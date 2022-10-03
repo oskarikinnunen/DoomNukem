@@ -1,0 +1,35 @@
+build/SDL_systhread.lo: \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/src/thread/pthread/SDL_systhread.c \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/src/thread/pthread/../../SDL_internal.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/src/thread/pthread/../../dynapi/SDL_dynapi.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/src/thread/pthread/../../dynapi/SDL_dynapi_overrides.h \
+  include/SDL_config.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_platform.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/begin_code.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/close_code.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_assert.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_config.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_log.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_stdinc.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_system.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_keyboard.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_error.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_keycode.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_scancode.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_video.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_pixels.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_endian.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_rect.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_rwops.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_surface.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_blendmode.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_render.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_hints.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_thread.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_atomic.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_mutex.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/src/thread/pthread/../SDL_thread_c.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/src/thread/pthread/../pthread/SDL_systhread_c.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/src/thread/pthread/../../SDL_error_c.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/src/thread/pthread/../.././SDL_internal.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/src/thread/pthread/../SDL_systhread.h

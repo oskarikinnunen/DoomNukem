@@ -1,0 +1,26 @@
+build/SDL_syshaptic.lo: \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/src/haptic/darwin/SDL_syshaptic.c \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/src/haptic/darwin/../../SDL_internal.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/src/haptic/darwin/../../dynapi/SDL_dynapi.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/src/haptic/darwin/../../dynapi/SDL_dynapi_overrides.h \
+  include/SDL_config.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_platform.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/begin_code.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/close_code.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_assert.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_config.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_log.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_stdinc.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_haptic.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_error.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_joystick.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/src/haptic/darwin/../SDL_syshaptic.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/src/haptic/darwin/../../joystick/SDL_sysjoystick.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/src/haptic/darwin/../../joystick/../SDL_internal.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/src/haptic/darwin/../../joystick/SDL_joystick_c.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_gamecontroller.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_rwops.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/include/SDL_sensor.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/src/haptic/darwin/../../joystick/darwin/SDL_iokitjoystick_c.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/src/haptic/darwin/../../joystick/darwin/../../SDL_internal.h \
+  /Users/okinnune/doomnukem/SDL2-2.0.22/src/haptic/darwin/SDL_syshaptic_c.h
