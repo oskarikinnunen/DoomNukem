@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 08:20:49 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 10:34:28 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 10:37:19 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ static void	render_editline(t_sdlcontext *sdl, t_editor *ed)
 	v2add(circlepos, ed->mousedrag.pos);
 	drawline((uint32_t *)sdl->surface->pixels, circlepos, ed->mouse.p, CLR_TURQ);
 	drawcircle((uint32_t *)sdl->surface->pixels, circlepos, 10, CLR_TURQ);
-	if (ed->line.start[X] == 0 && ed->line.start[Y] == 0) //not placed yet, could be checked in a simpler way
+	if (ed->state == place_start)
 		return;
 	drawline((uint32_t *)sdl->surface->pixels, line_ss.start, circlepos, CLR_TURQ);
 }
