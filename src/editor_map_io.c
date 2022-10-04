@@ -6,16 +6,11 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 11:39:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 11:40:53 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
-
-/*void	loadmap(t_editor *ed, char *filename)
-{
-	
-}*/
 
 static int	fileopen(char *filename, int flags)
 {

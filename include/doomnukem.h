@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 10:42:23 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 13:14:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,7 @@
 # define MOUSE_RIGHT 3
 # define CLR_PRPL 14231500
 # define CLR_TURQ 5505010
-# define V2NOTSET -42
-
-
+# define CLR_GRAY 4868682
 
 typedef struct s_sdlcontext
 {
@@ -74,6 +72,37 @@ typedef enum e_editorstate
 	place_end
 }	t_editorstate;
 
+
+typedef struct s_img
+{
+	uint32_t	size[2];
+	uint32_t	*data;
+	uint32_t	length;
+}	t_img;
+
+typedef struct s_obj //TODO: move obj/fdf related stuff to separate header?
+{
+	char		**mtlnames;
+	uint32_t	*mtlcolors;
+	uint8_t		*colors; //Points to colors in mtlcolors
+	uint32_t	m_count;
+	int32_t		**verts;
+	uint32_t	**faces;
+	uint32_t	v_count;
+	uint32_t	f_count;
+}	t_obj;
+
+typedef struct s_fdf
+{
+	struct s_simpleimg	*img;
+	t_obj				obj;
+	int					curframe;
+	float				*depth;
+	float				**verts;
+	float				matrices[2][3][3];
+	float				view[2];
+}	t_fdf;
+
 typedef struct s_editor
 {
 	t_editorstate	state;
@@ -81,6 +110,7 @@ typedef struct s_editor
 	t_list			*linelist;
 	t_mousedrag		mousedrag;
 	t_mouse			mouse;
+	t_fdf			fdf;
 }	t_editor;
 
 /* V2.C */
@@ -107,6 +137,9 @@ void	saveline(t_editor *ed);
 /* EDITOR_MAP_IO.C */
 void	loadmap(t_editor *ed, char *filename);
 void	savemap(t_editor *ed, char *filename);
+
+/* EDITOR_3D.C */
+void	gridto_obj(t_obj *obj);
 
 
 /* DRAW.C */

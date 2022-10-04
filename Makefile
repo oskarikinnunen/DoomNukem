@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/04 11:28:44 by okinnune         ###   ########.fr        #
+#    Updated: 2022/10/04 12:06:08 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ LIBFT= libft/libft.a
 
 #Source files:
 SRCFILES= main.c draw.c v2.c\
-		editor.c editor_mouse.c editor_events.c editor_render.c editor_saveline.c editor_map_io.c #EDITOR FILES
+		editor.c editor_mouse.c editor_events.c editor_render.c editor_saveline.c editor_map_io.c editor_3d.c #EDITOR FILES
 SRC= $(addprefix src/,$(SRCFILES))
 OBJ= $(SRC:.c=.o)
 

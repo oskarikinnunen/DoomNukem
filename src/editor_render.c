@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 08:20:49 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 11:24:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 11:43:26 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,11 @@ void	renderlines(t_sdlcontext *sdl, t_editor *ed)
 {
 	t_list	*l;
 
-	render_editline(sdl, ed);
 	l = ed->linelist;
 	while (l != NULL)
 	{
 		renderline(sdl, ed, *(t_line *)l->content);
 		l = l->next;
 	}
+	render_editline(sdl, ed);
 }
