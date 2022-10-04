@@ -3,14 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   v3_basics.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 17:31:46 by okinnune          #+#    #+#             */
-/*   Updated: 2022/09/11 09:25:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 15:42:51 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../v3lib.h"
+
+void fv3_to_iv3(float *f3, int *i3)
+{
+	i3[X] = (int)f3[X];
+	i3[Y] = (int)f3[Y];
+	i3[Z] = (int)f3[Z];
+}
 
 float	*v3_new(float x, float y, float z)
 {

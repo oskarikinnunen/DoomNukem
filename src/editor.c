@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 13:15:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 15:59:58 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static void debug_draw_object(uint32_t *pxls, t_obj obj) //remove this and use p
 	int			i;
 
 	i = 0;
-	while (i < 40)
+	while (i < obj.f_count)
 	{
 		drawline(pxls, obj.verts[obj.faces[i][0]], obj.verts[obj.faces[i][1]], CLR_TURQ);
 		drawline(pxls, obj.verts[obj.faces[i][1]], obj.verts[obj.faces[i][2]], CLR_TURQ);
@@ -65,15 +65,27 @@ void	editorloop(t_sdlcontext sdl)
 
 	bzero(&ed, sizeof(t_editor));
 	loadmap(&ed, "mapfile1");
-	gridto_obj(&ed.fdf.obj);
+
+	//FDF
+	alloc_image(&ed.grid_fdf.img, WINDOW_W, WINDOW_H);
+	alloc_image(&ed.walls_fdf.img, WINDOW_W, WINDOW_H);
 	while (1)
 	{
 		bzero(sdl.surface->pixels, sizeof(uint32_t) * WINDOW_H * WINDOW_W);
 		if (editor_events(&ed))
 			break ; //error returned from event handling, exit gracefully
-		//debug_draw_object((uint32_t *)sdl.surface->pixels, ed.fdf.obj);
-		drawgrid((uint32_t *)sdl.surface->pixels, ed.mousedrag.pos);
-		renderlines(&sdl, &ed);
+		if (ed.state == display3d)
+		{
+			fdf_draw_wireframe(&ed.grid_fdf, ed.mousedrag.pos);
+			ft_memcpy(sdl.surface->pixels, ed.grid_fdf.img.data, ed.grid_fdf.img.length);
+			//fdf_draw_wireframe(&ed.walls_fdf, ed.mousedrag.pos);
+			//ft_memcpy(sdl.surface->pixels, ed.walls_fdf.img.data, ed.grid_fdf.img.length);
+		}
+		else
+		{
+			drawgrid((uint32_t *)sdl.surface->pixels, ed.mousedrag.pos);
+			renderlines(&sdl, &ed);
+		}
 		SDL_UpdateWindowSurface(sdl.window);
 	}
 	savemap(&ed, "mapfile1");

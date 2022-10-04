@@ -927,12 +927,13 @@ cat >>"$ac_tmp/subs1.awk" <<\_ACAWK &&
 S["LTLIBOBJS"]=""
 S["WAYLAND_SCANNER_CODE_MODE"]=""
 S["WAYLAND_SCANNER"]=""
-S["EXTRA_LDFLAGS"]=" -lm -liconv  -Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa"\
-" -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal"
+S["EXTRA_LDFLAGS"]=" -lm -liconv  -Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox -Wl,-weak_framework,CoreHaptics -Wl,-weak_framework,GameController -Wl,-framework"\
+",ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-w"\
+"eak_framework,Metal"
 S["BUILD_LDFLAGS"]=""
 S["EXTRA_CFLAGS"]="-Iinclude -I/Users/okinnune/doomnukem/SDL2-2.0.22/include -idirafter /Users/okinnune/doomnukem/SDL2-2.0.22/src/video/khronos  -mmmx -m3dnow -msse -m"\
 "sse2 -msse3 -Wall -fno-strict-aliasing -DTARGET_API_MAC_CARBON -DTARGET_API_MAC_OSX -fvisibility=hidden -Wdeclaration-after-statement -Werror=declar"\
-"ation-after-statement -DMESA_EGL_NO_X11_HEADERS -DEGL_NO_X11 -D_THREAD_SAFE"
+"ation-after-statement -DMESA_EGL_NO_X11_HEADERS -DEGL_NO_X11 -D_THREAD_SAFE -fobjc-weak -Wno-unused-command-line-argument"
 S["BUILD_CFLAGS"]="-g -O3 -DUSING_GENERATED_CONFIG_H"
 S["SDLTEST_OBJECTS"]="$(objects)/SDL_test_assert.lo $(objects)/SDL_test_common.lo $(objects)/SDL_test_compare.lo $(objects)/SDL_test_crc32.lo $(objects)/SDL_test_font.lo "\
 "$(objects)/SDL_test_fuzzer.lo $(objects)/SDL_test_harness.lo $(objects)/SDL_test_imageBlit.lo $(objects)/SDL_test_imageBlitBlend.lo $(objects)/SDL_t"\
@@ -981,8 +982,9 @@ S["ENABLE_SHARED_TRUE"]=""
 S["PKGCONFIG_LIBS_PRIV"]="\n"\
 "Libs.private:"
 S["SDL_RLD_FLAGS"]=""
-S["SDL_STATIC_LIBS"]=" -lm -liconv  -Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa"\
-" -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal"
+S["SDL_STATIC_LIBS"]=" -lm -liconv  -Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox -Wl,-weak_framework,CoreHaptics -Wl,-weak_framework,GameController -Wl,-framework"\
+",ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-w"\
+"eak_framework,Metal"
 S["SDL_LIBS"]="-lSDL2"
 S["SDL_CFLAGS"]=" -D_THREAD_SAFE"
 S["INSTALL_SDL2_CONFIG"]="TRUE"
@@ -1335,6 +1337,7 @@ D["HAVE_PTHREAD_SETNAME_NP"]=" 1"
 D["SDL_JOYSTICK_HIDAPI"]=" 1"
 D["SDL_AUDIO_DRIVER_COREAUDIO"]=" 1"
 D["SDL_JOYSTICK_IOKIT"]=" 1"
+D["SDL_JOYSTICK_MFI"]=" 1"
 D["SDL_HAPTIC_IOKIT"]=" 1"
 D["SDL_POWER_MACOSX"]=" 1"
 D["SDL_FILESYSTEM_COCOA"]=" 1"

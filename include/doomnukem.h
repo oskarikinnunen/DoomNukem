@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 13:14:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 15:15:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 
 # define X 0
 # define Y 1
+# define Z 2
 # define MOUSE_LEFT 1
 # define MOUSE_MDL 2
 # define MOUSE_RIGHT 3
@@ -69,7 +70,8 @@ typedef struct s_wall
 typedef enum e_editorstate
 {
 	place_start,
-	place_end
+	place_end,
+	display3d
 }	t_editorstate;
 
 
@@ -94,7 +96,7 @@ typedef struct s_obj //TODO: move obj/fdf related stuff to separate header?
 
 typedef struct s_fdf
 {
-	struct s_simpleimg	*img;
+	t_img				img;
 	t_obj				obj;
 	int					curframe;
 	float				*depth;
@@ -110,7 +112,8 @@ typedef struct s_editor
 	t_list			*linelist;
 	t_mousedrag		mousedrag;
 	t_mouse			mouse;
-	t_fdf			fdf;
+	t_fdf			grid_fdf;
+	t_fdf			walls_fdf;
 }	t_editor;
 
 /* V2.C */
@@ -140,6 +143,14 @@ void	savemap(t_editor *ed, char *filename);
 
 /* EDITOR_3D.C */
 void	gridto_obj(t_obj *obj);
+void	lines_to_obj(t_obj *obj, t_editor *ed);
+
+/* FDF.C */
+int		fdf_init(t_fdf *fdf);
+void	fdf_draw_wireframe(t_fdf *fdf, int offset[2]);
+
+/* IMG.C */
+void	alloc_image(t_img *img, int width, int height);
 
 
 /* DRAW.C */

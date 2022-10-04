@@ -22,9 +22,9 @@ CC      = gcc
 CXX     = g++
 INCLUDE = -Iinclude -I/Users/okinnune/doomnukem/SDL2-2.0.22/include -idirafter /Users/okinnune/doomnukem/SDL2-2.0.22/src/video/khronos
 CFLAGS  = -g -O3 -DUSING_GENERATED_CONFIG_H
-EXTRA_CFLAGS = -Iinclude -I/Users/okinnune/doomnukem/SDL2-2.0.22/include -idirafter /Users/okinnune/doomnukem/SDL2-2.0.22/src/video/khronos  -mmmx -m3dnow -msse -msse2 -msse3 -Wall -fno-strict-aliasing -DTARGET_API_MAC_CARBON -DTARGET_API_MAC_OSX -fvisibility=hidden -Wdeclaration-after-statement -Werror=declaration-after-statement -DMESA_EGL_NO_X11_HEADERS -DEGL_NO_X11 -D_THREAD_SAFE
+EXTRA_CFLAGS = -Iinclude -I/Users/okinnune/doomnukem/SDL2-2.0.22/include -idirafter /Users/okinnune/doomnukem/SDL2-2.0.22/src/video/khronos  -mmmx -m3dnow -msse -msse2 -msse3 -Wall -fno-strict-aliasing -DTARGET_API_MAC_CARBON -DTARGET_API_MAC_OSX -fvisibility=hidden -Wdeclaration-after-statement -Werror=declaration-after-statement -DMESA_EGL_NO_X11_HEADERS -DEGL_NO_X11 -D_THREAD_SAFE -fobjc-weak -Wno-unused-command-line-argument
 LDFLAGS = 
-EXTRA_LDFLAGS =  -lm -liconv  -Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal
+EXTRA_LDFLAGS =  -lm -liconv  -Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox -Wl,-weak_framework,CoreHaptics -Wl,-weak_framework,GameController -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 INSTALL = /Users/okinnune/.brew/bin/ginstall -c
 AR	= ar

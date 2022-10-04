@@ -6,11 +6,16 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 08:45:14 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 15:33:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
+
+static bool iskey(SDL_Event e, int keycode)
+{
+	return (e.key.keysym.sym == keycode);
+}
 
 int		editor_events(t_editor *ed)
 {
@@ -19,8 +24,25 @@ int		editor_events(t_editor *ed)
 	while (SDL_PollEvent(&e))
 	{
 		mouse_event(e, ed);
-		if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE)
-			return (1);
+		if (e.type == SDL_KEYDOWN) {
+			if (iskey(e, SDLK_ESCAPE))
+				return (1);
+			else if(iskey(e, SDLK_SPACE))
+			{
+				if (ed->state != display3d)
+				{
+					gridto_obj(&ed->grid_fdf.obj); //TODO: LEAKS!! free this pls
+					fdf_init(&ed->grid_fdf);
+					lines_to_obj(&ed->walls_fdf.obj, ed);
+					fdf_init(&ed->walls_fdf);
+					ed->state = display3d;
+				}
+					
+				else
+					ed->state = place_start;
+			}
+		}
+			
 	}
 	return (0);
 }
