@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 10:05:22 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 10:22:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ typedef struct s_sdlcontext
 {
 	SDL_Window				*window;
 	SDL_Surface				*surface;
-	//t_simpleimg				*images;
 }	t_sdlcontext;
 
 typedef struct s_mouse
@@ -62,6 +61,12 @@ typedef	struct s_line
 	int	start[2];
 	int	end[2];
 }	t_line;
+
+typedef struct s_wall
+{
+	t_line	line;
+	int		height;
+}	t_wall;
 
 typedef enum e_editorstate
 {

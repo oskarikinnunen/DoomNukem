@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 10:12:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 10:33:40 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ static void	mousedrag(t_editor *ed)
 		d->pos[X] = d->pos_origin[X] + d->drag[X];
 		d->pos[Y] = d->pos_origin[Y] + d->drag[Y];
 		d->pos[X] = ft_clamp(d->pos[X], -(GRIDSIZE * TILESIZE) + WINDOW_W - 20, 20);
-		printf("X: %i \n", d->pos[X]);
 		d->pos[Y] = ft_clamp(d->pos[Y], -(GRIDSIZE * TILESIZE) + WINDOW_H - 20, 20);
 	}
 	if (ed->mouse.held == MOUSE_MDL)
@@ -60,7 +59,7 @@ static void mouseclick(t_editor *ed)
 		{
 			mousetoworldspace(ed->line.end, ed);
 			saveline(ed);
-			//Malloc line and stuff
+			ft_bzero(&ed->line, sizeof(t_line));
 			ed->state = place_start;
 		}
 		else if (ed->state == place_start)

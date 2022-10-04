@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 10:12:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 10:20:36 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static int	fileopen(char *filename, int flags)
 	int	fd;
 
 	fd = open(filename, flags);
-	if (fd == -1 && flags != O_RDWR) //SECOND check is just so loadmap doesn't exit to program TODO: fix
+	if (fd == -1 && flags != O_RDWR) //TODO: fix, second check is just so loadmap doesn't exit the program
 		exit(0); //TODO: make error exit function
 	return (fd);
 }
@@ -32,7 +32,6 @@ void	loadmap(t_editor *ed, char *filename)
 	int		fd;
 	int		br;
 	t_line	line;
-	//t_list	file_l;
 	t_list	*node;
 
 	fd = fileopen(filename, O_RDWR);
