@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 15:33:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 16:39:21 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ int		editor_events(t_editor *ed)
 				{
 					gridto_obj(&ed->grid_fdf.obj); //TODO: LEAKS!! free this pls
 					fdf_init(&ed->grid_fdf);
+					ft_bzero(&ed->walls_fdf, sizeof(t_fdf));
 					lines_to_obj(&ed->walls_fdf.obj, ed);
 					fdf_init(&ed->walls_fdf);
 					ed->state = display3d;

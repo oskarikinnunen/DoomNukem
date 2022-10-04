@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:21:52 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 11:43:01 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 16:52:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,13 @@ bool	removeduplicate(t_editor *ed)
 		line = *(t_line *)node->content;
 		if (node->content == NULL)
 			return (true);
-		if (((v2cmp(ed->line.start, line.start) && v2cmp(ed->line.end, line.end)) ||
-			(v2cmp(ed->line.start, line.end) && v2cmp(ed->line.end, line.start))) &&
-			prev != NULL)
+		if ((v2cmp(ed->line.start, line.start) && v2cmp(ed->line.end, line.end)) ||
+			(v2cmp(ed->line.start, line.end) && v2cmp(ed->line.end, line.start)))
 		{
-			prev->next = node->next;
+			if (prev)
+				prev->next = node->next;
+			else
+				ed->linelist = node->next;
 			ft_lstdelone(&node, &del_list);
 			return (true);
 		}

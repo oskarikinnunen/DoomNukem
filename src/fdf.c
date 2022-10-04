@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 11:58:52 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 16:03:36 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 16:53:43 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,14 +64,19 @@ static	void drawface(t_fdf *fdf, int i)//wireframe
 	//fdf->obj.faces[i][0] = 2;
 	//fdf->obj.faces[i][1] = 2;
 	//fdf->obj.faces[i][2] = 2;
-	//printf("face %i \n", fdf->obj.faces[i][0]);
-	fdf->verts[0][0] = 42;
+	//return ;
+	//fdf->verts[0][0] = 42;
+	//printf("f index %i \n", fdf->obj.faces[i][0]);
+	
 	fv3_to_iv3(fdf->verts[fdf->obj.faces[i][0]], i3[0]);
+	
 	fv3_to_iv3(fdf->verts[fdf->obj.faces[i][1]], i3[1]);
 	fv3_to_iv3(fdf->verts[fdf->obj.faces[i][2]], i3[2]);
+	
 	drawline(fdf->img.data, i3[0], i3[1], INT_MAX);
 	drawline(fdf->img.data, i3[1], i3[2], INT_MAX);
 	drawline(fdf->img.data, i3[2], i3[0], INT_MAX);
+	return ;
 }
 
 void	fdf_draw_wireframe(t_fdf *fdf, int offset[2])
@@ -83,9 +88,8 @@ void	fdf_draw_wireframe(t_fdf *fdf, int offset[2])
 	min_x = INT_MAX;
 	ft_bzero(fdf->img.data, fdf->img.length);
 	calc_matrices(fdf);
-	printf("count %i \n", fdf->obj.v_count);
 	//while (i < 66)
-	while (i < fdf->obj.v_count)
+	while (i < fdf->obj.v_count) //fix list len
 	{
 		fdf->verts[i][X] = (float)fdf->obj.verts[i][X];
 		fdf->verts[i][Y] = (float)fdf->obj.verts[i][Y];

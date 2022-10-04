@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 11:57:55 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 15:54:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 16:34:32 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ static void linefaces(t_obj *obj, int i)
 	obj->faces[fi][0] = i + 1;
 	obj->faces[fi][1] = i + 2;
 	obj->faces[fi][2] = i;
+	printf("fi %i \n", fi);
 }
 
 static void	i3_mul(int *i3, int mul)
@@ -99,7 +100,6 @@ static void	i3_mul(int *i3, int mul)
 	i3[Z] = i3[Z] * mul;
 }
 
-
 void lines_to_obj(t_obj *obj, t_editor *ed)
 {
 	t_list	*l;
@@ -107,7 +107,8 @@ void lines_to_obj(t_obj *obj, t_editor *ed)
 	int		i;
 
 	l = ed->linelist;
-	len = ft_listlen(l);
+	len = ft_listlen(l) - 1;
+	printf("listlen %i \n", len);
 	obj->v_count = len * 4;
 	obj->verts = ft_memalloc(obj->v_count * sizeof(int32_t));
 	obj->f_count = len * 2;
@@ -131,6 +132,8 @@ void lines_to_obj(t_obj *obj, t_editor *ed)
 		i3_mul(obj->verts[i + 3], TILESIZE);
 		linefaces(obj, i);
 		l = l->next;
+		printf("lcount %i \n", i);
 		i += 4;
 	}
+	printf("fcount %i \n", obj->f_count);
 }

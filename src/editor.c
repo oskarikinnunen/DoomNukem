@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 15:59:58 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 16:53:32 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,8 @@ void	editorloop(t_sdlcontext sdl)
 		{
 			fdf_draw_wireframe(&ed.grid_fdf, ed.mousedrag.pos);
 			ft_memcpy(sdl.surface->pixels, ed.grid_fdf.img.data, ed.grid_fdf.img.length);
+			
+			
 			//fdf_draw_wireframe(&ed.walls_fdf, ed.mousedrag.pos);
 			//ft_memcpy(sdl.surface->pixels, ed.walls_fdf.img.data, ed.grid_fdf.img.length);
 		}
