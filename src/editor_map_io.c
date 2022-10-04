@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 10:20:36 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 11:39:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static int	fileopen(char *filename, int flags)
 {
 	int	fd;
 
-	fd = open(filename, flags);
+	fd = open(filename, flags, 0666);
 	if (fd == -1 && flags != O_RDWR) //TODO: fix, second check is just so loadmap doesn't exit the program
 		exit(0); //TODO: make error exit function
 	return (fd);

@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/04 09:47:15 by okinnune         ###   ########.fr        #
+#    Updated: 2022/10/04 11:28:44 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ OBJ= $(SRC:.c=.o)
 #Compilation stuff:
 INCLUDE= -ISDL_built/include/SDL2/ -Isrc -Iinclude -Ilibft $(LIBFT) 
 CC= gcc
-CFLAGS= $(INCLUDE) -lm
+CFLAGS= $(INCLUDE) -lm -g
 
 all: $(OBJ) $(SDL2) $(LIBFT)
 	$(CC) $(OBJ) -o $(NAME) `SDL_built/bin/sdl2-config --cflags --libs` $(INCLUDE)
