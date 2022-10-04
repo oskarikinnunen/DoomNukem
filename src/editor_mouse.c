@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 10:33:40 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 10:37:47 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ static void mouseclick(t_editor *ed)
 			ed->state = place_end;
 		}
 	}
-		
 }
 
 void	mouse_event(SDL_Event e, t_editor *ed)
