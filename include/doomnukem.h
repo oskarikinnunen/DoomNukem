@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 10:22:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 10:42:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ typedef struct s_editor
 /* V2.C */
 void	v2add(int v[2], int ov[2]);
 void	v2mul(int v[2], int mul);
+bool	v2cmp(int v[2], int ov[2]);
 
 /* EDITOR.C */
 void	editorloop(t_sdlcontext sdl);
