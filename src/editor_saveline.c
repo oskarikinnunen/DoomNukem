@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:21:52 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 10:52:34 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 11:12:43 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,21 +19,21 @@ bool	removeduplicate(t_editor *ed)
 	t_line	line;
 
 	node = ed->linelist;
+	prev = NULL;
 	while (node != NULL)
 	{
 		line = *(t_line *)node->content;
-		if (v2cmp(ed->line.start, line.start)) {
-			/*if (node->next != NULL)
+		if ((v2cmp(ed->line.start, line.start) && v2cmp(ed->line.end, line.end))
+			|| (v2cmp(ed->line.end, line.start) && v2cmp(ed->line.start, line.end)))
+		{
+			if (prev != NULL)
 				prev->next = node->next;
-			free(node->content);
-			free(node);*/
-			prev->next = NULL;
 			free(node);
-			//ft_memdel((void **)&node);
+			node = NULL;
 			return (true);
 		}
-		node = node->next;
 		prev = node;
+		node = node->next;
 	}
 	return (false);
 }
