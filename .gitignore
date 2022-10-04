@@ -1,2 +1,4 @@
 *.o
 src/*.o
+SDL_built/*
+SDL_built/**
