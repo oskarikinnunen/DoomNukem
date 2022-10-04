@@ -1,0 +1,69 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   editor_map_io.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
+/*   Updated: 2022/10/04 10:12:27 by okinnune         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "doomnukem.h"
+
+/*void	loadmap(t_editor *ed, char *filename)
+{
+	
+}*/
+
+static int	fileopen(char *filename, int flags)
+{
+	int	fd;
+
+	fd = open(filename, flags);
+	if (fd == -1 && flags != O_RDWR) //SECOND check is just so loadmap doesn't exit to program TODO: fix
+		exit(0); //TODO: make error exit function
+	return (fd);
+}
+
+void	loadmap(t_editor *ed, char *filename)
+{
+	int		fd;
+	int		br;
+	t_line	line;
+	//t_list	file_l;
+	t_list	*node;
+
+	fd = fileopen(filename, O_RDWR);
+	if (fd <= -1)
+		return ;
+	br = read(fd, &line, sizeof(t_line));
+	while (br >= sizeof(t_line))
+	{
+		printf("read %i from file \n", br);
+		node = ft_lstnew(&line, sizeof(t_line));
+		if (ed->linelist == NULL)
+			ed->linelist = node;
+		else
+			ft_lstapp(&ed->linelist, node);
+		br = read(fd, &line, sizeof(t_line));
+	}
+	close(fd);
+}
+
+void	savemap(t_editor *ed, char *filename)
+{
+	int		fd;
+	t_list	*l;
+
+	fd = fileopen(filename, O_RDWR | O_CREAT);
+	l = ed->linelist;
+	while (l != NULL)
+	{
+		int written = write(fd, (t_line *)l->content, sizeof(t_line));
+		printf("wrote %i bytes \n", written);
+		l = l->next;
+	}
+	close(fd);
+}

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 08:29:55 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 10:05:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,13 +53,15 @@ void	editorloop(t_sdlcontext sdl)
 	t_editor	ed;
 
 	bzero(&ed, sizeof(t_editor));
+	loadmap(&ed, "mapfile2");
 	while (1)
 	{
 		bzero(sdl.surface->pixels, sizeof(uint32_t) * WINDOW_H * WINDOW_W);
 		if (editor_events(&ed))
-			return ; //error returned from event handling, exit gracefully
+			break ; //error returned from event handling, exit gracefully
 		drawgrid((uint32_t *)sdl.surface->pixels, ed.mousedrag.pos);
 		renderlines(&sdl, &ed);
 		SDL_UpdateWindowSurface(sdl.window);
 	}
+	savemap(&ed, "mapfile2");
 }

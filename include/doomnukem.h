@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 08:55:48 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 10:05:22 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "libft.h"
 #include "limits.h" //TODO: remove probably, used for INT_MAX
 #include "math.h"
+#include <fcntl.h>
 #include <stdbool.h>
 
 # define WINDOW_W 800
@@ -29,6 +30,8 @@
 # define MOUSE_MDL 2
 # define MOUSE_RIGHT 3
 # define CLR_PRPL 14231500
+# define CLR_TURQ 5505010
+# define V2NOTSET -42
 
 
 
@@ -62,7 +65,6 @@ typedef	struct s_line
 
 typedef enum e_editorstate
 {
-	none,
 	place_start,
 	place_end
 }	t_editorstate;
@@ -71,6 +73,7 @@ typedef struct s_editor
 {
 	t_editorstate	state;
 	t_line			line;
+	t_list			*linelist;
 	t_mousedrag		mousedrag;
 	t_mouse			mouse;
 }	t_editor;
@@ -91,6 +94,13 @@ void	renderlines(t_sdlcontext *sdl, t_editor *ed); //TODO: invent better name?
 /* EDITOR_MOUSE.C */
 void	mousetoworldspace(int v2[2], t_editor *ed);
 void	mouse_event(SDL_Event e, t_editor *ed);
+
+/* EDITOR_SAVELINE.C */
+void	saveline(t_editor *ed);
+
+/* EDITOR_MAP_IO.C */
+void	loadmap(t_editor *ed, char *filename);
+void	savemap(t_editor *ed, char *filename);
 
 
 /* DRAW.C */

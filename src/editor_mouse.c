@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 08:49:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 10:12:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,8 @@ void	mousetoworldspace(int v2[2], t_editor *ed)
 	mod[Y] = v2[Y] % TILESIZE;
 	v2[X] /= TILESIZE;
 	v2[Y] /= TILESIZE;
-	if (mod[X] > TILESIZE / 2)
-		v2[X]++;
-	if (mod[Y] > TILESIZE / 2)
-		v2[Y]++;
-	printf("mod %i %i \n", mod[X], mod[Y]);
+	v2[X] += (bool)(mod[X] > TILESIZE / 2);
+	v2[Y] += (bool)(mod[Y] > TILESIZE / 2);
 }
 
 static void	mousedrag(t_editor *ed)
@@ -59,14 +56,18 @@ static void mouseclick(t_editor *ed)
 	if (ed->mouse.click)
 	{
 		ed->mouse.click = false;
-		ed->state++;
-		if (ed->state > place_end)
-			ed->state = none;
-		if (ed->state == place_start)
+		if (ed->state == place_end)
+		{
+			mousetoworldspace(ed->line.end, ed);
+			saveline(ed);
+			//Malloc line and stuff
+			ed->state = place_start;
+		}
+		else if (ed->state == place_start)
 		{
 			mousetoworldspace(ed->line.start, ed);
+			ed->state = place_end;
 		}
-			
 	}
 		
 }
