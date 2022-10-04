@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 16:53:32 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 16:57:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,10 @@ void	editorloop(t_sdlcontext sdl)
 	//FDF
 	alloc_image(&ed.grid_fdf.img, WINDOW_W, WINDOW_H);
 	alloc_image(&ed.walls_fdf.img, WINDOW_W, WINDOW_H);
+	ed.grid_fdf.view[X] = -0.4f;
+	ed.grid_fdf.view[Y] = -0.8f;
+	ft_memcpy(ed.walls_fdf.view, ed.grid_fdf.view, sizeof(float [2]));
+
 	while (1)
 	{
 		bzero(sdl.surface->pixels, sizeof(uint32_t) * WINDOW_H * WINDOW_W);

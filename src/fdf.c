@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 11:58:52 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 16:53:43 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/04 17:35:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,13 @@ static void	calc_matrices(t_fdf *fdf)
 	float	angles[2];
 
 	ft_bzero(fdf->matrices, sizeof(float [2][3][3]));
-	//angles[X] = fdf->view[Y];
-	angles[X] = -0.4f;
-	angles[Y] = 0.8f;
+	angles[X] = fdf->view[X];
+	angles[Y] = fdf->view[Y];
 	fdf->matrices[0][X][X] = cos(angles[X]);
 	fdf->matrices[0][X][Y] = -sin(angles[X]);
 	fdf->matrices[0][Y][X] = sin(angles[X]);
 	fdf->matrices[0][Y][Y] = cos(angles[X]);
+
 
 	/*iso[Y][Y] = cos(angle);
 	iso[Y][Z] = sin(angle);
@@ -69,13 +69,12 @@ static	void drawface(t_fdf *fdf, int i)//wireframe
 	//printf("f index %i \n", fdf->obj.faces[i][0]);
 	
 	fv3_to_iv3(fdf->verts[fdf->obj.faces[i][0]], i3[0]);
-	
 	fv3_to_iv3(fdf->verts[fdf->obj.faces[i][1]], i3[1]);
 	fv3_to_iv3(fdf->verts[fdf->obj.faces[i][2]], i3[2]);
 	
-	drawline(fdf->img.data, i3[0], i3[1], INT_MAX);
-	drawline(fdf->img.data, i3[1], i3[2], INT_MAX);
-	drawline(fdf->img.data, i3[2], i3[0], INT_MAX);
+	drawline(fdf->img.data, i3[0], i3[1], CLR_GRAY);
+	drawline(fdf->img.data, i3[1], i3[2], CLR_GRAY);
+	drawline(fdf->img.data, i3[2], i3[0], CLR_GRAY);
 	return ;
 }
 
