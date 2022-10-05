@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 15:26:50 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/05 16:37:21 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,10 @@ static void debug_draw_object(uint32_t *pxls, t_obj obj) //remove this and use p
 }
 	
 
-void	editorloop(t_sdlcontext sdl)
+int	editorloop(t_sdlcontext sdl)
 {
 	t_editor	ed;
+	t_gamereturn	gr;
 
 	bzero(&ed, sizeof(t_editor));
 	loadmap(&ed.linelist, "mapfile1");
@@ -78,12 +79,14 @@ void	editorloop(t_sdlcontext sdl)
 		update_deltatime(&ed.clock);
 		update_anim(&ed.transition, ed.clock.delta);
 		bzero(sdl.surface->pixels, sizeof(uint32_t) * WINDOW_H * WINDOW_W);
-		if (editor_events(&ed))
-			break ; //error returned from event handling, exit gracefully
-		if (ed.state == display3d || ed.transition.active)
+		gr = editor_events(&ed); 
+		if (gr != game_continue)
 		{
-			editor3d(sdl, &ed);
+			savemap(&ed, "mapfile1");
+			return(gr) ; //error returned from event handling, exit gracefully
 		}
+		if (ed.state == display3d || ed.transition.active)
+			editor3d(sdl, &ed);
 		else
 		{
 			drawgrid((uint32_t *)sdl.surface->pixels, ed.mousedrag->pos);
@@ -91,5 +94,5 @@ void	editorloop(t_sdlcontext sdl)
 		}
 		SDL_UpdateWindowSurface(sdl.window);
 	}
-	savemap(&ed, "mapfile1");
+	return(game_error); //should never get here
 }
