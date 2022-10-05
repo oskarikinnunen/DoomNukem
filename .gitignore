@@ -2,4 +2,7 @@
 src/*.o
 SDL_built/*
 SDL_built/**
+libft/libft.a
+libft/**.o
 !SDL_built/DontRemoveMe
+callgrind.out*

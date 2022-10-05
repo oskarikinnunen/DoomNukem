@@ -1,3 +1,5 @@
+See "callgraph.png" for a visualisation of the editors "program flow".
+
 Feel free to add new keybindings here
 
 KEYBIND				| 	ACTION
