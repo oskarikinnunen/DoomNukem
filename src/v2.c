@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:23:41 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 12:03:44 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/05 14:01:14 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,12 @@ void	v2mul(int v[2], int mul)
 {
 	v[X] *= mul;
 	v[Y] *= mul;
+}
+
+void	f2mul(float f[2], float mul)
+{
+	f[X] *= mul;
+	f[Y] *= mul;
 }
 
 void	v2add(int v[2], int ov[2])

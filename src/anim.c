@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:56:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 13:31:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/05 13:54:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,21 +24,19 @@ void	update_anim(t_anim *anim, uint32_t delta)
 	if (anim->mode == anim_forwards)
 	{
 		if (anim->frame >= anim->lastframe)
-		{
 			anim->active = false;
-			return ;
-		}
-		anim->frame = (int)(anim->framerate * now_second);
+		else
+			anim->frame = (int)(anim->framerate * now_second);
 	}
 	if (anim->mode == anim_backwards)
 	{
 		if (anim->frame < 0)
-		{
 			anim->active = false;
-			return ;
-		}
-		anim->frame = anim->lastframe - (int)(anim->framerate * now_second);
+		else
+			anim->frame = anim->lastframe - (int)(anim->framerate * now_second);
 	}
+	anim->lerp = ((float)anim->frame / (float)anim->lastframe); //TODO: make sure lastframe can't be zero or protect this
+	anim->lerp = ft_clampf(anim->lerp, 0.0f, 1.0f);
 }
 
 void	start_anim(t_anim *anim, t_anim_mode mode)

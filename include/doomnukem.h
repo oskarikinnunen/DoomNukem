@@ -6,13 +6,13 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 13:40:30 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/05 14:01:37 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../SDL_built/include/SDL2/SDL.h" //TODO: make this work without relative path?
 #include "libft.h"
-#include "limits.h" //TODO: remove probably, used for INT_MAX
+#include "limits.h" //TODO: remove mby? just define INT_MAX yourself
 #include "math.h"
 #include <fcntl.h>
 #include <stdbool.h>
@@ -20,16 +20,19 @@
 # define WINDOW_W 800
 # define WINDOW_H 600
 # define TILESIZE 32 //EDITOR tilesize
-# define GRIDSIZE 64 //EDITOR tilesize
+# define GRIDSIZE 64 //EDITOR gridsize (how many addressable coordinates we have)
+
 # define PI	3.14159265359
 # define FULLRAD PI * 2.0
 
 # define X 0
 # define Y 1
 # define Z 2
+
 # define MOUSE_LEFT 1
 # define MOUSE_MDL 2
 # define MOUSE_RIGHT 3
+
 # define CLR_PRPL 14231500
 # define CLR_TURQ 5505010
 # define CLR_GRAY 4868682
@@ -129,6 +132,7 @@ typedef struct s_anim
 	int32_t		frame;
 	int32_t		lastframe;
 	uint8_t		framerate;
+	float		lerp;
 	t_anim_mode	mode;
 }	t_anim;
 
@@ -147,6 +151,7 @@ typedef struct s_editor
 }	t_editor;
 
 /* V2.C */
+void	f2mul(float f[2], float mul); //TODO: move f2 functions to own file and maybe think of better naming?
 void	v2add(int v[2], int ov[2]);
 void	v2mul(int v[2], int mul);
 void	v2mul_to_f2(int v[2], float mul, float f[2]);
