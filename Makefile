@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/05 14:21:23 by okinnune         ###   ########.fr        #
+#    Updated: 2022/10/05 14:25:53 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,6 +45,7 @@ $(LIBFT):
 
 clean-sdl:
 	rm -rf $(SDLFOLDER)/build/*
+	touch $(SDLFOLDER)/build/DontRemoveMe
 	rm -rf SDL_built/*
 	touch SDL_built/DontRemoveMe
 	rm -f $(SDL2)
