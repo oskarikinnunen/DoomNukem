@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 14:01:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/05 14:16:37 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ typedef struct s_anim
 typedef struct s_editor
 {
 	t_editorstate	state;
-	t_line			line;
+	t_line			line; //the line that is being edited right now
 	t_list			*linelist;
 	t_mousedrag		mousedrag[2]; //First one is right click drag, 2nd is for middle click
 	t_mouse			mouse;

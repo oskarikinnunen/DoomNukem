@@ -3,4 +3,3 @@ src/*.o
 SDL_built/*
 SDL_built/**
 !SDL_built/DontRemoveMe
-
