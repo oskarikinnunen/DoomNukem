@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+         #
+#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/05 16:41:07 by okinnune         ###   ########.fr        #
+#    Updated: 2022/10/05 18:36:31 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ LIBFT= libft/libft.a
 SRCFILES= main.c draw.c v2.c img.c fdf.c deltatime.c anim.c\
 		editor.c editor_mouse.c editor_events.c editor_render.c \
 		editor_saveline.c editor_map_io.c editor_3d_initialize.c \
-		editor_3d.c playmode.c
+		editor_3d.c playmode.c free_obj.c 3dsage.c
 SRC= $(addprefix src/,$(SRCFILES))
 OBJ= $(SRC:.c=.o)
 

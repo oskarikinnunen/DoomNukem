@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 16:37:31 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/05 19:17:38 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,7 +156,19 @@ typedef struct s_game
 	t_list			*linelst;
 	t_clock			clock;
 	t_mouse			mouse;
+	struct s_player	*player;
 } t_game;
+
+typedef struct s_player
+{
+	int wasd[4];
+	int sl,sr;
+	int m;
+	int x,y,z;
+	int a;
+	int l;
+	int slowspeed;
+} t_player;
 
 typedef enum e_gamereturn
 {
@@ -221,6 +233,10 @@ void	draw(uint32_t *pxls, int pos[2], uint32_t clr);
 void	drawline(uint32_t *pxls, int from[2], int to[2], uint32_t clr);
 void	drawcircle(uint32_t *pxls, int crd[2], int size, uint32_t clr);
 void	imgtoscreen(uint32_t *pxls, t_img *img);
+
+/* FREE */
+void	free_lst(t_list *head);
+void	free_obj(t_obj *obj);
 
 /* PLAYMODE */
 int playmode(t_sdlcontext sdl);

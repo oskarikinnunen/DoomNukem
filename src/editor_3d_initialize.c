@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   editor_3d.c                                        :+:      :+:    :+:   */
+/*   editor_3d_initialize.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 11:57:55 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 11:25:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/05 18:19:26 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ void gridto_obj(t_obj *obj)
 
 	obj->verts = ft_memalloc(GRIDSIZE * GRIDSIZE * sizeof(float *));
 	obj->v_count = 0;
+	if (obj->mtlcolors)
+		free(obj->mtlcolors);
 	obj->mtlcolors = ft_memalloc(sizeof(uint32_t));
 	obj->mtlcolors[0] = CLR_GRAY;
 	ft_bzero(crd, sizeof(int [2]));
@@ -128,6 +130,8 @@ void lines_to_obj(t_obj *obj, t_editor *ed)
 	obj->f_count = len * 2;
 	obj->faces = ft_memalloc(obj->f_count * sizeof(uint32_t *));
 	i = 0;
+	if (obj->mtlcolors)
+		free(obj->mtlcolors);
 	obj->mtlcolors = ft_memalloc(sizeof(uint32_t));
 	obj->mtlcolors[0] = CLR_PRPL;
 	while (l != NULL)

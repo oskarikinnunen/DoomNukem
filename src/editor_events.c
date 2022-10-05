@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 16:33:45 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/05 18:20:29 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int		editor_events(t_editor *ed)
 				}
 				else
 				{
-					start_anim(&ed->transition, anim_backwards);
+					//start_anim(&ed->transition, anim_backwards);
 					ed->state = place_start;
 				}
 			}
