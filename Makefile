@@ -6,13 +6,14 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/05 13:37:09 by okinnune         ###   ########.fr        #
+#    Updated: 2022/10/05 14:12:37 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
 NAME= DoomNukem
 #Library dependencies:
+SDLFOLDER= SDL-release-2.0.22
 SDL2= SDL_built/lib/libSDL2.a
 LIBFT= libft/libft.a
 
@@ -43,10 +44,12 @@ $(LIBFT):
 	make -C libft
 
 clean-sdl:
-	rm -rf SDL2-2.0.22/build/*
+	rm -rf $(SDLFOLDER)/build/*
+	rm -rf SDL_built/*
+	touch SDL_built/DontRemoveMe
 	rm -f $(SDL2)
 
 re-sdl: clean-sdl $(SDL2)
 
 $(SDL2):
-	cd SDL2-2.0.22/build &&../configure --prefix=$(PWD)/SDL_built/ && make install
+	cd $(SDLFOLDER)/build && ../configure --prefix=$(PWD)/SDL_built/ && make install
