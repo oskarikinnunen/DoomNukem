@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 15:00:42 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/05 15:26:50 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	editorloop(t_sdlcontext sdl)
 	t_editor	ed;
 
 	bzero(&ed, sizeof(t_editor));
-	loadmap(&ed, "mapfile1");
+	loadmap(&ed.linelist, "mapfile1");
 
 	//FDF
 	alloc_image(&ed.grid_fdf.img, WINDOW_W, WINDOW_H);

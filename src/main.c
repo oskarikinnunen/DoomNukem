@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 14:56:46 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/05 15:27:40 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	main(int argc, char **argv)
 
 	createsdlcontext(&sdl);
 	editorloop(sdl);
-	
+	playmode(sdl);
 	//TODO: sdl exit
 	return 0;
 }

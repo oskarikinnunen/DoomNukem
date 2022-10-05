@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 14:16:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/05 15:34:29 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,6 +150,15 @@ typedef struct s_editor
 	t_clock			clock;
 }	t_editor;
 
+/* Playmode */
+typedef struct s_game
+{
+	t_line			*linelst;
+	t_clock			clock;
+	t_mouse			mouse;
+} t_game;
+
+
 /* V2.C */
 void	f2mul(float f[2], float mul); //TODO: move f2 functions to own file and maybe think of better naming?
 void	v2add(int v[2], int ov[2]);
@@ -175,7 +184,7 @@ void	mouse_event(SDL_Event e, t_editor *ed);
 void	saveline(t_editor *ed);
 
 /* EDITOR_MAP_IO.C */
-void	loadmap(t_editor *ed, char *filename);
+void	loadmap(t_list **head, char *filename);
 void	savemap(t_editor *ed, char *filename);
 
 /* EDITOR_3D_INITIALIZE.C */
@@ -204,3 +213,6 @@ void	draw(uint32_t *pxls, int pos[2], uint32_t clr);
 void	drawline(uint32_t *pxls, int from[2], int to[2], uint32_t clr);
 void	drawcircle(uint32_t *pxls, int crd[2], int size, uint32_t clr);
 void	imgtoscreen(uint32_t *pxls, t_img *img);
+
+/* PLAYMODE */
+void playmode(t_sdlcontext sdl);
