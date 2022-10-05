@@ -1,4 +1,4 @@
-Feel free to add new keybindings here if you add any
+Feel free to add new keybindings here
 
 KEYBIND				| 	ACTION
 Left click			|	Place line start/end (redraw on top of old line to remove)

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 11:58:52 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 11:52:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/05 13:31:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,7 @@ static void	calc_matrices(t_fdf *fdf)
 	fdf->matrices[0][Y][X] = sin(angles[X]);
 	fdf->matrices[0][Y][Y] = cos(angles[X]);
 	fdf->matrices[0][Z][Z] = 1.0f;
-
-	/*iso[Y][Y] = cos(angle);
-	iso[Y][Z] = sin(angle);
-	iso[Z][Y] = -sin(angle);
-	iso[Z][Z] = cos(angle);*/
+	
 	fdf->matrices[1][X][X] = 1.0f;
 	fdf->matrices[1][Y][Y] = cos(angles[Y]);
 	fdf->matrices[1][Y][Z] = sin(angles[Y]);

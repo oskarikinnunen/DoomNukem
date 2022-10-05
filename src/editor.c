@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 12:03:34 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/05 13:27:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,26 +69,39 @@ void	editorloop(t_sdlcontext sdl)
 	//FDF
 	alloc_image(&ed.grid_fdf.img, WINDOW_W, WINDOW_H);
 	alloc_image(&ed.walls_fdf.img, WINDOW_W, WINDOW_H);
-	ed.grid_fdf.view[X] = -0.4f;
-	ed.grid_fdf.view[Y] = -0.8f;
-	ft_memcpy(ed.walls_fdf.view, ed.grid_fdf.view, sizeof(float [2]));
-
+	ed.transition.framerate = 60;
+	ed.transition.lastframe = 15;
+	ed.transition.active = false;
+	ed.threedee_zoom = 1.0f;
 	while (1)
 	{
+		update_deltatime(&ed.clock);
+		update_anim(&ed.transition, ed.clock.delta);
 		bzero(sdl.surface->pixels, sizeof(uint32_t) * WINDOW_H * WINDOW_W);
 		if (editor_events(&ed))
 			break ; //error returned from event handling, exit gracefully
-		if (ed.state == display3d)
+		if (ed.state == display3d || ed.transition.active)
 		{
 			/* FDF VIEW PARAMETERS */
 			#pragma region FDFVIEWPARAMS
 			//TODO: extract to own function
 			float	v[2];
+			float	animlerp;
+
+			animlerp = ((float)ed.transition.frame / (float)ed.transition.lastframe);
 			v2mul_to_f2(ed.mousedrag[1].pos, 0.005f, v);
+			v[X] = v[X] * animlerp;
+			v[Y] = v[Y] * animlerp;
 			ft_memcpy(ed.grid_fdf.view, v, sizeof(float [2]));
 			ft_memcpy(ed.walls_fdf.view, v, sizeof(float [2]));
-			ed.grid_fdf.zoom += (float)ed.mouse.scroll_delta * 0.01f;
-			ed.walls_fdf.zoom += (float)ed.mouse.scroll_delta * 0.01f;
+			ed.threedee_zoom += (float)ed.mouse.scroll_delta * 0.01f;
+			ed.grid_fdf.zoom = ed.threedee_zoom;
+			ed.walls_fdf.zoom = ed.threedee_zoom;
+			if (ed.transition.active)
+			{
+				ed.grid_fdf.zoom = (1.0f - animlerp) + (animlerp * ed.threedee_zoom);
+				ed.walls_fdf.zoom = (1.0f - animlerp) + (animlerp * ed.threedee_zoom);
+			}
 			v2mul_to_f2(ed.mousedrag->pos, 1.0f / ed.grid_fdf.zoom, v);
 			ft_memcpy(ed.grid_fdf.offset, v, sizeof(float [2]));
 			ft_memcpy(ed.walls_fdf.offset, v, sizeof(float [2]));

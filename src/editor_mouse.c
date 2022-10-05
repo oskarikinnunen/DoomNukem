@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 11:56:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/05 13:06:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	mousetoworldspace(int v2[2], t_editor *ed)
 {
 	int	mod[2];
+
 	v2[X] = -(ed->mousedrag->pos[X] - ed->mouse.p[X]);
 	v2[Y] = -(ed->mousedrag->pos[Y] - ed->mouse.p[Y]);
 	mod[X] = v2[X] % TILESIZE;
@@ -47,7 +48,7 @@ static void	mousedrag(t_editor *ed)
 		}
 	}
 	d = &ed->mousedrag[1]; //MDL mouse drag
-	if (ed->mouse.held == MOUSE_MDL)
+	if (ed->mouse.held == MOUSE_MDL && ed->state == display3d)
 	{
 		d->drag[X] = m2[X] - d->drag_origin[X];
 		d->drag[Y] = m2[Y] - d->drag_origin[Y];
@@ -57,7 +58,7 @@ static void	mousedrag(t_editor *ed)
 	}
 }
 
-static void mouseclick(t_editor *ed)
+static void	mouseclick(t_editor *ed)
 {
 
 	if (ed->mouse.click)
@@ -86,7 +87,7 @@ void	mouse_event(SDL_Event e, t_editor *ed)
 		ed->mouse.held = e.button.button;
 		ed->mousedrag->drag_origin[X] = ed->mouse.p[X];
 		ed->mousedrag->drag_origin[Y] = ed->mouse.p[Y];
-		if (e.button.button == MOUSE_MDL)
+		if (e.button.button == MOUSE_MDL && ed->state == display3d)
 		{
 			ed->mousedrag[1].drag_origin[X] = ed->mouse.p[X];
 			ed->mousedrag[1].drag_origin[Y] = ed->mouse.p[Y];
@@ -99,7 +100,7 @@ void	mouse_event(SDL_Event e, t_editor *ed)
 		ed->mousedrag->pos_origin[X] += ed->mousedrag->drag[X]; //TODO: use v2add
 		ed->mousedrag->pos_origin[Y] += ed->mousedrag->drag[Y];
 		bzero(ed->mousedrag->drag, sizeof(int [2]));
-		if (e.button.button == MOUSE_MDL)
+		if (e.button.button == MOUSE_MDL && ed->state == display3d)
 		{
 			ed->mousedrag[1].pos_origin[X] += ed->mousedrag[1].drag[X];
 			ed->mousedrag[1].pos_origin[Y] += ed->mousedrag[1].drag[Y];

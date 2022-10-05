@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 11:40:53 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/05 13:33:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	loadmap(t_editor *ed, char *filename)
 	br = read(fd, &line, sizeof(t_line));
 	while (br >= sizeof(t_line))
 	{
-		printf("read %i from file \n", br);
+		//printf("read %i from file \n", br);
 		node = ft_lstnew(&line, sizeof(t_line));
 		if (ed->linelist == NULL)
 			ed->linelist = node;
@@ -56,7 +56,7 @@ void	savemap(t_editor *ed, char *filename)
 	while (l != NULL)
 	{
 		int written = write(fd, (t_line *)l->content, sizeof(t_line));
-		printf("wrote %i bytes \n", written);
+		//printf("wrote %i bytes \n", written);
 		l = l->next;
 	}
 	close(fd);

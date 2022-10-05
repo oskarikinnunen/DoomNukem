@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 12:01:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/05 13:24:29 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,29 @@ typedef struct s_fdf
 	float				zoom;
 }	t_fdf;
 
+//TODO: add ping-pong, repeat
+typedef enum	e_anim_mode
+{
+	anim_forwards,
+	anim_backwards
+} t_anim_mode;
+
+typedef struct s_clock
+{
+	Uint32	prev_time;
+	Uint32	delta;
+} t_clock;
+
+typedef struct s_anim
+{
+	bool		active;
+	uint32_t	time;
+	int32_t		frame;
+	int32_t		lastframe;
+	uint8_t		framerate;
+	t_anim_mode	mode;
+}	t_anim;
+
 typedef struct s_editor
 {
 	t_editorstate	state;
@@ -118,6 +141,9 @@ typedef struct s_editor
 	t_mouse			mouse;
 	t_fdf			grid_fdf;
 	t_fdf			walls_fdf;
+	float			threedee_zoom;
+	t_anim			transition;
+	t_clock			clock;
 }	t_editor;
 
 /* V2.C */
@@ -158,6 +184,12 @@ void	fdf_draw_wireframe(t_fdf *fdf);
 /* IMG.C */
 void	alloc_image(t_img *img, int width, int height);
 
+/* DELTATIME.C */
+void	update_deltatime(t_clock *c);
+
+/* ANIM.C */
+void	update_anim(t_anim *anim, uint32_t delta);
+void	start_anim(t_anim *anim, t_anim_mode mode);
 
 /* DRAW.C */
 void	draw(uint32_t *pxls, int pos[2], uint32_t clr);
