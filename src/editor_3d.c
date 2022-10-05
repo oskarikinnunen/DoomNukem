@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 13:37:25 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 13:43:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/05 13:44:59 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@ void	editor3d(t_sdlcontext sdl, t_editor *ed_ptr)
 {
 	float		v[2];
 	float		animlerp;
-	t_editor	ed;
+	t_editor	ed;	//This is here just cuz i'm lazy
 
-	ed = *ed_ptr; //This is here just cuz i'm lazy
+	ed = *ed_ptr;
 	animlerp = ((float)ed.transition.frame / (float)ed.transition.lastframe);
 	v2mul_to_f2(ed.mousedrag[1].pos, 0.005f, v);
 	v[X] = v[X] * animlerp;
