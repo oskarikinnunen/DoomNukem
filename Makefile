@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/05 14:12:37 by okinnune         ###   ########.fr        #
+#    Updated: 2022/10/05 14:21:23 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,11 +26,11 @@ SRC= $(addprefix src/,$(SRCFILES))
 OBJ= $(SRC:.c=.o)
 
 #Compilation stuff:
-INCLUDE= -ISDL_built/include/SDL2/ -Isrc -Iinclude -Ilibft $(LIBFT) 
+INCLUDE= -ISDL_built/include/SDL2/ -Isrc -Iinclude -Ilibft $(LIBFT)
 CC= gcc
 CFLAGS= $(INCLUDE) -lm -g
 
-all: $(OBJ) $(SDL2) $(LIBFT)
+all: $(SDL2) $(LIBFT) $(OBJ)
 	$(CC) $(OBJ) -o $(NAME) `SDL_built/bin/sdl2-config --cflags --libs` $(INCLUDE)
 
 $(OBJ): include/doomnukem.h
@@ -52,4 +52,4 @@ clean-sdl:
 re-sdl: clean-sdl $(SDL2)
 
 $(SDL2):
-	cd $(SDLFOLDER)/build && ../configure --prefix=$(PWD)/SDL_built/ && make install
+	cd $(SDLFOLDER)/build &&../configure --prefix=$(PWD)/SDL_built/ && make install
