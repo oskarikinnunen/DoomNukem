@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 16:57:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/05 12:03:34 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,16 +80,27 @@ void	editorloop(t_sdlcontext sdl)
 			break ; //error returned from event handling, exit gracefully
 		if (ed.state == display3d)
 		{
-			fdf_draw_wireframe(&ed.grid_fdf, ed.mousedrag.pos);
-			ft_memcpy(sdl.surface->pixels, ed.grid_fdf.img.data, ed.grid_fdf.img.length);
-			
-			
-			//fdf_draw_wireframe(&ed.walls_fdf, ed.mousedrag.pos);
-			//ft_memcpy(sdl.surface->pixels, ed.walls_fdf.img.data, ed.grid_fdf.img.length);
+			/* FDF VIEW PARAMETERS */
+			#pragma region FDFVIEWPARAMS
+			//TODO: extract to own function
+			float	v[2];
+			v2mul_to_f2(ed.mousedrag[1].pos, 0.005f, v);
+			ft_memcpy(ed.grid_fdf.view, v, sizeof(float [2]));
+			ft_memcpy(ed.walls_fdf.view, v, sizeof(float [2]));
+			ed.grid_fdf.zoom += (float)ed.mouse.scroll_delta * 0.01f;
+			ed.walls_fdf.zoom += (float)ed.mouse.scroll_delta * 0.01f;
+			v2mul_to_f2(ed.mousedrag->pos, 1.0f / ed.grid_fdf.zoom, v);
+			ft_memcpy(ed.grid_fdf.offset, v, sizeof(float [2]));
+			ft_memcpy(ed.walls_fdf.offset, v, sizeof(float [2]));
+			#pragma endregion
+			fdf_draw_wireframe(&ed.grid_fdf);
+			fdf_draw_wireframe(&ed.walls_fdf);
+			imgtoscreen(sdl.surface->pixels, &ed.grid_fdf.img);
+			imgtoscreen(sdl.surface->pixels, &ed.walls_fdf.img);
 		}
 		else
 		{
-			drawgrid((uint32_t *)sdl.surface->pixels, ed.mousedrag.pos);
+			drawgrid((uint32_t *)sdl.surface->pixels, ed.mousedrag->pos);
 			renderlines(&sdl, &ed);
 		}
 		SDL_UpdateWindowSurface(sdl.window);

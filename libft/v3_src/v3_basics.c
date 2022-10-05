@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 17:31:46 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 15:42:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/05 11:33:20 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,14 @@ void	v3_add(float *v3, float *add)
 	v3[Z] += add[Z];
 }
 
-void	v3_mul(float matrix[3][3], float *v3)
+void	v3_mul(float mul, float *v3)
+{
+	v3[X] = v3[X] * mul;
+	v3[Y] = v3[Y] * mul;
+	v3[Z] = v3[Z] * mul;
+}
+
+void	v3_matrix_mul(float matrix[3][3], float *v3)
 {
 	float	t[3];
 	int		index;
@@ -60,7 +67,7 @@ void	v3_mul(float matrix[3][3], float *v3)
 void	v3listmul(float matrix[3][3], float **v3s, int len)
 {
 	while (len >= 0)
-		v3_mul(matrix, v3s[len--]);
+		v3_matrix_mul(matrix, v3s[len--]);
 }
 
 void	v3listadd(float **v3s, float *add, int len)

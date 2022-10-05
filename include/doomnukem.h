@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 16:19:48 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/05 12:01:04 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ typedef struct s_sdlcontext
 typedef struct s_mouse
 {
 	int		p[2];
+	int		scroll;
+	int		scroll_delta;
 	bool	click;
 	int		held;
 }	t_mouse;
@@ -87,9 +89,9 @@ typedef struct s_obj //TODO: move obj/fdf related stuff to separate header?
 	char		**mtlnames;
 	uint32_t	*mtlcolors;
 	uint8_t		*colors; //Points to colors in mtlcolors
-	uint32_t	m_count;
 	int32_t		**verts;
 	uint32_t	**faces;
+	uint32_t	m_count;
 	uint32_t	v_count;
 	uint32_t	f_count;
 }	t_obj;
@@ -103,6 +105,8 @@ typedef struct s_fdf
 	float				**verts;
 	float				matrices[2][3][3];
 	float				view[2];
+	float				offset[2];
+	float				zoom;
 }	t_fdf;
 
 typedef struct s_editor
@@ -110,7 +114,7 @@ typedef struct s_editor
 	t_editorstate	state;
 	t_line			line;
 	t_list			*linelist;
-	t_mousedrag		mousedrag;
+	t_mousedrag		mousedrag[2]; //First one is right click drag, 2nd is for middle click
 	t_mouse			mouse;
 	t_fdf			grid_fdf;
 	t_fdf			walls_fdf;
@@ -119,6 +123,8 @@ typedef struct s_editor
 /* V2.C */
 void	v2add(int v[2], int ov[2]);
 void	v2mul(int v[2], int mul);
+void	v2mul_to_f2(int v[2], float mul, float f[2]);
+void	v2cpy(int to[2], int from[2]);
 bool	v2cmp(int v[2], int ov[2]);
 
 /* EDITOR.C */
@@ -128,7 +134,7 @@ void	editorloop(t_sdlcontext sdl);
 int		editor_events(t_editor *ed);
 
 /* EDITOR_RENDER.C */
-void	renderlines(t_sdlcontext *sdl, t_editor *ed); //TODO: invent better name?
+void	renderlines(t_sdlcontext *sdl, t_editor *ed); //TODO:  better name?
 
 /* EDITOR_MOUSE.C */
 void	mousetoworldspace(int v2[2], t_editor *ed);
@@ -147,7 +153,7 @@ void	lines_to_obj(t_obj *obj, t_editor *ed);
 
 /* FDF.C */
 int		fdf_init(t_fdf *fdf);
-void	fdf_draw_wireframe(t_fdf *fdf, int offset[2]);
+void	fdf_draw_wireframe(t_fdf *fdf);
 
 /* IMG.C */
 void	alloc_image(t_img *img, int width, int height);
@@ -157,3 +163,4 @@ void	alloc_image(t_img *img, int width, int height);
 void	draw(uint32_t *pxls, int pos[2], uint32_t clr);
 void	drawline(uint32_t *pxls, int from[2], int to[2], uint32_t clr);
 void	drawcircle(uint32_t *pxls, int crd[2], int size, uint32_t clr);
+void	imgtoscreen(uint32_t *pxls, t_img *img);
