@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 13:24:29 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/05 13:40:30 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,9 +173,12 @@ void	saveline(t_editor *ed);
 void	loadmap(t_editor *ed, char *filename);
 void	savemap(t_editor *ed, char *filename);
 
-/* EDITOR_3D.C */
+/* EDITOR_3D_INITIALIZE.C */
 void	gridto_obj(t_obj *obj);
 void	lines_to_obj(t_obj *obj, t_editor *ed);
+
+/* EDITOR_3D.C */
+void	editor3d(t_sdlcontext sdl, t_editor *ed_ptr);
 
 /* FDF.C */
 int		fdf_init(t_fdf *fdf);

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 13:27:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/05 13:40:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,9 @@ void	editorloop(t_sdlcontext sdl)
 			break ; //error returned from event handling, exit gracefully
 		if (ed.state == display3d || ed.transition.active)
 		{
-			/* FDF VIEW PARAMETERS */
+			editor3d(sdl, &ed);
+			/*
 			#pragma region FDFVIEWPARAMS
-			//TODO: extract to own function
 			float	v[2];
 			float	animlerp;
 
@@ -109,7 +109,7 @@ void	editorloop(t_sdlcontext sdl)
 			fdf_draw_wireframe(&ed.grid_fdf);
 			fdf_draw_wireframe(&ed.walls_fdf);
 			imgtoscreen(sdl.surface->pixels, &ed.grid_fdf.img);
-			imgtoscreen(sdl.surface->pixels, &ed.walls_fdf.img);
+			imgtoscreen(sdl.surface->pixels, &ed.walls_fdf.img);*/
 		}
 		else
 		{
