@@ -8,12 +8,12 @@ static int key_up(SDL_Event g)
 }
 
 /*action down keys here*/
-static int key_down(SDL_Event g)
+static int key_down(SDL_Event e)
 {
 	printf("key down\n");
-	if (iskey(g, SDLK_ESCAPE))
+	if (iskey(e, SDLK_ESCAPE))
 		return(game_exit);
-	if (iskey(g, SDLK_TAB))
+	if (iskey(e, SDLK_TAB))
 		return(game_switchmode);
 	return(game_continue);
 }
@@ -21,14 +21,14 @@ static int key_down(SDL_Event g)
 /*check for keyboard/mouse input*/
 static int game_events(t_game *game)
 {
-	static SDL_Event	g;
+	static SDL_Event	e;
 
-	while (SDL_PollEvent(&g))
+	while (SDL_PollEvent(&e))
 	{
-		if (g.type == SDL_KEYDOWN)
-			return(key_down(g));
-		if (g.type == SDL_KEYUP)
-			return(key_up(g));
+		if (e.type == SDL_KEYDOWN)
+			return(key_down(e));
+		if (e.type == SDL_KEYUP)
+			return(key_up(e));
 	}
 	return(game_continue);
 }
