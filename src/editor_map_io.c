@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_map_io.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 13:35:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/05 15:26:11 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,49 @@ static int	fileopen(char *filename, int flags)
 	return (fd);
 }
 
+void	loadmap(t_list **head, char *filename)
+{
+	int		fd;
+	int		br;
+	t_line	line;
+	t_list	*node;
+
+	fd = fileopen(filename, O_RDWR);
+	if (fd <= -1)
+		return ;
+	br = read(fd, &line, sizeof(t_line));
+	while (br >= sizeof(t_line))
+	{
+		//printf("read %i from file \n", br);
+		node = ft_lstnew(&line, sizeof(t_line));
+		if (*head == NULL)
+			*head = node;
+		else
+			ft_lstapp(head, node);
+		br = read(fd, &line, sizeof(t_line));
+	}
+	close(fd);
+}
+
+//TODO: cant save if map has less walls than opened one.
+//Rewrite with lst, instead of editor
+void	savemap(t_editor *ed, char *filename)
+{
+	int		fd;
+	t_list	*l;
+
+	fd = fileopen(filename, O_RDWR | O_CREAT);
+	l = ed->linelist;
+	while (l != NULL)
+	{
+		int written = write(fd, (t_line *)l->content, sizeof(t_line));
+		//printf("wrote %i bytes \n", written);
+		l = l->next;
+	}
+	close(fd);
+}
+
+/*
 void	loadmap(t_editor *ed, char *filename)
 {
 	int		fd;
@@ -45,19 +88,4 @@ void	loadmap(t_editor *ed, char *filename)
 	}
 	close(fd);
 }
-
-void	savemap(t_editor *ed, char *filename)
-{
-	int		fd;
-	t_list	*l;
-
-	fd = fileopen(filename, O_RDWR | O_CREAT);
-	l = ed->linelist;
-	while (l != NULL)
-	{
-		int written = write(fd, (t_line *)l->content, sizeof(t_line));
-		//printf("wrote %i bytes \n", written);
-		l = l->next;
-	}
-	close(fd);
-}
+*/

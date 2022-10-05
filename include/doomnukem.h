@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 14:16:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/05 16:37:31 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,6 +150,22 @@ typedef struct s_editor
 	t_clock			clock;
 }	t_editor;
 
+/* Playmode */
+typedef struct s_game
+{
+	t_list			*linelst;
+	t_clock			clock;
+	t_mouse			mouse;
+} t_game;
+
+typedef enum e_gamereturn
+{
+	game_error,
+	game_continue,
+	game_exit,
+	game_switchmode
+} t_gamereturn;
+
 /* V2.C */
 void	f2mul(float f[2], float mul); //TODO: move f2 functions to own file and maybe think of better naming?
 void	v2add(int v[2], int ov[2]);
@@ -159,10 +175,11 @@ void	v2cpy(int to[2], int from[2]);
 bool	v2cmp(int v[2], int ov[2]);
 
 /* EDITOR.C */
-void	editorloop(t_sdlcontext sdl);
+int		editorloop(t_sdlcontext sdl);
 
 /* EDITOR_EVENTS.C */
 int		editor_events(t_editor *ed);
+bool	iskey(SDL_Event e, int keycode);
 
 /* EDITOR_RENDER.C */
 void	renderlines(t_sdlcontext *sdl, t_editor *ed); //TODO:  better name?
@@ -175,7 +192,7 @@ void	mouse_event(SDL_Event e, t_editor *ed);
 void	saveline(t_editor *ed);
 
 /* EDITOR_MAP_IO.C */
-void	loadmap(t_editor *ed, char *filename);
+void	loadmap(t_list **head, char *filename);
 void	savemap(t_editor *ed, char *filename);
 
 /* EDITOR_3D_INITIALIZE.C */
@@ -204,3 +221,6 @@ void	draw(uint32_t *pxls, int pos[2], uint32_t clr);
 void	drawline(uint32_t *pxls, int from[2], int to[2], uint32_t clr);
 void	drawcircle(uint32_t *pxls, int crd[2], int size, uint32_t clr);
 void	imgtoscreen(uint32_t *pxls, t_img *img);
+
+/* PLAYMODE */
+int playmode(t_sdlcontext sdl);

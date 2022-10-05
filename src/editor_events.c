@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   editor_events.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 13:12:22 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/05 16:33:45 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-static bool iskey(SDL_Event e, int keycode)
+bool iskey(SDL_Event e, int keycode)
 {
 	return (e.key.keysym.sym == keycode);
 }
@@ -29,7 +29,9 @@ int		editor_events(t_editor *ed)
 		mouse_event(e, ed);
 		if (e.type == SDL_KEYDOWN) {
 			if (iskey(e, SDLK_ESCAPE))
-				return (1);
+				return (game_exit);
+			else if (iskey(e, SDLK_TAB))
+				return(game_switchmode);
 			else if(iskey(e, SDLK_SPACE))
 			{
 				if (ed->state != display3d)
@@ -49,5 +51,5 @@ int		editor_events(t_editor *ed)
 			}
 		}
 	}
-	return (0);
+	return (game_continue);
 }

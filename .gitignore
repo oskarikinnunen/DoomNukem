@@ -6,3 +6,4 @@ libft/libft.a
 libft/**.o
 !SDL_built/DontRemoveMe
 callgrind.out*
+DoomNukem
