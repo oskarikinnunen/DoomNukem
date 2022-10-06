@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/06 11:14:10 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/06 14:32:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,24 +39,45 @@ static void	updatemovementvector(float move_f2[2], int32_t keystate, float angle
 		move_f2[X] += -sin(angle + RAD90);
 		move_f2[Y] += -cos(angle + RAD90);
 	}
-	
 }
 
-void	moveplayer(int32_t keystate, int mousedelta_x, t_player *plr, uint32_t	delta)
+static bool checkwallcollisions(t_game *game, float potential_pos[2])
+{
+	t_list	*node;
+	t_line	line;
+
+	node = game->linelst;
+	while (node != NULL)
+	{
+		line = *(t_line *)node->content;
+		//v2mul(line.start, TILESIZE);
+		//v2mul(line.end, TILESIZE);
+		if (linecirclecollision(line, potential_pos, PLAYERRADIUS * TILESIZE) == true)
+			return (true);
+		node = node->next;
+	}
+	return (false);
+}
+
+void	moveplayer(t_game *game)
 {
 	float	move_f2[2];
+	float	potential_plr_pos[2];
 	float	angle;
 
 	ft_bzero(move_f2, sizeof(float [2]));
 	angle = 0;
-	angle -= mousedelta_x * MOUSESPEED;
+	angle -= game->mouse.p_delta[X] * MOUSESPEED;
 	//	rotate character with arrow keys, doesn't work correctly with strafe
 	//	but if you need it it's here, just uncomment the next 2 lines
 	//angle -= (keystate >> KEYS_RGHTMASK) & 1;
 	//angle += (keystate >> KEYS_LEFTMASK) & 1;
-	angle *= delta * ROTATESPEED;
-	plr->angle += angle;
-	updatemovementvector(move_f2, keystate, plr->angle);
-	f2mul(move_f2, delta * MOVESPEED);
-	f2add(plr->position, move_f2);
+	angle *= game->clock.delta * ROTATESPEED;
+	game->player.angle += angle;
+	updatemovementvector(move_f2, game->keystate, game->player.angle);
+	f2mul(move_f2, game->clock.delta * MOVESPEED);
+	f2cpy(potential_plr_pos, move_f2);
+	f2add(potential_plr_pos, game->player.position);
+	if (checkwallcollisions(game, potential_plr_pos) == false)
+		f2add(game->player.position, move_f2);
 }

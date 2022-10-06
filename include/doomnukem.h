@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/06 11:57:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/06 14:41:30 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,9 @@
 
 // Player defines
 # define OVERHEADCAMSPEED 0.4f
+# define PLAYERRADIUS 16
 
-# define MOVESPEED 0.12f
+# define MOVESPEED 0.14f
 # define ROTATESPEED 0.002f
 # define MOUSESPEED 1.0f
 
@@ -201,6 +202,7 @@ bool	v2cmp(int v[2], int ov[2]);
 void	v2diff(int v[2], int ov[2], int rv[2]);
 void	v2mul_to_f2(int v[2], float mul, float f[2]);
 
+float	f2dist(float f[2], float of[2]);
 void	f2mul(float f[2], float mul); //TODO: move f2 functions to own file and maybe think of better naming?
 void	f2tov2(float f[2], int v[2]);
 void	f2add(float f[2], float of[2]);
@@ -260,9 +262,14 @@ void	imgtoscreen(uint32_t *pxls, t_img *img);
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
 
+/* PHYSICS.C */
+bool	pointcirclecollision(float p[2], float cp[2], float r);
+bool	linecirclecollision(t_line line, float cp[2], float r);
+
+
 /* PLAYMODE_OVERHEAD.C */
 void	render_overhead(t_game *game, t_sdlcontext *sdl);
 void	move_overhead(t_game *game);
 
 /* MOVEPLAYER.C */
-void	moveplayer(int32_t keystate, int mousedelta_x, t_player *plr, uint32_t	delta);
+void	moveplayer(t_game *game);

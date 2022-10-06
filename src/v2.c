@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:23:41 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/06 11:56:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/06 14:10:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,23 @@ void	v2add(int v[2], int ov[2])
 }
 
 /* FLOATING POINT VECTORS */
+
+float	f2dist(float f[2], float of[2])
+{
+	float	dist[2];
+
+	dist[X] = f[X] - of[X];
+	dist[Y] = f[Y] - of[Y];
+	return (sqrt((dist[X] * dist[X]) + (dist[Y] * dist[Y])));
+}
+
+/*float	f2dot(float f[2], float of[2])
+{
+	float	dist;
+
+	dist = f2dist(f, of);
+	return ()
+}*/
 
 void	f2tov2(float f[2], int v[2])
 {

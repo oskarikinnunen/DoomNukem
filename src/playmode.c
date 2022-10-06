@@ -73,7 +73,7 @@ static int gameloop(t_sdlcontext sdl, t_game *game)
 		if (gr != game_continue)
 			return(gr);
 		if (game->cam_mode == overhead_follow)
-			moveplayer(game->keystate, game->mouse.p_delta[X], &game->player, game->clock.delta);
+			moveplayer(game);
 		else
 			move_overhead(game);
 		render_overhead(game, &sdl);
