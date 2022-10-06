@@ -130,8 +130,8 @@ void drawWall(int x1, int x2, int b1, int b2, int t1, int t2, int c, int s, t_pr
 
         if (sectors[s].surface == 1) {sectors[s].surf[x]=y1; continue;}
         if (sectors[s].surface == 2) {sectors[s].surf[x]=y2; continue;}
-        if (sectors[s].surface == -1) {for(y=sectors[s].surf[x];y<y1;y++){pixel(x, y, sectors[s].c1, prm);};}
-        if (sectors[s].surface == -2) {for(y=y2;y<sectors[s].surf[x];y++){pixel(x, y, sectors[s].c2, prm);};}
+      //  if (sectors[s].surface == -1) {for(y=sectors[s].surf[x];y<y1;y++){pixel(x, y, sectors[s].c1, prm);};}
+       // if (sectors[s].surface == -2) {for(y=y2;y<sectors[s].surf[x];y++){pixel(x, y, sectors[s].c2, prm);};}
         for (y = y1; y < y2; y++)
         {
             pixel(x, y, c, prm);
@@ -331,7 +331,8 @@ void init(t_player *player, t_game *game)
             walls[w].c = loadWalls[v2+4];
             v2+=5;
         }
-    }*/
+    }
+	*/
 }
 
 void sage_render(t_sdlcontext sdl, t_game *game)

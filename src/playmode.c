@@ -102,3 +102,7 @@ int playmode(t_sdlcontext sdl)
 	free_lst(game.linelst);
 	return(gr);
 }
+/*
+array of triangles
+triangle is a size 3 array of points
+points is 3 int;*/

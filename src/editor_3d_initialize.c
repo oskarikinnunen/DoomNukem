@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 11:57:55 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 18:19:26 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/06 17:31:41 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,13 +117,13 @@ static void copyverts(t_obj *obj, t_line line, int i) //Ghetto, TODO: make cpyv2
 	obj->verts[i + 3][Y] = line.end[Y];
 }
 
-void lines_to_obj(t_obj *obj, t_editor *ed)
+void lines_to_obj(t_obj *obj, t_list *linelist)
 {
 	t_list		*l;
 	int			len;
 	uint32_t	i;
 
-	l = ed->linelist;
+	l = linelist;
 	len = ft_listlen(l);
 	obj->v_count = len * 4;
 	obj->verts = ft_memalloc(obj->v_count * sizeof(int32_t *));
