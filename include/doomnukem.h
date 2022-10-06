@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/06 11:23:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/06 11:57:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@
 # define CLR_GRAY 4868682
 
 // Player defines
+# define OVERHEADCAMSPEED 0.4f
+
 # define MOVESPEED 0.12f
 # define ROTATESPEED 0.002f
 # define MOUSESPEED 1.0f
@@ -179,6 +181,7 @@ typedef struct s_game
 	t_player		player;
 	int32_t			keystate;
 	t_cam_mode		cam_mode;
+	float			overheadcam_pos[2];
 } t_game;
 
 typedef enum e_gamereturn
@@ -201,6 +204,7 @@ void	v2mul_to_f2(int v[2], float mul, float f[2]);
 void	f2mul(float f[2], float mul); //TODO: move f2 functions to own file and maybe think of better naming?
 void	f2tov2(float f[2], int v[2]);
 void	f2add(float f[2], float of[2]);
+void	f2cpy(float to[2], float from[2]);
 
 /* EDITOR.C */
 int		editorloop(t_sdlcontext sdl);
@@ -258,6 +262,7 @@ int		playmode(t_sdlcontext sdl);
 
 /* PLAYMODE_OVERHEAD.C */
 void	render_overhead(t_game *game, t_sdlcontext *sdl);
+void	move_overhead(t_game *game);
 
 /* MOVEPLAYER.C */
 void	moveplayer(int32_t keystate, int mousedelta_x, t_player *plr, uint32_t	delta);

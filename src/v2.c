@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:23:41 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/06 10:27:01 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/06 11:56:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,12 @@ void	f2tov2(float f[2], int v[2])
 {
 	v[X] = (int)f[X];
 	v[Y] = (int)f[Y];
+}
+
+void	f2cpy(float to[2], float from[2])
+{
+	to[X] = from[X];
+	to[Y] = from[Y];
 }
 
 void	f2mul(float f[2], float mul)
