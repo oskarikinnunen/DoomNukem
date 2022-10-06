@@ -16,8 +16,17 @@ static int key_events(SDL_Event e, t_game *game)
 		game->keystate |= keyismoveright(e) << KEYS_RGHTMASK;
 		game->keystate |= keyismoveup(e) << KEYS_UPMASK;
 		game->keystate |= keyismovedown(e) << KEYS_DOWNMASK;
-		if (iskey(e, SDLK_RETURN))
+		if (iskey(e, SDLK_SPACE))
+		{
 			game->cam_mode = !game->cam_mode; //Flip from 0->1 and vice versa
+			if (game->cam_mode == overhead_absolute)
+			{
+				game->overheadcam_pos[X] = -game->player.position[X];
+				game->overheadcam_pos[Y] = -game->player.position[Y];
+				game->overheadcam_pos[X] += WINDOW_W / 2;
+				game->overheadcam_pos[Y] += WINDOW_H / 2;
+			}
+		}
 	}
 	else if(e.type == SDL_KEYUP)
 	{
@@ -64,7 +73,10 @@ static int gameloop(t_sdlcontext sdl, t_game *game)
 		gr = handleinput(game);
 		if (gr != game_continue)
 			return(gr);
-		moveplayer(game->keystate, game->mouse.p_delta[X], &game->player, game->clock.delta);
+		if (game->cam_mode == overhead_follow)
+			moveplayer(game->keystate, game->mouse.p_delta[X], &game->player, game->clock.delta);
+		else
+			move_overhead(game);
 		render_overhead(game, &sdl);
 		SDL_UpdateWindowSurface(sdl.window);
 	}
@@ -79,8 +91,8 @@ int playmode(t_sdlcontext sdl)
 
 	bzero(&game, sizeof(t_game));
 	loadmap(&game.linelst, "mapfile1");
-	game.player.position[X] = 10.0f;
-	game.player.position[Y] = 10.0f;
+	game.player.position[X] = 30.0f * TILESIZE;
+	game.player.position[Y] = 30.0f * TILESIZE;
 	//Locks mouse
 	SDL_CaptureMouse(SDL_TRUE);
 	SDL_SetRelativeMouseMode(SDL_TRUE);		
