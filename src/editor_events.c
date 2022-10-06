@@ -39,7 +39,7 @@ int		editor_events(t_editor *ed)
 					start_anim(&ed->transition, anim_forwards);
 					gridto_obj(&ed->grid_fdf.obj); //TODO: LEAKS!! doesn't free the previous stuff
 					fdf_init(&ed->grid_fdf);
-					lines_to_obj(&ed->walls_fdf.obj, ed);
+					lines_to_obj(&ed->walls_fdf.obj, ed->linelist);
 					fdf_init(&ed->walls_fdf);
 					ed->state = display3d;
 				}

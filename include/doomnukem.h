@@ -156,6 +156,9 @@ typedef struct s_game
 	t_list			*linelst;
 	t_clock			clock;
 	t_mouse			mouse;
+	struct s_triangle	*triangles;
+	int				tri_count;
+	struct s_obj	*obj;
 	struct s_player	*player;
 } t_game;
 
@@ -177,6 +180,19 @@ typedef enum e_gamereturn
 	game_exit,
 	game_switchmode
 } t_gamereturn;
+
+typedef struct s_vec3d
+{
+	int x;
+	int y;
+	int z;
+	int w;
+}	t_vec3d;
+
+typedef struct	s_triangle
+{
+	struct s_vec3d p[3];
+}	t_triangle;
 
 /* V2.C */
 void	f2mul(float f[2], float mul); //TODO: move f2 functions to own file and maybe think of better naming?

@@ -1,8 +1,11 @@
 #include "doomnukem.h"
 
-/* testing renders */
+/* testing 2drenders */
 void sage_render(t_sdlcontext sdl, t_game *game);
 void init(t_player *player, t_game *game);
+
+/*testing 3drenders*/
+void engine3d(t_sdlcontext sdl, t_game *game);
 
 /*action up keys here*/
 static int key_up(SDL_Event e, t_player *player)
@@ -80,10 +83,40 @@ static int gameloop(t_sdlcontext sdl, t_game *game)
 		gr = game_events(game);
 		if (gr != game_continue)
 			return(gr);
-		sage_render(sdl, game);
+		//sage_render(sdl, game);
+		engine3d(sdl, game);
 		SDL_UpdateWindowSurface(sdl.window);
+		//sleep(10);
 	}
 	return(game_exit); // for now
+}
+
+static t_triangle set_tri(int *p1, int *p2, int *p3)
+{
+	return((t_triangle){
+		(t_vec3d){p1[X], p1[Y], p1[Z], 1},
+		(t_vec3d){p2[X], p2[Y], p2[Z], 1},
+		(t_vec3d){p3[X], p3[Y], p3[Z], 1}
+		});
+}
+
+static void set_tri_array(t_game *game)
+{
+	int		i;
+	int		len;
+	int32_t	**verts;
+
+	i = 0;
+	verts = game->obj->verts;
+	len = game->obj->v_count; //4vert = 2 triangles
+	game->triangles = malloc(sizeof(t_triangle) * (len / 2));
+	game->tri_count = len / 2;
+	while (i < len)
+	{
+		game->triangles[i / 2] = set_tri(verts[i], verts[i + 1], verts[1 + 2]);
+		game->triangles[(i / 2) + 1] = set_tri(verts[i + 1], verts[i + 2], verts[i + 3]);
+		i += 4;
+	}
 }
 
 /*setup and call gameloop*/
@@ -92,13 +125,20 @@ int playmode(t_sdlcontext sdl)
 	t_game			game;
 	t_gamereturn	gr;
 	t_player		player;
+	t_obj			obj;
 
 	bzero(&game, sizeof(t_game));
 	bzero(&player, sizeof(t_player));
+	bzero(&obj, sizeof(t_obj));
 	game.player = &player;
+	game.obj = &obj;
+
 	loadmap(&game.linelst, "mapfile1");
-	init(&player, &game);
+	lines_to_obj(&obj, game.linelst);
+	set_tri_array(&game);
+	
 	gr = gameloop(sdl, &game);
+	
 	free_lst(game.linelst);
 	return(gr);
 }
