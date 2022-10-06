@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 09:46:25 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/06 11:54:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/06 12:24:15 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,5 +77,8 @@ void	render_overhead(t_game *game, t_sdlcontext *sdl)
 	}
 	v2add(look_to, player_pos);
 	drawline(sdl->surface->pixels, player_pos, look_to, CLR_PRPL);
-	drawcircle(sdl->surface->pixels, player_pos, 16, CLR_PRPL);
+	if (game->cam_mode == overhead_follow)
+		drawcircle(sdl->surface->pixels, player_pos, 16, CLR_PRPL);
+	else
+		drawcircle(sdl->surface->pixels, player_pos, 16, CLR_GRAY);
 }
