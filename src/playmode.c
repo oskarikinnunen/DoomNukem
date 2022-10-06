@@ -18,7 +18,7 @@ static int key_events(SDL_Event e, t_game *game)
 		game->keystate |= keyismovedown(e) << KEYS_DOWNMASK;
 		if (iskey(e, SDLK_SPACE))
 		{
-			game->cam_mode = !game->cam_mode; //Flip from 0->1 and vice versa
+			game->cam_mode = !game->cam_mode; //Flips from 0->1 and 1->0
 			if (game->cam_mode == overhead_absolute)
 			{
 				game->overheadcam_pos[X] = -game->player.position[X];
@@ -57,7 +57,6 @@ static int handleinput(t_game *game)
 		if (gr != game_continue)
 			return (gr);
 	}
-	
 	return(game_continue);
 }
 
