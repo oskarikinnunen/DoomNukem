@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 13:52:50 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/06 14:42:36 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/06 14:43:34 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ bool	linecirclecollision(t_line line, float cp[2], float r)
 	
 	f2tov2(start, line.start);
 	f2tov2(end, line.end);
-	f2mul(start, TILESIZE);
+	f2mul(start, TILESIZE); //Lines are in their grid positions so multiply by tilesize to get world coordinates
 	f2mul(end, TILESIZE);
 	dist = f2dist(start, end);
 	dot = (((cp[X]-start[X])*(end[X]-start[X])) + ((cp[Y]-start[Y])*(end[Y]-start[Y])) ) / pow(dist,2);
