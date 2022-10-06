@@ -1,5 +1,7 @@
 See "callgraph.png" for a visualisation of the editors "program flow".
 
+This document is formated correctly when opened with vscode
+//TODO: use actual markdown or reformat completely?
 Feel free to add new keybindings here
 
 GENERAL KEYBINDINGS
