@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/06 14:32:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/06 14:44:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ static void	updatemovementvector(float move_f2[2], int32_t keystate, float angle
 	}
 }
 
+//Doesn't work yet, fix linecirclecollision
 static bool checkwallcollisions(t_game *game, float potential_pos[2])
 {
 	t_list	*node;
@@ -50,8 +51,6 @@ static bool checkwallcollisions(t_game *game, float potential_pos[2])
 	while (node != NULL)
 	{
 		line = *(t_line *)node->content;
-		//v2mul(line.start, TILESIZE);
-		//v2mul(line.end, TILESIZE);
 		if (linecirclecollision(line, potential_pos, PLAYERRADIUS * TILESIZE) == true)
 			return (true);
 		node = node->next;
@@ -76,8 +75,9 @@ void	moveplayer(t_game *game)
 	game->player.angle += angle;
 	updatemovementvector(move_f2, game->keystate, game->player.angle);
 	f2mul(move_f2, game->clock.delta * MOVESPEED);
-	f2cpy(potential_plr_pos, move_f2);
-	f2add(potential_plr_pos, game->player.position);
-	if (checkwallcollisions(game, potential_plr_pos) == false)
-		f2add(game->player.position, move_f2);
+	f2add(game->player.position, move_f2);
+	//f2cpy(potential_plr_pos, move_f2);
+	//f2add(potential_plr_pos, game->player.position);
+	//if (checkwallcollisions(game, potential_plr_pos) == false)
+	//	f2add(game->player.position, move_f2);
 }
