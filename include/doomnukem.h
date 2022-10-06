@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 16:37:31 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/06 11:23:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 
 # define PI	3.14159265359
 # define FULLRAD PI * 2.0
+# define RAD90		1.57079633f //90 degrees in radian
 
 # define X 0
 # define Y 1
@@ -37,6 +38,11 @@
 # define CLR_TURQ 5505010
 # define CLR_GRAY 4868682
 
+// Player defines
+# define MOVESPEED 0.12f
+# define ROTATESPEED 0.002f
+# define MOUSESPEED 1.0f
+
 typedef struct s_sdlcontext
 {
 	SDL_Window				*window;
@@ -46,6 +52,7 @@ typedef struct s_sdlcontext
 typedef struct s_mouse
 {
 	int		p[2];
+	int		p_delta[2];
 	int		scroll;
 	int		scroll_delta;
 	bool	click;
@@ -151,11 +158,27 @@ typedef struct s_editor
 }	t_editor;
 
 /* Playmode */
+
+typedef struct s_player
+{
+	float	position[2]; //TODO: might be changed to int[2], don't know yet
+	float	angle;
+}	t_player;
+
+typedef enum	e_cam_mode
+{
+	overhead_follow,
+	overhead_absolute
+}	t_cam_mode;
+
 typedef struct s_game
 {
 	t_list			*linelst;
 	t_clock			clock;
 	t_mouse			mouse;
+	t_player		player;
+	int32_t			keystate;
+	t_cam_mode		cam_mode;
 } t_game;
 
 typedef enum e_gamereturn
@@ -167,12 +190,17 @@ typedef enum e_gamereturn
 } t_gamereturn;
 
 /* V2.C */
-void	f2mul(float f[2], float mul); //TODO: move f2 functions to own file and maybe think of better naming?
+
 void	v2add(int v[2], int ov[2]);
 void	v2mul(int v[2], int mul);
-void	v2mul_to_f2(int v[2], float mul, float f[2]);
 void	v2cpy(int to[2], int from[2]);
 bool	v2cmp(int v[2], int ov[2]);
+void	v2diff(int v[2], int ov[2], int rv[2]);
+void	v2mul_to_f2(int v[2], float mul, float f[2]);
+
+void	f2mul(float f[2], float mul); //TODO: move f2 functions to own file and maybe think of better naming?
+void	f2tov2(float f[2], int v[2]);
+void	f2add(float f[2], float of[2]);
 
 /* EDITOR.C */
 int		editorloop(t_sdlcontext sdl);
@@ -209,6 +237,9 @@ void	fdf_draw_wireframe(t_fdf *fdf);
 /* IMG.C */
 void	alloc_image(t_img *img, int width, int height);
 
+/* INPUTHELPER.C */
+bool	iskey(SDL_Event e, int keycode);
+
 /* DELTATIME.C */
 void	update_deltatime(t_clock *c);
 
@@ -222,5 +253,11 @@ void	drawline(uint32_t *pxls, int from[2], int to[2], uint32_t clr);
 void	drawcircle(uint32_t *pxls, int crd[2], int size, uint32_t clr);
 void	imgtoscreen(uint32_t *pxls, t_img *img);
 
-/* PLAYMODE */
-int playmode(t_sdlcontext sdl);
+/* PLAYMODE.C */
+int		playmode(t_sdlcontext sdl);
+
+/* PLAYMODE_OVERHEAD.C */
+void	render_overhead(t_game *game, t_sdlcontext *sdl);
+
+/* MOVEPLAYER.C */
+void	moveplayer(int32_t keystate, int mousedelta_x, t_player *plr, uint32_t	delta);

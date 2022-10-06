@@ -8,3 +8,9 @@ Right click + drag 	|	Drag view
 Middle mouse + drag	|	Rotate 3D view
 Space				|	Toggle 3D view
 ESC					|	Exit program and save mapfile
+
+PLAYMODE BINDINGS
+KEYBIND				| 	ACTION
+WASD				|	Movement
+Mouse X-axis		|	Rotation
+Enter				|	Switch camera mode (overhead or absolute)
