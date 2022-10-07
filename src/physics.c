@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 13:52:50 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/06 14:43:34 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/07 11:00:24 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,9 @@
 
 bool	pointcirclecollision(float p[2], float cp[2], float r)
 {
-	float	dist[2];
 	float	distance;
 
-	dist[X] = p[X] - cp[X]; // todo MAKE Vector sqrt distance function;
-	dist[Y] = p[Y] - cp[Y];
-	distance = sqrt((dist[X] * dist[X]) + (dist[Y] * dist[Y]));
+	distance = f2dist(p, cp);
 	return (distance <= r);
 }
 
