@@ -6,12 +6,13 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/06 14:44:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/07 10:52:34 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "inputhelp.h"
+#include "bresenham.h"
 
  // Might need the whole gamecontext but I'm trying to avoid it, (trying to avoid global state)
  // TODO: normalize movement vector
@@ -41,17 +42,24 @@ static void	updatemovementvector(float move_f2[2], int32_t keystate, float angle
 	}
 }
 
-//Doesn't work yet, fix linecirclecollision
+//Only checks start and end point collisions, TODO: fix linecirclecollision
 static bool checkwallcollisions(t_game *game, float potential_pos[2])
 {
-	t_list	*node;
-	t_line	line;
+	t_list		*node;
+	t_line		line;
+	float		test_line_pos[2];
+	t_bresenham	b;
+	
 
 	node = game->linelst;
 	while (node != NULL)
 	{
 		line = *(t_line *)node->content;
-		if (linecirclecollision(line, potential_pos, PLAYERRADIUS * TILESIZE) == true)
+		v2mul_to_f2(line.start, TILESIZE, test_line_pos);
+		if (pointcirclecollision(test_line_pos, potential_pos, PLAYERRADIUS))
+			return (true);
+		v2mul_to_f2(line.end, TILESIZE, test_line_pos);
+		if (pointcirclecollision(test_line_pos, potential_pos, PLAYERRADIUS))
 			return (true);
 		node = node->next;
 	}
@@ -75,9 +83,12 @@ void	moveplayer(t_game *game)
 	game->player.angle += angle;
 	updatemovementvector(move_f2, game->keystate, game->player.angle);
 	f2mul(move_f2, game->clock.delta * MOVESPEED);
-	f2add(game->player.position, move_f2);
-	//f2cpy(potential_plr_pos, move_f2);
-	//f2add(potential_plr_pos, game->player.position);
-	//if (checkwallcollisions(game, potential_plr_pos) == false)
-	//	f2add(game->player.position, move_f2);
+	#ifndef COLLISION_ON
+		f2add(game->player.position, move_f2);
+	#else
+		f2cpy(potential_plr_pos, move_f2);
+		f2add(potential_plr_pos, game->player.position);
+		if (checkwallcollisions(game, potential_plr_pos) == false)
+			f2add(game->player.position, move_f2);
+	#endif
 }
