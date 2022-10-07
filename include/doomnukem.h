@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/07 10:53:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/07 10:56:44 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,12 @@
 # define CLR_TURQ 5505010
 # define CLR_GRAY 4868682
 
-# define COLLISION_ON //Comment/uncomment to toggle collision
 
-// Player defines
+
+// Playmode defines
 # define OVERHEADCAMSPEED 0.4f
 # define PLAYERRADIUS 16
+# define COLLISION_ON //Comment/uncomment to toggle experimental collision
 
 # define MOVESPEED 0.14f
 # define ROTATESPEED 0.002f
