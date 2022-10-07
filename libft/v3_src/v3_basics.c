@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 17:31:46 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 11:33:20 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/07 10:46:55 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,18 +19,8 @@ void fv3_to_iv3(float *f3, int *i3)
 	i3[Z] = (int)f3[Z];
 }
 
-float	*v3_new(float x, float y, float z)
-{
-	float	*v3;
-
-	v3 = (float *)malloc(sizeof(float) * 3);
-	v3[X] = x;
-	v3[Y] = y;
-	v3[Z] = z;
-	return (v3);
-}
-
-void	v3_add(float *v3, float *add)
+//Adds right side to left side
+void	v3_add(float v3[3], float add[3])
 {
 	v3[X] += add[X];
 	v3[Y] += add[Y];
