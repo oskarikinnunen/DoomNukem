@@ -93,12 +93,10 @@ int playmode(t_sdlcontext sdl)
 	game.player.position[X] = 30.0f * TILESIZE;
 	game.player.position[Y] = 30.0f * TILESIZE;
 	//Locks mouse
-	SDL_CaptureMouse(SDL_TRUE);
 	SDL_SetRelativeMouseMode(SDL_TRUE);		
 	//Do game loop until exit or error
 	gr = gameloop(sdl, &game);
 	//Unlocks mouse
 	SDL_SetRelativeMouseMode(SDL_FALSE);
-	SDL_CaptureMouse(SDL_FALSE);
 	return (gr);
 }
