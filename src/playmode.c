@@ -98,14 +98,13 @@ static int gameloop(t_sdlcontext sdl, t_game *game)
 
 	while (1)
 	{
+		update_deltatime(&game->clock);
 		bzero(sdl.surface->pixels, sizeof(uint32_t) * WINDOW_H * WINDOW_W);
 		gr = game_events(game);
 		if (gr != game_continue)
 			return(gr);
-		//sage_render(sdl, game);
 		engine3d(sdl, game);
 		SDL_UpdateWindowSurface(sdl.window);
-		//sleep(10);
 	}
 	return(game_exit); // for now
 }
@@ -118,6 +117,8 @@ static t_triangle set_tri(int *p1, int *p2, int *p3)
 		(t_vec3d){p3[X], p3[Y], p3[Z], 1}
 		});
 }
+
+void printf_tri(t_triangle tri);
 
 static void set_tri_array(t_game *game)
 {
@@ -132,10 +133,13 @@ static void set_tri_array(t_game *game)
 	game->tri_count = len / 2;
 	while (i < len)
 	{
-		game->triangles[i / 2] = set_tri(verts[i], verts[i + 1], verts[1 + 2]);
+		game->triangles[i / 2] = set_tri(verts[i], verts[i + 1], verts[i + 2]);
 		game->triangles[(i / 2) + 1] = set_tri(verts[i + 1], verts[i + 2], verts[i + 3]);
+		printf_tri(game->triangles[i / 2]);
+		printf_tri(game->triangles[(i / 2) + 1]);
 		i += 4;
 	}
+	//exit(0);
 }
 
 /*setup and call gameloop*/

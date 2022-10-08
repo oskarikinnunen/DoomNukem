@@ -141,8 +141,8 @@ void lines_to_obj(t_obj *obj, t_list *linelist)
 		obj->verts[i + 2] = ft_memalloc(3 * sizeof(int32_t *));
 		obj->verts[i + 3] = ft_memalloc(3 * sizeof(int32_t *));
 		copyverts(obj, *((t_line *)l->content), i);
-		obj->verts[i + 2][Z] = -5; //HEIGHT OF THE WALL
-		obj->verts[i + 3][Z] = -5;
+		obj->verts[i + 2][Z] = 5; //HEIGHT OF THE WALL
+		obj->verts[i + 3][Z] = 5;
 		i3_mul(obj->verts[i], TILESIZE);
 		i3_mul(obj->verts[i + 1], TILESIZE);
 		i3_mul(obj->verts[i + 2], TILESIZE);
