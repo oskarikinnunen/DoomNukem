@@ -160,11 +160,17 @@ typedef struct s_game
 	int				tri_count;
 	struct s_obj	*obj;
 	struct s_player	*player;
+	struct s_mat4x4 *matproj;
+	struct s_vec3d *vcamera;
+	struct s_vec3d *vlookdir;
+	float	fyaw;
+	float	ftheta;
 } t_game;
 
 typedef struct s_player
 {
 	int wasd[4];
+	int arrow[4];
 	int sl,sr;
 	int m;
 	int x,y,z;
@@ -183,16 +189,27 @@ typedef enum e_gamereturn
 
 typedef struct s_vec3d
 {
-	int x;
-	int y;
-	int z;
-	int w;
+	float x;
+	float y;
+	float z;
+	float w;
 }	t_vec3d;
 
 typedef struct	s_triangle
 {
 	struct s_vec3d p[3];
 }	t_triangle;
+
+typedef struct s_mat4x4
+{
+	float m[4][4];
+}	t_mat4x4;
+
+typedef struct s_trilist
+{
+	struct s_triangle tri;
+	struct s_trilist *next;
+} t_trilist;
 
 /* V2.C */
 void	f2mul(float f[2], float mul); //TODO: move f2 functions to own file and maybe think of better naming?

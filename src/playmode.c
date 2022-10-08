@@ -6,6 +6,9 @@ void init(t_player *player, t_game *game);
 
 /*testing 3drenders*/
 void engine3d(t_sdlcontext sdl, t_game *game);
+t_mat4x4	Init();
+t_vec3d		Initv3();
+t_triangle Inittri();
 
 /*action up keys here*/
 static int key_up(SDL_Event e, t_player *player)
@@ -26,6 +29,14 @@ static int key_up(SDL_Event e, t_player *player)
 		player->sr = val;
 	if (iskey(e, SDLK_m))
 		player->m = val;
+	if (iskey(e, SDLK_UP))
+		player->arrow[0] = val;
+	if (iskey(e, SDLK_LEFT))
+		player->arrow[1] = val;
+	if (iskey(e, SDLK_DOWN))
+		player->arrow[2] = val;
+	if (iskey(e, SDLK_RIGHT))
+		player->arrow[3] = val;
 	return(game_continue);
 }
 
@@ -54,6 +65,14 @@ static int key_down(SDL_Event e, t_player *player)
 		player->m = val;
 	if (iskey(e, SDLK_RETURN))
 		player->slowspeed = 1;
+	if (iskey(e, SDLK_UP))
+		player->arrow[0] = val;
+	if (iskey(e, SDLK_LEFT))
+		player->arrow[1] = val;
+	if (iskey(e, SDLK_DOWN))
+		player->arrow[2] = val;
+	if (iskey(e, SDLK_RIGHT))
+		player->arrow[3] = val;
 	return(game_continue);
 }
 
@@ -126,12 +145,22 @@ int playmode(t_sdlcontext sdl)
 	t_gamereturn	gr;
 	t_player		player;
 	t_obj			obj;
+	t_vec3d			vcamera;
+	t_vec3d			vlookdir;
+	t_mat4x4		matproj;
 
 	bzero(&game, sizeof(t_game));
 	bzero(&player, sizeof(t_player));
 	bzero(&obj, sizeof(t_obj));
+	vcamera = (t_vec3d){0, 0, 0, 1};
+	vlookdir = (t_vec3d){0, 0, 0, 1};
+	matproj = Init();
+
 	game.player = &player;
 	game.obj = &obj;
+	game.vcamera = &vcamera;
+	game.vlookdir = &vlookdir;
+	game.matproj = &matproj;
 
 	loadmap(&game.linelst, "mapfile1");
 	lines_to_obj(&obj, game.linelst);
