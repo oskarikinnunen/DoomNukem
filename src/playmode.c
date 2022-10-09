@@ -134,7 +134,7 @@ static void set_tri_array(t_game *game)
 	while (i < len)
 	{
 		game->triangles[i / 2] = set_tri(verts[i], verts[i + 1], verts[i + 2]);
-		game->triangles[(i / 2) + 1] = set_tri(verts[i + 1], verts[i + 2], verts[i + 3]);
+		game->triangles[(i / 2) + 1] = set_tri(verts[i + 2], verts[i + 1], verts[i + 3]);
 		printf_tri(game->triangles[i / 2]);
 		printf_tri(game->triangles[(i / 2) + 1]);
 		i += 4;

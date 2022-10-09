@@ -198,6 +198,7 @@ typedef struct s_vec3d
 typedef struct	s_triangle
 {
 	struct s_vec3d p[3];
+	uint32_t	clr;
 }	t_triangle;
 
 typedef struct s_mat4x4
