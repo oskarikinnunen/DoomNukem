@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/07 10:56:44 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/11 12:48:13 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 #include <fcntl.h>
 #include <stdbool.h>
 
-# define WINDOW_W 800
-# define WINDOW_H 600
+# define WINDOW_W 1920
+# define WINDOW_H 1080
 # define TILESIZE 32 //EDITOR tilesize
 # define GRIDSIZE 64 //EDITOR gridsize (how many addressable coordinates we have)
 
@@ -47,7 +47,7 @@
 
 # define MOVESPEED 0.14f
 # define ROTATESPEED 0.002f
-# define MOUSESPEED 1.0f
+# define MOUSESPEED 0.002f
 
 typedef struct s_sdlcontext
 {

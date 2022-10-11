@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/06 12:26:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/11 14:39:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ static void debug_draw_object(uint32_t *pxls, t_obj obj) //remove this and use p
 
 int	editorloop(t_sdlcontext sdl)
 {
-	t_editor	ed;
+	t_editor		ed;
 	t_gamereturn	gr;
 
 	bzero(&ed, sizeof(t_editor));
