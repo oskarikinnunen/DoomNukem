@@ -3,12 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/07 10:56:44 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/11 15:59:14 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#ifndef DOOMNUKEM_H
+# define DOOMNUKEM_H
 
 #include "../SDL_built/include/SDL2/SDL.h" //TODO: make this work without relative path?
 #include "libft.h"
@@ -276,3 +279,5 @@ void	move_overhead(t_game *game);
 
 /* MOVEPLAYER.C */
 void	moveplayer(t_game *game);
+
+#endif
