@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/11 17:27:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/11 17:31:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,6 @@ void	loadmap(t_list **linelist, char *filename)
 	br = read(fd, &line, sizeof(t_line));
 	while (br >= sizeof(t_line))
 	{
-		
-		//printf("read %i from file \n", br);
 		node = ft_lstnew(&line, sizeof(t_line));
 		if (*linelist == NULL)
 			*linelist = node;
@@ -47,7 +45,6 @@ void	loadmap(t_list **linelist, char *filename)
 	close(fd);
 }
 
-//TODO: cant save if map has less walls than opened one.
 //TODO: make general, make param a t_list **
 // Iterates through a linked list containing t_lines and writes it's contents into a file
 void	savemap(t_editor *ed, char *filename)
@@ -65,29 +62,3 @@ void	savemap(t_editor *ed, char *filename)
 	}
 	close(fd);
 }
-
-/*
-void	loadmap(t_editor *ed, char *filename)
-{
-	int		fd;
-	int		br;
-	t_line	line;
-	t_list	*node;
-
-	fd = fileopen(filename, O_RDWR);
-	if (fd <= -1)
-		return ;
-	br = read(fd, &line, sizeof(t_line));
-	while (br >= sizeof(t_line))
-	{
-		//printf("read %i from file \n", br);
-		node = ft_lstnew(&line, sizeof(t_line));
-		if (ed->linelist == NULL)
-			ed->linelist = node;
-		else
-			ft_lstapp(&ed->linelist, node);
-		br = read(fd, &line, sizeof(t_line));
-	}
-	close(fd);
-}
-*/

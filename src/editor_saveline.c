@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:21:52 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 16:52:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/11 17:32:02 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ static void del_list(void *content, size_t size)
 	free(content);
 }
 
-//TODO: fix this, this isn't able to remove the first one, program segfaults :D
 bool	removeduplicate(t_editor *ed)
 {
 	t_list	*node;
