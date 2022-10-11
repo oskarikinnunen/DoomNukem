@@ -6,19 +6,19 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/11 15:59:14 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/11 16:40:34 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef DOOMNUKEM_H
 # define DOOMNUKEM_H
 
-#include "../SDL_built/include/SDL2/SDL.h" //TODO: make this work without relative path?
-#include "libft.h"
-#include "limits.h" //TODO: remove mby? just define INT_MAX yourself
-#include "math.h"
-#include <fcntl.h>
-#include <stdbool.h>
+# include "../SDL_built/include/SDL2/SDL.h" //TODO: make this work without relative path?
+# include "libft.h"
+# include "limits.h" //TODO: remove mby? just define INT_MAX yourself
+# include "math.h"
+# include <fcntl.h>
+# include <stdbool.h>
 
 # define WINDOW_W 800
 # define WINDOW_H 600
@@ -279,5 +279,8 @@ void	move_overhead(t_game *game);
 
 /* MOVEPLAYER.C */
 void	moveplayer(t_game *game);
+
+/* ERRORS.C */
+void	errors(uint32_t error_code);
 
 #endif
