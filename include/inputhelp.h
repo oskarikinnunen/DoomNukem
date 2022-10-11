@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 09:30:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/06 10:50:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/11 17:43:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 # include "../SDL_built/include/SDL2/SDL.h"
 
 # define KEYS_LEFTMASK 0
-# define KEYS_RGHTMASK 2
-# define KEYS_UPMASK 4
-# define KEYS_DOWNMASK 8
+# define KEYS_RGHTMASK 1
+# define KEYS_UPMASK 2
+# define KEYS_DOWNMASK 3
 
 
 bool	keyismoveleft(SDL_Event e);
