@@ -61,22 +61,22 @@ static int handleinput(t_game *game)
 }
 
 /*main game loop*/
-static int gameloop(t_sdlcontext sdl, t_game *game)
+static int gameloop(t_sdlcontext sdl, t_game game)
 {
 	t_gamereturn	gr;
 
 	while (1)
 	{
-		update_deltatime(&game->clock);
+		update_deltatime(&game.clock);
 		bzero(sdl.surface->pixels, sizeof(uint32_t) * WINDOW_H * WINDOW_W);
-		gr = handleinput(game);
+		gr = handleinput(&game);
 		if (gr != game_continue)
 			return(gr);
-		if (game->cam_mode == overhead_follow)
-			moveplayer(game);
+		if (game.cam_mode == overhead_follow)
+			moveplayer(&game);
 		else
-			move_overhead(game);
-		render_overhead(game, &sdl);
+			move_overhead(&game);
+		render_overhead(&game, &sdl);
 		SDL_UpdateWindowSurface(sdl.window);
 	}
 	return(game_exit); // for now
@@ -90,12 +90,12 @@ int playmode(t_sdlcontext sdl)
 
 	bzero(&game, sizeof(t_game));
 	loadmap(&game.linelst, "mapfile1");
-	game.player.position[X] = 30.0f * TILESIZE;
+	game.player.position[X] = 30.0f * TILESIZE; //TODO: player position should be in game coordinates, not screenspace
 	game.player.position[Y] = 30.0f * TILESIZE;
 	//Locks mouse
-	SDL_SetRelativeMouseMode(SDL_TRUE);		
+	SDL_SetRelativeMouseMode(SDL_TRUE);
 	//Do game loop until exit or error
-	gr = gameloop(sdl, &game);
+	gr = gameloop(sdl, game);
 	//Unlocks mouse
 	SDL_SetRelativeMouseMode(SDL_FALSE);
 	return (gr);

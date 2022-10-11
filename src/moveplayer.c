@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/07 10:52:34 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/11 12:24:19 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,9 +77,10 @@ void	moveplayer(t_game *game)
 	angle -= game->mouse.p_delta[X] * MOUSESPEED;
 	//	rotate character with arrow keys, doesn't work correctly with strafe
 	//	but if you need it it's here, just uncomment the next 2 lines
-	//angle -= (keystate >> KEYS_RGHTMASK) & 1;
+	//angle -= ((game->keystate >> KEYS_RGHTMASK) & 1) * ROTATESPEED;
+	//angle -= ((game->keystate >> KEYS_LEFTMASK) & 1) * ROTATESPEED;
 	//angle += (keystate >> KEYS_LEFTMASK) & 1;
-	angle *= game->clock.delta * ROTATESPEED;
+	angle *= game->clock.delta;
 	game->player.angle += angle;
 	updatemovementvector(move_f2, game->keystate, game->player.angle);
 	f2mul(move_f2, game->clock.delta * MOVESPEED);

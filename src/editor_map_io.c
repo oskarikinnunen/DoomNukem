@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_map_io.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 15:26:11 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/11 17:27:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static int	fileopen(char *filename, int flags)
 	return (fd);
 }
 
-void	loadmap(t_list **head, char *filename)
+void	loadmap(t_list **linelist, char *filename)
 {
 	int		fd;
 	int		br;
@@ -35,25 +35,27 @@ void	loadmap(t_list **head, char *filename)
 	br = read(fd, &line, sizeof(t_line));
 	while (br >= sizeof(t_line))
 	{
+		
 		//printf("read %i from file \n", br);
 		node = ft_lstnew(&line, sizeof(t_line));
-		if (*head == NULL)
-			*head = node;
+		if (*linelist == NULL)
+			*linelist = node;
 		else
-			ft_lstapp(head, node);
+			ft_lstapp(linelist, node);
 		br = read(fd, &line, sizeof(t_line));
 	}
 	close(fd);
 }
 
 //TODO: cant save if map has less walls than opened one.
-//Rewrite with lst, instead of editor
+//TODO: make general, make param a t_list **
+// Iterates through a linked list containing t_lines and writes it's contents into a file
 void	savemap(t_editor *ed, char *filename)
 {
 	int		fd;
 	t_list	*l;
 
-	fd = fileopen(filename, O_RDWR | O_CREAT);
+	fd = fileopen(filename, O_RDWR | O_CREAT | O_TRUNC);
 	l = ed->linelist;
 	while (l != NULL)
 	{
