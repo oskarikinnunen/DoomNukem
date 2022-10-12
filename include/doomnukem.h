@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/06 17:32:57 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/12 11:19:03 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 
 # define PI	3.14159265359
 # define FULLRAD PI * 2.0
+# define RAD90		1.57079633f //90 degrees in radian
 
 # define X 0
 # define Y 1
@@ -37,15 +38,28 @@
 # define CLR_TURQ 5505010
 # define CLR_GRAY 4868682
 
+
+
+// Playmode defines
+# define OVERHEADCAMSPEED 0.4f
+# define PLAYERRADIUS 16
+# define COLLISION_ON //Comment/uncomment to toggle experimental collision
+
+# define MOVESPEED 0.14f
+# define ROTATESPEED 0.002f
+# define MOUSESPEED 1.0f
+
 typedef struct s_sdlcontext
 {
 	SDL_Window				*window;
 	SDL_Surface				*surface;
+	uint32_t				*zbuffer;
 }	t_sdlcontext;
 
 typedef struct s_mouse
 {
 	int		p[2];
+	int		p_delta[2];
 	int		scroll;
 	int		scroll_delta;
 	bool	click;
@@ -151,33 +165,18 @@ typedef struct s_editor
 }	t_editor;
 
 /* Playmode */
-typedef struct s_game
-{
-	t_list			*linelst;
-	t_clock			clock;
-	t_mouse			mouse;
-	struct s_triangle	*triangles;
-	int				tri_count;
-	struct s_obj	*obj;
-	struct s_player	*player;
-	struct s_mat4x4 *matproj;
-	struct s_vec3d *vcamera;
-	struct s_vec3d *vlookdir;
-	float	fyaw;
-	float	ftheta;
-} t_game;
 
 typedef struct s_player
 {
-	int wasd[4];
-	int arrow[4];
-	int sl,sr;
-	int m;
-	int x,y,z;
-	int a;
-	int l;
-	int slowspeed;
-} t_player;
+	float	position[3]; //TODO: might be changed to int[2], don't know yet
+	float	angle[2];
+}	t_player;
+
+typedef enum	e_cam_mode
+{
+	overhead_follow,
+	overhead_absolute
+}	t_cam_mode;
 
 typedef enum e_gamereturn
 {
@@ -212,13 +211,49 @@ typedef struct s_trilist
 	struct s_trilist *next;
 } t_trilist;
 
+typedef struct s_math //place holder for structs containing players camera info and matrixes
+{
+	int					tri_count;
+	struct s_triangle	*triangles;
+	t_mat4x4 			matproj;
+	t_vec3d 			vcamera;
+	t_vec3d 			vlookdir;
+	float				fyaw;
+	float				fpitch;
+}	t_math;
+
+typedef struct s_game
+{
+	t_list			*linelst;
+	t_clock			clock;
+	t_mouse			mouse;
+	t_player		player;
+	int32_t			keystate;
+	t_cam_mode		cam_mode;
+	t_math			math;
+	float			overheadcam_pos[2];
+} t_game;
+
+typedef struct s_zbuff
+{
+	int	w;
+	int	*zbuff;
+}	t_zbuff;
+
 /* V2.C */
-void	f2mul(float f[2], float mul); //TODO: move f2 functions to own file and maybe think of better naming?
+
 void	v2add(int v[2], int ov[2]);
 void	v2mul(int v[2], int mul);
-void	v2mul_to_f2(int v[2], float mul, float f[2]);
 void	v2cpy(int to[2], int from[2]);
 bool	v2cmp(int v[2], int ov[2]);
+void	v2diff(int v[2], int ov[2], int rv[2]);
+void	v2mul_to_f2(int v[2], float mul, float f[2]);
+
+float	f2dist(float f[2], float of[2]);
+void	f2mul(float f[2], float mul); //TODO: move f2 functions to own file and maybe think of better naming?
+void	f2tov2(float f[2], int v[2]);
+void	f2add(float f[2], float of[2]);
+void	f2cpy(float to[2], float from[2]);
 
 /* EDITOR.C */
 int		editorloop(t_sdlcontext sdl);
@@ -255,6 +290,9 @@ void	fdf_draw_wireframe(t_fdf *fdf);
 /* IMG.C */
 void	alloc_image(t_img *img, int width, int height);
 
+/* INPUTHELPER.C */
+bool	iskey(SDL_Event e, int keycode);
+
 /* DELTATIME.C */
 void	update_deltatime(t_clock *c);
 
@@ -268,9 +306,18 @@ void	drawline(uint32_t *pxls, int from[2], int to[2], uint32_t clr);
 void	drawcircle(uint32_t *pxls, int crd[2], int size, uint32_t clr);
 void	imgtoscreen(uint32_t *pxls, t_img *img);
 
-/* FREE */
-void	free_lst(t_list *head);
-void	free_obj(t_obj *obj);
+/* PLAYMODE.C */
+int		playmode(t_sdlcontext sdl);
+void	engine3d(t_sdlcontext sdl, t_game *game);
 
-/* PLAYMODE */
-int playmode(t_sdlcontext sdl);
+/* PHYSICS.C */
+bool	pointcirclecollision(float p[2], float cp[2], float r);
+bool	linecirclecollision(t_line line, float cp[2], float r);
+
+
+/* PLAYMODE_OVERHEAD.C */
+void	render_overhead(t_game *game, t_sdlcontext *sdl);
+void	move_overhead(t_game *game);
+
+/* MOVEPLAYER.C */
+void	moveplayer(t_game *game);

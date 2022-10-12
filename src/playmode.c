@@ -1,92 +1,74 @@
 #include "doomnukem.h"
+#include "inputhelp.h"
 
-/* testing 2drenders */
-void sage_render(t_sdlcontext sdl, t_game *game);
-void init(t_player *player, t_game *game);
-
-/*testing 3drenders*/
-void engine3d(t_sdlcontext sdl, t_game *game);
-t_mat4x4	Init();
-t_vec3d		Initv3();
+/*place holder for inits*/
+t_mat4x4 Init();
+t_vec3d	Initv3();
 t_triangle Inittri();
 
-/*action up keys here*/
-static int key_up(SDL_Event e, t_player *player)
+//	Good resource for remembering bitwise operations:
+//			https://stackoverflow.com/a/47990/1725220
+//	TODO: move playermode events to separate file
+static int key_events(SDL_Event e, t_game *game)
 {
-	printf("key up\n");
-	int val = 0;
-	if (iskey(e, SDLK_w))
-		player->wasd[0] = val;
-	if (iskey(e, SDLK_a))
-		player->wasd[1] = val;
-	if (iskey(e, SDLK_s))
-		player->wasd[2] = val;
-	if (iskey(e, SDLK_d))
-		player->wasd[3] = val;
-	if (iskey(e, SDLK_LEFT))
-		player->sl = val;
-	if (iskey(e, SDLK_RIGHT))
-		player->sr = val;
-	if (iskey(e, SDLK_m))
-		player->m = val;
-	if (iskey(e, SDLK_UP))
-		player->arrow[0] = val;
-	if (iskey(e, SDLK_LEFT))
-		player->arrow[1] = val;
-	if (iskey(e, SDLK_DOWN))
-		player->arrow[2] = val;
-	if (iskey(e, SDLK_RIGHT))
-		player->arrow[3] = val;
-	return(game_continue);
+	if (e.type == SDL_KEYDOWN)
+	{
+		if (iskey(e, SDLK_ESCAPE))
+			return (game_exit);
+		if (iskey(e, SDLK_TAB))
+			return (game_switchmode);
+		game->keystate |= keyismoveleft(e);
+		game->keystate |= keyismoveright(e) << KEYS_RIGHTMASK;
+		game->keystate |= keyismoveup(e) << KEYS_UPMASK;
+		game->keystate |= keyismovedown(e) << KEYS_DOWNMASK;
+		game->keystate |= keyarrowright(e) << KEYS_ARROWRIGHT;
+		game->keystate |= keyarrowdown(e) << KEYS_ARROWDOWN;
+		game->keystate |= keyarrowleft(e) << KEYS_ARROWLEFT;
+		game->keystate |= keyarrowup(e) << KEYS_ARROWUP;
+		if (iskey(e, SDLK_SPACE))
+		{
+			game->cam_mode = !game->cam_mode; //Flips from 0->1 and 1->0
+			if (game->cam_mode == overhead_absolute)
+			{
+				game->overheadcam_pos[X] = -game->player.position[X];
+				game->overheadcam_pos[Y] = -game->player.position[Y];
+				game->overheadcam_pos[X] += WINDOW_W / 2;
+				game->overheadcam_pos[Y] += WINDOW_H / 2;
+			}
+		}
+	}
+	else if(e.type == SDL_KEYUP)
+	{
+		game->keystate &= ~(keyismoveleft(e));
+		game->keystate &= ~(keyismoveright(e) << KEYS_RIGHTMASK);
+		game->keystate &= ~(keyismoveup(e) << KEYS_UPMASK);
+		game->keystate &= ~(keyismovedown(e) << KEYS_DOWNMASK);
+		game->keystate &= ~(keyarrowright(e) << KEYS_ARROWRIGHT);
+		game->keystate &= ~(keyarrowleft(e) << KEYS_ARROWLEFT);
+		game->keystate &= ~(keyarrowdown(e) << KEYS_ARROWDOWN);
+		game->keystate &= ~(keyarrowup(e) << KEYS_ARROWUP);
+	}
+	return (game_continue);
 }
 
-/*action down keys here*/
-static int key_down(SDL_Event e, t_player *player)
+//	Updates mouse delta position
+static void updatemouse(t_mouse *mouse)
 {
-	printf("key down %d\n", player->wasd[0]);
-	if (iskey(e, SDLK_ESCAPE))
-		return(game_exit);
-	if (iskey(e, SDLK_TAB))
-		return(game_switchmode);
-	int val = 1;
-	if (iskey(e, SDLK_w))
-		player->wasd[0] = val;
-	if (iskey(e, SDLK_a))
-		player->wasd[1] = val;
-	if (iskey(e, SDLK_s))
-		player->wasd[2] = val;
-	if (iskey(e, SDLK_d))
-		player->wasd[3] = val;
-	if (iskey(e, SDLK_LEFT))
-		player->sl = val;
-	if (iskey(e, SDLK_RIGHT))
-		player->sr = val;
-	if (iskey(e, SDLK_m))
-		player->m = val;
-	if (iskey(e, SDLK_RETURN))
-		player->slowspeed = 1;
-	if (iskey(e, SDLK_UP))
-		player->arrow[0] = val;
-	if (iskey(e, SDLK_LEFT))
-		player->arrow[1] = val;
-	if (iskey(e, SDLK_DOWN))
-		player->arrow[2] = val;
-	if (iskey(e, SDLK_RIGHT))
-		player->arrow[3] = val;
-	return(game_continue);
+	SDL_GetRelativeMouseState(&mouse->p_delta[X], &mouse->p_delta[Y]);
 }
 
 /*check for keyboard/mouse input*/
-static int game_events(t_game *game)
+static int handleinput(t_game *game)
 {
 	static SDL_Event	e;
+	t_gamereturn		gr;
 
+	updatemouse(&game->mouse);
 	while (SDL_PollEvent(&e))
 	{
-		if (e.type == SDL_KEYDOWN)
-			return(key_down(e, game->player));
-		if (e.type == SDL_KEYUP)
-			return(key_up(e, game->player));
+		gr = key_events(e, game);
+		if (gr != game_continue)
+			return (gr);
 	}
 	return(game_continue);
 }
@@ -100,13 +82,35 @@ static int gameloop(t_sdlcontext sdl, t_game *game)
 	{
 		update_deltatime(&game->clock);
 		bzero(sdl.surface->pixels, sizeof(uint32_t) * WINDOW_H * WINDOW_W);
-		gr = game_events(game);
+		gr = handleinput(game);
+		/*
 		if (gr != game_continue)
 			return(gr);
+		render_overhead(game, &sdl);*/
+		if (gr != game_continue)
+			return(gr);
+		if (game->cam_mode == overhead_follow)
+			moveplayer(game);
+		else
+			move_overhead(game);
 		engine3d(sdl, game);
 		SDL_UpdateWindowSurface(sdl.window);
 	}
 	return(game_exit); // for now
+}
+
+static int start_gameloop(t_sdlcontext sdl, t_game game)
+{
+	t_math	*math;
+	int		gr;
+
+	math = &game.math;
+	bzero(&game.player, sizeof(t_player));
+	math->vcamera = (t_vec3d){0, 0, 0, 1}; // change these to v3init
+	math->vlookdir = (t_vec3d){0, 0, 0, 1}; // 
+	math->matproj = Init();
+
+	return(gameloop(sdl, &game));
 }
 
 static t_triangle set_tri(int *p1, int *p2, int *p3)
@@ -120,23 +124,23 @@ static t_triangle set_tri(int *p1, int *p2, int *p3)
 
 void printf_tri(t_triangle tri);
 
-static void set_tri_array(t_game *game)
+static void set_tri_array(t_math *math, t_obj *obj)
 {
 	int		i;
 	int		len;
 	int32_t	**verts;
 
 	i = 0;
-	verts = game->obj->verts;
-	len = game->obj->v_count; //4vert = 2 triangles
-	game->triangles = malloc(sizeof(t_triangle) * (len / 2));
-	game->tri_count = len / 2;
+	verts = obj->verts;
+	len = obj->v_count; //4vert = 2 triangles
+	math->triangles = malloc(sizeof(t_triangle) * (len / 2));
+	math->tri_count = len / 2;
 	while (i < len)
 	{
-		game->triangles[i / 2] = set_tri(verts[i], verts[i + 1], verts[i + 2]);
-		game->triangles[(i / 2) + 1] = set_tri(verts[i + 2], verts[i + 1], verts[i + 3]);
-		printf_tri(game->triangles[i / 2]);
-		printf_tri(game->triangles[(i / 2) + 1]);
+		math->triangles[i / 2] = set_tri(verts[i], verts[i + 1], verts[i + 2]);
+		math->triangles[(i / 2) + 1] = set_tri(verts[i + 2], verts[i + 1], verts[i + 3]);
+		printf_tri(math->triangles[i / 2]);
+		printf_tri(math->triangles[(i / 2) + 1]);
 		i += 4;
 	}
 	//exit(0);
@@ -146,36 +150,21 @@ static void set_tri_array(t_game *game)
 int playmode(t_sdlcontext sdl)
 {
 	t_game			game;
-	t_gamereturn	gr;
-	t_player		player;
 	t_obj			obj;
-	t_vec3d			vcamera;
-	t_vec3d			vlookdir;
-	t_mat4x4		matproj;
+	t_gamereturn	gr;
 
 	bzero(&game, sizeof(t_game));
-	bzero(&player, sizeof(t_player));
 	bzero(&obj, sizeof(t_obj));
-	vcamera = (t_vec3d){0, 0, 0, 1};
-	vlookdir = (t_vec3d){0, 0, 0, 1};
-	matproj = Init();
-
-	game.player = &player;
-	game.obj = &obj;
-	game.vcamera = &vcamera;
-	game.vlookdir = &vlookdir;
-	game.matproj = &matproj;
-
 	loadmap(&game.linelst, "mapfile1");
 	lines_to_obj(&obj, game.linelst);
-	set_tri_array(&game);
-	
-	gr = gameloop(sdl, &game);
-	
-	free_lst(game.linelst);
-	return(gr);
+	set_tri_array(&game.math, &obj);
+	game.player.position[X] = 30.0f * TILESIZE;
+	game.player.position[Y] = 30.0f * TILESIZE;
+	//Locks mouse
+	SDL_SetRelativeMouseMode(SDL_TRUE);		
+	//Do game loop until exit or error
+	gr = start_gameloop(sdl, game);
+	//Unlocks mouse
+	SDL_SetRelativeMouseMode(SDL_FALSE);
+	return (gr);
 }
-/*
-array of triangles
-triangle is a size 3 array of points
-points is 3 int;*/

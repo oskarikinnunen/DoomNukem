@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 11:57:55 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/06 17:31:41 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/11 11:08:05 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,6 @@ void gridto_obj(t_obj *obj)
 
 	obj->verts = ft_memalloc(GRIDSIZE * GRIDSIZE * sizeof(float *));
 	obj->v_count = 0;
-	if (obj->mtlcolors)
-		free(obj->mtlcolors);
 	obj->mtlcolors = ft_memalloc(sizeof(uint32_t));
 	obj->mtlcolors[0] = CLR_GRAY;
 	ft_bzero(crd, sizeof(int [2]));

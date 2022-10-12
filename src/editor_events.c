@@ -6,16 +6,11 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 18:20:29 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/11 11:09:05 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
-
-bool iskey(SDL_Event e, int keycode)
-{
-	return (e.key.keysym.sym == keycode);
-}
 
 int		editor_events(t_editor *ed)
 {
@@ -45,7 +40,7 @@ int		editor_events(t_editor *ed)
 				}
 				else
 				{
-					//start_anim(&ed->transition, anim_backwards);
+					start_anim(&ed->transition, anim_backwards);
 					ed->state = place_start;
 				}
 			}

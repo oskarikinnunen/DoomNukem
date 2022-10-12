@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 10:54:20 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/12 11:22:58 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "bresenham.h"
 
-void	draw(uint32_t *pxls, int crd[2], uint32_t clr)
+void	draw(uint32_t *pxls, int crd[2], uint32_t clr) // TODO: Implement zbuffer into draw function/Make a struct for draw function that has point, clr, zbuffer
 {
 	if (crd[X] < 0 || crd[X] >= WINDOW_W
 		|| crd[Y] < 0 || crd[Y] >= WINDOW_H)

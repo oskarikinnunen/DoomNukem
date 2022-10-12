@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 18:20:42 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/06 12:26:12 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,9 +83,6 @@ int	editorloop(t_sdlcontext sdl)
 		if (gr != game_continue)
 		{
 			savemap(&ed, "mapfile1");
-			free(ed.grid_fdf.img.data);
-			free(ed.walls_fdf.img.data);
-			free_lst(ed.linelist);
 			return(gr) ; //error returned from event handling, exit gracefully
 		}
 		if (ed.state == display3d || ed.transition.active)
