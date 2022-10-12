@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_map_io.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 15:26:11 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/12 17:42:26 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static int	fileopen(char *filename, int flags)
 
 	fd = open(filename, flags, 0666);
 	if (fd == -1 && flags != O_RDWR) //TODO: fix, second check is just so loadmap doesn't exit the program
-		exit(0); //TODO: make error exit function
+		errors(5);
 	return (fd);
 }
 
@@ -37,13 +37,16 @@ void	loadmap(t_list **head, char *filename)
 	{
 		//printf("read %i from file \n", br);
 		node = ft_lstnew(&line, sizeof(t_line));
+		if (!node)
+			errors(4);
 		if (*head == NULL)
 			*head = node;
 		else
 			ft_lstapp(head, node);
 		br = read(fd, &line, sizeof(t_line));
 	}
-	close(fd);
+	if (close(fd) == -1)
+		errors(6);
 }
 
 //TODO: cant save if map has less walls than opened one.
@@ -54,14 +57,19 @@ void	savemap(t_editor *ed, char *filename)
 	t_list	*l;
 
 	fd = fileopen(filename, O_RDWR | O_CREAT);
+	if (fd == -1)
+		errors(5);
 	l = ed->linelist;
 	while (l != NULL)
 	{
 		int written = write(fd, (t_line *)l->content, sizeof(t_line));
+		if (written == -1)
+			errors(7);
 		//printf("wrote %i bytes \n", written);
 		l = l->next;
 	}
-	close(fd);
+	if (close(fd) == -1)
+		errors(6);
 }
 
 /*
