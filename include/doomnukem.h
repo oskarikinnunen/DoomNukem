@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/12 15:54:22 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/12 16:36:30 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,7 +243,7 @@ void	lines_to_obj(t_obj *obj, t_editor *ed);
 void	editor3d(t_sdlcontext sdl, t_editor *ed_ptr);
 
 /* FDF.C */
-int		fdf_init(t_fdf *fdf);
+void		fdf_init(t_fdf *fdf);
 void	fdf_draw_wireframe(t_fdf *fdf);
 
 /* IMG.C */
