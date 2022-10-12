@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/11 16:40:34 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/12 15:54:22 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,7 +236,7 @@ void	loadmap(t_list **head, char *filename);
 void	savemap(t_editor *ed, char *filename);
 
 /* EDITOR_3D_INITIALIZE.C */
-void	gridto_obj(t_obj *obj);
+void	grid_to_obj(t_obj *obj);
 void	lines_to_obj(t_obj *obj, t_editor *ed);
 
 /* EDITOR_3D.C */
