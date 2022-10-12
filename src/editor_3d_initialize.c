@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 11:57:55 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/11 16:39:55 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/12 15:54:11 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static void generatefaces(t_obj *obj)
 	obj->f_count -= GRIDSIZE;
 	obj->faces = ft_memalloc(obj->f_count * sizeof(uint32_t *));
 	if (!obj->faces)
-		errors(2);
+		errors(4);
 	i = 0;
 	ri = 0;
 	while (i < obj->f_count)
@@ -48,7 +48,7 @@ static void generatefaces(t_obj *obj)
 		obj->faces[i] = ft_memalloc(sizeof(uint32_t [3]));
 		obj->faces[i + 1] = ft_memalloc(sizeof(uint32_t [3]));
 		if (!obj->faces[i] || !obj->faces[i + 1])
-			errors(2);
+			errors(4);
 		setfaceindex(&obj->faces[i], ri);
 		i += 2;
 		ri++;
@@ -56,17 +56,17 @@ static void generatefaces(t_obj *obj)
 	}
 }
 
-void gridto_obj(t_obj *obj)
+void grid_to_obj(t_obj *obj)
 {
 	int	crd[2];
 
+	obj->v_count = 0;
 	obj->verts = ft_memalloc(GRIDSIZE * GRIDSIZE * sizeof(float *));
 	if (!obj->verts)
-		errors(2);
-	obj->v_count = 0;
+		errors(4);
 	obj->mtlcolors = ft_memalloc(sizeof(uint32_t));
 	if (!obj->mtlcolors)
-		errors(2);
+		errors(4);
 	obj->mtlcolors[0] = CLR_GRAY;
 	ft_bzero(crd, sizeof(int [2]));
 	while (crd[Y] < TILESIZE * GRIDSIZE)
@@ -76,7 +76,7 @@ void gridto_obj(t_obj *obj)
 		{
 			obj->verts[obj->v_count] = ft_memalloc(sizeof(int32_t [3]));
 			if (!obj->verts[obj->v_count])
-				errors(2);
+				errors(4);
 			obj->verts[obj->v_count][X] = crd[X];
 			obj->verts[obj->v_count][Y] = crd[Y];
 			obj->v_count++;
@@ -89,7 +89,6 @@ void gridto_obj(t_obj *obj)
 
 static void linefaces(t_obj *obj, uint32_t i)
 {
-	//TODO: Protect allocations plz
 	int	fi;
 
 	fi = i;
@@ -97,14 +96,14 @@ static void linefaces(t_obj *obj, uint32_t i)
 		fi = i / 2;
 	obj->faces[fi] = ft_memalloc(3 * sizeof (uint32_t));
 	if (!obj->faces[fi])
-		errors(2);
+		errors(4);
 	obj->faces[fi][0] = i;
 	obj->faces[fi][1] = i + 1;
 	obj->faces[fi][2] = i + 2;
 	fi++;
 	obj->faces[fi] = ft_memalloc(3 * sizeof (uint32_t));
 	if (!obj->faces[fi])
-		errors(2);
+		errors(4);
 	obj->faces[fi][0] = i + 1;
 	obj->faces[fi][1] = i + 2;
 	obj->faces[fi][2] = i + 3;
@@ -129,6 +128,20 @@ static void copyverts(t_obj *obj, t_line line, int i) //Ghetto, TODO: make cpyv2
 	obj->verts[i + 3][Y] = line.end[Y];
 }
 
+static void	create_verts_faces_colors(t_obj *obj)
+{
+	obj->verts = ft_memalloc(obj->v_count * sizeof(int32_t *));
+	if (!obj->verts)
+		errors(4);
+	obj->faces = ft_memalloc(obj->f_count * sizeof(uint32_t *));
+	if (!obj->faces)
+		errors(4);
+	obj->mtlcolors = ft_memalloc(sizeof(uint32_t));
+	if (!obj->mtlcolors)
+		errors(4);
+	obj->mtlcolors[0] = CLR_PRPL;
+}
+
 static void	allocate_verts(uint32_t i, t_obj *obj)
 {
 	obj->verts[i] = ft_memalloc(3 * sizeof(int32_t *));
@@ -137,7 +150,7 @@ static void	allocate_verts(uint32_t i, t_obj *obj)
 	obj->verts[i + 3] = ft_memalloc(3 * sizeof(int32_t *));
 	if (!obj->verts[i] || !obj->verts[i + 1] || \
 		!obj->verts[i + 2] || !obj->verts[i + 3])
-		errors(2);
+		errors(4);
 }
 
 void	lines_to_obj(t_obj *obj, t_editor *ed)
@@ -149,16 +162,9 @@ void	lines_to_obj(t_obj *obj, t_editor *ed)
 	l = ed->linelist;
 	len = ft_listlen(l);
 	obj->v_count = len * 4;
-	obj->verts = ft_memalloc(obj->v_count * sizeof(int32_t *));
-	if (!obj->verts)
-		errors(2);
 	obj->f_count = len * 2;
-	obj->faces = ft_memalloc(obj->f_count * sizeof(uint32_t *));
-	if (!obj->faces)
-		errors(2);
+	create_verts_faces_colors(obj);
 	i = 0;
-	obj->mtlcolors = ft_memalloc(sizeof(uint32_t));
-	obj->mtlcolors[0] = CLR_PRPL;
 	while (l != NULL)
 	{
 		allocate_verts(i, obj);
