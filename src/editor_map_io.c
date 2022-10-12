@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/12 17:53:13 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/12 18:28:33 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static int	fileopen(char *filename, int flags)
 
 	fd = open(filename, flags, 0666);
 	if (fd == -1 && flags != O_RDWR) //TODO: fix, second check is just so loadmap doesn't exit the program
-		errors(6);
+		errors(11);
 	return (fd);
 }
 
@@ -44,7 +44,7 @@ void	loadmap(t_list **head, char *filename)
 		br = read(fd, &line, sizeof(t_line));
 	}
 	if (close(fd) == -1)
-		errors(7);
+		errors(12);
 }
 
 //TODO: cant save if map has less walls than opened one.
@@ -60,12 +60,12 @@ void	savemap(t_editor *ed, char *filename)
 	{
 		int written = write(fd, (t_line *)l->content, sizeof(t_line));
 		if (written == -1)
-			errors(8);
+			errors(13);
 		//printf("wrote %i bytes \n", written);
 		l = l->next;
 	}
 	if (close(fd) == -1)
-		errors(7);
+		errors(12);
 }
 
 /*

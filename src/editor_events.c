@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/12 17:25:43 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/12 18:26:46 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int		editor_events(t_editor *ed)
 						free_fdf_obj(&ed->walls_fdf.obj);
 					}
 					start_anim(&ed->transition, anim_forwards);
-					grid_to_obj(&ed->grid_fdf.obj); //TODO: LEAKS!! doesn't free the previous stuff
+					grid_to_obj(&ed->grid_fdf.obj);
 					fdf_init(&ed->grid_fdf);
 					lines_to_obj(&ed->walls_fdf.obj, ed);
 					fdf_init(&ed->walls_fdf);

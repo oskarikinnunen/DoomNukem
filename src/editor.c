@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/12 17:50:35 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/12 18:30:41 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,11 +78,16 @@ int	editorloop(t_sdlcontext sdl)
 	{
 		update_deltatime(&ed.clock);
 		update_anim(&ed.transition, ed.clock.delta);
-		bzero(sdl.surface->pixels, sizeof(uint32_t) * WINDOW_H * WINDOW_W);
+		ft_bzero(sdl.surface->pixels, sizeof(uint32_t) * WINDOW_H * WINDOW_W);
 		gr = editor_events(&ed); 
 		if (gr != game_continue)
 		{
 			savemap(&ed, "mapfile1");
+			if (gr == game_exit)
+			{
+				quit_sdl(&sdl);
+				exit (0);
+			}
 			return(gr) ; //error returned from event handling, exit gracefully
 		}
 		if (ed.state == display3d || ed.transition.active)

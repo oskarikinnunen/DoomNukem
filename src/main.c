@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/12 15:40:10 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/12 18:38:11 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 		errors(3);
 }
 
-static void	quit_sdl(t_sdlcontext *sdl)
+void	quit_sdl(t_sdlcontext *sdl)
 {
 	SDL_DestroyWindow(sdl->window);
 	SDL_Quit();
@@ -43,10 +43,10 @@ int	main(int argc, char **argv)
 	while (1)
 	{
 		gr = editorloop(sdl);
-		if (gr == game_exit)
+		if (gr == game_exit) // quit & exit is handled inside of editorloop atm
 			break ;
 		gr = playmode(sdl);
-		if (gr == game_exit)
+		if (gr == game_exit) // quit & exit is handled inside of playmode atm
 			break ;
 	}
 	quit_sdl(&sdl);

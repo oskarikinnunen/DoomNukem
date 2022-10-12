@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/12 17:54:00 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/12 18:38:40 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,5 +282,8 @@ void	moveplayer(t_game *game);
 
 /* ERRORS.C */
 void	errors(int error_code);
+
+/* SDL */
+void	quit_sdl(t_sdlcontext *sdl);
 
 #endif
