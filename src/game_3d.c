@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/12 12:04:15 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/12 12:59:11 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -520,7 +520,7 @@ static void move(t_game *game)
 
 	//math->fyaw = game->player.angle[X];
 	//math->fpitch = game->player.angle[Y];
-	//printf("yaw %f pitch %f\n", math->fyaw, math->fpitch);
+	printf("yaw %f pitch %f\n", math->fyaw, math->fpitch);
 }
 
 t_trilist *trilist_malloc(t_triangle triref)
@@ -548,6 +548,80 @@ static t_trilist *trilist_push_back(t_trilist *head, t_triangle ref)
 	}
 	prev->next = trilist_malloc(ref);
 	return(head);
+}
+
+static void clipped(int count, t_triangle *triangles_calc, t_game *game, t_sdlcontext sdl)
+{
+	int i = 0;
+	int counter = 0;
+	while (i < count && 1 == 1)
+	{
+		t_triangle clipped[2];
+		t_trilist	*trilist;
+		t_trilist	*head;
+
+	/*	if ((triangles_calc[i].p->x > WINDOW_W - 1|| triangles_calc[i].p->x < 0) && (triangles_calc[i].p->y > WINDOW_H - 1 || triangles_calc[i].p->y < 0))
+		{
+			i++;
+			continue;
+		}*/
+		trilist = trilist_malloc(triangles_calc[i]);
+		if (!trilist)
+			exit(0);
+		head = trilist;
+		int nnewtriangles = 1;
+		int front = 0;
+		for (int p = 0; p < 4; p++)
+		{
+			t_trilist *lenlist;
+			int ntristtoadd = 0;
+			while (trilist)
+			{
+				clipped[0] = Inittri();
+				clipped[1] = Inittri();
+				t_triangle test = Inittri();
+				trilist = head;
+				test = trilist->tri;
+				nnewtriangles--;
+				switch (p)
+				{
+				case 0: ntristtoadd = Triangle_ClipAgainstPlane((t_vec3d){0.0f, 0.0f, 0.0f, 1.0f}, (t_vec3d){0.0f, 1.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]); break;
+				case 1: ntristtoadd = Triangle_ClipAgainstPlane((t_vec3d){0.0f, (float)WINDOW_H - 1.0f, 0.0f, 1.0f}, (t_vec3d){0.0f, -1.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]); break;
+				case 2: ntristtoadd = Triangle_ClipAgainstPlane((t_vec3d){0.0f, 0.0f, 0.0f, 1.0f}, (t_vec3d){1.0f, 0.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]); break;
+				case 3: ntristtoadd = Triangle_ClipAgainstPlane((t_vec3d){(float)WINDOW_W - 1.0f, 0.0f, 0.0f, 1.0f}, (t_vec3d){-1.0f, 0.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]); break;
+				}
+				for (int w = 0; w < ntristtoadd; w++)
+				{
+					head = trilist_push_back(head, clipped[w]);
+					trilist = trilist->next;
+				}
+				trilist = trilist->next;
+			}
+		}
+		trilist = head;
+		while (trilist)
+		{
+			t_trilist *temp;
+			z_fill_tri((int [3][3])
+			{
+			{trilist->tri.p[0].x, trilist->tri.p[0].y, trilist->tri.p[0].z},
+			{trilist->tri.p[1].x, trilist->tri.p[1].y, trilist->tri.p[1].z},
+			{trilist->tri.p[2].x, trilist->tri.p[2].y, trilist->tri.p[2].z}},
+			sdl, trilist->tri.clr);
+			drawline(sdl.surface->pixels, (int [2]){trilist->tri.p[0].x, trilist->tri.p[0].y}, (int [2]){trilist->tri.p[1].x, trilist->tri.p[1].y}, CLR_PRPL);
+			drawline(sdl.surface->pixels, (int [2]){trilist->tri.p[1].x, trilist->tri.p[1].y}, (int [2]){trilist->tri.p[2].x, trilist->tri.p[2].y}, CLR_PRPL);
+			drawline(sdl.surface->pixels, (int [2]){trilist->tri.p[2].x, trilist->tri.p[2].y}, (int [2]){trilist->tri.p[0].x, trilist->tri.p[0].y}, CLR_PRPL);
+			temp = trilist;
+			trilist = trilist->next;
+			free(temp);
+			counter++;
+		}
+		i++;
+	}
+	printf("counter is %d\n", counter);
+	printf("fps is %f\n", 1000.0f / game->clock.delta);
+	printf("loopcomplete\n\n");
+	free(triangles_calc);
 }
 
 void engine3d(t_sdlcontext sdl, t_game *game)
@@ -668,81 +742,6 @@ void engine3d(t_sdlcontext sdl, t_game *game)
 		}
 		i++;
 	}
-	sort_triangles(triangles_calc, 0, count - 1);
-
-	i = 0;
-	while (i < count && 1 == 1)
-	{
-		t_triangle clipped[2];
-		t_trilist	*trilist;
-		t_trilist	*head;
-
-		trilist = trilist_malloc(triangles_calc[i]);
-		if (!trilist)
-			exit(0);
-		head = trilist;
-		int nnewtriangles = 1;
-		int front = 0;
-		for (int p = 0; p < 4; p++)
-		{
-			t_trilist *lenlist;
-			int ntristtoadd = 0;
-			while (nnewtriangles > 0)
-			{
-				clipped[0] = Inittri();
-				clipped[1] = Inittri();
-				t_triangle test = Inittri();
-				trilist = head;
-				for (int f = 0; f < front; f++)
-				{
-					if (trilist->next)
-					trilist = trilist->next;
-				}
-				test = trilist->tri;
-				front++;
-				nnewtriangles--;
-				if (test.p->x > WINDOW_W - 1|| test.p->x < 0)
-					break;
-				if (test.p->y > WINDOW_H - 1 || test.p->y < 0)
-					break;
-				switch (p)
-				{
-				case 0: ntristtoadd = Triangle_ClipAgainstPlane((t_vec3d){0.0f, 0.0f, 0.0f, 1.0f}, (t_vec3d){0.0f, 1.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]); break;
-				case 1: ntristtoadd = Triangle_ClipAgainstPlane((t_vec3d){0.0f, (float)WINDOW_H - 1.0f, 0.0f, 1.0f}, (t_vec3d){0.0f, -1.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]); break;
-				case 2: ntristtoadd = Triangle_ClipAgainstPlane((t_vec3d){0.0f, 0.0f, 0.0f, 1.0f}, (t_vec3d){1.0f, 0.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]); break;
-				case 3: ntristtoadd = Triangle_ClipAgainstPlane((t_vec3d){(float)WINDOW_W - 1.0f, 0.0f, 0.0f, 1.0f}, (t_vec3d){-1.0f, 0.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]); break;
-				}
-				for (int w = 0; w < ntristtoadd; w++)
-				{
-					head = trilist_push_back(head, clipped[w]);
-				}
-			}
-			nnewtriangles = 0;
-			trilist = head;
-			while (trilist)
-			{
-				nnewtriangles++;
-				trilist = trilist->next;
-			}
-		}
-		trilist = head;
-		while (trilist)
-		{
-			t_trilist *temp;
-			z_fill_tri((int [3][3])
-			{
-			{trilist->tri.p[0].x, trilist->tri.p[0].y, trilist->tri.p[0].z},
-			{trilist->tri.p[1].x, trilist->tri.p[1].y, trilist->tri.p[1].z},
-			{trilist->tri.p[2].x, trilist->tri.p[2].y, trilist->tri.p[2].z}},
-			sdl, trilist->tri.clr);
-			drawline(sdl.surface->pixels, (int [2]){trilist->tri.p[0].x, trilist->tri.p[0].y}, (int [2]){trilist->tri.p[1].x, trilist->tri.p[1].y}, CLR_PRPL);
-			drawline(sdl.surface->pixels, (int [2]){trilist->tri.p[1].x, trilist->tri.p[1].y}, (int [2]){trilist->tri.p[2].x, trilist->tri.p[2].y}, CLR_PRPL);
-			drawline(sdl.surface->pixels, (int [2]){trilist->tri.p[2].x, trilist->tri.p[2].y}, (int [2]){trilist->tri.p[0].x, trilist->tri.p[0].y}, CLR_PRPL);
-			temp = trilist;
-			trilist = trilist->next;
-			free(temp);
-		}
-		i++;
-	}
-	free(triangles_calc);
+	//sort_triangles(triangles_calc, 0, count - 1);
+	clipped(count, triangles_calc, game, sdl);
 }
