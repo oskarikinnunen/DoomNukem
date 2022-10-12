@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/06 12:26:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/12 17:50:35 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,8 @@ int	editorloop(t_sdlcontext sdl)
 			drawgrid((uint32_t *)sdl.surface->pixels, ed.mousedrag->pos);
 			renderlines(&sdl, &ed);
 		}
-		SDL_UpdateWindowSurface(sdl.window);
+		if (SDL_UpdateWindowSurface(sdl.window) < 0)
+			errors(4);
 	}
 	return(game_error); //should never get here
 }

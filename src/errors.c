@@ -6,13 +6,13 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 15:53:51 by raho              #+#    #+#             */
-/*   Updated: 2022/10/12 17:42:25 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/12 17:53:48 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-void	errors(uint32_t error_code)
+void	errors(int error_code)
 {
 	if (error_code == 1)
 	{
@@ -31,19 +31,24 @@ void	errors(uint32_t error_code)
 	}
 	if (error_code == 4)
 	{
+		fprintf(stderr, "SDL_UpdateWindowSurface failed: %s\n", SDL_GetError());
+		exit (1);
+	}
+	if (error_code == 5)
+	{
 		fprintf(stderr, "Malloc failed\n");
 		exit (2);
 	}
-	if (error_code == 5)
+	if (error_code == 6)
 	{
 		fprintf(stderr, "Open failed\n");
 		exit (3);
 	}
-	if (error_code == 6)
+	if (error_code == 7)
 	{
 		fprintf(stderr, "Close failed\n");
 	}
-	if (error_code == 7)
+	if (error_code == 8)
 	{
 		fprintf(stderr, "Write failed\n");
 	}

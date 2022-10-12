@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/12 16:36:30 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/12 17:54:00 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -281,6 +281,6 @@ void	move_overhead(t_game *game);
 void	moveplayer(t_game *game);
 
 /* ERRORS.C */
-void	errors(uint32_t error_code);
+void	errors(int error_code);
 
 #endif
