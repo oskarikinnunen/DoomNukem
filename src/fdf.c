@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 11:58:52 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/12 17:54:24 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/12 18:30:58 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,13 @@ void	fdf_init(t_fdf *fdf)
 	fdf->depth = ft_memalloc(sizeof(float) * fdf->img.length);
 	fdf->verts = ft_memalloc(sizeof(float *) * fdf->obj.v_count);
 	if (!fdf->depth || !fdf->verts)
-		errors(5);
+		errors(15);
 	i = 0;
 	while (i < fdf->obj.v_count)
 	{
 		fdf->verts[i] = ft_memalloc(sizeof(float *) * 3);
 		if (!fdf->verts[i])
-			errors(5);
+			errors(15);
 		i++;
 	}
 	calc_matrices(fdf);
