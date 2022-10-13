@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   inputhelp.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 09:30:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/11 17:43:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/13 19:17:54 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef INPUTHELP_H
+# define INPUTHELP_H
 
 # include "../SDL_built/include/SDL2/SDL.h"
 

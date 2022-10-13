@@ -3,46 +3,52 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/11 14:39:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/13 19:08:04 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-static void	createsdlcontext(t_sdlcontext *sdl)
+static void	create_sdl_context(t_sdlcontext *sdl)
 {
-	if (SDL_Init(SDL_INIT_VIDEO) < 0 || SDL_Init(SDL_INIT_EVENTS) < 0)
-		printf("SDL_Init error");
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+		errors(1);
+	if (SDL_Init(SDL_INIT_EVENTS) < 0)
+		errors(1);
 	sdl->window = SDL_CreateWindow("DoomNukem",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		WINDOW_W, WINDOW_H, SDL_WINDOW_SHOWN);
 	if (sdl->window == NULL)
-		printf("Couldn't create SDL2 window :(");
-	printf("sdl context and init \n");
+		errors(2);
 	sdl->surface = SDL_GetWindowSurface(sdl->window);
 	if (sdl->surface == NULL)
-		(printf("WTH SURFACE NULL"), exit(0));
-	printf("%s \n", SDL_GetError());
+		errors(3);
+}
+
+void	quit_sdl(t_sdlcontext *sdl)
+{
+	SDL_DestroyWindow(sdl->window);
+	SDL_Quit();
 }
 
 int	main(int argc, char **argv)
 {
 	t_sdlcontext	sdl;
-	t_gamereturn		gr;
+	t_gamereturn	gr;
 
-	createsdlcontext(&sdl);
+	create_sdl_context(&sdl);
 	while (1)
 	{
 		gr = editorloop(sdl);
-		if (gr == game_error || gr == game_exit)
+		if (gr == game_exit) // quit & exit is handled inside of editorloop atm
 			break ;
 		gr = playmode(sdl);
-		if (gr == game_error || gr == game_exit)
+		if (gr == game_exit) // quit & exit is handled inside of playmode atm
 			break ;
 	}
-	//TODO: sdl exit
-	return 0;
+	quit_sdl(&sdl);
+	return (0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/11 14:39:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/13 19:07:57 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,11 +78,16 @@ int	editorloop(t_sdlcontext sdl)
 	{
 		update_deltatime(&ed.clock);
 		update_anim(&ed.transition, ed.clock.delta);
-		bzero(sdl.surface->pixels, sizeof(uint32_t) * WINDOW_H * WINDOW_W);
+		ft_bzero(sdl.surface->pixels, sizeof(uint32_t) * WINDOW_H * WINDOW_W);
 		gr = editor_events(&ed); 
 		if (gr != game_continue)
 		{
 			savemap(&ed, "mapfile1");
+			if (gr == game_exit)
+			{
+				quit_sdl(&sdl);
+				exit (0);
+			}
 			return(gr) ; //error returned from event handling, exit gracefully
 		}
 		if (ed.state == display3d || ed.transition.active)
@@ -92,7 +97,8 @@ int	editorloop(t_sdlcontext sdl)
 			drawgrid((uint32_t *)sdl.surface->pixels, ed.mousedrag->pos);
 			renderlines(&sdl, &ed);
 		}
-		SDL_UpdateWindowSurface(sdl.window);
+		if (SDL_UpdateWindowSurface(sdl.window) < 0)
+			errors(4);
 	}
 	return(game_error); //should never get here
 }

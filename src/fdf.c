@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fdf.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 11:58:52 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/06 12:27:00 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/12 18:30:58 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,25 +33,24 @@ static void	calc_matrices(t_fdf *fdf)
 	fdf->matrices[1][Z][Z] = cos(angles[Y]);
 }
 
-int	fdf_init(t_fdf *fdf)
+void	fdf_init(t_fdf *fdf)
 {
 	int	i;
 
 	fdf->zoom = 1.0f;
 	fdf->depth = ft_memalloc(sizeof(float) * fdf->img.length);
 	fdf->verts = ft_memalloc(sizeof(float *) * fdf->obj.v_count);
-	if (fdf->depth == NULL || fdf->verts == NULL)
-		return (-1);
+	if (!fdf->depth || !fdf->verts)
+		errors(15);
 	i = 0;
 	while (i < fdf->obj.v_count)
 	{
 		fdf->verts[i] = ft_memalloc(sizeof(float *) * 3);
-		if (fdf->verts[i] == NULL) //TODO: Free the prev vertices in this case of fail
-			return (-1);
+		if (!fdf->verts[i])
+			errors(15);
 		i++;
 	}
 	calc_matrices(fdf);
-	return (1);
 }
 
 static	void drawface(t_fdf *fdf, int i)//wireframe

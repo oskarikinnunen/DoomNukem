@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_map_io.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/11 17:31:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/13 19:06:50 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static int	fileopen(char *filename, int flags)
 
 	fd = open(filename, flags, 0666);
 	if (fd == -1 && flags != O_RDWR) //TODO: fix, second check is just so loadmap doesn't exit the program
-		exit(0); //TODO: make error exit function
+		errors(11);
 	return (fd);
 }
 
@@ -30,19 +30,20 @@ void	loadmap(t_list **linelist, char *filename)
 	t_list	*node;
 
 	fd = fileopen(filename, O_RDWR);
-	if (fd <= -1)
-		return ;
 	br = read(fd, &line, sizeof(t_line));
 	while (br >= sizeof(t_line))
 	{
 		node = ft_lstnew(&line, sizeof(t_line));
+		if (!node)
+			errors(5);
 		if (*linelist == NULL)
 			*linelist = node;
 		else
 			ft_lstapp(linelist, node);
 		br = read(fd, &line, sizeof(t_line));
 	}
-	close(fd);
+	if (close(fd) == -1)
+		errors(12);
 }
 
 //TODO: make general, make param a t_list **
@@ -57,8 +58,11 @@ void	savemap(t_editor *ed, char *filename)
 	while (l != NULL)
 	{
 		int written = write(fd, (t_line *)l->content, sizeof(t_line));
+		if (written == -1)
+			errors(13);
 		//printf("wrote %i bytes \n", written);
 		l = l->next;
 	}
-	close(fd);
+	if (close(fd) == -1)
+		errors(12);
 }
