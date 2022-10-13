@@ -3,19 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/11 12:48:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/13 19:17:50 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../SDL_built/include/SDL2/SDL.h" //TODO: make this work without relative path?
-#include "libft.h"
-#include "limits.h" //TODO: remove mby? just define INT_MAX yourself
-#include "math.h"
-#include <fcntl.h>
-#include <stdbool.h>
+#ifndef DOOMNUKEM_H
+# define DOOMNUKEM_H
+
+# include "../SDL_built/include/SDL2/SDL.h" //TODO: make this work without relative path?
+# include "libft.h"
+# include "limits.h" //TODO: remove mby? just define INT_MAX yourself
+# include "math.h"
+# include <fcntl.h>
+# include <stdbool.h>
 
 # define WINDOW_W 1920
 # define WINDOW_H 1080
@@ -233,14 +236,14 @@ void	loadmap(t_list **head, char *filename);
 void	savemap(t_editor *ed, char *filename);
 
 /* EDITOR_3D_INITIALIZE.C */
-void	gridto_obj(t_obj *obj);
+void	grid_to_obj(t_obj *obj);
 void	lines_to_obj(t_obj *obj, t_editor *ed);
 
 /* EDITOR_3D.C */
 void	editor3d(t_sdlcontext sdl, t_editor *ed_ptr);
 
 /* FDF.C */
-int		fdf_init(t_fdf *fdf);
+void		fdf_init(t_fdf *fdf);
 void	fdf_draw_wireframe(t_fdf *fdf);
 
 /* IMG.C */
@@ -276,3 +279,11 @@ void	move_overhead(t_game *game);
 
 /* MOVEPLAYER.C */
 void	moveplayer(t_game *game);
+
+/* ERRORS.C */
+void	errors(int error_code);
+
+/* SDL */
+void	quit_sdl(t_sdlcontext *sdl);
+
+#endif

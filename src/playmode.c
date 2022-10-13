@@ -77,7 +77,8 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 		else
 			move_overhead(&game);
 		render_overhead(&game, &sdl);
-		SDL_UpdateWindowSurface(sdl.window);
+		if (SDL_UpdateWindowSurface(sdl.window) < 0)
+			errors(4);
 	}
 	return(game_exit); // for now
 }
@@ -93,10 +94,17 @@ int playmode(t_sdlcontext sdl)
 	game.player.position[X] = 30.0f * TILESIZE; //TODO: player position should be in game coordinates, not screenspace
 	game.player.position[Y] = 30.0f * TILESIZE;
 	//Locks mouse
-	SDL_SetRelativeMouseMode(SDL_TRUE);
+	if (SDL_SetRelativeMouseMode(SDL_TRUE) < 0)
+		errors(5);		
 	//Do game loop until exit or error
 	gr = gameloop(sdl, game);
+	if (gr == game_exit)
+	{
+		quit_sdl(&sdl);
+		exit (0);
+	}
 	//Unlocks mouse
-	SDL_SetRelativeMouseMode(SDL_FALSE);
+	if (SDL_SetRelativeMouseMode(SDL_FALSE) < 0)
+		errors(5);
 	return (gr);
 }
