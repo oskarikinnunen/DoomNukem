@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 15:53:51 by raho              #+#    #+#             */
-/*   Updated: 2022/10/12 18:37:44 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/13 20:35:52 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,33 +18,33 @@
 
 static void	sdl_errors(int error_code)
 {
-	if (error_code == 1)
+	if (error_code == EC_SDL_INIT)
 		fprintf(stderr, "SDL_Init failed: %s\n", SDL_GetError());
-	if (error_code == 2)
+	if (error_code == EC_SDL_CREATEWINDOW)
 		fprintf(stderr, "SDL_CreateWindow failed: %s\n", SDL_GetError());
-	if (error_code == 3)
+	if (error_code == EC_SDL_GETWINDOW_SURFACE)
 		fprintf(stderr, "SDL_GetWindowSurface failed: %s\n", SDL_GetError());
-	if (error_code == 4)
+	if (error_code == EC_SDL_UPDATEWINDOWSURFACE)
 		fprintf(stderr, "SDL_UpdateWindowSurface failed: %s\n", SDL_GetError());
-	if (error_code == 5)
+	if (error_code == EC_SDL_SETRELATIVEMOUSEMODE)
 		fprintf(stderr, "SDL_SetRelativeMouseMode failed: %s\n", SDL_GetError());
 	exit (1);
 }
 
 static void	standard_function_errors(error_code)
 {
-	if (error_code == 11)
+	if (error_code == EC_OPEN)
 		fprintf(stderr, "Open failed\n");
-	if (error_code == 12)
+	if (error_code == EC_CLOSE)
 		fprintf(stderr, "Close failed\n");
-	if (error_code == 13)
+	if (error_code == EC_WRITE)
 		fprintf(stderr, "Write failed\n");
-	if (error_code == 15)
+	if (error_code == EC_MALLOC)
 		fprintf(stderr, "Malloc failed\n");
 	exit (2);
 }
 
-void	errors(int error_code)
+void	error_log(int error_code)
 {
 	if (error_code <= 10)
 		sdl_errors(error_code);

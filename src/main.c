@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/13 19:08:04 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/13 20:34:45 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,17 @@
 static void	create_sdl_context(t_sdlcontext *sdl)
 {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-		errors(1);
+		error_log(EC_SDL_INIT);
 	if (SDL_Init(SDL_INIT_EVENTS) < 0)
-		errors(1);
+		error_log(EC_SDL_INIT);
 	sdl->window = SDL_CreateWindow("DoomNukem",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		WINDOW_W, WINDOW_H, SDL_WINDOW_SHOWN);
 	if (sdl->window == NULL)
-		errors(2);
+		error_log(EC_SDL_CREATEWINDOW);
 	sdl->surface = SDL_GetWindowSurface(sdl->window);
 	if (sdl->surface == NULL)
-		errors(3);
+		error_log(EC_SDL_GETWINDOW_SURFACE);
 }
 
 void	quit_sdl(t_sdlcontext *sdl)

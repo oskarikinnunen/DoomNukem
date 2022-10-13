@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:21:52 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/13 19:07:23 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/13 20:32:59 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,14 +52,14 @@ void	saveline(t_editor *ed)
 	if (ed->linelist == NULL)
 		ed->linelist = ft_lstnew(&ed->line, sizeof(t_line));
 		if (!ed->linelist)
-			errors(15);
+			error_log(EC_MALLOC);
 	else
 	{
 		if (ed->linelist != NULL && removeduplicate(ed))
 			return ;
 		node = ft_lstnew(&ed->line, sizeof(t_line));
 		if (!node)
-			errors(15);
+			error_log(EC_MALLOC);
 		ft_lstapp(&ed->linelist, node);
 	}
 }

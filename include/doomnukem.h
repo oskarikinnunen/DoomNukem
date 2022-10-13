@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/13 20:01:31 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/13 20:35:59 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,9 @@
 
 # include "../SDL_built/include/SDL2/SDL.h" //TODO: make this work without relative path?
 # include "libft.h"
+# include "error_log.h"
 # include "limits.h" //TODO: remove mby? just define INT_MAX yourself
-# include "math.h"
+# include <math.h>
 # include <fcntl.h>
 # include <stdbool.h>
 
@@ -281,7 +282,7 @@ void	move_overhead(t_game *game);
 void	moveplayer(t_game *game);
 
 /* ERRORS.C */
-void	errors(int error_code);
+void	error_log(int error_code);
 
 /* SDL */
 void	quit_sdl(t_sdlcontext *sdl);

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/13 19:07:57 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/13 20:29:33 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ int	editorloop(t_sdlcontext sdl)
 			renderlines(&sdl, &ed);
 		}
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
-			errors(4);
+			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 	}
 	return(game_error); //should never get here
 }
