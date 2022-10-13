@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/13 12:20:55 by okinnune         ###   ########.fr        #
+#    Updated: 2022/10/13 12:44:56 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ SRCFILES= main.c draw.c v2.c img.c fdf.c deltatime.c anim.c\
 		editor.c editor_mouse.c editor_events.c editor_render.c \
 		editor_saveline.c editor_map_io.c editor_3d_initialize.c \
 		editor_3d.c playmode.c inputhelper.c playmode_overhead.c \
-		moveplayer.c physics.c game_3d.c
+		moveplayer.c physics.c game_3d.c perfgraph.c
 SRC= $(addprefix src/,$(SRCFILES))
 OBJ= $(SRC:.c=.o)
 

@@ -77,10 +77,13 @@ static int handleinput(t_game *game)
 static int gameloop(t_sdlcontext sdl, t_game *game)
 {
 	t_gamereturn	gr;
+	t_perfgraph		pgraph;
 
+	alloc_image(&pgraph.image, PERFGRAPH_SAMPLES + 1, PERFGRAPH_SAMPLES + 1);
 	while (1)
 	{
 		update_deltatime(&game->clock);
+		
 		bzero(sdl.surface->pixels, sizeof(uint32_t) * WINDOW_H * WINDOW_W);
 		gr = handleinput(game);
 		/*
@@ -94,6 +97,7 @@ static int gameloop(t_sdlcontext sdl, t_game *game)
 		else
 			move_overhead(game);
 		engine3d(sdl, game);
+		drawperfgraph(&pgraph, game->clock.delta, &sdl);
 		SDL_UpdateWindowSurface(sdl.window);
 	}
 	return(game_exit); // for now
