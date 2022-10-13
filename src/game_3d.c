@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game_3d.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/12 12:59:11 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/13 13:06:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -619,7 +619,6 @@ static void clipped(int count, t_triangle *triangles_calc, t_game *game, t_sdlco
 		i++;
 	}
 	printf("counter is %d\n", counter);
-	printf("fps is %f\n", 1000.0f / game->clock.delta);
 	printf("loopcomplete\n\n");
 	free(triangles_calc);
 }
