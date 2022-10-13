@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/13 19:06:50 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/13 20:01:41 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,13 @@ static int	fileopen(char *filename, int flags)
 	int	fd;
 
 	fd = open(filename, flags, 0666);
-	if (fd == -1 && flags != O_RDWR) //TODO: fix, second check is just so loadmap doesn't exit the program
+	if (fd == -1)
 		errors(11);
 	return (fd);
 }
 
+
+//loadmap doesn't care if open fails, we just allocate the head of the linelist in the case the file doesn't exist
 void	loadmap(t_list **linelist, char *filename)
 {
 	int		fd;
@@ -29,21 +31,20 @@ void	loadmap(t_list **linelist, char *filename)
 	t_line	line;
 	t_list	*node;
 
-	fd = fileopen(filename, O_RDWR);
-	br = read(fd, &line, sizeof(t_line));
+	br = 0;
+	fd = open(filename, O_RDWR, 0666);
+	*linelist = ft_lstnew(&(t_line){0, 0, 0, 0}, sizeof(t_line));
+	if (fd != -1)
+		br = read(fd, &line, sizeof(t_line));
 	while (br >= sizeof(t_line))
 	{
 		node = ft_lstnew(&line, sizeof(t_line));
 		if (!node)
 			errors(5);
-		if (*linelist == NULL)
-			*linelist = node;
-		else
-			ft_lstapp(linelist, node);
+		ft_lstapp(linelist, node);
 		br = read(fd, &line, sizeof(t_line));
 	}
-	if (close(fd) == -1)
-		errors(12);
+	close(fd);
 }
 
 //TODO: make general, make param a t_list **
