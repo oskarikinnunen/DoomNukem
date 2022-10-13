@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/11 17:15:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/12 12:59:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,9 @@ t_vector3	vector3_div(t_vector3 vec, float div);
 //returns distance between first and second vector
 float		vector3_dist(t_vector3 first, t_vector3 second);
 
+//returns dot product of vector 'first' and vector 'second'
+float		vector3_dot(t_vector3 first, t_vector3 second);
+
 //returns true if both vectors are identical
 bool		vector3_cmp(t_vector3 first, t_vector3 second);
 
@@ -66,6 +69,9 @@ t_vector2	vector2_div(t_vector2 vec, float div);
 
 //returns distance between first and second vector
 float		vector2_dist(t_vector2 first, t_vector2 second);
+
+//returns dot product of vector 'first' and vector 'second'
+float		vector2_dot(t_vector2 first, t_vector2 second);
 
 //returns true if both vectors are identical
 bool		vector2_cmp(t_vector2 first, t_vector2 second);

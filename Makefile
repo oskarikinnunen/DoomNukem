@@ -6,14 +6,14 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/06 13:54:12 by okinnune         ###   ########.fr        #
+#    Updated: 2022/10/13 11:11:44 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
 NAME= DoomNukem
 #Library dependencies:
-SDLFOLDER= SDL-release-2.0.22
+SDLFOLDER= SDL-release-2.0.8
 SDL2= SDL_built/lib/libSDL2.a
 LIBFT= libft/libft.a
 
