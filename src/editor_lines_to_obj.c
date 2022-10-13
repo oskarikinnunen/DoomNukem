@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 11:57:55 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/12 18:27:43 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/13 20:30:37 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,14 @@ static void linefaces(t_obj *obj, uint32_t i)
 		fi = i / 2;
 	obj->faces[fi] = ft_memalloc(3 * sizeof (uint32_t));
 	if (!obj->faces[fi])
-		errors(15);
+		error_log(EC_MALLOC);
 	obj->faces[fi][0] = i;
 	obj->faces[fi][1] = i + 1;
 	obj->faces[fi][2] = i + 2;
 	fi++;
 	obj->faces[fi] = ft_memalloc(3 * sizeof (uint32_t));
 	if (!obj->faces[fi])
-		errors(15);
+		error_log(EC_MALLOC);
 	obj->faces[fi][0] = i + 1;
 	obj->faces[fi][1] = i + 2;
 	obj->faces[fi][2] = i + 3;
@@ -59,7 +59,7 @@ static void	allocate_and_copy_verts(t_obj *obj, t_line line, int i) //Ghetto, TO
 	obj->verts[i + 3] = ft_memalloc(3 * sizeof(int32_t *));
 	if (!obj->verts[i] || !obj->verts[i + 1] || \
 		!obj->verts[i + 2] || !obj->verts[i + 3])
-		errors(15);
+		error_log(EC_MALLOC);
 	obj->verts[i][X] = line.start[X];
 	obj->verts[i][Y] = line.start[Y];
 	obj->verts[i + 1][X] = line.end[X];
@@ -74,13 +74,13 @@ static void	create_verts_faces_colors(t_obj *obj)
 {
 	obj->verts = ft_memalloc(obj->v_count * sizeof(int32_t *));
 	if (!obj->verts)
-		errors(15);
+		error_log(EC_MALLOC);
 	obj->faces = ft_memalloc(obj->f_count * sizeof(uint32_t *));
 	if (!obj->faces)
-		errors(15);
+		error_log(EC_MALLOC);
 	obj->mtlcolors = ft_memalloc(sizeof(uint32_t));
 	if (!obj->mtlcolors)
-		errors(15);
+		error_log(EC_MALLOC);
 	obj->mtlcolors[0] = CLR_PRPL;
 }
 

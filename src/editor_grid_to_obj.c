@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 11:57:55 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/12 18:27:25 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/13 20:30:18 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static void generatefaces(t_obj *obj)
 	obj->f_count -= GRIDSIZE;
 	obj->faces = ft_memalloc(obj->f_count * sizeof(uint32_t *));
 	if (!obj->faces)
-		errors(15);
+		error_log(EC_MALLOC);
 	i = 0;
 	ri = 0;
 	while (i < obj->f_count)
@@ -48,7 +48,7 @@ static void generatefaces(t_obj *obj)
 		obj->faces[i] = ft_memalloc(sizeof(uint32_t [3]));
 		obj->faces[i + 1] = ft_memalloc(sizeof(uint32_t [3]));
 		if (!obj->faces[i] || !obj->faces[i + 1])
-			errors(15);
+			error_log(EC_MALLOC);
 		setfaceindex(&obj->faces[i], ri);
 		i += 2;
 		ri++;
@@ -60,7 +60,7 @@ static void	save_coordinates(t_obj *obj, int *crd)
 {
 	obj->verts[obj->v_count] = ft_memalloc(sizeof(int32_t [3]));
 	if (!obj->verts[obj->v_count])
-		errors(15);
+		error_log(EC_MALLOC);
 	obj->verts[obj->v_count][X] = crd[X];
 	obj->verts[obj->v_count][Y] = crd[Y];
 }
@@ -72,10 +72,10 @@ void grid_to_obj(t_obj *obj)
 	obj->v_count = 0;
 	obj->verts = ft_memalloc(GRIDSIZE * GRIDSIZE * sizeof(float *));
 	if (!obj->verts)
-		errors(15);
+		error_log(EC_MALLOC);
 	obj->mtlcolors = ft_memalloc(sizeof(uint32_t));
 	if (!obj->mtlcolors)
-		errors(15);
+		error_log(EC_MALLOC);
 	obj->mtlcolors[0] = CLR_GRAY;
 	ft_bzero(crd, sizeof(int [2]));
 	while (crd[Y] < TILESIZE * GRIDSIZE)
