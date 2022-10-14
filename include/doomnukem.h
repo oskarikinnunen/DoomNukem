@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/13 15:14:07 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/14 11:42:24 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,14 @@ typedef struct s_img
 	uint32_t	*data;
 	uint32_t	length;
 }	t_img;
+
+# define PERFGRAPH_SAMPLES 64
+
+typedef struct s_perfgraph
+{
+	t_img		image;
+	uint32_t	deltas[PERFGRAPH_SAMPLES];
+}	t_perfgraph;
 
 typedef struct s_obj //TODO: move obj/fdf related stuff to separate header?
 {
@@ -307,6 +315,9 @@ void	draw(uint32_t *pxls, int pos[2], uint32_t clr);
 void	drawline(uint32_t *pxls, int from[2], int to[2], uint32_t clr);
 void	drawcircle(uint32_t *pxls, int crd[2], int size, uint32_t clr);
 void	imgtoscreen(uint32_t *pxls, t_img *img);
+
+/* PERFGRAPH.C */
+void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext *sdl);
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);

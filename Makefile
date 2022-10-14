@@ -6,7 +6,7 @@
 #    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/13 13:37:41 by vlaine           ###   ########.fr        #
+#    Updated: 2022/10/14 12:37:42 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ SRCFILES= main.c draw.c v2.c img.c fdf.c deltatime.c anim.c\
 		editor.c editor_mouse.c editor_events.c editor_render.c \
 		editor_saveline.c editor_map_io.c editor_3d_initialize.c \
 		editor_3d.c playmode.c inputhelper.c playmode_overhead.c \
-		moveplayer.c physics.c game_3d.c
+		moveplayer.c physics.c game_3d.c perfgraph.c
 SRC= $(addprefix src/,$(SRCFILES))
 OBJ= $(SRC:.c=.o)
 
@@ -30,7 +30,7 @@ OBJ= $(SRC:.c=.o)
 INCLUDE= -ISDL_built/include/SDL2/ -Isrc -Iinclude -Ilibft #$(LIBFT)
 CC= gcc
 LIBS= $(LIBFT) -lm
-CFLAGS= $(INCLUDE) -g -Ofast -finline-functions
+CFLAGS= $(INCLUDE) -g -finline-functions
 
 all: $(SDL2) $(LIBFT) $(OBJ)
 	$(CC) $(OBJ) -o $(NAME) `SDL_built/bin/sdl2-config --cflags --libs` $(INCLUDE) $(LIBS)

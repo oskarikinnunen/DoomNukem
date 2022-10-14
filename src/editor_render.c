@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_render.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 08:20:49 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 11:03:55 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/14 12:04:05 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static void	render_editline(t_sdlcontext *sdl, t_editor *ed)
 	v2mul(circlepos, TILESIZE);
 	v2add(circlepos, ed->mousedrag->pos);
 	drawline((uint32_t *)sdl->surface->pixels, circlepos, ed->mouse.p, CLR_TURQ);
-	drawcircle((uint32_t *)sdl->surface->pixels, circlepos, 10, CLR_TURQ);
+	//drawcircle((uint32_t *)sdl->surface->pixels, circlepos, 10, CLR_TURQ);
 	if (ed->state == place_start)
 		return;
 	drawline((uint32_t *)sdl->surface->pixels, line_ss.start, circlepos, CLR_TURQ);

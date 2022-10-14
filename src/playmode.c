@@ -79,12 +79,14 @@ static int handleinput(t_game *game)
 static int gameloop(t_sdlcontext sdl, t_game *game)
 {
 	t_gamereturn	gr;
-	int i = 0;
+	t_perfgraph		pgraph;
 
-	gr = game_continue;
+	alloc_image(&pgraph.image, PERFGRAPH_SAMPLES + 1, PERFGRAPH_SAMPLES + 1);
 	while (1)
 	{
 		update_deltatime(&game->clock);
+		
+		bzero(sdl.surface->pixels, sizeof(uint32_t) * WINDOW_H * WINDOW_W);
 		gr = handleinput(game);
 		if (gr != game_continue)
 		{
@@ -101,11 +103,8 @@ static int gameloop(t_sdlcontext sdl, t_game *game)
 		//SDL_RenderDrawLine(sdl.renderer, 0, 0, 500, 500);
 		engine3d(sdl, game);
 		//SDL_RenderPresent(sdl.renderer);
+		drawperfgraph(&pgraph, game->clock.delta, &sdl);
 		SDL_UpdateWindowSurface(sdl.window);
-		if (game->clock.delta == 0)
-			printf("fps infinite\n");
-		else
-			printf("delta is %u, fps is %f\n", game->clock.delta, 1000.0f / game->clock.delta);
 	}
 	return(game_exit); // for now
 }

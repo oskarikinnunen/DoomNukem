@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/13 15:22:37 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/14 12:02:51 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ int isvalid(int crd[2])
 
 void	draw(uint32_t *pxls, int crd[2], uint32_t clr) // TODO: Implement zbuffer into draw function/Make a struct for draw function that has point, clr, zbuffer
 {
-	//printf("window size is %d\n", (crd[X] + crd[Y] * WINDOW_W) & (WINDOW_H * WINDOW_W - 1));
+	//printf("window size is %d\n", crd[X] + crd[Y] * WINDOW_W);
 	
-	if ((crd[X] & (1023)) == crd[X] && (crd[Y] & (1023)) == crd[Y])
+	if ((crd[X] & (WINDOW_W - 1)) == crd[X] && (crd[Y] & (WINDOW_H - 1)) == crd[Y])
 		pxls[crd[X] + crd[Y] * WINDOW_W] = clr;
 
 }
