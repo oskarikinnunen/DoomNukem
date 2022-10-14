@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/14 11:39:55 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/14 13:01:40 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -694,7 +694,7 @@ static void clipped(int count, t_triangle *triangles_calc, t_game *game, t_sdlco
 	{
 		t_triangle clipped[2];
 		t_trilist	*trilist;
-		t_trilist	*head;
+		t_trilist	*head = NULL;
 
 	//	if ((triangles_calc[i].p->x > WINDOW_W - 1|| triangles_calc[i].p->x < 0) && (triangles_calc[i].p->y > WINDOW_H - 1 || triangles_calc[i].p->y < 0))
 	//	{
