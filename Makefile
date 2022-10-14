@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/13 11:11:44 by okinnune         ###   ########.fr        #
+#    Updated: 2022/10/14 17:53:43 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,12 +18,22 @@ SDL2= SDL_built/lib/libSDL2.a
 LIBFT= libft/libft.a
 
 #Source files:
-SRCFILES= main.c draw.c v2.c img.c fdf.c deltatime.c anim.c\
+SRCFILES= main.c draw.c v2.c img.c deltatime.c anim.c\
 		editor.c editor_mouse.c editor_events.c editor_render.c \
-		editor_saveline.c editor_map_io.c editor_3d_initialize.c \
-		editor_3d.c playmode.c inputhelper.c playmode_overhead.c \
+		editor_saveline.c editor_map_io.c\
+		playmode.c inputhelper.c playmode_overhead.c \
 		moveplayer.c physics.c
+VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
+		vector3_complex.c \
+		vector2_elementary.c vector2_shorthands.c \
+		vector2_complex.c \
+		point_elementary.c point_shorthands.c \
+		point_complex.c point_float_ops.c \
+		conversions.c \
+		quaternion_shorthands.c
+VECTORSRC= $(addprefix src/vectors/,$(VECTORSRCFILES))
 SRC= $(addprefix src/,$(SRCFILES))
+SRC+= $(VECTORSRC)
 OBJ= $(SRC:.c=.o)
 
 #Compilation stuff:

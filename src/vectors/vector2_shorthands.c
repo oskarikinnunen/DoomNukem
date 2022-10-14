@@ -1,21 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   img.c                                              :+:      :+:    :+:   */
+/*   vector2_shorthands.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/04 13:42:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/13 13:31:54 by okinnune         ###   ########.fr       */
+/*   Created: 2022/10/13 11:34:53 by okinnune          #+#    #+#             */
+/*   Updated: 2022/10/14 17:54:22 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "doomnukem.h"
+#include "vectors.h"
 
-void	alloc_image(t_img *img, int width, int height)
+t_vector2	vector2_zero()
 {
-	img->size.x = width;
-	img->size.y = height;
-	img->length = width * height;
-	img->data = ft_memalloc(img->length * sizeof(uint32_t));
+	return ((t_vector2) {0, 0});
+}
+
+t_vector2	vector2_one()
+{
+	return ((t_vector2) {1, 1});
+}
+
+t_vector2	vector2_negative(t_vector2 vec)
+{
+	t_vector2	result;
+
+	result.x = -vec.x;
+	result.y = -vec.y;
+	return (result);
 }

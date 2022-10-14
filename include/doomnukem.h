@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/11 12:48:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/14 18:34:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "math.h"
 #include <fcntl.h>
 #include <stdbool.h>
+#include "vectors.h"
 
 # define WINDOW_W 1920
 # define WINDOW_H 1080
@@ -45,7 +46,7 @@
 # define PLAYERRADIUS 16
 # define COLLISION_ON //Comment/uncomment to toggle experimental collision
 
-# define MOVESPEED 0.14f
+# define MOVESPEED 0.0014f
 # define ROTATESPEED 0.002f
 # define MOUSESPEED 0.002f
 
@@ -57,8 +58,8 @@ typedef struct s_sdlcontext
 
 typedef struct s_mouse
 {
-	int		p[2];
-	int		p_delta[2];
+	t_point	pos;
+	t_point	delta;
 	int		scroll;
 	int		scroll_delta;
 	bool	click;
@@ -67,16 +68,16 @@ typedef struct s_mouse
 
 typedef struct s_mousedrag
 {
-	int	pos[2];
-	int	pos_origin[2];
-	int	drag[2];
-	int	drag_origin[2];
+	t_point	pos;
+	t_point	pos_origin;
+	t_point	drag;
+	t_point	drag_origin;
 }	t_mousedrag;
 
 typedef	struct s_line
 {
-	int	start[2];
-	int	end[2];
+	t_point	start;
+	t_point	end;
 }	t_line;
 
 typedef struct s_wall
@@ -95,7 +96,7 @@ typedef enum e_editorstate
 
 typedef struct s_img
 {
-	uint32_t	size[2];
+	t_point		size;
 	uint32_t	*data;
 	uint32_t	length;
 }	t_img;
@@ -111,19 +112,6 @@ typedef struct s_obj //TODO: move obj/fdf related stuff to separate header?
 	uint32_t	v_count;
 	uint32_t	f_count;
 }	t_obj;
-
-typedef struct s_fdf
-{
-	t_img				img;
-	t_obj				obj;
-	int					curframe;
-	float				*depth;
-	float				**verts;
-	float				matrices[2][3][3];
-	float				view[2];
-	float				offset[2];
-	float				zoom;
-}	t_fdf;
 
 //TODO: add ping-pong, repeat
 typedef enum	e_anim_mode
@@ -156,8 +144,6 @@ typedef struct s_editor
 	t_list			*linelist;
 	t_mousedrag		mousedrag[2]; //First one is right click drag, 2nd is for middle click
 	t_mouse			mouse;
-	t_fdf			grid_fdf;
-	t_fdf			walls_fdf;
 	float			threedee_zoom;
 	t_anim			transition;
 	t_clock			clock;
@@ -167,8 +153,8 @@ typedef struct s_editor
 
 typedef struct s_player
 {
-	float	position[2]; //TODO: might be changed to int[2], don't know yet
-	float	angle;
+	t_vector2	position; //TODO: might be changed to int[2], don't know yet
+	float		angle;
 }	t_player;
 
 typedef enum	e_cam_mode
@@ -185,7 +171,7 @@ typedef struct s_game
 	t_player		player;
 	int32_t			keystate;
 	t_cam_mode		cam_mode;
-	float			overheadcam_pos[2];
+	t_vector2		overheadcam_pos;
 } t_game;
 
 typedef enum e_gamereturn
@@ -222,7 +208,8 @@ bool	iskey(SDL_Event e, int keycode);
 void	renderlines(t_sdlcontext *sdl, t_editor *ed); //TODO:  better name?
 
 /* EDITOR_MOUSE.C */
-void	mousetoworldspace(int v2[2], t_editor *ed);
+t_point	screentoworldspace(t_point point);
+void	mousetoworldspace(t_point point, t_editor *ed);
 void	mouse_event(SDL_Event e, t_editor *ed);
 
 /* EDITOR_SAVELINE.C */
@@ -231,17 +218,6 @@ void	saveline(t_editor *ed);
 /* EDITOR_MAP_IO.C */
 void	loadmap(t_list **head, char *filename);
 void	savemap(t_editor *ed, char *filename);
-
-/* EDITOR_3D_INITIALIZE.C */
-void	gridto_obj(t_obj *obj);
-void	lines_to_obj(t_obj *obj, t_editor *ed);
-
-/* EDITOR_3D.C */
-void	editor3d(t_sdlcontext sdl, t_editor *ed_ptr);
-
-/* FDF.C */
-int		fdf_init(t_fdf *fdf);
-void	fdf_draw_wireframe(t_fdf *fdf);
 
 /* IMG.C */
 void	alloc_image(t_img *img, int width, int height);
@@ -257,18 +233,17 @@ void	update_anim(t_anim *anim, uint32_t delta);
 void	start_anim(t_anim *anim, t_anim_mode mode);
 
 /* DRAW.C */
-void	draw(uint32_t *pxls, int pos[2], uint32_t clr);
-void	drawline(uint32_t *pxls, int from[2], int to[2], uint32_t clr);
-void	drawcircle(uint32_t *pxls, int crd[2], int size, uint32_t clr);
+void	draw(uint32_t *pxls, t_point pos, uint32_t clr);
+void	drawline(uint32_t *pxls, t_point from, t_point to, uint32_t clr);
+void	drawcircle(uint32_t *pxls, t_point pos, int size, uint32_t clr);
 void	imgtoscreen(uint32_t *pxls, t_img *img);
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
 
 /* PHYSICS.C */
-bool	pointcirclecollision(float p[2], float cp[2], float r);
-bool	linecirclecollision(t_line line, float cp[2], float r);
-
+bool	pointcirclecollision(t_vector2 p, t_vector2 cp, float r);
+bool	linecirclecollision(t_line line, t_vector2 cp, float r);
 
 /* PLAYMODE_OVERHEAD.C */
 void	render_overhead(t_game *game, t_sdlcontext *sdl);

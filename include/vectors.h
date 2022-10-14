@@ -6,12 +6,15 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/12 12:59:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/14 17:43:32 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VECTORS_H
 # define VECTORS_H
+
+#include <math.h>
+#include <stdbool.h>
 
 /* t_vector3 functions */
 typedef struct s_vector3
@@ -20,6 +23,15 @@ typedef struct s_vector3
 	float	y;
 	float	z;
 }	t_vector3;
+
+//shorthand for (t_vector3){0, 0, 0}
+t_vector3	vector3_zero();
+
+//shorthand for (t_vector3){1, 1, 1}
+t_vector3	vector3_one();
+
+//returns 'vec' but with x, y, and z signs flipped //TODO: explain this better lol
+t_vector3	vector3_negative(t_vector3 vec);
 
 //returns vector 'first' added by vector 'second'
 t_vector3	vector3_add(t_vector3 first, t_vector3 second);
@@ -35,6 +47,12 @@ t_vector3	vector3_mul(t_vector3 vec, float mul);
 
 //returns vector 'vec' divided by 'div'
 t_vector3	vector3_div(t_vector3 vec, float div);
+
+//returns the magnitude of the vector 'vec'
+float		vector3_magnitude(t_vector3 vec);
+
+//returns the squared magnitude of the vector 'vec'
+float		vector3_sqr_magnitude(t_vector3 vec);
 
 //returns distance between first and second vector
 float		vector3_dist(t_vector3 first, t_vector3 second);
@@ -52,6 +70,15 @@ typedef struct s_vector2
 	float	y;
 }	t_vector2;
 
+//shorthand for (t_vector2){0, 0}
+t_vector2	vector2_zero();
+
+//shorthand for (t_vector2){1, 1}
+t_vector2	vector2_one();
+
+//returns 'vec' but with x and y signs flipped //TODO: explain this better lol
+t_vector2	vector2_negative(t_vector2 vec);
+
 //returns vector 'first' added by vector 'second'
 t_vector2	vector2_add(t_vector2 first, t_vector2 second);
 
@@ -67,6 +94,12 @@ t_vector2	vector2_mul(t_vector2 vec, float mul);
 //returns vector 'vec' divided by 'div'
 t_vector2	vector2_div(t_vector2 vec, float div);
 
+//returns the magnitude of the vector 'vec'
+float		vector2_magnitude(t_vector2 vec);
+
+//returns the squared magnitude of the vector 'vec'
+float		vector2_sqr_magnitude(t_vector2 vec);
+
 //returns distance between first and second vector
 float		vector2_dist(t_vector2 first, t_vector2 second);
 
@@ -76,6 +109,57 @@ float		vector2_dot(t_vector2 first, t_vector2 second);
 //returns true if both vectors are identical
 bool		vector2_cmp(t_vector2 first, t_vector2 second);
 
+typedef struct s_point
+{
+	int		x;
+	int		y;
+}	t_point;
+
+//shorthand for (t_point){0, 0}
+t_point		point_zero();
+
+//shorthand for (t_point){1, 1}
+t_point		point_one();
+
+//returns 'point' but with x and y signs flipped //TODO: explain this better lol
+t_point		point_negative(t_point point);
+
+//returns point 'first' added by point 'second'
+t_point		point_add(t_point first, t_point second);
+
+//returns point 'first' substracted by point 'second'
+t_point		point_sub(t_point first, t_point second);
+
+//returns point 'point' with 'add' added to x and y
+t_point		point_add_xy(t_point point, int add);
+
+//returns point 'point' multiplied by 'mul'
+t_point		point_mul(t_point point, int mul);
+
+//returns point 'point' divided by 'div'
+t_point		point_div(t_point point, int div);
+
+//returns point 'point' multiplied by float 'mul'
+t_point		point_fmul(t_point point, float mul);
+
+//returns point 'point' divided by float 'mul'
+t_point		point_fdiv(t_point point, float mul);
+
+//returns the magnitude of the point 'point'
+int			point_magnitude(t_point point);
+
+//returns the squared magnitude of the point 'point'
+int			point_sqr_magnitude(t_point point);
+
+//returns distance between first and second point
+int			point_dist(t_point first, t_point second);
+
+//returns dot product of point 'first' and point 'second'
+int			point_dot(t_point first, t_point second);
+
+//returns true if both points are identical
+bool		point_cmp(t_point first, t_point second);
+
 typedef struct s_quaternion
 {
 	float	x;
@@ -84,10 +168,18 @@ typedef struct s_quaternion
 	float	w;
 }	t_quaternion;
 
-typedef struct s_point
-{
-	int		x;
-	int		y;
-}	t_point;
+// shorthand for writing (t_quaternion){1.0f, 1.0f, 1.0f, 1.0f}
+t_quaternion	quaternion_identity();
+
+// returns quaternion multiplication result 'first * second'
+t_quaternion	quaternion_mul(t_quaternion first, t_quaternion second);
+
+/* CONVERSIONS */
+
+//Returns t_vector2 'vec' casted to t_point. (Shorthand for '*(t_point *)&vec').
+t_point			vector2_to_point(t_vector2 vec);
+
+//Returns t_point 'point' casted to t_vector2. (Shorthand for '*(t_vector2 *)&point').
+t_vector2		point_to_vector2(t_point point);
 
 #endif
