@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 09:46:25 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/14 18:35:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/14 20:26:41 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,10 @@ static void	draw_walls(t_list *linelist, t_sdlcontext *sdl, t_vector2 offset)
 	while (node != NULL)
 	{
 		line = *(t_line *)node->content;
-		//line.start = point_add(line.start, vector2_to_point(offset));
 		line.start = point_mul(line.start, TILESIZE);
-		//line.start = point_add(line.start, vector2_to_point(vector2_div(offset, TILESIZE)));
 		line.start = point_add(line.start, (t_point){offset.x * TILESIZE, offset.y * TILESIZE});
 		line.end = point_mul(line.end, TILESIZE);
 		line.end = point_add(line.end, (t_point){offset.x * TILESIZE, offset.y * TILESIZE});
-		//line.end = point_add(line.end, vector2_to_point(vector2_div(offset, TILESIZE)));
-		// line start and end calculated incorrectly, needs to take offset into account
 		drawline(sdl->surface->pixels, line.start, line.end, CLR_TURQ);
 		node = node->next;
 	}
@@ -61,30 +57,17 @@ void	render_overhead(t_game *game, t_sdlcontext *sdl)
 	if (game->cam_mode == overhead_absolute)
 	{
 		player_pos = *(t_point *)&game->player.position;
-		//int temp[2];
 		t_point	temp;
-		temp = vector2_to_point(game->overheadcam_pos);
-		//f2tov2(game->overheadcam_pos, temp);
-		//v2add(player_pos, temp);
-		player_pos = point_add(player_pos, temp);
+		//player_pos = point_add(player_pos, point_negative(vector2_to_point(game->overheadcam_pos)));
 		draw_walls(game->linelst, sdl, game->overheadcam_pos);
 	}
 	else if  (game->cam_mode == overhead_follow)
 	{
 		player_pos.x = WINDOW_W / 2;
 		player_pos.y = WINDOW_H / 2;
-		//f2add(walls_offset, game->player.position);
-		
-		/*walls_offset.x = -game->player.position.x;
-		walls_offset.y = -game->player.position.y;
-		walls_offset.x += player_pos.x;
-		walls_offset.y += player_pos.y;*/
-
 		walls_offset = vector2_negative(game->player.position);
-		printf("offset %f %f \n", walls_offset.x, walls_offset.y);
 		draw_walls(game->linelst, sdl, walls_offset);
 	}
-	//v2add(look_to, player_pos);
 	look_to = point_add(look_to, player_pos);
 	drawline(sdl->surface->pixels, player_pos, look_to, CLR_PRPL);
 	if (game->cam_mode == overhead_follow)

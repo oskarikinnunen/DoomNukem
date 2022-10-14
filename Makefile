@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/14 17:53:43 by okinnune         ###   ########.fr        #
+#    Updated: 2022/10/14 20:24:46 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ SDL2= SDL_built/lib/libSDL2.a
 LIBFT= libft/libft.a
 
 #Source files:
-SRCFILES= main.c draw.c v2.c img.c deltatime.c anim.c\
+SRCFILES= main.c draw.c img.c deltatime.c anim.c\
 		editor.c editor_mouse.c editor_events.c editor_render.c \
 		editor_saveline.c editor_map_io.c\
 		playmode.c inputhelper.c playmode_overhead.c \

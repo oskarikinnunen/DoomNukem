@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/13 16:43:43 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/14 20:19:32 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,17 @@ int		editor_events(t_editor *ed)
 				return(game_switchmode);
 			else if(iskey(e, SDLK_SPACE))
 			{
-				if (ed->state != display3d)
+				
+				/*if (ed->state != display3d)
 				{
 					start_anim(&ed->transition, anim_forwards);
-					ed->state = display3d;
+					ed->state = display3d; 
 				}
 				else
 				{
 					start_anim(&ed->transition, anim_backwards);
 					ed->state = place_start;
-				}
+				}*/
 			}
 		}
 	}

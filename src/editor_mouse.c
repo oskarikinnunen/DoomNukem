@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/14 18:16:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/14 20:20:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,29 +22,7 @@ t_point	screentoworldspace(t_point point)
 	mod.y = point.y % TILESIZE;
 	result.x += (bool)(mod.x > TILESIZE / 2);
 	result.y += (bool)(mod.y > TILESIZE / 2);
-	printf("worldspace mouse %i %i \n", point.x, point.y);
 	return (result);
-	/*point.x = -(ed->mousedrag->pos.x - ed->mouse.pos.x);
-	point.y = -(ed->mousedrag->pos.y - ed->mouse.pos.y);
-	mod.x = point.x % TILESIZE;
-	mod.y = point.y % TILESIZE;
-	point = point_div(point, TILESIZE);
-	point.x += (bool)(mod.x > TILESIZE / 2);
-	point.y += (bool)(mod.y > TILESIZE / 2);*/
-}
-
-void	mousetoworldspace(t_point point, t_editor *ed)
-{
-	t_point	mod;
-
-	point.x = -(ed->mousedrag->pos.x - ed->mouse.pos.x);
-	point.y = -(ed->mousedrag->pos.y - ed->mouse.pos.y);
-	mod.x = point.x % TILESIZE;
-	mod.y = point.y % TILESIZE;
-	point = point_div(point, TILESIZE);
-	point.x += (bool)(mod.x > TILESIZE / 2);
-	point.y += (bool)(mod.y > TILESIZE / 2);
-	printf("worldspace mouse %i %i \n", point.x, point.y);
 }
 
 //TODO: only clamps d.pos, should also limit drag somehow
@@ -88,7 +66,6 @@ static void	mouseclick(t_editor *ed)
 		if (ed->state == place_end)
 		{
 			ed->line.end = screentoworldspace(ed->mouse.pos);
-			//mousetoworldspace(ed->line.end, ed);
 			saveline(ed);
 			ft_bzero(&ed->line, sizeof(t_line));
 			ed->state = place_start;
@@ -131,11 +108,10 @@ void	mouse_event(SDL_Event e, t_editor *ed)
 	}
 	if (e.type == SDL_MOUSEWHEEL)
 	{
-		ed->mouse.scroll += e.wheel.y; //TODO: add deltascroll to mouse struct, if needed
+		ed->mouse.scroll += e.wheel.y;
 		ed->mouse.scroll_delta = e.wheel.y;
 		ed->mouse.scroll = ft_clamp(ed->mouse.scroll, -20, 20);
 	}
-		
 	mousedrag(ed);
 	mouseclick(ed);
 }

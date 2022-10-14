@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/14 18:34:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/14 20:23:15 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,11 @@
 
 
 // Playmode defines
-# define OVERHEADCAMSPEED 0.4f
+# define OVERHEADCAMSPEED 0.028f
 # define PLAYERRADIUS 16
 # define COLLISION_ON //Comment/uncomment to toggle experimental collision
 
-# define MOVESPEED 0.0014f
+# define MOVESPEED 0.014f
 # define ROTATESPEED 0.002f
 # define MOUSESPEED 0.002f
 
@@ -209,7 +209,6 @@ void	renderlines(t_sdlcontext *sdl, t_editor *ed); //TODO:  better name?
 
 /* EDITOR_MOUSE.C */
 t_point	screentoworldspace(t_point point);
-void	mousetoworldspace(t_point point, t_editor *ed);
 void	mouse_event(SDL_Event e, t_editor *ed);
 
 /* EDITOR_SAVELINE.C */
