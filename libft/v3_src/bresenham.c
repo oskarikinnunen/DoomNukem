@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bresenham.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 12:09:50 by okinnune          #+#    #+#             */
-/*   Updated: 2022/09/29 18:21:58 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/13 14:37:37 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int		step_bresenham(t_bresenham *b)
 
 void	populate_bresenham(t_bresenham *b, int32_t *from, int32_t *to)
 {
-	ft_memcpy(b->local, from, sizeof(int32_t [3]));
+	ft_memcpy(b->local, from, sizeof(int32_t [2]));
 	b->diff[X] = ft_abs(b->local[X] - to[X]);
 	b->diff[Y] = -ft_abs(b->local[Y] - to[Y]);
 	b->add[X] = 1 - ((b->local[X] > to[X]) * 2);

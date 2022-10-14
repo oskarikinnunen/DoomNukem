@@ -66,6 +66,8 @@ static int handleinput(t_game *game)
 	updatemouse(&game->mouse);
 	while (SDL_PollEvent(&e))
 	{
+		if (e.type != SDL_KEYDOWN && e.type != SDL_KEYUP)
+			return(game_continue);
 		gr = key_events(e, game);
 		if (gr != game_continue)
 			return (gr);
@@ -77,24 +79,33 @@ static int handleinput(t_game *game)
 static int gameloop(t_sdlcontext sdl, t_game *game)
 {
 	t_gamereturn	gr;
+	int i = 0;
 
+	gr = game_continue;
 	while (1)
 	{
 		update_deltatime(&game->clock);
-		bzero(sdl.surface->pixels, sizeof(uint32_t) * WINDOW_H * WINDOW_W);
 		gr = handleinput(game);
+		if (gr != game_continue)
+		{
+			return(gr);
+		}
+		bzero(sdl.surface->pixels, sizeof(uint32_t) * WINDOW_H * WINDOW_W);
+		//SDL_SetRenderDrawColor(sdl.renderer, 0, 0, 0, 255);
+		//SDL_RenderClear(sdl.renderer);
+		//SDL_SetRenderDrawColor(sdl.renderer, 255, 255, 255, 255);
 		/*
 		if (gr != game_continue)
 			return(gr);
 		render_overhead(game, &sdl);*/
-		if (gr != game_continue)
-			return(gr);
-		if (game->cam_mode == overhead_follow)
-			moveplayer(game);
-		else
-			move_overhead(game);
+		//SDL_RenderDrawLine(sdl.renderer, 0, 0, 500, 500);
 		engine3d(sdl, game);
+		//SDL_RenderPresent(sdl.renderer);
 		SDL_UpdateWindowSurface(sdl.window);
+		if (game->clock.delta == 0)
+			printf("fps infinite\n");
+		else
+			printf("delta is %u, fps is %f\n", game->clock.delta, 1000.0f / game->clock.delta);
 	}
 	return(game_exit); // for now
 }
@@ -106,8 +117,10 @@ static int start_gameloop(t_sdlcontext sdl, t_game game)
 
 	math = &game.math;
 	bzero(&game.player, sizeof(t_player));
-	math->vcamera = (t_vec3d){0, 0, 0, 1}; // change these to v3init
+	math->vcamera = (t_vec3d){43.471909, 69.871468, -47.650238, 1}; // change these to v3init
 	math->vlookdir = (t_vec3d){0, 0, 0, 1}; // 
+	math->fyaw = -1.824000f;
+	math->fpitch = -0.204000f;
 	math->matproj = Init();
 
 	return(gameloop(sdl, &game));

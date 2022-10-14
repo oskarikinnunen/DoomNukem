@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/12 11:19:03 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/13 15:14:07 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 #include <fcntl.h>
 #include <stdbool.h>
 
-# define WINDOW_W 800
-# define WINDOW_H 600
+# define WINDOW_W 1024
+# define WINDOW_H 1024
 # define TILESIZE 32 //EDITOR tilesize
 # define GRIDSIZE 64 //EDITOR gridsize (how many addressable coordinates we have)
 
@@ -37,8 +37,9 @@
 # define CLR_PRPL 14231500
 # define CLR_TURQ 5505010
 # define CLR_GRAY 4868682
+# define CLR_GREEN 3002977
 
-
+//pxls[((crd[X] & (WINDOW_W - 1)) + (crd[Y] & (WINDOW_H - 1)) * WINDOW_W)] = clr;
 
 // Playmode defines
 # define OVERHEADCAMSPEED 0.4f
@@ -54,6 +55,7 @@ typedef struct s_sdlcontext
 	SDL_Window				*window;
 	SDL_Surface				*surface;
 	uint32_t				*zbuffer;
+	SDL_Renderer			*renderer; //TODO: for testing remove.
 }	t_sdlcontext;
 
 typedef struct s_mouse

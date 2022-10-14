@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bresenham.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 04:27:26 by okinnune          #+#    #+#             */
-/*   Updated: 2022/09/29 18:20:00 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/13 14:37:54 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ typedef struct s_bresenham //CHANGE TO USE Uu_int32_t32
 {
 	int32_t	diff[2];
 	int32_t	add[2];
-	int32_t	local[3];
+	int32_t	local[2];
 	int32_t	target[2];
 	int32_t	error;
 }	t_bresenham;

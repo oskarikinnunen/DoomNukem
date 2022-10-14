@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/12 12:59:11 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/14 11:32:51 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,10 @@
 #include "inputhelp.h"
 #include "bresenham.h"
 
-#define PRINT_DEBUG 0
+#define PRINT_DEBUG 1
+#define SH WINDOW_H
+#define SW WINDOW_W
+
 
 t_mat4x4 Init()
 {
@@ -244,6 +247,7 @@ float dist1(t_vec3d p, t_vec3d plane_n, t_vec3d plane_p) // rename
 
 static void printf_matrix(t_mat4x4 m)
 {
+	return;
 	if (PRINT_DEBUG == 0)
 		return;
 	int i = 0;
@@ -288,7 +292,10 @@ int Triangle_ClipAgainstPlane(t_vec3d plane_p, t_vec3d plane_n, t_triangle *in_t
 	// If dist1ance sign is positive, point lies on "inside" of plane
 	t_vec3d inside_points[3];  int nInsidePointCount = 0;
 	t_vec3d outside_points[3]; int nOutsidePointCount = 0;
-
+	
+	in_tri->clr = CLR_GREEN;
+	out_tri1->clr = CLR_PRPL; //debug colors
+	out_tri2->clr = CLR_TURQ; //debug colors
 	for (int e = 0; e < 3; e++)
 	{
 		inside_points[e] = Initv3();
@@ -385,7 +392,6 @@ int Triangle_ClipAgainstPlane(t_vec3d plane_p, t_vec3d plane_n, t_triangle *in_t
 		out_tri1->p[0] = inside_points[0];
 		out_tri1->p[1] = inside_points[1];
 		out_tri1->p[2] = Vector_IntersectPlane(plane_p, plane_n, inside_points[0], outside_points[0]);
-		out_tri1->clr = CLR_PRPL;
 
 		// The second triangle is composed of one of he inside points, a
 		// new point determined by the intersection of the other side of the 
@@ -393,7 +399,6 @@ int Triangle_ClipAgainstPlane(t_vec3d plane_p, t_vec3d plane_n, t_triangle *in_t
 		out_tri2->p[0] = inside_points[1];
 		out_tri2->p[1] = out_tri1->p[2];
 		out_tri2->p[2] = Vector_IntersectPlane(plane_p, plane_n, inside_points[1], outside_points[0]);
-		out_tri2->clr = CLR_TURQ;
 
 		return 2; // Return two newly formed triangles which form a quad
 	}
@@ -465,16 +470,20 @@ static void	z_fill_sub_tri(int *tris[3], t_sdlcontext sdl, uint32_t clr)
 {
 	t_bresenham	b[2];
 
+//	if (tris[0][Y] - 5 < tris[2][Y])
+	//	return;
 	populate_bresenham(&(b[0]), tris[0], tris[1]);
 	populate_bresenham(&(b[1]), tris[0], tris[2]);
 	while (b[0].local[Y] != tris[1][Y])
 	{
+		//SDL_RenderDrawLine(sdl.renderer, b[0].local[X], b[0].local[Y], b[1].local[X], b[1].local[Y]);
 		drawline((u_int32_t *)sdl.surface->pixels, b[0].local, b[1].local, clr);
 		while (b[0].local[Y] == b[1].local[Y])
 			step_bresenham(&(b[0]));
 		while (b[1].local[Y] != b[0].local[Y])
 			step_bresenham(&(b[1]));
 	}
+	//SDL_RenderDrawLine(sdl.renderer, b[0].local[X], b[0].local[Y], b[1].local[X], b[1].local[Y]);
 	drawline((u_int32_t *)sdl.surface->pixels, b[0].local, b[1].local, clr);
 }
 
@@ -491,6 +500,8 @@ static void	z_fill_tri(int tris[3][3], t_sdlcontext sdl, uint32_t clr)
 	split[Z] = sorted[1][Z];
 	z_fill_sub_tri((int *[3]){(int *)&(sorted[0]), (int *)&(sorted[1]), (int *)&split}, sdl, clr);
 	z_fill_sub_tri((int *[3]){(int *)&(sorted[2]), (int *)&(sorted[1]), (int *)&split}, sdl, clr);
+	//SDL_RenderDrawLine(sdl.renderer, sorted[0][X], sorted[0][Y], sorted[2][X], sorted[2][Y]);
+	
 	drawline((u_int32_t *)sdl.surface->pixels, sorted[0], sorted[2], clr);
 	//z_draw_line(sorted[0], sorted[2], sdl);
 }
@@ -520,7 +531,8 @@ static void move(t_game *game)
 
 	//math->fyaw = game->player.angle[X];
 	//math->fpitch = game->player.angle[Y];
-	printf("yaw %f pitch %f\n", math->fyaw, math->fpitch);
+	//printf("yaw %f pitch %f\n", math->fyaw, math->fpitch);
+	//printf_v3(math->vcamera);
 }
 
 t_trilist *trilist_malloc(t_triangle triref)
@@ -550,6 +562,130 @@ static t_trilist *trilist_push_back(t_trilist *head, t_triangle ref)
 	return(head);
 }
 
+static int isvalidtri(t_triangle triprojected)
+{
+	int x = 0;
+	int y = 0;
+	for (int i = 0; i < 3; i++)
+	{
+		if (triprojected.p[i].x > 0 && triprojected.p[i].x < WINDOW_W)
+			if (triprojected.p[i].y > 0 && triprojected.p[i].y < WINDOW_H)
+				return(1);
+	}
+	return(0);
+}
+
+static void drawline1(uint32_t *pxls, int x0, int y0, int x1, int y1)
+{
+	int i;
+    double x = x1 - x0; 
+	double y = y1 - y0; 
+	double length = sqrt( x*x + y*y ); 
+	double addx = x / length; 
+	double addy = y / length; 
+	x = x0; 
+	y = y0; 
+	i = 0;
+	while (i < length)
+	{ 
+		draw(pxls, (int [2]){x, y}, INT_MAX); 
+		x += addx; 
+		y += addy; 
+		i++;
+	} 
+}
+/*
+static void clipped(int count, t_triangle *triangles_calc, t_game *game, t_sdlcontext sdl)
+{
+	int i = 0;
+	int p = 0;
+	int ntristtoadd = 0;
+	int counter = 0;
+	int index = 0;
+	int w = 0;
+	int n = 0;
+	int n1 = 0;
+	int size = 0;
+
+	t_triangle newtriangles[200];
+	printf("count is %d\n", count);
+	while (i < count && false)
+	{
+		t_triangle clipped[2];
+		
+		newtriangles[size++] = triangles_calc[i];
+		p = 0;
+		n = 1;
+		while (p < 4)
+		{
+			printf("\n\nloop all sides of screen\n");
+			while (n > 0)
+			{
+				printf("loop new triangles\n");
+				n--;
+				t_triangle test = newtriangles[0];
+				if (p == 0)
+					ntristtoadd = Triangle_ClipAgainstPlane((t_vec3d){0.0f, 0.0f, 0.0f, 1.0f}, (t_vec3d){0.0f, 1.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]);
+				else if (p == 1)
+					ntristtoadd = Triangle_ClipAgainstPlane((t_vec3d){0.0f, (float)SH - 1.0f, 0.0f, 1.0f}, (t_vec3d){0.0f, -1.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]);
+				else if (p == 2)
+					ntristtoadd = Triangle_ClipAgainstPlane((t_vec3d){0.0f, 0.0f, 0.0f, 1.0f}, (t_vec3d){1.0f, 0.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]);
+				else
+					ntristtoadd = Triangle_ClipAgainstPlane((t_vec3d){(float)SW - 1.0f, 0.0f, 0.0f, 1.0f}, (t_vec3d){-1.0f, 0.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]);
+				w = 0;
+				while (w < ntristtoadd)
+				{
+					newtriangles[size++] = clipped[w];
+					index++;
+					w++;
+					n1++;
+				}
+				printf("index is %d, w is %d, n is %d\n", index, w, n);
+			}
+			n = n1;
+			printf("size is %d, index is %d n is %d\n", size, index, n);
+			p++;
+		}
+		i++;
+	//	exit(0);
+	}
+	i = 0;
+	while (i < count && true)
+	{
+		
+	//	drawline(sdl.surface->pixels, (int [2]){newtriangles[i].p[0].x, newtriangles[i].p[0].y}, (int [2]){newtriangles[i].p[1].x, newtriangles[i].p[1].y}, INT_MAX);
+	//	drawline(sdl.surface->pixels, (int [2]){newtriangles[i].p[1].x, newtriangles[i].p[1].y}, (int [2]){newtriangles[i].p[2].x, newtriangles[i].p[2].y}, INT_MAX);
+	//	drawline(sdl.surface->pixels, (int [2]){newtriangles[i].p[2].x, newtriangles[i].p[2].y}, (int [2]){newtriangles[i].p[0].x, newtriangles[i].p[0].y}, INT_MAX);
+		
+	//	drawline1(sdl.surface->pixels, (int)newtriangles[i].p[0].x, (int)newtriangles[i].p[0].y, (int)newtriangles[i].p[1].x, (int)newtriangles[i].p[1].y);
+	//	drawline1(sdl.surface->pixels, (int)newtriangles[i].p[1].x, (int)newtriangles[i].p[1].y, (int)newtriangles[i].p[2].x, (int)newtriangles[i].p[2].y);
+	//	drawline1(sdl.surface->pixels, (int)newtriangles[i].p[2].x, (int)newtriangles[i].p[2].y, (int)newtriangles[i].p[0].x, (int)newtriangles[i].p[0].y);
+		newtriangles[i] = triangles_calc[i];
+		if (1)
+		z_fill_tri((int [3][3])
+			{
+			{newtriangles[i].p[0].x, newtriangles[i].p[0].y, newtriangles[i].p[0].z},
+			{newtriangles[i].p[1].x, newtriangles[i].p[1].y, newtriangles[i].p[1].z},
+			{newtriangles[i].p[2].x, newtriangles[i].p[2].y, newtriangles[i].p[2].z}},
+			sdl, INT_MAX);
+		SDL_RenderDrawLine(sdl.renderer, newtriangles[i].p[0].x, newtriangles[i].p[0].y, newtriangles[i].p[1].x, newtriangles[i].p[1].y);
+		SDL_RenderDrawLine(sdl.renderer, newtriangles[i].p[1].x, newtriangles[i].p[1].y, newtriangles[i].p[2].x, newtriangles[i].p[2].y);
+		SDL_RenderDrawLine(sdl.renderer, newtriangles[i].p[2].x, newtriangles[i].p[2].y, newtriangles[i].p[0].x, newtriangles[i].p[0].y);
+		printf_tri(newtriangles[i]);
+		counter++;
+		i++;
+	}
+	
+	SDL_SetRenderDrawColor(sdl.renderer, 255, 0, 0, 255);
+	SDL_RenderDrawLine(sdl.renderer, 0, 0, SW + 1, 0);
+	SDL_RenderDrawLine(sdl.renderer, SW + 1, 0, SW + 1, SH + 1);
+	SDL_RenderDrawLine(sdl.renderer, SW + 1, SH + 1, 0, SH + 1);
+	SDL_RenderDrawLine(sdl.renderer, 0, 0, 0, SH + 1);
+	//printf("fps is %u\n", game->clock.delta);
+	//if (1000.0f / game->clock.delta < 60.0f && 1000.0f / game->clock.delta > 40.0f)
+	//	exit(0);
+}
+*/
 static void clipped(int count, t_triangle *triangles_calc, t_game *game, t_sdlcontext sdl)
 {
 	int i = 0;
@@ -560,28 +696,27 @@ static void clipped(int count, t_triangle *triangles_calc, t_game *game, t_sdlco
 		t_trilist	*trilist;
 		t_trilist	*head;
 
-	/*	if ((triangles_calc[i].p->x > WINDOW_W - 1|| triangles_calc[i].p->x < 0) && (triangles_calc[i].p->y > WINDOW_H - 1 || triangles_calc[i].p->y < 0))
-		{
-			i++;
-			continue;
-		}*/
-		trilist = trilist_malloc(triangles_calc[i]);
-		if (!trilist)
-			exit(0);
-		head = trilist;
+	//	if ((triangles_calc[i].p->x > WINDOW_W - 1|| triangles_calc[i].p->x < 0) && (triangles_calc[i].p->y > WINDOW_H - 1 || triangles_calc[i].p->y < 0))
+	//	{
+	//		i++;
+	//		continue;
+	//	}
+		head = trilist_push_back(head, triangles_calc[i]);
 		int nnewtriangles = 1;
 		int front = 0;
 		for (int p = 0; p < 4; p++)
 		{
 			t_trilist *lenlist;
 			int ntristtoadd = 0;
-			while (trilist)
+			while (nnewtriangles > 0)
 			{
 				clipped[0] = Inittri();
 				clipped[1] = Inittri();
 				t_triangle test = Inittri();
 				trilist = head;
 				test = trilist->tri;
+				head = head->next;
+				free(trilist);
 				nnewtriangles--;
 				switch (p)
 				{
@@ -593,15 +728,22 @@ static void clipped(int count, t_triangle *triangles_calc, t_game *game, t_sdlco
 				for (int w = 0; w < ntristtoadd; w++)
 				{
 					head = trilist_push_back(head, clipped[w]);
-					trilist = trilist->next;
 				}
+			}
+			nnewtriangles = 0;
+			trilist = head;
+			while(trilist)
+			{
 				trilist = trilist->next;
+				nnewtriangles++;
 			}
 		}
 		trilist = head;
 		while (trilist)
 		{
 			t_trilist *temp;
+			SDL_SetRenderDrawColor(sdl.renderer, trilist->tri.clr >> 16, trilist->tri.clr >> 8, trilist->tri.clr, 255);
+			if (1)
 			z_fill_tri((int [3][3])
 			{
 			{trilist->tri.p[0].x, trilist->tri.p[0].y, trilist->tri.p[0].z},
@@ -611,23 +753,28 @@ static void clipped(int count, t_triangle *triangles_calc, t_game *game, t_sdlco
 			drawline(sdl.surface->pixels, (int [2]){trilist->tri.p[0].x, trilist->tri.p[0].y}, (int [2]){trilist->tri.p[1].x, trilist->tri.p[1].y}, CLR_PRPL);
 			drawline(sdl.surface->pixels, (int [2]){trilist->tri.p[1].x, trilist->tri.p[1].y}, (int [2]){trilist->tri.p[2].x, trilist->tri.p[2].y}, CLR_PRPL);
 			drawline(sdl.surface->pixels, (int [2]){trilist->tri.p[2].x, trilist->tri.p[2].y}, (int [2]){trilist->tri.p[0].x, trilist->tri.p[0].y}, CLR_PRPL);
+			//SDL_RenderDrawLine(sdl.renderer, trilist->tri.p[0].x, trilist->tri.p[0].y, trilist->tri.p[1].x, trilist->tri.p[1].y);
+			//SDL_RenderDrawLine(sdl.renderer, trilist->tri.p[1].x, trilist->tri.p[1].y, trilist->tri.p[2].x, trilist->tri.p[2].y);
+			//SDL_RenderDrawLine(sdl.renderer, trilist->tri.p[2].x, trilist->tri.p[2].y, trilist->tri.p[0].x, trilist->tri.p[0].y);
+			//printf_tri(trilist->tri);
 			temp = trilist;
 			trilist = trilist->next;
 			free(temp);
 			counter++;
 		}
+		head = NULL;
 		i++;
 	}
-	printf("counter is %d\n", counter);
-	printf("fps is %f\n", 1000.0f / game->clock.delta);
-	printf("loopcomplete\n\n");
-	free(triangles_calc);
+	//printf("counter is %d\n", counter);
+	//printf("fps is %f\n", 1000.0f / game->clock.delta);
+	//printf("loopcomplete\n\n");
+	//free(triangles_calc);
 }
 
 void engine3d(t_sdlcontext sdl, t_game *game)
 {
 	move(game);
-	t_triangle	*triangles_calc;
+	t_triangle	triangles_calc[200];
 	t_triangle	*triangles;
 	t_math		*math;
 	int			i;
@@ -635,8 +782,7 @@ void engine3d(t_sdlcontext sdl, t_game *game)
 
 	math = &game->math;
 	math->matproj = Init();
-	math->matproj = Matrix_MakeProjection(90.0f, (float)WINDOW_H / (float)WINDOW_W, 2.0f, 1000.0f);
-	triangles_calc = malloc(sizeof(t_triangle) * 200);
+	math->matproj = Matrix_MakeProjection(90.0f, (float)SH / (float)SW, 2.0f, 1000.0f);
 	triangles = math->triangles;
 
 	t_mat4x4 matrotz = Init();
@@ -688,15 +834,6 @@ void engine3d(t_sdlcontext sdl, t_game *game)
 		t_vec3d vcameraray = Vector_Sub(tritransformed.p[0], math->vcamera);
 		if (Vector_DotProduct(normal, vcameraray) < 0.0f || 1 == 0)
 		{
-			t_vec3d light_direction = (t_vec3d){0.0f, 1.0f, -1.0f, 1};
-			light_direction = Vector_Normalise(light_direction);
-
-			float dp;
-			if (0.1f > Vector_DotProduct(light_direction, normal))
-				dp = 0.1f;
-			else
-				dp = Vector_DotProduct(light_direction, normal);
-
 			triviewed.p[0] = Matrix_MultiplyVector(matview, tritransformed.p[0]);
 			triviewed.p[1] = Matrix_MultiplyVector(matview, tritransformed.p[1]);
 			triviewed.p[2] = Matrix_MultiplyVector(matview, tritransformed.p[2]);
@@ -706,7 +843,7 @@ void engine3d(t_sdlcontext sdl, t_game *game)
 			clipped[0] = Inittri();
 			clipped[1] = Inittri();
 			nclippedtriangles = Triangle_ClipAgainstPlane(
-				(t_vec3d){0.0f, 0.0f, 10.1f, 1},
+				(t_vec3d){0.0f, 0.0f, 0.1f, 1},
 				(t_vec3d){0.0f, 0.0f, 1.0f, 1},
 				&triviewed, &clipped[0], &clipped[1]);
 			for (int n = 0; n < nclippedtriangles; n++)
@@ -731,17 +868,83 @@ void engine3d(t_sdlcontext sdl, t_game *game)
 				triprojected.p[1] = Vector_Add(triprojected.p[1], voffsetview);
 				triprojected.p[2] = Vector_Add(triprojected.p[2], voffsetview);
 
-				triprojected.p[0].x *= 0.5f * (float)WINDOW_W;
-				triprojected.p[0].y *= 0.5f * (float)WINDOW_H;
-				triprojected.p[1].x *= 0.5f * (float)WINDOW_W;
-				triprojected.p[1].y *= 0.5f * (float)WINDOW_H;
-				triprojected.p[2].x *= 0.5f * (float)WINDOW_W;
-				triprojected.p[2].y *= 0.5f * (float)WINDOW_H;
+				triprojected.p[0].x *= 0.5f * (float)SW;
+				triprojected.p[0].y *= 0.5f * (float)SH;
+				triprojected.p[1].x *= 0.5f * (float)SW;
+				triprojected.p[1].y *= 0.5f * (float)SH;
+				triprojected.p[2].x *= 0.5f * (float)SW;
+				triprojected.p[2].y *= 0.5f * (float)SH;
 				triangles_calc[count++] = triprojected;
 			}
 		}
 		i++;
 	}
 	//sort_triangles(triangles_calc, 0, count - 1);
+	//printf("count before clipping %d\n", count);
 	clipped(count, triangles_calc, game, sdl);
 }
+
+/*
+while (i < count && true)
+	{
+		t_triangle clipped[2];
+		t_trilist	*trilist;
+		t_trilist	*new;
+		t_trilist	*head;
+
+		trilist = trilist_malloc(triangles_calc[i]);
+		if (!trilist)
+			exit(0);
+		head = trilist;
+		for (int p = 0; p < 4 && 1 == 0; p++)
+		{
+			int ntristtoadd = 0;
+			while (trilist)
+			{
+				clipped[0] = Inittri();
+				clipped[1] = Inittri();
+				t_triangle test = Inittri();
+				test = trilist->tri;
+				switch (p)
+				{
+				case 0: ntristtoadd = Triangle_ClipAgainstPlane((t_vec3d){0.0f, 0.0f, 0.0f, 1.0f}, (t_vec3d){0.0f, 1.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]); break;
+				case 1: ntristtoadd = Triangle_ClipAgainstPlane((t_vec3d){0.0f, (float)WINDOW_H - 1.0f, 0.0f, 1.0f}, (t_vec3d){0.0f, -1.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]); break;
+				case 2: ntristtoadd = Triangle_ClipAgainstPlane((t_vec3d){0.0f, 0.0f, 0.0f, 1.0f}, (t_vec3d){1.0f, 0.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]); break;
+				case 3: ntristtoadd = Triangle_ClipAgainstPlane((t_vec3d){(float)WINDOW_W - 1.0f, 0.0f, 0.0f, 1.0f}, (t_vec3d){-1.0f, 0.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]); break;
+				}
+				for (int w = 0; w < ntristtoadd; w++)
+				{
+					//head = trilist_push_back(head, clipped[w]);
+					//trilist = trilist->next;
+				}
+				trilist = trilist->next;
+			}
+		}
+		trilist->tri = triangles_calc[i];
+		while (trilist)
+		{
+			t_trilist *temp;
+			z_fill_tri((int [3][3])
+			{
+			{trilist->tri.p[0].x, trilist->tri.p[0].y, trilist->tri.p[0].z},
+			{trilist->tri.p[1].x, trilist->tri.p[1].y, trilist->tri.p[1].z},
+			{trilist->tri.p[2].x, trilist->tri.p[2].y, trilist->tri.p[2].z}},
+			sdl, trilist->tri.clr);
+			drawline(sdl.surface->pixels, (int [2]){trilist->tri.p[0].x, trilist->tri.p[0].y}, (int [2]){trilist->tri.p[1].x, trilist->tri.p[1].y}, INT_MAX);
+			drawline(sdl.surface->pixels, (int [2]){trilist->tri.p[1].x, trilist->tri.p[1].y}, (int [2]){trilist->tri.p[2].x, trilist->tri.p[2].y}, INT_MAX);
+			drawline(sdl.surface->pixels, (int [2]){trilist->tri.p[2].x, trilist->tri.p[2].y}, (int [2]){trilist->tri.p[0].x, trilist->tri.p[0].y}, INT_MAX);
+			//printf_tri(trilist->tri);
+			temp = trilist;
+			trilist = trilist->next;
+			free(temp);
+			counter++;
+		}
+		trilist = NULL;
+		i++;
+	}
+	printf("counter is %d\n", counter);
+	printf("fps is %f\n", 1000.0f / game->clock.delta);
+	//if (1000.0f / game->clock.delta < 60.0f && 1000.0f / game->clock.delta > 40.0f)
+	//	exit(0);
+	printf("loopcomplete\n\n");
+	free(triangles_calc);*/
