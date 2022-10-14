@@ -22,8 +22,8 @@ static int key_events(SDL_Event e, t_game *game)
 			if (game->cam_mode == overhead_absolute)
 			{
 				game->overheadcam_pos = vector2_negative(game->player.position);
-				game->overheadcam_pos.x += WINDOW_W / 2;
-				game->overheadcam_pos.y += WINDOW_H / 2;
+				//game->overheadcam_pos.x += WINDOW_W / 2;
+				//game->overheadcam_pos.y += WINDOW_H / 2;
 			}
 		}
 	}

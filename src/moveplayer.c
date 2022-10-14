@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/14 18:26:28 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/14 20:21:38 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 static t_vector2	movementvector(int32_t keystate, float angle)
 {
 	t_vector2	movement;
+
+	movement = vector2_zero();
 	if ((keystate >> KEYS_UPMASK) & 1) 
 	{
 		movement.x += sin(angle);
@@ -91,11 +93,4 @@ void	moveplayer(t_game *game)
 	move_vector = vector2_mul(move_vector, game->clock.delta * MOVESPEED);
 	
 	game->player.position = vector2_add(game->player.position, move_vector);
-	//printf("%f %f\n", move_vector.x, move_vector.y);
-	printf("%f %f\n", game->player.position.x, game->player.position.y);
-	/*
-		potential_pos = vector2_add(game->player.position, move_vector);
-		if (checkwallcollisions(game, potential_pos) == false)
-			game->player.position = vector2_add(game->player.position, move_vector);
-	*/
 }
