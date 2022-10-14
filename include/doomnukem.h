@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/14 11:42:24 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/14 14:30:12 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -321,7 +321,7 @@ void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext *sdl);
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
-void	engine3d(t_sdlcontext sdl, t_game *game);
+void engine3d(t_sdlcontext sdl, t_game *game, t_triangle *triangles);
 
 /* PHYSICS.C */
 bool	pointcirclecollision(float p[2], float cp[2], float r);

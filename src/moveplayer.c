@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/11 15:54:01 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/14 16:22:20 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ void	moveplayer(t_game *game)
 	angle -= game->mouse.p_delta[Y] * MOUSESPEED;
 	angle *= game->clock.delta * ROTATESPEED;
 	game->player.angle[Y] += angle;
+	game->player.angle[Y] = ft_clampf(game->player.angle[Y], -RAD90 * 1.9f, RAD90 * 1.9f);
 	updatemovementvector(move_f2, game->keystate, game->player.angle[Y]);
 	f2mul(move_f2, game->clock.delta * MOVESPEED);
 	#ifndef COLLISION_ON

@@ -101,7 +101,8 @@ static int gameloop(t_sdlcontext sdl, t_game *game)
 			return(gr);
 		render_overhead(game, &sdl);*/
 		//SDL_RenderDrawLine(sdl.renderer, 0, 0, 500, 500);
-		engine3d(sdl, game);
+		moveplayer(game);
+		engine3d(sdl, game, game->math.triangles);
 		//SDL_RenderPresent(sdl.renderer);
 		drawperfgraph(&pgraph, game->clock.delta, &sdl);
 		SDL_UpdateWindowSurface(sdl.window);

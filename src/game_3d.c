@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/14 14:16:32 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/14 16:31:33 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,11 @@ t_vec3d Vector_Sub(t_vec3d v1, t_vec3d v2)
 t_vec3d Vector_Mul(t_vec3d v1, float k)
 {
 	return ((t_vec3d){ v1.x * k, v1.y * k, v1.z * k , 1});
+}
+
+t_vec3d Vector_Mul_Vector(t_vec3d v1, t_vec3d v2)
+{
+	return ((t_vec3d){ v1.x * v2.x, v1.y * v2.y, v1.z * v2.z , v1.w * v2.w});
 }
 
 t_vec3d Vector_Div(t_vec3d v1, float k)
@@ -293,7 +298,7 @@ int Triangle_ClipAgainstPlane(t_vec3d plane_p, t_vec3d plane_n, t_triangle *in_t
 	t_vec3d inside_points[3];  int nInsidePointCount = 0;
 	t_vec3d outside_points[3]; int nOutsidePointCount = 0;
 	
-	in_tri->clr = CLR_GREEN;
+	in_tri->clr = CLR_GREEN; //debug colors
 	out_tri1->clr = CLR_PRPL; //debug colors
 	out_tri2->clr = CLR_TURQ; //debug colors
 	for (int e = 0; e < 3; e++)
@@ -529,8 +534,8 @@ static void move(t_game *game)
 	if ((game->keystate >> KEYS_ARROWDOWN) & 1U)
 		math->fpitch -= 2.0f * delta;
 
-	//math->fyaw = game->player.angle[X];
-	//math->fpitch = game->player.angle[Y];
+	math->fyaw = game->player.angle[X];
+	math->fpitch = game->player.angle[Y];
 	//printf("yaw %f pitch %f\n", math->fyaw, math->fpitch);
 	//printf_v3(math->vcamera);
 }
@@ -598,105 +603,12 @@ static void drawline1(uint32_t *pxls, int x0, int y0, int x1, int y1)
 static void clipped(int count, t_triangle *triangles_calc, t_game *game, t_sdlcontext sdl)
 {
 	int i = 0;
-	int p = 0;
-	int ntristtoadd = 0;
-	int counter = 0;
-	int index = 0;
-	int w = 0;
-	int n = 0;
-	int n1 = 0;
-	int size = 0;
-
-	t_triangle newtriangles[200];
-	printf("count is %d\n", count);
-	while (i < count && false)
-	{
-		t_triangle clipped[2];
-		
-		newtriangles[size++] = triangles_calc[i];
-		p = 0;
-		n = 1;
-		while (p < 4)
-		{
-			printf("\n\nloop all sides of screen\n");
-			while (n > 0)
-			{
-				printf("loop new triangles\n");
-				n--;
-				t_triangle test = newtriangles[0];
-				if (p == 0)
-					ntristtoadd = Triangle_ClipAgainstPlane((t_vec3d){0.0f, 0.0f, 0.0f, 1.0f}, (t_vec3d){0.0f, 1.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]);
-				else if (p == 1)
-					ntristtoadd = Triangle_ClipAgainstPlane((t_vec3d){0.0f, (float)SH - 1.0f, 0.0f, 1.0f}, (t_vec3d){0.0f, -1.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]);
-				else if (p == 2)
-					ntristtoadd = Triangle_ClipAgainstPlane((t_vec3d){0.0f, 0.0f, 0.0f, 1.0f}, (t_vec3d){1.0f, 0.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]);
-				else
-					ntristtoadd = Triangle_ClipAgainstPlane((t_vec3d){(float)SW - 1.0f, 0.0f, 0.0f, 1.0f}, (t_vec3d){-1.0f, 0.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]);
-				w = 0;
-				while (w < ntristtoadd)
-				{
-					newtriangles[size++] = clipped[w];
-					index++;
-					w++;
-					n1++;
-				}
-				printf("index is %d, w is %d, n is %d\n", index, w, n);
-			}
-			n = n1;
-			printf("size is %d, index is %d n is %d\n", size, index, n);
-			p++;
-		}
-		i++;
-	//	exit(0);
-	}
-	i = 0;
-	while (i < count && true)
-	{
-		
-	//	drawline(sdl.surface->pixels, (int [2]){newtriangles[i].p[0].x, newtriangles[i].p[0].y}, (int [2]){newtriangles[i].p[1].x, newtriangles[i].p[1].y}, INT_MAX);
-	//	drawline(sdl.surface->pixels, (int [2]){newtriangles[i].p[1].x, newtriangles[i].p[1].y}, (int [2]){newtriangles[i].p[2].x, newtriangles[i].p[2].y}, INT_MAX);
-	//	drawline(sdl.surface->pixels, (int [2]){newtriangles[i].p[2].x, newtriangles[i].p[2].y}, (int [2]){newtriangles[i].p[0].x, newtriangles[i].p[0].y}, INT_MAX);
-		
-	//	drawline1(sdl.surface->pixels, (int)newtriangles[i].p[0].x, (int)newtriangles[i].p[0].y, (int)newtriangles[i].p[1].x, (int)newtriangles[i].p[1].y);
-	//	drawline1(sdl.surface->pixels, (int)newtriangles[i].p[1].x, (int)newtriangles[i].p[1].y, (int)newtriangles[i].p[2].x, (int)newtriangles[i].p[2].y);
-	//	drawline1(sdl.surface->pixels, (int)newtriangles[i].p[2].x, (int)newtriangles[i].p[2].y, (int)newtriangles[i].p[0].x, (int)newtriangles[i].p[0].y);
-		newtriangles[i] = triangles_calc[i];
-		if (1)
-		z_fill_tri((int [3][3])
-			{
-			{newtriangles[i].p[0].x, newtriangles[i].p[0].y, newtriangles[i].p[0].z},
-			{newtriangles[i].p[1].x, newtriangles[i].p[1].y, newtriangles[i].p[1].z},
-			{newtriangles[i].p[2].x, newtriangles[i].p[2].y, newtriangles[i].p[2].z}},
-			sdl, INT_MAX);
-		SDL_RenderDrawLine(sdl.renderer, newtriangles[i].p[0].x, newtriangles[i].p[0].y, newtriangles[i].p[1].x, newtriangles[i].p[1].y);
-		SDL_RenderDrawLine(sdl.renderer, newtriangles[i].p[1].x, newtriangles[i].p[1].y, newtriangles[i].p[2].x, newtriangles[i].p[2].y);
-		SDL_RenderDrawLine(sdl.renderer, newtriangles[i].p[2].x, newtriangles[i].p[2].y, newtriangles[i].p[0].x, newtriangles[i].p[0].y);
-		printf_tri(newtriangles[i]);
-		counter++;
-		i++;
-	}
-	
-	SDL_SetRenderDrawColor(sdl.renderer, 255, 0, 0, 255);
-	SDL_RenderDrawLine(sdl.renderer, 0, 0, SW + 1, 0);
-	SDL_RenderDrawLine(sdl.renderer, SW + 1, 0, SW + 1, SH + 1);
-	SDL_RenderDrawLine(sdl.renderer, SW + 1, SH + 1, 0, SH + 1);
-	SDL_RenderDrawLine(sdl.renderer, 0, 0, 0, SH + 1);
-	//printf("fps is %u\n", game->clock.delta);
-	//if (1000.0f / game->clock.delta < 60.0f && 1000.0f / game->clock.delta > 40.0f)
-	//	exit(0);
-}
-*/
-/*
-static void clipped(int count, t_triangle *triangles_calc, t_game *game, t_sdlcontext sdl)
-{
-	int i = 0;
 	int counter = 0;
 	while (i < count && 1 == 1)
 	{
 		t_triangle clipped[2];
 		t_trilist	*trilist;
 		t_trilist	*head = NULL;
-
 	//	if ((triangles_calc[i].p->x > WINDOW_W - 1|| triangles_calc[i].p->x < 0) && (triangles_calc[i].p->y > WINDOW_H - 1 || triangles_calc[i].p->y < 0))
 	//	{
 	//		i++;
@@ -741,7 +653,7 @@ static void clipped(int count, t_triangle *triangles_calc, t_game *game, t_sdlco
 		trilist = head;
 		while (trilist)
 		{
-			t_triangle *temp;
+			t_trilist *temp;
 			//SDL_SetRenderDrawColor(sdl.renderer, trilist->tri.clr >> 16, trilist->tri.clr >> 8, trilist->tri.clr, 255);
 			if (1)
 			z_fill_tri((int [3][3])
@@ -750,9 +662,9 @@ static void clipped(int count, t_triangle *triangles_calc, t_game *game, t_sdlco
 			{trilist->tri.p[1].x, trilist->tri.p[1].y, trilist->tri.p[1].z},
 			{trilist->tri.p[2].x, trilist->tri.p[2].y, trilist->tri.p[2].z}},
 			sdl, trilist->tri.clr);
-			drawline(sdl.surface->pixels, (int [2]){trilist->tri.p[0].x, trilist->tri.p[0].y}, (int [2]){trilist->tri.p[1].x, trilist->tri.p[1].y}, CLR_PRPL);
-			drawline(sdl.surface->pixels, (int [2]){trilist->tri.p[1].x, trilist->tri.p[1].y}, (int [2]){trilist->tri.p[2].x, trilist->tri.p[2].y}, CLR_PRPL);
-			drawline(sdl.surface->pixels, (int [2]){trilist->tri.p[2].x, trilist->tri.p[2].y}, (int [2]){trilist->tri.p[0].x, trilist->tri.p[0].y}, CLR_PRPL);
+			drawline(sdl.surface->pixels, (int [2]){trilist->tri.p[0].x, trilist->tri.p[0].y}, (int [2]){trilist->tri.p[1].x, trilist->tri.p[1].y}, INT_MAX);
+			drawline(sdl.surface->pixels, (int [2]){trilist->tri.p[1].x, trilist->tri.p[1].y}, (int [2]){trilist->tri.p[2].x, trilist->tri.p[2].y}, INT_MAX);
+			drawline(sdl.surface->pixels, (int [2]){trilist->tri.p[2].x, trilist->tri.p[2].y}, (int [2]){trilist->tri.p[0].x, trilist->tri.p[0].y}, INT_MAX);
 			//SDL_RenderDrawLine(sdl.renderer, trilist->tri.p[0].x, trilist->tri.p[0].y, trilist->tri.p[1].x, trilist->tri.p[1].y);
 			//SDL_RenderDrawLine(sdl.renderer, trilist->tri.p[1].x, trilist->tri.p[1].y, trilist->tri.p[2].x, trilist->tri.p[2].y);
 			//SDL_RenderDrawLine(sdl.renderer, trilist->tri.p[2].x, trilist->tri.p[2].y, trilist->tri.p[0].x, trilist->tri.p[0].y);
@@ -769,8 +681,8 @@ static void clipped(int count, t_triangle *triangles_calc, t_game *game, t_sdlco
 	//printf("fps is %f\n", 1000.0f / game->clock.delta);
 	//printf("loopcomplete\n\n");
 	//free(triangles_calc);
-}*/
-
+}
+*/
 static void clipped(int count, t_triangle *triangles_calc, t_game *game, t_sdlcontext sdl)
 {
 	int i = 0;
@@ -821,9 +733,9 @@ static void clipped(int count, t_triangle *triangles_calc, t_game *game, t_sdlco
 			{triangles[index].p[1].x, triangles[index].p[1].y, triangles[index].p[1].z},
 			{triangles[index].p[2].x, triangles[index].p[2].y, triangles[index].p[2].z}},
 			sdl, triangles[index].clr);
-			drawline(sdl.surface->pixels, (int [2]){triangles[index].p[0].x, triangles[index].p[0].y}, (int [2]){triangles[index].p[1].x, triangles[index].p[1].y}, CLR_PRPL);
-			drawline(sdl.surface->pixels, (int [2]){triangles[index].p[1].x, triangles[index].p[1].y}, (int [2]){triangles[index].p[2].x, triangles[index].p[2].y}, CLR_PRPL);
-			drawline(sdl.surface->pixels, (int [2]){triangles[index].p[2].x, triangles[index].p[2].y}, (int [2]){triangles[index].p[0].x, triangles[index].p[0].y}, CLR_PRPL);
+			drawline(sdl.surface->pixels, (int [2]){triangles[index].p[0].x, triangles[index].p[0].y}, (int [2]){triangles[index].p[1].x, triangles[index].p[1].y}, INT_MAX);
+			drawline(sdl.surface->pixels, (int [2]){triangles[index].p[1].x, triangles[index].p[1].y}, (int [2]){triangles[index].p[2].x, triangles[index].p[2].y}, INT_MAX);
+			drawline(sdl.surface->pixels, (int [2]){triangles[index].p[2].x, triangles[index].p[2].y}, (int [2]){triangles[index].p[0].x, triangles[index].p[0].y}, INT_MAX);
 			index++;
 		}
 		start = 0;
@@ -832,24 +744,46 @@ static void clipped(int count, t_triangle *triangles_calc, t_game *game, t_sdlco
 	}
 }
 
-void engine3d(t_sdlcontext sdl, t_game *game)
+static t_vec3d angle_axis(float angle, t_vec3d axis)
 {
-	move(game);
+	double s;
+	t_vec3d v = Initv3();
+
+	s = sinf(angle/2.0f);
+	v.x = axis.x * s;
+	v.y = axis.y * s;
+	v.z = axis.z * s;
+	v.w = cosf(angle/2.0f);
+
+	return(v);
+}
+
+static t_vec3d quaternion_mul(t_vec3d a, t_vec3d b) {
+    return ((t_vec3d){
+        a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z,  // 1
+        a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y,  // i
+        a.w * b.y - a.x * b.z + a.y * b.w + a.z * b.x,  // j
+        a.w * b.z + a.x * b.y - a.y * b.x + a.z * b.w}  // k
+	);
+}
+
+void engine3d(t_sdlcontext sdl, t_game *game, t_triangle *triangles)
+{
 	t_triangle	triangles_calc[200];
-	t_triangle	*triangles;
 	t_math		*math;
 	int			i;
 	int			count = 0;
 
+	move(game);
+	printf("fyaw %f fpitch %f\n", game->math.fyaw, game->math.fpitch);
 	math = &game->math;
 	math->matproj = Init();
 	math->matproj = Matrix_MakeProjection(90.0f, (float)SH / (float)SW, 2.0f, 1000.0f);
-	triangles = math->triangles;
 
 	t_mat4x4 matrotz = Init();
 	t_mat4x4 matrotx = Init();
 	matrotz = Matrix_MakeRotationZ(0);
-	matrotx = Matrix_MakeRotationX(1.57079633f * 3);
+	matrotx = Matrix_MakeRotationX(0);
 
 	t_mat4x4 mattrans = Init();
 	mattrans = Matrix_MakeTranslation(0.0f, 0.0f, 5.0f);
@@ -859,18 +793,33 @@ void engine3d(t_sdlcontext sdl, t_game *game)
 	matworld = Matrix_MultiplyMatrix(matrotz, matrotx);
 	matworld = Matrix_MultiplyMatrix(matworld, mattrans);
 
-	t_vec3d vup = (t_vec3d){0, 1, 0, 1};
+	//static
+
+
+	t_vec3d vup = (t_vec3d){0, 0, 1, 1}; // z should be up which makes matrox unnecessary
 	t_vec3d vtarget = (t_vec3d){0, 0, 1, 1};
-	t_mat4x4 matcamerarot = Init();
-	matcamerarot = Matrix_MakeRotationY(math->fyaw);
+	/*t_mat4x4 matcamerarot = Init();
+	matcamerarot = Matrix_MakeRotationY(math->fpitch);
 	math->vlookdir = Matrix_MultiplyVector(matcamerarot, vtarget);
+	math->vlookdir = Vector_Normalise(math->vlookdir);
+*/	/*
+	t_mat4x4 matcamerarot = Init();
+	matcamerarot = Matrix_MakeRotationY(math->fpitch);
+	math->vlookdir = Matrix_MultiplyVector(matcamerarot, (t_vec3d){0, 0, 1, 0});
+	math->vlookdir = Vector_Add(math->vlookdir, Matrix_MultiplyVector(Matrix_MakeRotationZ(math->fyaw), (t_vec3d){0, 1, 0, 0}));
+	*/
+	math->vlookdir = angle_axis(math->fyaw, (t_vec3d){1, 0, 0, 1});
+	printf_v3(math->vlookdir);
+	math->vlookdir = quaternion_mul(math->vlookdir, angle_axis(math->fpitch, (t_vec3d){0, 1, 0, 1}));
 
-	vtarget = (t_vec3d){0, 1, 0, 1};
-	matcamerarot = Init();
-	matcamerarot = Matrix_MakeRotationX(math->fpitch);
-	math->vlookdir = Vector_Add(math->vlookdir, Matrix_MultiplyVector(matcamerarot, vtarget));
-
+	math->vlookdir = Vector_Normalise(math->vlookdir);
+	printf_v3(math->vlookdir);
 	vtarget = Vector_Add(math->vcamera, math->vlookdir);
+	//math->vlookdir = Vector_Normalise(math->vlookdir);
+	//matcamerarot = Init();
+	//matcamerarot = Matrix_MakeRotationZ(math->fyaw);
+	//math->vlookdir = Matrix_MultiplyVector(matcamerarot, (t_vec3d){0, 0, 1, 1});
+	//vtarget = Vector_Add(vtarget, Vector_Add(math->vcamera, math->vlookdir));
 
 	t_mat4x4 matcamera = Matrix_PointAt(math->vcamera, vtarget, vup);
 	t_mat4x4 matview = Matrix_QuickInverse(matcamera);
@@ -940,72 +889,5 @@ void engine3d(t_sdlcontext sdl, t_game *game)
 		}
 		i++;
 	}
-	//sort_triangles(triangles_calc, 0, count - 1);
-	//printf("count before clipping %d\n", count);
 	clipped(count, triangles_calc, game, sdl);
 }
-
-/*
-while (i < count && true)
-	{
-		t_triangle clipped[2];
-		t_trilist	*trilist;
-		t_trilist	*new;
-		t_trilist	*head;
-
-		trilist = trilist_malloc(triangles_calc[i]);
-		if (!trilist)
-			exit(0);
-		head = trilist;
-		for (int p = 0; p < 4 && 1 == 0; p++)
-		{
-			int ntristtoadd = 0;
-			while (trilist)
-			{
-				clipped[0] = Inittri();
-				clipped[1] = Inittri();
-				t_triangle test = Inittri();
-				test = trilist->tri;
-				switch (p)
-				{
-				case 0: ntristtoadd = Triangle_ClipAgainstPlane((t_vec3d){0.0f, 0.0f, 0.0f, 1.0f}, (t_vec3d){0.0f, 1.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]); break;
-				case 1: ntristtoadd = Triangle_ClipAgainstPlane((t_vec3d){0.0f, (float)WINDOW_H - 1.0f, 0.0f, 1.0f}, (t_vec3d){0.0f, -1.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]); break;
-				case 2: ntristtoadd = Triangle_ClipAgainstPlane((t_vec3d){0.0f, 0.0f, 0.0f, 1.0f}, (t_vec3d){1.0f, 0.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]); break;
-				case 3: ntristtoadd = Triangle_ClipAgainstPlane((t_vec3d){(float)WINDOW_W - 1.0f, 0.0f, 0.0f, 1.0f}, (t_vec3d){-1.0f, 0.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]); break;
-				}
-				for (int w = 0; w < ntristtoadd; w++)
-				{
-					//head = trilist_push_back(head, clipped[w]);
-					//trilist = trilist->next;
-				}
-				trilist = trilist->next;
-			}
-		}
-		trilist->tri = triangles_calc[i];
-		while (trilist)
-		{
-			t_trilist *temp;
-			z_fill_tri((int [3][3])
-			{
-			{trilist->tri.p[0].x, trilist->tri.p[0].y, trilist->tri.p[0].z},
-			{trilist->tri.p[1].x, trilist->tri.p[1].y, trilist->tri.p[1].z},
-			{trilist->tri.p[2].x, trilist->tri.p[2].y, trilist->tri.p[2].z}},
-			sdl, trilist->tri.clr);
-			drawline(sdl.surface->pixels, (int [2]){trilist->tri.p[0].x, trilist->tri.p[0].y}, (int [2]){trilist->tri.p[1].x, trilist->tri.p[1].y}, INT_MAX);
-			drawline(sdl.surface->pixels, (int [2]){trilist->tri.p[1].x, trilist->tri.p[1].y}, (int [2]){trilist->tri.p[2].x, trilist->tri.p[2].y}, INT_MAX);
-			drawline(sdl.surface->pixels, (int [2]){trilist->tri.p[2].x, trilist->tri.p[2].y}, (int [2]){trilist->tri.p[0].x, trilist->tri.p[0].y}, INT_MAX);
-			//printf_tri(trilist->tri);
-			temp = trilist;
-			trilist = trilist->next;
-			free(temp);
-			counter++;
-		}
-		trilist = NULL;
-		i++;
-	}
-	printf("counter is %d\n", counter);
-	printf("fps is %f\n", 1000.0f / game->clock.delta);
-	//if (1000.0f / game->clock.delta < 60.0f && 1000.0f / game->clock.delta > 40.0f)
-	//	exit(0);
-	printf("loopcomplete\n\n");
-	free(triangles_calc);*/

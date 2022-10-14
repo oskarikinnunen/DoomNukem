@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/14 12:02:51 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/14 14:35:56 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	draw(uint32_t *pxls, int crd[2], uint32_t clr) // TODO: Implement zbuffer i
 {
 	//printf("window size is %d\n", crd[X] + crd[Y] * WINDOW_W);
 	
-	if ((crd[X] & (WINDOW_W - 1)) == crd[X] && (crd[Y] & (WINDOW_H - 1)) == crd[Y])
+	if ((crd[X] & (WINDOW_W - 1)) == crd[X] && (crd[Y] & (WINDOW_H - 1)) == crd[Y] && pxls[crd[X] + crd[Y] * WINDOW_W] != INT_MAX)
 		pxls[crd[X] + crd[Y] * WINDOW_W] = clr;
 
 }
