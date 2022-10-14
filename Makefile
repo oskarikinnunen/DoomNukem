@@ -6,7 +6,7 @@
 #    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/14 12:37:42 by vlaine           ###   ########.fr        #
+#    Updated: 2022/10/14 14:20:31 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ OBJ= $(SRC:.c=.o)
 INCLUDE= -ISDL_built/include/SDL2/ -Isrc -Iinclude -Ilibft #$(LIBFT)
 CC= gcc
 LIBS= $(LIBFT) -lm
-CFLAGS= $(INCLUDE) -g -finline-functions
+CFLAGS= $(INCLUDE) -g -finline-functions -Ofast
 
 all: $(SDL2) $(LIBFT) $(OBJ)
 	$(CC) $(OBJ) -o $(NAME) `SDL_built/bin/sdl2-config --cflags --libs` $(INCLUDE) $(LIBS)

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/14 13:01:40 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/14 14:16:32 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -686,6 +686,7 @@ static void clipped(int count, t_triangle *triangles_calc, t_game *game, t_sdlco
 	//	exit(0);
 }
 */
+/*
 static void clipped(int count, t_triangle *triangles_calc, t_game *game, t_sdlcontext sdl)
 {
 	int i = 0;
@@ -706,7 +707,6 @@ static void clipped(int count, t_triangle *triangles_calc, t_game *game, t_sdlco
 		int front = 0;
 		for (int p = 0; p < 4; p++)
 		{
-			t_trilist *lenlist;
 			int ntristtoadd = 0;
 			while (nnewtriangles > 0)
 			{
@@ -741,8 +741,8 @@ static void clipped(int count, t_triangle *triangles_calc, t_game *game, t_sdlco
 		trilist = head;
 		while (trilist)
 		{
-			t_trilist *temp;
-			SDL_SetRenderDrawColor(sdl.renderer, trilist->tri.clr >> 16, trilist->tri.clr >> 8, trilist->tri.clr, 255);
+			t_triangle *temp;
+			//SDL_SetRenderDrawColor(sdl.renderer, trilist->tri.clr >> 16, trilist->tri.clr >> 8, trilist->tri.clr, 255);
 			if (1)
 			z_fill_tri((int [3][3])
 			{
@@ -769,6 +769,67 @@ static void clipped(int count, t_triangle *triangles_calc, t_game *game, t_sdlco
 	//printf("fps is %f\n", 1000.0f / game->clock.delta);
 	//printf("loopcomplete\n\n");
 	//free(triangles_calc);
+}*/
+
+static void clipped(int count, t_triangle *triangles_calc, t_game *game, t_sdlcontext sdl)
+{
+	int i = 0;
+	int index = 0;
+	int start = 0;
+	int end = 0;
+
+	t_triangle triangles[200];
+
+
+	while (i < count && 1)
+	{
+		t_triangle clipped[2];
+
+		triangles[end++] = triangles_calc[i];
+		int nnewtriangles = 1;
+		for (int p = 0; p < 4; p++)
+		{
+			int ntristoadd = 0;
+			while (nnewtriangles > 0)
+			{
+				clipped[0] = Inittri();
+				clipped[1] = Inittri();
+				t_triangle test = Inittri();
+				test = triangles[start++];
+				nnewtriangles--;
+				switch (p)
+				{
+				case 0: ntristoadd = Triangle_ClipAgainstPlane((t_vec3d){0.0f, 0.0f, 0.0f, 1.0f}, (t_vec3d){0.0f, 1.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]); break;
+				case 1: ntristoadd = Triangle_ClipAgainstPlane((t_vec3d){0.0f, (float)WINDOW_H - 1.0f, 0.0f, 1.0f}, (t_vec3d){0.0f, -1.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]); break;
+				case 2: ntristoadd = Triangle_ClipAgainstPlane((t_vec3d){0.0f, 0.0f, 0.0f, 1.0f}, (t_vec3d){1.0f, 0.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]); break;
+				case 3: ntristoadd = Triangle_ClipAgainstPlane((t_vec3d){(float)WINDOW_W - 1.0f, 0.0f, 0.0f, 1.0f}, (t_vec3d){-1.0f, 0.0f, 0.0f, 1.0f}, &test, &clipped[0], &clipped[1]); break;
+				}
+				for (int w = 0; w < ntristoadd; w++)
+				{
+					triangles[end++] = clipped[w];
+				}
+			}
+			nnewtriangles = end - start;
+		}
+		index = start;
+		while (index < end)
+		{
+			if (1)
+			z_fill_tri((int [3][3])
+			{
+			{triangles[index].p[0].x, triangles[index].p[0].y, triangles[index].p[0].z},
+			{triangles[index].p[1].x, triangles[index].p[1].y, triangles[index].p[1].z},
+			{triangles[index].p[2].x, triangles[index].p[2].y, triangles[index].p[2].z}},
+			sdl, triangles[index].clr);
+			drawline(sdl.surface->pixels, (int [2]){triangles[index].p[0].x, triangles[index].p[0].y}, (int [2]){triangles[index].p[1].x, triangles[index].p[1].y}, CLR_PRPL);
+			drawline(sdl.surface->pixels, (int [2]){triangles[index].p[1].x, triangles[index].p[1].y}, (int [2]){triangles[index].p[2].x, triangles[index].p[2].y}, CLR_PRPL);
+			drawline(sdl.surface->pixels, (int [2]){triangles[index].p[2].x, triangles[index].p[2].y}, (int [2]){triangles[index].p[0].x, triangles[index].p[0].y}, CLR_PRPL);
+			index++;
+		}
+		start = 0;
+		end = 0;
+		i++;
+	}
 }
 
 void engine3d(t_sdlcontext sdl, t_game *game)
