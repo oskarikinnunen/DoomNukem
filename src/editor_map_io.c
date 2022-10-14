@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/11 17:27:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/14 13:52:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,13 +53,14 @@ void	loadmap(t_list **linelist, char *filename)
 void	savemap(t_editor *ed, char *filename)
 {
 	int		fd;
+	int		written;
 	t_list	*l;
 
 	fd = fileopen(filename, O_RDWR | O_CREAT | O_TRUNC);
 	l = ed->linelist;
 	while (l != NULL)
 	{
-		int written = write(fd, (t_line *)l->content, sizeof(t_line));
+		write(fd, (t_line *)l->content, sizeof(t_line));
 		//printf("wrote %i bytes \n", written);
 		l = l->next;
 	}

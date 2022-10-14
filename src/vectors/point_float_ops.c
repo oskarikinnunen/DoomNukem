@@ -1,21 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   img.c                                              :+:      :+:    :+:   */
+/*   point_float_ops.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/04 13:42:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/13 13:31:54 by okinnune         ###   ########.fr       */
+/*   Created: 2022/10/13 12:19:29 by okinnune          #+#    #+#             */
+/*   Updated: 2022/10/13 13:10:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "doomnukem.h"
+#include "vectors.h"
 
-void	alloc_image(t_img *img, int width, int height)
+t_point		point_fmul(t_point point, float mul) {
+	t_point	result;
+
+	result.x = point.x * mul;
+	result.y = point.y * mul;
+	return (result);
+}
+
+t_point		point_fdiv(t_point point, float div)
 {
-	img->size.x = width;
-	img->size.y = height;
-	img->length = width * height;
-	img->data = ft_memalloc(img->length * sizeof(uint32_t));
+	t_point	result;
+
+	result.x = point.x / div;
+	result.y = point.y / div;
+	return (result);
 }

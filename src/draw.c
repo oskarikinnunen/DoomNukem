@@ -6,36 +6,36 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 10:54:20 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/14 18:17:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "bresenham.h"
 
-void	draw(uint32_t *pxls, int crd[2], uint32_t clr)
+void	draw(uint32_t *pxls, t_point pos, uint32_t clr)
 {
-	if (crd[X] < 0 || crd[X] >= WINDOW_W
-		|| crd[Y] < 0 || crd[Y] >= WINDOW_H)
+	if (pos.x < 0 || pos.x >= WINDOW_W
+		|| pos.y < 0 || pos.y >= WINDOW_H)
 		return ;
-	pxls[crd[X] + crd[Y] * WINDOW_W] = clr;
+	pxls[pos.x + pos.y * WINDOW_W] = clr;
 }
 
 # define CRCL_SIDES 16
 
-void	drawcircle(uint32_t *pxls, int crd[2], int size, uint32_t clr)
+void	drawcircle(uint32_t *pxls, t_point pos, int size, uint32_t clr)
 {
-	int		edges[CRCL_SIDES][2];
+	t_point	edges[CRCL_SIDES + 1];
 	int		i;
 	float	angl;
 
 	i = 0;
 	angl = 0.0f;
-	while (i <= CRCL_SIDES)
+	while (i < CRCL_SIDES + 1)
 	{
-		edges[i][X] = crd[X] + (sin(angl) * size);
-		edges[i][Y] = crd[Y] + (cos(angl) * size);
-		if (i > 0)
+		edges[i].x = pos.x + (sin(angl) * size);
+		edges[i].y = pos.y + (cos(angl) * size);
+		if (i >= 1)
 			drawline(pxls, edges[i - 1], edges[i], clr);
 		angl += FULLRAD / CRCL_SIDES;
 		i++;
@@ -44,25 +44,25 @@ void	drawcircle(uint32_t *pxls, int crd[2], int size, uint32_t clr)
 
 void	imgtoscreen(uint32_t *pxls, t_img *img)
 {
-	int			p[2];
+	t_point		p;
 	uint32_t	clr;
 
-	p[Y] = 0;
-	while(p[Y] < img->size[Y])
+	p.y = 0;
+	while(p.y < img->size.y)
 	{
-		p[X] = 0;
-		while(p[X] < img->size[X])
+		p.x = 0;
+		while(p.x < img->size.x)
 		{
-			clr = img->data[p[X] + p[Y] * img->size[X]]; //TODO: sampleimg funtion;
+			clr = img->data[p.x + p.y * img->size.x]; //TODO: sampleimg funtion;
 			if (clr != 0)
 				draw(pxls, p, clr); //TODO: sampleimg function
-			p[X]++;
+			p.x++;
 		}
-		p[Y]++;
+		p.y++;
 	}
 }
 
-void	drawline(uint32_t *pxls, int from[2], int to[2], uint32_t clr)
+void	drawline(uint32_t *pxls, t_point from, t_point to, uint32_t clr)
 {
 	static t_bresenham	b;
 

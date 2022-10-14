@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/11 14:39:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/14 13:52:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,13 @@ int	main(int argc, char **argv)
 	while (1)
 	{
 		gr = editorloop(sdl);
-		if (gr == game_error || gr == game_exit)
+		if (gr == game_exit)
 			break ;
 		gr = playmode(sdl);
 		if (gr == game_error || gr == game_exit)
 			break ;
 	}
+	//SDL_DestroyWindow()
 	//TODO: sdl exit
 	return 0;
 }

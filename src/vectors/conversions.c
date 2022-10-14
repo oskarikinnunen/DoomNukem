@@ -1,21 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   img.c                                              :+:      :+:    :+:   */
+/*   conversions.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/04 13:42:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/13 13:31:54 by okinnune         ###   ########.fr       */
+/*   Created: 2022/10/13 17:23:31 by okinnune          #+#    #+#             */
+/*   Updated: 2022/10/14 14:23:59 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "doomnukem.h"
+#include "vectors.h"
 
-void	alloc_image(t_img *img, int width, int height)
+t_point	vector2_to_point(t_vector2 vec)
 {
-	img->size.x = width;
-	img->size.y = height;
-	img->length = width * height;
-	img->data = ft_memalloc(img->length * sizeof(uint32_t));
+	return (*(t_point *)&vec);
+}
+
+t_vector2	point_to_vector2(t_point point)
+{
+	return (*(t_vector2 *)&point);
 }

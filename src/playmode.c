@@ -21,10 +21,9 @@ static int key_events(SDL_Event e, t_game *game)
 			game->cam_mode = !game->cam_mode; //Flips from 0->1 and 1->0
 			if (game->cam_mode == overhead_absolute)
 			{
-				game->overheadcam_pos[X] = -game->player.position[X];
-				game->overheadcam_pos[Y] = -game->player.position[Y];
-				game->overheadcam_pos[X] += WINDOW_W / 2;
-				game->overheadcam_pos[Y] += WINDOW_H / 2;
+				game->overheadcam_pos = vector2_negative(game->player.position);
+				game->overheadcam_pos.x += WINDOW_W / 2;
+				game->overheadcam_pos.y += WINDOW_H / 2;
 			}
 		}
 	}
@@ -41,7 +40,7 @@ static int key_events(SDL_Event e, t_game *game)
 //	Updates mouse delta position
 static void updatemouse(t_mouse *mouse)
 {
-	SDL_GetRelativeMouseState(&mouse->p_delta[X], &mouse->p_delta[Y]);
+	SDL_GetRelativeMouseState(&mouse->delta.x, &mouse->delta.y);
 }
 
 /*check for keyboard/mouse input*/
@@ -90,8 +89,8 @@ int playmode(t_sdlcontext sdl)
 
 	bzero(&game, sizeof(t_game));
 	loadmap(&game.linelst, "mapfile1");
-	game.player.position[X] = 30.0f * TILESIZE; //TODO: player position should be in game coordinates, not screenspace
-	game.player.position[Y] = 30.0f * TILESIZE;
+	game.player.position.x = 0.0f; //TODO: player position should be in game coordinates, not screenspace
+	game.player.position.y = 0.0f;
 	//Locks mouse
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 	//Do game loop until exit or error

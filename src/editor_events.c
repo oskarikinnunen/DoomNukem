@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/06 09:20:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/13 16:43:43 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,6 @@ int		editor_events(t_editor *ed)
 				if (ed->state != display3d)
 				{
 					start_anim(&ed->transition, anim_forwards);
-					gridto_obj(&ed->grid_fdf.obj); //TODO: LEAKS!! doesn't free the previous stuff
-					fdf_init(&ed->grid_fdf);
-					lines_to_obj(&ed->walls_fdf.obj, ed);
-					fdf_init(&ed->walls_fdf);
 					ed->state = display3d;
 				}
 				else
