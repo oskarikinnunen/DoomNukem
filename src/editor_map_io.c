@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_map_io.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/13 20:39:23 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/15 13:12:34 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,15 +55,14 @@ void	loadmap(t_list **linelist, char *filename)
 void	savemap(t_editor *ed, char *filename)
 {
 	int		fd;
+	int		written;
 	t_list	*l;
 
 	fd = fileopen(filename, O_RDWR | O_CREAT | O_TRUNC);
 	l = ed->linelist;
 	while (l != NULL)
 	{
-		int written = write(fd, (t_line *)l->content, sizeof(t_line));
-		if (written == -1)
-			error_log(EC_WRITE);
+		write(fd, (t_line *)l->content, sizeof(t_line));
 		//printf("wrote %i bytes \n", written);
 		l = l->next;
 	}

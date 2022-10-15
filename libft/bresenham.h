@@ -3,26 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   bresenham.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 04:27:26 by okinnune          #+#    #+#             */
-/*   Updated: 2022/09/29 18:20:00 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/13 14:32:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef BRESENHAM_H
 # define BRESENHAM_H
 
+# include "../include/vectors.h"
+
 typedef struct s_bresenham //CHANGE TO USE Uu_int32_t32
 {
-	int32_t	diff[2];
-	int32_t	add[2];
-	int32_t	local[3];
-	int32_t	target[2];
+	t_point	diff;
+	t_point	add;
+	t_point	local;
+	t_point	target;
 	int32_t	error;
 }	t_bresenham;
 
-void	populate_bresenham(t_bresenham *b, int32_t *from, int32_t *to);
+void	populate_bresenham(t_bresenham *b, t_point from, t_point to);
 int		step_bresenham(t_bresenham *b);
 void	step_bresenham_x(t_bresenham *b);
 void	step_bresenham_y(t_bresenham *b);

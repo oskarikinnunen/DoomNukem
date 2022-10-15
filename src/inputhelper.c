@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 09:20:17 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/06 10:49:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/15 12:55:38 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,3 @@ bool	keyismovedown(SDL_Event e)
 {
 	return (iskey(e, SDLK_DOWN) || iskey(e, SDLK_s));
 }
-
-/*bool check_keystate(int32_t keystate, int32_t mask)
-{
-	return (keystate & mask);
-}*/

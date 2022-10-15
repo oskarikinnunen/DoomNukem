@@ -2,6 +2,8 @@
 src/*.o
 SDL_built/*
 SDL_built/**
+SDL-release-2.0.8/build/*
+!SDL-release-2.0.8/build/DontRemoveMe
 libft/libft.a
 libft/**.o
 !SDL_built/DontRemoveMe

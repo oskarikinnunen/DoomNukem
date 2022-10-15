@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   moveplayer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/13 19:08:11 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/15 13:10:48 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,65 +16,45 @@
 
  // Might need the whole gamecontext but I'm trying to avoid it, (trying to avoid global state)
  // TODO: normalize movement vector
-static void	updatemovementvector(float move_f2[2], int32_t keystate, float angle)
+static t_vector2	movementvector(int32_t keystate, float angle)
 {
-	//TODO: next parts could be done with some kind of "rotatevector" function
+	t_vector2	movement;
+
+	movement = vector2_zero();
 	if ((keystate >> KEYS_UPMASK) & 1) 
 	{
-		move_f2[X] += sin(angle);
-		move_f2[Y] += cos(angle);
+		movement.x += sin(angle);
+		movement.y += cos(angle);
 	}
 	if ((keystate >> KEYS_DOWNMASK) & 1)
 	{
-		move_f2[X] -= sin(angle);
-		move_f2[Y] -= cos(angle);
+		movement.x -= sin(angle);
+		movement.y -= cos(angle);
 	}
 	// strafe
 	if ((keystate >> KEYS_LEFTMASK) & 1)
 	{
-		move_f2[X] += sin(angle + RAD90);
-		move_f2[Y] += cos(angle + RAD90);
+		movement.x += sin(angle + RAD90);
+		movement.y += cos(angle + RAD90);
 	}
 	if ((keystate >> KEYS_RGHTMASK) & 1)
 	{
-		move_f2[X] += -sin(angle + RAD90);
-		move_f2[Y] += -cos(angle + RAD90);
+		movement.x += -sin(angle + RAD90);
+		movement.y += -cos(angle + RAD90);
 	}
-}
-
-//Only checks start and end point collisions, TODO: fix linecirclecollision
-static bool checkwallcollisions(t_game *game, float potential_pos[2])
-{
-	t_list		*node;
-	t_line		line;
-	float		test_line_pos[2];
-	t_bresenham	b;
-	
-
-	node = game->linelst;
-	while (node != NULL)
-	{
-		line = *(t_line *)node->content;
-		v2mul_to_f2(line.start, TILESIZE, test_line_pos);
-		if (pointcirclecollision(test_line_pos, potential_pos, PLAYERRADIUS))
-			return (true);
-		v2mul_to_f2(line.end, TILESIZE, test_line_pos);
-		if (pointcirclecollision(test_line_pos, potential_pos, PLAYERRADIUS))
-			return (true);
-		node = node->next;
-	}
-	return (false);
+	movement = vector2_clamp_magnitude(movement, MAXMOVEMENTSPEED);
+	return (movement);
 }
 
 void	moveplayer(t_game *game)
 {
-	float	move_f2[2];
-	float	potential_plr_pos[2];
+	t_vector2	move_vector;
+	t_vector2	potential_pos; //Unused right now, will be used when collision is reimplemented
 	float	angle;
 
-	ft_bzero(move_f2, sizeof(float [2]));
+	move_vector = vector2_zero();
 	angle = 0;
-	angle -= game->mouse.p_delta[X] * MOUSESPEED;
+	angle -= game->mouse.delta.x * MOUSESPEED;
 	//	rotate character with arrow keys, doesn't work correctly with strafe
 	//	but if you need it it's here, just uncomment the next 2 lines
 	//angle -= ((game->keystate >> KEYS_RGHTMASK) & 1) * ROTATESPEED;
@@ -82,14 +62,7 @@ void	moveplayer(t_game *game)
 	//angle += (keystate >> KEYS_LEFTMASK) & 1;
 	angle *= game->clock.delta;
 	game->player.angle += angle;
-	updatemovementvector(move_f2, game->keystate, game->player.angle);
-	f2mul(move_f2, game->clock.delta * MOVESPEED);
-	#ifndef COLLISION_ON
-		f2add(game->player.position, move_f2);
-	#else
-		f2cpy(potential_plr_pos, move_f2);
-		f2add(potential_plr_pos, game->player.position);
-		if (checkwallcollisions(game, potential_plr_pos) == false)
-			f2add(game->player.position, move_f2);
-	#endif
+	move_vector = movementvector(game->keystate, game->player.angle);
+	move_vector = vector2_mul(move_vector, game->clock.delta * MOVESPEED);
+	game->player.position = vector2_add(game->player.position, move_vector);
 }
