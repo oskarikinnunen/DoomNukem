@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/15 13:11:18 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/15 13:15:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,6 @@ int	main(int argc, char **argv)
 		if (gr == game_exit) // quit & exit is handled inside of playmode atm
 			break ;
 	}
-	quit_sdl(&sdl);
+	//quit_sdl(&sdl);
 	return (0);
 }

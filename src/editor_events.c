@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/15 13:12:47 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/15 13:14:22 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,6 @@ int		editor_events(t_editor *ed)
 				return(game_switchmode);
 			else if(iskey(e, SDLK_SPACE))
 			{
-				
 				/*if (ed->state != display3d)
 				{
 					if (check_for_free == 1)
