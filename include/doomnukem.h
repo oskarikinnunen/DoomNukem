@@ -3,11 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2022/10/13 20:35:59 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/15 13:15:58 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,19 +20,6 @@
 # include <math.h>
 # include <fcntl.h>
 # include <stdbool.h>
-=======
-/*   Updated: 2022/10/15 12:38:26 by okinnune         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "../SDL_built/include/SDL2/SDL.h" //TODO: make this work without relative path?
-#include "libft.h"
-#include "limits.h" //TODO: remove mby? just define INT_MAX yourself
-#include "math.h"
-#include <fcntl.h>
-#include <stdbool.h>
-#include "vectors.h"
->>>>>>> vector2-rewrite
 
 # define WINDOW_W 1920
 # define WINDOW_H 1080
@@ -237,20 +223,6 @@ void	saveline(t_editor *ed);
 void	loadmap(t_list **head, char *filename);
 void	savemap(t_editor *ed, char *filename);
 
-<<<<<<< HEAD
-/* EDITOR_3D_INITIALIZE.C */
-void	grid_to_obj(t_obj *obj);
-void	lines_to_obj(t_obj *obj, t_editor *ed);
-
-/* EDITOR_3D.C */
-void	editor3d(t_sdlcontext sdl, t_editor *ed_ptr);
-
-/* FDF.C */
-void		fdf_init(t_fdf *fdf);
-void	fdf_draw_wireframe(t_fdf *fdf);
-
-=======
->>>>>>> vector2-rewrite
 /* IMG.C */
 void	alloc_image(t_img *img, int width, int height);
 

@@ -3,15 +3,13 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
+#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
- #    Updated: 2022/10/12 16:05:30 by raho             ###   ########.fr        #
-=======
-#    Updated: 2022/10/15 12:33:33 by okinnune         ###   ########.fr        #
->>>>>>> vector2-rewrite
+#    Updated: 2022/10/15 13:15:03 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
+
 
 
 NAME= DoomNukem
