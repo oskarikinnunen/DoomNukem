@@ -6,14 +6,13 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 09:46:25 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/14 20:26:41 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/15 12:55:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "inputhelp.h"
 
-//TODO: add "camera position", this just draws from (0,0) perspective
 
 void	move_overhead(t_game *game)
 {
@@ -46,9 +45,12 @@ static void	draw_walls(t_list *linelist, t_sdlcontext *sdl, t_vector2 offset)
 	}
 }
 
+//TODO: add some kind of "camera position" abstraction, this just draws from (0,0) perspective and all the walls are shifted
+//TODO: re-add player_ball draw for overhead_absolute camera mode
+//TODO: player position in "overhead follow" is off by half a window size
 void	render_overhead(t_game *game, t_sdlcontext *sdl)
 {
-	t_point		player_pos; //player coordinates (screenspace) in integer vector
+	t_point		player_ball; //player coordinates  in screenspace
 	t_point		look_to; // line end coordinate that is towards player look direction
 	t_vector2	walls_offset;
 
@@ -56,22 +58,21 @@ void	render_overhead(t_game *game, t_sdlcontext *sdl)
 	look_to.y = cos(game->player.angle) * 40;
 	if (game->cam_mode == overhead_absolute)
 	{
-		player_pos = *(t_point *)&game->player.position;
-		t_point	temp;
-		//player_pos = point_add(player_pos, point_negative(vector2_to_point(game->overheadcam_pos)));
+		player_ball = point_zero(); //for now
+		//TODO: Calculate screen coordinates for player "ball" here
+		//player_pos = vector2_to_point(game->player.position);
 		draw_walls(game->linelst, sdl, game->overheadcam_pos);
 	}
 	else if  (game->cam_mode == overhead_follow)
 	{
-		player_pos.x = WINDOW_W / 2;
-		player_pos.y = WINDOW_H / 2;
+		player_ball.x = WINDOW_W / 2;
+		player_ball.y = WINDOW_H / 2;
 		walls_offset = vector2_negative(game->player.position);
 		draw_walls(game->linelst, sdl, walls_offset);
 	}
-	look_to = point_add(look_to, player_pos);
-	drawline(sdl->surface->pixels, player_pos, look_to, CLR_PRPL);
-	if (game->cam_mode == overhead_follow)
-		drawcircle(sdl->surface->pixels, player_pos, PLAYERRADIUS, CLR_PRPL);
-	else
-		drawcircle(sdl->surface->pixels, player_pos, PLAYERRADIUS, CLR_GRAY);
+	look_to = point_add(look_to, player_ball);
+	if (game->cam_mode == overhead_follow) {
+		drawcircle(sdl->surface->pixels, player_ball, PLAYERRADIUS, CLR_PRPL);
+		drawline(sdl->surface->pixels, player_ball, look_to, CLR_PRPL);
+	}
 }

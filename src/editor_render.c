@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 08:20:49 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/14 18:15:06 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/15 12:24:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,10 @@ static void	render_editline(t_sdlcontext *sdl, t_editor *ed)
 	line_ss.start = point_add(line_ss.start, ed->mousedrag->pos);
 	line_ss.end = point_mul(ed->line.end, TILESIZE);
 	line_ss.end = point_add(line_ss.end, ed->mousedrag->pos);
-	circlepos = screentoworldspace(ed->mouse.pos);
+	circlepos = mousetoworldspace(ed);
 	circlepos = point_mul(circlepos, TILESIZE);
+	circlepos = point_add(circlepos, ed->mousedrag->pos);
+	//circlepos = point_add(circlepos, point_div(ed->mousedrag->pos, TILESIZE));
 	//mousetoworldspace(circlepos, ed);
 	//circlepos = point_mul(circlepos, TILESIZE);
 	//circlepos = point_add(circlepos, ed->mousedrag->pos);

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/14 20:21:38 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/15 12:55:27 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,43 +42,16 @@ static t_vector2	movementvector(int32_t keystate, float angle)
 		movement.x += -sin(angle + RAD90);
 		movement.y += -cos(angle + RAD90);
 	}
+	movement = vector2_clamp_magnitude(movement, MAXMOVEMENTSPEED);
 	return (movement);
-}
-
-//Only checks start and end point collisions, TODO: fix linecirclecollision
-static bool checkwallcollisions(t_game *game, t_vector2 potential_pos)
-{
-	t_list		*node;
-	t_line		line;
-	t_vector2	test_line_pos;
-	t_bresenham	b;
-	
-
-	node = game->linelst;
-	while (node != NULL)
-	{
-		line = *(t_line *)node->content;
-		//test_line_pos = 
-		line.start = point_mul(line.start, TILESIZE);
-		line.end = point_mul(line.end, TILESIZE);
-		test_line_pos = point_to_vector2(line.start);
-		if (pointcirclecollision(test_line_pos, potential_pos, PLAYERRADIUS))
-			return (true);
-		test_line_pos = point_to_vector2(line.start);
-		if (pointcirclecollision(test_line_pos, potential_pos, PLAYERRADIUS))
-			return (true);
-		node = node->next;
-	}
-	return (false);
 }
 
 void	moveplayer(t_game *game)
 {
-	t_vector2	move_vector; //
-	t_vector2	potential_pos;
+	t_vector2	move_vector;
+	t_vector2	potential_pos; //Unused right now, will be used when collision is reimplemented
 	float	angle;
 
-	//ft_bzero(move_f2, sizeof(float [2]));
 	move_vector = vector2_zero();
 	angle = 0;
 	angle -= game->mouse.delta.x * MOUSESPEED;
@@ -91,6 +64,5 @@ void	moveplayer(t_game *game)
 	game->player.angle += angle;
 	move_vector = movementvector(game->keystate, game->player.angle);
 	move_vector = vector2_mul(move_vector, game->clock.delta * MOVESPEED);
-	
 	game->player.position = vector2_add(game->player.position, move_vector);
 }
