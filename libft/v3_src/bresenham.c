@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bresenham.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 12:09:50 by okinnune          #+#    #+#             */
-/*   Updated: 2022/09/29 18:21:58 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/13 14:42:25 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,19 @@
 
 void	step_bresenham_x(t_bresenham *b)
 {
-	if (b->error * 2 < b->diff[X] && b->local[Y] != b->target[Y])
+	if (b->error * 2 < b->diff.x && b->local.y != b->target.y)
 	{
-		b->local[Y] += b->add[Y];
-		b->error += b->diff[X];
+		b->local.y += b->add.y;
+		b->error += b->diff.x;
 	}
 }
 
 void	step_bresenham_y(t_bresenham *b)
 {
-	if (b->error * 2 > b->diff[Y] && b->local[X] != b->target[X])
+	if (b->error * 2 > b->diff.y && b->local.x != b->target.x)
 	{
-		b->local[X] += b->add[X];
-		b->error += b->diff[Y];
+		b->local.x += b->add.x;
+		b->error += b->diff.y;
 	}
 }
 
@@ -35,17 +35,16 @@ int		step_bresenham(t_bresenham *b)
 {
 	step_bresenham_x(b);
 	step_bresenham_y(b);
-	return (b->local[X] == b->target[X] && b->local[Y] == b->target[Y]);
+	return (b->local.x == b->target.x && b->local.y == b->target.y);
 }
 
-void	populate_bresenham(t_bresenham *b, int32_t *from, int32_t *to)
+void	populate_bresenham(t_bresenham *b, t_point from, t_point to)
 {
-	ft_memcpy(b->local, from, sizeof(int32_t [3]));
-	b->diff[X] = ft_abs(b->local[X] - to[X]);
-	b->diff[Y] = -ft_abs(b->local[Y] - to[Y]);
-	b->add[X] = 1 - ((b->local[X] > to[X]) * 2);
-	b->add[Y] = 1 - ((b->local[Y] > to[Y]) * 2);
-	b->target[X] = to[X];
-	b->target[Y] = to[Y];
-	b->error = b->diff[X] + b->diff[Y];
+	b->local = from;
+	b->diff.x = ft_abs(b->local.x - to.x);
+	b->diff.y = -ft_abs(b->local.y - to.y);
+	b->add.x = 1 - ((b->local.x > to.x) * 2);
+	b->add.y = 1 - ((b->local.y > to.y) * 2);
+	b->target = to;
+	b->error = b->diff.x + b->diff.y;
 }

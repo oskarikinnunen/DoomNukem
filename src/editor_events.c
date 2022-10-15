@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_events.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/12 18:26:46 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/15 13:12:47 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,8 @@ int		editor_events(t_editor *ed)
 				return(game_switchmode);
 			else if(iskey(e, SDLK_SPACE))
 			{
-				if (ed->state != display3d)
+				
+				/*if (ed->state != display3d)
 				{
 					if (check_for_free == 1)
 					{
@@ -83,18 +84,13 @@ int		editor_events(t_editor *ed)
 						free_fdf_obj(&ed->walls_fdf.obj);
 					}
 					start_anim(&ed->transition, anim_forwards);
-					grid_to_obj(&ed->grid_fdf.obj);
-					fdf_init(&ed->grid_fdf);
-					lines_to_obj(&ed->walls_fdf.obj, ed);
-					fdf_init(&ed->walls_fdf);
-					ed->state = display3d;
-					check_for_free = 1;
+					ed->state = display3d; 
 				}
 				else
 				{
 					start_anim(&ed->transition, anim_backwards);
 					ed->state = place_start;
-				}
+				}*/
 			}
 		}
 	}

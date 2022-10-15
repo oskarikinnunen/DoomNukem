@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_saveline.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:21:52 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/13 20:32:59 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/15 13:12:04 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ bool	removeduplicate(t_editor *ed)
 		line = *(t_line *)node->content;
 		if (node->content == NULL)
 			return (true);
-		if ((v2cmp(ed->line.start, line.start) && v2cmp(ed->line.end, line.end)) ||
-			(v2cmp(ed->line.start, line.end) && v2cmp(ed->line.end, line.start)))
+		if ((point_cmp(ed->line.start, line.start) && point_cmp(ed->line.end, line.end)) ||
+			(point_cmp(ed->line.start, line.end) && point_cmp(ed->line.end, line.start)))
 		{
 			if (prev)
 				prev->next = node->next;
