@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/14 20:24:46 by okinnune         ###   ########.fr        #
+#    Updated: 2022/10/15 12:33:33 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,11 +26,11 @@ SRCFILES= main.c draw.c img.c deltatime.c anim.c\
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c \
 		vector2_elementary.c vector2_shorthands.c \
-		vector2_complex.c \
+		vector2_complex.c vector2_clamp.c \
 		point_elementary.c point_shorthands.c \
 		point_complex.c point_float_ops.c \
 		conversions.c \
-		quaternion_shorthands.c
+		quaternion_shorthands.c 
 VECTORSRC= $(addprefix src/vectors/,$(VECTORSRCFILES))
 SRC= $(addprefix src/,$(SRCFILES))
 SRC+= $(VECTORSRC)

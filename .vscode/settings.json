@@ -11,6 +11,7 @@
 		"memory": "c",
 		"new": "c",
 		"ostream": "c",
-		"utility": "c"
+		"utility": "c",
+		"vectors.h": "c"
 	}
 }

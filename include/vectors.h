@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/14 17:43:32 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/15 12:35:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include <math.h>
 #include <stdbool.h>
+#include "libft.h"
 
 /* t_vector3 functions */
 typedef struct s_vector3
@@ -108,6 +109,9 @@ float		vector2_dot(t_vector2 first, t_vector2 second);
 
 //returns true if both vectors are identical
 bool		vector2_cmp(t_vector2 first, t_vector2 second);
+
+//returns copy of 'vec' but with magnitude clamped to 'max_magnitude'
+t_vector2	vector2_clamp_magnitude(t_vector2 vec, float max_magnitude);
 
 typedef struct s_point
 {

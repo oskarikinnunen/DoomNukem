@@ -6,11 +6,28 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/14 20:20:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/15 12:25:38 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
+
+
+t_point	mousetoworldspace(t_editor *ed)
+{
+	t_point	result;
+	t_point	mod;
+
+	result.x = -(ed->mousedrag->pos.x - ed->mouse.pos.x);
+	result.y = -(ed->mousedrag->pos.y - ed->mouse.pos.y);
+	//result = point_div(point, TILESIZE);
+	mod.x = result.x % TILESIZE;
+	mod.y = result.y % TILESIZE;
+	result = point_div(result, TILESIZE);
+	result.x += (bool)(mod.x > TILESIZE / 2);
+	result.y += (bool)(mod.y > TILESIZE / 2);
+	return (result);
+}
 
 t_point	screentoworldspace(t_point point)
 {
@@ -65,14 +82,14 @@ static void	mouseclick(t_editor *ed)
 		ed->mouse.click = false;
 		if (ed->state == place_end)
 		{
-			ed->line.end = screentoworldspace(ed->mouse.pos);
+			ed->line.end = mousetoworldspace(ed);
 			saveline(ed);
 			ft_bzero(&ed->line, sizeof(t_line));
 			ed->state = place_start;
 		}
 		else if (ed->state == place_start)
 		{
-			ed->line.start = screentoworldspace(ed->mouse.pos);
+			ed->line.start = mousetoworldspace(ed);
 			ed->state = place_end;
 		}
 	}
