@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   errors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 15:53:51 by raho              #+#    #+#             */
-/*   Updated: 2022/10/13 20:35:52 by raho             ###   ########.fr       */
+/*   Updated: 2022/10/15 13:19:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static void	sdl_errors(int error_code)
 	exit (1);
 }
 
-static void	standard_function_errors(error_code)
+static void	standard_function_errors(int error_code)
 {
 	if (error_code == EC_OPEN)
 		fprintf(stderr, "Open failed\n");

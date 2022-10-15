@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/15 13:15:58 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/15 13:16:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include "limits.h" //TODO: remove mby? just define INT_MAX yourself
 # include <math.h>
 # include <fcntl.h>
+# include "vectors.h"
 # include <stdbool.h>
 
 # define WINDOW_W 1920
