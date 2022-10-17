@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/17 20:04:53 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/18 02:46:29 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ int	editorloop(t_sdlcontext sdl)
 	ed.transition.lastframe = 15;
 	ed.transition.active = false;
 	ed.threedee_zoom = 1.0f;
+	//get_tools();
 	while (1)
 	{
 		update_deltatime(&ed.clock);
