@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vectors.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/15 12:35:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/17 20:37:21 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,10 +166,8 @@ bool		point_cmp(t_point first, t_point second);
 
 typedef struct s_quaternion
 {
-	float	x;
-	float	y;
-	float	z;
-	float	w;
+	t_vector3	v;
+	float		w;
 }	t_quaternion;
 
 // shorthand for writing (t_quaternion){1.0f, 1.0f, 1.0f, 1.0f}
