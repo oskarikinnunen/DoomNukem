@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode_overhead.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 09:46:25 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/15 13:10:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/17 19:26:39 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	move_overhead(t_game *game)
 	
 	move_vector = vector2_zero();
 	move_vector.x += (game->keystate >> KEYS_LEFTMASK) & 1;
-	move_vector.x -= (game->keystate >> KEYS_RGHTMASK) & 1;
+	move_vector.x -= (game->keystate >> KEYS_RIGHTMASK) & 1;
 	move_vector.y += (game->keystate >> KEYS_UPMASK) & 1;
 	move_vector.y -= (game->keystate >> KEYS_DOWNMASK) & 1;
 	move_vector = vector2_mul(move_vector, game->clock.delta * OVERHEADCAMSPEED);
@@ -54,8 +54,8 @@ void	render_overhead(t_game *game, t_sdlcontext *sdl)
 	t_point		look_to; // line end coordinate that is towards player look direction
 	t_vector2	walls_offset;
 
-	look_to.x = sin(game->player.angle) * 40;
-	look_to.y = cos(game->player.angle) * 40;
+	look_to.x = sin(game->player.angle.x) * 40;
+	look_to.y = cos(game->player.angle.y) * 40;
 	if (game->cam_mode == overhead_absolute)
 	{
 		player_ball = point_zero(); //for now

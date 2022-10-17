@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/15 13:16:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/17 19:26:08 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@
 # define CLR_PRPL 14231500
 # define CLR_TURQ 5505010
 # define CLR_GRAY 4868682
+# define CLR_GREEN 3002977
 
 
 
@@ -59,6 +60,8 @@ typedef struct s_sdlcontext
 {
 	SDL_Window				*window;
 	SDL_Surface				*surface;
+	uint32_t				*zbuffer;
+	SDL_Renderer			*renderer; //TODO: for testing remove.
 }	t_sdlcontext;
 
 typedef struct s_mouse
@@ -105,6 +108,14 @@ typedef struct s_img
 	uint32_t	*data;
 	uint32_t	length;
 }	t_img;
+
+# define PERFGRAPH_SAMPLES 64
+
+typedef struct s_perfgraph
+{
+	t_img		image;
+	uint32_t	deltas[PERFGRAPH_SAMPLES];
+}	t_perfgraph;
 
 typedef struct s_obj //TODO: move obj/fdf related stuff to separate header?
 {
@@ -159,7 +170,7 @@ typedef struct s_editor
 typedef struct s_player
 {
 	t_vector2	position; //TODO: might be changed to int[2], don't know yet
-	float		angle;
+	t_vector2	angle;
 }	t_player;
 
 typedef enum	e_cam_mode
@@ -168,17 +179,6 @@ typedef enum	e_cam_mode
 	overhead_absolute
 }	t_cam_mode;
 
-typedef struct s_game
-{
-	t_list			*linelst;
-	t_clock			clock;
-	t_mouse			mouse;
-	t_player		player;
-	int32_t			keystate;
-	t_cam_mode		cam_mode;
-	t_vector2		overheadcam_pos;
-} t_game;
-
 typedef enum e_gamereturn
 {
 	game_error,
@@ -186,6 +186,63 @@ typedef enum e_gamereturn
 	game_exit,
 	game_switchmode
 } t_gamereturn;
+
+typedef struct s_vec3d
+{
+	float x;
+	float y;
+	float z;
+	float w;
+}	t_vec3d;
+
+typedef struct	s_triangle
+{
+	struct s_vec3d p[3];
+	uint32_t	clr;
+}	t_triangle;
+
+typedef struct s_mat4x4
+{
+	float m[4][4];
+}	t_mat4x4;
+
+typedef struct s_trilist
+{
+	struct s_triangle tri;
+	struct s_trilist *next;
+} t_trilist;
+
+typedef struct s_math //place holder for structs containing players camera info and matrixes
+{
+	//pass
+	int					tri_count;
+	struct s_triangle	*triangles;
+	//static
+	t_mat4x4 			matproj;
+	//player movement
+	t_vec3d 			vcamera;
+	t_vec3d 			vlookdir;
+	float				fyaw;
+	float				fpitch;
+}	t_math;
+
+typedef struct s_game
+{
+	t_list			*linelst;
+	t_clock			clock;
+	t_mouse			mouse;
+	t_player		player;
+	int32_t			keystate;
+	t_math			math;
+	t_cam_mode		cam_mode;
+	t_vector2		overheadcam_pos;
+} t_game;
+
+typedef struct s_zbuff
+{
+	int	w;
+	int	*zbuff;
+}	t_zbuff;
 
 /* V2.C */
 
@@ -243,12 +300,17 @@ void	drawline(uint32_t *pxls, t_point from, t_point to, uint32_t clr);
 void	drawcircle(uint32_t *pxls, t_point pos, int size, uint32_t clr);
 void	imgtoscreen(uint32_t *pxls, t_img *img);
 
+/* PERFGRAPH.C */
+void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext *sdl);
+
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
+void engine3d(t_sdlcontext sdl, t_triangle *triangles, int tri_count, t_mat4x4 matproj, t_mat4x4 matworld, t_vec3d vcamera, t_vec3d vlookdir);
 
 /* PHYSICS.C */
 bool	pointcirclecollision(t_vector2 p, t_vector2 cp, float r);
 bool	linecirclecollision(t_line line, t_vector2 cp, float r);
+
 
 /* PLAYMODE_OVERHEAD.C */
 void	render_overhead(t_game *game, t_sdlcontext *sdl);
