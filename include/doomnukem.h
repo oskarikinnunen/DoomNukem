@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/17 19:26:08 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/17 21:21:17 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,17 +187,9 @@ typedef enum e_gamereturn
 	game_switchmode
 } t_gamereturn;
 
-typedef struct s_vec3d
-{
-	float x;
-	float y;
-	float z;
-	float w;
-}	t_vec3d;
-
 typedef struct	s_triangle
 {
-	struct s_vec3d p[3];
+	t_quaternion p[3];
 	uint32_t	clr;
 }	t_triangle;
 
@@ -213,15 +205,15 @@ typedef struct s_trilist
 } t_trilist;
 
 typedef struct s_math //place holder for structs containing players camera info and matrixes
-{
+{// on the chopping list
 	//pass
 	int					tri_count;
 	struct s_triangle	*triangles;
 	//static
 	t_mat4x4 			matproj;
 	//player movement
-	t_vec3d 			vcamera;
-	t_vec3d 			vlookdir;
+	t_vector3 			vcamera;
+	t_vector3 			vlookdir;
 	float				fyaw;
 	float				fpitch;
 }	t_math;
@@ -305,7 +297,7 @@ void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext *sdl);
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
-void engine3d(t_sdlcontext sdl, t_triangle *triangles, int tri_count, t_mat4x4 matproj, t_mat4x4 matworld, t_vec3d vcamera, t_vec3d vlookdir);
+void engine3d(t_sdlcontext sdl, t_triangle *triangles, int tri_count, t_mat4x4 matproj, t_mat4x4 matworld, t_vector3 vcamera, t_vector3 vlookdir);
 
 /* PHYSICS.C */
 bool	pointcirclecollision(t_vector2 p, t_vector2 cp, float r);

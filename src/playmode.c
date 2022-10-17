@@ -6,8 +6,8 @@
 //	TODO: move playermode events to separate file
 /*place holder for inits*/
 t_mat4x4 Init();
-t_vec3d	Initv3();
 t_triangle Inittri();
+void printf_tri(t_triangle t);
 t_mat4x4 Matrix_MakeIdentity();
 t_mat4x4 Matrix_MakeProjection(float fFovDegrees, float fAspectRatio, float fNear, float fFar);
 void	move(t_game *game);
@@ -106,8 +106,8 @@ static int start_gameloop(t_sdlcontext sdl, t_game game)
 
 	math = &game.math;
 	bzero(&game.player, sizeof(t_player));
-	math->vcamera = (t_vec3d){43.471909, 69.871468, -47.650238, 1}; // change these to v3init
-	math->vlookdir = (t_vec3d){0, 0, 0, 1}; // 
+	math->vcamera = (t_vector3){43.471909, 69.871468, -47.650238}; // change these to v3init
+	math->vlookdir = (t_vector3){1, 0, 0}; // 
 	math->fyaw = -1.824000f;
 	math->fpitch = -0.204000f;
 	math->matproj = Init();
@@ -118,9 +118,9 @@ static int start_gameloop(t_sdlcontext sdl, t_game game)
 static t_triangle set_tri(int *p1, int *p2, int *p3)
 {
 	return((t_triangle){
-		(t_vec3d){p1[X], p1[Y], p1[Z], 1},
-		(t_vec3d){p2[X], p2[Y], p2[Z], 1},
-		(t_vec3d){p3[X], p3[Y], p3[Z], 1}
+		(t_quaternion){p1[X], p1[Y], p1[Z], 1.0f},
+		(t_quaternion){p2[X], p2[Y], p2[Z], 1.0f},
+		(t_quaternion){p3[X], p3[Y], p3[Z], 1.0f}
 		});
 }
 
@@ -139,9 +139,10 @@ static void set_tri_array(t_math *math, t_obj *obj)
 	{
 		math->triangles[i / 2] = set_tri(verts[i], verts[i + 1], verts[i + 2]);
 		math->triangles[(i / 2) + 1] = set_tri(verts[i + 2], verts[i + 1], verts[i + 3]);
+	//	printf_tri(math->triangles[i / 2]);
+	//	printf_tri(math->triangles[(i / 2) + 1]);
 		i += 4;
 	}
-	//exit(0);
 }
 
 static void linefaces(t_obj *obj, uint32_t i)
@@ -236,6 +237,8 @@ int playmode(t_sdlcontext sdl)
 	if (SDL_SetRelativeMouseMode(SDL_TRUE) < 0)
 		error_log(EC_SDL_SETRELATIVEMOUSEMODE);
 	//Do game loop until exit or error
+	//gr = startgameloop(sdl, game);
+	//gr = start_gameloop(sdl, game);
 	gr = gameloop(sdl, game);
 	if (gr == game_exit)
 	{
