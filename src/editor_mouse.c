@@ -6,12 +6,11 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/17 20:22:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/17 20:48:32 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
-
 
 t_point	mousetoworldspace(t_editor *ed)
 {
@@ -111,8 +110,7 @@ void	mouse_event(SDL_Event e, t_editor *ed)
 	{
 		ed->mouse.click = (ed->mouse.held == MOUSE_LEFT);
 		ed->mouse.held = 0;
-		ed->mousedrag->pos_origin.x += ed->mousedrag->drag.x; //TODO: use v2add
-		ed->mousedrag->pos_origin.y += ed->mousedrag->drag.y;
+		ed->mousedrag->pos_origin = point_add(ed->mousedrag->pos_origin, ed->mousedrag->drag);
 		ed->mousedrag->drag = point_zero();
 		if (e.button.button == MOUSE_MDL && ed->state == display3d)
 		{

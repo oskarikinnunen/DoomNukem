@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/17 20:19:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/17 20:42:04 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,27 @@ typedef enum	e_anim_mode
 	anim_forwards,
 	anim_backwards
 } t_anim_mode;
+
+
+typedef struct	s_tool
+{
+	void	(*click_func)(t_point, int);
+	void	(*key_func)(int);
+	t_mouse	mouse;
+}	t_tool; //TODO: make static array of these and use test them in editor_mouse
+
+/*
+
+	tool_click(t_point position, int mousekey);
+	tool_click(t_point position, int mousekey);
+
+*/
+/*typedef enum	e_tooltype //TODO: Unused right now
+{
+	tool_points,
+	tool_define_room,
+	tool_entity,
+}	t_tool;*/
 
 typedef struct s_clock
 {
