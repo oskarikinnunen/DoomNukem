@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/17 20:42:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/17 23:49:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,8 @@ typedef struct	s_tool
 	void	(*key_func)(int);
 	t_mouse	mouse;
 }	t_tool; //TODO: make static array of these and use test them in editor_mouse
+
+t_tool	*get_tools();
 
 /*
 
