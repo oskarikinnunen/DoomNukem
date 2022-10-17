@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   moveplayer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/15 13:10:48 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/17 19:50:07 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static t_vector2	movementvector(int32_t keystate, float angle)
 		movement.x += sin(angle + RAD90);
 		movement.y += cos(angle + RAD90);
 	}
-	if ((keystate >> KEYS_RGHTMASK) & 1)
+	if ((keystate >> KEYS_RIGHTMASK) & 1)
 	{
 		movement.x += -sin(angle + RAD90);
 		movement.y += -cos(angle + RAD90);
@@ -61,8 +61,13 @@ void	moveplayer(t_game *game)
 	//angle -= ((game->keystate >> KEYS_LEFTMASK) & 1) * ROTATESPEED;
 	//angle += (keystate >> KEYS_LEFTMASK) & 1;
 	angle *= game->clock.delta;
-	game->player.angle += angle;
-	move_vector = movementvector(game->keystate, game->player.angle);
+	game->player.angle.x += angle;
+	angle = 0;
+	angle -= game->mouse.delta.y * MOUSESPEED;
+	angle *= game->clock.delta;
+	game->player.angle.y += angle;
+	game->player.angle.y = ft_clampf(game->player.angle.y, -RAD90 * 0.99f, RAD90 * 0.99f);
+	move_vector = movementvector(game->keystate, game->player.angle.x);
 	move_vector = vector2_mul(move_vector, game->clock.delta * MOVESPEED);
 	game->player.position = vector2_add(game->player.position, move_vector);
 }
