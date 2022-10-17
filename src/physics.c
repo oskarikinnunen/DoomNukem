@@ -6,11 +6,17 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 13:52:50 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/14 17:52:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/17 20:13:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
+
+bool	pointrectanglecollision(t_point p, t_rectangle rect) //dunno if this should be in physics
+{
+	return (p.x > rect.position.x && p.x < rect.position.x + rect.size.x
+		&& p.y > rect.position.y && p.y < rect.position.y + rect.size.y);
+}
 
 bool	pointcirclecollision(t_vector2 p, t_vector2 cp, float r)
 {

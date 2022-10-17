@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/15 13:17:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/17 20:23:00 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 int		editor_events(t_editor *ed)
 {
 	static SDL_Event	e;
-	static int			check_for_free;
 	
 	ed->mouse.scroll_delta = 0; //Needs to be reseted outside of eventloop
 	while (SDL_PollEvent(&e))

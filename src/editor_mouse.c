@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/15 13:12:23 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/17 20:22:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,7 @@ static void	mousedrag(t_editor *ed)
 
 static void	mouseclick(t_editor *ed)
 {
-
-	if (ed->mouse.click)
+	if (ed->mouse.click) //TODO: rewrite so we check for button collision here so we can change the tool accordingly
 	{
 		ed->mouse.click = false;
 		if (ed->state == place_end)

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/15 13:16:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/17 20:19:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <math.h>
 # include <fcntl.h>
 # include "vectors.h"
+# include "shapes.h"
 # include <stdbool.h>
 
 # define WINDOW_W 1920
@@ -242,11 +243,16 @@ void	draw(uint32_t *pxls, t_point pos, uint32_t clr);
 void	drawline(uint32_t *pxls, t_point from, t_point to, uint32_t clr);
 void	drawcircle(uint32_t *pxls, t_point pos, int size, uint32_t clr);
 void	imgtoscreen(uint32_t *pxls, t_img *img);
+void	drawrectangle(uint32_t *pxls, t_rectangle rect, uint32_t clr);
+
+/* EDITOR_BUTTONS.C */
+void	draw_editor_buttons(t_sdlcontext sdl);
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
 
 /* PHYSICS.C */
+bool	pointrectanglecollision(t_point p, t_rectangle rect);
 bool	pointcirclecollision(t_vector2 p, t_vector2 cp, float r);
 bool	linecirclecollision(t_line line, t_vector2 cp, float r);
 

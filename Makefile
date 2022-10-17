@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/15 13:18:52 by okinnune         ###   ########.fr        #
+#    Updated: 2022/10/17 20:04:24 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ SRCFILES= main.c draw.c img.c deltatime.c anim.c\
 		editor.c editor_mouse.c editor_events.c editor_render.c \
 		editor_saveline.c editor_map_io.c\
 		playmode.c inputhelper.c playmode_overhead.c \
-		moveplayer.c physics.c errors.c
+		moveplayer.c physics.c errors.c editor_buttons.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c \
 		vector2_elementary.c vector2_shorthands.c \
