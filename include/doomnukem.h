@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/14 14:30:12 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/17 16:54:50 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@
 
 # define MOVESPEED 0.14f
 # define ROTATESPEED 0.002f
-# define MOUSESPEED 1.0f
+# define MOUSESPEED 0.34f
 
 typedef struct s_sdlcontext
 {
@@ -223,9 +223,12 @@ typedef struct s_trilist
 
 typedef struct s_math //place holder for structs containing players camera info and matrixes
 {
+	//pass
 	int					tri_count;
 	struct s_triangle	*triangles;
+	//static
 	t_mat4x4 			matproj;
+	//player movement
 	t_vec3d 			vcamera;
 	t_vec3d 			vlookdir;
 	float				fyaw;
@@ -321,7 +324,7 @@ void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext *sdl);
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
-void engine3d(t_sdlcontext sdl, t_game *game, t_triangle *triangles);
+void engine3d(t_sdlcontext sdl, t_triangle *triangles, int tri_count, t_mat4x4 matproj, t_mat4x4 matworld, t_vec3d vcamera, t_vec3d vlookdir);
 
 /* PHYSICS.C */
 bool	pointcirclecollision(float p[2], float cp[2], float r);

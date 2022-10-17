@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/14 16:22:20 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/17 14:38:40 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,8 @@ void	moveplayer(t_game *game)
 	angle -= game->mouse.p_delta[X] * MOUSESPEED;
 	//	rotate character with arrow keys, doesn't work correctly with strafe
 	//	but if you need it it's here, just uncomment the next 2 lines
-	//angle -= (keystate >> KEYS_RGHTMASK) & 1;
-	//angle += (keystate >> KEYS_LEFTMASK) & 1;
+	//angle -= (game->keystate >> KEYS_RIGHTMASK) & 1;
+	//angle += (game->keystate >> KEYS_LEFTMASK) & 1;
 	angle *= game->clock.delta * ROTATESPEED;
 	game->player.angle[X] += angle;
 	updatemovementvector(move_f2, game->keystate, game->player.angle[X]);
@@ -86,7 +86,7 @@ void	moveplayer(t_game *game)
 	angle -= game->mouse.p_delta[Y] * MOUSESPEED;
 	angle *= game->clock.delta * ROTATESPEED;
 	game->player.angle[Y] += angle;
-	game->player.angle[Y] = ft_clampf(game->player.angle[Y], -RAD90 * 1.9f, RAD90 * 1.9f);
+	game->player.angle[Y] = ft_clampf(game->player.angle[Y], -RAD90 * 0.99f, RAD90 * 0.99f);
 	updatemovementvector(move_f2, game->keystate, game->player.angle[Y]);
 	f2mul(move_f2, game->clock.delta * MOVESPEED);
 	#ifndef COLLISION_ON

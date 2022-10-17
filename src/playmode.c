@@ -5,6 +5,9 @@
 t_mat4x4 Init();
 t_vec3d	Initv3();
 t_triangle Inittri();
+t_mat4x4 Matrix_MakeIdentity();
+t_mat4x4 Matrix_MakeProjection(float fFovDegrees, float fAspectRatio, float fNear, float fFar);
+void	move(t_game *game);
 
 //	Good resource for remembering bitwise operations:
 //			https://stackoverflow.com/a/47990/1725220
@@ -80,12 +83,15 @@ static int gameloop(t_sdlcontext sdl, t_game *game)
 {
 	t_gamereturn	gr;
 	t_perfgraph		pgraph;
+	t_mat4x4 matproj = Init();
+	t_mat4x4 matworld = Init();
 
+	matworld = Matrix_MakeIdentity();
+	matproj = Matrix_MakeProjection(90.0f, (float)WINDOW_H / (float)WINDOW_W, 2.0f, 1000.0f);
 	alloc_image(&pgraph.image, PERFGRAPH_SAMPLES + 1, PERFGRAPH_SAMPLES + 1);
 	while (1)
 	{
 		update_deltatime(&game->clock);
-		
 		bzero(sdl.surface->pixels, sizeof(uint32_t) * WINDOW_H * WINDOW_W);
 		gr = handleinput(game);
 		if (gr != game_continue)
@@ -93,17 +99,9 @@ static int gameloop(t_sdlcontext sdl, t_game *game)
 			return(gr);
 		}
 		bzero(sdl.surface->pixels, sizeof(uint32_t) * WINDOW_H * WINDOW_W);
-		//SDL_SetRenderDrawColor(sdl.renderer, 0, 0, 0, 255);
-		//SDL_RenderClear(sdl.renderer);
-		//SDL_SetRenderDrawColor(sdl.renderer, 255, 255, 255, 255);
-		/*
-		if (gr != game_continue)
-			return(gr);
-		render_overhead(game, &sdl);*/
-		//SDL_RenderDrawLine(sdl.renderer, 0, 0, 500, 500);
 		moveplayer(game);
-		engine3d(sdl, game, game->math.triangles);
-		//SDL_RenderPresent(sdl.renderer);
+		move(game);
+		engine3d(sdl, game->math.triangles, game->math.tri_count, matproj, matworld, game->math.vcamera, game->math.vlookdir);  // tri count, matproj
 		drawperfgraph(&pgraph, game->clock.delta, &sdl);
 		SDL_UpdateWindowSurface(sdl.window);
 	}
