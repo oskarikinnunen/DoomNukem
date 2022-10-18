@@ -1,30 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   editor_saveline.c                                  :+:      :+:    :+:   */
+/*   editor_line_screenspace.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/04 09:21:52 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/18 21:27:16 by okinnune         ###   ########.fr       */
+/*   Created: 2022/10/18 19:52:32 by okinnune          #+#    #+#             */
+/*   Updated: 2022/10/18 20:51:21 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-
-void	saveline(t_editor *ed)
+t_line	line_in_screenspace(t_editor *ed, t_line line)
 {
-	t_list	*node;
-	if (ed->linelist == NULL)
-		ed->linelist = ft_lstnew(&ed->line, sizeof(t_line));
-		if (!ed->linelist)
-			error_log(EC_MALLOC);
-	else
-	{
-		node = ft_lstnew(&ed->line, sizeof(t_line));
-		if (!node)
-			error_log(EC_MALLOC);
-		ft_lstapp(&ed->linelist, node);
-	}
+	t_line	result;
+
+	result.start = point_mul(line.start, GRIDSIZE);
+	result.start = point_add(result.start, ed->offset);
+	result.end = point_mul(line.end, GRIDSIZE);
+	result.end = point_add(result.end, ed->offset);
+	return (result);
 }

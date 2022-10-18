@@ -1,50 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   editor_tools.c                                     :+:      :+:    :+:   */
+/*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/17 23:33:34 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/17 23:52:06 by okinnune         ###   ########.fr       */
+/*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
+/*   Updated: 2022/10/18 19:02:55 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
+#include "editor_tools.h"
 
-void point_tool_click(t_point crd, int mousebtn)
+static void	entity_tool_change(t_editor *ed)
 {
-	printf("btn %i \n", mousebtn);
+	ed->tool = get_entity_tool();
+	printf("changed to entity tool\n"); //TODO: implement
 	return ;
 }
 
-void point_tool_key(int key)
+static void	entity_tool_click(t_point crd, int mousebtn)
+{
+	printf("entity tool clicked %i \n", mousebtn);
+	return ;
+}
+
+static void	entity_tool_key(int key) //make static?
 {
 	return ;
 }
 
-void entity_tool_click(t_point crd, int mousebtn)
+t_tool	*get_entity_tool()
 {
-	return ;
-}
-
-void entity_tool_key(int key)
-{
-	return ;
-}
-
-t_tool *get_tools()
-{
-	static	t_tool tools[2] = 
-	{
-		{
-		point_tool_click, point_tool_key
-		},
-		{
-		entity_tool_click, entity_tool_key
-		}
+	static t_tool	tool
+	= {
+		NULL, NULL, NULL
 	};
-	
-	tools[0].click_func(point_zero(), 42);
-	return (tools);
-};
+
+	return (&tool);
+}

@@ -6,35 +6,55 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 14:35:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/17 20:20:35 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/18 19:41:40 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "shapes.h"
+#include "editor_tools.h"
 #include "doomnukem.h"
 
-t_rectangle	*get_editor_buttons()
+t_tool_button	*get_editor_tool_buttons()
 {
-	static t_rectangle buttons[3] =
+	static t_tool_button buttons[2] =
 	{
-		{WINDOW_W - 50, 10, 40, 40},
-		{WINDOW_W - 50, 60, 40, 40},
-		{WINDOW_W - 50, 110, 40, 40}
+		{WINDOW_W - 50, 10, 40, 40, get_point_tool},
+		{WINDOW_W - 50, 60, 40, 40, get_entity_tool}
 	};
 
 	return	(buttons);
 }
 
+//Maybe this should take gamecontext/whatever editor context and change the tool for the context
+void	check_tool_change_click(t_point cursor, t_editor *ed)
+{
+	t_tool_button	*buttons;
+	int				i;
+
+	buttons = get_editor_tool_buttons();
+	i = 0;
+	while (i < 2)
+	{
+		if (pointrectanglecollision(cursor, buttons[i].rect))
+		{
+			//buttons[i].tool_get()->change_func(ed);
+			ed->tool = buttons[i].tool_get();
+			//ed->mouse.click_unhandled = false;
+		}
+			
+		i++;
+	}
+}
+
 void	draw_editor_buttons(t_sdlcontext sdl)
 {
-	t_rectangle	*buttons;
-	int			i;
+	t_tool_button	*buttons;
+	int				i;
 
-	buttons = get_editor_buttons();
+	buttons = get_editor_tool_buttons();
 	i = 0;
-	while (i < 3)
+	while (i < 2)
 	{
-		drawrectangle(sdl.surface->pixels, buttons[i], CLR_GRAY);
+		drawrectangle(sdl.surface->pixels, buttons[i].rect, CLR_GRAY);
 		i++;
 	}
 }

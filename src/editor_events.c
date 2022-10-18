@@ -6,11 +6,19 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/17 20:23:00 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/18 21:30:34 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
+
+void	move_editor_offset(t_editor *ed, SDL_Event e)
+{
+	ed->offset.x -= iskey(e, SDLK_d) * ed->clock.delta * 3.0f;
+	ed->offset.x += iskey(e, SDLK_a) * ed->clock.delta * 3.0f;
+	ed->offset.y -= iskey(e, SDLK_s) * ed->clock.delta * 3.0f;
+	ed->offset.y += iskey(e, SDLK_w) * ed->clock.delta * 3.0f;
+}
 
 int		editor_events(t_editor *ed)
 {
@@ -22,31 +30,13 @@ int		editor_events(t_editor *ed)
 		if (ed->transition.active)
 			break ;
 		mouse_event(e, ed);
-		if (e.type == SDL_KEYDOWN) {
+		if (e.type == SDL_KEYDOWN)
+		{
+			move_editor_offset(ed, e);
 			if (iskey(e, SDLK_ESCAPE))
 				return (game_exit);
 			else if (iskey(e, SDLK_TAB))
 				return(game_switchmode);
-			else if(iskey(e, SDLK_SPACE))
-			{
-				/*if (ed->state != display3d)
-				{
-					if (check_for_free == 1)
-					{
-						free_fdf(&ed->grid_fdf);
-						free_fdf(&ed->walls_fdf);
-						free_fdf_obj(&ed->grid_fdf.obj);
-						free_fdf_obj(&ed->walls_fdf.obj);
-					}
-					start_anim(&ed->transition, anim_forwards);
-					ed->state = display3d; 
-				}
-				else
-				{
-					start_anim(&ed->transition, anim_backwards);
-					ed->state = place_start;
-				}*/
-			}
 		}
 	}
 	return (game_continue);

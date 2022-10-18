@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/17 23:49:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/18 20:43:43 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@
 # include "shapes.h"
 # include <stdbool.h>
 
-# define WINDOW_W 1920
-# define WINDOW_H 1080
+# define WINDOW_W 1280
+# define WINDOW_H 720
 # define TILESIZE 32 //EDITOR tilesize
 # define GRIDSIZE 64 //EDITOR gridsize (how many addressable coordinates we have)
 
@@ -68,17 +68,10 @@ typedef struct s_mouse
 	t_point	delta;
 	int		scroll;
 	int		scroll_delta;
-	bool	click;
+	bool	click_unhandled;
+	int		click_button;
 	int		held;
 }	t_mouse;
-
-typedef struct s_mousedrag
-{
-	t_point	pos;
-	t_point	pos_origin;
-	t_point	drag;
-	t_point	drag_origin;
-}	t_mousedrag;
 
 typedef	struct s_line
 {
@@ -94,8 +87,8 @@ typedef struct s_wall
 
 typedef enum e_editorstate
 {
-	place_start,
-	place_end,
+	e_place_start,
+	e_place_end,
 	display3d
 }	t_editorstate;
 
@@ -125,16 +118,6 @@ typedef enum	e_anim_mode
 	anim_forwards,
 	anim_backwards
 } t_anim_mode;
-
-
-typedef struct	s_tool
-{
-	void	(*click_func)(t_point, int);
-	void	(*key_func)(int);
-	t_mouse	mouse;
-}	t_tool; //TODO: make static array of these and use test them in editor_mouse
-
-t_tool	*get_tools();
 
 /*
 
@@ -169,20 +152,21 @@ typedef struct s_anim
 typedef struct s_editor
 {
 	t_editorstate	state;
+	struct s_tool	*tool;
 	t_line			line; //the line that is being edited right now
 	t_list			*linelist;
-	t_mousedrag		mousedrag[2]; //First one is right click drag, 2nd is for middle click
 	t_mouse			mouse;
 	float			threedee_zoom;
 	t_anim			transition;
 	t_clock			clock;
+	t_point			offset;
 }	t_editor;
 
 /* Playmode */
 
 typedef struct s_player
 {
-	t_vector2	position; //TODO: might be changed to int[2], don't know yet
+	t_vector2	position;
 	float		angle;
 }	t_player;
 
@@ -233,6 +217,9 @@ int		editorloop(t_sdlcontext sdl);
 int		editor_events(t_editor *ed);
 bool	iskey(SDL_Event e, int keycode);
 
+/* EDITOR_LINE_SCREENSPACE.C */
+t_line	line_in_screenspace(t_editor *ed, t_line line);
+
 /* EDITOR_RENDER.C */
 void	renderlines(t_sdlcontext *sdl, t_editor *ed); //TODO:  better name?
 
@@ -269,7 +256,8 @@ void	imgtoscreen(uint32_t *pxls, t_img *img);
 void	drawrectangle(uint32_t *pxls, t_rectangle rect, uint32_t clr);
 
 /* EDITOR_BUTTONS.C */
-void	draw_editor_buttons(t_sdlcontext sdl);
+void	draw_editor_buttons(t_sdlcontext sdl); //TODO: MOVE TO EDITOR_TOOLS
+void	check_tool_change_click(t_point cursor, t_editor *ed); //TODO: MOVE TO EDITOR_TOOLS
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
