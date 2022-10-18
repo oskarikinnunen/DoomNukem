@@ -6,11 +6,12 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/18 02:46:29 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/18 21:01:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
+#include "editor_tools.h"
 
 void	drawrect(uint32_t *pxls, t_point crd, int clr)
 {
@@ -76,8 +77,13 @@ int	editorloop(t_sdlcontext sdl)
 		}
 		else
 		{
-			drawgrid((uint32_t *)sdl.surface->pixels, ed.mousedrag->pos);
+			drawgrid((uint32_t *)sdl.surface->pixels, ed.offset);
 			renderlines(&sdl, &ed);
+			if (ed.tool != NULL)
+			{
+				ed.tool->update(&ed);
+				ed.tool->draw_update(&ed, &sdl);
+			}
 		}
 		draw_editor_buttons(sdl);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
