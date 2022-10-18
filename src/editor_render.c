@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 08:20:49 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/17 18:04:52 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/18 18:23:36 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ void	renderlines(t_sdlcontext *sdl, t_editor *ed)
 	l = ed->linelist;
 	while (l != NULL)
 	{
+		printf("we has list :3 \n");
 		renderline(sdl, ed, *(t_line *)l->content);
 		l = l->next;
 	}

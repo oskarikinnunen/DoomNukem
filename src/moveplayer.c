@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/17 19:50:07 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/18 22:06:11 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@
 
  // Might need the whole gamecontext but I'm trying to avoid it, (trying to avoid global state)
  // TODO: normalize movement vector
-static t_vector2	movementvector(int32_t keystate, float angle)
+static t_vector3	movementvector(int32_t keystate, float angle)
 {
-	t_vector2	movement;
+	t_vector3	movement;
 
-	movement = vector2_zero();
+	movement = vector3_zero();
 	if ((keystate >> KEYS_UPMASK) & 1) 
 	{
 		movement.x += sin(angle);
@@ -42,17 +42,26 @@ static t_vector2	movementvector(int32_t keystate, float angle)
 		movement.x += -sin(angle + RAD90);
 		movement.y += -cos(angle + RAD90);
 	}
-	movement = vector2_clamp_magnitude(movement, MAXMOVEMENTSPEED);
+	//flying
+	if ((keystate >> KEYS_SPACEMASK) & 1)
+	{
+		movement.z += 0.25f;
+	}
+	if ((keystate >> KEYS_CTRLMASK) & 1)
+	{
+		movement.z -= 0.25f;
+	}
+	movement = vector3_clamp_magnitude(movement, MAXMOVEMENTSPEED);
 	return (movement);
 }
 
 void	moveplayer(t_game *game)
 {
-	t_vector2	move_vector;
-	t_vector2	potential_pos; //Unused right now, will be used when collision is reimplemented
+	t_vector3	move_vector;
+	t_vector3	potential_pos; //Unused right now, will be used when collision is reimplemented
 	float	angle;
 
-	move_vector = vector2_zero();
+	move_vector = vector3_zero();
 	angle = 0;
 	angle -= game->mouse.delta.x * MOUSESPEED;
 	//	rotate character with arrow keys, doesn't work correctly with strafe
@@ -68,6 +77,6 @@ void	moveplayer(t_game *game)
 	game->player.angle.y += angle;
 	game->player.angle.y = ft_clampf(game->player.angle.y, -RAD90 * 0.99f, RAD90 * 0.99f);
 	move_vector = movementvector(game->keystate, game->player.angle.x);
-	move_vector = vector2_mul(move_vector, game->clock.delta * MOVESPEED);
-	game->player.position = vector2_add(game->player.position, move_vector);
+	move_vector = vector3_mul(move_vector, game->clock.delta * MOVESPEED);
+	game->player.position = vector3_add(game->player.position, move_vector);
 }

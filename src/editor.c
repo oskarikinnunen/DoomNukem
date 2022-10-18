@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/17 17:52:58 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/18 18:09:01 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,7 @@ int	editorloop(t_sdlcontext sdl)
 	t_gamereturn	gr;
 
 	bzero(&ed, sizeof(t_editor));
-	loadmap(&ed.linelist, "mapfile1");
-
+	ed.linelist = loadmap("mapfile1");
 	//FDF
 	ed.transition.framerate = 60;
 	ed.transition.lastframe = 15;
