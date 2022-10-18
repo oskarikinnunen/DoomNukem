@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/17 20:37:21 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/18 21:05:46 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,18 @@ float		vector3_dot(t_vector3 first, t_vector3 second);
 
 //returns true if both vectors are identical
 bool		vector3_cmp(t_vector3 first, t_vector3 second);
+
+//returns vector3 multiplied by vector 'v1' and vector 'v2'
+t_vector3	vector3_mul_vector3(t_vector3 v1, t_vector3 v2);
+
+//normalises vector 'v' and returns it
+t_vector3	vector3_normalise(t_vector3 v);
+
+//returns crossproduct from vector 'v1' and vector 'v2'
+t_vector3	vector3_crossproduct(t_vector3 v1, t_vector3 v2);
+
+//returns copy of 'vec' but with magnitude clamped to 'max_magnitude'
+t_vector3	vector3_clamp_magnitude(t_vector3 vec, float max_magnitude);
 
 /* t_vector2 functions */
 typedef struct s_vector2
@@ -170,11 +182,56 @@ typedef struct s_quaternion
 	float		w;
 }	t_quaternion;
 
-// shorthand for writing (t_quaternion){1.0f, 1.0f, 1.0f, 1.0f}
+//shorthand for writing (t_quaternion){1.0f, 1.0f, 1.0f, 1.0f}
 t_quaternion	quaternion_identity();
 
-// returns quaternion multiplication result 'first * second'
+//returns quaternion multiplication result 'first * second'
 t_quaternion	quaternion_mul(t_quaternion first, t_quaternion second);
+
+//returns quaternion, for quaternion line that starts from 'linestart' and ends in 'lineend' and intersects plane vector 'plane_p' and 'plane_n'
+t_quaternion	quaternion_intersectplane(t_vector3 plane_p, t_vector3 plane_n, t_quaternion lineStart, t_quaternion lineEnd);
+
+typedef struct s_mat4x4
+{
+	float	m[4][4];
+}	t_mat4x4;
+//TODO: check all matrix functions and flip variables. For example function vector3_mul_matrix(matrix, vector) should be (vector, matrix)
+
+//shorthand for (t_mat4x4){0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}
+t_mat4x4 matrix_zero();
+
+//returns vector3 'i' multiplied by matrix 'm'
+t_vector3 vector3_mul_matrix(t_mat4x4 m, t_vector3 i);
+
+//returns zeroed matrix, with [0][0], [1][1], [2][2], [3][3] set to 1.0f
+t_mat4x4 matrix_makeidentity();
+
+//returns rotation matrix for angle x
+t_mat4x4 matrix_makerotationx(float fAngleRad);
+
+//returns rotation matrix for angle y
+t_mat4x4 matrix_makerotationy(float fAngleRad);
+
+//returns rotation matrix for angle z
+t_mat4x4 matrix_makerotationz(float fAngleRad);
+
+//matrix makes identity matrix and sets matrix[3][0] = 'x', matrix.m[3][1] = 'y', matrix.m[3][2] = 'z'
+t_mat4x4 matrix_maketranslation(float x, float y, float z);
+
+//returns matrix projection, fFovDegrees is player field of view in degrees, aspect ratio is float window height divided by window width, fnear is how close the camera clips and ffar is how far the camera clips 
+t_mat4x4 matrix_makeprojection(float fFovDegrees, float fAspectRatio, float fNear, float fFar);
+
+//returns matrix multiplied by matrix 'm1' and matrix 'm2'
+t_mat4x4 matrix_multiply_matrix(t_mat4x4 m1, t_mat4x4 m2);
+
+//returns matrix looking at vector 'target' from vector 'pos' vector 'up' being which axis is up
+t_mat4x4 matrix_lookat(t_vector3 pos, t_vector3 target, t_vector3 up);
+
+//returns matrix 'm' with matrix[3][0], matrix[3][1], matrix[3][2] inversed and matrix[3][3] == 1.0f
+t_mat4x4 matrix_quickinverse(t_mat4x4 m);
+
+//returns quaternion 'i' multiplied by matrix 'm'
+t_quaternion quaternion_mul_matrix(t_mat4x4 m, t_quaternion i);
 
 /* CONVERSIONS */
 

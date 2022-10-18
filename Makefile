@@ -6,7 +6,7 @@
 #    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/17 17:46:48 by vlaine           ###   ########.fr        #
+#    Updated: 2022/10/18 19:48:32 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,13 +25,15 @@ SRCFILES= main.c draw.c img.c deltatime.c anim.c\
 		playmode.c inputhelper.c playmode_overhead.c \
 		moveplayer.c physics.c errors.c game_3d.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
-		vector3_complex.c \
+		vector3_complex.c vector3_complex2.c \
 		vector2_elementary.c vector2_shorthands.c \
 		vector2_complex.c vector2_clamp.c \
 		point_elementary.c point_shorthands.c \
 		point_complex.c point_float_ops.c \
 		conversions.c \
-		quaternion_shorthands.c 
+		quaternion_shorthands.c quaternions.c \
+		matrix_shorthands.c matrix_rotations.c \
+		matrix_functions.c
 VECTORSRC= $(addprefix src/vectors/,$(VECTORSRCFILES))
 SRC= $(addprefix src/,$(SRCFILES))
 SRC+= $(VECTORSRC)

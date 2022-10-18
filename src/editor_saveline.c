@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_saveline.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:21:52 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/15 13:12:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/18 18:26:46 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,13 @@ bool	removeduplicate(t_editor *ed)
 void	saveline(t_editor *ed)
 {
 	t_list	*node;
+	
 	if (ed->linelist == NULL)
+	{
 		ed->linelist = ft_lstnew(&ed->line, sizeof(t_line));
 		if (!ed->linelist)
 			error_log(EC_MALLOC);
+	}
 	else
 	{
 		if (ed->linelist != NULL && removeduplicate(ed))
@@ -62,4 +65,5 @@ void	saveline(t_editor *ed)
 			error_log(EC_MALLOC);
 		ft_lstapp(&ed->linelist, node);
 	}
+	printf("no head = %i\n", ed->linelist == NULL);
 }

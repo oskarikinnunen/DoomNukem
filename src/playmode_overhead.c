@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 09:46:25 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/17 19:26:39 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/18 20:51:26 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ void	render_overhead(t_game *game, t_sdlcontext *sdl)
 	t_point		player_ball; //player coordinates  in screenspace
 	t_point		look_to; // line end coordinate that is towards player look direction
 	t_vector2	walls_offset;
+	t_vector2	temp;
 
 	look_to.x = sin(game->player.angle.x) * 40;
 	look_to.y = cos(game->player.angle.y) * 40;
@@ -67,7 +68,8 @@ void	render_overhead(t_game *game, t_sdlcontext *sdl)
 	{
 		player_ball.x = WINDOW_W / 2;
 		player_ball.y = WINDOW_H / 2;
-		walls_offset = vector2_negative(game->player.position);
+		temp = (t_vector2){game->player.position.x, game->player.position.y};
+		walls_offset = vector2_negative(temp);
 		draw_walls(game->linelst, sdl, walls_offset);
 	}
 	look_to = point_add(look_to, player_ball);

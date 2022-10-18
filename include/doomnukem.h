@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/17 21:21:17 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/18 21:35:21 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@
 # define PLAYERRADIUS 16
 # define COLLISION_ON //Comment/uncomment to toggle experimental collision
 
-# define MOVESPEED 0.010f
-# define MAXMOVEMENTSPEED 0.75f
+# define MOVESPEED 10.010f
+# define MAXMOVEMENTSPEED 10.75f
 # define ROTATESPEED 0.002f
 # define MOUSESPEED 0.002f
 
@@ -169,7 +169,7 @@ typedef struct s_editor
 
 typedef struct s_player
 {
-	t_vector2	position; //TODO: might be changed to int[2], don't know yet
+	t_vector3	position; //TODO: might be changed to int[2], don't know yet
 	t_vector2	angle;
 }	t_player;
 
@@ -193,39 +193,15 @@ typedef struct	s_triangle
 	uint32_t	clr;
 }	t_triangle;
 
-typedef struct s_mat4x4
-{
-	float m[4][4];
-}	t_mat4x4;
-
-typedef struct s_trilist
-{
-	struct s_triangle tri;
-	struct s_trilist *next;
-} t_trilist;
-
-typedef struct s_math //place holder for structs containing players camera info and matrixes
-{// on the chopping list
-	//pass
-	int					tri_count;
-	struct s_triangle	*triangles;
-	//static
-	t_mat4x4 			matproj;
-	//player movement
-	t_vector3 			vcamera;
-	t_vector3 			vlookdir;
-	float				fyaw;
-	float				fpitch;
-}	t_math;
-
 typedef struct s_game
 {
+	int				tri_count;
+	t_triangle		*triangles;
 	t_list			*linelst;
 	t_clock			clock;
 	t_mouse			mouse;
 	t_player		player;
 	int32_t			keystate;
-	t_math			math;
 	t_cam_mode		cam_mode;
 	t_vector2		overheadcam_pos;
 } t_game;
@@ -270,7 +246,7 @@ void	mouse_event(SDL_Event e, t_editor *ed);
 void	saveline(t_editor *ed);
 
 /* EDITOR_MAP_IO.C */
-void	loadmap(t_list **head, char *filename);
+t_list	*loadmap(char *filename);
 void	savemap(t_editor *ed, char *filename);
 
 /* IMG.C */
@@ -297,7 +273,7 @@ void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext *sdl);
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
-void engine3d(t_sdlcontext sdl, t_triangle *triangles, int tri_count, t_mat4x4 matproj, t_mat4x4 matworld, t_vector3 vcamera, t_vector3 vlookdir);
+void	engine3d(t_sdlcontext sdl, t_game game);
 
 /* PHYSICS.C */
 bool	pointcirclecollision(t_vector2 p, t_vector2 cp, float r);
