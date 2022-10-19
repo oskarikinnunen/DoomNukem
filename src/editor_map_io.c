@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/18 18:29:55 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/19 17:26:31 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,13 +66,10 @@ void	savemap(t_editor *ed, char *filename)
 	int i = 0;
 	while (l != NULL)
 	{
-		printf("we has list in savemap \n");
 		write(fd, (t_line *)l->content, sizeof(t_line));
-		//printf("wrote %i bytes \n", written);
 		l = l->next;
 		i++;
 	}
-	printf("i = %d\n", i);
 	if (close(fd) == -1)
 		error_log(EC_CLOSE);
 }

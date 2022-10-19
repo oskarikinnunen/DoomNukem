@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/18 21:05:46 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/19 14:24:17 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,55 @@
 #include <math.h>
 #include <stdbool.h>
 #include "libft.h"
+
+/* t_vector2 functions */
+typedef struct s_vector2
+{
+	float	x;
+	float	y;
+}	t_vector2;
+
+//shorthand for (t_vector2){0, 0}
+t_vector2	vector2_zero();
+
+//shorthand for (t_vector2){1, 1}
+t_vector2	vector2_one();
+
+//returns 'vec' but with x and y signs flipped //TODO: explain this better lol
+t_vector2	vector2_negative(t_vector2 vec);
+
+//returns vector 'first' added by vector 'second'
+t_vector2	vector2_add(t_vector2 first, t_vector2 second);
+
+//returns vector 'first' substracted by vector 'second'
+t_vector2	vector2_sub(t_vector2 first, t_vector2 second);
+
+//returns vector 'vec' with 'add' added to x and y
+t_vector2	vector2_add_xy(t_vector2 vec, float add);
+
+//returns vector 'vec' multiplied by 'mul'
+t_vector2	vector2_mul(t_vector2 vec, float mul);
+
+//returns vector 'vec' divided by 'div'
+t_vector2	vector2_div(t_vector2 vec, float div);
+
+//returns the magnitude of the vector 'vec'
+float		vector2_magnitude(t_vector2 vec);
+
+//returns the squared magnitude of the vector 'vec'
+float		vector2_sqr_magnitude(t_vector2 vec);
+
+//returns distance between first and second vector
+float		vector2_dist(t_vector2 first, t_vector2 second);
+
+//returns dot product of vector 'first' and vector 'second'
+float		vector2_dot(t_vector2 first, t_vector2 second);
+
+//returns true if both vectors are identical
+bool		vector2_cmp(t_vector2 first, t_vector2 second);
+
+//returns copy of 'vec' but with magnitude clamped to 'max_magnitude'
+t_vector2	vector2_clamp_magnitude(t_vector2 vec, float max_magnitude);
 
 /* t_vector3 functions */
 typedef struct s_vector3
@@ -76,54 +125,8 @@ t_vector3	vector3_crossproduct(t_vector3 v1, t_vector3 v2);
 //returns copy of 'vec' but with magnitude clamped to 'max_magnitude'
 t_vector3	vector3_clamp_magnitude(t_vector3 vec, float max_magnitude);
 
-/* t_vector2 functions */
-typedef struct s_vector2
-{
-	float	x;
-	float	y;
-}	t_vector2;
-
-//shorthand for (t_vector2){0, 0}
-t_vector2	vector2_zero();
-
-//shorthand for (t_vector2){1, 1}
-t_vector2	vector2_one();
-
-//returns 'vec' but with x and y signs flipped //TODO: explain this better lol
-t_vector2	vector2_negative(t_vector2 vec);
-
-//returns vector 'first' added by vector 'second'
-t_vector2	vector2_add(t_vector2 first, t_vector2 second);
-
-//returns vector 'first' substracted by vector 'second'
-t_vector2	vector2_sub(t_vector2 first, t_vector2 second);
-
-//returns vector 'vec' with 'add' added to x and y
-t_vector2	vector2_add_xy(t_vector2 vec, float add);
-
-//returns vector 'vec' multiplied by 'mul'
-t_vector2	vector2_mul(t_vector2 vec, float mul);
-
-//returns vector 'vec' divided by 'div'
-t_vector2	vector2_div(t_vector2 vec, float div);
-
-//returns the magnitude of the vector 'vec'
-float		vector2_magnitude(t_vector2 vec);
-
-//returns the squared magnitude of the vector 'vec'
-float		vector2_sqr_magnitude(t_vector2 vec);
-
-//returns distance between first and second vector
-float		vector2_dist(t_vector2 first, t_vector2 second);
-
-//returns dot product of vector 'first' and vector 'second'
-float		vector2_dot(t_vector2 first, t_vector2 second);
-
-//returns true if both vectors are identical
-bool		vector2_cmp(t_vector2 first, t_vector2 second);
-
-//returns copy of 'vec' but with magnitude clamped to 'max_magnitude'
-t_vector2	vector2_clamp_magnitude(t_vector2 vec, float max_magnitude);
+//returns signed shortest distance from point to plane, plane normal must be normalised
+float		vector3_fdist_to_plane(t_vector3 p, t_vector3 plane_n, t_vector3 plane_p);
 
 typedef struct s_point
 {
@@ -200,9 +203,6 @@ typedef struct s_mat4x4
 //shorthand for (t_mat4x4){0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}
 t_mat4x4 matrix_zero();
 
-//returns vector3 'i' multiplied by matrix 'm'
-t_vector3 vector3_mul_matrix(t_mat4x4 m, t_vector3 i);
-
 //returns zeroed matrix, with [0][0], [1][1], [2][2], [3][3] set to 1.0f
 t_mat4x4 matrix_makeidentity();
 
@@ -233,6 +233,11 @@ t_mat4x4 matrix_quickinverse(t_mat4x4 m);
 //returns quaternion 'i' multiplied by matrix 'm'
 t_quaternion quaternion_mul_matrix(t_mat4x4 m, t_quaternion i);
 
+//returns vector3 lookdirection, from vector2 angle
+t_vector3	lookdirection(t_vector2 angle);
+
+//returns vector3 'i' multiplied by matrix 'm'
+t_vector3 vector3_mul_matrix(t_mat4x4 m, t_vector3 i);
 /* CONVERSIONS */
 
 //Returns t_vector2 'vec' casted to t_point. (Shorthand for '*(t_point *)&vec').

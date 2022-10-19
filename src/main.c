@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/18 20:39:56 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/19 17:00:46 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,11 @@ int	main(int argc, char **argv)
 	create_sdl_context(&sdl);
 	while (1)
 	{
-		gr = playmode(sdl);
-		if (gr == game_exit) // quit & exit is handled inside of playmode atm
-			break ;
 		gr = editorloop(sdl);
 		if (gr == game_exit) // quit & exit is handled inside of editorloop atm
+			break ;
+		gr = playmode(sdl);
+		if (gr == game_exit) // quit & exit is handled inside of playmode atm
 			break ;
 	}
 	//quit_sdl(&sdl);

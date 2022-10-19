@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 19:06:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/18 21:05:38 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/19 14:21:16 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,4 +42,10 @@ t_vector3	vector3_clamp_magnitude(t_vector3 vec, float max_magnitude)
 	if (ft_absf(len) > max_magnitude)
 		mul = max_magnitude / len;
 	return ((t_vector3){vec.x * mul, vec.y * mul, vec.z * mul});
+}
+
+float vector3_fdist_to_plane(t_vector3 p, t_vector3 plane_n, t_vector3 plane_p)
+{
+	t_vector3 n = vector3_normalise(p);
+	return (plane_n.x * p.x + plane_n.y * p.y + plane_n.z * p.z - vector3_dot(plane_n, plane_p));
 }

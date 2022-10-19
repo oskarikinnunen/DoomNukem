@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 09:30:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/18 21:01:26 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/19 14:58:46 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 # define KEYS_DOWNMASK 3
 # define KEYS_SPACEMASK 4
 # define KEYS_CTRLMASK 5
+# define KEYS_SHIFTMASK 6
+# define KEYS_MMASK 7
 
 
 bool	keyismoveleft(SDL_Event e);

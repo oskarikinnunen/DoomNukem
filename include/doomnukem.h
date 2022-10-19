@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/18 21:35:21 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/19 17:53:25 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@
 # define CLR_GRAY 4868682
 # define CLR_GREEN 3002977
 
-
+#define DEBUG_ON 1
 
 // Playmode defines
 # define OVERHEADCAMSPEED 0.028f
@@ -52,9 +52,9 @@
 # define COLLISION_ON //Comment/uncomment to toggle experimental collision
 
 # define MOVESPEED 10.010f
-# define MAXMOVEMENTSPEED 10.75f
+# define MAXMOVEMENTSPEED 0.08f
 # define ROTATESPEED 0.002f
-# define MOUSESPEED 0.002f
+# define MOUSESPEED 0.0002f
 
 typedef struct s_sdlcontext
 {
@@ -171,12 +171,13 @@ typedef struct s_player
 {
 	t_vector3	position; //TODO: might be changed to int[2], don't know yet
 	t_vector2	angle;
+	t_vector3	lookdir;
 }	t_player;
 
 typedef enum	e_cam_mode
 {
-	overhead_follow,
-	overhead_absolute
+	player_view,
+	overhead_follow
 }	t_cam_mode;
 
 typedef enum e_gamereturn
@@ -211,21 +212,6 @@ typedef struct s_zbuff
 	int	w;
 	int	*zbuff;
 }	t_zbuff;
-
-/* V2.C */
-
-void	v2add(int v[2], int ov[2]);
-void	v2mul(int v[2], int mul);
-void	v2cpy(int to[2], int from[2]);
-bool	v2cmp(int v[2], int ov[2]);
-void	v2diff(int v[2], int ov[2], int rv[2]);
-void	v2mul_to_f2(int v[2], float mul, float f[2]);
-
-float	f2dist(float f[2], float of[2]);
-void	f2mul(float f[2], float mul); //TODO: move f2 functions to own file and maybe think of better naming?
-void	f2tov2(float f[2], int v[2]);
-void	f2add(float f[2], float of[2]);
-void	f2cpy(float to[2], float from[2]);
 
 /* EDITOR.C */
 int		editorloop(t_sdlcontext sdl);
@@ -273,6 +259,7 @@ void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext *sdl);
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
+void	z_fill_tri(int tris[3][3], t_sdlcontext sdl, uint32_t clr);
 void	engine3d(t_sdlcontext sdl, t_game game);
 
 /* PHYSICS.C */
@@ -292,5 +279,11 @@ void	error_log(int error_code);
 
 /* SDL */
 void	quit_sdl(t_sdlcontext *sdl);
+
+/*DEBUG FILES*/
+void printf_tri(t_triangle tri);
+void printf_quat(t_quaternion v);
+void printf_vec(t_vector3 v);
+void printf_matrix(t_mat4x4 m);
 
 #endif
