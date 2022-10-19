@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/19 18:34:01 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/19 18:48:06 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int	editorloop(t_sdlcontext sdl)
 		}
 		else
 		{
-			draw_image(sdl.surface->pixels, (t_point){30, 50}, *sdl.images, 120);
+			//draw_image(sdl.surface->pixels, (t_point){30, 50}, *sdl.images, 120);
 			drawgrid((uint32_t *)sdl.surface->pixels, ed.mousedrag->pos);
 			renderlines(&sdl, &ed);
 		}
