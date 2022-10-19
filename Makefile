@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
+#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/19 16:11:40 by vlaine           ###   ########.fr        #
+#    Updated: 2022/10/19 18:15:42 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ SRCFILES= main.c draw.c img.c deltatime.c anim.c\
 		editor_saveline.c editor_map_io.c\
 		playmode.c inputhelper.c playmode_overhead.c \
 		moveplayer.c physics.c errors.c game_3d.c fill_triangle.c \
-		perfgraph.c
+		perfgraph.c png.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \
 		vector2_elementary.c vector2_shorthands.c \

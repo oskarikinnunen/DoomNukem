@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/19 17:00:46 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/19 18:41:18 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
+#include "png.h"
 
 static void	create_sdl_context(t_sdlcontext *sdl)
 {
@@ -26,6 +27,8 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	sdl->surface = SDL_GetWindowSurface(sdl->window);
 	if (sdl->surface == NULL)
 		error_log(EC_SDL_GETWINDOW_SURFACE);
+	sdl->images = ft_memalloc(sizeof(t_img));
+	sdl->images[0] = pngparse("wall2.png");
 }
 
 void	quit_sdl(t_sdlcontext *sdl)
