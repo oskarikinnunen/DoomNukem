@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/19 17:53:25 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/19 18:40:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,13 +56,6 @@
 # define ROTATESPEED 0.002f
 # define MOUSESPEED 0.0002f
 
-typedef struct s_sdlcontext
-{
-	SDL_Window				*window;
-	SDL_Surface				*surface;
-	uint32_t				*zbuffer;
-	SDL_Renderer			*renderer; //TODO: for testing remove.
-}	t_sdlcontext;
 
 typedef struct s_mouse
 {
@@ -108,6 +101,15 @@ typedef struct s_img
 	uint32_t	*data;
 	uint32_t	length;
 }	t_img;
+
+typedef struct s_sdlcontext
+{
+	SDL_Window				*window;
+	SDL_Surface				*surface;
+	uint32_t				*zbuffer;
+	SDL_Renderer			*renderer; //TODO: for testing remove.
+	t_img					*images;
+}	t_sdlcontext;
 
 # define PERFGRAPH_SAMPLES 64
 
@@ -252,7 +254,9 @@ void	start_anim(t_anim *anim, t_anim_mode mode);
 void	draw(uint32_t *pxls, t_point pos, uint32_t clr);
 void	drawline(uint32_t *pxls, t_point from, t_point to, uint32_t clr);
 void	drawcircle(uint32_t *pxls, t_point pos, int size, uint32_t clr);
-void	imgtoscreen(uint32_t *pxls, t_img *img);
+
+//Draws image 'img' to pixels 'pxls', offset by point 'pos' and scaled to 'scale'
+void	draw_image(uint32_t *pxls, t_point pos, t_img img, int scale);
 
 /* PERFGRAPH.C */
 void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext *sdl);
