@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/18 22:11:29 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/19 17:54:48 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,44 +18,7 @@
 #define SH WINDOW_H
 #define SW WINDOW_W
 
-static void printf_matrix(t_mat4x4 m)
-{
-	int i = 0;
-	int j = 0;
-	while (i < 4)
-	{
-		j = 0;
-		while (j < 4)
-		{
-			printf("	mat[%d][%d] = %f", i, j, m.m[i][j]);
-			j++;
-		}
-		printf("\n");
-		i++;
-	}
-}
-
-void printf_vec(t_vector3 v)
-{
-	printf("x %f y %f z %f\n", v.x, v.y, v.z);
-}
-
-void printf_quat(t_quaternion v)
-{
-	printf("w %f ", v.w);
-	printf_vec(v.v);
-}
-
-void printf_tri(t_triangle tri)
-{
-	printf("triangle start\n");
-	printf_quat(tri.p[0]);
-	printf_quat(tri.p[1]);
-	printf_quat(tri.p[2]);
-	printf("triangle ends\n");
-}
-
-t_quaternion Initquater()
+static t_quaternion Initquater()
 {
 	t_vector3 v;
 	t_quaternion q;
@@ -68,7 +31,7 @@ t_quaternion Initquater()
 	return (q);
 }
 
-t_triangle Inittri()
+static t_triangle Inittri()
 {
 	t_triangle t;
 
@@ -79,14 +42,7 @@ t_triangle Inittri()
 	return(t);
 }
 
-// Return signed shortest distance from point to plane, plane normal must be normalised
-float fdist(t_vector3 p, t_vector3 plane_n, t_vector3 plane_p) // rename
-{
-	t_vector3 n = vector3_normalise(p);
-	return (plane_n.x * p.x + plane_n.y * p.y + plane_n.z * p.z - vector3_dot(plane_n, plane_p));
-}
-
-int Triangle_ClipAgainstPlane(t_vector3 plane_p, t_vector3 plane_n, t_triangle *in_tri, t_triangle *out_tri1, t_triangle *out_tri2)
+static int Triangle_ClipAgainstPlane(t_vector3 plane_p, t_vector3 plane_n, t_triangle *in_tri, t_triangle *out_tri1, t_triangle *out_tri2)
 {
 	// Make sure plane normal is indeed normal
 	plane_n = vector3_normalise(plane_n);
@@ -105,9 +61,9 @@ int Triangle_ClipAgainstPlane(t_vector3 plane_p, t_vector3 plane_n, t_triangle *
 		outside_points[e] = Initquater();
 	}
 	// Get signed dist1ance of each point in triangle to plane
-	float d0 = fdist(in_tri->p[0].v, plane_n, plane_p);
-	float d1 = fdist(in_tri->p[1].v, plane_n, plane_p);
-	float d2 = fdist(in_tri->p[2].v, plane_n, plane_p);
+	float d0 = vector3_fdist_to_plane(in_tri->p[0].v, plane_n, plane_p);
+	float d1 = vector3_fdist_to_plane(in_tri->p[1].v, plane_n, plane_p);
+	float d2 = vector3_fdist_to_plane(in_tri->p[2].v, plane_n, plane_p);
 
 	if (d0 >= 0)
 	{
@@ -205,121 +161,6 @@ int Triangle_ClipAgainstPlane(t_vector3 plane_p, t_vector3 plane_n, t_triangle *
 		return 2; // Return two newly formed triangles which form a quad
 	}
 	return(0);
-}
-
-static void	sort_tris(int tris[3][3])
-{
-	int	s_x;
-	int	s_j;
-	int	temp[3];
-
-	s_x = 0;
-	s_j = 0;
-	while (s_x < 2)
-	{
-		while (s_j < 2 - s_x)
-		{
-			if (tris[s_j][Y] < tris[s_j + 1][Y])
-			{
-				ft_memcpy(temp, tris[s_j], sizeof(int) * 3);
-				ft_memcpy(tris[s_j], tris[s_j + 1], sizeof(int) * 3);
-				ft_memcpy(tris[s_j + 1], temp, sizeof(int) * 3);
-			}
-			s_j++;
-		}
-		s_j = 0;
-		s_x++;
-	}
-}
-
-static void	z_fill_sub_tri(int *tris[3], t_sdlcontext sdl, uint32_t clr)
-{
-	t_bresenham	b[2];
-
-	populate_bresenham(&(b[0]), (t_point){tris[0][X], tris[0][Y]}, (t_point){tris[1][X], tris[1][Y]});
-	populate_bresenham(&(b[1]), (t_point){tris[0][X], tris[0][Y]}, (t_point){tris[2][X], tris[2][Y]});
-	while (b[0].local.y != tris[1][Y])
-	{
-		drawline((u_int32_t *)sdl.surface->pixels, b[0].local, b[1].local, clr);
-		while (b[0].local.y == b[1].local.y)
-			step_bresenham(&(b[0]));
-		while (b[1].local.y != b[0].local.y)
-			step_bresenham(&(b[1]));
-	}
-	drawline((u_int32_t *)sdl.surface->pixels, b[0].local, b[1].local, clr);
-}
-
-static void	z_fill_tri(int tris[3][3], t_sdlcontext sdl, uint32_t clr)
-{
-	int	split[3]; 	//Vector that's used to form the subtriangles.
-	int	sorted[3][3];	//Stack memory for the sorted triangles
-	float	lerp;
-
-	sort_tris(ft_memcpy(sorted, tris, sizeof(int [3][3])));
-	lerp = (float)(sorted[1][Y] - sorted[2][Y]) / (float)(sorted[0][Y] - sorted[2][Y]);
-	split[X] = sorted[2][X] + (lerp * (sorted[0][X] - sorted[2][X]));
-	split[Y] = sorted[1][Y];
-	split[Z] = sorted[1][Z];
-	z_fill_sub_tri((int *[3]){(int *)&(sorted[0]), (int *)&(sorted[1]), (int *)&split}, sdl, clr);
-	z_fill_sub_tri((int *[3]){(int *)&(sorted[2]), (int *)&(sorted[1]), (int *)&split}, sdl, clr);
-	drawline((u_int32_t *)sdl.surface->pixels, (t_point){sorted[0][X], sorted[0][Y]}, (t_point){sorted[2][X], sorted[2][Y]}, clr);
-}
-
-static t_vector3 lookdirection(t_vector2 angle)
-{
-	
-	t_quaternion	temp = Initquater();
-	t_mat4x4		matcamerarot = matrix_zero();
-
-	matcamerarot = matrix_makerotationy(angle.y);
-	temp = quaternion_mul_matrix(matcamerarot, (t_quaternion){1, 0, 0, 1});
-	matcamerarot = matrix_makerotationz(angle.x);
-	temp = quaternion_mul_matrix(matcamerarot, temp);
-
-	return (temp.v);
-	/*t_vector3	temp;
-
-	temp = vector3_zero();
-	temp.x = cosf(angle.x) * cosf(angle.y);
-	temp.y = sinf(angle.x) * sinf(angle.y);
-	temp.z = sinf(angle.y);
-	//temp.z = cosf(angle.y);
-	//temp.x += sinf(angle.y);
-	//temp.y += cosf(angle.y);
-	return(temp);*/
-}
-
-static int isvalidtri(t_triangle triprojected)
-{
-	int x = 0;
-	int y = 0;
-	for (int i = 0; i < 3; i++)
-	{
-		if (triprojected.p[i].v.x > 0 && triprojected.p[i].v.x < WINDOW_W)
-			if (triprojected.p[i].v.y > 0 && triprojected.p[i].v.y < WINDOW_H)
-				return(1);
-	}
-	return(0);
-}
-
-static void drawline1(uint32_t *pxls, int x0, int y0, int x1, int y1)
-{
-	int i;
-    double x = x1 - x0; 
-	double y = y1 - y0; 
-	double length = sqrt( x*x + y*y ); 
-	double addx = x / length; 
-	double addy = y / length; 
-	x = x0; 
-	y = y0; 
-	i = 0;
-	while (i < length)
-	{ 
-		draw(pxls, (t_point){x, y}, INT_MAX); 
-		x += addx; 
-		y += addy; 
-		i++;
-	} 
 }
 
 static void draw_triangles(t_sdlcontext sdl, t_triangle *triangles, int index, int end)
@@ -458,20 +299,11 @@ void engine3d(t_sdlcontext sdl, t_game game)
 	int			i;
 	int			count = 0;
 	t_vector3 vtarget;
-	t_vector3 vlookdir;
-	static t_vector3 vcamera;// = vector3_zero();
 	t_mat4x4 matworld = matrix_makeidentity();
 	t_mat4x4 matproj = matrix_makeprojection(90.0f, (float)WINDOW_H / (float)WINDOW_W, 2.0f, 1000.0f);
 
-	vlookdir = lookdirection(game.player.angle);
-	t_vector3 vforwad = vector3_mul(vlookdir, 8.0f * game.clock.delta);
-
-	if ((game.keystate >> KEYS_UPMASK) & 1U)
-		vcamera = vector3_add(vcamera, vforwad);
-	if ((game.keystate >> KEYS_DOWNMASK) & 1U)
-		vcamera = vector3_sub(vcamera, vforwad);
-	vtarget = vector3_add(vcamera, vlookdir);
-	t_mat4x4 matcamera = matrix_lookat(vcamera, vtarget, (t_vector3){0, 0, 1});
+	vtarget = vector3_add(game.player.position, game.player.lookdir);
+	t_mat4x4 matcamera = matrix_lookat(game.player.position, vtarget, (t_vector3){0, 0, 1});
 	t_mat4x4 matview = matrix_quickinverse(matcamera);
 	i = 0;
 	while(i < game.tri_count)
@@ -482,8 +314,8 @@ void engine3d(t_sdlcontext sdl, t_game game)
 
 		tritransformed = transform_calc(matworld, game.triangles[i]);
 		normal = normal_calc(tritransformed);
-		vcameraray = vector3_sub(tritransformed.p[0].v, vcamera);
-		if (vector3_dot(normal, vcameraray) < 0.0f)
+		vcameraray = vector3_sub(tritransformed.p[0].v, game.player.position);
+		if (vector3_dot(normal, vcameraray) < 0.0f || 1) //TODO: Currently ignoring normals with || 1
 		{
 			t_triangle clipped[2];
 			int nclippedtriangles = clippedtriangles(tritransformed, matview, clipped);

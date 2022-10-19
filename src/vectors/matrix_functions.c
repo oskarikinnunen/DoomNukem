@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 19:24:23 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/18 21:24:53 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/19 15:56:59 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ t_mat4x4 matrix_makeprojection(float fFovDegrees, float fAspectRatio, float fNea
 	return matrix;
 }
 
-t_mat4x4 Matrix_MultiplyMatrix(t_mat4x4 m1, t_mat4x4 m2)
+t_mat4x4 matrix_multiply_matrix(t_mat4x4 m1, t_mat4x4 m2)
 {
 	t_mat4x4 matrix = matrix_zero();
 	for (int c = 0; c < 4; c++)
@@ -79,15 +79,5 @@ t_vector3 vector3_mul_matrix(t_mat4x4 m, t_vector3 i)
 	v.x = i.x * m.m[0][0] + i.y * m.m[1][0] + i.z * m.m[2][0] + 1 * m.m[3][0];
 	v.y = i.x * m.m[0][1] + i.y * m.m[1][1] + i.z * m.m[2][1] + 1 * m.m[3][1];
 	v.z = i.x * m.m[0][2] + i.y * m.m[1][2] + i.z * m.m[2][2] + 1 * m.m[3][2];
-	return v;
-}
-
-t_quaternion quaternion_mul_matrix(t_mat4x4 m, t_quaternion i)
-{
-	t_quaternion v;
-	v.v.x = i.v.x * m.m[0][0] + i.v.y * m.m[1][0] + i.v.z * m.m[2][0] + i.w * m.m[3][0];
-	v.v.y = i.v.x * m.m[0][1] + i.v.y * m.m[1][1] + i.v.z * m.m[2][1] + i.w * m.m[3][1];
-	v.v.z = i.v.x * m.m[0][2] + i.v.y * m.m[1][2] + i.v.z * m.m[2][2] + i.w * m.m[3][2];
-	v.w = i.v.x * m.m[0][3] + i.v.y * m.m[1][3] + i.v.z * m.m[2][3] + i.w * m.m[3][3];
 	return v;
 }

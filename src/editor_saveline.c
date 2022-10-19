@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:21:52 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/18 18:26:46 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/19 14:44:50 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,5 +65,4 @@ void	saveline(t_editor *ed)
 			error_log(EC_MALLOC);
 		ft_lstapp(&ed->linelist, node);
 	}
-	printf("no head = %i\n", ed->linelist == NULL);
 }
