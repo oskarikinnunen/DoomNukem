@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/19 18:40:01 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 13:36:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ void	draw_image(uint32_t *pxls, t_point pos, t_img img, int scale)
 	float		scalar;
 	uint32_t	color;
 
+	if (img.size.x == 0 || img.size.y == 0 || img.length == 0)
+		return ;
 	scalar = ((float)img.size.x / (float)scale);
 	pixel.y = 0;
 	while (pixel.y < scale - 1)

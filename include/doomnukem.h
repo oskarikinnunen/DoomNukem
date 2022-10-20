@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/19 18:40:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 13:34:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ typedef enum e_editorstate
 typedef struct s_img
 {
 	t_point		size;
+	char		name[128];
 	uint32_t	*data;
 	uint32_t	length;
 }	t_img;
@@ -109,6 +110,7 @@ typedef struct s_sdlcontext
 	uint32_t				*zbuffer;
 	SDL_Renderer			*renderer; //TODO: for testing remove.
 	t_img					*images;
+	uint					imagecount;
 }	t_sdlcontext;
 
 # define PERFGRAPH_SAMPLES 64
@@ -239,6 +241,7 @@ void	savemap(t_editor *ed, char *filename);
 
 /* IMG.C */
 void	alloc_image(t_img *img, int width, int height);
+t_img	get_image_by_name(t_sdlcontext sdl, char *name);
 
 /* INPUTHELPER.C */
 bool	iskey(SDL_Event e, int keycode);
