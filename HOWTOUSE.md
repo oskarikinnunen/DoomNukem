@@ -19,5 +19,5 @@ Space				|	Toggle 3D view
 PLAYMODE KEYBINDINGS
 KEYBIND				| 	ACTION
 WASD/Arrow keys		|	Movement
-Mouse X-axis		|	Rotation
-Space				|	Switch camera mode (overhead or absolute)
+Mouse 				|	Rotation
+KEY_M				|	Map Toggle

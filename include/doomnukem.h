@@ -6,7 +6,11 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2022/10/20 14:10:44 by okinnune         ###   ########.fr       */
+=======
+/*   Updated: 2022/10/20 13:34:23 by okinnune         ###   ########.fr       */
+>>>>>>> main
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,5 +287,11 @@ void	error_log(int error_code);
 
 /* SDL */
 void	quit_sdl(t_sdlcontext *sdl);
+
+/*DEBUG FILES*/
+void printf_tri(t_triangle tri);
+void printf_quat(t_quaternion v);
+void printf_vec(t_vector3 v);
+void printf_matrix(t_mat4x4 m);
 
 #endif

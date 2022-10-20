@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode_overhead.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 09:46:25 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/15 13:10:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/19 16:56:59 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	move_overhead(t_game *game)
 	
 	move_vector = vector2_zero();
 	move_vector.x += (game->keystate >> KEYS_LEFTMASK) & 1;
-	move_vector.x -= (game->keystate >> KEYS_RGHTMASK) & 1;
+	move_vector.x -= (game->keystate >> KEYS_RIGHTMASK) & 1;
 	move_vector.y += (game->keystate >> KEYS_UPMASK) & 1;
 	move_vector.y -= (game->keystate >> KEYS_DOWNMASK) & 1;
 	move_vector = vector2_mul(move_vector, game->clock.delta * OVERHEADCAMSPEED);
@@ -37,9 +37,9 @@ static void	draw_walls(t_list *linelist, t_sdlcontext *sdl, t_vector2 offset)
 	{
 		line = *(t_line *)node->content;
 		line.start = point_mul(line.start, TILESIZE);
-		line.start = point_add(line.start, (t_point){offset.x * TILESIZE, offset.y * TILESIZE});
+		line.start = point_add(line.start, (t_point){offset.x, offset.y});
 		line.end = point_mul(line.end, TILESIZE);
-		line.end = point_add(line.end, (t_point){offset.x * TILESIZE, offset.y * TILESIZE});
+		line.end = point_add(line.end, (t_point){offset.x, offset.y});
 		drawline(sdl->surface->pixels, line.start, line.end, CLR_TURQ);
 		node = node->next;
 	}
@@ -52,27 +52,19 @@ void	render_overhead(t_game *game, t_sdlcontext *sdl)
 {
 	t_point		player_ball; //player coordinates  in screenspace
 	t_point		look_to; // line end coordinate that is towards player look direction
+	t_vector3	normalized_forward;
 	t_vector2	walls_offset;
 
-	look_to.x = sin(game->player.angle) * 40;
-	look_to.y = cos(game->player.angle) * 40;
-	if (game->cam_mode == overhead_absolute)
-	{
-		player_ball = point_zero(); //for now
-		//TODO: Calculate screen coordinates for player "ball" here
-		//player_pos = vector2_to_point(game->player.position);
-		draw_walls(game->linelst, sdl, game->overheadcam_pos);
-	}
-	else if  (game->cam_mode == overhead_follow)
-	{
-		player_ball.x = WINDOW_W / 2;
-		player_ball.y = WINDOW_H / 2;
-		walls_offset = vector2_negative(game->player.position);
-		draw_walls(game->linelst, sdl, walls_offset);
-	}
+	player_ball.x = WINDOW_W / 2;
+	player_ball.y = WINDOW_H / 2;
+	walls_offset = vector2_negative((t_vector2){game->player.position.x, game->player.position.y});
+	//walls_offset = vector2_sub(walls_offset, point_to_vector2(player_ball));
+	walls_offset = vector2_add(walls_offset, (t_vector2){player_ball.x, player_ball.y});
+	draw_walls(game->linelst, sdl, walls_offset);
+	normalized_forward = vector3_normalise(game->player.lookdir);
+	look_to = (t_point) {normalized_forward.x * 20, normalized_forward.y * 20};
 	look_to = point_add(look_to, player_ball);
-	if (game->cam_mode == overhead_follow) {
-		drawcircle(sdl->surface->pixels, player_ball, PLAYERRADIUS, CLR_PRPL);
-		drawline(sdl->surface->pixels, player_ball, look_to, CLR_PRPL);
-	}
+	drawline(sdl->surface->pixels, player_ball, look_to, CLR_PRPL);
+	//	drawline(sdl->surface->pixels, player_ball, PLAYERRADIUS, CLR_PRPL);
+	drawcircle(sdl->surface->pixels, player_ball, PLAYERRADIUS, CLR_PRPL);
 }

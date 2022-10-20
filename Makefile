@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/18 21:27:06 by okinnune         ###   ########.fr        #
+#    Updated: 2022/10/20 14:15:33 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,15 +27,20 @@ SRCFILES= main.c draw.c img.c deltatime.c anim.c\
 		editor/tools/point_tool.c \
 		editor/tools/point_tool_delete.c \
 		editor/tools/entity_tool.c \
-		editor_line_screenspace.c
+		editor_line_screenspace.c \
+		game_3d.c fill_triangle.c perfgraph.c \
+		png.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
-		vector3_complex.c \
+		vector3_complex.c vector3_complex2.c \
 		vector2_elementary.c vector2_shorthands.c \
 		vector2_complex.c vector2_clamp.c \
 		point_elementary.c point_shorthands.c \
 		point_complex.c point_float_ops.c \
-		conversions.c \
-		quaternion_shorthands.c 
+		conversions.c vector3_complex3.c \
+		quaternion_shorthands.c quaternions.c \
+		matrix_shorthands.c matrix_rotations.c \
+		matrix_functions.c matrix_functions2.c \
+		debug_vectors.c
 VECTORSRC= $(addprefix src/vectors/,$(VECTORSRCFILES))
 SRC= $(addprefix src/,$(SRCFILES))
 SRC+= $(VECTORSRC)
@@ -45,7 +50,7 @@ OBJ= $(SRC:.c=.o)
 INCLUDE= -ISDL_built/include/SDL2/ -Isrc -Iinclude -Ilibft #$(LIBFT)
 CC= gcc
 LIBS= $(LIBFT) -lm
-CFLAGS= $(INCLUDE) -g
+CFLAGS= $(INCLUDE) -g -finline-functions -O1
 
 all: $(SDL2) $(LIBFT) $(OBJ)
 	$(CC) $(OBJ) -o $(NAME) `SDL_built/bin/sdl2-config --cflags --libs` $(INCLUDE) $(LIBS)

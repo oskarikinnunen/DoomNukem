@@ -6,11 +6,12 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 13:52:50 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/17 20:13:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 14:18:12 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
+#include "shapes.h"
 
 bool	pointrectanglecollision(t_point p, t_rectangle rect) //dunno if this should be in physics
 {
