@@ -6,74 +6,92 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/14 14:35:56 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/20 15:28:18 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "bresenham.h"
 
-int isvalid(int crd[2]);
-
-int isvalid(int crd[2])
+void	draw(uint32_t *pxls, t_point pos, uint32_t clr)
 {
-	if (crd[X] < 0 || crd[X] >= WINDOW_W
-		|| crd[Y] < 0 || crd[Y] >= WINDOW_H)
-		return (0);
-	return(1);
-}
-
-void	draw(uint32_t *pxls, int crd[2], uint32_t clr) // TODO: Implement zbuffer into draw function/Make a struct for draw function that has point, clr, zbuffer
-{
-	//printf("window size is %d\n", crd[X] + crd[Y] * WINDOW_W);
-	
-	if ((crd[X] & (WINDOW_W - 1)) == crd[X] && (crd[Y] & (WINDOW_H - 1)) == crd[Y] && pxls[crd[X] + crd[Y] * WINDOW_W] != INT_MAX)
-		pxls[crd[X] + crd[Y] * WINDOW_W] = clr;
-
+	if (pos.x < 0 || pos.x >= WINDOW_W
+		|| pos.y < 0 || pos.y >= WINDOW_H)
+		return ;
+	pxls[pos.x + pos.y * WINDOW_W] = clr;
 }
 
 # define CRCL_SIDES 16
 
-void	drawcircle(uint32_t *pxls, int crd[2], int size, uint32_t clr)
+void	drawcircle(uint32_t *pxls, t_point pos, int size, uint32_t clr)
 {
-	int		edges[CRCL_SIDES][2];
+	t_point	edges[CRCL_SIDES + 1];
 	int		i;
 	float	angl;
 
 	i = 0;
 	angl = 0.0f;
-	while (i <= CRCL_SIDES)
+	while (i < CRCL_SIDES + 1)
 	{
-		edges[i][X] = crd[X] + (sin(angl) * size);
-		edges[i][Y] = crd[Y] + (cos(angl) * size);
-		if (i > 0)
+		edges[i].x = pos.x + (sin(angl) * size);
+		edges[i].y = pos.y + (cos(angl) * size);
+		if (i >= 1)
 			drawline(pxls, edges[i - 1], edges[i], clr);
 		angl += FULLRAD / CRCL_SIDES;
 		i++;
 	}
 }
 
-void	imgtoscreen(uint32_t *pxls, t_img *img)
+void	draw_image(uint32_t *pxls, t_point pos, t_img img, int scale)
 {
-	int			p[2];
-	uint32_t	clr;
+	t_point		pixel;
+	t_point		sample;
+	float		scalar;
+	uint32_t	color;
 
-	p[Y] = 0;
-	while(p[Y] < img->size[Y])
+	if (img.size.x == 0 || img.size.y == 0 || img.length == 0)
+		return ;
+	scalar = ((float)img.size.x / (float)scale);
+	pixel.y = 0;
+	while (pixel.y < scale - 2) //TODO: probably png readers fault that the second to last line is garbled, for now it just stops early, hence the '- 2'
 	{
-		p[X] = 0;
-		while(p[X] < img->size[X])
+		pixel.x = 0;
+		if (pixel.y + pos.y < 0 || pixel.y + pos.y > WINDOW_H)
+			continue;
+		while (pixel.x < scale - 1)
 		{
-			clr = img->data[p[X] + p[Y] * img->size[X]]; //TODO: sampleimg funtion;
-			if (clr != 0)
-				draw(pxls, p, clr); //TODO: sampleimg function
-			p[X]++;
+			if (pixel.x + pos.x < 0 || pixel.x + pos.x >= WINDOW_W)
+				continue;
+			sample = point_fmul(pixel, scalar);
+			color = img.data[sample.x + sample.y + (sample.y * img.size.y)]; //Protect plz, make samplecolor function
+			draw(pxls, point_add(pos, pixel), color);
+			pixel.x++;
 		}
-		p[Y]++;
+		pixel.y++;
 	}
 }
 
-void	drawline(uint32_t *pxls, int from[2], int to[2], uint32_t clr)
+/*void	draw_img(uint32_t *pxls, t_img *img)
+{
+	t_point		p;
+	uint32_t	clr;
+
+	p.y = 0;
+	while(p.y < img->size.y - 1)
+	{
+		p.x = 0;
+		while(p.x < img->size.x - 1)
+		{
+			clr = img->data[p.x + p.y + (p.y * img->size.y)]; //TODO: sampleimg funtion;
+			if (clr != 0)
+				draw(pxls, p, clr); //TODO: sampleimg function
+			p.x++;
+		}
+		p.y++;
+	}
+}*/
+
+void	drawline(uint32_t *pxls, t_point from, t_point to, uint32_t clr)
 {
 	static t_bresenham	b;
 

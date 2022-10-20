@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_saveline.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:21:52 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/04 16:52:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/19 14:44:50 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ static void del_list(void *content, size_t size)
 	free(content);
 }
 
-//TODO: fix this, this isn't able to remove the first one, program segfaults :D
 bool	removeduplicate(t_editor *ed)
 {
 	t_list	*node;
@@ -31,8 +30,8 @@ bool	removeduplicate(t_editor *ed)
 		line = *(t_line *)node->content;
 		if (node->content == NULL)
 			return (true);
-		if ((v2cmp(ed->line.start, line.start) && v2cmp(ed->line.end, line.end)) ||
-			(v2cmp(ed->line.start, line.end) && v2cmp(ed->line.end, line.start)))
+		if ((point_cmp(ed->line.start, line.start) && point_cmp(ed->line.end, line.end)) ||
+			(point_cmp(ed->line.start, line.end) && point_cmp(ed->line.end, line.start)))
 		{
 			if (prev)
 				prev->next = node->next;
@@ -50,13 +49,20 @@ bool	removeduplicate(t_editor *ed)
 void	saveline(t_editor *ed)
 {
 	t_list	*node;
+	
 	if (ed->linelist == NULL)
+	{
 		ed->linelist = ft_lstnew(&ed->line, sizeof(t_line));
+		if (!ed->linelist)
+			error_log(EC_MALLOC);
+	}
 	else
 	{
 		if (ed->linelist != NULL && removeduplicate(ed))
 			return ;
 		node = ft_lstnew(&ed->line, sizeof(t_line));
+		if (!node)
+			error_log(EC_MALLOC);
 		ft_lstapp(&ed->linelist, node);
 	}
 }

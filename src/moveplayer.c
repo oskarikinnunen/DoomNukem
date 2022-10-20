@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/17 14:38:40 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/19 15:36:57 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,85 +16,114 @@
 
  // Might need the whole gamecontext but I'm trying to avoid it, (trying to avoid global state)
  // TODO: normalize movement vector
-static void	updatemovementvector(float move_f2[2], int32_t keystate, float angle)
+/*
+static t_vector3	movementvector(int32_t keystate, float angle)
 {
-	//TODO: next parts could be done with some kind of "rotatevector" function
+	t_vector3	movement;
+
+	movement = vector3_zero();
 	if ((keystate >> KEYS_UPMASK) & 1) 
 	{
-		move_f2[X] += sin(angle);
-		move_f2[Y] += cos(angle);
+		movement.x += sin(angle);
+		movement.y += cos(angle);
 	}
 	if ((keystate >> KEYS_DOWNMASK) & 1)
 	{
-		move_f2[X] -= sin(angle);
-		move_f2[Y] -= cos(angle);
+		movement.x -= sin(angle);
+		movement.y -= cos(angle);
 	}
 	// strafe
 	if ((keystate >> KEYS_LEFTMASK) & 1)
 	{
-		move_f2[X] += sin(angle + RAD90);
-		move_f2[Y] += cos(angle + RAD90);
+		movement.x += sin(angle + RAD90);
+		movement.y += cos(angle + RAD90);
 	}
 	if ((keystate >> KEYS_RIGHTMASK) & 1)
 	{
-		move_f2[X] += -sin(angle + RAD90);
-		move_f2[Y] += -cos(angle + RAD90);
+		movement.x += -sin(angle + RAD90);
+		movement.y += -cos(angle + RAD90);
 	}
-}
-
-//Only checks start and end point collisions, TODO: fix linecirclecollision
-static bool checkwallcollisions(t_game *game, float potential_pos[2])
-{
-	t_list		*node;
-	t_line		line;
-	float		test_line_pos[2];
-	t_bresenham	b;
-	
-
-	node = game->linelst;
-	while (node != NULL)
+	//flying
+	if ((keystate >> KEYS_SPACEMASK) & 1)
 	{
-		line = *(t_line *)node->content;
-		v2mul_to_f2(line.start, TILESIZE, test_line_pos);
-		if (pointcirclecollision(test_line_pos, potential_pos, PLAYERRADIUS))
-			return (true);
-		v2mul_to_f2(line.end, TILESIZE, test_line_pos);
-		if (pointcirclecollision(test_line_pos, potential_pos, PLAYERRADIUS))
-			return (true);
-		node = node->next;
+		movement.z += 0.25f;
 	}
-	return (false);
+	if ((keystate >> KEYS_CTRLMASK) & 1)
+	{
+		movement.z -= 0.25f;
+	}
+	movement = vector3_clamp_magnitude(movement, MAXMOVEMENTSPEED);
+	return (movement);
+}
+*/
+static t_vector3	movementvector(int32_t keystate, t_vector3 lookdir)
+{
+	t_vector3	movement;
+	t_vector3	forward;
+
+	movement = vector3_zero();
+	forward = vector3_mul_vector3(lookdir, (t_vector3){1, 1, 0});
+	if ((keystate >> KEYS_UPMASK) & 1) 
+	{
+		movement = vector3_add(movement, forward);
+	}
+	if ((keystate >> KEYS_DOWNMASK) & 1)
+	{
+		movement = vector3_sub(movement, forward);
+	}
+	// strafe
+	if ((keystate >> KEYS_LEFTMASK) & 1)
+	{
+		movement = vector3_sub(movement,
+			vector3_crossproduct(forward, (t_vector3){0.0f, 0.0f, 1.0f}));
+		//movement.x += sin(angle + RAD90);
+		//movement.y += cos(angle + RAD90);
+	}
+	if ((keystate >> KEYS_RIGHTMASK) & 1)
+	{
+		movement = vector3_add(movement,
+			vector3_crossproduct(forward, (t_vector3){0.0f, 0.0f, 1.0f}));
+		//movement.x += -sin(angle + RAD90);
+		//movement.y += -cos(angle + RAD90);
+	}
+	//flying
+	if ((keystate >> KEYS_SPACEMASK) & 1)
+	{
+		movement.z += 0.25f;
+	}
+	if ((keystate >> KEYS_CTRLMASK) & 1)
+	{
+		movement.z -= 0.25f;
+	}
+	
+	movement = vector3_clamp_magnitude(movement, MAXMOVEMENTSPEED);
+	return (movement);
 }
 
 void	moveplayer(t_game *game)
 {
-	float	move_f2[2];
-	float	potential_plr_pos[2];
+	t_vector3	move_vector;
+	t_vector3	potential_pos; //Unused right now, will be used when collision is reimplemented
 	float	angle;
 
-	ft_bzero(move_f2, sizeof(float [2]));
+	move_vector = vector3_zero();
 	angle = 0;
-	angle -= game->mouse.p_delta[X] * MOUSESPEED;
+	angle -= game->mouse.delta.x * MOUSESPEED;
 	//	rotate character with arrow keys, doesn't work correctly with strafe
 	//	but if you need it it's here, just uncomment the next 2 lines
-	//angle -= (game->keystate >> KEYS_RIGHTMASK) & 1;
-	//angle += (game->keystate >> KEYS_LEFTMASK) & 1;
-	angle *= game->clock.delta * ROTATESPEED;
-	game->player.angle[X] += angle;
-	updatemovementvector(move_f2, game->keystate, game->player.angle[X]);
+	//angle -= ((game->keystate >> KEYS_RGHTMASK) & 1) * ROTATESPEED;
+	//angle -= ((game->keystate >> KEYS_LEFTMASK) & 1) * ROTATESPEED;
+	//angle += (keystate >> KEYS_LEFTMASK) & 1;
+	angle *= game->clock.delta;
+	game->player.angle.x += angle;
 	angle = 0;
-	angle -= game->mouse.p_delta[Y] * MOUSESPEED;
-	angle *= game->clock.delta * ROTATESPEED;
-	game->player.angle[Y] += angle;
-	game->player.angle[Y] = ft_clampf(game->player.angle[Y], -RAD90 * 0.99f, RAD90 * 0.99f);
-	updatemovementvector(move_f2, game->keystate, game->player.angle[Y]);
-	f2mul(move_f2, game->clock.delta * MOVESPEED);
-	#ifndef COLLISION_ON
-		f2add(game->player.position, move_f2);
-	#else
-		f2cpy(potential_plr_pos, move_f2);
-		f2add(potential_plr_pos, game->player.position);
-		if (checkwallcollisions(game, potential_plr_pos) == false)
-			f2add(game->player.position, move_f2);
-	#endif
+	angle -= game->mouse.delta.y * MOUSESPEED;
+	angle *= game->clock.delta;
+	game->player.angle.y += angle;
+	game->player.angle.y = ft_clampf(game->player.angle.y, -RAD90 * 0.99f, RAD90 * 0.99f);
+	game->player.lookdir = lookdirection(game->player.angle);
+	move_vector = movementvector(game->keystate, game->player.lookdir);
+	//move_vector = movementvector(game->keystate, angle.x);
+	move_vector = vector3_mul(move_vector, game->clock.delta * MOVESPEED);
+	game->player.position = vector3_add(game->player.position, move_vector);
 }

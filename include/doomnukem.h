@@ -6,19 +6,24 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/17 16:54:50 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/20 21:50:41 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../SDL_built/include/SDL2/SDL.h" //TODO: make this work without relative path?
-#include "libft.h"
-#include "limits.h" //TODO: remove mby? just define INT_MAX yourself
-#include "math.h"
-#include <fcntl.h>
-#include <stdbool.h>
+#ifndef DOOMNUKEM_H
+# define DOOMNUKEM_H
 
-# define WINDOW_W 1024
-# define WINDOW_H 1024
+# include "../SDL_built/include/SDL2/SDL.h" //TODO: make this work without relative path?
+# include "libft.h"
+# include "error_log.h"
+# include "limits.h" //TODO: remove mby? just define INT_MAX yourself
+# include <math.h>
+# include <fcntl.h>
+# include "vectors.h"
+# include <stdbool.h>
+
+# define WINDOW_W 1920
+# define WINDOW_H 1080
 # define TILESIZE 32 //EDITOR tilesize
 # define GRIDSIZE 64 //EDITOR gridsize (how many addressable coordinates we have)
 
@@ -39,29 +44,23 @@
 # define CLR_GRAY 4868682
 # define CLR_GREEN 3002977
 
-//pxls[((crd[X] & (WINDOW_W - 1)) + (crd[Y] & (WINDOW_H - 1)) * WINDOW_W)] = clr;
+#define DEBUG_ON 1
 
 // Playmode defines
-# define OVERHEADCAMSPEED 0.4f
+# define OVERHEADCAMSPEED 0.028f
 # define PLAYERRADIUS 16
 # define COLLISION_ON //Comment/uncomment to toggle experimental collision
 
-# define MOVESPEED 0.14f
+# define MOVESPEED 10.010f
+# define MAXMOVEMENTSPEED 0.08f
 # define ROTATESPEED 0.002f
-# define MOUSESPEED 0.34f
+# define MOUSESPEED 0.0002f
 
-typedef struct s_sdlcontext
-{
-	SDL_Window				*window;
-	SDL_Surface				*surface;
-	uint32_t				*zbuffer;
-	SDL_Renderer			*renderer; //TODO: for testing remove.
-}	t_sdlcontext;
 
 typedef struct s_mouse
 {
-	int		p[2];
-	int		p_delta[2];
+	t_point	pos;
+	t_point	delta;
 	int		scroll;
 	int		scroll_delta;
 	bool	click;
@@ -70,16 +69,16 @@ typedef struct s_mouse
 
 typedef struct s_mousedrag
 {
-	int	pos[2];
-	int	pos_origin[2];
-	int	drag[2];
-	int	drag_origin[2];
+	t_point	pos;
+	t_point	pos_origin;
+	t_point	drag;
+	t_point	drag_origin;
 }	t_mousedrag;
 
 typedef	struct s_line
 {
-	int	start[2];
-	int	end[2];
+	t_point	start;
+	t_point	end;
 }	t_line;
 
 typedef struct s_wall
@@ -98,10 +97,21 @@ typedef enum e_editorstate
 
 typedef struct s_img
 {
-	uint32_t	size[2];
+	t_point		size;
+	char		name[128];
 	uint32_t	*data;
 	uint32_t	length;
 }	t_img;
+
+typedef struct s_sdlcontext
+{
+	SDL_Window				*window;
+	SDL_Surface				*surface;
+	SDL_Renderer			*renderer; //TODO: for testing remove.
+	t_img					*images;
+	uint					imagecount;
+	float					*zbuffer;
+}	t_sdlcontext;
 
 # define PERFGRAPH_SAMPLES 64
 
@@ -122,19 +132,6 @@ typedef struct s_obj //TODO: move obj/fdf related stuff to separate header?
 	uint32_t	v_count;
 	uint32_t	f_count;
 }	t_obj;
-
-typedef struct s_fdf
-{
-	t_img				img;
-	t_obj				obj;
-	int					curframe;
-	float				*depth;
-	float				**verts;
-	float				matrices[2][3][3];
-	float				view[2];
-	float				offset[2];
-	float				zoom;
-}	t_fdf;
 
 //TODO: add ping-pong, repeat
 typedef enum	e_anim_mode
@@ -167,8 +164,6 @@ typedef struct s_editor
 	t_list			*linelist;
 	t_mousedrag		mousedrag[2]; //First one is right click drag, 2nd is for middle click
 	t_mouse			mouse;
-	t_fdf			grid_fdf;
-	t_fdf			walls_fdf;
 	float			threedee_zoom;
 	t_anim			transition;
 	t_clock			clock;
@@ -178,14 +173,15 @@ typedef struct s_editor
 
 typedef struct s_player
 {
-	float	position[3]; //TODO: might be changed to int[2], don't know yet
-	float	angle[2];
+	t_vector3	position; //TODO: might be changed to int[2], don't know yet
+	t_vector2	angle;
+	t_vector3	lookdir;
 }	t_player;
 
 typedef enum	e_cam_mode
 {
-	overhead_follow,
-	overhead_absolute
+	player_view,
+	overhead_follow
 }	t_cam_mode;
 
 typedef enum e_gamereturn
@@ -196,55 +192,31 @@ typedef enum e_gamereturn
 	game_switchmode
 } t_gamereturn;
 
-typedef struct s_vec3d
+typedef struct s_texture
 {
-	float x;
-	float y;
-	float z;
-	float w;
-}	t_vec3d;
+	float	u;
+	float	v;
+	float	w;
+} t_texture;
 
 typedef struct	s_triangle
 {
-	struct s_vec3d p[3];
+	t_quaternion	p[3];
+	t_texture		t[3];
 	uint32_t	clr;
 }	t_triangle;
 
-typedef struct s_mat4x4
-{
-	float m[4][4];
-}	t_mat4x4;
-
-typedef struct s_trilist
-{
-	struct s_triangle tri;
-	struct s_trilist *next;
-} t_trilist;
-
-typedef struct s_math //place holder for structs containing players camera info and matrixes
-{
-	//pass
-	int					tri_count;
-	struct s_triangle	*triangles;
-	//static
-	t_mat4x4 			matproj;
-	//player movement
-	t_vec3d 			vcamera;
-	t_vec3d 			vlookdir;
-	float				fyaw;
-	float				fpitch;
-}	t_math;
-
 typedef struct s_game
 {
+	int				tri_count;
+	t_triangle		*triangles;
 	t_list			*linelst;
 	t_clock			clock;
 	t_mouse			mouse;
 	t_player		player;
 	int32_t			keystate;
 	t_cam_mode		cam_mode;
-	t_math			math;
-	float			overheadcam_pos[2];
+	t_vector2		overheadcam_pos;
 } t_game;
 
 typedef struct s_zbuff
@@ -252,21 +224,6 @@ typedef struct s_zbuff
 	int	w;
 	int	*zbuff;
 }	t_zbuff;
-
-/* V2.C */
-
-void	v2add(int v[2], int ov[2]);
-void	v2mul(int v[2], int mul);
-void	v2cpy(int to[2], int from[2]);
-bool	v2cmp(int v[2], int ov[2]);
-void	v2diff(int v[2], int ov[2], int rv[2]);
-void	v2mul_to_f2(int v[2], float mul, float f[2]);
-
-float	f2dist(float f[2], float of[2]);
-void	f2mul(float f[2], float mul); //TODO: move f2 functions to own file and maybe think of better naming?
-void	f2tov2(float f[2], int v[2]);
-void	f2add(float f[2], float of[2]);
-void	f2cpy(float to[2], float from[2]);
 
 /* EDITOR.C */
 int		editorloop(t_sdlcontext sdl);
@@ -279,29 +236,20 @@ bool	iskey(SDL_Event e, int keycode);
 void	renderlines(t_sdlcontext *sdl, t_editor *ed); //TODO:  better name?
 
 /* EDITOR_MOUSE.C */
-void	mousetoworldspace(int v2[2], t_editor *ed);
+t_point	mousetoworldspace(t_editor *ed);
+t_point	screentoworldspace(t_point point);
 void	mouse_event(SDL_Event e, t_editor *ed);
 
 /* EDITOR_SAVELINE.C */
 void	saveline(t_editor *ed);
 
 /* EDITOR_MAP_IO.C */
-void	loadmap(t_list **head, char *filename);
+t_list	*loadmap(char *filename);
 void	savemap(t_editor *ed, char *filename);
-
-/* EDITOR_3D_INITIALIZE.C */
-void	gridto_obj(t_obj *obj);
-void	lines_to_obj(t_obj *obj, t_list *linelist);
-
-/* EDITOR_3D.C */
-void	editor3d(t_sdlcontext sdl, t_editor *ed_ptr);
-
-/* FDF.C */
-int		fdf_init(t_fdf *fdf);
-void	fdf_draw_wireframe(t_fdf *fdf);
 
 /* IMG.C */
 void	alloc_image(t_img *img, int width, int height);
+t_img	get_image_by_name(t_sdlcontext sdl, char *name);
 
 /* INPUTHELPER.C */
 bool	iskey(SDL_Event e, int keycode);
@@ -314,21 +262,24 @@ void	update_anim(t_anim *anim, uint32_t delta);
 void	start_anim(t_anim *anim, t_anim_mode mode);
 
 /* DRAW.C */
-void	draw(uint32_t *pxls, int pos[2], uint32_t clr);
-void	drawline(uint32_t *pxls, int from[2], int to[2], uint32_t clr);
-void	drawcircle(uint32_t *pxls, int crd[2], int size, uint32_t clr);
-void	imgtoscreen(uint32_t *pxls, t_img *img);
+void	draw(uint32_t *pxls, t_point pos, uint32_t clr);
+void	drawline(uint32_t *pxls, t_point from, t_point to, uint32_t clr);
+void	drawcircle(uint32_t *pxls, t_point pos, int size, uint32_t clr);
+
+//Draws image 'img' to pixels 'pxls', offset by point 'pos' and scaled to 'scale'
+void	draw_image(uint32_t *pxls, t_point pos, t_img img, int scale);
 
 /* PERFGRAPH.C */
 void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext *sdl);
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
-void engine3d(t_sdlcontext sdl, t_triangle *triangles, int tri_count, t_mat4x4 matproj, t_mat4x4 matworld, t_vec3d vcamera, t_vec3d vlookdir);
+void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle);
+void	engine3d(t_sdlcontext sdl, t_game game);
 
 /* PHYSICS.C */
-bool	pointcirclecollision(float p[2], float cp[2], float r);
-bool	linecirclecollision(t_line line, float cp[2], float r);
+bool	pointcirclecollision(t_vector2 p, t_vector2 cp, float r);
+bool	linecirclecollision(t_line line, t_vector2 cp, float r);
 
 
 /* PLAYMODE_OVERHEAD.C */
@@ -337,3 +288,18 @@ void	move_overhead(t_game *game);
 
 /* MOVEPLAYER.C */
 void	moveplayer(t_game *game);
+
+/* ERRORS.C */
+void	error_log(int error_code);
+
+/* SDL */
+void	quit_sdl(t_sdlcontext *sdl);
+
+/*DEBUG FILES*/
+void printf_tri(t_triangle tri);
+void printf_quat(t_quaternion v);
+void printf_vec(t_vector3 v);
+void printf_matrix(t_mat4x4 m);
+void printf_point(t_point p);
+
+#endif

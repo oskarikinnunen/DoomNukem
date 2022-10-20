@@ -6,70 +6,52 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/14 12:03:47 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/20 15:46:53 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-void	drawrect(uint32_t *pxls, int crd[2], int clr)
+void	drawrect(uint32_t *pxls, t_point crd, int clr)
 {
 	int	i;
 
 	i = 0;
 	while (i < TILESIZE)
 	{
-		draw(pxls, (int [2]){crd[X] + i, crd[Y]}, clr);
-		draw(pxls, (int [2]){crd[X], crd[Y] + i}, clr);
-		draw(pxls, (int [2]){crd[X] + TILESIZE, crd[Y] + i}, clr);
-		draw(pxls, (int [2]){crd[X] + i, crd[Y] + TILESIZE}, clr);
+		draw(pxls, point_add(crd, (t_point){i, 0}), clr);
+		draw(pxls, point_add(crd, (t_point){0, i}), clr);
+		draw(pxls, point_add(crd, (t_point){TILESIZE, i}), clr);
+		draw(pxls, point_add(crd, (t_point){TILESIZE, i}), clr);
 		i++;
 	}
 }
 
-void	drawgrid(uint32_t *pxls, int origin[2])
+void	drawgrid(uint32_t *pxls, t_point origin)
 {
-	int	crd[2];
+	t_point	crd;
 
-	crd[Y] = origin[Y];
-	while (crd[Y] < (TILESIZE * GRIDSIZE) + origin[Y])
+	crd.y = origin.y;
+	while (crd.y < (TILESIZE * GRIDSIZE) + origin.y)
 	{
-		crd[X] = origin[X];
-		while (crd[X] < (TILESIZE * GRIDSIZE) + origin[X])
+		crd.x = origin.x;
+		while (crd.x < (TILESIZE * GRIDSIZE) + origin.x)
 		{
 			drawrect(pxls, crd, CLR_GRAY);
-			crd[X] += TILESIZE;
+			crd.x += TILESIZE;
 		}
-		crd[Y] += TILESIZE;
+		crd.y += TILESIZE;
 	}
 }
-
-static void debug_draw_object(uint32_t *pxls, t_obj obj) //remove this and use proper fdf rendering
-{
-	int			i;
-
-	i = 0;
-	while (i < obj.f_count)
-	{
-		drawline(pxls, obj.verts[obj.faces[i][0]], obj.verts[obj.faces[i][1]], CLR_TURQ);
-		drawline(pxls, obj.verts[obj.faces[i][1]], obj.verts[obj.faces[i][2]], CLR_TURQ);
-		drawline(pxls, obj.verts[obj.faces[i][2]], obj.verts[obj.faces[i][0]], CLR_TURQ);
-		i++;
-	}
-}
-	
 
 int	editorloop(t_sdlcontext sdl)
 {
-	t_editor	ed;
+	t_editor		ed;
 	t_gamereturn	gr;
 
 	bzero(&ed, sizeof(t_editor));
-	loadmap(&ed.linelist, "mapfile1");
-
+	ed.linelist = loadmap("mapfile1");
 	//FDF
-	alloc_image(&ed.grid_fdf.img, WINDOW_W, WINDOW_H);
-	alloc_image(&ed.walls_fdf.img, WINDOW_W, WINDOW_H);
 	ed.transition.framerate = 60;
 	ed.transition.lastframe = 15;
 	ed.transition.active = false;
@@ -78,21 +60,25 @@ int	editorloop(t_sdlcontext sdl)
 	{
 		update_deltatime(&ed.clock);
 		update_anim(&ed.transition, ed.clock.delta);
-		bzero(sdl.surface->pixels, sizeof(uint32_t) * WINDOW_H * WINDOW_W);
+		ft_bzero(sdl.surface->pixels, sizeof(uint32_t) * WINDOW_H * WINDOW_W);
 		gr = editor_events(&ed); 
 		if (gr != game_continue)
 		{
 			savemap(&ed, "mapfile1");
+			if (gr == game_exit)
+			{
+				quit_sdl(&sdl);
+				exit (0);
+			}
 			return(gr) ; //error returned from event handling, exit gracefully
 		}
-		if (ed.state == display3d || ed.transition.active)
-			editor3d(sdl, &ed);
 		else
 		{
 			drawgrid((uint32_t *)sdl.surface->pixels, ed.mousedrag->pos);
 			renderlines(&sdl, &ed);
 		}
-		SDL_UpdateWindowSurface(sdl.window);
+		if (SDL_UpdateWindowSurface(sdl.window) < 0)
+			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 	}
 	return(game_error); //should never get here
 }
