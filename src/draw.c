@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 14:19:58 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 20:08:25 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	draw(uint32_t *pxls, t_point pos, uint32_t clr)
 	if (pos.x < 0 || pos.x >= WINDOW_W
 		|| pos.y < 0 || pos.y >= WINDOW_H)
 		return ;
-	pxls[pos.x + pos.y * WINDOW_W] = clr;
+	pxls[pos.x + (pos.y * WINDOW_W)] = clr;
 }
 
 # define CRCL_SIDES 16
@@ -61,54 +61,36 @@ void	drawrectangle(uint32_t *pxls, t_rectangle rect, uint32_t clr)
 	drawline(pxls, from, to, clr);
 }
 
-void	draw_image(uint32_t *pxls, t_point pos, t_img img, int scale)
+void	draw_image(uint32_t *pxls, t_point pos, t_img img, t_vector2 scale)
 {
 	t_point		pixel;
 	t_point		sample;
-	float		scalar;
+	t_vector2	scalar;
 	uint32_t	color;
 
 	if (img.size.x == 0 || img.size.y == 0 || img.length == 0)
 		return ;
-	scalar = ((float)img.size.x / (float)scale);
+	scalar.x = ((float)img.size.x / scale.x);
+	scalar.y = ((float)img.size.y / scale.y);
 	pixel.y = 0;
-	while (pixel.y < scale - 2) //TODO: probably png readers fault that the second to last line is garbled, for now it just stops early, hence the '- 2'
+	while (pixel.y < scale.y - 2) //TODO: it's the png readers fault that the second to last line is garbled, for now it just stops early, hence the '- 2'
 	{
 		pixel.x = 0;
 		if (pixel.y + pos.y < 0 || pixel.y + pos.y > WINDOW_H)
 			continue;
-		while (pixel.x < scale - 1)
+		while (pixel.x < scale.x - 1)
 		{
 			if (pixel.x + pos.x < 0 || pixel.x + pos.x >= WINDOW_W)
 				continue;
-			sample = point_fmul(pixel, scalar);
-			color = img.data[sample.x + sample.y + (sample.y * img.size.y)]; //Protect plz, make samplecolor function
+			sample.x = ft_clamp(pixel.x * scalar.x, 0, img.size.x - 1);
+			sample.y = ft_clamp(pixel.y * scalar.y, 0, img.size.y - 1);
+			color = img.data[sample.x + sample.y + (sample.y * img.size.x)]; //TODO: NO idea why y needs to be there twice. Probably the png readers fault aswell
 			draw(pxls, point_add(pos, pixel), color);
 			pixel.x++;
 		}
 		pixel.y++;
 	}
 }
-
-/*void	draw_img(uint32_t *pxls, t_img *img)
-{
-	t_point		p;
-	uint32_t	clr;
-
-	p.y = 0;
-	while(p.y < img->size.y - 1)
-	{
-		p.x = 0;
-		while(p.x < img->size.x - 1)
-		{
-			clr = img->data[p.x + p.y + (p.y * img->size.y)]; //TODO: sampleimg funtion;
-			if (clr != 0)
-				draw(pxls, p, clr); //TODO: sampleimg function
-			p.x++;
-		}
-		p.y++;
-	}
-}*/
 
 void	drawline(uint32_t *pxls, t_point from, t_point to, uint32_t clr)
 {

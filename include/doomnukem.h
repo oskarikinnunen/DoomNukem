@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 14:18:47 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 20:09:00 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@
 # include "vectors.h"
 # include <stdbool.h>
 
-# define WINDOW_W 1920
-# define WINDOW_H 1080
+# define WINDOW_W 1280
+# define WINDOW_H 600
 # define TILESIZE 32 //EDITOR tilesize
 # define GRIDSIZE 64 //EDITOR gridsize (how many addressable coordinates we have)
 
@@ -256,7 +256,8 @@ void	draw_editor_buttons(t_sdlcontext sdl); //TODO: MOVE TO EDITOR_TOOLS
 void	check_tool_change_click(t_point cursor, t_editor *ed); //TODO: MOVE TO EDITOR_TOOLS
 
 //Draws image 'img' to pixels 'pxls', offset by point 'pos' and scaled to 'scale'
-void	draw_image(uint32_t *pxls, t_point pos, t_img img, int scale);
+void	draw_image(uint32_t *pxls, t_point pos, t_img img, t_point scale);
+void	draw_img(uint32_t *pxls, t_img *img); //REMOVE, FOR debugging png reader
 
 /* PERFGRAPH.C */
 void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext *sdl);
