@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 13:36:23 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 13:49:43 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	draw_image(uint32_t *pxls, t_point pos, t_img img, int scale)
 		return ;
 	scalar = ((float)img.size.x / (float)scale);
 	pixel.y = 0;
-	while (pixel.y < scale - 1)
+	while (pixel.y < scale - 2) //TODO: probably png readers fault that the second to last line is garbled, for now it just stops early, hence the '- 2'
 	{
 		pixel.x = 0;
 		if (pixel.y + pos.y < 0 || pixel.y + pos.y > WINDOW_H)
