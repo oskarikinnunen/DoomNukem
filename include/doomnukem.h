@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 20:09:00 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 20:36:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <fcntl.h>
 # include "vectors.h"
 # include <stdbool.h>
+# include "shapes.h"
 
 # define WINDOW_W 1280
 # define WINDOW_H 600
@@ -250,12 +251,14 @@ void	start_anim(t_anim *anim, t_anim_mode mode);
 void	draw(uint32_t *pxls, t_point pos, uint32_t clr);
 void	drawline(uint32_t *pxls, t_point from, t_point to, uint32_t clr);
 void	drawcircle(uint32_t *pxls, t_point pos, int size, uint32_t clr);
+void	drawrectangle(uint32_t *pxls, t_rectangle rect, uint32_t clr);
 
 /* EDITOR_BUTTONS.C */
 void	draw_editor_buttons(t_sdlcontext sdl); //TODO: MOVE TO EDITOR_TOOLS
 void	check_tool_change_click(t_point cursor, t_editor *ed); //TODO: MOVE TO EDITOR_TOOLS
 
 //Draws image 'img' to pixels 'pxls', offset by point 'pos' and scaled to 'scale'
+
 void	draw_image(uint32_t *pxls, t_point pos, t_img img, t_point scale);
 void	draw_img(uint32_t *pxls, t_img *img); //REMOVE, FOR debugging png reader
 
