@@ -6,12 +6,13 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 13:49:43 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 14:19:58 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "bresenham.h"
+#include "shapes.h"
 
 void	draw(uint32_t *pxls, t_point pos, uint32_t clr)
 {
@@ -40,6 +41,24 @@ void	drawcircle(uint32_t *pxls, t_point pos, int size, uint32_t clr)
 		angl += FULLRAD / CRCL_SIDES;
 		i++;
 	}
+}
+
+//Draws an unfilled rectangle 'rect'
+void	drawrectangle(uint32_t *pxls, t_rectangle rect, uint32_t clr)
+{
+	t_point	from;
+	t_point	to;
+
+	from = rect.position;
+	to = point_add(from, (t_point){rect.size.x, 0});
+	drawline(pxls, from, to, clr); 
+	to = point_add(from, (t_point){0, rect.size.y});
+	drawline(pxls, from, to, clr); 
+	from = point_add(rect.position, rect.size);
+	to = point_add(from, (t_point){0, -rect.size.y});
+	drawline(pxls, from, to, clr);
+	to = point_add(from, (t_point){-rect.size.x, 0});
+	drawline(pxls, from, to, clr);
 }
 
 void	draw_image(uint32_t *pxls, t_point pos, t_img img, int scale)
