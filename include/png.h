@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   png.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:12:25 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/19 18:15:53 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 18:21:32 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 typedef struct s_pngpalette
 {
-	uint64_t	*plte;
+	uint32_t	*plte;
 	uint32_t	length;
 } t_pngpalette;
 

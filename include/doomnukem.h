@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 13:34:23 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 16:53:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@
 # include "vectors.h"
 # include <stdbool.h>
 
-# define WINDOW_W 1920
-# define WINDOW_H 1080
+# define WINDOW_W 1280
+# define WINDOW_H 600
 # define TILESIZE 32 //EDITOR tilesize
 # define GRIDSIZE 64 //EDITOR gridsize (how many addressable coordinates we have)
 
@@ -259,7 +259,8 @@ void	drawline(uint32_t *pxls, t_point from, t_point to, uint32_t clr);
 void	drawcircle(uint32_t *pxls, t_point pos, int size, uint32_t clr);
 
 //Draws image 'img' to pixels 'pxls', offset by point 'pos' and scaled to 'scale'
-void	draw_image(uint32_t *pxls, t_point pos, t_img img, int scale);
+void	draw_image(uint32_t *pxls, t_point pos, t_img img, t_point scale);
+void	draw_img(uint32_t *pxls, t_img *img); //REMOVE, FOR debugging png reader
 
 /* PERFGRAPH.C */
 void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext *sdl);
