@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 14:12:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 14:16:04 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ int	editorloop(t_sdlcontext sdl)
 
 	bzero(&ed, sizeof(t_editor));
 	ed.linelist = loadmap("mapfile1");
-
 	//FDF
 	ed.transition.framerate = 60;
 	ed.transition.lastframe = 15;

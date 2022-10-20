@@ -6,16 +6,14 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 11:11:21 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/19 13:30:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 14:18:02 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PNG_H
 # define PNG_H
 
-#include <inttypes.h>
-#include "vectors.h"
-
+# include <inttypes.h>
 
 typedef struct s_pngpalette
 {
@@ -33,7 +31,9 @@ typedef struct s_pngdata
 	t_pngpalette	palette;
 }	t_pngdata;
 
-/* parses a png image */
-void	pngparse(t_pngdata *data, char *filename);
+/* PNG.C */
+/* \brief parses a png image
+*/
+struct s_img	pngparse(char *filename);
 
 #endif
