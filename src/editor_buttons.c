@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 14:35:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/18 19:41:40 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 14:00:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,8 @@ void	check_tool_change_click(t_point cursor, t_editor *ed)
 		{
 			//buttons[i].tool_get()->change_func(ed);
 			ed->tool = buttons[i].tool_get();
-			//ed->mouse.click_unhandled = false;
+			ed->mouse.click_unhandled = false;
 		}
-			
 		i++;
 	}
 }

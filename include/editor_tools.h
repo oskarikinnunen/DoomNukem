@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/18 21:28:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 13:59:22 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ typedef struct	s_tool
 
 typedef struct	s_tool_button
 {
-	struct	s_rectangle	rect;
+	t_rectangle	rect;
 	t_tool	*(*tool_get)(void);
 }	t_tool_button;
 
@@ -36,8 +36,6 @@ typedef enum e_point_tool_state
 	place_end
 }	t_point_tool_state;
 
-
-void	point_tool_delete(t_editor *ed, t_point crd);
-
+void	point_tool_delete(struct s_editor *ed, t_point crd); 
 t_tool	*get_point_tool();
 t_tool	*get_entity_tool();
