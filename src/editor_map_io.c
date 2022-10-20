@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_map_io.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/19 17:26:31 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/20 20:31:43 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,10 @@ t_list	*loadmap(char *filename)
 	linelist = NULL;
 	fd = open(filename, O_RDONLY, 0666); //TODO: check if you can load a directory
 	if (fd == -1)
+	{
+		printf("map reader is shit, exiting the whole program! Pls supply an empty map file\n");
 		exit(0);
+	}
 	br = read(fd, &line, sizeof(t_line));
 	while (br >= sizeof(t_line))
 	{

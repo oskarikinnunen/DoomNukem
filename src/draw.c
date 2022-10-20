@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 20:08:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 20:09:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	drawrectangle(uint32_t *pxls, t_rectangle rect, uint32_t clr)
 	drawline(pxls, from, to, clr);
 }
 
-void	draw_image(uint32_t *pxls, t_point pos, t_img img, t_vector2 scale)
+void	draw_image(uint32_t *pxls, t_point pos, t_img img, t_point scale)
 {
 	t_point		pixel;
 	t_point		sample;
