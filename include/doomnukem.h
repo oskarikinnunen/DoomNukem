@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/19 13:31:18 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 14:10:44 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,10 @@
 # include <math.h>
 # include <fcntl.h>
 # include "vectors.h"
-# include "shapes.h"
 # include <stdbool.h>
 
-# define WINDOW_W 1280
-# define WINDOW_H 720
+# define WINDOW_W 1920
+# define WINDOW_H 1080
 # define TILESIZE 32 //EDITOR tilesize
 # define GRIDSIZE 64 //EDITOR gridsize (how many addressable coordinates we have)
 
@@ -43,24 +42,19 @@
 # define CLR_PRPL 14231500
 # define CLR_TURQ 5505010
 # define CLR_GRAY 4868682
+# define CLR_GREEN 3002977
 
-
+#define DEBUG_ON 1
 
 // Playmode defines
 # define OVERHEADCAMSPEED 0.028f
 # define PLAYERRADIUS 16
 # define COLLISION_ON //Comment/uncomment to toggle experimental collision
 
-# define MOVESPEED 0.010f
-# define MAXMOVEMENTSPEED 0.75f
+# define MOVESPEED 10.010f
+# define MAXMOVEMENTSPEED 0.08f
 # define ROTATESPEED 0.002f
-# define MOUSESPEED 0.002f
-
-typedef struct s_sdlcontext
-{
-	SDL_Window				*window;
-	SDL_Surface				*surface;
-}	t_sdlcontext;
+# define MOUSESPEED 0.0002f
 
 typedef struct s_mouse
 {
@@ -96,9 +90,28 @@ typedef enum e_editorstate
 typedef struct s_img
 {
 	t_point		size;
+	char		name[128];
 	uint32_t	*data;
 	uint32_t	length;
 }	t_img;
+
+typedef struct s_sdlcontext
+{
+	SDL_Window				*window;
+	SDL_Surface				*surface;
+	uint32_t				*zbuffer;
+	SDL_Renderer			*renderer; //TODO: for testing remove.
+	t_img					*images;
+	uint					imagecount;
+}	t_sdlcontext;
+
+# define PERFGRAPH_SAMPLES 64
+
+typedef struct s_perfgraph
+{
+	t_img		image;
+	uint32_t	deltas[PERFGRAPH_SAMPLES];
+}	t_perfgraph;
 
 typedef struct s_obj //TODO: move obj/fdf related stuff to separate header?
 {
@@ -118,19 +131,6 @@ typedef enum	e_anim_mode
 	anim_forwards,
 	anim_backwards
 } t_anim_mode;
-
-/*
-
-	tool_click(t_point position, int mousekey);
-	tool_click(t_point position, int mousekey);
-
-*/
-/*typedef enum	e_tooltype //TODO: Unused right now
-{
-	tool_points,
-	tool_define_room,
-	tool_entity,
-}	t_tool;*/
 
 typedef struct s_clock
 {
@@ -152,7 +152,6 @@ typedef struct s_anim
 typedef struct s_editor
 {
 	t_editorstate	state;
-	struct s_tool	*tool;
 	t_line			line; //the line that is being edited right now
 	t_list			*linelist;
 	t_mouse			mouse;
@@ -160,32 +159,23 @@ typedef struct s_editor
 	t_anim			transition;
 	t_clock			clock;
 	t_point			offset;
+	struct s_tool	*tool;
 }	t_editor;
 
 /* Playmode */
 
 typedef struct s_player
 {
-	t_vector2	position;
-	float		angle;
+	t_vector3	position; //TODO: might be changed to int[2], don't know yet
+	t_vector2	angle;
+	t_vector3	lookdir;
 }	t_player;
 
 typedef enum	e_cam_mode
 {
-	overhead_follow,
-	overhead_absolute
+	player_view,
+	overhead_follow
 }	t_cam_mode;
-
-typedef struct s_game
-{
-	t_list			*linelst;
-	t_clock			clock;
-	t_mouse			mouse;
-	t_player		player;
-	int32_t			keystate;
-	t_cam_mode		cam_mode;
-	t_vector2		overheadcam_pos;
-} t_game;
 
 typedef enum e_gamereturn
 {
@@ -195,20 +185,30 @@ typedef enum e_gamereturn
 	game_switchmode
 } t_gamereturn;
 
-/* V2.C */
+typedef struct	s_triangle
+{
+	t_quaternion p[3];
+	uint32_t	clr;
+}	t_triangle;
 
-void	v2add(int v[2], int ov[2]);
-void	v2mul(int v[2], int mul);
-void	v2cpy(int to[2], int from[2]);
-bool	v2cmp(int v[2], int ov[2]);
-void	v2diff(int v[2], int ov[2], int rv[2]);
-void	v2mul_to_f2(int v[2], float mul, float f[2]);
+typedef struct s_game
+{
+	int				tri_count;
+	t_triangle		*triangles;
+	t_list			*linelst;
+	t_clock			clock;
+	t_mouse			mouse;
+	t_player		player;
+	int32_t			keystate;
+	t_cam_mode		cam_mode;
+	t_vector2		overheadcam_pos;
+} t_game;
 
-float	f2dist(float f[2], float of[2]);
-void	f2mul(float f[2], float mul); //TODO: move f2 functions to own file and maybe think of better naming?
-void	f2tov2(float f[2], int v[2]);
-void	f2add(float f[2], float of[2]);
-void	f2cpy(float to[2], float from[2]);
+typedef struct s_zbuff
+{
+	int	w;
+	int	*zbuff;
+}	t_zbuff;
 
 /* EDITOR.C */
 int		editorloop(t_sdlcontext sdl);
@@ -216,9 +216,6 @@ int		editorloop(t_sdlcontext sdl);
 /* EDITOR_EVENTS.C */
 int		editor_events(t_editor *ed);
 bool	iskey(SDL_Event e, int keycode);
-
-/* EDITOR_LINE_SCREENSPACE.C */
-t_line	line_in_screenspace(t_editor *ed, t_line line);
 
 /* EDITOR_RENDER.C */
 void	renderlines(t_sdlcontext *sdl, t_editor *ed); //TODO:  better name?
@@ -232,11 +229,12 @@ void	mouse_event(SDL_Event e, t_editor *ed);
 void	saveline(t_editor *ed);
 
 /* EDITOR_MAP_IO.C */
-void	loadmap(t_list **head, char *filename);
+t_list	*loadmap(char *filename);
 void	savemap(t_editor *ed, char *filename);
 
 /* IMG.C */
 void	alloc_image(t_img *img, int width, int height);
+t_img	get_image_by_name(t_sdlcontext sdl, char *name);
 
 /* INPUTHELPER.C */
 bool	iskey(SDL_Event e, int keycode);
@@ -252,20 +250,26 @@ void	start_anim(t_anim *anim, t_anim_mode mode);
 void	draw(uint32_t *pxls, t_point pos, uint32_t clr);
 void	drawline(uint32_t *pxls, t_point from, t_point to, uint32_t clr);
 void	drawcircle(uint32_t *pxls, t_point pos, int size, uint32_t clr);
-void	imgtoscreen(uint32_t *pxls, t_img *img);
-void	drawrectangle(uint32_t *pxls, t_rectangle rect, uint32_t clr);
 
 /* EDITOR_BUTTONS.C */
 void	draw_editor_buttons(t_sdlcontext sdl); //TODO: MOVE TO EDITOR_TOOLS
 void	check_tool_change_click(t_point cursor, t_editor *ed); //TODO: MOVE TO EDITOR_TOOLS
 
+//Draws image 'img' to pixels 'pxls', offset by point 'pos' and scaled to 'scale'
+void	draw_image(uint32_t *pxls, t_point pos, t_img img, int scale);
+
+/* PERFGRAPH.C */
+void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext *sdl);
+
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
+void	z_fill_tri(int tris[3][3], t_sdlcontext sdl, uint32_t clr);
+void	engine3d(t_sdlcontext sdl, t_game game);
 
 /* PHYSICS.C */
-bool	pointrectanglecollision(t_point p, t_rectangle rect);
 bool	pointcirclecollision(t_vector2 p, t_vector2 cp, float r);
 bool	linecirclecollision(t_line line, t_vector2 cp, float r);
+
 
 /* PLAYMODE_OVERHEAD.C */
 void	render_overhead(t_game *game, t_sdlcontext *sdl);

@@ -6,13 +6,12 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/17 20:05:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 13:49:43 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "bresenham.h"
-#include "shapes.h"
 
 void	draw(uint32_t *pxls, t_point pos, uint32_t clr)
 {
@@ -43,43 +42,54 @@ void	drawcircle(uint32_t *pxls, t_point pos, int size, uint32_t clr)
 	}
 }
 
-//Draws an unfilled rectangle 'rect'
-void	drawrectangle(uint32_t *pxls, t_rectangle rect, uint32_t clr)
+void	draw_image(uint32_t *pxls, t_point pos, t_img img, int scale)
 {
-	t_point	from;
-	t_point	to;
+	t_point		pixel;
+	t_point		sample;
+	float		scalar;
+	uint32_t	color;
 
-	from = rect.position;
-	to = point_add(from, (t_point){rect.size.x, 0});
-	drawline(pxls, from, to, clr); 
-	to = point_add(from, (t_point){0, rect.size.y});
-	drawline(pxls, from, to, clr); 
-	from = point_add(rect.position, rect.size);
-	to = point_add(from, (t_point){0, -rect.size.y});
-	drawline(pxls, from, to, clr);
-	to = point_add(from, (t_point){-rect.size.x, 0});
-	drawline(pxls, from, to, clr);
+	if (img.size.x == 0 || img.size.y == 0 || img.length == 0)
+		return ;
+	scalar = ((float)img.size.x / (float)scale);
+	pixel.y = 0;
+	while (pixel.y < scale - 2) //TODO: probably png readers fault that the second to last line is garbled, for now it just stops early, hence the '- 2'
+	{
+		pixel.x = 0;
+		if (pixel.y + pos.y < 0 || pixel.y + pos.y > WINDOW_H)
+			continue;
+		while (pixel.x < scale - 1)
+		{
+			if (pixel.x + pos.x < 0 || pixel.x + pos.x >= WINDOW_W)
+				continue;
+			sample = point_fmul(pixel, scalar);
+			color = img.data[sample.x + sample.y + (sample.y * img.size.y)]; //Protect plz, make samplecolor function
+			draw(pxls, point_add(pos, pixel), color);
+			pixel.x++;
+		}
+		pixel.y++;
+	}
 }
 
-void	imgtoscreen(uint32_t *pxls, t_img *img)
+/*void	draw_img(uint32_t *pxls, t_img *img)
 {
 	t_point		p;
 	uint32_t	clr;
 
 	p.y = 0;
-	while(p.y < img->size.y)
+	while(p.y < img->size.y - 1)
 	{
 		p.x = 0;
-		while(p.x < img->size.x)
+		while(p.x < img->size.x - 1)
 		{
-			clr = img->data[p.x + p.y * img->size.x]; //TODO: sampleimg funtion;
+			clr = img->data[p.x + p.y + (p.y * img->size.y)]; //TODO: sampleimg funtion;
 			if (clr != 0)
 				draw(pxls, p, clr); //TODO: sampleimg function
 			p.x++;
 		}
 		p.y++;
 	}
-}
+}*/
 
 void	drawline(uint32_t *pxls, t_point from, t_point to, uint32_t clr)
 {

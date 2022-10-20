@@ -5,10 +5,11 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/08 11:10:32 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/19 13:33:21 by okinnune         ###   ########.fr       */
+/*   Created: 2022/10/19 17:10:14 by okinnune          #+#    #+#             */
+/*   Updated: 2022/10/20 13:26:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "png.h"
 #include "doomnukem.h"
@@ -35,7 +36,7 @@ char	*readpalette(t_pngdata *png, char *ptr)
 
 	png->palette.plte = ft_memalloc(sizeof(uint64_t) * 1024);
 	if (png->palette.plte == NULL)
-		error_exit("alloc fail");
+		error_log(EC_MALLOC);
 	while (ft_strncmp(ptr, "PLTE", 4) != 0)
 		ptr++;
 	ptr += 4;
@@ -59,7 +60,7 @@ void	readdat(t_pngdata *png, char *ptr)
 	ptr += 12;
 	png->data = ft_memalloc(sizeof(uint8_t) * png->width * png->height);
 	if (png->data == NULL)
-		error_exit("alloc fail");
+		error_log(EC_MALLOC);
 	count = 0;
 	while (ft_strncmp(ptr, "tEXt", 4) != 0
 		&& count < png->width * png->height)
@@ -70,28 +71,53 @@ void	readdat(t_pngdata *png, char *ptr)
 	}
 }
 
-void	pngparse(t_pngdata	*png, char *filename)
+void	pngtosimpleimg(t_pngdata *png, t_img *img) //dis bad, make return t_img instead
 {
+	int	i;
+
+	img->size.x = png->width;
+	img->size.y = png->height;
+	img->length = img->size.x * img->size.y;
+	img->data = ft_memalloc(img->length * sizeof(uint32_t));
+	i = 0;
+	while (i < img->length)
+	{
+		img->data[i] = png->palette.plte[png->data[i]];
+		i++;
+	}
+	free(png->data);
+	free(png->palette.plte); // check if palette exists?
+}
+
+//TODO: generate placeholder image if the image requested here didn't exist
+t_img	pngparse(char *filename)
+{
+	t_pngdata	png;
 	int			fd;
 	int			len;
 	char		*ptr;
 	char		buf[32000];
+	t_img		result;
 
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
-		exit(0);
+		error_log(EC_OPEN);
 	len = read(fd, buf, sizeof(uint8_t) * 32000);
-	ft_bzero(png, sizeof(t_pngdata));
+	ft_bzero(&png, sizeof(t_pngdata));
 	ptr = buf;
 	while (ft_strcmp(++ptr, "IHDR") != 0 && len > 0)
 		len--;
 	ptr += 4;
-	png->width = png4byte(ptr);
-	png->height = png4byte(ptr + 4);
+	png.width = png4byte(ptr);
+	png.height = png4byte(ptr + 4);
 	ptr += 8;
-	png->bitdepth = *(ptr);
-	png->colortype = *(ptr + 1);
-	ptr = readpalette(png, ptr);
-	readdat(png, ptr);
+	png.bitdepth = *(ptr);
+	png.colortype = *(ptr + 1);
+	ptr = readpalette(&png, ptr);
+	readdat(&png, ptr);
 	close(fd);
+	pngtosimpleimg(&png, &result);
+	if (ft_strlen(filename) < 128)
+		ft_strcpy(result.name, filename);
+	return (result);
 }
