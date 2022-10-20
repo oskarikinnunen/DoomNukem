@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 14:10:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 20:59:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static void point_tool_click(t_editor *ed)
 
 static void	point_tool_draw(t_editor *ed, t_sdlcontext *sdl) //This needs to access editors state, so pass editor here??
 {
-	t_line	ss_line;
+	t_line			ss_line;
 
 	if (point_cmp(ed->line.end, point_zero()) && !point_cmp(ed->line.start, point_zero()))
 	{
