@@ -50,8 +50,6 @@ char	*readpalette(t_pngdata *png, uint8_t *ptr)
 	{
 		if (i % 3 == 0)
 		{
-			printf("read clr %i \n", i / 3);
-			//png->palette.plte[i / 3] = rev_bytes(*(uint32_t *)ptr) & 0xFFFFFF16;
 			png->palette.plte[i / 3] = *(uint32_t *)ptr;
 		}
 		ptr++;
@@ -68,7 +66,6 @@ void	readdat(t_pngdata *png, uint8_t *ptr)
 	while (ft_strncmp(ptr, "IDAT", 4) != 0)
 		ptr++;
 	ptr += 12;
-	printf("width %i height %i \n", png->width, png->height);
 	png->data = malloc(sizeof(uint8_t) * png->width * png->height);
 	printf("malloced %i indexes for data \n", png->width * png->height);
 	//png->data[(png->width * png->height) - 1] = 0;
@@ -78,20 +75,11 @@ void	readdat(t_pngdata *png, uint8_t *ptr)
 	while (count < (png->width * png->height) - 1
 			/*&& ft_strncmp(ptr, "tEXT", 4) != 0*/)
 	{
-		//printf("count is %i \n", count);
 		png->data[count] =
 			*ptr;
 		ptr++;
 		count++;
 	}
-	printf("read %i pixels \n", count);
-	/*count = 0;
-	while (1)
-	{
-		printf("READING PAST MEMORY %i \n", count);
-		*(ptr++);
-		count++;
-	}*/
 }
 
 void	pngtosimpleimg(t_pngdata *png, t_img *img) //dis bad, make return t_img instead
@@ -113,7 +101,7 @@ void	pngtosimpleimg(t_pngdata *png, t_img *img) //dis bad, make return t_img ins
 }
 
 //TODO: generate placeholder image if the image requested here didn't exist
-t_img	pngparse(char *filename) //TODO: ADD WARNING MESSAGE FOR IMAGES OVER 190X190
+t_img	pngparse(char *filename)
 {
 	t_pngdata	png;
 	int			fd;
@@ -140,16 +128,13 @@ t_img	pngparse(char *filename) //TODO: ADD WARNING MESSAGE FOR IMAGES OVER 190X1
 	}
 	ptr += 8;
 	png.bitdepth = *(ptr);
-	printf("bitdepth %i \n", png.bitdepth);
 	png.colortype = *(ptr + 1);
-	printf("reading palette \n");
 	ptr = readpalette(&png, ptr);
-	printf("read dat %s \n", filename);
 	readdat(&png, ptr);
 	close(fd);
-	printf("im here\n");
 	pngtosimpleimg(&png, &result);
 	if (ft_strlen(filename) < 128)
 		ft_strcpy(result.name, filename);
+	printf("read png %s \n", filename);
 	return (result);
 }
