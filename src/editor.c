@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 20:25:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 21:04:48 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ int	editorloop(t_sdlcontext sdl)
 				ed.tool->draw_update(&ed, &sdl);
 			}
 		}
-		draw_editor_buttons(sdl);
+		draw_editor_buttons(sdl, ed.tool_selected);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 	}

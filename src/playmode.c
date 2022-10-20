@@ -80,10 +80,8 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 		if (gr != game_continue)
 			return(gr);
 		moveplayer(&game);
-		if (game.cam_mode != player_view)
-			render_overhead(&game, &sdl);
-		else
-			engine3d(sdl, game);
+		engine3d(sdl, game);
+		render_overhead(&game, &sdl);
 		drawperfgraph(&pgraph, game.clock.delta, &sdl);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);

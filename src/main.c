@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 20:40:14 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 20:56:44 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,14 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	sdl->surface = SDL_GetWindowSurface(sdl->window);
 	if (sdl->surface == NULL)
 		error_log(EC_SDL_GETWINDOW_SURFACE);
-	sdl->images = ft_memalloc(sizeof(t_img) * 2);
+	sdl->images = ft_memalloc(sizeof(t_img) * 3);
 	if (sdl->images == NULL)
 		error_log(EC_MALLOC);
 	//sdl->images[0] = pngparse("images/spritefont2.png");
-	sdl->images[0] = pngparse("images/wall2.png");
-	sdl->images[1] = pngparse("images/wall2.png");
-	sdl->imagecount = 2; //TODO: Restructure the code so this is incremented automatically when loading a new image to sdl->images
+	sdl->images[0] = pngparse("images/linetool.png");
+	sdl->images[1] = pngparse("images/entitytool.png");
+	sdl->images[2] = pngparse("images/spritefont2.png");
+	sdl->imagecount = 3; //TODO: Restructure the code so this is incremented automatically when loading a new image to sdl->images
 }
 
 void	quit_sdl(t_sdlcontext *sdl)

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 20:36:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 21:42:30 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@
 # include <stdbool.h>
 # include "shapes.h"
 
-# define WINDOW_W 1280
-# define WINDOW_H 600
+# define WINDOW_W 1920
+# define WINDOW_H 1080
 # define TILESIZE 32 //EDITOR tilesize
 # define GRIDSIZE 64 //EDITOR gridsize (how many addressable coordinates we have)
 
@@ -52,6 +52,8 @@
 # define PLAYERRADIUS 16
 # define COLLISION_ON //Comment/uncomment to toggle experimental collision
 
+
+# define EDITOR_MOVESPEED 1.2f
 # define MOVESPEED 10.010f
 # define MAXMOVEMENTSPEED 0.08f
 # define ROTATESPEED 0.002f
@@ -161,6 +163,8 @@ typedef struct s_editor
 	t_clock			clock;
 	t_point			offset;
 	struct s_tool	*tool;
+	uint8_t			tool_selected;
+	uint32_t		keystate;
 }	t_editor;
 
 /* Playmode */
@@ -254,12 +258,13 @@ void	drawcircle(uint32_t *pxls, t_point pos, int size, uint32_t clr);
 void	drawrectangle(uint32_t *pxls, t_rectangle rect, uint32_t clr);
 
 /* EDITOR_BUTTONS.C */
-void	draw_editor_buttons(t_sdlcontext sdl); //TODO: MOVE TO EDITOR_TOOLS
+void	draw_editor_buttons(t_sdlcontext sdl, uint8_t tool_selected); //TODO: MOVE TO EDITOR_TOOLS
 void	check_tool_change_click(t_point cursor, t_editor *ed); //TODO: MOVE TO EDITOR_TOOLS
 
 //Draws image 'img' to pixels 'pxls', offset by point 'pos' and scaled to 'scale'
 
 void	draw_image(uint32_t *pxls, t_point pos, t_img img, t_point scale);
+void	draw_ingame_image(uint32_t *pxls, t_point pos, t_img img, t_point scale);
 void	draw_img(uint32_t *pxls, t_img *img); //REMOVE, FOR debugging png reader
 
 /* PERFGRAPH.C */
