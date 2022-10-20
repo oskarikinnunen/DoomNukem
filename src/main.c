@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/19 18:41:18 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 13:43:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,10 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	if (sdl->surface == NULL)
 		error_log(EC_SDL_GETWINDOW_SURFACE);
 	sdl->images = ft_memalloc(sizeof(t_img));
+	if (sdl->images == NULL)
+		error_log(EC_MALLOC);
 	sdl->images[0] = pngparse("wall2.png");
+	sdl->imagecount = 1; //TODO: Restructure the code so this is incremented automatically when loading a new image to sdl->images
 }
 
 void	quit_sdl(t_sdlcontext *sdl)

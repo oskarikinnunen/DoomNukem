@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:10:14 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/19 18:38:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 13:26:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,6 @@ void	pngtosimpleimg(t_pngdata *png, t_img *img) //dis bad, make return t_img ins
 
 	img->size.x = png->width;
 	img->size.y = png->height;
-	//ft_memcpy(img->size, png->size, sizeof(Uint32[2]));
 	img->length = img->size.x * img->size.y;
 	img->data = ft_memalloc(img->length * sizeof(uint32_t));
 	i = 0;
@@ -90,7 +89,6 @@ void	pngtosimpleimg(t_pngdata *png, t_img *img) //dis bad, make return t_img ins
 	free(png->palette.plte); // check if palette exists?
 }
 
-//TODO: COPY DRAWSCALED IMAGE FROM WOLF3D SOURCES
 //TODO: generate placeholder image if the image requested here didn't exist
 t_img	pngparse(char *filename)
 {
@@ -118,7 +116,8 @@ t_img	pngparse(char *filename)
 	ptr = readpalette(&png, ptr);
 	readdat(&png, ptr);
 	close(fd);
-	//CONVERT TO SIMPLEIMG HERE AND RETURN THAT
 	pngtosimpleimg(&png, &result);
+	if (ft_strlen(filename) < 128)
+		ft_strcpy(result.name, filename);
 	return (result);
 }
