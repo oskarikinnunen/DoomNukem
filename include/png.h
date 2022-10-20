@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/08 11:11:21 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 14:18:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 20:08:30 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 typedef struct s_pngpalette
 {
-	uint64_t	*plte;
+	uint32_t	*plte;
 	uint32_t	length;
 }	t_pngpalette;
 
