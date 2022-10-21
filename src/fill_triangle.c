@@ -19,10 +19,10 @@ uint32_t color = CLR_PRPL;
 static void	z_draw(t_sdlcontext sdl, t_point pos, uint32_t clr, float z)
 {
 	//z = (uint32_t)z_dist;
-	if (z < sdl.zbuffer[pos.x + pos.y * WINDOW_W])
+	if (z < sdl.zbuffer[pos.x + pos.y * WINDOW_W] || 1)
 	{
 		sdl.zbuffer[pos.x + pos.y * WINDOW_W] = z;
-		((uint32_t *)sdl.surface->pixels)[pos.x + pos.y * WINDOW_W] = clr;
+		((uint32_t *)sdl.surface->pixels)[pos.x + pos.y * WINDOW_W] = INT_MAX;
 	}
 }
 
@@ -97,19 +97,19 @@ static void	z_fill_sub_tri(t_sdlcontext sdl, t_triangle triangle, t_quaternion r
 	t_quaternion	*p = ref;
 
 	q = ref;
-	printf("\nz_fill_sub_tri\n");
-	printf_quat(p[0]);
-	printf_quat(p[1]);
-	printf_quat(p[2]);
+	//printf("\nz_fill_sub_tri\n");
+//	printf_quat(p[0]);
+//	printf_quat(p[1]);
+//	printf_quat(p[2]);
 	int y = q[1].v.y;
 	populate_bresenham(&(b[0]), (t_point){q[0].v.x, q[0].v.y}, (t_point){q[1].v.x, q[1].v.y});
 	populate_bresenham(&(b[1]), (t_point){q[0].v.x, q[0].v.y}, (t_point){q[2].v.x, q[2].v.y});
-	printf_point(b[0].local);
-	printf_point(b[1].local);
-	printf("%f\n", y);
+	//printf_point(b[0].local);
+	//printf_point(b[1].local);
+	//printf("%f\n", y);
 	while (b[0].local.y != y)
 	{
-		printf("x %d y %d\n", b[0].local.y, b[1].local.y);
+//		printf("x %d y %d\n", b[0].local.y, b[1].local.y);
 		z_drawline(sdl, b[0].local, b[1].local, triangle.clr, q[0].w);
 		while (b[0].local.y == b[1].local.y)
 			step_bresenham(&(b[0]));
@@ -117,6 +117,51 @@ static void	z_fill_sub_tri(t_sdlcontext sdl, t_triangle triangle, t_quaternion r
 			step_bresenham(&(b[1]));
 	}
 	z_drawline(sdl, b[0].local, b[1].local, triangle.clr, q[0].w);
+}
+
+//delta could be uint8 and it could go from 0 to 100; if we dont need that much accuracy
+t_point point_lerp(t_point from, t_point to, float delta)
+{
+	t_point result;
+
+	result.x = from.x + ((to.x - from.x) * delta);
+	result.y = from.y + ((to.y - from.y) * delta);
+
+	return (result); // might return - if from is greater than to
+}
+
+static void fill_triangle(t_sdlcontext sdl, t_quaternion q[3]) 
+{
+	int index = 1;
+	int max;
+	//t_point from = (t_point){q[0].v.x, q[0].v.y}, (t_point){q[1].v.x, q[1].v.y};
+	//t_point to = (t_point){q[0].v.x, q[0].v.y}, (t_point){q[2].v.x, q[2].v.y};
+	t_point p[3];
+	t_point p1;
+	t_point p2;
+	p[0].x = q[0].v.x;
+	p[0].y = q[0].v.y;
+	p[1].x = q[1].v.x;
+	p[1].y = q[1].v.y;
+	p[2].x = q[2].v.x;
+	p[2].y = q[2].v.y;
+	max = p[1].y - p[2].y;
+	printf("\ntesting max is %d\n", max);
+	printf_point(p[0]);
+	printf_point(p[1]);
+	printf_point(p[2]);
+	printf("\n");
+	index = p[0].y - p[1].y;
+	max = index;
+	while(index > 0)
+	{
+		p1 = point_lerp(p[1], p[0], (float)index / max);
+		p2 = point_lerp(p[2], p[0], (float)index / max);
+		printf_point(p1);
+		printf_point(p2);
+		drawline(sdl.surface->pixels, p1, p2, INT_MAX);
+		index--;
+	}
 }
 
 void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle)
@@ -135,12 +180,13 @@ void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle)
 	split.v.z = p[1].w;
 	//sorted[1].v.z = triangle.p[0].v.z + triangle.p[1].v.z + triangle.p[2].v.z;
 	// sorted[1].v.z -= 10000;
-	printf_tri(triangle);
-	printf_quat(p[0]);
-	printf_quat(p[1]);
-	printf_quat(p[2]);
-	printf_quat(split);
-	z_fill_sub_tri(sdl, triangle, (t_quaternion[3]){p[0], p[1], split});
+//	printf_tri(triangle);
+//	printf_quat(p[0]);
+//	printf_quat(p[1]);
+//	printf_quat(p[2]);
+//	printf_quat(split);
+	fill_triangle(sdl, (t_quaternion[3]){p[0], p[1], split});
+	//z_fill_sub_tri(sdl, triangle, (t_quaternion[3]){p[0], p[1], split});
 	//printf("it works yay!!!!\n");
 	//exit(0);
 	//z_fill_sub_tri((int *[3]){(int *)&(sorted[0]), (int *)&(sorted[1]), (int *)&split}, sdl, clr);
