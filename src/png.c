@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   png.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:10:14 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 19:56:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/24 19:26:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ void	readdat(t_pngdata *png, uint8_t *ptr)
 		ptr++;
 	ptr += 12;
 	png->data = malloc(sizeof(uint8_t) * png->width * png->height);
-	printf("malloced %i indexes for data \n", png->width * png->height);
 	//png->data[(png->width * png->height) - 1] = 0;
 	if (png->data == NULL)
 		error_log(EC_MALLOC);
