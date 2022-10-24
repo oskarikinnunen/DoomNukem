@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 16:53:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/24 20:33:51 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,8 @@
 # include <fcntl.h>
 # include "vectors.h"
 # include <stdbool.h>
+# include "shapes.h"
 
-# define WINDOW_W 1280
-# define WINDOW_H 600
 # define TILESIZE 32 //EDITOR tilesize
 # define GRIDSIZE 64 //EDITOR gridsize (how many addressable coordinates we have)
 
@@ -51,11 +50,12 @@
 # define PLAYERRADIUS 16
 # define COLLISION_ON //Comment/uncomment to toggle experimental collision
 
+
+# define EDITOR_MOVESPEED 1.2f
 # define MOVESPEED 10.010f
 # define MAXMOVEMENTSPEED 0.08f
 # define ROTATESPEED 0.002f
 # define MOUSESPEED 0.0002f
-
 
 typedef struct s_mouse
 {
@@ -63,17 +63,10 @@ typedef struct s_mouse
 	t_point	delta;
 	int		scroll;
 	int		scroll_delta;
-	bool	click;
+	bool	click_unhandled;
+	int		click_button;
 	int		held;
 }	t_mouse;
-
-typedef struct s_mousedrag
-{
-	t_point	pos;
-	t_point	pos_origin;
-	t_point	drag;
-	t_point	drag_origin;
-}	t_mousedrag;
 
 typedef	struct s_line
 {
@@ -89,8 +82,8 @@ typedef struct s_wall
 
 typedef enum e_editorstate
 {
-	place_start,
-	place_end,
+	e_place_start,
+	e_place_end,
 	display3d
 }	t_editorstate;
 
@@ -111,6 +104,8 @@ typedef struct s_sdlcontext
 	SDL_Renderer			*renderer; //TODO: for testing remove.
 	t_img					*images;
 	uint					imagecount;
+	uint32_t				window_w;
+	uint32_t				window_h;
 }	t_sdlcontext;
 
 # define PERFGRAPH_SAMPLES 64
@@ -162,11 +157,14 @@ typedef struct s_editor
 	t_editorstate	state;
 	t_line			line; //the line that is being edited right now
 	t_list			*linelist;
-	t_mousedrag		mousedrag[2]; //First one is right click drag, 2nd is for middle click
 	t_mouse			mouse;
 	float			threedee_zoom;
 	t_anim			transition;
 	t_clock			clock;
+	t_point			offset;
+	struct s_tool	*tool;
+	uint8_t			tool_selected;
+	uint32_t		keystate;
 }	t_editor;
 
 /* Playmode */
@@ -254,16 +252,20 @@ void	update_anim(t_anim *anim, uint32_t delta);
 void	start_anim(t_anim *anim, t_anim_mode mode);
 
 /* DRAW.C */
-void	draw(uint32_t *pxls, t_point pos, uint32_t clr);
-void	drawline(uint32_t *pxls, t_point from, t_point to, uint32_t clr);
-void	drawcircle(uint32_t *pxls, t_point pos, int size, uint32_t clr);
+void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr);
+void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr);
+void	drawcircle(t_sdlcontext sdl, t_point pos, int size, uint32_t clr);
+void	drawrectangle(t_sdlcontext, t_rectangle rect, uint32_t clr);
+
+/* EDITOR_BUTTONS.C */
+void	draw_editor_buttons(t_sdlcontext sdl, uint8_t tool_selected); //TODO: MOVE TO EDITOR_TOOLS
+void	check_tool_change_click(t_point cursor, t_editor *ed); //TODO: MOVE TO EDITOR_TOOLS
 
 //Draws image 'img' to pixels 'pxls', offset by point 'pos' and scaled to 'scale'
-void	draw_image(uint32_t *pxls, t_point pos, t_img img, t_point scale);
-void	draw_img(uint32_t *pxls, t_img *img); //REMOVE, FOR debugging png reader
+void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale);
 
 /* PERFGRAPH.C */
-void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext *sdl);
+void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
@@ -274,9 +276,8 @@ void	engine3d(t_sdlcontext sdl, t_game game);
 bool	pointcirclecollision(t_vector2 p, t_vector2 cp, float r);
 bool	linecirclecollision(t_line line, t_vector2 cp, float r);
 
-
 /* PLAYMODE_OVERHEAD.C */
-void	render_overhead(t_game *game, t_sdlcontext *sdl);
+void	render_overhead(t_game *game, t_sdlcontext sdl);
 void	move_overhead(t_game *game);
 
 /* MOVEPLAYER.C */

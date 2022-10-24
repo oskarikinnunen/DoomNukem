@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:56:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/11 14:39:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/17 20:43:40 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	update_anim(t_anim *anim, uint32_t delta)
 		else
 			anim->frame = anim->lastframe - (int)(anim->framerate * now_second);
 	}
-	anim->lerp = ((float)anim->frame / (float)anim->lastframe); //TODO: make sure lastframe can't be zero or protect this
+	anim->lerp = ((float)anim->frame / (float)anim->lastframe);
 	anim->lerp = ft_clampf(anim->lerp, 0.0f, 1.0f);
 }
 

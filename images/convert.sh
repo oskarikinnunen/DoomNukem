@@ -12,7 +12,6 @@ srcfolder=original # the folder name where we read the unconverted png's from
 for filename in $srcfolder/*; do
 	bname=$( basename "$filename")
 	convert $filename \
-		-resize 160x160 \
 		-compress None \
 		-type palette \
 		-define png:compression-level=0 \

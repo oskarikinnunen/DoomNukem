@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game_3d.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/19 17:54:48 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/24 20:32:25 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 #include "bresenham.h"
 
 #define PRINT_DEBUG 1
-#define SH WINDOW_H
-#define SW WINDOW_W
 
 static t_quaternion Initquater()
 {
@@ -173,9 +171,9 @@ static void draw_triangles(t_sdlcontext sdl, t_triangle *triangles, int index, i
 		{triangles[index].p[1].v.x, triangles[index].p[1].v.y, triangles[index].p[1].v.z},
 		{triangles[index].p[2].v.x, triangles[index].p[2].v.y, triangles[index].p[2].v.z}},
 		sdl, triangles[index].clr);
-		drawline(sdl.surface->pixels, (t_point){triangles[index].p[0].v.x, triangles[index].p[0].v.y}, (t_point){triangles[index].p[1].v.x, triangles[index].p[1].v.y}, INT_MAX);
-		drawline(sdl.surface->pixels, (t_point){triangles[index].p[1].v.x, triangles[index].p[1].v.y}, (t_point){triangles[index].p[2].v.x, triangles[index].p[2].v.y}, INT_MAX);
-		drawline(sdl.surface->pixels, (t_point){triangles[index].p[2].v.x, triangles[index].p[2].v.y}, (t_point){triangles[index].p[0].v.x, triangles[index].p[0].v.y}, INT_MAX);
+		drawline(sdl, (t_point){triangles[index].p[0].v.x, triangles[index].p[0].v.y}, (t_point){triangles[index].p[1].v.x, triangles[index].p[1].v.y}, INT_MAX);
+		drawline(sdl, (t_point){triangles[index].p[1].v.x, triangles[index].p[1].v.y}, (t_point){triangles[index].p[2].v.x, triangles[index].p[2].v.y}, INT_MAX);
+		drawline(sdl, (t_point){triangles[index].p[2].v.x, triangles[index].p[2].v.y}, (t_point){triangles[index].p[0].v.x, triangles[index].p[0].v.y}, INT_MAX);
 		index++;
 	}
 }
@@ -208,9 +206,9 @@ static void clipped(int count, t_triangle *triangles_calc, t_sdlcontext sdl)
 				switch (p)
 				{
 				case 0: ntristoadd = Triangle_ClipAgainstPlane((t_vector3){0.0f, 0.0f, 0.0f}, (t_vector3){0.0f, 1.0f, 0.0f}, &test, &clipped[0], &clipped[1]); break;
-				case 1: ntristoadd = Triangle_ClipAgainstPlane((t_vector3){0.0f, (float)WINDOW_H - 1.0f, 0.0f}, (t_vector3){0.0f, -1.0f, 0.0f}, &test, &clipped[0], &clipped[1]); break;
+				case 1: ntristoadd = Triangle_ClipAgainstPlane((t_vector3){0.0f, (float)sdl.window_h - 1.0f, 0.0f}, (t_vector3){0.0f, -1.0f, 0.0f}, &test, &clipped[0], &clipped[1]); break;
 				case 2: ntristoadd = Triangle_ClipAgainstPlane((t_vector3){0.0f, 0.0f, 0.0f}, (t_vector3){1.0f, 0.0f, 0.0f}, &test, &clipped[0], &clipped[1]); break;
-				case 3: ntristoadd = Triangle_ClipAgainstPlane((t_vector3){(float)WINDOW_W - 1.0f, 0.0f, 0.0f}, (t_vector3){-1.0f, 0.0f, 0.0f}, &test, &clipped[0], &clipped[1]); break;
+				case 3: ntristoadd = Triangle_ClipAgainstPlane((t_vector3){(float)sdl.window_w - 1.0f, 0.0f, 0.0f}, (t_vector3){-1.0f, 0.0f, 0.0f}, &test, &clipped[0], &clipped[1]); break;
 				}
 				for (int w = 0; w < ntristoadd; w++)
 				{
@@ -262,7 +260,7 @@ static int clippedtriangles(t_triangle tritransformed, t_mat4x4 matview, t_trian
 	&triviewed, &(clipped[0]), &(clipped[1])));
 }
 
-static t_triangle triangle_to_screenspace(t_mat4x4 matproj, t_triangle clipped)
+static t_triangle triangle_to_screenspace(t_mat4x4 matproj, t_triangle clipped, t_sdlcontext sdl)
 {
 	t_triangle triprojected = Inittri();
 
@@ -283,12 +281,12 @@ static t_triangle triangle_to_screenspace(t_mat4x4 matproj, t_triangle clipped)
 	triprojected.p[1].v = vector3_add(triprojected.p[1].v, voffsetview);
 	triprojected.p[2].v = vector3_add(triprojected.p[2].v, voffsetview);
 
-	triprojected.p[0].v.x *= 0.5f * (float)SW;
-	triprojected.p[0].v.y *= 0.5f * (float)SH;
-	triprojected.p[1].v.x *= 0.5f * (float)SW;
-	triprojected.p[1].v.y *= 0.5f * (float)SH;
-	triprojected.p[2].v.x *= 0.5f * (float)SW;
-	triprojected.p[2].v.y *= 0.5f * (float)SH;
+	triprojected.p[0].v.x *= 0.5f * (float)sdl.window_w;
+	triprojected.p[0].v.y *= 0.5f * (float)sdl.window_h;
+	triprojected.p[1].v.x *= 0.5f * (float)sdl.window_w;
+	triprojected.p[1].v.y *= 0.5f * (float)sdl.window_h;
+	triprojected.p[2].v.x *= 0.5f * (float)sdl.window_w;
+	triprojected.p[2].v.y *= 0.5f * (float)sdl.window_h;
 
 	return(triprojected);
 }
@@ -300,7 +298,7 @@ void engine3d(t_sdlcontext sdl, t_game game)
 	int			count = 0;
 	t_vector3 vtarget;
 	t_mat4x4 matworld = matrix_makeidentity();
-	t_mat4x4 matproj = matrix_makeprojection(90.0f, (float)WINDOW_H / (float)WINDOW_W, 2.0f, 1000.0f);
+	t_mat4x4 matproj = matrix_makeprojection(90.0f, (float)sdl.window_h / (float)sdl.window_w, 2.0f, 1000.0f);
 
 	vtarget = vector3_add(game.player.position, game.player.lookdir);
 	t_mat4x4 matcamera = matrix_lookat(game.player.position, vtarget, (t_vector3){0, 0, 1});
@@ -321,7 +319,7 @@ void engine3d(t_sdlcontext sdl, t_game game)
 			int nclippedtriangles = clippedtriangles(tritransformed, matview, clipped);
 			for (int n = 0; n < nclippedtriangles; n++)
 			{
-				triangles_calc[count++] = triangle_to_screenspace(matproj, clipped[n]);
+				triangles_calc[count++] = triangle_to_screenspace(matproj, clipped[n], sdl);
 			}
 		}
 		i++;

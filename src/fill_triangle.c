@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fill_triangle.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/19 14:19:47 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/24 20:27:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,13 @@ static void	z_fill_sub_tri(int *tris[3], t_sdlcontext sdl, uint32_t clr)
 	populate_bresenham(&(b[1]), (t_point){tris[0][X], tris[0][Y]}, (t_point){tris[2][X], tris[2][Y]});
 	while (b[0].local.y != tris[1][Y])
 	{
-		drawline((u_int32_t *)sdl.surface->pixels, b[0].local, b[1].local, clr);
+		drawline(sdl, b[0].local, b[1].local, clr);
 		while (b[0].local.y == b[1].local.y)
 			step_bresenham(&(b[0]));
 		while (b[1].local.y != b[0].local.y)
 			step_bresenham(&(b[1]));
 	}
-	drawline((u_int32_t *)sdl.surface->pixels, b[0].local, b[1].local, clr);
+	drawline(sdl, b[0].local, b[1].local, clr);
 }
 
 void	z_fill_tri(int tris[3][3], t_sdlcontext sdl, uint32_t clr)
@@ -68,5 +68,5 @@ void	z_fill_tri(int tris[3][3], t_sdlcontext sdl, uint32_t clr)
 	split[Z] = sorted[1][Z];
 	z_fill_sub_tri((int *[3]){(int *)&(sorted[0]), (int *)&(sorted[1]), (int *)&split}, sdl, clr);
 	z_fill_sub_tri((int *[3]){(int *)&(sorted[2]), (int *)&(sorted[1]), (int *)&split}, sdl, clr);
-	drawline((u_int32_t *)sdl.surface->pixels, (t_point){sorted[0][X], sorted[0][Y]}, (t_point){sorted[2][X], sorted[2][Y]}, clr);
+	drawline(sdl, (t_point){sorted[0][X], sorted[0][Y]}, (t_point){sorted[2][X], sorted[2][Y]}, clr);
 }

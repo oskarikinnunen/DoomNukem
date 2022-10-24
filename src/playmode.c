@@ -75,16 +75,16 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	while (1)
 	{
 		update_deltatime(&game.clock);
-		bzero(sdl.surface->pixels, sizeof(uint32_t) * WINDOW_H * WINDOW_W);
+		bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 		gr = handleinput(&game);
 		if (gr != game_continue)
 			return(gr);
 		moveplayer(&game);
-		if (game.cam_mode != player_view)
-			render_overhead(&game, &sdl);
-		else
+		if (game.cam_mode == player_view)
 			engine3d(sdl, game);
-		drawperfgraph(&pgraph, game.clock.delta, &sdl);
+		else
+			render_overhead(&game, sdl);
+		drawperfgraph(&pgraph, game.clock.delta, sdl);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 	}

@@ -6,20 +6,20 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/15 13:12:23 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/18 21:08:29 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
-
+#include "editor_tools.h"
 
 t_point	mousetoworldspace(t_editor *ed)
 {
 	t_point	result;
 	t_point	mod;
 
-	result.x = -(ed->mousedrag->pos.x - ed->mouse.pos.x);
-	result.y = -(ed->mousedrag->pos.y - ed->mouse.pos.y);
+	result.x = -(ed->offset.x - ed->mouse.pos.x); //USED MOUSEDRAG
+	result.y = -(ed->offset.y - ed->mouse.pos.y); //USED MOUSEDRAG
 	mod.x = result.x % TILESIZE;
 	mod.y = result.y % TILESIZE;
 	result = point_div(result, TILESIZE);
@@ -41,57 +41,11 @@ t_point	screentoworldspace(t_point point)
 	return (result);
 }
 
-//TODO: only clamps d.pos, should also limit drag somehow
-static void	mousedrag(t_editor *ed)
-{
-	t_point		m2;
-	t_mousedrag	*d;
-
-	d = ed->mousedrag;
-	if (ed->mouse.held != 0)
-		SDL_GetMouseState(&m2.x, &m2.y);
-	if (ed->mouse.held == MOUSE_RIGHT)
-	{
-		d->drag.x = m2.x - d->drag_origin.x;
-		d->drag.y = m2.y - d->drag_origin.y;
-		d->pos.x = d->pos_origin.x + d->drag.x;
-		d->pos.y = d->pos_origin.y + d->drag.y;
-		if (ed->state != display3d)
-		{
-			d->pos.x = ft_clamp(d->pos.x, -(GRIDSIZE * TILESIZE) + WINDOW_W - 20, 20);
-			d->pos.y = ft_clamp(d->pos.y, -(GRIDSIZE * TILESIZE) + WINDOW_H - 20, 20);
-		}
-	}
-	d = &ed->mousedrag[1]; //MDL mouse drag
-	if (ed->mouse.held == MOUSE_MDL && ed->state == display3d)
-	{
-		d->drag.x = m2.x - d->drag_origin.x;
-		d->drag.y = m2.y - d->drag_origin.y;
-		d->pos.x = d->pos_origin.x + d->drag.x;
-		d->pos.y = d->pos_origin.y + d->drag.y;
-		d->pos.y = ft_clamp(d->pos.y, -300, 300);
-	}
-}
-
 static void	mouseclick(t_editor *ed)
 {
-
-	if (ed->mouse.click)
-	{
-		ed->mouse.click = false;
-		if (ed->state == place_end)
-		{
-			ed->line.end = mousetoworldspace(ed);
-			saveline(ed);
-			ft_bzero(&ed->line, sizeof(t_line));
-			ed->state = place_start;
-		}
-		else if (ed->state == place_start)
-		{
-			ed->line.start = mousetoworldspace(ed);
-			ed->state = place_end;
-		}
-	}
+	if (ed->tool == NULL)
+		ed->mouse.click_unhandled = false;
+	check_tool_change_click(ed->mouse.pos, ed);
 }
 
 void	mouse_event(SDL_Event e, t_editor *ed)
@@ -100,27 +54,12 @@ void	mouse_event(SDL_Event e, t_editor *ed)
 	if (e.type == SDL_MOUSEBUTTONDOWN)
 	{
 		ed->mouse.held = e.button.button;
-		ed->mousedrag->drag_origin.x = ed->mouse.pos.x;
-		ed->mousedrag->drag_origin.y = ed->mouse.pos.y;
-		if (e.button.button == MOUSE_MDL && ed->state == display3d)
-		{
-			ed->mousedrag[1].drag_origin.x = ed->mouse.pos.x;
-			ed->mousedrag[1].drag_origin.y = ed->mouse.pos.y;
-		}
 	}
 	if (e.type == SDL_MOUSEBUTTONUP)
 	{
-		ed->mouse.click = (ed->mouse.held == MOUSE_LEFT);
+		ed->mouse.click_unhandled = true;
+		ed->mouse.click_button = e.button.button;
 		ed->mouse.held = 0;
-		ed->mousedrag->pos_origin.x += ed->mousedrag->drag.x; //TODO: use v2add
-		ed->mousedrag->pos_origin.y += ed->mousedrag->drag.y;
-		ed->mousedrag->drag = point_zero();
-		if (e.button.button == MOUSE_MDL && ed->state == display3d)
-		{
-			ed->mousedrag[1].pos_origin.x += ed->mousedrag[1].drag.x;
-			ed->mousedrag[1].pos_origin.y += ed->mousedrag[1].drag.y;
-			ed->mousedrag[1].drag = point_zero();
-		}
 	}
 	if (e.type == SDL_MOUSEWHEEL)
 	{
@@ -128,6 +67,6 @@ void	mouse_event(SDL_Event e, t_editor *ed)
 		ed->mouse.scroll_delta = e.wheel.y;
 		ed->mouse.scroll = ft_clamp(ed->mouse.scroll, -20, 20);
 	}
-	mousedrag(ed);
-	mouseclick(ed);
+	if (ed->mouse.click_unhandled)
+		mouseclick(ed);
 }
