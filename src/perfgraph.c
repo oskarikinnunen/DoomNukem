@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   perfgraph.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 15:20:11 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/19 16:22:55 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/24 20:35:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ Uint32	samplecolor(t_img img, int ix, int iy)
 	return (img.data[index]);
 }
 
-void	put_image_to_screen(t_sdlcontext *context, t_img img, int p[2])
+void	put_image_to_screen(t_sdlcontext sdl, t_img img, int p[2])
 {
 	int			iy;
 	int			ix;
@@ -36,20 +36,20 @@ void	put_image_to_screen(t_sdlcontext *context, t_img img, int p[2])
 	while (iy++ < img.size.y)
 	{
 		ix = 0;
-		if (iy + p[Y] < 0 || iy + p[Y] > WINDOW_H)
+		if (iy + p[Y] < 0 || iy + p[Y] > sdl.window_h)
 			continue ;
 		while (ix++ < img.size.x - 1)
 		{
-			if (ix + p[X] < 0 || ix + p[X] >= WINDOW_W)
+			if (ix + p[X] < 0 || ix + p[X] >= sdl.window_w)
 				continue ;
 			color = samplecolor(img, ix, iy);
-			draw(context->surface->pixels,
+			draw(sdl,
 				(t_point){ix + p[X], iy + p[Y]}, color);
 		}
 	}
 }
 
-void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext *sdl)
+void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl)
 {
 	int			i;
 	t_img		img;

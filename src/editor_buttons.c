@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 14:35:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 21:11:08 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/24 20:50:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ t_tool_button	*get_editor_tool_buttons()
 {
 	static t_tool_button buttons[2] =
 	{
-		{WINDOW_W - 50, 10, 40, 40, get_point_tool},
-		{WINDOW_W - 50, 50, 40, 40, get_entity_tool}
+		{0, 10, 40, 40, get_point_tool},
+		{0, 50, 40, 40, get_entity_tool}
 	};
 
 	return	(buttons);
@@ -61,11 +61,11 @@ void	draw_editor_buttons(t_sdlcontext sdl, uint8_t tool_selected)
 	while (i < 2)
 	{
 		
-		draw_image(sdl.surface->pixels, buttons[i].rect.position, images[i], buttons[i].rect.size);
+		draw_image(sdl, buttons[i].rect.position, images[i], buttons[i].rect.size);
 		if (i + 1 != tool_selected)
-			drawrectangle(sdl.surface->pixels, buttons[i].rect, CLR_GRAY);
+			drawrectangle(sdl, buttons[i].rect, CLR_GRAY);
 		i++;
 	}
 	if (tool_selected != 0)
-		drawrectangle(sdl.surface->pixels, buttons[tool_selected - 1].rect, CLR_TURQ);
+		drawrectangle(sdl, buttons[tool_selected - 1].rect, CLR_TURQ);
 }

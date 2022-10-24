@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/24 16:33:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/24 20:33:51 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,6 @@
 # include <stdbool.h>
 # include "shapes.h"
 
-# define WINDOW_W 1920
-# define WINDOW_H 1080
 # define TILESIZE 32 //EDITOR tilesize
 # define GRIDSIZE 64 //EDITOR gridsize (how many addressable coordinates we have)
 
@@ -106,6 +104,8 @@ typedef struct s_sdlcontext
 	SDL_Renderer			*renderer; //TODO: for testing remove.
 	t_img					*images;
 	uint					imagecount;
+	uint32_t				window_w;
+	uint32_t				window_h;
 }	t_sdlcontext;
 
 # define PERFGRAPH_SAMPLES 64
@@ -252,23 +252,20 @@ void	update_anim(t_anim *anim, uint32_t delta);
 void	start_anim(t_anim *anim, t_anim_mode mode);
 
 /* DRAW.C */
-void	draw(uint32_t *pxls, t_point pos, uint32_t clr);
-void	drawline(uint32_t *pxls, t_point from, t_point to, uint32_t clr);
-void	drawcircle(uint32_t *pxls, t_point pos, int size, uint32_t clr);
-void	drawrectangle(uint32_t *pxls, t_rectangle rect, uint32_t clr);
+void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr);
+void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr);
+void	drawcircle(t_sdlcontext sdl, t_point pos, int size, uint32_t clr);
+void	drawrectangle(t_sdlcontext, t_rectangle rect, uint32_t clr);
 
 /* EDITOR_BUTTONS.C */
 void	draw_editor_buttons(t_sdlcontext sdl, uint8_t tool_selected); //TODO: MOVE TO EDITOR_TOOLS
 void	check_tool_change_click(t_point cursor, t_editor *ed); //TODO: MOVE TO EDITOR_TOOLS
 
 //Draws image 'img' to pixels 'pxls', offset by point 'pos' and scaled to 'scale'
-
-void	draw_image(uint32_t *pxls, t_point pos, t_img img, t_point scale);
-void	draw_ingame_image(uint32_t *pxls, t_point pos, t_img img, t_point scale);
-void	draw_img(uint32_t *pxls, t_img *img); //REMOVE, FOR debugging png reader
+void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale);
 
 /* PERFGRAPH.C */
-void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext *sdl);
+void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
@@ -280,7 +277,7 @@ bool	pointcirclecollision(t_vector2 p, t_vector2 cp, float r);
 bool	linecirclecollision(t_line line, t_vector2 cp, float r);
 
 /* PLAYMODE_OVERHEAD.C */
-void	render_overhead(t_game *game, t_sdlcontext *sdl);
+void	render_overhead(t_game *game, t_sdlcontext sdl);
 void	move_overhead(t_game *game);
 
 /* MOVEPLAYER.C */

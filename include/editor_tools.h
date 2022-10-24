@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 20:33:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/24 20:35:26 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ struct s_sdlcontext;
 typedef struct	s_tool
 {
 	void		(*update)(struct s_editor *ed);
-	void		(*draw_update)(struct s_editor *ed, struct s_sdlcontext *sdl);
+	void		(*draw_update)(struct s_editor *ed, struct s_sdlcontext sdl);
 	//void		(*click_func)(struct s_editor *ed);
 	//id		(*key_func)(int);
 }	t_tool; //TODO: make static array of these and use test them in editor_mouse

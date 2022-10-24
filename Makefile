@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/24 16:38:20 by okinnune         ###   ########.fr        #
+#    Updated: 2022/10/24 21:19:41 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,7 @@ SRCFILES= main.c draw.c img.c deltatime.c anim.c\
 		editor/tools/entity_tool.c \
 		editor_line_screenspace.c \
 		game_3d.c fill_triangle.c perfgraph.c \
-		png.c luatest.c
+		png.c lua_conf.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \
 		vector2_elementary.c vector2_shorthands.c \
@@ -77,8 +77,13 @@ clean-sdl:
 
 re-sdl: clean-sdl $(SDL2)
 
+clean-lua:
+	rm -rf $(LUAFOLDER)/install
+
+re-lua: clean-lua $(LUA)
+
 $(LUA):
-	cd $(LUAFOLDER) && make macosx && make local
+	cd $(LUAFOLDER) && make generic && make local
 
 $(SDL2):
 	cd $(SDLFOLDER)/build &&../configure --prefix=$(PWD)/SDL_built/ && make install
