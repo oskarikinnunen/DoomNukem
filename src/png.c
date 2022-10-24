@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   png.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:10:14 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 20:24:10 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/20 19:56:37 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,21 +35,23 @@ static uint32_t rev_bytes (uint32_t bytes)
 
 //only works with image sizes < 1 byte, result isn't calculated correctly
 
-uint8_t	*readpalette(t_pngdata *png, uint8_t *ptr)
+char	*readpalette(t_pngdata *png, uint8_t *ptr)
 {
 	int	i;
 
 	png->palette.plte = ft_memalloc(sizeof(uint32_t) * 2048);
 	if (png->palette.plte == NULL)
 		error_log(EC_MALLOC);
-	while (ft_strncmp((char *)ptr, "PLTE", 4) != 0)
+	while (ft_strncmp(ptr, "PLTE", 4) != 0)
 		ptr++;
 	ptr += 4;
 	i = 0;
-	while (ft_strncmp((char *)ptr, "IDAT", 4) != 0)
+	while (ft_strncmp(ptr, "IDAT", 4) != 0)
 	{
 		if (i % 3 == 0)
 		{
+			printf("read clr %i \n", i / 3);
+			//png->palette.plte[i / 3] = rev_bytes(*(uint32_t *)ptr) & 0xFFFFFF16;
 			png->palette.plte[i / 3] = *(uint32_t *)ptr;
 		}
 		ptr++;
@@ -63,7 +65,7 @@ void	readdat(t_pngdata *png, uint8_t *ptr)
 {
 	int	count;
 
-	while (ft_strncmp((char *)ptr, "IDAT", 4) != 0)
+	while (ft_strncmp(ptr, "IDAT", 4) != 0)
 		ptr++;
 	ptr += 12;
 	printf("width %i height %i \n", png->width, png->height);
@@ -82,6 +84,7 @@ void	readdat(t_pngdata *png, uint8_t *ptr)
 		ptr++;
 		count++;
 	}
+	printf("read %i pixels \n", count);
 	/*count = 0;
 	while (1)
 	{
@@ -125,7 +128,7 @@ t_img	pngparse(char *filename) //TODO: ADD WARNING MESSAGE FOR IMAGES OVER 190X1
 	len = read(fd, buf, sizeof(uint8_t) * 1000000);
 	ft_bzero(&png, sizeof(t_pngdata));
 	ptr = buf;
-	while (ft_strcmp((char *)++ptr, "IHDR") != 0 && len > 0)
+	while (ft_strcmp(++ptr, "IHDR") != 0 && len > 0)
 		len--;
 	ptr += 4;
 	png.width = rev_bytes(*(uint32_t *)ptr);
@@ -137,10 +140,14 @@ t_img	pngparse(char *filename) //TODO: ADD WARNING MESSAGE FOR IMAGES OVER 190X1
 	}
 	ptr += 8;
 	png.bitdepth = *(ptr);
+	printf("bitdepth %i \n", png.bitdepth);
 	png.colortype = *(ptr + 1);
+	printf("reading palette \n");
 	ptr = readpalette(&png, ptr);
+	printf("read dat %s \n", filename);
 	readdat(&png, ptr);
 	close(fd);
+	printf("im here\n");
 	pngtosimpleimg(&png, &result);
 	if (ft_strlen(filename) < 128)
 		ft_strcpy(result.name, filename);

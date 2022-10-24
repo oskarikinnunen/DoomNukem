@@ -6,12 +6,13 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 20:56:44 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/24 19:19:35 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "png.h"
+#include "game_lua.h"
 
 static void	create_sdl_context(t_sdlcontext *sdl)
 {
@@ -34,6 +35,7 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	sdl->images[0] = pngparse("images/linetool.png");
 	sdl->images[1] = pngparse("images/entitytool.png");
 	sdl->images[2] = pngparse("images/spritefont2.png");
+	load_lua_conf();
 	sdl->imagecount = 3; //TODO: Restructure the code so this is incremented automatically when loading a new image to sdl->images
 }
 
