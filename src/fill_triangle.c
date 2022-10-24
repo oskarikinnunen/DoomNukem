@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/20 22:57:11 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/24 16:30:23 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,10 +130,25 @@ t_point point_lerp(t_point from, t_point to, float delta)
 	return (result); // might return - if from is greater than to
 }
 
+//delta could be uint8 and it could go from 0 to 100; if we dont need that much accuracy
+t_point quaternion_lerp(t_quaternion from, t_quaternion to, float delta)
+{
+	t_point result;
+
+	printf("lerp x %f y %f\n", from.v.x + ((to.v.x - from.v.x) * delta), from.v.y + ((to.v.y - from.v.y) * delta));
+	result.x = roundf(from.v.x + ((to.v.x - from.v.x) * delta));
+	result.y = roundf(from.v.y + ((to.v.y - from.v.y) * delta));
+	printf_point(result);
+
+	return (result); // might return - if from is greater than to
+}
+
+
 static void fill_triangle(t_sdlcontext sdl, t_quaternion q[3]) 
 {
-	int index = 1;
-	int max;
+	float index = 1;
+	float max1;
+	float max2;
 	//t_point from = (t_point){q[0].v.x, q[0].v.y}, (t_point){q[1].v.x, q[1].v.y};
 	//t_point to = (t_point){q[0].v.x, q[0].v.y}, (t_point){q[2].v.x, q[2].v.y};
 	t_point p[3];
@@ -145,23 +160,37 @@ static void fill_triangle(t_sdlcontext sdl, t_quaternion q[3])
 	p[1].y = q[1].v.y;
 	p[2].x = q[2].v.x;
 	p[2].y = q[2].v.y;
-	max = p[1].y - p[2].y;
-	printf("\ntesting max is %d\n", max);
+	max1 = p[1].y - p[2].y;
+	printf_quat(q[0]);
+	printf_quat(q[1]);
+	printf_quat(q[2]);
 	printf_point(p[0]);
 	printf_point(p[1]);
 	printf_point(p[2]);
 	printf("\n");
+	max1 = q[0].v.y - q[1].v.y;
+	max2 = q[0].v.y - q[2].v.y;
+	index = 1.0f;
+	while (index < max1)
+	{
+		drawline(sdl.surface->pixels, quaternion_lerp(q[1], q[0], index / max1), quaternion_lerp(q[2], q[0], ((index + (q[1].v.y - q[2].v.y))) / max2), INT_MAX);
+		index++;
+	}
+	/*
 	index = p[0].y - p[1].y;
-	max = index;
+	maxx = index;
+	maxy = p[0].y - p[2].y;
 	while(index > 0)
 	{
-		p1 = point_lerp(p[1], p[0], (float)index / max);
-		p2 = point_lerp(p[2], p[0], (float)index / max);
+		p1 = point_lerp(p[1], p[0], (float)index / maxx);
+		p2 = point_lerp(p[2], p[0], (float)(index) / maxy);
 		printf_point(p1);
 		printf_point(p2);
+		printf("index %d\n", index);
 		drawline(sdl.surface->pixels, p1, p2, INT_MAX);
 		index--;
 	}
+	*/
 }
 
 void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle)
