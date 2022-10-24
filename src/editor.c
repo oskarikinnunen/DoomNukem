@@ -6,29 +6,29 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 21:04:48 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/24 20:24:02 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "editor_tools.h"
 
-void	drawrect(uint32_t *pxls, t_point crd, int clr)
+static void	drawsquare(t_sdlcontext sdl, t_point crd, int clr)
 {
 	int	i;
 
 	i = 0;
 	while (i < TILESIZE)
 	{
-		draw(pxls, point_add(crd, (t_point){i, 0}), clr);
-		draw(pxls, point_add(crd, (t_point){0, i}), clr);
-		draw(pxls, point_add(crd, (t_point){TILESIZE, i}), clr);
-		draw(pxls, point_add(crd, (t_point){TILESIZE, i}), clr);
+		draw(sdl, point_add(crd, (t_point){i, 0}), clr);
+		draw(sdl, point_add(crd, (t_point){0, i}), clr);
+		draw(sdl, point_add(crd, (t_point){TILESIZE, i}), clr);
+		draw(sdl, point_add(crd, (t_point){TILESIZE, i}), clr);
 		i++;
 	}
 }
 
-void	drawgrid(uint32_t *pxls, t_point origin)
+static void	drawgrid(t_sdlcontext sdl, t_point origin)
 {
 	t_point	crd;
 
@@ -38,7 +38,7 @@ void	drawgrid(uint32_t *pxls, t_point origin)
 		crd.x = origin.x;
 		while (crd.x < (TILESIZE * GRIDSIZE) + origin.x)
 		{
-			drawrect(pxls, crd, CLR_GRAY);
+			drawsquare(sdl, crd, CLR_GRAY);
 			crd.x += TILESIZE;
 		}
 		crd.y += TILESIZE;
@@ -62,7 +62,8 @@ int	editorloop(t_sdlcontext sdl)
 	{
 		update_deltatime(&ed.clock);
 		update_anim(&ed.transition, ed.clock.delta);
-		ft_bzero(sdl.surface->pixels, sizeof(uint32_t) * WINDOW_H * WINDOW_W);
+		//ft_bzero(sdl.surface->pixels, sizeof(uint32_t) * WINDOW_H * WINDOW_W);
+		ft_bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 		gr = editor_events(&ed); 
 		if (gr != game_continue)
 		{
@@ -76,7 +77,7 @@ int	editorloop(t_sdlcontext sdl)
 		}
 		else
 		{
-			drawgrid((uint32_t *)sdl.surface->pixels, ed.offset);
+			drawgrid(sdl, ed.offset);
 			renderlines(&sdl, &ed);
 			if (ed.tool != NULL)
 			{

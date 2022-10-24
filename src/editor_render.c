@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 08:20:49 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 14:16:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/24 20:24:27 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	renderline(t_sdlcontext *sdl, t_editor *ed, t_line line)
 	line_ss.start = point_add(line_ss.start, ed->offset);
 	line_ss.end = point_mul(line.end, TILESIZE);
 	line_ss.end = point_add(line_ss.end, ed->offset);
-	drawline((uint32_t *)sdl->surface->pixels, line_ss.start, line_ss.end, CLR_PRPL);
+	drawline(*sdl, line_ss.start, line_ss.end, CLR_PRPL);
 }
 
 static void	render_cursorball(t_sdlcontext *sdl, t_editor *ed)
@@ -30,7 +30,7 @@ static void	render_cursorball(t_sdlcontext *sdl, t_editor *ed)
 	circlepos = mousetoworldspace(ed);
 	circlepos = point_mul(circlepos, TILESIZE);
 	circlepos = point_add(circlepos, ed->offset);
-	drawcircle((uint32_t *)sdl->surface->pixels, circlepos, 10, CLR_TURQ);
+	drawcircle(*sdl, circlepos, 10, CLR_TURQ);
 }
 
 void	renderlines(t_sdlcontext *sdl, t_editor *ed)

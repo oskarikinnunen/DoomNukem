@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 20:59:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/24 20:34:24 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static void point_tool_click(t_editor *ed)
 	}
 }
 
-static void	point_tool_draw(t_editor *ed, t_sdlcontext *sdl) //This needs to access editors state, so pass editor here??
+static void	point_tool_draw(t_editor *ed, t_sdlcontext sdl) //This needs to access editors state, so pass editor here??
 {
 	t_line			ss_line;
 
@@ -64,7 +64,7 @@ static void	point_tool_draw(t_editor *ed, t_sdlcontext *sdl) //This needs to acc
 		ss_line.start = point_add(ss_line.start, ed->offset);
 		
 		ss_line.end = ed->mouse.pos;
-		drawline(sdl->surface->pixels, ss_line.start, ss_line.end, CLR_TURQ);
+		drawline(sdl, ss_line.start, ss_line.end, CLR_TURQ);
 	}
 	return ;
 }
