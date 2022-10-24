@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 09:46:25 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 21:50:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/24 15:48:40 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ static void	draw_walls(t_list *linelist, t_img	img, t_vector2 offset)
 		line = *(t_line *)node->content;
 		line.start = point_mul(line.start, TILESIZE);
 		line.start = point_add(line.start, (t_point){offset.x, offset.y});
-		line.
 		line.end = point_mul(line.end, TILESIZE);
 		line.end = point_add(line.end, (t_point){offset.x, offset.y});
 		drawline(img.data, line.start, line.end, CLR_TURQ);
@@ -56,10 +55,6 @@ void	render_overhead(t_game *game, t_sdlcontext *sdl)
 	t_vector3		normalized_forward;
 	t_vector2		walls_offset;
 	static t_img	*image;
-	static t_rectangle	map_rect =
-	{
-		//TODO: dis
-	}
 
 	if (image == NULL)
 	{

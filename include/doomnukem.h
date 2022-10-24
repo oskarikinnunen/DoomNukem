@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 21:42:30 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/24 16:33:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,7 +278,6 @@ void	engine3d(t_sdlcontext sdl, t_game game);
 /* PHYSICS.C */
 bool	pointcirclecollision(t_vector2 p, t_vector2 cp, float r);
 bool	linecirclecollision(t_line line, t_vector2 cp, float r);
-
 
 /* PLAYMODE_OVERHEAD.C */
 void	render_overhead(t_game *game, t_sdlcontext *sdl);

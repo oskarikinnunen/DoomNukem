@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/20 14:15:33 by okinnune         ###   ########.fr        #
+#    Updated: 2022/10/24 16:38:20 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,9 @@ NAME= DoomNukem
 SDLFOLDER= SDL-release-2.0.8
 SDL2= SDL_built/lib/libSDL2.a
 LIBFT= libft/libft.a
+
+LUAFOLDER= lua-5.3.6
+LUA= $(LUAFOLDER)/install/lib/liblua.a #TODO: find out real name!
 
 #Source files:
 SRCFILES= main.c draw.c img.c deltatime.c anim.c\
@@ -29,7 +32,7 @@ SRCFILES= main.c draw.c img.c deltatime.c anim.c\
 		editor/tools/entity_tool.c \
 		editor_line_screenspace.c \
 		game_3d.c fill_triangle.c perfgraph.c \
-		png.c
+		png.c luatest.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \
 		vector2_elementary.c vector2_shorthands.c \
@@ -47,13 +50,13 @@ SRC+= $(VECTORSRC)
 OBJ= $(SRC:.c=.o)
 
 #Compilation stuff:
-INCLUDE= -ISDL_built/include/SDL2/ -Isrc -Iinclude -Ilibft #$(LIBFT)
+INCLUDE= -ISDL_built/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
 CC= gcc
 LIBS= $(LIBFT) -lm
 CFLAGS= $(INCLUDE) -g -finline-functions -O1
 
-all: $(SDL2) $(LIBFT) $(OBJ)
-	$(CC) $(OBJ) -o $(NAME) `SDL_built/bin/sdl2-config --cflags --libs` $(INCLUDE) $(LIBS)
+all: $(SDL2) $(LUA) $(LIBFT) $(OBJ)
+	$(CC) $(OBJ) -o $(NAME) `SDL_built/bin/sdl2-config --cflags --libs` $(INCLUDE) $(LIBS) $(LUA)
 
 $(OBJ): include/doomnukem.h
 
@@ -73,6 +76,9 @@ clean-sdl:
 	rm -f $(SDL2)
 
 re-sdl: clean-sdl $(SDL2)
+
+$(LUA):
+	cd $(LUAFOLDER) && make macosx && make local
 
 $(SDL2):
 	cd $(SDLFOLDER)/build &&../configure --prefix=$(PWD)/SDL_built/ && make install
