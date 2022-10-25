@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 13:13:28 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/19 13:49:11 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/25 14:34:12 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,13 @@ void printf_matrix(t_mat4x4 m)
 		printf("\n");
 		i++;
 	}
+}
+
+void printf_point(t_point p)
+{
+	if (DEBUG_ON == 0)
+		return;
+	printf("x %d y %d\n", p.x, p.y);
 }
 
 void printf_vec(t_vector3 v)

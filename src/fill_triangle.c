@@ -3,21 +3,58 @@
 /*                                                        :::      ::::::::   */
 /*   fill_triangle.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/24 20:27:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/25 14:38:54 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "bresenham.h"
 
-static void	sort_tris(int tris[3][3])
+static void	z_draw(t_sdlcontext sdl, t_point pos, uint32_t clr, float z)
+{
+	if (z > sdl.zbuffer[pos.x + pos.y * sdl.window_w] || 1) //TODO: Zbuffer currently not working
+	{
+		sdl.zbuffer[pos.x + pos.y * sdl.window_w] = z;
+		((uint32_t *)sdl.surface->pixels)[pos.x + pos.y * sdl.window_w] = clr;
+	}
+}
+
+static void z_draw_x_line(t_sdlcontext sdl, t_point from, int to, uint32_t clr, float z)
+{
+	while(from.x < to)
+	{
+		z_draw(sdl, from, clr, z);
+		from.x++;
+	}
+}
+
+static void ft_swap(void * a, void * b, size_t len)
+{
+	unsigned char	*a1;
+	unsigned char	*b1;
+	unsigned char	temp;
+	size_t			i;
+
+	a1 = a;
+	b1 = b;
+	i = 0;
+	while (i < len)
+	{
+		temp = a1[i];
+		a1[i] = b1[i];
+		b1[i] = temp;
+		i++;
+	}
+}
+
+static void	sort_tris(t_quaternion *q)
 {
 	int	s_x;
 	int	s_j;
-	int	temp[3];
+	t_quaternion temp;
 
 	s_x = 0;
 	s_j = 0;
@@ -25,11 +62,11 @@ static void	sort_tris(int tris[3][3])
 	{
 		while (s_j < 2 - s_x)
 		{
-			if (tris[s_j][Y] < tris[s_j + 1][Y])
+			if (q[s_j].v.y < q[s_j + 1].v.y)
 			{
-				ft_memcpy(temp, tris[s_j], sizeof(int) * 3);
-				ft_memcpy(tris[s_j], tris[s_j + 1], sizeof(int) * 3);
-				ft_memcpy(tris[s_j + 1], temp, sizeof(int) * 3);
+				temp = q[s_j];
+				q[s_j] = q[s_j + 1];
+				q[s_j + 1] = temp;
 			}
 			s_j++;
 		}
@@ -38,35 +75,81 @@ static void	sort_tris(int tris[3][3])
 	}
 }
 
-static void	z_fill_sub_tri(int *tris[3], t_sdlcontext sdl, uint32_t clr)
+float flerp(float from, float to, float delta)
 {
-	t_bresenham	b[2];
-
-	populate_bresenham(&(b[0]), (t_point){tris[0][X], tris[0][Y]}, (t_point){tris[1][X], tris[1][Y]});
-	populate_bresenham(&(b[1]), (t_point){tris[0][X], tris[0][Y]}, (t_point){tris[2][X], tris[2][Y]});
-	while (b[0].local.y != tris[1][Y])
-	{
-		drawline(sdl, b[0].local, b[1].local, clr);
-		while (b[0].local.y == b[1].local.y)
-			step_bresenham(&(b[0]));
-		while (b[1].local.y != b[0].local.y)
-			step_bresenham(&(b[1]));
-	}
-	drawline(sdl, b[0].local, b[1].local, clr);
+	return (from + ((to - from) * delta));
 }
 
-void	z_fill_tri(int tris[3][3], t_sdlcontext sdl, uint32_t clr)
+static void fill_tri_bot(t_sdlcontext sdl, t_point *p, float z)
 {
-	int	split[3]; 	//Vector that's used to form the subtriangles.
-	int	sorted[3][3];	//Stack memory for the sorted triangles
-	float	lerp;
+	float index;
+	float max;
+	t_point a;
+	t_point b;
 
-	sort_tris(ft_memcpy(sorted, tris, sizeof(int [3][3])));
-	lerp = (float)(sorted[1][Y] - sorted[2][Y]) / (float)(sorted[0][Y] - sorted[2][Y]);
-	split[X] = sorted[2][X] + (lerp * (sorted[0][X] - sorted[2][X]));
-	split[Y] = sorted[1][Y];
-	split[Z] = sorted[1][Z];
-	z_fill_sub_tri((int *[3]){(int *)&(sorted[0]), (int *)&(sorted[1]), (int *)&split}, sdl, clr);
-	z_fill_sub_tri((int *[3]){(int *)&(sorted[2]), (int *)&(sorted[1]), (int *)&split}, sdl, clr);
-	drawline(sdl, (t_point){sorted[0][X], sorted[0][Y]}, (t_point){sorted[2][X], sorted[2][Y]}, clr);
+	index = 0;
+	max = p[1].y - p[0].y;
+	while (index < max)
+	{
+		a.x = flerp(p[1].x, p[0].x, index/max);
+		a.y = p[1].y - index;
+		b.x = flerp(p[2].x, p[0].x, index/max);
+		b.y = a.y;
+		z_draw_x_line(sdl, a, b.x, CLR_PRPL, z);
+		index++;
+	}
+}
+
+static void fill_tri_top(t_sdlcontext sdl, t_point *p, float z)
+{
+	float index;
+	float max;
+	t_point a;
+	t_point b;
+
+	index = 0;
+	max = p[0].y - p[1].y;
+	while (index < max)
+	{
+		a.x = flerp(p[1].x, p[0].x, index/max);
+		a.y = p[1].y + index;
+		b.x = flerp(p[2].x, p[0].x, index/max);
+		b.y = a.y;
+		z_draw_x_line(sdl, a, b.x, CLR_GREEN, z);
+		index++;
+	}
+}
+
+/*
+creates two triangles from the given triangle one flat top and one flat bottom.
+both triangles are then assigned to t_point p[3] array and passed onto fill_tri_bot/top functions.
+p[0] is always the pointy head of the triangle p[1] and p[2] are flat points where, p[1] x is smaller than p[2]
+*/
+void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle)
+{
+	t_quaternion	split;
+	t_quaternion	*q;
+	t_point			p[3];
+	float			lerp;
+
+
+	q = triangle.p;
+	sort_tris(q);
+	lerp = (float)(q[1].v.y - q[2].v.y) / (float)(q[0].v.y - q[2].v.y);
+	split.v.x = q[2].v.x + (lerp * (q[0].v.x - q[2].v.x));
+	split.v.y = q[1].v.y;
+	split.v.z = q[1].w;
+
+	if (split.v.x < q[1].v.x)
+		ft_swap(&q[1].v.x, &split.v.x, sizeof(float));
+	p[0].x = q[0].v.x;
+	p[0].y = q[0].v.y;
+	p[1].x = q[1].v.x;
+	p[1].y = q[1].v.y;
+	p[2].x = split.v.x;
+	p[2].y = split.v.y;
+	fill_tri_top(sdl, p, q[0].w);
+	p[0].x = q[2].v.x;
+	p[0].y = q[2].v.y;
+	fill_tri_bot(sdl, p, q[0].w);
 }
