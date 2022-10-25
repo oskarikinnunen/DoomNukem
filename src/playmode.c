@@ -103,6 +103,38 @@ static t_triangle set_tri(int *p1, int *p2, int *p3)
 		});
 }
 
+static void set_tex1(t_triangle *tri)
+{
+	tri->t[0].u = 0.0f;
+	tri->t[0].v = 0.0f;
+
+	tri->t[1].u = 1.0f;
+	tri->t[1].v = 0.0f;
+
+	tri->t[2].u = 0.0f;
+	tri->t[2].v = 1.0f;
+
+	tri->t[0].w = 1.0f;
+	tri->t[1].w = 1.0f;
+	tri->t[2].w = 1.0f;
+}
+
+static void set_tex2(t_triangle *tri)
+{
+	tri->t[0].u = 0.0f;
+	tri->t[0].v = 1.0f;
+
+	tri->t[1].u = 1.0f;
+	tri->t[1].v = 0.0f;
+
+	tri->t[2].u = 1.0f;
+	tri->t[2].v = 1.0f;
+
+	tri->t[0].w = 1.0f;
+	tri->t[1].w = 1.0f;
+	tri->t[2].w = 1.0f;
+}
+
 static void set_tri_array(t_game *game, t_obj *obj)
 {
 	int		i;
@@ -119,6 +151,8 @@ static void set_tri_array(t_game *game, t_obj *obj)
 	{
 		game->triangles[i / 2] = set_tri(verts[i], verts[i + 1], verts[i + 2]);
 		game->triangles[(i / 2) + 1] = set_tri(verts[i + 2], verts[i + 1], verts[i + 3]);
+		set_tex1(&game->triangles[i / 2]);
+		set_tex2(&game->triangles[(i / 2) + 1]);
 		switch (test)
 		{
 			case 0: game->triangles[i / 2].clr = CLR_TURQ;
@@ -211,6 +245,18 @@ static void lines_to_obj(t_obj *obj, t_list *linelist)
 	}
 }
 
+static void debug_tex(uint32_t *tex)
+{
+	for (int x = 0; x < 64; x++)
+	{
+		for (int y = 0; y < 64; y++)
+		{
+			int xorcolor = (x * 256 / 64) ^ (y * 256 / 64);
+			tex[64 * y + x] = 256 * xorcolor; //xor green
+		}
+	}
+}
+
 /*setup and call gameloop*/
 int playmode(t_sdlcontext sdl)
 {
@@ -226,6 +272,7 @@ int playmode(t_sdlcontext sdl)
 	sdl.zbuffer = malloc(WINDOW_W * WINDOW_H * sizeof(uint32_t));
 	game.player.position.x = 0.0f; //TODO: player position should be in game coordinates, not screenspace
 	game.player.position.y = 0.0f;
+	debug_tex(sdl.debug_tex);
 	//Locks mouse
 	if (SDL_SetRelativeMouseMode(SDL_TRUE) < 0)
 		error_log(EC_SDL_SETRELATIVEMOUSEMODE);

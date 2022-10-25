@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/20 20:26:27 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/25 16:50:18 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -317,7 +317,10 @@ static void texturetriangle(int x1, int y1, float u1, float v1, float w1,
 				if (tex_w > sdl.zbuffer[i* WINDOW_W + j])
 				{
 					//Draw(j, i, tex->SampleGlyph(tex_u / tex_w, tex_v / tex_w), tex->SampleColour(tex_u / tex_w, tex_v / tex_w));
-					draw(sdl.surface->pixels, (t_point){j, i}, debugcolor);
+					//printf("tex u %f, v %f\n", (tex_u / tex_w), (tex_v / tex_w));
+					//printf("tex coord x %d y %d\n", (tex_u / tex_w) * 64, (tex_v / tex_w) * 64);
+					//sdl.debug_tex[(64 * (int)(((float)w / WINDOW_W) * 64.0f)) + (int)(((float)h / WINDOW_H) * 64.0f)]);
+					draw(sdl.surface->pixels, (t_point){j, i}, sdl.debug_tex[64 * (int)((tex_u / tex_w) * 64.0f) + (int)((tex_v / tex_w) * 64.0f)]);
 					sdl.zbuffer[i* WINDOW_W + j] = tex_w;
 				}
 				t += tstep;
@@ -378,7 +381,8 @@ static void texturetriangle(int x1, int y1, float u1, float v1, float w1,
 				if (tex_w > sdl.zbuffer[i*WINDOW_W + j])
 				{
 					//Draw(j, i, tex->SampleGlyph(tex_u / tex_w, tex_v / tex_w), tex->SampleColour(tex_u / tex_w, tex_v / tex_w));
-					draw(sdl.surface->pixels, (t_point){j, i}, debugcolor);
+					draw(sdl.surface->pixels, (t_point){j, i}, sdl.debug_tex[64 * (int)((tex_u / tex_w) * 64.0f) + (int)((tex_v / tex_w) * 64.0f)]);
+					//draw(sdl.surface->pixels, (t_point){j, i}, debugcolor);
 					sdl.zbuffer[i* WINDOW_W + j] = tex_w;
 				}
 				t += tstep;
@@ -391,7 +395,10 @@ static void draw_triangles(t_sdlcontext sdl, t_triangle *triangles, int index, i
 {
 	while (index < end)
 	{
-		if (0)
+		t_texture *t;
+		t = triangles[index].t;
+		printf("u %f v %f w %f\n", t[0].u, t[0].v, t[0].w);
+		if (1)
 		texturetriangle(triangles[index].p[0].v.x, triangles[index].p[0].v.y, triangles[index].t[0].u, triangles[index].t[0].v, triangles[index].t[0].w,
 					triangles[index].p[1].v.x, triangles[index].p[1].v.y, triangles[index].t[1].u, triangles[index].t[1].v, triangles[index].t[1].w,
 					triangles[index].p[2].v.x, triangles[index].p[2].v.y, triangles[index].t[2].u, triangles[index].t[2].v, triangles[index].t[2].w, NULL, sdl, triangles[index].clr);
@@ -464,6 +471,9 @@ static t_triangle transform_calc(t_mat4x4 matworld, t_triangle triangles)
 	tritransformed.p[0] = quaternion_mul_matrix(matworld, triangles.p[0]);
 	tritransformed.p[1] = quaternion_mul_matrix(matworld, triangles.p[1]);
 	tritransformed.p[2] = quaternion_mul_matrix(matworld, triangles.p[2]);
+	tritransformed.t[0] = triangles.t[0];
+	tritransformed.t[1] = triangles.t[1];
+	tritransformed.t[2] = triangles.t[2];
 	tritransformed.clr = triangles.clr;
 
 	return(tritransformed);
@@ -488,6 +498,9 @@ static int clippedtriangles(t_triangle tritransformed, t_mat4x4 matview, t_trian
 	triviewed.p[0] = quaternion_mul_matrix(matview, tritransformed.p[0]);
 	triviewed.p[1] = quaternion_mul_matrix(matview, tritransformed.p[1]);
 	triviewed.p[2] = quaternion_mul_matrix(matview, tritransformed.p[2]);
+	triviewed.t[0] = tritransformed.t[0];
+	triviewed.t[1] = tritransformed.t[1];
+	triviewed.t[2] = tritransformed.t[2];
 	return (Triangle_ClipAgainstPlane(
 	(t_vector3){0.0f, 0.0f, 0.1f},
 	(t_vector3){0.0f, 0.0f, 1.0f},
@@ -564,6 +577,16 @@ void engine3d(t_sdlcontext sdl, t_game game)
 	t_mat4x4 matcamera = matrix_lookat(game.player.position, vtarget, (t_vector3){0, 0, 1});
 	t_mat4x4 matview = matrix_quickinverse(matcamera);
 	i = 0;
+	/*
+	for (int w = 0; w < WINDOW_W; w++)
+	{
+		for (int h = 0; h < WINDOW_H; h++)
+		{
+			//draw(sdl.surface->pixels, (t_point){w, h}, INT_MAX);
+			//printf("x %d y %d \n", (int)(((float)w / WINDOW_W) * 64.0f), (int)(((float)h / WINDOW_H) * 64.0f));
+			draw(sdl.surface->pixels, (t_point){w, h}, sdl.debug_tex[(64 * (int)(((float)w / WINDOW_W) * 64.0f)) + (int)(((float)h / WINDOW_H) * 64.0f)]);
+		}
+	}*/
 	while(i < game.tri_count)
 	{
 		t_triangle tritransformed;
@@ -581,6 +604,7 @@ void engine3d(t_sdlcontext sdl, t_game game)
 			{
 				triangles_calc[count++] = triangle_to_screenspace(matproj, clipped[n]);
 				triangles_calc[count - 1].clr = game.triangles[i].clr;
+				//printf("v is %f\n", triangles_calc[count - 1].t->v);
 			}
 		}
 		i++;

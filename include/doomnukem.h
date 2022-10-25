@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/24 15:59:52 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/25 15:02:40 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,7 @@ typedef struct s_sdlcontext
 	t_img					*images;
 	uint					imagecount;
 	float					*zbuffer;
+	uint32_t				debug_tex[64*64];
 }	t_sdlcontext;
 
 # define PERFGRAPH_SAMPLES 64
