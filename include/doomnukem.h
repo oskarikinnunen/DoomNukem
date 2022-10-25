@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/25 14:44:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/25 17:22:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ typedef struct s_entity
 {
 	t_entityID	id;
 	t_vector2	position;
+	char		test1;
 }	t_entity;
 
 typedef enum e_editorstate

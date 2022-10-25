@@ -6,11 +6,12 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 20:31:43 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/25 17:26:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
+#include "filechunks.h"
 
 static int	fileopen(char *filename, int flags)
 {
@@ -22,6 +23,115 @@ static int	fileopen(char *filename, int flags)
 	return (fd);
 }
 
+typedef struct s_chunkloader
+{
+	char	chunkname[CHUNKSIZE + 1];
+	t_list	*(*parse)(int);
+}	t_chunkloader;
+
+//tatic t_chunkloader *
+
+int		find_chunk_count(int fd)
+{
+	char	buf[CHUNKSIZE + 1];
+	int		br;
+	int		count;
+
+	br = read(fd, buf, CHUNKSIZE);
+
+	count = 0;
+	while (br > 0)
+	{
+		printf("chunk count read str %s \n", buf);
+		if (ft_strcmp(buf, "CEND") == 0)
+			break;
+		count++;
+		br = read(fd, buf, CHUNKSIZE);
+	}
+	lseek(fd, -(count + 1) * CHUNKSIZE, SEEK_CUR);
+	return (count);
+}
+
+void	save_entitylist(t_list *entitylist, char *filename)
+{
+	t_list		*l;
+	t_entity	ent;
+	int			written;
+	int			fd;
+
+	l = entitylist;
+	fd = fileopen(filename, O_RDWR | O_CREAT | O_TRUNC);
+	printf("size should ? %lu  \n", sizeof(t_entityID) + sizeof(t_vector2) + sizeof(char));
+	written = 0;
+	while (l != NULL)
+	{
+		ent = *(t_entity *)l->content;
+		written += write(fd, &ent, sizeof(t_entity));
+		l = l->next;
+	}
+	printf("wrote %i to file \n", written);
+	if (written % CHUNKSIZE != 0) //No need for padding since struct size is always multiple of 4? TODO: research
+	{
+		printf("pad size = %i \n", CHUNKSIZE - (written % CHUNKSIZE));
+		write(fd, (int [4]){-42, -42, -42, -42}, CHUNKSIZE - (written % CHUNKSIZE));
+	}
+		
+}
+
+t_list	*parse_entity(int fd)
+{
+	t_entity	ent;
+	char		buf[CHUNKSIZE];
+	int			br;
+	int			i;
+
+	int count = find_chunk_count(fd);
+	count = (count * CHUNKSIZE) / sizeof(t_entity);
+	br = read(fd, buf, CHUNKSIZE);
+	i = 0;
+	while (i < count)
+	{
+		ent = *(t_entity *)buf;
+		printf("entity uid %i pos %f %f\n", ent.id, ent.position.x, ent.position.y);
+		i++;
+		br = read(fd, buf, CHUNKSIZE);
+	}
+	//while
+	return (NULL);
+}
+
+void	mapload_experimental()
+{
+	int		fd;
+	int		br;
+	char	buf[CHUNKSIZE + 1];
+	int		i;
+	static	t_chunkloader cls[2] =
+	{
+		{"ENT_", parse_entity},
+		{"WALX", parse_entity}
+	};
+
+	fd = open("mapfile_e1", O_RDONLY, 0666);
+	if (fd == -1)
+		error_log(EC_OPEN);
+	ft_bzero(buf, CHUNKSIZE + 1);
+	br = read(fd, buf, CHUNKSIZE);
+	while (br > 0)
+	{
+		i = 0;
+		while (i < 2)
+		{
+			if (ft_strcmp(cls[i].chunkname, buf) == 0) 
+			{
+				printf("found chunk %s \n", buf);
+				cls[i].parse(fd);
+			}
+			i++;
+		}
+		br = read(fd, buf, CHUNKSIZE);
+	}
+}
 
 //loadmap doesn't care if open fails, we just allocate the head of the linelist in the case the file doesn't exist
 //TODO: when the file doesn't exist, it's putting one line to 0.0 when checking in 3d mode
@@ -33,6 +143,7 @@ t_list	*loadmap(char *filename)
 	t_list	*linelist;
 	t_list	*node;
 
+	mapload_experimental();
 	linelist = NULL;
 	fd = open(filename, O_RDONLY, 0666); //TODO: check if you can load a directory
 	if (fd == -1)

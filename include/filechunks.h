@@ -1,31 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   conversions.c                                      :+:      :+:    :+:   */
+/*   filechunks.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/13 17:23:31 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/25 17:13:42 by okinnune         ###   ########.fr       */
+/*   Created: 2022/10/25 15:11:15 by okinnune          #+#    #+#             */
+/*   Updated: 2022/10/25 16:27:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "vectors.h"
+#ifndef FILECHUNKS_H
+# define FILECHUNKS_H 
 
-t_point	vector2_to_point(t_vector2 vec)
-{
-	t_point	result;
+# define CHUNKSIZE 4
 
-	result.x = (int)vec.x;
-	result.y = (int)vec.y;
-	return (result);
-}
-
-t_vector2	point_to_vector2(t_point point)
-{
-	t_vector2	result;
-
-	result.x = (float)point.x;
-	result.y = (float)point.y;
-	return (result);
-}
+#endif
