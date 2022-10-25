@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/24 20:33:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/25 14:22:10 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,17 @@ typedef struct s_wall
 	t_line	line;
 	int		height;
 }	t_wall;
+
+typedef enum e_entityID
+{
+	player
+}	t_entityID;
+
+typedef struct s_entity
+{
+	t_entityID	id;
+	t_vector2	position;
+}	t_entity;
 
 typedef enum e_editorstate
 {
@@ -157,6 +168,7 @@ typedef struct s_editor
 	t_editorstate	state;
 	t_line			line; //the line that is being edited right now
 	t_list			*linelist;
+	t_list			*entitylist;
 	t_mouse			mouse;
 	float			threedee_zoom;
 	t_anim			transition;

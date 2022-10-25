@@ -6,11 +6,12 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/24 20:35:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/25 14:27:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "shapes.h"
+#include "doomnukem.h"
 
 struct s_editor;
 struct s_sdlcontext;
@@ -19,10 +20,17 @@ typedef struct	s_tool
 {
 	void		(*update)(struct s_editor *ed);
 	void		(*draw_update)(struct s_editor *ed, struct s_sdlcontext sdl);
+	void		*tooldata;
 	//void		(*click_func)(struct s_editor *ed);
 	//id		(*key_func)(int);
 }	t_tool; //TODO: make static array of these and use test them in editor_mouse
 
+typedef struct	s_guibutton
+{
+	t_rectangle rect;
+	t_img		img;
+	char		imagename[256];
+}	t_guibutton;
 
 typedef struct	s_tool_button
 {

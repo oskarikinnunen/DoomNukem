@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 14:35:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/24 20:50:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/25 14:09:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void	check_tool_change_click(t_point cursor, t_editor *ed)
 		if (pointrectanglecollision(cursor, buttons[i].rect))
 		{
 			//buttons[i].tool_get()->change_func(ed);
+			SDL_ShowCursor(SDL_ENABLE);
 			ed->tool = buttons[i].tool_get();
 			ed->mouse.click_unhandled = false;
 			ed->tool_selected = i + 1;
@@ -60,7 +61,6 @@ void	draw_editor_buttons(t_sdlcontext sdl, uint8_t tool_selected)
 	i = 0;
 	while (i < 2)
 	{
-		
 		draw_image(sdl, buttons[i].rect.position, images[i], buttons[i].rect.size);
 		if (i + 1 != tool_selected)
 			drawrectangle(sdl, buttons[i].rect, CLR_GRAY);
