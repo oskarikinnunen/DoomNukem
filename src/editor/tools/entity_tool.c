@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 13:59:47 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/25 13:38:15 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static void entity_tool_click(t_editor *ed)
 	ed->mouse.click_unhandled = false;
 }
 
-static void	entity_tool_draw(t_editor *ed, t_sdlcontext *sdl) //This needs to access editors state, so pass editor here??
+static void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl) //This needs to access editors state, so pass editor here??
 {
 	return ;
 }
