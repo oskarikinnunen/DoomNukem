@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/24 20:33:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/25 14:33:11 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -269,7 +269,7 @@ void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
-void	z_fill_tri(int tris[3][3], t_sdlcontext sdl, uint32_t clr);
+void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle);
 void	engine3d(t_sdlcontext sdl, t_game game);
 
 /* PHYSICS.C */
@@ -294,5 +294,6 @@ void printf_tri(t_triangle tri);
 void printf_quat(t_quaternion v);
 void printf_vec(t_vector3 v);
 void printf_matrix(t_mat4x4 m);
+void printf_point(t_point p);
 
 #endif
