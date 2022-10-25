@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/24 21:05:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/25 14:38:51 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 
 void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr)
 {
-	if (pos.x < 0 || pos.x >= sdl.window_w
-		|| pos.y < 0 || pos.y >= sdl.window_h)
+	if (pos.x < 0 || pos.x >= sdl.window_w - 1
+		|| pos.y < 0 || pos.y >= sdl.window_h - 1)
 		return ;
 	((uint32_t *)sdl.surface->pixels)[pos.x + (pos.y * sdl.window_w)] = clr;
 }
@@ -77,12 +77,18 @@ void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale)
 	while (pixel.y < scale.y - 2) //TODO: it's the png readers fault that the second to last line is garbled, for now it just stops early, hence the '- 2'
 	{
 		pixel.x = 0;
-		if (pixel.y + pos.y < 0 || pixel.y + pos.y > sdl.window_h)
+		if (pixel.y + pos.y < 0 || pixel.y + pos.y >= sdl.window_h - 1)
+		{
+			pixel.y++;
 			continue;
+		}
 		while (pixel.x < scale.x)
 		{
-			if (pixel.x + pos.x < 0 || pixel.x + pos.x >= sdl.window_w)
+			if (pixel.x + pos.x < 0 || pixel.x + pos.x >= sdl.window_w - 1)
+			{
+				pixel.x++;
 				continue;
+			}
 			sample.x = ft_clamp(pixel.x * scalar.x, 0, img.size.x - 1);
 			sample.y = ft_clamp(pixel.y * scalar.y, 0, img.size.y - 1);
 			color = img.data[sample.x + sample.y + (sample.y * img.size.x)]; //TODO: NO idea why y needs to be there twice. Probably the png readers fault aswell
