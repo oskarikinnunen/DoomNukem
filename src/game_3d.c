@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game_3d.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/24 20:32:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/25 14:14:11 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,15 +165,7 @@ static void draw_triangles(t_sdlcontext sdl, t_triangle *triangles, int index, i
 {
 	while (index < end)
 	{
-		z_fill_tri((int [3][3])
-		{
-		{triangles[index].p[0].v.x, triangles[index].p[0].v.y, triangles[index].p[0].v.z},
-		{triangles[index].p[1].v.x, triangles[index].p[1].v.y, triangles[index].p[1].v.z},
-		{triangles[index].p[2].v.x, triangles[index].p[2].v.y, triangles[index].p[2].v.z}},
-		sdl, triangles[index].clr);
-		drawline(sdl, (t_point){triangles[index].p[0].v.x, triangles[index].p[0].v.y}, (t_point){triangles[index].p[1].v.x, triangles[index].p[1].v.y}, INT_MAX);
-		drawline(sdl, (t_point){triangles[index].p[1].v.x, triangles[index].p[1].v.y}, (t_point){triangles[index].p[2].v.x, triangles[index].p[2].v.y}, INT_MAX);
-		drawline(sdl, (t_point){triangles[index].p[2].v.x, triangles[index].p[2].v.y}, (t_point){triangles[index].p[0].v.x, triangles[index].p[0].v.y}, INT_MAX);
+		z_fill_tri(sdl, triangles[index]);
 		index++;
 	}
 }
