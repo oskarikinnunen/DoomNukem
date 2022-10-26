@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/24 20:28:59 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/26 16:16:51 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,11 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 
 }
 
-void	quit_sdl(t_sdlcontext *sdl)
+void	quit_game(t_sdlcontext *sdl)
 {
 	SDL_DestroyWindow(sdl->window);
 	SDL_Quit();
+	exit(0);
 }
 
 int	main(int argc, char **argv)
@@ -44,15 +45,14 @@ int	main(int argc, char **argv)
 	t_gamereturn	gr;
 
 	create_sdl_context(&sdl);
-	while (1)
+	gr = game_switchmode;
+	while (gr == game_switchmode)
 	{
-		gr = editorloop(sdl);
-		if (gr == game_exit) // quit & exit is handled inside of editorloop atm
-			break ;
-		gr = playmode(sdl);
-		if (gr == game_exit) // quit & exit is handled inside of playmode atm
-			break ;
+		gr = editorloop(sdl); // quit & exit is handled inside the loop
+		printf("%s\ngamereturn after editor %i \n", CLEARSCREEN, gr);
+		gr = playmode(sdl); // quit & exit is handled inside the loop
+		printf("%s\ngamereturn after playmode %i \n", CLEARSCREEN, gr);
 	}
-	//quit_sdl(&sdl);
+	//shouldn't get here?
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 09:46:25 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/24 20:58:43 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/26 15:09:35 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	render_overhead(t_game *game, t_sdlcontext sdl)
 	walls_offset = vector2_negative((t_vector2){game->player.position.x, game->player.position.y});
 	//walls_offset = vector2_sub(walls_offset, point_to_vector2(player_ball));
 	walls_offset = vector2_add(walls_offset, (t_vector2){player_ball.x, player_ball.y});
-	draw_walls(game->linelst, sdl, walls_offset);
+	draw_walls(game->linelist, sdl, walls_offset);
 	normalized_forward = vector3_normalise(game->player.lookdir);
 	look_to = (t_point) {normalized_forward.x * 20, normalized_forward.y * 20};
 	look_to = point_add(look_to, player_ball);

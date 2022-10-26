@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/18 21:08:29 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/26 13:31:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,11 @@
 #include "editor_tools.h"
 
 t_point	mousetoworldspace(t_editor *ed)
+{
+	return (point_sub(ed->mouse.pos, ed->offset));
+}
+
+t_point	mousetogridspace(t_editor *ed)
 {
 	t_point	result;
 	t_point	mod;
@@ -28,7 +33,7 @@ t_point	mousetoworldspace(t_editor *ed)
 	return (result);
 }
 
-t_point	screentoworldspace(t_point point)
+t_point	screentogridspace(t_point point)
 {
 	t_point	result;
 	t_point	mod;

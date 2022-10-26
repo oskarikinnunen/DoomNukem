@@ -1,24 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   editor_line_screenspace.c                          :+:      :+:    :+:   */
+/*   spaceconversions.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/18 19:52:32 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/18 20:51:21 by okinnune         ###   ########.fr       */
+/*   Created: 2022/10/26 13:31:43 by okinnune          #+#    #+#             */
+/*   Updated: 2022/10/26 13:34:34 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
+#include "vectors.h"
 
-t_line	line_in_screenspace(t_editor *ed, t_line line)
+t_point worldtoeditorspace(t_editor *ed, t_vector2 worldcrd)
 {
-	t_line	result;
+	t_point	result;
 
-	result.start = point_mul(line.start, GRIDSIZE);
-	result.start = point_add(result.start, ed->offset);
-	result.end = point_mul(line.end, GRIDSIZE);
-	result.end = point_add(result.end, ed->offset);
+	result = vector2_to_point(worldcrd);
+	result = point_add(result, ed->offset);
 	return (result);
 }
