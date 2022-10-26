@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vectors.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/19 14:24:17 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/26 14:38:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,9 @@ t_vector2	vector2_mul(t_vector2 vec, float mul);
 
 //returns vector 'vec' divided by 'div'
 t_vector2	vector2_div(t_vector2 vec, float div);
+
+//returns vector 'vec' normalised
+t_vector2	vector2_normalise(t_vector2 vec);
 
 //returns the magnitude of the vector 'vec'
 float		vector2_magnitude(t_vector2 vec);
@@ -163,6 +166,9 @@ t_point		point_fmul(t_point point, float mul);
 
 //returns point 'point' divided by float 'mul'
 t_point		point_fdiv(t_point point, float mul);
+
+//returns point 'point' normalised
+t_point		point_normalise(t_point point);
 
 //returns the magnitude of the point 'point'
 int			point_magnitude(t_point point);

@@ -17,6 +17,15 @@ int	point_sqr_magnitude(t_point point)
 	return ((point.x * point.x) + (point.y * point.y));
 }
 
+t_point	point_normalise(t_point point)
+{
+	int l = point_magnitude(point);
+	if (l != 0)
+		return((t_point){point.x / l, point.y / l});
+	else
+		return (point_zero());
+}
+
 int	point_magnitude(t_point point)
 {
 	return (sqrt((point.x * point.x) + (point.y * point.y)));

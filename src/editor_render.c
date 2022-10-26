@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 08:20:49 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/24 20:24:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/26 14:46:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,9 @@ static void	renderline(t_sdlcontext *sdl, t_editor *ed, t_line line)
 	line_ss.start = point_add(line_ss.start, ed->offset);
 	line_ss.end = point_mul(line.end, TILESIZE);
 	line_ss.end = point_add(line_ss.end, ed->offset);
+	drawcircle(*sdl, line_ss.start, 5, CLR_GREEN);
+	drawcircle(*sdl, line_ss.end, 5, CLR_GREEN);
 	drawline(*sdl, line_ss.start, line_ss.end, CLR_PRPL);
-}
-
-static void	render_cursorball(t_sdlcontext *sdl, t_editor *ed)
-{
-	t_point	circlepos;
-
-	circlepos = mousetoworldspace(ed);
-	circlepos = point_mul(circlepos, TILESIZE);
-	circlepos = point_add(circlepos, ed->offset);
-	drawcircle(*sdl, circlepos, 10, CLR_TURQ);
 }
 
 void	renderlines(t_sdlcontext *sdl, t_editor *ed)
@@ -43,5 +35,4 @@ void	renderlines(t_sdlcontext *sdl, t_editor *ed)
 		renderline(sdl, ed, *(t_line *)l->content);
 		l = l->next;
 	}
-	render_cursorball(sdl, ed);
 }

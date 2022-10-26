@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/25 17:22:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/26 16:03:41 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@
 # define CLR_TURQ 5505010
 # define CLR_GRAY 4868682
 # define CLR_GREEN 3002977
+# define CLEARSCREEN "\e[1;1H\e[2J"
 
 #define DEBUG_ON 1
 
@@ -213,7 +214,8 @@ typedef struct s_game
 {
 	int				tri_count;
 	t_triangle		*triangles;
-	t_list			*linelst;
+	t_list			*linelist;
+	t_list			*entitylist;
 	t_clock			clock;
 	t_mouse			mouse;
 	t_player		player;
@@ -240,8 +242,12 @@ void	renderlines(t_sdlcontext *sdl, t_editor *ed); //TODO:  better name?
 
 /* EDITOR_MOUSE.C */
 t_point	mousetoworldspace(t_editor *ed);
-t_point	screentoworldspace(t_point point);
+t_point	mousetogridspace(t_editor *ed);
+t_point	screentogridspace(t_point point);
 void	mouse_event(SDL_Event e, t_editor *ed);
+
+/* SPACECONVERSIONS.C */
+t_point	worldtoeditorspace(t_editor *ed, t_vector2 worldcrd);
 
 /* EDITOR_SAVELINE.C */
 void	saveline(t_editor *ed);
@@ -300,7 +306,12 @@ void	moveplayer(t_game *game);
 void	error_log(int error_code);
 
 /* SDL */
-void	quit_sdl(t_sdlcontext *sdl);
+void	quit_game(t_sdlcontext *sdl);
+
+/* LIST_HELPER.C */
+void	list_push(t_list **head, void *content, size_t content_size);
+//TODO: documentation here
+void	list_remove(t_list **head, void *match, size_t content_size);
 
 /*DEBUG FILES*/
 void printf_tri(t_triangle tri);
