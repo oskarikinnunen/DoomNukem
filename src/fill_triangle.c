@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/26 16:25:14 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/26 17:46:57 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ static void fill_tri_bot(t_sdlcontext sdl, t_triangle triangle, float z)
 			tex.v = flerp(t_a.v, t_b.v, ((float)(i - a.x))/(b.x - a.x));
 			tex.w = flerp(t_a.w, t_b.w, ((float)(i - a.x))/(b.x - a.x));
 			
-			z_draw(sdl, (t_point){i, a.y}, sdl.debug_tex[64 * (int)((tex.u / tex.w) * 64.0f) + (int)((tex.v / tex.w) * 64.0f)], tex.w);
+			z_draw(sdl, (t_point){i, a.y}, sdl.debug_tex[64 * (int)((tex.u / tex.w) * 63.0f) + (int)((tex.v / tex.w) * 63.0f) - 1], tex.w);
 			i++;
 		}
 		//z_draw_x_line(sdl, a, b.x, CLR_PRPL, z);
@@ -172,9 +172,22 @@ static void fill_tri_top(t_sdlcontext sdl, t_triangle triangle, float z)
 			tex.v = flerp(t_a.v, t_b.v, ((float)(i - a.x))/(b.x - a.x));
 			tex.w = flerp(t_a.w, t_b.w, ((float)(i - a.x))/(b.x - a.x));
 
-			z_draw(sdl, (t_point){i, a.y}, sdl.debug_tex[64 * (int)((tex.u / tex.w) * 64.0f) + (int)((tex.v / tex.w) * 64.0f)], tex.w);
+			z_draw(sdl, (t_point){i, a.y}, sdl.debug_tex[64 * (int)((tex.u / tex.w) * 63.0f) + (int)((tex.v / tex.w) * 63.0f) - 1], tex.w);
 			i++;
 		}
+		index++;
+	}
+}
+
+static void clamp_min_max(t_quaternion *q)
+{
+	int index = 0;
+	while (index < 4)
+	{
+		q[index].v.x = roundf(q[index].v.x);
+		q[index].v.y = roundf(q[index].v.y);
+		q[index].v.z = roundf(q[index].v.z);
+		q[index].w = roundf(q[index].w);
 		index++;
 	}
 }
@@ -194,24 +207,24 @@ void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle)
 	t_point			p[3];
 	float			lerp;
 
-	//printf("\n\n");
 	q = triangle.p;
 	sort_tris(triangle.p, triangle.t);
-	//printf_tri(triangle);
 	lerp = (float)(q[1].v.y - q[2].v.y) / (float)(q[0].v.y - q[2].v.y);
 	q_split.v.x = q[2].v.x + (lerp * (q[0].v.x - q[2].v.x));
 	q_split.v.y = q[1].v.y;
 	q_split.v.z = q[1].w; // not same maybe
 	
-//	lerp = (float)(triangle.t[1].v - triangle.t[2].v) / (float)(triangle.t[0].v - triangle.t[2].v);
-/*	t_split.u = triangle.t[2].u + (lerp * (triangle.t[0].u - triangle.t[2].u));
-	t_split.v = triangle.t[1].v;
-	t_split.w = triangle.t[1].w;
-*/
+	/*
+	q_split.v.x = flerp(triangle.p[2].v.x, triangle.p[0].v.x, lerp);
+	q_split.v.y = flerp(triangle.p[2].v.y, triangle.p[0].v.y, lerp);
+	q_split.v.z = flerp(triangle.p[2].v.z, triangle.p[0].v.z, lerp);
+	*/
+
 	t_split.u = flerp(triangle.t[2].u, triangle.t[0].u, lerp);
 	t_split.v = flerp(triangle.t[2].v, triangle.t[0].v, lerp);
 	t_split.w = flerp(triangle.t[2].w, triangle.t[0].w, lerp);
-	//printf_tri(triangle);
+
+	clamp_min_max((t_quaternion [4]){q[0], q[1], q[2], q_split});
 	if (q_split.v.x < q[1].v.x)
 	{
 		ft_swap(&q[1], &q_split, sizeof(t_quaternion));
@@ -220,7 +233,7 @@ void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle)
 	if (0)
 	{
 		t_triangle test;
-		test.p[0] = (t_quaternion){0, 500.0f, 0, 0};
+		test.p[0] = (t_quaternion){750.0f, 750.0f, 0, 0};
 		test.p[1] = (t_quaternion){0, 0, 0, 0};
 		test.p[2] = (t_quaternion){500.0f, 0, 0, 0};
 		test.t[0] = (t_texture){0, 1, 1};

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/26 16:28:08 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/26 17:29:12 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -586,7 +586,7 @@ void engine3d(t_sdlcontext sdl, t_game game)
 		tritransformed = transform_calc(matworld, game.triangles[i]);
 		normal = normal_calc(tritransformed);
 		vcameraray = vector3_sub(tritransformed.p[0].v, game.player.position);
-		if (vector3_dot(normal, vcameraray) < 0.0f || 0) //TODO: Currently ignoring normals with || 1
+		if (vector3_dot(normal, vcameraray) < 0.0f || 1) //TODO: Currently ignoring normals with || 1
 		{
 			t_triangle clipped[2];
 			int nclippedtriangles = clippedtriangles(tritransformed, matview, clipped);
