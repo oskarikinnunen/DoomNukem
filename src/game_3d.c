@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/25 16:50:18 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/26 16:28:08 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -397,8 +397,8 @@ static void draw_triangles(t_sdlcontext sdl, t_triangle *triangles, int index, i
 	{
 		t_texture *t;
 		t = triangles[index].t;
-		printf("u %f v %f w %f\n", t[0].u, t[0].v, t[0].w);
-		if (1)
+		//printf("u %f v %f w %f\n", t[0].u, t[0].v, t[0].w);
+		if (0)
 		texturetriangle(triangles[index].p[0].v.x, triangles[index].p[0].v.y, triangles[index].t[0].u, triangles[index].t[0].v, triangles[index].t[0].w,
 					triangles[index].p[1].v.x, triangles[index].p[1].v.y, triangles[index].t[1].u, triangles[index].t[1].v, triangles[index].t[1].w,
 					triangles[index].p[2].v.x, triangles[index].p[2].v.y, triangles[index].t[2].u, triangles[index].t[2].v, triangles[index].t[2].w, NULL, sdl, triangles[index].clr);
@@ -577,16 +577,6 @@ void engine3d(t_sdlcontext sdl, t_game game)
 	t_mat4x4 matcamera = matrix_lookat(game.player.position, vtarget, (t_vector3){0, 0, 1});
 	t_mat4x4 matview = matrix_quickinverse(matcamera);
 	i = 0;
-	/*
-	for (int w = 0; w < WINDOW_W; w++)
-	{
-		for (int h = 0; h < WINDOW_H; h++)
-		{
-			//draw(sdl.surface->pixels, (t_point){w, h}, INT_MAX);
-			//printf("x %d y %d \n", (int)(((float)w / WINDOW_W) * 64.0f), (int)(((float)h / WINDOW_H) * 64.0f));
-			draw(sdl.surface->pixels, (t_point){w, h}, sdl.debug_tex[(64 * (int)(((float)w / WINDOW_W) * 64.0f)) + (int)(((float)h / WINDOW_H) * 64.0f)]);
-		}
-	}*/
 	while(i < game.tri_count)
 	{
 		t_triangle tritransformed;
@@ -596,7 +586,7 @@ void engine3d(t_sdlcontext sdl, t_game game)
 		tritransformed = transform_calc(matworld, game.triangles[i]);
 		normal = normal_calc(tritransformed);
 		vcameraray = vector3_sub(tritransformed.p[0].v, game.player.position);
-		if (vector3_dot(normal, vcameraray) < 0.0f || 1) //TODO: Currently ignoring normals with || 1
+		if (vector3_dot(normal, vcameraray) < 0.0f || 0) //TODO: Currently ignoring normals with || 1
 		{
 			t_triangle clipped[2];
 			int nclippedtriangles = clippedtriangles(tritransformed, matview, clipped);

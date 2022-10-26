@@ -82,6 +82,10 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 		bzero(sdl.zbuffer, sizeof(float) * WINDOW_H * WINDOW_W);
 		gr = handleinput(&game);
 		moveplayer(&game);
+	//	game.player.position = (t_vector3){396.694366, 148.424728, 122.722466};
+	//	game.player.lookdir = (t_vector3){0.812856, 0.564258, -0.144492};
+	//	printf_vec(game.player.position);
+	//	printf_vec(game.player.lookdir);
 		if (game.cam_mode != player_view)
 			render_overhead(&game, &sdl);
 		else

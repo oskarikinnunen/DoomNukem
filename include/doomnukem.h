@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/25 15:02:40 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/26 15:06:56 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -299,6 +299,7 @@ void	quit_sdl(t_sdlcontext *sdl);
 /*DEBUG FILES*/
 void printf_tri(t_triangle tri);
 void printf_quat(t_quaternion v);
+void printf_tex(t_texture t);
 void printf_vec(t_vector3 v);
 void printf_matrix(t_mat4x4 m);
 void printf_point(t_point p);
