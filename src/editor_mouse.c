@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/26 13:31:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/27 18:28:38 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ t_point	screentogridspace(t_point point)
 
 static void	mouseclick(t_editor *ed)
 {
-	if (ed->tool == NULL)
-		ed->mouse.click_unhandled = false;
+	/*if (ed->tool == NULL)
+		ed->mouse.click_unhandled = false;*/
 	check_tool_change_click(ed->mouse.pos, ed);
 }
 

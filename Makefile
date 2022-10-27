@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/27 15:55:37 by okinnune         ###   ########.fr        #
+#    Updated: 2022/10/27 18:32:47 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,8 @@ SRCFILES= main.c draw.c img.c deltatime.c anim.c\
 		game_3d.c fill_triangle.c perfgraph.c \
 		png.c lua_conf.c list_helper.c \
 		spaceconversions.c obj_parse.c \
-		obj_parse_vertex.c obj_parse_faces.c
+		obj_parse_vertex.c obj_parse_faces.c \
+		button_bootstrap.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \
 		vector2_elementary.c vector2_shorthands.c \

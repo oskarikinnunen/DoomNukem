@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/26 17:23:18 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/27 18:33:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ static void	drawgrid(t_sdlcontext sdl, t_point origin)
 	}
 }
 
+void	buttoncreator(t_editor *ed, t_sdlcontext sdl);
+
 int	editorloop(t_sdlcontext sdl)
 {
 	t_editor		ed;
@@ -66,6 +68,7 @@ int	editorloop(t_sdlcontext sdl)
 		drawgrid(sdl, ed.offset);
 		renderlines(&sdl, &ed);
 		draw_editor_buttons(sdl, ed.tool_selected);
+		buttoncreator(&ed, sdl);
 		if (ed.tool != NULL)
 		{
 			ed.tool->update(&ed);

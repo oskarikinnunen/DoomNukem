@@ -6,14 +6,14 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/26 17:32:53 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/27 18:33:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "inputhelp.h"
 
-void	editor_toggle_keystates(t_editor *ed, SDL_Event e)
+void		editor_toggle_keystates(t_editor *ed, SDL_Event e)
 {
 	if (e.type == SDL_KEYDOWN)
 	{
@@ -31,9 +31,9 @@ void	editor_toggle_keystates(t_editor *ed, SDL_Event e)
 	}
 }
 
-void	move_editor_offset(t_editor *ed)
+void		move_editor_offset(t_editor *ed)
 {
-	if ((ed->keystate >> KEYS_UPMASK) & 1) 
+	if ((ed->keystate >> KEYS_UPMASK) & 1)
 		ed->offset.y += EDITOR_MOVESPEED * ed->clock.delta;
 	if ((ed->keystate >> KEYS_DOWNMASK) & 1)
 		ed->offset.y -= EDITOR_MOVESPEED * ed->clock.delta;
@@ -54,6 +54,11 @@ int		editor_events(t_editor *ed)
 		editor_toggle_keystates(ed, e);
 		if (e.type == SDL_KEYDOWN)
 		{
+			if (iskey(e, SDLK_SPACE))
+			{
+				ed->tool = NULL;
+				ed->tool_selected = 0;
+			}
 			if (iskey(e, SDLK_ESCAPE))
 				return (game_exit);
 			else if (iskey(e, SDLK_TAB))
