@@ -7,3 +7,8 @@ images =
 	"spritefont1.png",
 	"spritefont2.png"
 }
+objects =
+{
+	"cube.obj",
+	"cy__000000.obj"
+}

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 21:28:10 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/26 17:32:53 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,6 @@ int		editor_events(t_editor *ed)
 	ed->mouse.scroll_delta = 0; //Needs to be reseted outside of eventloop
 	while (SDL_PollEvent(&e))
 	{
-		if (ed->transition.active)
-			break ;
 		mouse_event(e, ed);
 		editor_toggle_keystates(ed, e);
 		if (e.type == SDL_KEYDOWN)

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/26 16:03:41 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/27 16:37:22 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,10 @@
 # define CLR_GREEN 3002977
 # define CLEARSCREEN "\e[1;1H\e[2J"
 
-#define DEBUG_ON 1
+# define DEBUG_ON 1
+
+# define IMGPATH "assets/images/"
+# define OBJPATH "assets/objects/"
 
 // Playmode defines
 # define OVERHEADCAMSPEED 0.028f
@@ -117,6 +120,8 @@ typedef struct s_sdlcontext
 	SDL_Renderer			*renderer; //TODO: for testing remove.
 	t_img					*images;
 	uint					imagecount;
+	struct s_object			*objects;
+	uint					objectcount;
 	uint32_t				window_w;
 	uint32_t				window_h;
 }	t_sdlcontext;
@@ -132,7 +137,7 @@ typedef struct s_perfgraph
 typedef struct s_obj //TODO: move obj/fdf related stuff to separate header?
 {
 	char		**mtlnames;
-	uint32_t	*mtlcolors;
+	uint32_t	*mtlcolors; //obj color type 3
 	uint8_t		*colors; //Points to colors in mtlcolors
 	int32_t		**verts;
 	uint32_t	**faces;
@@ -310,6 +315,7 @@ void	quit_game(t_sdlcontext *sdl);
 
 /* LIST_HELPER.C */
 void	list_push(t_list **head, void *content, size_t content_size);
+void	*list_to_ptr(t_list *source, uint32_t *set_length);
 //TODO: documentation here
 void	list_remove(t_list **head, void *match, size_t content_size);
 
