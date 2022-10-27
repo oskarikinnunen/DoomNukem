@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/14 17:34:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/18 20:42:25 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/27 18:32:35 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,16 +39,16 @@ t_quaternion	quaternion_mul(t_quaternion a, t_quaternion b)
 }
 
 //TODO: Check if quaternion linestart and lineend could be replaced with t_vector3
-t_quaternion quaternion_intersectplane(t_vector3 plane_p, t_vector3 plane_n, t_quaternion lineStart, t_quaternion lineEnd)
+t_quaternion quaternion_intersectplane(t_vector3 plane_p, t_vector3 plane_n, t_quaternion lineStart, t_quaternion lineEnd, float *t)
 {
 	plane_n = vector3_normalise(plane_n);
 	float plane_d = -vector3_dot(plane_n, plane_p);
 	float ad = vector3_dot(lineStart.v, plane_n);
 	float bd = vector3_dot(lineEnd.v, plane_n);
-	float t = (-plane_d - ad) / (bd - ad);
+	*t = (-plane_d - ad) / (bd - ad);
 	t_vector3 lineStartToEnd = vector3_sub(lineEnd.v, lineStart.v);
-	t_vector3 lineToIntersect = vector3_mul(lineStartToEnd, t);
-	return ((t_quaternion){vector3_add(lineStart.v, lineToIntersect), 1});
+	t_vector3 lineToIntersect = vector3_mul(lineStartToEnd, *t);
+	return ((t_quaternion){vector3_add(lineStart.v, lineToIntersect), 1.0f});
 }
 
 /*static t_vec3d angle_axis(float angle, t_vec3d axis)

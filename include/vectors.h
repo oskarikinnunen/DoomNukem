@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vectors.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/26 14:38:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/27 18:33:11 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,7 +198,7 @@ t_quaternion	quaternion_identity();
 t_quaternion	quaternion_mul(t_quaternion first, t_quaternion second);
 
 //returns quaternion, for quaternion line that starts from 'linestart' and ends in 'lineend' and intersects plane vector 'plane_p' and 'plane_n'
-t_quaternion	quaternion_intersectplane(t_vector3 plane_p, t_vector3 plane_n, t_quaternion lineStart, t_quaternion lineEnd);
+t_quaternion quaternion_intersectplane(t_vector3 plane_p, t_vector3 plane_n, t_quaternion lineStart, t_quaternion lineEnd, float *t);
 
 typedef struct s_mat4x4
 {

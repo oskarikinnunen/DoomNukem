@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/27 16:37:22 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/27 18:42:23 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ typedef struct s_sdlcontext
 {
 	SDL_Window				*window;
 	SDL_Surface				*surface;
-	uint32_t				*zbuffer;
+	float					*zbuffer;
 	SDL_Renderer			*renderer; //TODO: for testing remove.
 	t_img					*images;
 	uint					imagecount;
@@ -209,9 +209,17 @@ typedef enum e_gamereturn
 	game_switchmode
 } t_gamereturn;
 
+typedef struct s_texture
+{
+	float	u;
+	float	v;
+	float	w;
+} t_texture;
+
 typedef struct	s_triangle
 {
-	t_quaternion p[3];
+	t_quaternion	p[3];
+	t_texture		t[3];
 	uint32_t	clr;
 }	t_triangle;
 
@@ -293,7 +301,7 @@ void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
-void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle);
+void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle, t_img img);
 void	engine3d(t_sdlcontext sdl, t_game game);
 
 /* PHYSICS.C */

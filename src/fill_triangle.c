@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/25 14:38:54 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/27 18:57:45 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,10 @@
 
 static void	z_draw(t_sdlcontext sdl, t_point pos, uint32_t clr, float z)
 {
-	if (z > sdl.zbuffer[pos.x + pos.y * sdl.window_w] || 1) //TODO: Zbuffer currently not working
+	if (z > sdl.zbuffer[pos.x + pos.y * sdl.window_w])
 	{
 		sdl.zbuffer[pos.x + pos.y * sdl.window_w] = z;
 		((uint32_t *)sdl.surface->pixels)[pos.x + pos.y * sdl.window_w] = clr;
-	}
-}
-
-static void z_draw_x_line(t_sdlcontext sdl, t_point from, int to, uint32_t clr, float z)
-{
-	while(from.x < to)
-	{
-		z_draw(sdl, from, clr, z);
-		from.x++;
 	}
 }
 
@@ -50,11 +41,12 @@ static void ft_swap(void * a, void * b, size_t len)
 	}
 }
 
-static void	sort_tris(t_quaternion *q)
+static void	sort_tris(t_quaternion	*q, t_texture *t)
 {
 	int	s_x;
 	int	s_j;
-	t_quaternion temp;
+	t_quaternion	temp_q;
+	t_texture 		temp_t;
 
 	s_x = 0;
 	s_j = 0;
@@ -64,9 +56,13 @@ static void	sort_tris(t_quaternion *q)
 		{
 			if (q[s_j].v.y < q[s_j + 1].v.y)
 			{
-				temp = q[s_j];
+				temp_q = q[s_j];
 				q[s_j] = q[s_j + 1];
-				q[s_j + 1] = temp;
+				q[s_j + 1] = temp_q;
+
+				temp_t = t[s_j];
+				t[s_j] = t[s_j + 1];
+				t[s_j + 1] = temp_t;
 			}
 			s_j++;
 		}
@@ -77,46 +73,108 @@ static void	sort_tris(t_quaternion *q)
 
 float flerp(float from, float to, float delta)
 {
+
 	return (from + ((to - from) * delta));
 }
 
-static void fill_tri_bot(t_sdlcontext sdl, t_point *p, float z)
+static void  calc_step(float x_step[2], t_texture t_step[2], t_triangle triangle, float delta)
 {
-	float index;
-	float max;
-	t_point a;
-	t_point b;
+	t_quaternion	*q;
+	t_texture		*t;
 
-	index = 0;
-	max = p[1].y - p[0].y;
-	while (index < max)
+	q = triangle.p;
+	t = triangle.t;
+	x_step[0] = (q[0].v.x - q[1].v.x) * delta;
+	x_step[1] = (q[0].v.x - q[2].v.x) * delta;
+
+	t_step[0].u = (t[0].u - t[1].u) * delta;
+	t_step[0].v = (t[0].v - t[1].v) * delta;
+	t_step[0].w = (t[0].w - t[1].w) * delta;
+
+	t_step[1].u = (t[0].u - t[2].u) * delta;
+	t_step[1].v = (t[0].v - t[2].v) * delta;
+	t_step[1].w = (t[0].w - t[2].w) * delta;
+}
+
+static t_triangle step_triangle(t_triangle triangle, float x_step[2], t_texture t_step[2])
+{
+	t_quaternion	*q;
+	t_texture		*t;
+
+	q = triangle.p;
+	t = triangle.t;
+
+	q[1].v.x += x_step[0];
+	q[2].v.x += x_step[1];
+
+	t[1].u += t_step[0].u;
+	t[1].v += t_step[0].v;
+	t[1].w += t_step[0].w;
+
+	t[2].u += t_step[1].u;
+	t[2].v += t_step[1].v;
+	t[2].w += t_step[1].w;
+
+	return (triangle);
+}
+
+static void fill_tri_bot(t_sdlcontext sdl, t_triangle triangle, t_img img)
+{
+	float i;
+	t_quaternion	*q;
+	t_texture		*t;
+	t_texture		tex;
+	float			x_step[2];
+	t_texture		t_step[2];
+	float			delta;
+
+	q = triangle.p;
+	t = triangle.t;
+	calc_step(x_step, t_step, triangle, 1.0f/(q[1].v.y - q[0].v.y));
+	while (q[0].v.y < q[1].v.y)
 	{
-		a.x = flerp(p[1].x, p[0].x, index/max);
-		a.y = p[1].y - index;
-		b.x = flerp(p[2].x, p[0].x, index/max);
-		b.y = a.y;
-		z_draw_x_line(sdl, a, b.x, CLR_PRPL, z);
-		index++;
+		i = q[1].v.x;
+		while(i < q[2].v.x)
+		{
+			delta = (i - q[1].v.x)/(q[2].v.x - q[1].v.x);
+			tex.u = flerp(t[1].u, t[2].u, delta);
+			tex.v = flerp(t[1].v, t[2].v, delta);
+			tex.w = flerp(t[1].w, t[2].w, delta);
+			z_draw(sdl, (t_point){(int)i, (int)q[1].v.y}, img.data[img.size.x * (int)((tex.u / tex.w) * img.size.x - 1) + (int)((tex.v / tex.w) * img.size.y - 1)], tex.w);
+			i++;
+		}
+		triangle = step_triangle(triangle, x_step, t_step);
+		q[1].v.y--;
 	}
 }
 
-static void fill_tri_top(t_sdlcontext sdl, t_point *p, float z)
+static void fill_tri_top(t_sdlcontext sdl, t_triangle triangle, t_img img)
 {
-	float index;
-	float max;
-	t_point a;
-	t_point b;
-
-	index = 0;
-	max = p[0].y - p[1].y;
-	while (index < max)
+	float i;
+	t_quaternion	*q;
+	t_texture		*t;
+	t_texture		tex;
+	float			x_step[2];
+	t_texture		t_step[2];
+	float			delta;
+	
+	q = triangle.p;
+	t = triangle.t;
+	calc_step(x_step, t_step, triangle, 1.0f/(q[0].v.y - q[1].v.y));
+	while (q[1].v.y < q[0].v.y)
 	{
-		a.x = flerp(p[1].x, p[0].x, index/max);
-		a.y = p[1].y + index;
-		b.x = flerp(p[2].x, p[0].x, index/max);
-		b.y = a.y;
-		z_draw_x_line(sdl, a, b.x, CLR_GREEN, z);
-		index++;
+		i = q[1].v.x;
+		while(i < q[2].v.x)
+		{
+			delta = (i - q[1].v.x)/(q[2].v.x - q[1].v.x);
+			tex.u = flerp(t[1].u, t[2].u, delta);
+			tex.v = flerp(t[1].v, t[2].v, delta);
+			tex.w = flerp(t[1].w, t[2].w, delta);
+			z_draw(sdl, (t_point){(int)i, (int)q[1].v.y}, img.data[img.size.x * (int)((tex.u / tex.w) * img.size.x - 1) + (int)((tex.v / tex.w) * img.size.y - 1)], tex.w);
+			i++;
+		}
+		triangle = step_triangle(triangle, x_step, t_step);
+		q[1].v.y++;
 	}
 }
 
@@ -125,31 +183,44 @@ creates two triangles from the given triangle one flat top and one flat bottom.
 both triangles are then assigned to t_point p[3] array and passed onto fill_tri_bot/top functions.
 p[0] is always the pointy head of the triangle p[1] and p[2] are flat points where, p[1] x is smaller than p[2]
 */
-void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle)
+void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle, t_img img)
 {
-	t_quaternion	split;
+	t_quaternion	q_split;
+	t_texture		t_split;
+	t_texture		t_temp;
+	t_quaternion	q_temp;
 	t_quaternion	*q;
 	t_point			p[3];
 	float			lerp;
 
-
 	q = triangle.p;
-	sort_tris(q);
+	sort_tris(triangle.p, triangle.t);
 	lerp = (float)(q[1].v.y - q[2].v.y) / (float)(q[0].v.y - q[2].v.y);
-	split.v.x = q[2].v.x + (lerp * (q[0].v.x - q[2].v.x));
-	split.v.y = q[1].v.y;
-	split.v.z = q[1].w;
+	q_split.v.x = q[2].v.x + (lerp * (q[0].v.x - q[2].v.x));
+	q_split.v.y = q[1].v.y;
+	q_split.v.z = q[1].w;
+	
+	/*
+	q_split.v.x = flerp(triangle.p[2].v.x, triangle.p[0].v.x, lerp);
+	q_split.v.y = flerp(triangle.p[2].v.y, triangle.p[0].v.y, lerp);
+	q_split.v.z = flerp(triangle.p[2].v.z, triangle.p[0].v.z, lerp);
+	*/
 
-	if (split.v.x < q[1].v.x)
-		ft_swap(&q[1].v.x, &split.v.x, sizeof(float));
-	p[0].x = q[0].v.x;
-	p[0].y = q[0].v.y;
-	p[1].x = q[1].v.x;
-	p[1].y = q[1].v.y;
-	p[2].x = split.v.x;
-	p[2].y = split.v.y;
-	fill_tri_top(sdl, p, q[0].w);
-	p[0].x = q[2].v.x;
-	p[0].y = q[2].v.y;
-	fill_tri_bot(sdl, p, q[0].w);
+	t_split.u = flerp(triangle.t[2].u, triangle.t[0].u, lerp);
+	t_split.v = flerp(triangle.t[2].v, triangle.t[0].v, lerp);
+	t_split.w = flerp(triangle.t[2].w, triangle.t[0].w, lerp);
+
+	if (q_split.v.x < q[1].v.x)
+	{
+		ft_swap(&q[1], &q_split, sizeof(t_quaternion));
+		ft_swap(&triangle.t[1], &t_split, sizeof(t_texture));
+	}
+	q_temp = q[2];
+	t_temp = triangle.t[2];
+	q[2] = q_split;
+	triangle.t[2] = t_split;
+	fill_tri_top(sdl, triangle, img); 
+	q[0] = q_temp;
+	triangle.t[0] = t_temp;
+	fill_tri_bot(sdl, triangle, img);
 }

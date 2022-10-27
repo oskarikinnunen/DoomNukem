@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/25 14:14:11 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/27 18:46:08 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,9 @@ static int Triangle_ClipAgainstPlane(t_vector3 plane_p, t_vector3 plane_n, t_tri
 	// If dist1ance sign is positive, point lies on "inside" of plane
 	t_quaternion inside_points[3];  int nInsidePointCount = 0;
 	t_quaternion outside_points[3]; int nOutsidePointCount = 0;
-	
-	in_tri->clr = CLR_GREEN; //debug colors
-	out_tri1->clr = CLR_PRPL; //debug colors
-	out_tri2->clr = CLR_TURQ; //debug colors
+	t_texture inside_tex[3]; int nInsideTexCount = 0;
+	t_texture outside_tex[3]; int nOutsideTexCount = 0;
+
 	for (int e = 0; e < 3; e++)
 	{
 		inside_points[e] = Initquater();
@@ -66,26 +65,32 @@ static int Triangle_ClipAgainstPlane(t_vector3 plane_p, t_vector3 plane_n, t_tri
 	if (d0 >= 0)
 	{
 		inside_points[nInsidePointCount++] = in_tri->p[0];
+		inside_tex[nInsideTexCount++] = in_tri->t[0];
 	}
 	else
 	{
 		outside_points[nOutsidePointCount++] = in_tri->p[0];
+		outside_tex[nOutsideTexCount++] = in_tri->t[0];
 	}
 	if (d1 >= 0)
 	{
 		inside_points[nInsidePointCount++] = in_tri->p[1];
+		inside_tex[nInsideTexCount++] = in_tri->t[1];
 	}
 	else
 	{
 		outside_points[nOutsidePointCount++] = in_tri->p[1];
+		outside_tex[nOutsideTexCount++] = in_tri->t[1];
 	}
 	if (d2 >= 0)
 	{
 		inside_points[nInsidePointCount++] = in_tri->p[2];
+		inside_tex[nInsideTexCount++] = in_tri->t[2];
 	}
 	else
 	{
 		outside_points[nOutsidePointCount++] = in_tri->p[2];
+		outside_tex[nOutsideTexCount++] = in_tri->t[2];
 	}
 
 	// Now classify triangle points, and break the input triangle into 
@@ -111,21 +116,30 @@ static int Triangle_ClipAgainstPlane(t_vector3 plane_p, t_vector3 plane_n, t_tri
 
 	if (nInsidePointCount == 1 && nOutsidePointCount == 2)
 	{
+
 		// Triangle should be clipped. As two points lie outside
 		// the plane, the triangle simply becomes a smaller triangle
 
 		// Copy appearance info to new triangle
-		//out_tri1.col =  in_tri.col;
-		//out_tri1.sym = in_tri.sym;
+		out_tri1->clr = in_tri->clr;
+		//out_tri1->sym = in_tri->sym;
 
 		// The inside point is valid, so keep that...
 		out_tri1->p[0] = inside_points[0];
+		out_tri1->t[0] = inside_tex[0];
 
 		// but the two new points are at the locations where the 
 		// original sides of the triangle (lines) intersect with the plane
-		out_tri1->p[1] = quaternion_intersectplane(plane_p, plane_n, inside_points[0], outside_points[0]);
-		out_tri1->p[2] = quaternion_intersectplane(plane_p, plane_n, inside_points[0], outside_points[1]);
+		float t;
+		out_tri1->p[1] = quaternion_intersectplane(plane_p, plane_n, inside_points[0], outside_points[0], &t);
+		out_tri1->t[1].u = t * (outside_tex[0].u - inside_tex[0].u) + inside_tex[0].u;
+		out_tri1->t[1].v = t * (outside_tex[0].v - inside_tex[0].v) + inside_tex[0].v;
+		out_tri1->t[1].w = t * (outside_tex[0].w - inside_tex[0].w) + inside_tex[0].w;
 
+		out_tri1->p[2] = quaternion_intersectplane(plane_p, plane_n, inside_points[0], outside_points[1], &t);
+		out_tri1->t[2].u = t * (outside_tex[1].u - inside_tex[0].u) + inside_tex[0].u;
+		out_tri1->t[2].v = t * (outside_tex[1].v - inside_tex[0].v) + inside_tex[0].v;
+		out_tri1->t[2].w = t * (outside_tex[1].w - inside_tex[0].w) + inside_tex[0].w;
 		return 1; // Return the newly formed single triangle
 	}
 
@@ -142,35 +156,50 @@ static int Triangle_ClipAgainstPlane(t_vector3 plane_p, t_vector3 plane_n, t_tri
 		//out_tri2.col =  in_tri.col;
 		//out_tri2.sym = in_tri.sym;
 
+		out_tri1->clr = in_tri->clr;
+		out_tri2->clr = in_tri->clr;
+
 		// The first triangle consists of the two inside points and a new
 		// point determined by the location where one side of the triangle
 		// intersects with the plane
 		out_tri1->p[0] = inside_points[0];
 		out_tri1->p[1] = inside_points[1];
-		out_tri1->p[2] = quaternion_intersectplane(plane_p, plane_n, inside_points[0], outside_points[0]);
+		out_tri1->t[0] = inside_tex[0];
+		out_tri1->t[1] = inside_tex[1];
+
+		float t;
+		out_tri1->p[2] = quaternion_intersectplane(plane_p, plane_n, inside_points[0], outside_points[0], &t);
+		out_tri1->t[2].u = t * (outside_tex[0].u - inside_tex[0].u) + inside_tex[0].u;
+		out_tri1->t[2].v = t * (outside_tex[0].v - inside_tex[0].v) + inside_tex[0].v;
+		out_tri1->t[2].w = t * (outside_tex[0].w - inside_tex[0].w) + inside_tex[0].w;
 
 		// The second triangle is composed of one of he inside points, a
 		// new point determined by the intersection of the other side of the 
 		// triangle and the plane, and the newly created point above
 		out_tri2->p[0] = inside_points[1];
+		out_tri2->t[0] = inside_tex[1];
 		out_tri2->p[1] = out_tri1->p[2];
-		out_tri2->p[2] = quaternion_intersectplane(plane_p, plane_n, inside_points[1], outside_points[0]);
+		out_tri2->t[1] = out_tri1->t[2];
+		out_tri2->p[2] = quaternion_intersectplane(plane_p, plane_n, inside_points[1], outside_points[0], &t);
+		out_tri2->t[2].u = t * (outside_tex[0].u - inside_tex[1].u) + inside_tex[1].u;
+		out_tri2->t[2].v = t * (outside_tex[0].v - inside_tex[1].v) + inside_tex[1].v;
+		out_tri2->t[2].w = t * (outside_tex[0].w - inside_tex[1].w) + inside_tex[1].w;
 
 		return 2; // Return two newly formed triangles which form a quad
 	}
 	return(0);
 }
 
-static void draw_triangles(t_sdlcontext sdl, t_triangle *triangles, int index, int end)
+static void draw_triangles(t_sdlcontext sdl, t_triangle *triangles, int index, int end, t_img img)
 {
 	while (index < end)
 	{
-		z_fill_tri(sdl, triangles[index]);
+		z_fill_tri(sdl, triangles[index], img);
 		index++;
 	}
 }
 
-static void clipped(int count, t_triangle *triangles_calc, t_sdlcontext sdl)
+static void clipped(int count, t_triangle *triangles_calc, t_sdlcontext sdl, t_img img)
 {
 	int i = 0;
 	int start = 0;
@@ -209,7 +238,7 @@ static void clipped(int count, t_triangle *triangles_calc, t_sdlcontext sdl)
 			}
 			nnewtriangles = end - start;
 		}
-		draw_triangles(sdl, triangles, start, end);
+		draw_triangles(sdl, triangles, start, end, img);
 		start = 0;
 		end = 0;
 		i++;
@@ -223,6 +252,10 @@ static t_triangle transform_calc(t_mat4x4 matworld, t_triangle triangles)
 	tritransformed.p[0] = quaternion_mul_matrix(matworld, triangles.p[0]);
 	tritransformed.p[1] = quaternion_mul_matrix(matworld, triangles.p[1]);
 	tritransformed.p[2] = quaternion_mul_matrix(matworld, triangles.p[2]);
+	tritransformed.t[0] = triangles.t[0];
+	tritransformed.t[1] = triangles.t[1];
+	tritransformed.t[2] = triangles.t[2];
+	tritransformed.clr = triangles.clr;
 
 	return(tritransformed);
 }
@@ -246,6 +279,9 @@ static int clippedtriangles(t_triangle tritransformed, t_mat4x4 matview, t_trian
 	triviewed.p[0] = quaternion_mul_matrix(matview, tritransformed.p[0]);
 	triviewed.p[1] = quaternion_mul_matrix(matview, tritransformed.p[1]);
 	triviewed.p[2] = quaternion_mul_matrix(matview, tritransformed.p[2]);
+	triviewed.t[0] = tritransformed.t[0];
+	triviewed.t[1] = tritransformed.t[1];
+	triviewed.t[2] = tritransformed.t[2];
 	return (Triangle_ClipAgainstPlane(
 	(t_vector3){0.0f, 0.0f, 0.1f},
 	(t_vector3){0.0f, 0.0f, 1.0f},
@@ -259,6 +295,21 @@ static t_triangle triangle_to_screenspace(t_mat4x4 matproj, t_triangle clipped, 
 	triprojected.p[0] = quaternion_mul_matrix(matproj, clipped.p[0]);
 	triprojected.p[1] = quaternion_mul_matrix(matproj, clipped.p[1]);
 	triprojected.p[2] = quaternion_mul_matrix(matproj, clipped.p[2]);
+	triprojected.t[0] = clipped.t[0];
+	triprojected.t[1] = clipped.t[1];
+	triprojected.t[2] = clipped.t[2];
+
+	triprojected.t[0].u = triprojected.t[0].u / triprojected.p[0].w;
+	triprojected.t[1].u = triprojected.t[1].u / triprojected.p[1].w;
+	triprojected.t[2].u = triprojected.t[2].u / triprojected.p[2].w;
+
+	triprojected.t[0].v = triprojected.t[0].v / triprojected.p[0].w;
+	triprojected.t[1].v = triprojected.t[1].v / triprojected.p[1].w;
+	triprojected.t[2].v = triprojected.t[2].v / triprojected.p[2].w;
+
+	triprojected.t[0].w = 1.0f / triprojected.p[0].w;
+	triprojected.t[1].w = 1.0f / triprojected.p[1].w;
+	triprojected.t[2].w = 1.0f / triprojected.p[2].w;
 	
 	triprojected.p[0].v = vector3_div(triprojected.p[0].v, triprojected.p[0].w);
 	triprojected.p[1].v = vector3_div(triprojected.p[1].v, triprojected.p[1].w);
@@ -285,6 +336,7 @@ static t_triangle triangle_to_screenspace(t_mat4x4 matproj, t_triangle clipped, 
 
 void engine3d(t_sdlcontext sdl, t_game game)
 {
+	static t_img debug_img;
 	t_triangle	triangles_calc[200];
 	int			i;
 	int			count = 0;
@@ -316,5 +368,7 @@ void engine3d(t_sdlcontext sdl, t_game game)
 		}
 		i++;
 	}
-	clipped(count, triangles_calc, sdl);
+	if (debug_img.length == 0)
+		debug_img = get_image_by_name(sdl, "");
+	clipped(count, triangles_calc, sdl, debug_img);
 }
