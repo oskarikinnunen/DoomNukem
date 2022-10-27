@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/26 14:26:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/27 13:01:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	t_list			*l;
 
 	if (entity_img.length == 0)
-		entity_img = get_image_by_name(sdl, "images/entitytool.png");
+		entity_img = get_image_by_name(sdl, "entitytool.png");
 	l = ed->entitylist;
 	while (l != NULL)
 	{

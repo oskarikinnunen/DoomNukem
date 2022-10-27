@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 14:35:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/25 16:57:44 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/27 17:56:13 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,8 @@ void	draw_editor_buttons(t_sdlcontext sdl, uint8_t tool_selected)
 	if (buttons == NULL) 
 	{
 		buttons = get_editor_tool_buttons();
-		images[0] = get_image_by_name(sdl, "images/linetool.png");
-		images[1] = get_image_by_name(sdl, "images/entitytool.png");
+		images[0] = get_image_by_name(sdl, "linetool.png");
+		images[1] = get_image_by_name(sdl, "entitytool.png");
 	}
 	i = 0;
 	while (i < 2)

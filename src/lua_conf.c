@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/24 20:51:22 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/27 13:40:21 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "lualib.h"
 #include "lauxlib.h"
 #include "doomnukem.h"
+#include "objects.h"
 #include "png.h"
 
 void	load_images(lua_State *lua, t_sdlcontext *sdl)
@@ -38,8 +39,36 @@ void	load_images(lua_State *lua, t_sdlcontext *sdl)
 		sprintf(indexer, "eval=images[%i]", i);
 		luaL_dostring(lua, indexer);
 		lua_getglobal(lua, "eval");
-		sprintf(imagename, "images/%s", lua_tostring(lua, -1));
+		sprintf(imagename, "%s%s", IMGPATH, lua_tostring(lua, -1));
 		sdl->images[i - 1] = pngparse(imagename);
+		i++;
+	}
+}
+
+void	load_objects(lua_State *lua, t_sdlcontext *sdl)
+{
+	char	objectname[256];
+	char	indexer[256];
+	int		i;
+
+	lua_getglobal(lua, "objects");
+	sdl->objectcount = lua_rawlen(lua, -1);
+	if (sdl->objectcount == 0)
+	{
+		printf("no objects in settings.lua \n");
+		return ;
+	}
+	sdl->objects = ft_memalloc(sizeof(t_object) * sdl->objectcount);
+	if (sdl->objects == NULL)
+		error_log(EC_MALLOC);
+	i = 1;
+	while (i <= sdl->objectcount)
+	{
+		sprintf(indexer, "eval=objects[%i]", i);
+		luaL_dostring(lua, indexer);
+		lua_getglobal(lua, "eval");
+		sprintf(objectname, "%s%s", OBJPATH, lua_tostring(lua, -1));
+		sdl->objects[i - 1] = objparse(objectname);
 		i++;
 	}
 }
@@ -71,6 +100,7 @@ void	load_lua_conf(t_sdlcontext *sdl)
 	{
 		load_resolution(lua, sdl);
 		load_images(lua, sdl);
+		load_objects(lua, sdl);
 	}
 	lua_close(lua);
 	return ;

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:10:14 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/24 19:26:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/27 12:59:47 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,8 +132,8 @@ t_img	pngparse(char *filename)
 	readdat(&png, ptr);
 	close(fd);
 	pngtosimpleimg(&png, &result);
-	if (ft_strlen(filename) < 128)
+	if (ft_strlen(filename) < 256)
 		ft_strcpy(result.name, filename);
-	printf("read png %s \n", filename);
+	printf("read png %s \n", result.name);
 	return (result);
 }

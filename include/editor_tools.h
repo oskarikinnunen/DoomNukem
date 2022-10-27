@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/26 15:34:53 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/27 18:00:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ typedef struct	s_tool
 
 typedef struct	s_guibutton
 {
-	t_rectangle rect;
+	t_rectangle	rect;
 	t_img		img;
 	char		imagename[256];
 }	t_guibutton;

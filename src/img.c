@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 13:42:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/24 20:49:23 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/27 13:17:19 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,16 @@ static t_img	error_image()
 // If you're planning to draw a image a bunch of times,
 // you should cache this result and use it multiple times instead of calling 
 // this unction for each draw call.
-t_img	get_image_by_name(t_sdlcontext sdl, char *name)
+t_img	get_image_by_name(t_sdlcontext sdl, char *name) //TODO: return pointer, this is wasteful use of memory especially when used for all of the objects
 {
-	int	i;
+	int		i;
+	char	fullpath[256];
 
 	i = 0;
+	sprintf(fullpath, "%s%s", IMGPATH, name);
 	while (i < sdl.imagecount && sdl.images != NULL)
 	{
-		if (ft_strcmp(sdl.images[i].name, name) == 0)
+		if (ft_strcmp(sdl.images[i].name, fullpath) == 0)
 			return (sdl.images[i]);
 		i++;
 	}
