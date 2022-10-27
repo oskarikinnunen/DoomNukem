@@ -77,6 +77,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	{
 		update_deltatime(&game.clock);
 		bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
+		bzero(sdl.zbuffer, sizeof(float) * sdl.window_h * sdl.window_w);
 		gr = handleinput(&game);
 		moveplayer(&game);
 		if (game.cam_mode == player_view)
@@ -101,6 +102,38 @@ static t_triangle set_tri(int *p1, int *p2, int *p3)
 		});
 }
 
+static void set_tex1(t_triangle *tri)
+{
+	tri->t[0].u = 0.0f;
+	tri->t[0].v = 0.0f;
+
+	tri->t[1].u = 1.0f;
+	tri->t[1].v = 0.0f;
+
+	tri->t[2].u = 0.0f;
+	tri->t[2].v = 1.0f;
+
+	tri->t[0].w = 1.0f;
+	tri->t[1].w = 1.0f;
+	tri->t[2].w = 1.0f;
+}
+
+static void set_tex2(t_triangle *tri)
+{
+	tri->t[0].u = 0.0f;
+	tri->t[0].v = 1.0f;
+
+	tri->t[1].u = 1.0f;
+	tri->t[1].v = 0.0f;
+
+	tri->t[2].u = 1.0f;
+	tri->t[2].v = 1.0f;
+
+	tri->t[0].w = 1.0f;
+	tri->t[1].w = 1.0f;
+	tri->t[2].w = 1.0f;
+}
+
 static void set_tri_array(t_game *game, t_obj *obj)
 {
 	int		i;
@@ -116,6 +149,8 @@ static void set_tri_array(t_game *game, t_obj *obj)
 	{
 		game->triangles[i / 2] = set_tri(verts[i], verts[i + 1], verts[i + 2]);
 		game->triangles[(i / 2) + 1] = set_tri(verts[i + 2], verts[i + 1], verts[i + 3]);
+		set_tex1(&game->triangles[i / 2]);
+		set_tex2(&game->triangles[(i / 2) + 1]);
 		i += 4;
 	}
 }
