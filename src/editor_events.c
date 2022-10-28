@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/27 18:33:23 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/28 15:01:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ void		editor_toggle_keystates(t_editor *ed, SDL_Event e)
 		ed->keystate |= keyismoveright(e) << KEYS_RIGHTMASK;
 		ed->keystate |= keyismoveup(e) << KEYS_UPMASK;
 		ed->keystate |= keyismovedown(e) << KEYS_DOWNMASK;
+		ed->keystate |= iskey(e, SDLK_LCTRL) << KEYS_CTRLMASK;
+		ed->keystate |= iskey(e, SDLK_SPACE) << KEYS_SPACEMASK;
 	}
 	if (e.type == SDL_KEYUP)
 	{
@@ -28,6 +30,8 @@ void		editor_toggle_keystates(t_editor *ed, SDL_Event e)
 		ed->keystate &= ~(keyismoveright(e) << KEYS_RIGHTMASK);
 		ed->keystate &= ~(keyismoveup(e) << KEYS_UPMASK);
 		ed->keystate &= ~(keyismovedown(e) << KEYS_DOWNMASK);
+		ed->keystate &= ~(iskey(e, SDLK_LCTRL) << KEYS_CTRLMASK);
+		ed->keystate &= ~(iskey(e, SDLK_SPACE) << KEYS_SPACEMASK);
 	}
 }
 

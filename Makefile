@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/27 18:32:47 by okinnune         ###   ########.fr        #
+#    Updated: 2022/10/28 14:36:14 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,7 @@ SRCFILES= main.c draw.c img.c deltatime.c anim.c\
 		png.c lua_conf.c list_helper.c \
 		spaceconversions.c obj_parse.c \
 		obj_parse_vertex.c obj_parse_faces.c \
-		button_bootstrap.c
+		button_bootstrap.c editor_new_buttons.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \
 		vector2_elementary.c vector2_shorthands.c \
@@ -45,7 +45,7 @@ VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		quaternion_shorthands.c quaternions.c \
 		matrix_shorthands.c matrix_rotations.c \
 		matrix_functions.c matrix_functions2.c \
-		debug_vectors.c
+		debug_vectors.c point_more.c
 VECTORSRC= $(addprefix src/vectors/,$(VECTORSRCFILES))
 SRC= $(addprefix src/,$(SRCFILES))
 SRC+= $(VECTORSRC)

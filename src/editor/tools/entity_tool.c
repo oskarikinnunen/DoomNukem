@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/27 13:01:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/28 14:42:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,20 +51,20 @@ static void entity_tool_place(t_editor *ed)
 
 static void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 {
-	static t_img	entity_img;
+	static t_img	*entity_img;
 	t_entity		*ent;
 	t_list			*l;
 
-	if (entity_img.length == 0)
+	if (entity_img == NULL)
 		entity_img = get_image_by_name(sdl, "entitytool.png");
 	l = ed->entitylist;
 	while (l != NULL)
 	{
 		ent = (t_entity *)l->content;
-		draw_image(sdl, worldtoeditorspace(ed, ent->position), entity_img, entity_img.size);
+		draw_image(sdl, worldtoeditorspace(ed, ent->position), *entity_img, entity_img->size);
 		l = l->next;
 	}
-	draw_image(sdl, ed->mouse.pos, entity_img, entity_img.size);
+	draw_image(sdl, ed->mouse.pos, *entity_img, entity_img->size);
 	ent = find_closest(ed);
 	if (ent != NULL)
 		drawcircle(sdl, worldtoeditorspace(ed, ent->position), 20, CLR_GREEN);

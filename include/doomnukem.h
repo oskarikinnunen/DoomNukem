@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/27 16:37:22 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/28 17:39:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,6 +176,7 @@ typedef struct s_editor
 	t_line			line; //the line that is being edited right now
 	t_list			*linelist;
 	t_list			*entitylist;
+	t_list			*buttonlist;
 	t_mouse			mouse;
 	float			threedee_zoom;
 	t_anim			transition;
@@ -263,7 +264,8 @@ void	savemap(t_editor *ed, char *filename);
 
 /* IMG.C */
 void	alloc_image(t_img *img, int width, int height);
-t_img	get_image_by_name(t_sdlcontext sdl, char *name);
+t_img	*get_image_by_index(t_sdlcontext sdl, int index);
+t_img	*get_image_by_name(t_sdlcontext sdl, char *name);
 
 /* INPUTHELPER.C */
 bool	iskey(SDL_Event e, int keycode);
@@ -297,6 +299,7 @@ void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle);
 void	engine3d(t_sdlcontext sdl, t_game game);
 
 /* PHYSICS.C */
+bool	pointrectanglecollision(t_point p, t_rectangle rect);
 bool	pointcirclecollision(t_vector2 p, t_vector2 cp, float r);
 bool	linecirclecollision(t_line line, t_vector2 cp, float r);
 

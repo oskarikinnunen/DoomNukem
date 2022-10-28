@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/27 18:33:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/28 17:31:27 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,10 @@ int	editorloop(t_sdlcontext sdl)
 	t_gamereturn	gr;
 
 	bzero(&ed, sizeof(t_editor));
-	ed.linelist = load_chunk("map_test1", "WALL");
-	ed.entitylist = load_chunk("map_test1", "ENT_");
+	ed.linelist = load_chunk("map_test1", "WALL", sizeof(t_line));
+	ed.entitylist = load_chunk("map_test1", "ENT_", sizeof(t_entity));
+	ed.buttonlist = load_chunk("buttons", "BUTN", sizeof(t_guibutton));
+	initialize_buttons(ed.buttonlist, sdl);
 	ed.tool = get_point_tool();
 	ed.tool_selected = 1;
 	gr = game_continue;
