@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 14:35:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/27 17:56:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/28 14:41:25 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	check_tool_change_click(t_point cursor, t_editor *ed)
 void	draw_editor_buttons(t_sdlcontext sdl, uint8_t tool_selected)
 {
 	static t_tool_button	*buttons;
-	static t_img			images[2]; //Make this somehow tied to t_tool_button
+	static t_img			*images[2]; //Make this somehow tied to t_tool_button
 	int				i;
 
 	if (buttons == NULL) 
@@ -61,7 +61,7 @@ void	draw_editor_buttons(t_sdlcontext sdl, uint8_t tool_selected)
 	i = 0;
 	while (i < 2)
 	{
-		draw_image(sdl, buttons[i].rect.position, images[i], buttons[i].rect.size);
+		draw_image(sdl, buttons[i].rect.position, *images[i], buttons[i].rect.size);
 		if (i + 1 != tool_selected)
 			drawrectangle(sdl, buttons[i].rect, CLR_GRAY);
 		i++;

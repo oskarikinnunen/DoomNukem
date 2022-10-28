@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/27 18:28:38 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/28 18:40:04 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,22 @@ t_point	screentogridspace(t_point point)
 
 static void	mouseclick(t_editor *ed)
 {
-	/*if (ed->tool == NULL)
-		ed->mouse.click_unhandled = false;*/
-	check_tool_change_click(ed->mouse.pos, ed);
+	t_list		*l;
+	t_guibutton	button;
+
+	l = ed->buttonlist;
+
+	while (l != NULL)
+	{
+		button = *(t_guibutton *)l->content;
+		if (pointrectanglecollision(ed->mouse.pos, button.rect))
+		{
+			if (button.onclick != NULL)
+				button.onclick(ed);
+		}
+		l = l->next;
+	}
+	ed->mouse.click_unhandled = false;
 }
 
 void	mouse_event(SDL_Event e, t_editor *ed)

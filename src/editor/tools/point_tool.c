@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/26 15:36:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/28 15:43:26 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,11 +114,6 @@ static void	point_tool_update(t_editor *ed) //This needs to access editors state
 {
 	if (ed->mouse.click_unhandled)
 		point_tool_click(ed);
-	return ;
-}
-
-static void	point_tool_key(int key) //make static?
-{
 	return ;
 }
 

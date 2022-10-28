@@ -6,37 +6,52 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/27 18:46:06 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/28 17:55:10 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "shapes.h"
-#include "doomnukem.h"
+#ifndef EDITOR_TOOLS_H
+# define EDITOR_TOOLS_H
 
-struct s_editor;
-struct s_sdlcontext;
+# include "shapes.h"
+# include "doomnukem.h"
 
-typedef struct	s_tool
+struct	s_editor;
+struct	s_sdlcontext;
+
+typedef struct s_tool
 {
 	void		(*update)(struct s_editor *ed);
 	void		(*draw_update)(struct s_editor *ed, struct s_sdlcontext sdl);
 	void		*tooldata;
-	//void		(*click_func)(struct s_editor *ed);
-	//id		(*key_func)(int);
-}	t_tool; //TODO: make static array of these and use test them in editor_mouse
+}	t_tool;
 
-typedef struct	s_guibutton
+
+typedef struct s_click_func_def
+{
+	char		func_name[256];
+	void		(*onclick)(t_editor *ed);
+}	t_click_func_def;
+
+typedef struct s_guibutton
 {
 	t_rectangle	rect;
 	t_img		*img;
 	char		imagename[256];
-	void		(*onclick)(struct s_editor *ed, struct s_sdlcontext sdl);
+	void		(*onclick)(t_editor *ed);
+	uint32_t	func_index; //Indexer which is used to get this buttons' 'onclick' function
 }	t_guibutton;
 
-typedef struct	s_tool_button
+typedef struct s_imagedropdown
+{
+	bool		inprogress;
+	t_img		*selected;
+}	t_imagedropdown;
+
+typedef struct s_tool_button
 {
 	t_rectangle	rect;
-	t_tool	*(*tool_get)(void);
+	t_tool		*(*tool_get)(void);
 }	t_tool_button;
 
 typedef enum e_point_tool_state
@@ -45,6 +60,12 @@ typedef enum e_point_tool_state
 	place_end
 }	t_point_tool_state;
 
-void	point_tool_delete(struct s_editor *ed, t_point crd); 
-t_tool	*get_point_tool();
-t_tool	*get_entity_tool();
+void				initialize_buttons(t_list *buttonlist, t_sdlcontext sdl);
+void				point_tool_delete(struct s_editor *ed, t_point crd);
+t_click_func_def	get_button_func(int	index);
+//default button click function, just prints a debug message
+void				empty_click_func(t_editor *ed);
+t_tool				*get_point_tool(void);
+t_tool				*get_entity_tool(void);
+
+#endif

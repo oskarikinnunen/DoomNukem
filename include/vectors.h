@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/26 14:38:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/28 14:06:01 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,6 +166,9 @@ t_point		point_fmul(t_point point, float mul);
 
 //returns point 'point' divided by float 'mul'
 t_point		point_fdiv(t_point point, float mul);
+
+//returns point 'point' with absolute x and y values
+t_point		point_abs(t_point point);
 
 //returns point 'point' normalised
 t_point		point_normalise(t_point point);
