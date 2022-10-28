@@ -238,7 +238,7 @@ int playmode(t_sdlcontext sdl)
 
 	bzero(&game, sizeof(t_game));
 	bzero(&obj, sizeof(t_obj));
-	sdl.zbuffer = malloc(sdl.window_w * sdl.window_h * sizeof(uint32_t));
+	sdl.zbuffer = malloc(sdl.window_w * sdl.window_h * sizeof(float));
 	game.linelist = load_chunk("map_test1", "WALL");
 	game.entitylist = load_chunk("map_test1", "ENT_");
 	if (game.entitylist != NULL) //player position is set from first entitys position, TODO: use entityID to determine which one is the player
