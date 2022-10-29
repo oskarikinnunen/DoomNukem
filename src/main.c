@@ -29,6 +29,13 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	sdl->surface = SDL_GetWindowSurface(sdl->window);
 	if (sdl->surface == NULL)
 		error_log(EC_SDL_GETWINDOW_SURFACE);
+	//sdl->renderer = SDL_CreateRenderer(sdl->window, -1, SDL_RENDERER_SOFTWARE);
+	//missing something at the end sdl->texture = SDL_CreateTexture(sdl->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, sdl->window_w, sdl);
+
+
+	//sdl->renderer = SDL_CreateRenderer(sdl->window,)
+	//SDL_LockSurface(sdl->surface);
+	//sdl->texture = SDL_CreateTexture()
 
 }
 

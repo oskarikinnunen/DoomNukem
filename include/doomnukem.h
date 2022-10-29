@@ -118,6 +118,7 @@ typedef struct s_sdlcontext
 	SDL_Surface				*surface;
 	float					*zbuffer;
 	SDL_Renderer			*renderer; //TODO: for testing remove.
+	SDL_Texture				*texture;
 	t_img					*images;
 	uint					imagecount;
 	struct s_object			*objects;

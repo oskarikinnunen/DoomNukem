@@ -128,6 +128,7 @@ static void fill_tri_bot(t_sdlcontext sdl, t_triangle triangle, t_img img, uint3
 	t_texture		t_step[2];
 	float			step;
 	float			delta;
+	uint32_t clr;
 
 	q = triangle.p;
 	t = triangle.t;
@@ -146,11 +147,9 @@ static void fill_tri_bot(t_sdlcontext sdl, t_triangle triangle, t_img img, uint3
 				delta = (i - q[1].v.x) / (q[2].v.x - q[1].v.x);
 				t[0].u = flerp(t[1].u, t[2].u, delta);
 				t[0].v = flerp(t[1].v, t[2].v, delta);
-				uint32_t clr = img.data[img.size.x * (int)((t[0].u / t[0].w) * img.size.x - 1) + (int)((t[0].v / t[0].w) * img.size.y - 1)];
-				if (clr == 53253092503)
-					printf("lol");
-				pixels[(int)(i) + (int)q[1].v.y * sdl.window_w] = clr;
-				//((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w] = CLR_PRPL;
+				clr = img.data[(int)(img.size.x * ((t[0].u / t[0].w) * img.size.x - 1) + ((t[0].v / t[0].w) * img.size.y - 1))];
+				pixels[(int)(i) + (int)q[1].v.y * sdl.surface->w] = clr;
+				((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w] = CLR_PRPL;
 				//img.data[img.size.x * (int)((t[0].u / t[0].w) * img.size.x - 1) + (int)((t[0].v / t[0].w) * img.size.y - 1)];
 			}
 			t[0].w += step;
@@ -170,6 +169,7 @@ static void fill_tri_top(t_sdlcontext sdl, t_triangle triangle, t_img img, uint3
 	t_texture		t_step[2];
 	float			step;
 	float			delta;
+	uint32_t clr;
 
 	q = triangle.p;
 	t = triangle.t;
@@ -188,11 +188,9 @@ static void fill_tri_top(t_sdlcontext sdl, t_triangle triangle, t_img img, uint3
 				delta = (i - q[1].v.x) / (q[2].v.x - q[1].v.x);
 				t[0].u = flerp(t[1].u, t[2].u, delta);
 				t[0].v = flerp(t[1].v, t[2].v, delta);
-				uint32_t clr = img.data[img.size.x * (int)((t[0].u / t[0].w) * img.size.x - 1) + (int)((t[0].v / t[0].w) * img.size.y - 1)];
-				if (clr == 53253092503)
-					printf("lol");
+				clr = img.data[(int)(img.size.x * ((t[0].u / t[0].w) * img.size.x - 1) + ((t[0].v / t[0].w) * img.size.y - 1))];
 				pixels[(int)(i) + (int)q[1].v.y * sdl.window_w] = clr;
-				///((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w] = CLR_TURQ;
+				((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w] = CLR_TURQ;
 				//img.data[img.size.x * (int)((t[0].u / t[0].w) * img.size.x - 1) + (int)((t[0].v / t[0].w) * img.size.y - 1)];
 			}
 			t[0].w += step;
@@ -240,5 +238,5 @@ void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle, t_img img, uint32_t *pixe
 	fill_tri_top(sdl, triangle, img, pixels);
 	q[0] = q_temp;
 	triangle.t[0] = t_temp;
-	fill_tri_bot(sdl, triangle, img, sdl.surface->pixels);
+	fill_tri_bot(sdl, triangle, img, pixels);
 }

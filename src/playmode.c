@@ -74,6 +74,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 
 	alloc_image(&pgraph.image, PERFGRAPH_SAMPLES + 1, PERFGRAPH_SAMPLES + 1);
 	gr = game_continue;
+	//pixels = sdl.surface->pixels;
 	while (gr == game_continue)
 	{
 		update_deltatime(&game.clock);
@@ -85,12 +86,6 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 			engine3d(sdl, game, pixels);
 		else
 			render_overhead(&game, sdl);
-			//bzero(sdl.pxls, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
-//		for (int i = 0; i < sdl.window_h * sdl.window_w; i++)
-	//		if (pixels[i] != 0)
-		//		printf("first index %d\n", (pixels)[i]);
-		//sdl.surface->pixels = (uint32_t *)pixels;
-		//ft_memcpy(((uint32_t *)sdl.surface->pixels), pixels, sizeof(float) * sdl.window_h * sdl.window_w);
 		drawperfgraph(&pgraph, game.clock.delta, sdl);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);

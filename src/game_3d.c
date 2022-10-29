@@ -130,6 +130,50 @@ static void draw_triangles(t_sdlcontext sdl, t_triangle *triangles, int index, i
 	}
 }
 
+static void swap(t_triangle *t1, t_triangle *t2)
+{
+	t_triangle *temp;
+	temp = t1;
+	t1 = t2;
+	t2 = temp;
+}
+
+//(t1.p[0].z + t1.p[1].z + t1.p[2].z) / 3.0f;
+static int partition(t_triangle *triangles, int low, int high)
+{
+	int pivot = (triangles[high].t[0].w + triangles[high].t[1].w + triangles[high].t[2].w) / 3.0f;
+	int i = (low -1);
+
+	for (int j = low; j < high - 1; j++)
+	{
+		if (((triangles[j].t[0].w + triangles[j].t[1].w + triangles[j].t[2].w) / 3.0f) > pivot)
+		{
+			i++;
+			swap(&triangles[i], &triangles[j]);
+		}
+	}
+	swap(&triangles[i + 1], &triangles[high]);
+	return(i + 1);
+}
+
+static void sort_triangles(t_triangle *triangles, int low, int high)
+{
+	int i, j;
+	t_triangle key;
+	for (i = 1; i < high; i++)
+	{
+		key = triangles[i];
+		j = i - 1;
+		while (j >= 0 && triangles[j].t[0].w < key.t[0].w)
+		{
+			triangles[j + 1] = triangles[j];
+			j = j - 1;
+		}
+		triangles[j + 1] = key;
+	}
+}
+
+
 static void clipped(int count, t_triangle *triangles_calc, t_sdlcontext sdl, t_img img, uint32_t *pixels)
 {
 	int counter = 0;
@@ -137,7 +181,9 @@ static void clipped(int count, t_triangle *triangles_calc, t_sdlcontext sdl, t_i
 	int i = 0;
 	int start = 0;
 	int end = 0;
+	int lol = 0;
 
+	t_triangle	tris[10000];
 	t_triangle triangles[200];
 	t_triangle clipped[2];
 
@@ -170,12 +216,18 @@ static void clipped(int count, t_triangle *triangles_calc, t_sdlcontext sdl, t_i
 		}
 	//	printf("counter %d\n", counter++);
 		counting += end - start;
-		draw_triangles(sdl, triangles, start, end, img, pixels);
+		while (start < end)
+		{
+			tris[lol++] = triangles[start];
+			start++;
+		}
 		start = 0;
 		end = 0;
 		i++;
 	}
-	//printf("triangle count %d\n", counting);
+	//printf("triangle count %d\n", lol);
+	sort_triangles(tris, 0, lol);
+	draw_triangles(sdl, tris, 0, lol, img, pixels);
 	counter = counting;
 }
 
@@ -320,12 +372,9 @@ void engine3d(t_sdlcontext sdl, t_game game, uint32_t *pixels)
 			t_vector3 vcameraray;	
 
 			tritransformed = (t_triangle){q[obj->faces[index].indices[0] - 1], q[obj->faces[index].indices[1] - 1], q[obj->faces[index].indices[2] - 1]};
-			//printf_face(obj->faces[index]);
-			//printf_tri(tritransformed);
-			//tritransformed = transform_calc(matworld, tritransformed);
 			normal = normal_calc(tritransformed);
 			vcameraray = vector3_sub(tritransformed.p[0].v, game.player.position);
-			if (vector3_dot(normal, vcameraray) < 0.0f || 0) //TODO: Currently ignoring normals with || 1
+			if (vector3_dot(normal, vcameraray) < 0.0f || 1) //TODO: Currently ignoring normals with || 1
 			{
 				t_triangle clipped[2];
 				int nclippedtriangles = clippedtriangles(tritransformed, matview, clipped);
@@ -351,7 +400,7 @@ void engine3d(t_sdlcontext sdl, t_game game, uint32_t *pixels)
 		tritransformed = transform_calc(matworld, game.triangles[i]);
 		normal = normal_calc(tritransformed);
 		vcameraray = vector3_sub(tritransformed.p[0].v, game.player.position);
-		if (vector3_dot(normal, vcameraray) < 0.0f || 1) //TODO: Currently ignoring normals with || 1
+		if (vector3_dot(normal, vcameraray) < 0.0f || 0) //TODO: Currently ignoring normals with || 1
 		{
 			t_triangle clipped[2];
 			int nclippedtriangles = clippedtriangles(tritransformed, matview, clipped);
