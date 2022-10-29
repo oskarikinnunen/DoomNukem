@@ -117,17 +117,23 @@ static int Triangle_ClipAgainstPlane(t_vector3 plane_p, t_vector3 plane_n, t_tri
 	return(0);
 }
 
-static void draw_triangles(t_sdlcontext sdl, t_triangle *triangles, int index, int end, t_img img)
+static void draw_triangles(t_sdlcontext sdl, t_triangle *triangles, int index, int end, t_img img, uint32_t *pixels)
 {
 	while (index < end)
 	{
-		z_fill_tri(sdl, triangles[index], img);
+		z_fill_tri(sdl, triangles[index], img, pixels);
+		drawline(sdl, (t_point){triangles[index].p[0].v.x, triangles[index].p[0].v.y}, (t_point){triangles[index].p[1].v.x, triangles[index].p[1].v.y}, INT_MAX);
+		drawline(sdl, (t_point){triangles[index].p[2].v.x, triangles[index].p[2].v.y}, (t_point){triangles[index].p[1].v.x, triangles[index].p[1].v.y}, INT_MAX);
+		drawline(sdl, (t_point){triangles[index].p[0].v.x, triangles[index].p[0].v.y}, (t_point){triangles[index].p[2].v.x, triangles[index].p[2].v.y}, INT_MAX);
+		
 		index++;
 	}
 }
 
-static void clipped(int count, t_triangle *triangles_calc, t_sdlcontext sdl, t_img img)
+static void clipped(int count, t_triangle *triangles_calc, t_sdlcontext sdl, t_img img, uint32_t *pixels)
 {
+	int counter = 0;
+	int counting = 0;
 	int i = 0;
 	int start = 0;
 	int end = 0;
@@ -135,6 +141,7 @@ static void clipped(int count, t_triangle *triangles_calc, t_sdlcontext sdl, t_i
 	t_triangle triangles[200];
 	t_triangle clipped[2];
 
+	//printf("\n\n");
 	while (i < count && 1)
 	{
 		triangles[end++] = triangles_calc[i];
@@ -161,11 +168,15 @@ static void clipped(int count, t_triangle *triangles_calc, t_sdlcontext sdl, t_i
 			}
 			nnewtriangles = end - start;
 		}
-		draw_triangles(sdl, triangles, start, end, img);
+	//	printf("counter %d\n", counter++);
+		counting += end - start;
+		draw_triangles(sdl, triangles, start, end, img, pixels);
 		start = 0;
 		end = 0;
 		i++;
 	}
+	//printf("triangle count %d\n", counting);
+	counter = counting;
 }
 
 static t_triangle transform_calc(t_mat4x4 matworld, t_triangle triangles)
@@ -257,12 +268,28 @@ static t_triangle triangle_to_screenspace(t_mat4x4 matproj, t_triangle clipped, 
 	return(triprojected);
 }
 
-void engine3d(t_sdlcontext sdl, t_game game)
+#include "objects.h"
+
+void printf_face(t_face face)
 {
-	static t_img debug_img;
-	t_triangle	triangles_calc[200];
+	uint32_t *f;
+
+	f = face.indices;
+	if (DEBUG_ON == 0)
+		return;
+	printf("%d, %d, %d\n", f[0], f[1], f[2]);
+}
+
+void engine3d(t_sdlcontext sdl, t_game game, uint32_t *pixels)
+{
+	static t_img 	debug_img;
+	t_triangle		triangles_calc[2000];
+	t_quaternion	q[10000];
 	int			i;
 	int			count = 0;
+	t_object	*obj;
+	int			index = 0;
+
 	t_vector3 vtarget;
 	t_mat4x4 matworld = matrix_makeidentity();
 	t_mat4x4 matproj = matrix_makeprojection(90.0f, (float)sdl.window_h / (float)sdl.window_w, 2.0f, 1000.0f);
@@ -270,6 +297,50 @@ void engine3d(t_sdlcontext sdl, t_game game)
 	vtarget = vector3_add(game.player.position, game.player.lookdir);
 	t_mat4x4 matcamera = matrix_lookat(game.player.position, vtarget, (t_vector3){0, 0, 1});
 	t_mat4x4 matview = matrix_quickinverse(matcamera);
+	i = 0;
+	while (i < sdl.objectcount)
+	{
+		obj = sdl.objects + i;
+		//printf("\n\n");
+		index = 0;
+		while (index < obj->vertice_count)
+		{
+			q[index] = (t_quaternion){obj->vertices[index].x, obj->vertices[index].y, obj->vertices[index].z, 1.0f};
+			//q[index] = quaternion_mul(q[index], (t_quaternion){10.0f, 10.0f, 10.0f, 1.0f});
+			//printf_quat(q[index]);
+			q[index] = quaternion_mul_matrix(matworld, q[index]);
+			//printf_quat(q[index]);
+			index++;
+		}
+		index = 0;
+		while (index < obj->face_count)
+		{
+			t_triangle tritransformed;
+			t_vector3 normal;	
+			t_vector3 vcameraray;	
+
+			tritransformed = (t_triangle){q[obj->faces[index].indices[0] - 1], q[obj->faces[index].indices[1] - 1], q[obj->faces[index].indices[2] - 1]};
+			//printf_face(obj->faces[index]);
+			//printf_tri(tritransformed);
+			//tritransformed = transform_calc(matworld, tritransformed);
+			normal = normal_calc(tritransformed);
+			vcameraray = vector3_sub(tritransformed.p[0].v, game.player.position);
+			if (vector3_dot(normal, vcameraray) < 0.0f || 0) //TODO: Currently ignoring normals with || 1
+			{
+				t_triangle clipped[2];
+				int nclippedtriangles = clippedtriangles(tritransformed, matview, clipped);
+				for (int n = 0; n < nclippedtriangles; n++)
+				{
+					triangles_calc[count++] = triangle_to_screenspace(matproj, clipped[n], sdl);
+					//printf_tri(triangles_calc[count - 1]);
+				}
+			}
+			index++;
+		}
+		//sdl.objects->vertices;
+		//while()
+		i++;
+	}
 	i = 0;
 	while(i < game.tri_count)
 	{
@@ -291,7 +362,8 @@ void engine3d(t_sdlcontext sdl, t_game game)
 		}
 		i++;
 	}
+	//printf("index is %d\n", i);
 	if (debug_img.length == 0) // TODO: Get image from obj file, when obj handling is done, currently only for debugging textures
 		debug_img = get_image_by_name(sdl, "");
-	clipped(count, triangles_calc, sdl, debug_img);
+	clipped(count, triangles_calc, sdl, debug_img, pixels);
 }

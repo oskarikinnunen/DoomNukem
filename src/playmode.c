@@ -70,6 +70,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 {
 	t_gamereturn	gr;
 	t_perfgraph		pgraph;
+	uint32_t		*pixels = malloc(sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 
 	alloc_image(&pgraph.image, PERFGRAPH_SAMPLES + 1, PERFGRAPH_SAMPLES + 1);
 	gr = game_continue;
@@ -81,9 +82,15 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 		gr = handleinput(&game);
 		moveplayer(&game);
 		if (game.cam_mode == player_view)
-			engine3d(sdl, game);
+			engine3d(sdl, game, pixels);
 		else
 			render_overhead(&game, sdl);
+			//bzero(sdl.pxls, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
+//		for (int i = 0; i < sdl.window_h * sdl.window_w; i++)
+	//		if (pixels[i] != 0)
+		//		printf("first index %d\n", (pixels)[i]);
+		//sdl.surface->pixels = (uint32_t *)pixels;
+		//ft_memcpy(((uint32_t *)sdl.surface->pixels), pixels, sizeof(float) * sdl.window_h * sdl.window_w);
 		drawperfgraph(&pgraph, game.clock.delta, sdl);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
@@ -239,6 +246,7 @@ int playmode(t_sdlcontext sdl)
 	bzero(&game, sizeof(t_game));
 	bzero(&obj, sizeof(t_obj));
 	sdl.zbuffer = malloc(sdl.window_w * sdl.window_h * sizeof(float));
+	sdl.pxls = (uint32_t *)malloc(sdl.window_w * sdl.window_h * sizeof(uint32_t));
 	game.linelist = load_chunk("map_test1", "WALL");
 	game.entitylist = load_chunk("map_test1", "ENT_");
 	if (game.entitylist != NULL) //player position is set from first entitys position, TODO: use entityID to determine which one is the player

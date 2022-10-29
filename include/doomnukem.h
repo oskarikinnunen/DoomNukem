@@ -124,6 +124,7 @@ typedef struct s_sdlcontext
 	uint					objectcount;
 	uint32_t				window_w;
 	uint32_t				window_h;
+	uint32_t				*pxls;
 }	t_sdlcontext;
 
 # define PERFGRAPH_SAMPLES 64
@@ -301,8 +302,8 @@ void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
-void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle, t_img img);
-void	engine3d(t_sdlcontext sdl, t_game game);
+void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle, t_img img, uint32_t *pixels);
+void	engine3d(t_sdlcontext sdl, t_game game, uint32_t *pixels);
 
 /* PHYSICS.C */
 bool	pointcirclecollision(t_vector2 p, t_vector2 cp, float r);
