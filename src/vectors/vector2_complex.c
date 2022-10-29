@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 11:43:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/13 12:06:14 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/26 14:35:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,12 @@
 float	vector2_sqr_magnitude(t_vector2 vec)
 {
 	return ((vec.x * vec.x) + (vec.y * vec.y));
+}
+
+t_vector2 vector2_normalise(t_vector2 vec)
+{
+	float l = vector2_magnitude(vec);
+	return((t_vector2){ vec.x / l, vec.y / l});
 }
 
 float	vector2_magnitude(t_vector2 vec)

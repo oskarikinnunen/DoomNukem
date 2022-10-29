@@ -1,4 +1,5 @@
 *.o
+.personalTODO
 src/*.o
 SDL_built/*
 SDL_built/**
@@ -6,6 +7,8 @@ SDL-release-2.0.8/build/*
 !SDL-release-2.0.8/build/DontRemoveMe
 libft/libft.a
 libft/**.o
+lua-5.3.6/install/
+mapfile1
 !SDL_built/DontRemoveMe
 callgrind.out*
 DoomNukem

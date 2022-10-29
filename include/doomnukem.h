@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/26 15:06:56 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/27 18:42:23 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,8 @@
 # include <fcntl.h>
 # include "vectors.h"
 # include <stdbool.h>
+# include "shapes.h"
 
-# define WINDOW_W 1920
-# define WINDOW_H 1080
 # define TILESIZE 32 //EDITOR tilesize
 # define GRIDSIZE 64 //EDITOR gridsize (how many addressable coordinates we have)
 
@@ -43,19 +42,24 @@
 # define CLR_TURQ 5505010
 # define CLR_GRAY 4868682
 # define CLR_GREEN 3002977
+# define CLEARSCREEN "\e[1;1H\e[2J"
 
-#define DEBUG_ON 1
+# define DEBUG_ON 1
+
+# define IMGPATH "assets/images/"
+# define OBJPATH "assets/objects/"
 
 // Playmode defines
 # define OVERHEADCAMSPEED 0.028f
 # define PLAYERRADIUS 16
 # define COLLISION_ON //Comment/uncomment to toggle experimental collision
 
+
+# define EDITOR_MOVESPEED 1.2f
 # define MOVESPEED 10.010f
 # define MAXMOVEMENTSPEED 0.08f
 # define ROTATESPEED 0.002f
 # define MOUSESPEED 0.0002f
-
 
 typedef struct s_mouse
 {
@@ -63,17 +67,10 @@ typedef struct s_mouse
 	t_point	delta;
 	int		scroll;
 	int		scroll_delta;
-	bool	click;
+	bool	click_unhandled;
+	int		click_button;
 	int		held;
 }	t_mouse;
-
-typedef struct s_mousedrag
-{
-	t_point	pos;
-	t_point	pos_origin;
-	t_point	drag;
-	t_point	drag_origin;
-}	t_mousedrag;
 
 typedef	struct s_line
 {
@@ -87,10 +84,22 @@ typedef struct s_wall
 	int		height;
 }	t_wall;
 
+typedef enum e_entityID
+{
+	player
+}	t_entityID;
+
+typedef struct s_entity
+{
+	t_entityID	id;
+	t_vector2	position;
+	char		test1;
+}	t_entity;
+
 typedef enum e_editorstate
 {
-	place_start,
-	place_end,
+	e_place_start,
+	e_place_end,
 	display3d
 }	t_editorstate;
 
@@ -107,11 +116,14 @@ typedef struct s_sdlcontext
 {
 	SDL_Window				*window;
 	SDL_Surface				*surface;
+	float					*zbuffer;
 	SDL_Renderer			*renderer; //TODO: for testing remove.
 	t_img					*images;
 	uint					imagecount;
-	float					*zbuffer;
-	uint32_t				debug_tex[64*64];
+	struct s_object			*objects;
+	uint					objectcount;
+	uint32_t				window_w;
+	uint32_t				window_h;
 }	t_sdlcontext;
 
 # define PERFGRAPH_SAMPLES 64
@@ -125,7 +137,7 @@ typedef struct s_perfgraph
 typedef struct s_obj //TODO: move obj/fdf related stuff to separate header?
 {
 	char		**mtlnames;
-	uint32_t	*mtlcolors;
+	uint32_t	*mtlcolors; //obj color type 3
 	uint8_t		*colors; //Points to colors in mtlcolors
 	int32_t		**verts;
 	uint32_t	**faces;
@@ -163,11 +175,15 @@ typedef struct s_editor
 	t_editorstate	state;
 	t_line			line; //the line that is being edited right now
 	t_list			*linelist;
-	t_mousedrag		mousedrag[2]; //First one is right click drag, 2nd is for middle click
+	t_list			*entitylist;
 	t_mouse			mouse;
 	float			threedee_zoom;
 	t_anim			transition;
 	t_clock			clock;
+	t_point			offset;
+	struct s_tool	*tool;
+	uint8_t			tool_selected;
+	uint32_t		keystate;
 }	t_editor;
 
 /* Playmode */
@@ -211,7 +227,8 @@ typedef struct s_game
 {
 	int				tri_count;
 	t_triangle		*triangles;
-	t_list			*linelst;
+	t_list			*linelist;
+	t_list			*entitylist;
 	t_clock			clock;
 	t_mouse			mouse;
 	t_player		player;
@@ -238,8 +255,12 @@ void	renderlines(t_sdlcontext *sdl, t_editor *ed); //TODO:  better name?
 
 /* EDITOR_MOUSE.C */
 t_point	mousetoworldspace(t_editor *ed);
-t_point	screentoworldspace(t_point point);
+t_point	mousetogridspace(t_editor *ed);
+t_point	screentogridspace(t_point point);
 void	mouse_event(SDL_Event e, t_editor *ed);
+
+/* SPACECONVERSIONS.C */
+t_point	worldtoeditorspace(t_editor *ed, t_vector2 worldcrd);
 
 /* EDITOR_SAVELINE.C */
 void	saveline(t_editor *ed);
@@ -263,28 +284,32 @@ void	update_anim(t_anim *anim, uint32_t delta);
 void	start_anim(t_anim *anim, t_anim_mode mode);
 
 /* DRAW.C */
-void	draw(uint32_t *pxls, t_point pos, uint32_t clr);
-void	drawline(uint32_t *pxls, t_point from, t_point to, uint32_t clr);
-void	drawcircle(uint32_t *pxls, t_point pos, int size, uint32_t clr);
+void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr);
+void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr);
+void	drawcircle(t_sdlcontext sdl, t_point pos, int size, uint32_t clr);
+void	drawrectangle(t_sdlcontext, t_rectangle rect, uint32_t clr);
+
+/* EDITOR_BUTTONS.C */
+void	draw_editor_buttons(t_sdlcontext sdl, uint8_t tool_selected); //TODO: MOVE TO EDITOR_TOOLS
+void	check_tool_change_click(t_point cursor, t_editor *ed); //TODO: MOVE TO EDITOR_TOOLS
 
 //Draws image 'img' to pixels 'pxls', offset by point 'pos' and scaled to 'scale'
-void	draw_image(uint32_t *pxls, t_point pos, t_img img, int scale);
+void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale);
 
 /* PERFGRAPH.C */
-void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext *sdl);
+void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
-void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle);
+void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle, t_img img);
 void	engine3d(t_sdlcontext sdl, t_game game);
 
 /* PHYSICS.C */
 bool	pointcirclecollision(t_vector2 p, t_vector2 cp, float r);
 bool	linecirclecollision(t_line line, t_vector2 cp, float r);
 
-
 /* PLAYMODE_OVERHEAD.C */
-void	render_overhead(t_game *game, t_sdlcontext *sdl);
+void	render_overhead(t_game *game, t_sdlcontext sdl);
 void	move_overhead(t_game *game);
 
 /* MOVEPLAYER.C */
@@ -294,23 +319,19 @@ void	moveplayer(t_game *game);
 void	error_log(int error_code);
 
 /* SDL */
-void	quit_sdl(t_sdlcontext *sdl);
+void	quit_game(t_sdlcontext *sdl);
+
+/* LIST_HELPER.C */
+void	list_push(t_list **head, void *content, size_t content_size);
+void	*list_to_ptr(t_list *source, uint32_t *set_length);
+//TODO: documentation here
+void	list_remove(t_list **head, void *match, size_t content_size);
 
 /*DEBUG FILES*/
 void printf_tri(t_triangle tri);
 void printf_quat(t_quaternion v);
-void printf_tex(t_texture t);
 void printf_vec(t_vector3 v);
 void printf_matrix(t_mat4x4 m);
 void printf_point(t_point p);
 
 #endif
-/*
-fill triangle max is 0
-w 626.917114 x 1020.786072 y 159.740646 z 0.998807
-w 1.000000 x 856.572571 y 0.000000 z 0.994737
-w 0.000000 x 886.548523 y 0.000000 z 1.000000
-x 1020 y 159
-x 856 y 0
-x 886 y 0
-*/

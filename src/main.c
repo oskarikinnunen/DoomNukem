@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 15:51:40 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/26 17:12:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "png.h"
+#include "game_lua.h"
 
 static void	create_sdl_context(t_sdlcontext *sdl)
 {
@@ -19,25 +20,23 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 		error_log(EC_SDL_INIT);
 	if (SDL_Init(SDL_INIT_EVENTS) < 0)
 		error_log(EC_SDL_INIT);
+	load_lua_conf(sdl);
 	sdl->window = SDL_CreateWindow("DoomNukem",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		WINDOW_W, WINDOW_H, SDL_WINDOW_SHOWN);
+		sdl->window_w, sdl->window_h, SDL_WINDOW_SHOWN);
 	if (sdl->window == NULL)
 		error_log(EC_SDL_CREATEWINDOW);
 	sdl->surface = SDL_GetWindowSurface(sdl->window);
 	if (sdl->surface == NULL)
 		error_log(EC_SDL_GETWINDOW_SURFACE);
-	sdl->images = ft_memalloc(sizeof(t_img));
-	if (sdl->images == NULL)
-		error_log(EC_MALLOC);
-	sdl->images[0] = pngparse("wall2.png");
-	sdl->imagecount = 1; //TODO: Restructure the code so this is incremented automatically when loading a new image to sdl->images
+
 }
 
-void	quit_sdl(t_sdlcontext *sdl)
+void	quit_game(t_sdlcontext *sdl)
 {
 	SDL_DestroyWindow(sdl->window);
 	SDL_Quit();
+	exit(0);
 }
 
 int	main(int argc, char **argv)
@@ -46,15 +45,14 @@ int	main(int argc, char **argv)
 	t_gamereturn	gr;
 
 	create_sdl_context(&sdl);
-	while (1)
+	gr = game_switchmode;
+	while (gr == game_switchmode)
 	{
-		gr = editorloop(sdl);
-		if (gr == game_exit) // quit & exit is handled inside of editorloop atm
-			break ;
-		gr = playmode(sdl);
-		if (gr == game_exit) // quit & exit is handled inside of playmode atm
-			break ;
+		gr = editorloop(sdl); // quit & exit is handled inside the loop
+		printf("%s\ngamereturn after editor %i \n", CLEARSCREEN, gr);
+		gr = playmode(sdl); // quit & exit is handled inside the loop
+		printf("%s\ngamereturn after playmode %i \n", CLEARSCREEN, gr);
 	}
-	//quit_sdl(&sdl);
+	//shouldn't get here?
 	return (0);
 }

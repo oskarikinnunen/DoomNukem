@@ -3,27 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 15:28:18 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/25 14:38:51 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "bresenham.h"
+#include "shapes.h"
 
-void	draw(uint32_t *pxls, t_point pos, uint32_t clr)
+void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr)
 {
-	if (pos.x < 0 || pos.x >= WINDOW_W
-		|| pos.y < 0 || pos.y >= WINDOW_H)
+	if (pos.x < 0 || pos.x >= sdl.window_w - 1
+		|| pos.y < 0 || pos.y >= sdl.window_h - 1)
 		return ;
-	pxls[pos.x + pos.y * WINDOW_W] = clr;
+	((uint32_t *)sdl.surface->pixels)[pos.x + (pos.y * sdl.window_w)] = clr;
 }
 
 # define CRCL_SIDES 16
 
-void	drawcircle(uint32_t *pxls, t_point pos, int size, uint32_t clr)
+void	drawcircle(t_sdlcontext sdl, t_point pos, int size, uint32_t clr)
 {
 	t_point	edges[CRCL_SIDES + 1];
 	int		i;
@@ -36,68 +37,75 @@ void	drawcircle(uint32_t *pxls, t_point pos, int size, uint32_t clr)
 		edges[i].x = pos.x + (sin(angl) * size);
 		edges[i].y = pos.y + (cos(angl) * size);
 		if (i >= 1)
-			drawline(pxls, edges[i - 1], edges[i], clr);
+			drawline(sdl, edges[i - 1], edges[i], clr);
 		angl += FULLRAD / CRCL_SIDES;
 		i++;
 	}
 }
 
-void	draw_image(uint32_t *pxls, t_point pos, t_img img, int scale)
+//Draws an unfilled rectangle 'rect'
+void	drawrectangle(t_sdlcontext sdl, t_rectangle rect, uint32_t clr)
+{
+	t_point	from;
+	t_point	to;
+
+	from = rect.position;
+	to = point_add(from, (t_point){rect.size.x, 0});
+	drawline(sdl, from, to, clr); 
+	to = point_add(from, (t_point){0, rect.size.y});
+	drawline(sdl, from, to, clr); 
+	from = point_add(rect.position, rect.size);
+	to = point_add(from, (t_point){0, -rect.size.y});
+	drawline(sdl, from, to, clr);
+	to = point_add(from, (t_point){-rect.size.x, 0});
+	drawline(sdl, from, to, clr);
+}
+
+void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale)
 {
 	t_point		pixel;
 	t_point		sample;
-	float		scalar;
+	t_vector2	scalar;
 	uint32_t	color;
 
 	if (img.size.x == 0 || img.size.y == 0 || img.length == 0)
 		return ;
-	scalar = ((float)img.size.x / (float)scale);
+	scale.y += 2; //LUL this is to fix the shitty png reader
+	scalar.x = ((float)img.size.x / scale.x);
+	scalar.y = ((float)img.size.y / scale.y);
 	pixel.y = 0;
-	while (pixel.y < scale - 2) //TODO: probably png readers fault that the second to last line is garbled, for now it just stops early, hence the '- 2'
+	while (pixel.y < scale.y - 2) //TODO: it's the png readers fault that the second to last line is garbled, for now it just stops early, hence the '- 2'
 	{
 		pixel.x = 0;
-		if (pixel.y + pos.y < 0 || pixel.y + pos.y > WINDOW_H)
-			continue;
-		while (pixel.x < scale - 1)
+		if (pixel.y + pos.y < 0 || pixel.y + pos.y >= sdl.window_h - 1)
 		{
-			if (pixel.x + pos.x < 0 || pixel.x + pos.x >= WINDOW_W)
+			pixel.y++;
+			continue;
+		}
+		while (pixel.x < scale.x)
+		{
+			if (pixel.x + pos.x < 0 || pixel.x + pos.x >= sdl.window_w - 1)
+			{
+				pixel.x++;
 				continue;
-			sample = point_fmul(pixel, scalar);
-			color = img.data[sample.x + sample.y + (sample.y * img.size.y)]; //Protect plz, make samplecolor function
-			draw(pxls, point_add(pos, pixel), color);
+			}
+			sample.x = ft_clamp(pixel.x * scalar.x, 0, img.size.x - 1);
+			sample.y = ft_clamp(pixel.y * scalar.y, 0, img.size.y - 1);
+			color = img.data[sample.x + sample.y + (sample.y * img.size.x)]; //TODO: NO idea why y needs to be there twice. Probably the png readers fault aswell
+			draw(sdl, point_add(pos, pixel), color);
 			pixel.x++;
 		}
 		pixel.y++;
 	}
 }
 
-/*void	draw_img(uint32_t *pxls, t_img *img)
-{
-	t_point		p;
-	uint32_t	clr;
-
-	p.y = 0;
-	while(p.y < img->size.y - 1)
-	{
-		p.x = 0;
-		while(p.x < img->size.x - 1)
-		{
-			clr = img->data[p.x + p.y + (p.y * img->size.y)]; //TODO: sampleimg funtion;
-			if (clr != 0)
-				draw(pxls, p, clr); //TODO: sampleimg function
-			p.x++;
-		}
-		p.y++;
-	}
-}*/
-
-void	drawline(uint32_t *pxls, t_point from, t_point to, uint32_t clr)
+void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr)
 {
 	static t_bresenham	b;
 
 	populate_bresenham(&b, from, to);
-	draw(pxls, b.local, clr);
+	draw(sdl, b.local, clr);
 	while (step_bresenham(&b) != 1)
-		draw(pxls, b.local, clr);
-	draw(pxls, b.local, clr);
+		draw(sdl, b.local, clr);
+	draw(sdl, b.local, clr);
 }

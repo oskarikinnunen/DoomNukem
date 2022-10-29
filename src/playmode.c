@@ -1,6 +1,6 @@
 #include "doomnukem.h"
 #include "inputhelp.h"
-
+#include "file_io.h"
 //	Good resource for remembering bitwise operations:
 //			https://stackoverflow.com/a/47990/1725220
 //	TODO: move playermode events to separate file
@@ -65,36 +65,31 @@ static int handleinput(t_game *game)
 	return(game_continue);
 }
 
-
 /*main game loop*/
 static int gameloop(t_sdlcontext sdl, t_game game)
 {
 	t_gamereturn	gr;
 	t_perfgraph		pgraph;
 
-	gr = game_continue;
 	alloc_image(&pgraph.image, PERFGRAPH_SAMPLES + 1, PERFGRAPH_SAMPLES + 1);
+	gr = game_continue;
 	while (gr == game_continue)
 	{
 		update_deltatime(&game.clock);
-		bzero(sdl.surface->pixels, sizeof(uint32_t) * WINDOW_H * WINDOW_W);
-		//ft_memset(sdl.zbuffer, UINT32_MAX, sizeof(uint32_t) * WINDOW_H * WINDOW_W);
-		bzero(sdl.zbuffer, sizeof(float) * WINDOW_H * WINDOW_W);
+		bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
+		bzero(sdl.zbuffer, sizeof(float) * sdl.window_h * sdl.window_w);
 		gr = handleinput(&game);
 		moveplayer(&game);
-	//	game.player.position = (t_vector3){396.694366, 148.424728, 122.722466};
-	//	game.player.lookdir = (t_vector3){0.812856, 0.564258, -0.144492};
-	//	printf_vec(game.player.position);
-	//	printf_vec(game.player.lookdir);
-		if (game.cam_mode != player_view)
-			render_overhead(&game, &sdl);
-		else
+		if (game.cam_mode == player_view)
 			engine3d(sdl, game);
-		drawperfgraph(&pgraph, game.clock.delta, &sdl);
-
+		else
+			render_overhead(&game, sdl);
+		drawperfgraph(&pgraph, game.clock.delta, sdl);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 	}
+	if (gr == game_exit)
+		quit_game(&sdl);
 	return(gr); // for now
 }
 
@@ -144,7 +139,6 @@ static void set_tri_array(t_game *game, t_obj *obj)
 	int		i;
 	int		len;
 	int32_t	**verts;
-	int		test = 0;
 
 	i = 0;
 	verts = obj->verts;
@@ -157,21 +151,7 @@ static void set_tri_array(t_game *game, t_obj *obj)
 		game->triangles[(i / 2) + 1] = set_tri(verts[i + 2], verts[i + 1], verts[i + 3]);
 		set_tex1(&game->triangles[i / 2]);
 		set_tex2(&game->triangles[(i / 2) + 1]);
-		switch (test)
-		{
-			case 0: game->triangles[i / 2].clr = CLR_TURQ;
-			game->triangles[(i / 2) + 1].clr = CLR_TURQ;
-			break;
-		
-			case 1: game->triangles[i / 2].clr = CLR_GREEN;
-			game->triangles[(i / 2) + 1].clr = CLR_GREEN;
-			break;
-		}
 		i += 4;
-		if (test == 1)
-			test = 0;
-		else
-			test++;
 	}
 }
 
@@ -249,18 +229,6 @@ static void lines_to_obj(t_obj *obj, t_list *linelist)
 	}
 }
 
-static void debug_tex(uint32_t *tex)
-{
-	for (int x = 0; x < 64; x++)
-	{
-		for (int y = 0; y < 64; y++)
-		{
-			int xorcolor = (x * 256 / 64) ^ (y * 256 / 64);
-			tex[64 * y + x] = 256 * xorcolor; //xor green
-		}
-	}
-}
-
 /*setup and call gameloop*/
 int playmode(t_sdlcontext sdl)
 {
@@ -270,23 +238,24 @@ int playmode(t_sdlcontext sdl)
 
 	bzero(&game, sizeof(t_game));
 	bzero(&obj, sizeof(t_obj));
-	game.linelst = loadmap("mapfile1");
-	lines_to_obj(&obj, game.linelst);
+	sdl.zbuffer = malloc(sdl.window_w * sdl.window_h * sizeof(float));
+	game.linelist = load_chunk("map_test1", "WALL");
+	game.entitylist = load_chunk("map_test1", "ENT_");
+	if (game.entitylist != NULL) //player position is set from first entitys position, TODO: use entityID to determine which one is the player
+	{
+		game.player.position.x = (*(t_entity *)game.entitylist->content).position.x;
+		game.player.position.y = (*(t_entity *)game.entitylist->content).position.y;
+		game.player.angle.x = 0;
+		game.player.angle.y = 0;
+	}
+
+	lines_to_obj(&obj, game.linelist);
 	set_tri_array(&game, &obj);
-	sdl.zbuffer = malloc(WINDOW_W * WINDOW_H * sizeof(uint32_t));
-	game.player.position.x = 0.0f; //TODO: player position should be in game coordinates, not screenspace
-	game.player.position.y = 0.0f;
-	debug_tex(sdl.debug_tex);
 	//Locks mouse
 	if (SDL_SetRelativeMouseMode(SDL_TRUE) < 0)
 		error_log(EC_SDL_SETRELATIVEMOUSEMODE);
 	//Do game loop until exit or error
 	gr = gameloop(sdl, game);
-	if (gr == game_exit)
-	{
-		quit_sdl(&sdl);
-		exit (0);
-	}
 	//Unlocks mouse
 	if (SDL_SetRelativeMouseMode(SDL_FALSE) < 0)
 		error_log(EC_SDL_SETRELATIVEMOUSEMODE);

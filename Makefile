@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
+#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/25 14:53:18 by vlaine           ###   ########.fr        #
+#    Updated: 2022/10/27 15:55:37 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,13 +18,22 @@ SDLFOLDER= SDL-release-2.0.8
 SDL2= SDL_built/lib/libSDL2.a
 LIBFT= libft/libft.a
 
+LUAFOLDER= lua-5.3.6
+LUA= $(LUAFOLDER)/install/lib/liblua.a #TODO: find out real name!
+
 #Source files:
 SRCFILES= main.c draw.c img.c deltatime.c anim.c\
 		editor.c editor_mouse.c editor_events.c editor_render.c \
-		editor_saveline.c editor_map_io.c\
+		editor_map_io.c	editor_buttons.c \
+		editor/tools/point_tool.c \
+		editor/tools/point_tool_delete.c \
+		editor/tools/entity_tool.c \
 		playmode.c inputhelper.c playmode_overhead.c \
-		moveplayer.c physics.c errors.c game_3d.c fill_triangle.c \
-		perfgraph.c png.c
+		moveplayer.c physics.c errors.c \
+		game_3d.c fill_triangle.c perfgraph.c \
+		png.c lua_conf.c list_helper.c \
+		spaceconversions.c obj_parse.c \
+		obj_parse_vertex.c obj_parse_faces.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \
 		vector2_elementary.c vector2_shorthands.c \
@@ -42,18 +51,18 @@ SRC+= $(VECTORSRC)
 OBJ= $(SRC:.c=.o)
 
 #Compilation stuff:
-INCLUDE= -ISDL_built/include/SDL2/ -Isrc -Iinclude -Ilibft #$(LIBFT)
+INCLUDE= -ISDL_built/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
 CC= gcc
 LIBS= $(LIBFT) -lm
-CFLAGS= $(INCLUDE) -g -finline-functions -Ofast
+CFLAGS= $(INCLUDE) -g -finline-functions -O1
 
-all: $(SDL2) $(LIBFT) $(OBJ)
-	$(CC) $(OBJ) -o $(NAME) `SDL_built/bin/sdl2-config --cflags --libs` $(INCLUDE) $(LIBS)
+all: $(SDL2) $(LUA) $(LIBFT) $(OBJ)
+	$(CC) $(OBJ) -o $(NAME) `SDL_built/bin/sdl2-config --cflags --libs` $(INCLUDE) $(LIBS) $(LUA)
 
-$(OBJ): include/doomnukem.h
+$(OBJ): include/doomnukem.h Makefile
 
 clean:
-	rm -f src/*.o
+	rm -f $(OBJ)
 
 re: clean all
 
@@ -68,6 +77,14 @@ clean-sdl:
 	rm -f $(SDL2)
 
 re-sdl: clean-sdl $(SDL2)
+
+clean-lua:
+	rm -rf $(LUAFOLDER)/install
+
+re-lua: clean-lua $(LUA)
+
+$(LUA):
+	cd $(LUAFOLDER) && make generic && make local
 
 $(SDL2):
 	cd $(SDLFOLDER)/build &&../configure --prefix=$(PWD)/SDL_built/ && make install
