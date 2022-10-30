@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/28 17:55:10 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/30 18:12:25 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ typedef struct s_tool
 {
 	void		(*update)(struct s_editor *ed);
 	void		(*draw_update)(struct s_editor *ed, struct s_sdlcontext sdl);
+	//void		(*cleanup)(struct s_editor *ed);
 	void		*tooldata;
 }	t_tool;
 
@@ -38,6 +39,7 @@ typedef struct s_guibutton
 	t_rectangle	rect;
 	t_img		*img;
 	char		imagename[256];
+	uint32_t	imageindex;
 	void		(*onclick)(t_editor *ed);
 	uint32_t	func_index; //Indexer which is used to get this buttons' 'onclick' function
 }	t_guibutton;
@@ -45,7 +47,11 @@ typedef struct s_guibutton
 typedef struct s_imagedropdown
 {
 	bool		inprogress;
-	t_img		*selected;
+	bool		changed;
+	t_point		origin;
+	t_guibutton	buttons[3];
+	int			scroll;
+	uint32_t	selected;
 }	t_imagedropdown;
 
 typedef struct s_tool_button
@@ -60,12 +66,23 @@ typedef enum e_point_tool_state
 	place_end
 }	t_point_tool_state;
 
+typedef struct s_buttontooldata
+{
+	t_guibutton		button;
+	t_guibutton		*selected;
+	t_imagedropdown	dropdown;
+}	t_buttontooldata;
+
 void				initialize_buttons(t_list *buttonlist, t_sdlcontext sdl);
 void				point_tool_delete(struct s_editor *ed, t_point crd);
 t_click_func_def	get_button_func(int	index);
-//default button click function, just prints a debug message
+void				draw_buttons(t_list *buttonlist, t_sdlcontext sdl); //TODO: move somewhere else so game can use it aswell?
 void				empty_click_func(t_editor *ed);
 t_tool				*get_point_tool(void);
 t_tool				*get_entity_tool(void);
+t_tool				*get_button_editor_tool();
+void				start_imagedropdown(t_point origin, t_imagedropdown *dd);
+void				update_imagedropdown(t_editor *ed, t_imagedropdown *dd);
+void				draw_imagedropdown(t_sdlcontext sdl, t_imagedropdown dd);
 
 #endif

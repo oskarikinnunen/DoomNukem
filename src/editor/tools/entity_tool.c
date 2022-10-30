@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/28 14:42:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/30 18:46:18 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,11 @@ static void	entity_tool_update(t_editor *ed) //This needs to access editors stat
 		
 }
 
+static void	entity_tool_cleanup(t_editor *ed)
+{
+	SDL_ShowCursor(SDL_ENABLE);
+}
+
 t_tool	*get_entity_tool()
 {
 	static t_tool	tool
@@ -96,8 +101,6 @@ t_tool	*get_entity_tool()
 		entity_tool_update, entity_tool_draw
 	};
 
-	if (SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE)
-		SDL_ShowCursor(SDL_DISABLE);
 	if (tool.tooldata == NULL)
 	{
 		tool.tooldata = ft_memalloc(sizeof(t_entity));

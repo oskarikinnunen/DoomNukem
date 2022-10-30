@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/28 17:39:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/30 18:14:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,9 +119,9 @@ typedef struct s_sdlcontext
 	uint32_t				*zbuffer;
 	SDL_Renderer			*renderer; //TODO: for testing remove.
 	t_img					*images;
-	uint					imagecount;
+	uint32_t				imagecount;
 	struct s_object			*objects;
-	uint					objectcount;
+	uint32_t				objectcount;
 	uint32_t				window_w;
 	uint32_t				window_h;
 }	t_sdlcontext;
@@ -183,7 +183,6 @@ typedef struct s_editor
 	t_clock			clock;
 	t_point			offset;
 	struct s_tool	*tool;
-	uint8_t			tool_selected;
 	uint32_t		keystate;
 }	t_editor;
 
