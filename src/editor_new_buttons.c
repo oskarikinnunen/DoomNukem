@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 14:34:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/28 19:01:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/30 18:23:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,19 +18,32 @@ typedef void	(*t_button_click_fptr)(t_editor *ed);
 void	empty_click_func(t_editor *ed)
 {
 	printf("button has undefined click function! \n");
+	ed->mouse.click_unhandled = false;
 }
 
-#include "vectors.h"
-
-typedef struct s_test
-{
-	t_vector3 p[3];
-	t_vector3 uv[3];
-}	t_test;
-
-void	debug_click_func(t_editor *ed)
+void	set_tool_button(t_editor *ed)
 {
 	printf("button has DEBUG click function! \n");
+	/*if (ed->tool != NULL && ed->tool->cleanup != NULL)
+		ed->tool->cleanup(ed);*/
+	ed->tool = get_button_editor_tool();
+	ed->mouse.click_unhandled = false;
+}
+
+void	set_tool_point(t_editor *ed)
+{
+	/*if (ed->tool != NULL && ed->tool->cleanup != NULL)
+		ed->tool->cleanup(ed);*/
+	ed->tool = get_point_tool();
+	ed->mouse.click_unhandled = false;
+}
+
+void	set_tool_entity(t_editor *ed)
+{
+	/*if (ed->tool != NULL && ed->tool->cleanup != NULL)
+		ed->tool->cleanup(ed);*/
+	ed->tool = get_entity_tool();
+	ed->mouse.click_unhandled = false;
 }
 
 #include "assert.h"
@@ -40,7 +53,9 @@ t_click_func_def	get_button_func(int	index)
 	static	t_click_func_def functions[256] =
 	{
 		{"empty_click", empty_click_func},
-		{"DEBUG_click", debug_click_func}
+		{"set_tool_button", set_tool_button},
+		{"set_tool_point", set_tool_point},
+		{"set_tool_entity", set_tool_entity}
 	};
 	int	i;
 
@@ -56,26 +71,25 @@ t_click_func_def	get_button_func(int	index)
 	return (functions[0]);
 }
 
-/*static t_button_click_fptr	get_button_func(int	index)
-{
-	static	t_button_click_fptr functions[256] =
-	{
-		empty_click_func
-	};
-	int	i;
 
-	i = 0;
-	while (i < 256)
+
+void draw_buttons(t_list *buttonlist, t_sdlcontext sdl)
+{
+	t_list		*l;
+	t_guibutton	button;
+	
+
+	l = buttonlist;
+	while (l != NULL)
 	{
-		if (functions[i] == NULL)
-		{
-			printf("last button func was %i \n", i);
-			break ;
-		}
-		i++;
+		button = *(t_guibutton *)l->content;
+		//drawrectangle(sdl, button.rect, CLR_PRPL);
+		if (button.img != NULL)
+			draw_image(sdl, button.rect.position, *button.img, button.rect.size);
+		//drawrectangle(sdl, dragcorner(button).rect, CLR_TURQ);
+		l = l->next;
 	}
-	return (functions[0]);
-}*/
+}
 
 void	initialize_buttons(t_list *buttonlist, t_sdlcontext sdl)
 {
@@ -86,11 +100,9 @@ void	initialize_buttons(t_list *buttonlist, t_sdlcontext sdl)
 	while (l != NULL)
 	{
 		button = (t_guibutton *)l->content;
-		button->img = get_image_by_name(sdl, button->imagename);
-		//button->onclick = ;
-		//button->onclick = &point_tool_test;
-		//button->func_index = 10;
-		button->onclick = get_button_func(0).onclick;
+		//button->img = get_image_by_name(sdl, button->imagename);
+		button->img = get_image_by_index(sdl, button->imageindex);
+		button->onclick = get_button_func(button->func_index).onclick;
 		l = l->next;
 	}
 }

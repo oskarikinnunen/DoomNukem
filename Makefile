@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/28 14:36:14 by okinnune         ###   ########.fr        #
+#    Updated: 2022/10/30 16:20:55 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,8 @@ SRCFILES= main.c draw.c img.c deltatime.c anim.c\
 		editor/tools/point_tool.c \
 		editor/tools/point_tool_delete.c \
 		editor/tools/entity_tool.c \
+		editor/tools/button_tool.c \
+		editor/imagedropdown.c \
 		playmode.c inputhelper.c playmode_overhead.c \
 		moveplayer.c physics.c errors.c \
 		game_3d.c fill_triangle.c perfgraph.c \

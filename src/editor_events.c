@@ -6,12 +6,13 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/28 15:01:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/30 17:22:13 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "inputhelp.h"
+#include "editor_tools.h"
 
 void		editor_toggle_keystates(t_editor *ed, SDL_Event e)
 {
@@ -58,11 +59,6 @@ int		editor_events(t_editor *ed)
 		editor_toggle_keystates(ed, e);
 		if (e.type == SDL_KEYDOWN)
 		{
-			if (iskey(e, SDLK_SPACE))
-			{
-				ed->tool = NULL;
-				ed->tool_selected = 0;
-			}
 			if (iskey(e, SDLK_ESCAPE))
 				return (game_exit);
 			else if (iskey(e, SDLK_TAB))

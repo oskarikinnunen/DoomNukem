@@ -6,12 +6,17 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/28 18:40:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/30 17:35:40 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "editor_tools.h"
+
+bool	mouse_clicked(t_mouse mouse, int button)
+{
+	return (mouse.click_unhandled == true && mouse.click_button == button);
+}
 
 t_point	mousetoworldspace(t_editor *ed)
 {
@@ -56,14 +61,13 @@ static void	mouseclick(t_editor *ed)
 	while (l != NULL)
 	{
 		button = *(t_guibutton *)l->content;
-		if (pointrectanglecollision(ed->mouse.pos, button.rect))
+		if (pointrectanglecollision(ed->mouse.pos, button.rect) && ed->mouse.click_button == MOUSE_LEFT)
 		{
 			if (button.onclick != NULL)
 				button.onclick(ed);
 		}
 		l = l->next;
 	}
-	ed->mouse.click_unhandled = false;
 }
 
 void	mouse_event(SDL_Event e, t_editor *ed)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   inputhelp.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 09:30:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/19 14:58:46 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/30 17:35:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # define KEYS_SHIFTMASK 6
 # define KEYS_MMASK 7
 
-
+bool	mouse_clicked(t_mouse mouse, int button);
 bool	keyismoveleft(SDL_Event e);
 bool	keyismoveright(SDL_Event e);
 bool	keyismoveup(SDL_Event e);

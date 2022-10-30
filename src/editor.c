@@ -6,13 +6,14 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/28 17:31:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/30 18:21:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "editor_tools.h"
 #include "file_io.h"
+#include "inputhelp.h"
 
 static void	drawsquare(t_sdlcontext sdl, t_point crd, int clr)
 {
@@ -59,7 +60,6 @@ int	editorloop(t_sdlcontext sdl)
 	ed.buttonlist = load_chunk("buttons", "BUTN", sizeof(t_guibutton));
 	initialize_buttons(ed.buttonlist, sdl);
 	ed.tool = get_point_tool();
-	ed.tool_selected = 1;
 	gr = game_continue;
 	while (gr == game_continue)
 	{
@@ -69,13 +69,17 @@ int	editorloop(t_sdlcontext sdl)
 		gr = editor_events(&ed); 
 		drawgrid(sdl, ed.offset);
 		renderlines(&sdl, &ed);
-		draw_editor_buttons(sdl, ed.tool_selected);
-		buttoncreator(&ed, sdl);
+		if ((ed.keystate << KEYS_SPACEMASK) && 1)
+			initialize_buttons(ed.buttonlist, sdl);
+		
+		//buttoncreator(&ed, sdl);
 		if (ed.tool != NULL)
 		{
 			ed.tool->update(&ed);
 			ed.tool->draw_update(&ed, sdl);
 		}
+		draw_buttons(ed.buttonlist, sdl);
+		ed.mouse.click_unhandled = false;
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 	}
