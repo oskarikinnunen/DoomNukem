@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/30 18:46:18 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/30 23:40:36 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,5 +107,6 @@ t_tool	*get_entity_tool()
 		if (tool.tooldata == NULL)
 			error_log(EC_MALLOC);
 	}
+	ft_strcpy(tool.icon_name, "entitytool.png");
 	return (&tool);
 }

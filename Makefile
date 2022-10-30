@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/30 16:20:55 by okinnune         ###   ########.fr        #
+#    Updated: 2022/10/31 00:43:03 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,19 +24,20 @@ LUA= $(LUAFOLDER)/install/lib/liblua.a #TODO: find out real name!
 #Source files:
 SRCFILES= main.c draw.c img.c deltatime.c anim.c\
 		editor.c editor_mouse.c editor_events.c editor_render.c \
-		editor_map_io.c	editor_buttons.c \
+		editor_map_io.c	\
 		editor/tools/point_tool.c \
 		editor/tools/point_tool_delete.c \
 		editor/tools/entity_tool.c \
 		editor/tools/button_tool.c \
 		editor/imagedropdown.c \
+		editor/editor_new_buttons.c \
 		playmode.c inputhelper.c playmode_overhead.c \
 		moveplayer.c physics.c errors.c \
 		game_3d.c fill_triangle.c perfgraph.c \
 		png.c lua_conf.c list_helper.c \
 		spaceconversions.c obj_parse.c \
 		obj_parse_vertex.c obj_parse_faces.c \
-		button_bootstrap.c editor_new_buttons.c
+		
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \
 		vector2_elementary.c vector2_shorthands.c \

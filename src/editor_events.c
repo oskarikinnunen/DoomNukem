@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/30 17:22:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/30 23:12:18 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void		editor_toggle_keystates(t_editor *ed, SDL_Event e)
 		ed->keystate |= keyismovedown(e) << KEYS_DOWNMASK;
 		ed->keystate |= iskey(e, SDLK_LCTRL) << KEYS_CTRLMASK;
 		ed->keystate |= iskey(e, SDLK_SPACE) << KEYS_SPACEMASK;
+		ed->keystate |= iskey(e, SDLK_LSHIFT) << KEYS_SHIFTMASK;
 	}
 	if (e.type == SDL_KEYUP)
 	{
@@ -33,6 +34,7 @@ void		editor_toggle_keystates(t_editor *ed, SDL_Event e)
 		ed->keystate &= ~(keyismovedown(e) << KEYS_DOWNMASK);
 		ed->keystate &= ~(iskey(e, SDLK_LCTRL) << KEYS_CTRLMASK);
 		ed->keystate &= ~(iskey(e, SDLK_SPACE) << KEYS_SPACEMASK);
+		ed->keystate &= ~(iskey(e, SDLK_LSHIFT) << KEYS_SHIFTMASK);
 	}
 }
 
@@ -55,8 +57,8 @@ int		editor_events(t_editor *ed)
 	ed->mouse.scroll_delta = 0; //Needs to be reseted outside of eventloop
 	while (SDL_PollEvent(&e))
 	{
-		mouse_event(e, ed);
 		editor_toggle_keystates(ed, e);
+		mouse_event(e, ed);
 		if (e.type == SDL_KEYDOWN)
 		{
 			if (iskey(e, SDLK_ESCAPE))

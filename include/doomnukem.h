@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/30 18:14:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/31 00:55:15 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@
 # define CLR_PRPL 14231500
 # define CLR_TURQ 5505010
 # define CLR_GRAY 4868682
+# define CLR_DARKGRAY 0x292929
 # define CLR_GREEN 3002977
 # define CLEARSCREEN "\e[1;1H\e[2J"
 
@@ -78,12 +79,6 @@ typedef	struct s_line
 	t_point	end;
 }	t_line;
 
-typedef struct s_wall
-{
-	t_line	line;
-	int		height;
-}	t_wall;
-
 typedef enum e_entityID
 {
 	player
@@ -95,14 +90,6 @@ typedef struct s_entity
 	t_vector2	position;
 	char		test1;
 }	t_entity;
-
-typedef enum e_editorstate
-{
-	e_place_start,
-	e_place_end,
-	display3d
-}	t_editorstate;
-
 
 typedef struct s_img
 {
@@ -134,7 +121,7 @@ typedef struct s_perfgraph
 	uint32_t	deltas[PERFGRAPH_SAMPLES];
 }	t_perfgraph;
 
-typedef struct s_obj //TODO: move obj/fdf related stuff to separate header?
+typedef struct s_obj //TODO: this will be deprecated, t_object defined in 'objects.h' is the current object struct
 {
 	char		**mtlnames;
 	uint32_t	*mtlcolors; //obj color type 3
@@ -146,12 +133,6 @@ typedef struct s_obj //TODO: move obj/fdf related stuff to separate header?
 	uint32_t	f_count;
 }	t_obj;
 
-//TODO: add ping-pong, repeat
-typedef enum	e_anim_mode
-{
-	anim_forwards,
-	anim_backwards
-} t_anim_mode;
 
 typedef struct s_clock
 {
@@ -159,27 +140,13 @@ typedef struct s_clock
 	Uint32	delta;
 } t_clock;
 
-typedef struct s_anim
-{
-	bool		active;
-	uint32_t	time;
-	int32_t		frame;
-	int32_t		lastframe;
-	uint8_t		framerate;
-	float		lerp;
-	t_anim_mode	mode;
-}	t_anim;
-
 typedef struct s_editor
 {
-	t_editorstate	state;
-	t_line			line; //the line that is being edited right now
+	t_line			line; //the line that is being edited right now //TODO: this should be moved to point_tool
 	t_list			*linelist;
 	t_list			*entitylist;
 	t_list			*buttonlist;
 	t_mouse			mouse;
-	float			threedee_zoom;
-	t_anim			transition;
 	t_clock			clock;
 	t_point			offset;
 	struct s_tool	*tool;
@@ -266,15 +233,8 @@ void	alloc_image(t_img *img, int width, int height);
 t_img	*get_image_by_index(t_sdlcontext sdl, int index);
 t_img	*get_image_by_name(t_sdlcontext sdl, char *name);
 
-/* INPUTHELPER.C */
-bool	iskey(SDL_Event e, int keycode);
-
 /* DELTATIME.C */
 void	update_deltatime(t_clock *c);
-
-/* ANIM.C */
-void	update_anim(t_anim *anim, uint32_t delta);
-void	start_anim(t_anim *anim, t_anim_mode mode);
 
 /* DRAW.C */
 void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr);
