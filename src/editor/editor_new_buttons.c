@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 14:34:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 00:44:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/31 01:12:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	set_tool_entity(t_editor *ed)
 
 t_click_func_def	get_button_func(int	index)
 {
-	static	t_click_func_def functions[256] =
+	static	t_click_func_def functions[256] = //add new button click functions here
 	{
 		{"empty_click", empty_click_func},
 		{"set_tool_button", set_tool_button},
@@ -105,7 +105,6 @@ void	initialize_buttons(t_list *buttonlist, t_sdlcontext sdl)
 	while (l != NULL)
 	{
 		button = (t_guibutton *)l->content;
-		//button->img = get_image_by_name(sdl, button->imagename);
 		button->img = get_image_by_index(sdl, button->imageindex);
 		button->onclick = get_button_func(button->func_index).onclick;
 		button->rect.size.x = ft_clamp(button->rect.size.x, 8, 1024);

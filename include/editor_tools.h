@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 00:50:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/31 01:12:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ typedef struct s_guibutton
 {
 	t_rectangle	rect;
 	t_img		*img;
-	char		imagename[256];
+	char		imagename[256]; //TODO: unused but I'll have to replace all of the buttons if I remove this, I'm lazy
 	uint32_t	imageindex;
 	void		(*onclick)(t_editor *ed);
 	uint32_t	func_index; //Indexer which is used to get this buttons' 'onclick' function

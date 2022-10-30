@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/30 15:40:24 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 00:26:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/31 01:17:58 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,14 @@ void	button_tool_draw(t_editor *ed, t_sdlcontext sdl)
 		draw_resizeindicators(ed, sdl);
 }
 
+static t_point snap_point(t_point point) //TODO: make a reusable version of this, and use for new walltool?
+{
+	t_point	result;
+
+	result.x = point.x - (point.x % 20);
+	result.y = point.y - (point.y % 20);
+	return (result);
+}
 
 void	modify_selected(t_editor *ed, t_buttontooldata *btd)
 {
@@ -101,7 +109,7 @@ void	modify_selected(t_editor *ed, t_buttontooldata *btd)
 	t_point			mouse_offset;
 	t_guibutton		*select;
 
-	dd = &((t_buttontooldata *)ed->tool->tooldata)->dropdown;
+	dd = &btd->dropdown;
 	select = btd->selected;
 	if (dd->changed)
 	{
@@ -110,6 +118,7 @@ void	modify_selected(t_editor *ed, t_buttontooldata *btd)
 	}
 	if (ed->mouse.scroll_delta != 0 && !dd->inprogress)
 	{
+		//system("code -g src/editor/editor_new_buttons.c:50"); TODO: do this after we have text rendering, redo the function selector
 		select->func_index += ed->mouse.scroll_delta;
 		select->func_index = ft_clamp(select->func_index, 0, 5);
 		select->onclick = get_button_func(select->func_index).onclick;
@@ -120,9 +129,7 @@ void	modify_selected(t_editor *ed, t_buttontooldata *btd)
 	{
 		if ((ed->keystate >> KEYS_SHIFTMASK) & 1)
 		{
-			select->rect.size = point_sub(ed->mouse.pos, select->rect.position);
-			select->rect.size.x = select->rect.size.x - (select->rect.size.x % 20);
-			select->rect.size.y = select->rect.size.y - (select->rect.size.y % 20);
+			select->rect.size = snap_point(point_sub(ed->mouse.pos, select->rect.position));
 			select->rect.size.x = ft_clamp(select->rect.size.x, 20, 260);
 			select->rect.size.y = ft_clamp(select->rect.size.y, 20, 260);
 			select->rect.size.x -= 3;
@@ -130,12 +137,9 @@ void	modify_selected(t_editor *ed, t_buttontooldata *btd)
 		}
 		else if ((ed->keystate >> KEYS_CTRLMASK) & 1)
 		{
-			select->rect.position = ed->mouse.pos;
-			select->rect.position.x = select->rect.position.x - (select->rect.position.x % 20);
-			select->rect.position.y = select->rect.position.y - (select->rect.position.y % 20);
+			select->rect.position = snap_point(ed->mouse.pos);
 		}
 	}
-		
 	if (mouse_clicked(ed->mouse, MOUSE_MDL))
 		start_imagedropdown(ed->mouse.pos, dd);
 	if (mouse_clicked(ed->mouse, MOUSE_RIGHT))
