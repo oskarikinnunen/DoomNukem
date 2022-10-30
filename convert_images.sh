@@ -1,1 +1,1 @@
-cd images && bash convert.sh && cd ..
+cd assets/images && bash convert.sh && cd .. && cd ..

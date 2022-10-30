@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game_3d.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/28 20:09:30 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/31 01:04:02 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -259,10 +259,11 @@ static t_triangle triangle_to_screenspace(t_mat4x4 matproj, t_triangle clipped, 
 
 void engine3d(t_sdlcontext sdl, t_game game)
 {
-	static t_img debug_img;
+	static t_img *debug_img;
 	t_triangle	triangles_calc[200];
 	int			i;
 	int			count = 0;
+
 	t_vector3 vtarget;
 	t_mat4x4 matworld = matrix_makeidentity();
 	t_mat4x4 matproj = matrix_makeprojection(90.0f, (float)sdl.window_h / (float)sdl.window_w, 2.0f, 1000.0f);
@@ -291,7 +292,7 @@ void engine3d(t_sdlcontext sdl, t_game game)
 		}
 		i++;
 	}
-	if (debug_img.length == 0) // TODO: Get image from obj file, when obj handling is done, currently only for debugging textures
+	if (debug_img == NULL) // TODO: Get image from obj file, when obj handling is done, currently only for debugging textures
 		debug_img = get_image_by_name(sdl, "");
-	clipped(count, triangles_calc, sdl, debug_img);
+	clipped(count, triangles_calc, sdl, *debug_img);
 }

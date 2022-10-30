@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/27 13:40:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/31 00:57:36 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ void	load_lua_conf(t_sdlcontext *sdl)
 
 	lua = luaL_newstate();
 	luaL_openlibs(lua);
-	lua_return = luaL_dofile(lua, "settings.lua");
+	lua_return = luaL_dofile(lua, "assets/settings.lua");
 	if (lua_return == LUA_OK)
 	{
 		load_resolution(lua, sdl);
