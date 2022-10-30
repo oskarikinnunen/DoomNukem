@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/30 18:12:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/31 00:50:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ typedef struct s_tool
 	void		(*draw_update)(struct s_editor *ed, struct s_sdlcontext sdl);
 	//void		(*cleanup)(struct s_editor *ed);
 	void		*tooldata;
+	char		icon_name[256];
+	t_img		*icon;
 }	t_tool;
 
 
@@ -54,12 +56,6 @@ typedef struct s_imagedropdown
 	uint32_t	selected;
 }	t_imagedropdown;
 
-typedef struct s_tool_button
-{
-	t_rectangle	rect;
-	t_tool		*(*tool_get)(void);
-}	t_tool_button;
-
 typedef enum e_point_tool_state
 {
 	place_start,
@@ -76,7 +72,9 @@ typedef struct s_buttontooldata
 void				initialize_buttons(t_list *buttonlist, t_sdlcontext sdl);
 void				point_tool_delete(struct s_editor *ed, t_point crd);
 t_click_func_def	get_button_func(int	index);
-void				draw_buttons(t_list *buttonlist, t_sdlcontext sdl); //TODO: move somewhere else so game can use it aswell?
+//TODO: rename and write documentation
+t_guibutton			*hovered(t_list *buttonlist, t_point mousepos);
+void				draw_buttons(t_editor ed, t_sdlcontext sdl); //TODO: move somewhere else so game can use it aswell?
 void				empty_click_func(t_editor *ed);
 t_tool				*get_point_tool(void);
 t_tool				*get_entity_tool(void);

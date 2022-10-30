@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/30 18:21:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/31 00:58:20 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,21 +64,20 @@ int	editorloop(t_sdlcontext sdl)
 	while (gr == game_continue)
 	{
 		update_deltatime(&ed.clock);
-		update_anim(&ed.transition, ed.clock.delta);
 		ft_bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
-		gr = editor_events(&ed); 
+		gr = editor_events(&ed);
 		drawgrid(sdl, ed.offset);
 		renderlines(&sdl, &ed);
-		if ((ed.keystate << KEYS_SPACEMASK) && 1)
-			initialize_buttons(ed.buttonlist, sdl);
-		
-		//buttoncreator(&ed, sdl);
+		draw_buttons(ed, sdl);
 		if (ed.tool != NULL)
 		{
 			ed.tool->update(&ed);
 			ed.tool->draw_update(&ed, sdl);
+			if (ed.tool->icon != NULL) //Indicates which tool is selected
+				draw_image(sdl, (t_point){ 8, sdl.window_h - 40 }, *ed.tool->icon, (t_point){32, 32});
+			else if (ed.tool->icon_name[0] != '\0')
+				ed.tool->icon = get_image_by_name(sdl, ed.tool->icon_name);
 		}
-		draw_buttons(ed.buttonlist, sdl);
 		ed.mouse.click_unhandled = false;
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);

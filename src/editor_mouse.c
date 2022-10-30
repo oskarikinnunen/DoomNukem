@@ -6,12 +6,13 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/30 17:35:40 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/30 23:17:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "editor_tools.h"
+#include "inputhelp.h"
 
 bool	mouse_clicked(t_mouse mouse, int button)
 {
@@ -58,6 +59,7 @@ static void	mouseclick(t_editor *ed)
 
 	l = ed->buttonlist;
 
+	printf("mouseclick \n");
 	while (l != NULL)
 	{
 		button = *(t_guibutton *)l->content;
@@ -89,6 +91,8 @@ void	mouse_event(SDL_Event e, t_editor *ed)
 		ed->mouse.scroll_delta = e.wheel.y;
 		ed->mouse.scroll = ft_clamp(ed->mouse.scroll, -20, 20);
 	}
-	if (ed->mouse.click_unhandled)
+	if (ed->mouse.click_unhandled
+		&& ((ed->keystate >> KEYS_CTRLMASK) & 1) == false
+		&& ((ed->keystate >> KEYS_SHIFTMASK) & 1) == false)
 		mouseclick(ed);
 }

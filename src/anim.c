@@ -6,12 +6,13 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:56:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/17 20:43:40 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/31 00:56:01 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
-#include "doomnukem.h"
+#include "animation.h"
+#include "libft.h"
+#include <stdio.h>
 
 void	update_anim(t_anim *anim, uint32_t delta)
 {

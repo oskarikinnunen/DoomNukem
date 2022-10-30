@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/28 15:43:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/30 23:38:04 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,5 +124,6 @@ t_tool	*get_point_tool()
 		point_tool_update, point_tool_draw
 	};
 
+	ft_strcpy(tool.icon_name, "linetool.png");
 	return (&tool);
 }

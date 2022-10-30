@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 09:30:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/30 17:35:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/31 00:55:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # define KEYS_SHIFTMASK 6
 # define KEYS_MMASK 7
 
+bool	iskey(SDL_Event e, int keycode);
 bool	mouse_clicked(t_mouse mouse, int button);
 bool	keyismoveleft(SDL_Event e);
 bool	keyismoveright(SDL_Event e);
