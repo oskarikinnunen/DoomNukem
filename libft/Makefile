@@ -26,7 +26,7 @@ FILES= ft_abs.c ft_atoi.c ft_bzero.c ft_digitcount.c ft_isalnum.c ft_isalpha.c\
 	ft_strsub.c ft_strtrim.c ft_tolower.c ft_toupper.c ft_isspace.c \
 	ft_ftoa.c ft_memdup.c ft_clamp.c ft_clampf.c ft_min_max.c \
 	ft_get_next_line.c ft_strscrape.c ft_strreplace.c ft_degtorad.c \
-	ft_absf.c ft_listlen.c get_next_line.c
+	ft_absf.c ft_listlen.c ft_strcdup.c get_next_line.c
 V_FILES= v3_basics.c bresenham.c
 CFLAGS= -Wall -Wextra -Werror -O2 -c -I.
 CC= gcc
