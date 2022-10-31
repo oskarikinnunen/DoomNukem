@@ -99,6 +99,30 @@ typedef struct s_img
 	uint32_t	length;
 }	t_img;
 
+typedef struct s_font_chars
+{
+	char			id;
+	t_point			pos;
+	t_point			size;
+	t_point			offset;
+	int				xadvance;
+}	t_font_chars;
+
+typedef struct s_font
+{
+	char			*name;
+	char			*file_name;
+	int				size;
+	int				padding;
+	int				spacing;
+	int				line_height;
+	t_point			scale;
+	int				char_count;
+	t_font_chars	*chars;
+	t_img			*bitmap;
+	t_img			*texts[3];
+}	t_font;
+
 typedef struct s_sdlcontext
 {
 	SDL_Window				*window;
@@ -109,6 +133,7 @@ typedef struct s_sdlcontext
 	uint32_t				imagecount;
 	struct s_object			*objects;
 	uint32_t				objectcount;
+	t_font					*font;
 	uint32_t				window_w;
 	uint32_t				window_h;
 }	t_sdlcontext;
