@@ -18,6 +18,6 @@ images =
 }
 objects =
 {
-	"cube.obj",
+	"tex_cube.obj",
 	"cy__000000.obj"
 }

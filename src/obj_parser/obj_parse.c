@@ -38,6 +38,10 @@ t_material	parsemat(int fd, char *name)
 			if (i != 3)
 				printf("invalid kd string! \n"); //TODO: log?
 		}
+		if (ft_strnstr(line, "map_Kd ", sizeof("map_Kd")) != NULL)
+		{
+			//ft_strcpy(mat.name, ft_strstr(line, ""))
+		}
 		if (ft_strlen(line) == 0)
 		{
 			free(line);
