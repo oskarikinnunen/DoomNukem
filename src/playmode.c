@@ -65,23 +65,46 @@ static int handleinput(t_game *game)
 	return(game_continue);
 }
 
+static t_render init_render(t_sdlcontext sdl)
+{
+	t_render	render;
+
+	bzero(&render, sizeof(t_render));
+	render.matworld = matrix_makeidentity();
+	render.matproj = matrix_makeprojection(90.0f, (float)sdl.window_h / (float)sdl.window_w, 2.0f, 1000.0f);
+	render.calc_triangles = malloc(sizeof(t_triangle) * 10000);
+	render.draw_triangles = malloc(sizeof(t_triangle) * 10000);
+	render.q = malloc(sizeof(t_quaternion) * 10000);
+	render.debug_img = get_image_by_name(sdl, "");
+	return(render);
+}
+
+static void update_render(t_render *render, t_player player)
+{
+	render->lookdir = player.lookdir;
+	render->position = player.position;
+}
+
 /*main game loop*/
 static int gameloop(t_sdlcontext sdl, t_game game)
 {
 	t_gamereturn	gr;
 	t_perfgraph		pgraph;
+	t_render		render;
 
 	alloc_image(&pgraph.image, PERFGRAPH_SAMPLES + 1, PERFGRAPH_SAMPLES + 1);
 	gr = game_continue;
+	render = init_render(sdl);
 	while (gr == game_continue)
 	{
 		update_deltatime(&game.clock);
+		update_render(&render, game.player);
 		bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 		bzero(sdl.zbuffer, sizeof(float) * sdl.window_h * sdl.window_w);
 		gr = handleinput(&game);
 		moveplayer(&game);
 		if (game.cam_mode == player_view)
-			engine3d(sdl, game);
+			engine3d(sdl, game, render);
 		else
 			render_overhead(&game, sdl);
 		drawperfgraph(&pgraph, game.clock.delta, sdl);
