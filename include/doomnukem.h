@@ -120,7 +120,7 @@ typedef struct s_font
 	int				char_count;
 	t_font_chars	*chars;
 	t_img			*bitmap;
-	t_img			*texts[3];
+	t_img			*texts[20];
 }	t_font;
 
 typedef struct s_sdlcontext
