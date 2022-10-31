@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 13:13:28 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/31 15:22:48 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/31 17:22:26 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void printf_vec(t_vector3 v)
 {
 	if (DEBUG_ON == 0)
 		return;
-	printf("x %f y %f z %f\n", v.x, v.y, v.z);
+	printf("%f, %f, %f\n", v.x, v.y, v.z);
 }
 
 void printf_quat(t_quaternion q)

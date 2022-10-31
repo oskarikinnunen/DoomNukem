@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/31 16:13:47 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/31 17:24:26 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,36 +119,53 @@ static t_triangle step_triangle(t_triangle triangle, float x_step[2], t_texture 
 	return (triangle);
 }
 
+static void step_ab(t_texture *step, t_triangle triangle, float delta)
+{
+	t_quaternion	*q;
+	t_texture		*t;
+
+	q = triangle.p;
+	t = triangle.t;
+	
+	step->u = (t[2].u - t[1].u) * delta;
+	step->v = (t[2].v - t[1].v) * delta;
+	step->w = (t[2].w - t[1].w) * delta;
+}
+
 static void fill_tri_bot(t_sdlcontext sdl, t_triangle triangle, t_img *img)
 {
-	float i;
 	t_quaternion	*q;
 	t_texture		*t;
 	float			x_step[2];
-	t_texture		t_step[2];
-	float			step;
-	float			delta;
+	t_texture		t_step[3];
+	int				index;
+	float			i;
 
 	q = triangle.p;
 	t = triangle.t;
 	calc_step(x_step, t_step, triangle, 1.0f / (q[1].v.y - q[0].v.y));
 	while (q[0].v.y < q[1].v.y)
 	{
-		step = (t[2].w - t[1].w) * (1.0f / (q[2].v.x - q[1].v.x));
-
+		step_ab(&t_step[2], triangle, 1.0f / (q[2].v.x - q[1].v.x));
+	
+		t[0].u = t[1].u;
+		t[0].v = t[1].v;
 		t[0].w = t[1].w;
+		index = 0;
 		i = q[1].v.x;
 		while(i < q[2].v.x)
 		{
 			if (t[0].w > sdl.zbuffer[(int)(i) + (int)q[1].v.y * sdl.window_w])
 			{
 				sdl.zbuffer[(int)(i) + (int)q[1].v.y * sdl.window_w] = t[0].w;
-				delta = (i - q[1].v.x) / (q[2].v.x - q[1].v.x);
-				t[0].u = flerp(t[1].u, t[2].u, delta);
-				t[0].v = flerp(t[1].v, t[2].v, delta);
+				t[0].u += (t_step[2].u * index);
+				t[0].v += (t_step[2].v * index);
+				index = 1;
 				((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w] = img->data[img->size.x * (int)((t[0].u / t[0].w) * img->size.x - 1) + (int)((t[0].v / t[0].w) * img->size.y - 1)];
 			}
-			t[0].w += step;
+			else
+				index++;
+			t[0].w += t_step[2].w;
 			i++;
 		}
 		triangle = step_triangle(triangle, x_step, t_step);
@@ -158,40 +175,45 @@ static void fill_tri_bot(t_sdlcontext sdl, t_triangle triangle, t_img *img)
 
 static void fill_tri_top(t_sdlcontext sdl, t_triangle triangle, t_img *img)
 {
-	float i;
 	t_quaternion	*q;
 	t_texture		*t;
 	float			x_step[2];
-	t_texture		t_step[2];
-	float			step;
-	float			delta;
+	t_texture		t_step[3];
+	int				index;
+	float			i;
 
 	q = triangle.p;
 	t = triangle.t;
 	calc_step(x_step, t_step, triangle, 1.0f / (q[0].v.y - q[1].v.y));
 	while (q[1].v.y < q[0].v.y)
 	{
-		step = (t[2].w - t[1].w) * (1.0f / (q[2].v.x - q[1].v.x));
-
+		step_ab(&t_step[2], triangle, 1.0f / (q[2].v.x - q[1].v.x));
+	
+		t[0].u = t[1].u;
+		t[0].v = t[1].v;
 		t[0].w = t[1].w;
+		index = 0;
 		i = q[1].v.x;
 		while(i < q[2].v.x)
 		{
 			if (t[0].w > sdl.zbuffer[(int)(i) + (int)q[1].v.y * sdl.window_w])
 			{
 				sdl.zbuffer[(int)(i) + (int)q[1].v.y * sdl.window_w] = t[0].w;
-				delta = (i - q[1].v.x) / (q[2].v.x - q[1].v.x);
-				t[0].u = flerp(t[1].u, t[2].u, delta);
-				t[0].v = flerp(t[1].v, t[2].v, delta);
+				t[0].u += (t_step[2].u * index);
+				t[0].v += (t_step[2].v * index);
+				index = 1;
 				((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w] = img->data[img->size.x * (int)((t[0].u / t[0].w) * img->size.x - 1) + (int)((t[0].v / t[0].w) * img->size.y - 1)];
 			}
-			t[0].w += step;
+			else
+				index++;
+			t[0].w += t_step[2].w;
 			i++;
 		}
 		triangle = step_triangle(triangle, x_step, t_step);
 		q[1].v.y++;
 	}
 }
+
 
 /*
 creates two triangles from the given triangle one flat top and one flat bottom.
