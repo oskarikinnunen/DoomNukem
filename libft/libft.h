@@ -115,6 +115,7 @@ void			ft_lstadd(t_list **alst, t_list *new);
 void			ft_lstapp(t_list **alst, t_list *new);/*extra*/
 int				ft_listlen(t_list *lst);
 
-int	get_next_line(const int fd, char **line);
+char			*ft_strcdup(const char *str, char c);
+int				get_next_line(const int fd, char **line);
 
 #endif
