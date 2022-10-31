@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 14:59:34 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/31 15:11:22 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale)
 	scalar.x = ((float)img.size.x / scale.x);
 	scalar.y = ((float)img.size.y / scale.y);
 	pixel.y = 0;
-	while (pixel.y < scale.y - 2) //TODO: it's the png readers fault that the second to last line is garbled, for now it just stops early, hence the '- 2'
+	while (pixel.y < scale.y) //TODO: it's the png readers fault that the second to last line is garbled, for now it just stops early, hence the '- 2'
 	{
 		pixel.x = 0;
 		if (pixel.y + pos.y < 0 || pixel.y + pos.y >= sdl.window_h - 1)
@@ -91,7 +91,7 @@ void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale)
 			}
 			sample.x = ft_clamp(pixel.x * scalar.x, 0, img.size.x - 1);
 			sample.y = ft_clamp(pixel.y * scalar.y, 0, img.size.y - 1);
-			color = img.data[sample.x + (sample.y * img.size.x)]; //TODO: NO idea why y needs to be there twice. Probably the png readers fault aswell
+			color = img.data[sample.x + (sample.y * img.size.x)];
 			draw(sdl, point_add(pos, pixel), color);
 			pixel.x++;
 		}
