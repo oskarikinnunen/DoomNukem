@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/28 14:45:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/31 14:59:34 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale)
 			}
 			sample.x = ft_clamp(pixel.x * scalar.x, 0, img.size.x - 1);
 			sample.y = ft_clamp(pixel.y * scalar.y, 0, img.size.y - 1);
-			color = img.data[sample.x + sample.y + (sample.y * img.size.x)]; //TODO: NO idea why y needs to be there twice. Probably the png readers fault aswell
+			color = img.data[sample.x + (sample.y * img.size.x)]; //TODO: NO idea why y needs to be there twice. Probably the png readers fault aswell
 			draw(sdl, point_add(pos, pixel), color);
 			pixel.x++;
 		}
