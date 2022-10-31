@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/31 14:18:01 by okinnune         ###   ########.fr        #
+#    Updated: 2022/10/31 15:37:02 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,7 @@ SRCFILES= main.c draw.c img.c deltatime.c anim.c\
 		editor/tools/point_tool.c \
 		editor/tools/point_tool_delete.c \
 		editor/tools/entity_tool.c \
+		editor/tools/wall_tool.c \
 		editor/tools/button_tool.c \
 		editor/imagedropdown.c \
 		editor/editor_new_buttons.c \
