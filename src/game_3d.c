@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   game_3d.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/31 01:04:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/31 12:07:15 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "inputhelp.h"
 #include "bresenham.h"
+#include "objects.h"
 
 static void save_clipped_points(float dist[3], t_triangle *tris[3], int points[4])
 {
@@ -117,12 +118,34 @@ static int Triangle_ClipAgainstPlane(t_vector3 plane_p, t_vector3 plane_n, t_tri
 	return(0);
 }
 
-static void draw_triangles(t_sdlcontext sdl, t_triangle *triangles, int index, int end, t_img img)
+static void draw_triangles(t_sdlcontext sdl, t_triangle *triangles, int count, t_img img)
 {
-	while (index < end)
+	int index = 0;
+	while (index < count)
 	{
 		z_fill_tri(sdl, triangles[index], img);
+		drawline(sdl, (t_point){triangles[index].p[0].v.x, triangles[index].p[0].v.y}, (t_point){triangles[index].p[1].v.x, triangles[index].p[1].v.y}, INT_MAX);
+		drawline(sdl, (t_point){triangles[index].p[2].v.x, triangles[index].p[2].v.y}, (t_point){triangles[index].p[1].v.x, triangles[index].p[1].v.y}, INT_MAX);
+		drawline(sdl, (t_point){triangles[index].p[0].v.x, triangles[index].p[0].v.y}, (t_point){triangles[index].p[2].v.x, triangles[index].p[2].v.y}, INT_MAX);
 		index++;
+	}
+}
+
+//TODO: temp remove after occlusion is added
+static void sort_triangles(t_triangle *triangles, int high)
+{
+	int i, j;
+	t_triangle key;
+	for (i = 1; i < high; i++)
+	{
+		key = triangles[i];
+		j = i - 1;
+		while (j >= 0 && triangles[j].t[0].w < key.t[0].w)
+		{
+			triangles[j + 1] = triangles[j];
+			j = j - 1;
+		}
+		triangles[j + 1] = key;
 	}
 }
 
@@ -131,9 +154,11 @@ static void clipped(int count, t_triangle *triangles_calc, t_sdlcontext sdl, t_i
 	int i = 0;
 	int start = 0;
 	int end = 0;
+	int counter = 0;
 
-	t_triangle triangles[200];
-	t_triangle clipped[2];
+	t_triangle	tri_buffer[10000];
+	t_triangle	triangles[200];
+	t_triangle	clipped[2];
 
 	while (i < count && 1)
 	{
@@ -161,11 +186,16 @@ static void clipped(int count, t_triangle *triangles_calc, t_sdlcontext sdl, t_i
 			}
 			nnewtriangles = end - start;
 		}
-		draw_triangles(sdl, triangles, start, end, img);
+		while (start < end)
+		{
+			tri_buffer[counter++] = triangles[start++];
+		}
 		start = 0;
 		end = 0;
 		i++;
 	}
+	sort_triangles(tri_buffer, counter); //TODO: remove when occlusion is added
+	draw_triangles(sdl, tri_buffer, counter, img);
 }
 
 static t_triangle transform_calc(t_mat4x4 matworld, t_triangle triangles)
@@ -259,10 +289,13 @@ static t_triangle triangle_to_screenspace(t_mat4x4 matproj, t_triangle clipped, 
 
 void engine3d(t_sdlcontext sdl, t_game game)
 {
-	static t_img *debug_img;
-	t_triangle	triangles_calc[200];
-	int			i;
-	int			count = 0;
+	static t_img	*debug_img;
+	t_triangle		triangles_calc[10000];
+	t_quaternion	q[10000];
+	t_object		*obj;
+	int				i;
+	int				count = 0;
+	int				index;
 
 	t_vector3 vtarget;
 	t_mat4x4 matworld = matrix_makeidentity();
@@ -272,7 +305,41 @@ void engine3d(t_sdlcontext sdl, t_game game)
 	t_mat4x4 matcamera = matrix_lookat(game.player.position, vtarget, (t_vector3){0, 0, 1});
 	t_mat4x4 matview = matrix_quickinverse(matcamera);
 	i = 0;
-	while(i < game.tri_count)
+	while (i < sdl.objectcount)
+	{
+		obj = &sdl.objects[i];
+		index = 0;
+		while (index < obj->vertice_count)
+		{
+			q[index] = (t_quaternion){obj->vertices[index].x, obj->vertices[index].y, obj->vertices[index].z, 1.0f};
+			q[index] = quaternion_mul_matrix(matworld, q[index]);
+			index++;
+		}
+		index = 0;
+		while (index < obj->face_count)
+		{
+			t_triangle tritransformed;
+			t_vector3 normal;	
+			t_vector3 vcameraray;	
+
+			tritransformed = (t_triangle){q[obj->faces[index].indices[0] - 1], q[obj->faces[index].indices[1] - 1], q[obj->faces[index].indices[2] - 1]};//TODO: Add uvw coordinates for textures
+			normal = normal_calc(tritransformed);
+			vcameraray = vector3_sub(tritransformed.p[0].v, game.player.position);
+			if (vector3_dot(normal, vcameraray) < 0.0f || 1) //TODO: Currently ignoring normals with || 1
+			{
+				t_triangle clipped[2];
+				int nclippedtriangles = clippedtriangles(tritransformed, matview, clipped);
+				for (int n = 0; n < nclippedtriangles; n++)
+				{
+					triangles_calc[count++] = triangle_to_screenspace(matproj, clipped[n], sdl);
+				}
+			}
+			index++;
+		}
+		i++;
+	}
+	i = 0;
+	while(i < game.tri_count)//TODO:(legacy code)Remove whole while loop after walls are added to objects in sdl struct
 	{
 		t_triangle tritransformed;
 		t_vector3 normal;
