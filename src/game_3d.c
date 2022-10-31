@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/31 14:54:37 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/31 16:21:23 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,6 +289,15 @@ static t_quaternion	vector3_to_quaternion(t_vector3 v)
 	return((t_quaternion){v.x, v.y, v.z, 1.0f});
 }
 
+static t_texture	vector2_to_texture(t_vector2 v)
+{
+	t_texture t;
+	t.u = v.x;
+	t.v = v.y;
+	t.w = 1.0f;
+	return(t);
+}
+
 void engine3d(t_sdlcontext sdl, t_game game, t_render render)
 {
 	t_object		*obj;
@@ -319,7 +328,13 @@ void engine3d(t_sdlcontext sdl, t_game game, t_render render)
 			t_vector3 normal;	
 			t_vector3 vcameraray;	
 
-			tritransformed = (t_triangle){render.q[obj->faces[index].indices[0] - 1], render.q[obj->faces[index].indices[1] - 1], render.q[obj->faces[index].indices[2] - 1]};//TODO: Add uvw coordinates for textures
+			tritransformed = (t_triangle){render.q[obj->faces[index].v_indices[0] - 1], render.q[obj->faces[index].v_indices[1] - 1], render.q[obj->faces[index].v_indices[2] - 1]};
+			if (obj->uv_count != 0)
+			{
+				tritransformed.t[0] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[0] - 1]);
+				tritransformed.t[1] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[1] - 1]);
+				tritransformed.t[2] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[2] - 1]);
+			}
 			normal = normal_calc(tritransformed);
 			vcameraray = vector3_sub(tritransformed.p[0].v, render.position);
 			if (vector3_dot(normal, vcameraray) < 0.0f || 1) //TODO: Currently ignoring normals with || 1
@@ -362,5 +377,6 @@ void engine3d(t_sdlcontext sdl, t_game game, t_render render)
 		}
 		i++;
 	}
+	render.img = render.debug_img;
 	clipped(render, sdl);
 }
