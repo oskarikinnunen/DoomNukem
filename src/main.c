@@ -29,7 +29,7 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	sdl->surface = SDL_GetWindowSurface(sdl->window);
 	if (sdl->surface == NULL)
 		error_log(EC_SDL_GETWINDOW_SURFACE);
-
+	load_font(sdl, "assets/fonts/sans-serif-black-bg.fnt");
 }
 
 void	quit_game(t_sdlcontext *sdl)
