@@ -233,6 +233,25 @@ static void	load_font(t_sdlcontext *sdl, const char *filename)
 
 }
 
+static void	paint_font(t_img *bitmap)
+{
+	t_point	i;
+	int		background_test;
+
+	background_test = -891285315;
+	i.y = 0;
+	while (i.y < bitmap->size.y)
+	{
+		i.x = 0;
+		while (i.x < bitmap->size.x)
+		{
+			if (bitmap->data[i.x + (i.y * bitmap->size.x)] != background_test)
+				bitmap->data[i.x + (i.y * bitmap->size.x)] = 0x00FF00;
+			i.x++;
+		}
+		i.y++;
+	}
+}
 
 static void	save_text(t_font *font, const char *str)
 {
@@ -241,11 +260,12 @@ static void	save_text(t_font *font, const char *str)
 	int			j;
 	t_point		cursor;
 	t_point		counter;
-	int			test;
+	int			background_test;
 
+	paint_font(font->bitmap);
 	alloc_image(&text, font->size * ft_strlen(str), font->line_height + 10);
 	ft_strcpy(text.name, str);
-	test = 0;
+	background_test = -891285315;
 	cursor.x = 5;
 	cursor.y = 5;
 	i = 0;
@@ -266,13 +286,14 @@ static void	save_text(t_font *font, const char *str)
 					while (counter.x < font->chars[j].size.x)
 					{
 						printf("[%d][%d]: %d\n", counter.y, counter.x, font->bitmap->data[(font->chars[j].pos.x + counter.x) + ((font->chars[j].pos.y + counter.y) * font->bitmap->size.x)]);
-						//text.data[(cursor.x + counter.x) + ((cursor.y + counter.y) * text.size.x)] = font->bitmap->data[(font->chars[j].pos.x + counter.x) + ((font->chars[j].pos.y + counter.y) * font->bitmap->size.x)];
+						if (font->bitmap->data[(font->chars[j].pos.x + counter.x) + ((font->chars[j].pos.y + counter.y) * font->bitmap->size.x)] != background_test)
+							text.data[(cursor.x + counter.x) + ((cursor.y + counter.y) * text.size.x)] = font->bitmap->data[(font->chars[j].pos.x + counter.x) + ((font->chars[j].pos.y + counter.y) * font->bitmap->size.x)];
 						counter.x++;
 					}
 					counter.y++;
 				}
-				cursor.x -= font->chars[j].offset.x + font->chars[j].size.x;
-				cursor.y -= font->chars[j].offset.y + font->chars[j].size.y;
+				cursor.x -= font->chars[j].offset.x;
+				cursor.y -= font->chars[j].offset.y;
 				cursor.x += font->chars[j].xadvance;
 				break ;
 			}
@@ -308,7 +329,7 @@ int	editorloop(t_sdlcontext sdl)
 	t_gamereturn	gr;
 
 	load_font(&sdl, "assets/fonts/sans-serif.fnt");
-	save_text(sdl.font, "0");
+	save_text(sdl.font, "bananacake");
 	bzero(&ed, sizeof(t_editor));
 	ed.linelist = load_chunk("map_test1", "WALL", sizeof(t_line));
 	ed.entitylist = load_chunk("map_test1", "ENT_", sizeof(t_entity));
@@ -333,7 +354,7 @@ int	editorloop(t_sdlcontext sdl)
 			else if (ed.tool->icon_name[0] != '\0')
 				ed.tool->icon = get_image_by_name(sdl, ed.tool->icon_name);
 		}
-		//draw_text(&sdl, sdl.font->texts[0], (t_point){400, 400});
+		draw_text(&sdl, sdl.font->texts[0], (t_point){400, 400});
 		ed.mouse.click_unhandled = false;
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
