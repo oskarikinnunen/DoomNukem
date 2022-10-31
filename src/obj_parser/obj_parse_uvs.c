@@ -6,12 +6,13 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 14:17:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 14:27:00 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/31 14:40:32 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "objects.h"
 #include "vectors.h"
+#include "doomnukem.h"
 
 t_vector2	parse_uv(char *line)
 {

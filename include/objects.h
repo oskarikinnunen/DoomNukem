@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 12:41:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 14:30:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/31 14:41:10 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ typedef struct s_material
 typedef struct s_face //Indexer for constructing faces (triangles)
 {
 	uint32_t	v_indices[3];
-	uint32_t	uv_indices[2];
+	uint32_t	uv_indices[3];
 }	t_face;
 
 typedef struct s_object
