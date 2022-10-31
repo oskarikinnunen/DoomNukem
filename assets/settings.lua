@@ -14,7 +14,9 @@ images =
 	"debug3.png",
 	"play.png",
 	"stop.png",
-	"redball.png"
+	"redball.png",
+	"quake2.png",
+	"quake3.png"
 }
 objects =
 {
