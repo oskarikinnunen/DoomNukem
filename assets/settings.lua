@@ -15,7 +15,8 @@ images =
 	"play.png",
 	"stop.png",
 	"redball.png",
-	"sans-serif.png"
+	"sans-serif-pink-bg.png",
+	"sans-serif-black-bg.png"
 }
 objects =
 {
