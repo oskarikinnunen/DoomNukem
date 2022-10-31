@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/28 17:56:58 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/31 16:13:47 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ static t_triangle step_triangle(t_triangle triangle, float x_step[2], t_texture 
 	return (triangle);
 }
 
-static void fill_tri_bot(t_sdlcontext sdl, t_triangle triangle, t_img img)
+static void fill_tri_bot(t_sdlcontext sdl, t_triangle triangle, t_img *img)
 {
 	float i;
 	t_quaternion	*q;
@@ -146,7 +146,7 @@ static void fill_tri_bot(t_sdlcontext sdl, t_triangle triangle, t_img img)
 				delta = (i - q[1].v.x) / (q[2].v.x - q[1].v.x);
 				t[0].u = flerp(t[1].u, t[2].u, delta);
 				t[0].v = flerp(t[1].v, t[2].v, delta);
-				((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w] = img.data[img.size.x * (int)((t[0].u / t[0].w) * img.size.x - 1) + (int)((t[0].v / t[0].w) * img.size.y - 1)];
+				((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w] = img->data[img->size.x * (int)((t[0].u / t[0].w) * img->size.x - 1) + (int)((t[0].v / t[0].w) * img->size.y - 1)];
 			}
 			t[0].w += step;
 			i++;
@@ -156,7 +156,7 @@ static void fill_tri_bot(t_sdlcontext sdl, t_triangle triangle, t_img img)
 	}
 }
 
-static void fill_tri_top(t_sdlcontext sdl, t_triangle triangle, t_img img)
+static void fill_tri_top(t_sdlcontext sdl, t_triangle triangle, t_img *img)
 {
 	float i;
 	t_quaternion	*q;
@@ -183,7 +183,7 @@ static void fill_tri_top(t_sdlcontext sdl, t_triangle triangle, t_img img)
 				delta = (i - q[1].v.x) / (q[2].v.x - q[1].v.x);
 				t[0].u = flerp(t[1].u, t[2].u, delta);
 				t[0].v = flerp(t[1].v, t[2].v, delta);
-				((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w] = img.data[img.size.x * (int)((t[0].u / t[0].w) * img.size.x - 1) + (int)((t[0].v / t[0].w) * img.size.y - 1)];
+				((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w] = img->data[img->size.x * (int)((t[0].u / t[0].w) * img->size.x - 1) + (int)((t[0].v / t[0].w) * img->size.y - 1)];
 			}
 			t[0].w += step;
 			i++;
@@ -228,8 +228,8 @@ void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle, t_img img)
 	t_temp = triangle.t[2];
 	q[2] = q_split;
 	triangle.t[2] = t_split;
-	fill_tri_top(sdl, triangle, img);
+	fill_tri_top(sdl, triangle, &img);
 	q[0] = q_temp;
 	triangle.t[0] = t_temp;
-	fill_tri_bot(sdl, triangle, img);
+	fill_tri_bot(sdl, triangle, &img);
 }
