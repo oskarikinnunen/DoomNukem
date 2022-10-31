@@ -238,7 +238,7 @@ static void	paint_font(t_img *bitmap)
 	t_point	i;
 	int		background_test;
 
-	background_test = -891285315;
+	background_test = -891285315; // for pink background
 	i.y = 0;
 	while (i.y < bitmap->size.y)
 	{
@@ -260,12 +260,12 @@ static void	save_text(t_font *font, const char *str)
 	int			j;
 	t_point		cursor;
 	t_point		counter;
-	int			background_test;
+	//int			background_test;
 
-	paint_font(font->bitmap);
+	//paint_font(font->bitmap);
 	alloc_image(&text, font->size * ft_strlen(str), font->line_height + 10);
 	ft_strcpy(text.name, str);
-	background_test = -891285315;
+	//background_test = -891285315; // for pink background
 	cursor.x = 5;
 	cursor.y = 5;
 	i = 0;
@@ -285,9 +285,9 @@ static void	save_text(t_font *font, const char *str)
 					counter.x = 0;
 					while (counter.x < font->chars[j].size.x)
 					{
-						printf("[%d][%d]: %d\n", counter.y, counter.x, font->bitmap->data[(font->chars[j].pos.x + counter.x) + ((font->chars[j].pos.y + counter.y) * font->bitmap->size.x)]);
-						if (font->bitmap->data[(font->chars[j].pos.x + counter.x) + ((font->chars[j].pos.y + counter.y) * font->bitmap->size.x)] != background_test)
-							text.data[(cursor.x + counter.x) + ((cursor.y + counter.y) * text.size.x)] = font->bitmap->data[(font->chars[j].pos.x + counter.x) + ((font->chars[j].pos.y + counter.y) * font->bitmap->size.x)];
+						//printf("[%d][%d]: %d\n", counter.y, counter.x, font->bitmap->data[(font->chars[j].pos.x + counter.x) + ((font->chars[j].pos.y + counter.y) * font->bitmap->size.x)]);
+						//if (font->bitmap->data[(font->chars[j].pos.x + counter.x) + ((font->chars[j].pos.y + counter.y) * font->bitmap->size.x)] != background_test)
+						text.data[(cursor.x + counter.x) + ((cursor.y + counter.y) * text.size.x)] = font->bitmap->data[(font->chars[j].pos.x + counter.x) + ((font->chars[j].pos.y + counter.y) * font->bitmap->size.x)];
 						counter.x++;
 					}
 					counter.y++;
@@ -328,7 +328,7 @@ int	editorloop(t_sdlcontext sdl)
 	t_editor		ed;
 	t_gamereturn	gr;
 
-	load_font(&sdl, "assets/fonts/sans-serif.fnt");
+	load_font(&sdl, "assets/fonts/sans-serif-black-bg.fnt");
 	save_text(sdl.font, "bananacake");
 	bzero(&ed, sizeof(t_editor));
 	ed.linelist = load_chunk("map_test1", "WALL", sizeof(t_line));
