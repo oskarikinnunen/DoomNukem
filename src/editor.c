@@ -236,16 +236,14 @@ static void	load_font(t_sdlcontext *sdl, const char *filename)
 static void	paint_font(t_img *bitmap)
 {
 	t_point	i;
-	int		background_test;
 
-	background_test = -891285315; // for pink background
 	i.y = 0;
 	while (i.y < bitmap->size.y)
 	{
 		i.x = 0;
 		while (i.x < bitmap->size.x)
 		{
-			if (bitmap->data[i.x + (i.y * bitmap->size.x)] != background_test)
+			if (bitmap->data[i.x + (i.y * bitmap->size.x)] != 0x000000) // testing black background
 				bitmap->data[i.x + (i.y * bitmap->size.x)] = 0x00FF00;
 			i.x++;
 		}
@@ -253,55 +251,64 @@ static void	paint_font(t_img *bitmap)
 	}
 }
 
+// ~ Character is so thin and at the bottom of the picture that I think it takes some colors outside of the image
+
 static void	save_text(t_font *font, const char *str)
 {
-	t_img		text;
+	t_img		*text;
 	int			i;
 	int			j;
 	t_point		cursor;
 	t_point		counter;
-	//int			background_test;
+	int			text_width;
+	static int	text_nbr = 0;
 
-	//paint_font(font->bitmap);
-	alloc_image(&text, font->size * ft_strlen(str), font->line_height + 10);
-	ft_strcpy(text.name, str);
-	//background_test = -891285315; // for pink background
+	//paint_font(font->bitmap); // for testing
+
+	text = ft_memalloc(sizeof(t_img));
+	if (!text)
+		error_log(EC_MALLOC);
+
+	// first calculating the amount of space needed by the text and then copying the characters to the image
+	
+	text_width = 0;
+	i = 0;
+	while (str[i] != '\0')
+	{
+		j = str[i] - 32;
+		text_width += font->chars[j].xadvance;
+		i++;
+	}
+	alloc_image(text, text_width + 10, font->line_height + 10);
+	ft_strcpy(text->name, str);
 	cursor.x = 5;
 	cursor.y = 5;
 	i = 0;
 	while (str[i] != '\0')
 	{
-		j = 0;
-		while (j < font->char_count)
+		j = str[i] - 32;
+		cursor.x += font->chars[j].offset.x;
+		cursor.y += font->chars[j].offset.y;
+		counter.y = 0;
+		while (counter.y < font->chars[j].size.y)
 		{
-			if (font->chars[j].id == str[i])
+			counter.x = 0;
+			while (counter.x < font->chars[j].size.x)
 			{
-				cursor.x += font->chars[j].offset.x;
-				cursor.y += font->chars[j].offset.y;
-				
-				counter.y = 0;
-				while (counter.y < font->chars[j].size.y)
-				{
-					counter.x = 0;
-					while (counter.x < font->chars[j].size.x)
-					{
-						//printf("[%d][%d]: %d\n", counter.y, counter.x, font->bitmap->data[(font->chars[j].pos.x + counter.x) + ((font->chars[j].pos.y + counter.y) * font->bitmap->size.x)]);
-						//if (font->bitmap->data[(font->chars[j].pos.x + counter.x) + ((font->chars[j].pos.y + counter.y) * font->bitmap->size.x)] != background_test)
-						text.data[(cursor.x + counter.x) + ((cursor.y + counter.y) * text.size.x)] = font->bitmap->data[(font->chars[j].pos.x + counter.x) + ((font->chars[j].pos.y + counter.y) * font->bitmap->size.x)];
-						counter.x++;
-					}
-					counter.y++;
-				}
-				cursor.x -= font->chars[j].offset.x;
-				cursor.y -= font->chars[j].offset.y;
-				cursor.x += font->chars[j].xadvance;
-				break ;
+				//printf("[%d][%d]: %d\n", counter.y, counter.x, font->bitmap->data[(font->chars[j].pos.x + counter.x) + ((font->chars[j].pos.y + counter.y) * font->bitmap->size.x)]);
+				//if (font->bitmap->data[(font->chars[j].pos.x + counter.x) + ((font->chars[j].pos.y + counter.y) * font->bitmap->size.x)] != 0x000000) // testing black background
+				text->data[(cursor.x + counter.x) + ((cursor.y + counter.y) * text->size.x)] = font->bitmap->data[(font->chars[j].pos.x + counter.x) + ((font->chars[j].pos.y + counter.y) * font->bitmap->size.x)];
+				counter.x++;
 			}
-			j++;
+			counter.y++;
 		}
+		cursor.x -= font->chars[j].offset.x;
+		cursor.y -= font->chars[j].offset.y;
+		cursor.x += font->chars[j].xadvance;
 		i++;
 	}
-	font->texts[0] = &text;
+	font->texts[text_nbr] = text;
+	text_nbr++;
 }
 
 static void	draw_text(t_sdlcontext *sdl, t_img *text, t_point pos)
@@ -329,7 +336,8 @@ int	editorloop(t_sdlcontext sdl)
 	t_gamereturn	gr;
 
 	load_font(&sdl, "assets/fonts/sans-serif-black-bg.fnt");
-	save_text(sdl.font, "bananacake");
+	save_text(sdl.font, "Your text goes here");
+	save_text(sdl.font, "Wanna try me guv? Q(._.Q)");
 	bzero(&ed, sizeof(t_editor));
 	ed.linelist = load_chunk("map_test1", "WALL", sizeof(t_line));
 	ed.entitylist = load_chunk("map_test1", "ENT_", sizeof(t_entity));
@@ -354,7 +362,9 @@ int	editorloop(t_sdlcontext sdl)
 			else if (ed.tool->icon_name[0] != '\0')
 				ed.tool->icon = get_image_by_name(sdl, ed.tool->icon_name);
 		}
-		draw_text(&sdl, sdl.font->texts[0], (t_point){400, 400});
+		draw_text(&sdl, sdl.font->texts[0], (t_point){10, 100});
+		draw_text(&sdl, sdl.font->texts[1], (t_point){10, 200});
+		draw_text(&sdl, sdl.font->texts[0], (t_point){10, 300});
 		ed.mouse.click_unhandled = false;
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
