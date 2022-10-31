@@ -22,5 +22,6 @@
 # define EC_CLOSE 12
 # define EC_WRITE 13
 # define EC_MALLOC 15
+# define EC_GETNEXTLINE 16
 
 #endif
