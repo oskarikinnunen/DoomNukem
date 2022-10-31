@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 15:55:15 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/27 17:09:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/31 14:18:44 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_face	parse_face(char *line)
 	i = 0;
 	while (i < 3 && f_strs[i] != NULL)
 	{
-		result.indices[i] = atoi(f_strs[i]); //Only takes the first number, so '3/2/9' would return 3 here.
+		result.v_indices[i] = atoi(f_strs[i]); //Only takes the first number, so '3/2/9' would return 3 here.
 		free(f_strs[i]);
 		i++;
 	}

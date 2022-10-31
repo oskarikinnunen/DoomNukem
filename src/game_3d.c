@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game_3d.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/31 12:07:15 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/31 14:19:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -322,7 +322,7 @@ void engine3d(t_sdlcontext sdl, t_game game)
 			t_vector3 normal;	
 			t_vector3 vcameraray;	
 
-			tritransformed = (t_triangle){q[obj->faces[index].indices[0] - 1], q[obj->faces[index].indices[1] - 1], q[obj->faces[index].indices[2] - 1]};//TODO: Add uvw coordinates for textures
+			tritransformed = (t_triangle){q[obj->faces[index].v_indices[0] - 1], q[obj->faces[index].v_indices[1] - 1], q[obj->faces[index].v_indices[2] - 1]};//TODO: Add uvw coordinates for textures
 			normal = normal_calc(tritransformed);
 			vcameraray = vector3_sub(tritransformed.p[0].v, game.player.position);
 			if (vector3_dot(normal, vcameraray) < 0.0f || 1) //TODO: Currently ignoring normals with || 1

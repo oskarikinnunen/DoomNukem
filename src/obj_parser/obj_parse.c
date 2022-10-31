@@ -101,6 +101,7 @@ t_object	objparse(char *filename)
 	t_object	result;
 	t_list		*materials;
 	t_list		*vertices;
+	t_list		*uvs;
 	t_list		*faces;
 	int			fd;
 
@@ -112,22 +113,27 @@ t_object	objparse(char *filename)
 	printf("reading object %s \n", filename);
 	materials = get_material_list(fd);
 	vertices = get_vertex_list(fd);
+	uvs = get_uv_list(fd);
 	faces = get_face_list(fd);
 	#ifdef	OBJ_DEBUG
 	printf("found %i materials \n", ft_listlen(materials));
-	printf("found %i vertices (triangles) \n", ft_listlen(vertices));
+	printf("found %i vertices \n", ft_listlen(vertices));
+	printf("found %i uvs \n", ft_listlen(uvs));
 	printf("found %i faces (triangles) \n", ft_listlen(faces));
 	#endif
 	result.materials = list_to_ptr(materials, &result.material_count);
 	result.vertices = list_to_ptr(vertices, &result.vertice_count);
+	result.uvs = list_to_ptr(uvs, &result.uv_count);
 	result.faces = list_to_ptr(faces, &result.face_count);
 
 	ft_lstdel(&materials, free_list_node);
 	ft_lstdel(&vertices, free_list_node);
+	ft_lstdel(&uvs, free_list_node);
 	ft_lstdel(&faces, free_list_node);
 	#ifdef	OBJ_DEBUG
 	printf("converted %i materials to pointer format\n", result.material_count); //TODO: log
 	printf("converted %i vertices to pointer format\n", result.vertice_count); //TODO: log
+	printf("converted %i uvs to pointer format\n", result.uv_count);
 	printf("converted %i faces to pointer format\n", result.face_count); //TODO: log
 	#endif
 	return (result);
