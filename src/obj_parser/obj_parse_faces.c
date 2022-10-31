@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 15:55:15 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/27 17:09:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/31 14:47:21 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,14 @@ t_face	parse_face(char *line)
 	char		**f_strs;
 	int			i;
 
+	ft_bzero(&result, sizeof(t_face));
 	f_strs = ft_strsplit(line, ' ');
 	i = 0;
 	while (i < 3 && f_strs[i] != NULL)
 	{
-		result.indices[i] = atoi(f_strs[i]); //Only takes the first number, so '3/2/9' would return 3 here.
+		result.v_indices[i] = atoi(f_strs[i]); //Only takes the first number, so '3/2/9' would return 3 here.
+		if (ft_strlen(f_strs[i]) > 2 && ft_strstr(f_strs[i], "/") != NULL)
+			result.uv_indices[i] = ft_atoi(ft_strstr(f_strs[i], "/") + 1);
 		free(f_strs[i]);
 		i++;
 	}
@@ -42,7 +45,6 @@ t_list	*get_face_list(int fd)
 	char		*line;
 	t_list		*list;
 	t_face		face;
-	//t_vector3	vec;
 
 	list = NULL;
 	while (ft_get_next_line(fd, &line))
