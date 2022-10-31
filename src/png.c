@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:10:14 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/27 12:59:47 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/31 15:05:15 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,27 @@ void	readdat(t_pngdata *png, uint8_t *ptr)
 	}
 }
 
+void	sample_ouroboros(t_img *orig) //samples the image into itself
+{
+	uint32_t	*newdata;
+	t_point		sample;
+
+	newdata = ft_memalloc(orig->length * sizeof(uint32_t));
+	sample = point_zero();
+	while (sample.y < orig->size.y)
+	{
+		sample.x = 0;
+		while (sample.x < orig->size.x)
+		{
+			newdata[sample.x + (sample.y * orig->size.x)] = orig->data[sample.x + sample.y + (sample.y * orig->size.x)];
+			sample.x++;
+		}
+		sample.y++;
+	}
+	free(orig->data);
+	orig->data = newdata;
+}
+
 void	pngtosimpleimg(t_pngdata *png, t_img *img) //dis bad, make return t_img instead
 {
 	int	i;
@@ -95,6 +116,7 @@ void	pngtosimpleimg(t_pngdata *png, t_img *img) //dis bad, make return t_img ins
 		img->data[i] = png->palette.plte[png->data[i]];
 		i++;
 	}
+	sample_ouroboros(img);
 	free(png->data);
 	free(png->palette.plte); // check if palette exists?
 }
