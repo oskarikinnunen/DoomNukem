@@ -6,21 +6,22 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/26 17:12:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/31 19:54:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "png.h"
 #include "game_lua.h"
+#include "objects.h"
 
 static void	create_sdl_context(t_sdlcontext *sdl)
 {
+	load_lua_conf(sdl);
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		error_log(EC_SDL_INIT);
 	if (SDL_Init(SDL_INIT_EVENTS) < 0)
 		error_log(EC_SDL_INIT);
-	load_lua_conf(sdl);
 	sdl->window = SDL_CreateWindow("DoomNukem",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		sdl->window_w, sdl->window_h, SDL_WINDOW_SHOWN);
@@ -29,7 +30,7 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	sdl->surface = SDL_GetWindowSurface(sdl->window);
 	if (sdl->surface == NULL)
 		error_log(EC_SDL_GETWINDOW_SURFACE);
-
+	objects_init(sdl);
 }
 
 void	quit_game(t_sdlcontext *sdl)

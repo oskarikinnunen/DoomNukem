@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   objects.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 12:41:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 16:26:47 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/10/31 19:55:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 typedef struct s_material
 {
-	char			name[256];
+	char			texturename[256];
 	uint32_t		kd;
 	struct s_img	*img;
 }	t_material;
@@ -45,5 +45,6 @@ t_object		objparse(char *filename);
 struct s_list	*get_uv_list(int fd);
 struct s_list	*get_vertex_list(int fd);
 struct s_list	*get_face_list(int fd);
+void			objects_init(struct s_sdlcontext *sdl);
 
 #endif
