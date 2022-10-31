@@ -41,6 +41,8 @@ static void	standard_function_errors(int error_code)
 		fprintf(stderr, "Write failed\n");
 	if (error_code == EC_MALLOC)
 		fprintf(stderr, "Malloc failed\n");
+	if (error_code == EC_GETNEXTLINE)
+		fprintf(stderr, "get_next_line failed\n");
 	exit (2);
 }
 

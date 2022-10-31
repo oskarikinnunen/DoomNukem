@@ -174,7 +174,7 @@ static void	load_font(t_sdlcontext *sdl, const char *filename)
 	char	*line;
 	int		ret;
 	int		i;
-	t_img	bitmap;
+	t_img	*bitmap;
 
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
@@ -202,7 +202,7 @@ static void	load_font(t_sdlcontext *sdl, const char *filename)
 	}
 	sdl->font->file_name = ft_strjoin(sdl->font->name, ".png");
 	bitmap = get_image_by_name(*sdl, sdl->font->file_name);
-	sdl->font->bitmap = &bitmap;
+	sdl->font->bitmap = bitmap;
 	if (close(fd) == -1)
 		error_log(EC_CLOSE);
 
@@ -307,7 +307,7 @@ int	editorloop(t_sdlcontext sdl)
 	t_editor		ed;
 	t_gamereturn	gr;
 
-	load_font(&sdl, "assets/images/font/sans-serif.fnt");
+	load_font(&sdl, "assets/fonts/sans-serif.fnt");
 	save_text(sdl.font, "0");
 	bzero(&ed, sizeof(t_editor));
 	ed.linelist = load_chunk("map_test1", "WALL", sizeof(t_line));
