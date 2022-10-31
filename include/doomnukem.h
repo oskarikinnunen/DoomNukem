@@ -284,11 +284,12 @@ t_img	*get_image_by_name(t_sdlcontext sdl, char *name);
 /* DELTATIME.C */
 void	update_deltatime(t_clock *c);
 
-/* DRAW.C */
+/* DRAW.C*/
 void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr);
 void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr);
 void	drawcircle(t_sdlcontext sdl, t_point pos, int size, uint32_t clr);
 void	drawrectangle(t_sdlcontext, t_rectangle rect, uint32_t clr);
+void	draw_text(t_sdlcontext *sdl, t_img *text, t_point pos);
 
 /* EDITOR_BUTTONS.C */
 void	draw_editor_buttons(t_sdlcontext sdl, uint8_t tool_selected); //TODO: MOVE TO EDITOR_TOOLS
@@ -296,6 +297,9 @@ void	check_tool_change_click(t_point cursor, t_editor *ed); //TODO: MOVE TO EDIT
 
 //Draws image 'img' to pixels 'pxls', offset by point 'pos' and scaled to 'scale'
 void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale);
+
+/* FONT.C */
+void	load_font(t_sdlcontext *sdl, const char *filename);
 
 /* PERFGRAPH.C */
 void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
@@ -322,6 +326,9 @@ void	error_log(int error_code);
 
 /* SDL */
 void	quit_game(t_sdlcontext *sdl);
+
+/* TEXT.C */
+void	save_text(t_font *font, const char *str);
 
 /* LIST_HELPER.C */
 void	list_push(t_list **head, void *content, size_t content_size);
