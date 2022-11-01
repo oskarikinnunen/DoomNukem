@@ -18,7 +18,7 @@ t_material	parsemat(int fd, char *name)
 	int			i;
 
 	ft_bzero(&mat, sizeof(t_material));
-	ft_strcpy(mat.name, name);
+	ft_strcpy(mat.texturename, name);
 	while (ft_get_next_line(fd, &line))
 	{
 		if (ft_strnstr(line, "Kd ", 3) != NULL)
@@ -37,6 +37,11 @@ t_material	parsemat(int fd, char *name)
 			free(kd_strs);
 			if (i != 3)
 				printf("invalid kd string! \n"); //TODO: log?
+		}
+		if (ft_strnstr(line, "map_Kd ", sizeof("map_Kd")) != NULL)
+		{
+			ft_strcpy(mat.texturename, ft_strrchr(line, '/') + 1);
+			printf("MAT NAME %s \n ", mat.texturename);
 		}
 		if (ft_strlen(line) == 0)
 		{

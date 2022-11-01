@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 01:01:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/31 15:21:49 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,6 +190,21 @@ typedef struct	s_triangle
 	uint32_t	clr;
 }	t_triangle;
 
+typedef struct s_render
+{
+	t_mat4x4		matworld;
+	t_mat4x4		matproj;
+	t_vector3		position;
+	t_vector3		lookdir;
+	t_triangle		*draw_triangles;
+	t_triangle		*calc_triangles;
+	uint32_t		draw_tri_count;
+	uint32_t		calc_tri_count;
+	t_img			*img;
+	t_img			*debug_img;
+	t_quaternion	*q;
+} t_render;
+
 typedef struct s_game
 {
 	int				tri_count;
@@ -263,7 +278,7 @@ void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
 void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle, t_img img);
-void	engine3d(t_sdlcontext sdl, t_game game);
+void	engine3d(t_sdlcontext sdl, t_game game, t_render render);
 
 /* PHYSICS.C */
 bool	pointrectanglecollision(t_point p, t_rectangle rect);
@@ -295,5 +310,7 @@ void printf_quat(t_quaternion v);
 void printf_vec(t_vector3 v);
 void printf_matrix(t_mat4x4 m);
 void printf_point(t_point p);
+void printf_texture(t_texture t);
+void printf_face(void *face);
 
 #endif
