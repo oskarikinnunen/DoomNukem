@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game_3d.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/01 14:23:06 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/01 14:40:51 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,9 +123,6 @@ static void draw_triangles(t_sdlcontext sdl, t_render render)
 	int index = 0;
 	while (index < render.draw_tri_count)
 	{
-		//render.draw_triangles[index];
-		printf("%i \n", index);
-		//if (render.img != NULL)
 		z_fill_tri(sdl, render.draw_triangles[index], *render.img);
 		drawline(sdl, (t_point){render.draw_triangles[index].p[0].v.x, render.draw_triangles[index].p[0].v.y}, (t_point){render.draw_triangles[index].p[1].v.x, render.draw_triangles[index].p[1].v.y}, INT_MAX);
 		drawline(sdl, (t_point){render.draw_triangles[index].p[2].v.x, render.draw_triangles[index].p[2].v.y}, (t_point){render.draw_triangles[index].p[1].v.x, render.draw_triangles[index].p[1].v.y}, INT_MAX);
@@ -161,7 +158,6 @@ static void clipped(t_render render, t_sdlcontext sdl)
 	t_triangle	triangles[200];
 	t_triangle	clipped[2];
 
-	printf("render tricount %i \n", render.calc_tri_count);
 	while (i < render.calc_tri_count)
 	{
 		triangles[end++] = render.calc_triangles[i];
@@ -187,7 +183,6 @@ static void clipped(t_render render, t_sdlcontext sdl)
 				}
 			}
 			nnewtriangles = end - start;
-			
 		}
 		while (start < end)
 		{
@@ -318,7 +313,6 @@ void engine3d(t_sdlcontext sdl, t_render render)
 	i = 0;
 	while (i < sdl.objectcount)
 	{
-		printf("drawing object %i \n", i);
 		obj = &sdl.objects[i];
 		index = 0;
 		while (index < obj->vertice_count)
@@ -352,7 +346,6 @@ void engine3d(t_sdlcontext sdl, t_render render)
 					render.calc_triangles[render.calc_tri_count++] = triangle_to_screenspace(render.matproj, clipped[n], sdl);
 				}
 			}
-			
 			index++;
 		}
 		render.img = obj->materials[0].img;
@@ -363,27 +356,4 @@ void engine3d(t_sdlcontext sdl, t_render render)
 		render.draw_tri_count = 0;
 		i++;
 	}
-	return ;
-	/* while(i < game.tri_count)//TODO:(legacy code)Remove whole while loop after walls are added to objects in sdl struct
-	{
-		t_triangle tritransformed;
-		t_vector3 normal;
-		t_vector3 vcameraray;
-
-		tritransformed = transform_calc(render.matworld, game.triangles[i]);
-		normal = normal_calc(tritransformed);
-		vcameraray = vector3_sub(tritransformed.p[0].v, render.position);
-		if (vector3_dot(normal, vcameraray) < 0.0f || 1) //TODO: Currently ignoring normals with || 1
-		{
-			t_triangle clipped[2];
-			int nclippedtriangles = clippedtriangles(tritransformed, matview, clipped);
-			for (int n = 0; n < nclippedtriangles; n++)
-			{
-				render.calc_triangles[render.calc_tri_count++] = triangle_to_screenspace(render.matproj, clipped[n], sdl);
-			}
-		}
-		i++;
-	}
-	render.img = render.debug_img;
-	clipped(render, sdl);*/
 }
