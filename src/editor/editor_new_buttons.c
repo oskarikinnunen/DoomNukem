@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 14:34:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 01:12:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/31 15:39:48 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,15 @@ void	set_tool_point(t_editor *ed)
 	ed->mouse.click_unhandled = false;
 }
 
+void	set_tool_wall(t_editor *ed)
+{
+	ed->tool = get_wall_tool();
+	ed->mouse.click_unhandled = false;
+}
+
 void	set_tool_entity(t_editor *ed)
 {
-	ed->tool = get_entity_tool();
+	ed->tool = get_wall_tool();
 	ed->mouse.click_unhandled = false;
 }
 
@@ -47,7 +53,8 @@ t_click_func_def	get_button_func(int	index)
 		{"empty_click", empty_click_func},
 		{"set_tool_button", set_tool_button},
 		{"set_tool_point", set_tool_point},
-		{"set_tool_entity", set_tool_entity}
+		{"set_tool_entity", set_tool_entity},
+		{"set_tool_wall", set_tool_wall}
 	};
 	int	i;
 

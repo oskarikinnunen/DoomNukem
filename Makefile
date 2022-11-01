@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/31 19:55:26 by okinnune         ###   ########.fr        #
+#    Updated: 2022/11/01 14:00:06 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,7 @@ SRCFILES= main.c draw.c img.c deltatime.c anim.c\
 		editor/tools/point_tool.c \
 		editor/tools/point_tool_delete.c \
 		editor/tools/entity_tool.c \
+		editor/tools/wall_tool.c \
 		editor/tools/button_tool.c \
 		editor/imagedropdown.c \
 		editor/editor_new_buttons.c \
@@ -40,7 +41,8 @@ SRCFILES= main.c draw.c img.c deltatime.c anim.c\
 		obj_parser/obj_parse_vertex.c \
 		obj_parser/obj_parse_faces.c \
 		obj_parser/obj_parse_uvs.c \
-		object_init.c
+		object_init.c \
+		init_render.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \
 		vector2_elementary.c vector2_shorthands.c \

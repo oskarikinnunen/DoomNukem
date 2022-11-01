@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 15:25:04 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/01 16:28:37 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ typedef struct s_editor
 	t_list			*buttonlist;
 	t_mouse			mouse;
 	t_clock			clock;
-	t_point			offset;
+	t_vector3		offset;
 	struct s_tool	*tool;
 	uint32_t		keystate;
 }	t_editor;
@@ -264,7 +264,7 @@ int		editor_events(t_editor *ed);
 bool	iskey(SDL_Event e, int keycode);
 
 /* EDITOR_RENDER.C */
-void	renderlines(t_sdlcontext *sdl, t_editor *ed); //TODO:  better name?
+void	renderlines(t_sdlcontext *sdl, t_editor *ed); //TODO:  LEGACY, remove
 
 /* EDITOR_MOUSE.C */
 t_point	mousetoworldspace(t_editor *ed);
@@ -289,6 +289,9 @@ t_img	*get_image_by_name(t_sdlcontext sdl, char *name);
 
 /* DELTATIME.C */
 void	update_deltatime(t_clock *c);
+
+/* INIT_RENDER.C */
+t_render	init_render(t_sdlcontext sdl);
 
 /* DRAW.C */
 void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr);
