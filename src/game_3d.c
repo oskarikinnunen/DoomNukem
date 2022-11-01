@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/01 16:33:01 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/01 17:22:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -298,13 +298,15 @@ static t_texture	vector2_to_texture(t_vector2 v)
 	return(t);
 }
 
-static void render_object(t_sdlcontext sdl, t_render render, t_entity *entity)
+void render_object(t_sdlcontext sdl, t_render render, t_entity *entity)
 {
 	int				index;
 	t_object		*obj;
 	t_vector3		temp;
 
 	obj = entity->obj;
+	if (obj == NULL)
+		return;
 	index = 0;
 	while (index < obj->vertice_count)
 	{
@@ -360,7 +362,6 @@ void engine3d(t_sdlcontext sdl, t_render render)
 	int				i;
 	int				index;
 
-	ft_bzero(sdl.zbuffer, sdl.window_h * sdl.window_w * sizeof(float));
 	render.vtarget = vector3_add(render.position, render.lookdir);
 	render.matcamera = matrix_lookat(render.position, render.vtarget, (t_vector3){0, 0, 1});
 	render.matview = matrix_quickinverse(render.matcamera);

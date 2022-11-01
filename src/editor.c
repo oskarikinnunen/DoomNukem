@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 16:32:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/01 17:30:43 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "editor_tools.h"
 #include "file_io.h"
 #include "inputhelp.h"
+#include "objects.h"
 
 static void	drawsquare(t_sdlcontext sdl, t_point crd, int clr)
 {
@@ -47,10 +48,28 @@ static void	drawgrid(t_sdlcontext sdl, t_point origin)
 	}
 }
 
-static void	update_render_editor(t_render *render, t_editor ed)
+static void	update_render_editor(t_render *render, t_editor ed) //TODO: move game3d matrix stuff 
 {
 	render->position = (t_vector3){ed.offset.x, -ed.offset.y, ed.offset.z};
 	render->lookdir = (t_vector3){0.0f, -0.015f, -1.0f};
+}
+
+static void	reload_objects(t_list **entitylist, t_sdlcontext sdl)
+{
+	t_list		*l;
+	t_entity	*ent;
+
+	l = *entitylist;
+	while (l != NULL)
+	{
+		ent = (t_entity *)l->content;
+		printf("reloaded object with %i object \n", ent->object_index);
+		//ent->transform.location
+		printf_vec(ent->transform.location);
+		printf_vec(ent->transform.scale);
+		ent->obj = &sdl.objects[ent->object_index]; //TODO: Protect!!s
+		l = l->next;
+	}
 }
 
 int	editorloop(t_sdlcontext sdl)
@@ -72,7 +91,23 @@ int	editorloop(t_sdlcontext sdl)
 		update_render_editor(&render, ed);
 		ft_bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 		gr = editor_events(&ed);
+		ft_bzero(sdl.zbuffer, sdl.window_h * sdl.window_w * sizeof(float));
 		engine3d(sdl, render);
+		//ft_bzero(sdl.zbuffer, sdl.window_h * sdl.window_w * sizeof(float));
+		render_object(sdl, render, render.listbot->content);
+		if (ed.entitylist != NULL)
+		{
+			render.listbot = ed.entitylist;
+			render_object(sdl, render, ed.entitylist->content);
+		}
+			
+		if (ed.reload_objects)
+		{
+			reload_objects(&ed.entitylist, sdl);
+			ed.reload_objects = false;
+		}
+			
+		//render
 		//drawgrid(sdl, ed.offset);
 		//renderlines(&sdl, &ed);
 		draw_buttons(ed, sdl);

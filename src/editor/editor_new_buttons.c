@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_new_buttons.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 14:34:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 15:39:48 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/01 17:03:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	set_tool_wall(t_editor *ed)
 
 void	set_tool_entity(t_editor *ed)
 {
-	ed->tool = get_wall_tool();
+	ed->tool = get_entity_tool();
 	ed->mouse.click_unhandled = false;
 }
 

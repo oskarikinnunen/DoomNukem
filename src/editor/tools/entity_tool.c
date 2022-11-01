@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 13:30:16 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/01 17:23:34 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "editor_tools.h"
 #include "file_io.h"
-
+#include "inputhelp.h"
 /*
 void entity_tool_append_list(t_editor *ed, t_entity ent) //TODO: make 
 {
@@ -95,11 +95,41 @@ static void	entity_tool_cleanup(t_editor *ed)
 	SDL_ShowCursor(SDL_ENABLE);
 }
 */
+
+/*void	entity_tool_update(t_editor *ed)
+{
+
+}*/
+
+void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
+{
+	
+}
+
+
+void	entity_tool_update(t_editor *ed)
+{
+	t_entity	ent;
+
+	if (mouse_clicked(ed->mouse, MOUSE_LEFT))
+	{
+		ed->reload_objects = true;
+		ft_bzero(&ent, sizeof(t_entity));
+		ent.obj = NULL;
+		printf("ENTITY TOOL CLICK!!\n");
+		ent.object_index = 1;
+		ent.transform.scale = vector3_one();
+		ent.transform.location = (t_vector3){ed->offset.x, -ed->offset.y, ed->offset.z};
+		list_push(&ed->entitylist, &ent, sizeof(t_entity));
+	}
+		
+}
+
 t_tool	*get_entity_tool()
 {
 	static t_tool	tool
 	= {
-		NULL, NULL 
+		entity_tool_update, entity_tool_draw 
 	};
 
 	if (tool.tooldata == NULL)

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 15:05:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/01 17:03:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ static void	mouseclick(t_editor *ed)
 
 	l = ed->buttonlist;
 
-	printf("mouseclick \n");
 	while (l != NULL)
 	{
 		button = *(t_guibutton *)l->content;

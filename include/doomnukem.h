@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 16:28:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/01 16:57:47 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,7 @@ typedef struct s_editor
 	t_vector3		offset;
 	struct s_tool	*tool;
 	uint32_t		keystate;
+	bool			reload_objects; //Doesn't actually reload them :3
 }	t_editor;
 
 /* Playmode */
@@ -193,6 +194,7 @@ typedef struct s_transform
 typedef struct s_entity
 {
 	t_transform		transform;
+	uint32_t		object_index;
 	struct s_object	*obj;
 }	t_entity;
 
@@ -312,6 +314,7 @@ void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
 void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle, t_img img);
+void	render_object(t_sdlcontext sdl, t_render render, t_entity *entity);
 void	engine3d(t_sdlcontext sdl, t_render render);
 
 /* PHYSICS.C */
