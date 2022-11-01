@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 14:19:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/01 14:39:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	sdl->surface = SDL_GetWindowSurface(sdl->window);
 	if (sdl->surface == NULL)
 		error_log(EC_SDL_GETWINDOW_SURFACE);
+	sdl->zbuffer = malloc(sdl->window_w * sdl->window_h * sizeof(float));
 	objects_init(sdl);
 }
 
@@ -49,10 +50,10 @@ int	main(int argc, char **argv)
 	gr = game_switchmode;
 	while (gr == game_switchmode)
 	{
-		gr = playmode(sdl); // quit & exit is handled inside the loop
-		printf("%s\ngamereturn after playmode %i \n", CLEARSCREEN, gr);
 		gr = editorloop(sdl); // quit & exit is handled inside the loop
 		printf("%s\ngamereturn after editor %i \n", CLEARSCREEN, gr);
+		gr = playmode(sdl); // quit & exit is handled inside the loop
+		printf("%s\ngamereturn after playmode %i \n", CLEARSCREEN, gr);
 	}
 	//shouldn't get here?
 	return (0);
