@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 15:21:49 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/01 15:23:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,7 +289,8 @@ void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr);
 void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr);
 void	drawcircle(t_sdlcontext sdl, t_point pos, int size, uint32_t clr);
 void	drawrectangle(t_sdlcontext, t_rectangle rect, uint32_t clr);
-void	draw_text(t_sdlcontext *sdl, t_img *text, t_point pos);
+void	draw_saved_text(t_sdlcontext *sdl, t_img *text, t_point pos);
+void	draw_text(t_sdlcontext *sdl, t_font *font, const char *str, t_point pos);
 
 /* EDITOR_BUTTONS.C */
 void	draw_editor_buttons(t_sdlcontext sdl, uint8_t tool_selected); //TODO: MOVE TO EDITOR_TOOLS
