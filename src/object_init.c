@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   object_init.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 19:50:18 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 19:53:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/01 15:29:08 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ void	objects_init(t_sdlcontext *sdl)
 	int			m_i;
 	t_object	*object;
 
+	i = 0;
 	while (i < sdl->objectcount)
 	{
 		object = &sdl->objects[i];
