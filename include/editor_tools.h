@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 01:12:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/31 15:36:38 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ t_guibutton			*hovered(t_list *buttonlist, t_point mousepos);
 void				draw_buttons(t_editor ed, t_sdlcontext sdl); //TODO: move somewhere else so game can use it aswell?
 void				empty_click_func(t_editor *ed);
 t_tool				*get_point_tool(void);
+t_tool				*get_wall_tool(void);
 t_tool				*get_entity_tool(void);
 t_tool				*get_button_editor_tool();
 void				start_imagedropdown(t_point origin, t_imagedropdown *dd);

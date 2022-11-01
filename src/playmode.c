@@ -271,7 +271,6 @@ int playmode(t_sdlcontext sdl)
 
 	bzero(&game, sizeof(t_game));
 	bzero(&obj, sizeof(t_obj));
-	sdl.zbuffer = malloc(sdl.window_w * sdl.window_h * sizeof(float));
 	game.linelist = load_chunk("map_test1", "WALL", sizeof(t_line));
 	lines_to_obj(&obj, game.linelist);
 	set_tri_array(&game, &obj);
