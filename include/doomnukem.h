@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 14:04:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/01 15:04:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ typedef struct s_editor
 	t_list			*buttonlist;
 	t_mouse			mouse;
 	t_clock			clock;
-	t_point			offset;
+	t_vector3		offset;
 	struct s_tool	*tool;
 	uint32_t		keystate;
 }	t_editor;

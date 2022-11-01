@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   point_tool.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/30 23:38:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/01 15:06:48 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ static void	render_cursorball(t_editor ed, t_sdlcontext sdl)
 
 	circlepos = mousetogridspace(&ed);
 	circlepos = point_mul(circlepos, TILESIZE);
-	circlepos = point_add(circlepos, ed.offset);
+	//circlepos = point_add(circlepos, (t_point)ed.offset);
 	drawcircle(sdl, circlepos, 10, CLR_TURQ);
 }
 
@@ -101,7 +101,7 @@ static void	point_tool_draw(t_editor *ed, t_sdlcontext sdl) //This needs to acce
 	if (point_cmp(ed->line.end, point_zero()) && !point_cmp(ed->line.start, point_zero()))
 	{
 		ss_line.start = point_mul(ed->line.start, TILESIZE);
-		ss_line.start = point_add(ss_line.start, ed->offset);
+		//ss_line.start = point_add(ss_line.start, ed->offset);
 		
 		ss_line.end = ed->mouse.pos;
 		drawline(sdl, ss_line.start, ss_line.end, CLR_TURQ);

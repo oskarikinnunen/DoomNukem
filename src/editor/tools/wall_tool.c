@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wall_tool.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:13:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 16:21:20 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/01 15:07:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_point	snapped_cursor(t_editor *ed)
 	t_point	snapped;
 
 	snapped = point_mul(screentogridspace(ed->mouse.pos), 32);
-	snapped = point_add(snapped, point_mod(ed->offset, 32));
+	//snapped = point_add(snapped, point_mod(ed->offset, 32);
 	return (snapped);
 }
 
