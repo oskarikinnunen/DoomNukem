@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 19:54:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/01 14:19:26 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,10 @@ int	main(int argc, char **argv)
 	gr = game_switchmode;
 	while (gr == game_switchmode)
 	{
-		gr = editorloop(sdl); // quit & exit is handled inside the loop
-		printf("%s\ngamereturn after editor %i \n", CLEARSCREEN, gr);
 		gr = playmode(sdl); // quit & exit is handled inside the loop
 		printf("%s\ngamereturn after playmode %i \n", CLEARSCREEN, gr);
+		gr = editorloop(sdl); // quit & exit is handled inside the loop
+		printf("%s\ngamereturn after editor %i \n", CLEARSCREEN, gr);
 	}
 	//shouldn't get here?
 	return (0);

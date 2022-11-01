@@ -65,24 +65,12 @@ static int handleinput(t_game *game)
 	return(game_continue);
 }
 
-static t_render init_render(t_sdlcontext sdl)
-{
-	t_render	render;
-
-	bzero(&render, sizeof(t_render));
-	render.matworld = matrix_makeidentity();
-	render.matproj = matrix_makeprojection(90.0f, (float)sdl.window_h / (float)sdl.window_w, 2.0f, 1000.0f);
-	render.calc_triangles = malloc(sizeof(t_triangle) * 10000);
-	render.draw_triangles = malloc(sizeof(t_triangle) * 10000);
-	render.q = malloc(sizeof(t_quaternion) * 10000); //TODO: should be multiplied by the largest obj vertex count
-	render.debug_img = get_image_by_name(sdl, "");
-	return(render);
-}
-
 static void update_render(t_render *render, t_player player)
 {
 	render->lookdir = player.lookdir;
 	render->position = player.position;
+	printf("pos %f %f %f, lookdir %f %f %f \n", render->position.x, render->position.y, render->position.z,
+		render->lookdir.x, render->lookdir.y, render->lookdir.z);
 }
 
 /*main game loop*/
@@ -104,7 +92,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 		gr = handleinput(&game);
 		moveplayer(&game);
 		if (game.cam_mode == player_view)
-			engine3d(sdl, game, render);
+			engine3d(sdl, render);
 		else
 			render_overhead(&game, sdl);
 		drawperfgraph(&pgraph, game.clock.delta, sdl);

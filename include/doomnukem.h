@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 15:21:49 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/01 14:04:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,10 +207,10 @@ typedef struct s_render
 
 typedef struct s_game
 {
-	int				tri_count;
-	t_triangle		*triangles;
-	t_list			*linelist;
-	t_list			*entitylist;
+	int				tri_count; // LEGACY
+	t_triangle		*triangles; // LEGACY
+	t_list			*linelist; // LEGACY
+	t_list			*entitylist; // LEGACY
 	t_clock			clock;
 	t_mouse			mouse;
 	t_player		player;
@@ -233,7 +233,7 @@ int		editor_events(t_editor *ed);
 bool	iskey(SDL_Event e, int keycode);
 
 /* EDITOR_RENDER.C */
-void	renderlines(t_sdlcontext *sdl, t_editor *ed); //TODO:  better name?
+void	renderlines(t_sdlcontext *sdl, t_editor *ed); //TODO:  LEGACY, remove
 
 /* EDITOR_MOUSE.C */
 t_point	mousetoworldspace(t_editor *ed);
@@ -259,6 +259,9 @@ t_img	*get_image_by_name(t_sdlcontext sdl, char *name);
 /* DELTATIME.C */
 void	update_deltatime(t_clock *c);
 
+/* INIT_RENDER.C */
+t_render	init_render(t_sdlcontext sdl);
+
 /* DRAW.C */
 void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr);
 void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr);
@@ -278,7 +281,7 @@ void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
 void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle, t_img img);
-void	engine3d(t_sdlcontext sdl, t_game game, t_render render);
+void	engine3d(t_sdlcontext sdl, t_render render);
 
 /* PHYSICS.C */
 bool	pointrectanglecollision(t_point p, t_rectangle rect);
