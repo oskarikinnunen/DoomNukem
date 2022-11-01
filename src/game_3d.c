@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game_3d.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/31 19:56:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/01 15:24:52 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -298,85 +298,88 @@ static t_texture	vector2_to_texture(t_vector2 v)
 	return(t);
 }
 
-void engine3d(t_sdlcontext sdl, t_game game, t_render render)
+static void render_object(t_sdlcontext sdl, t_render render, t_entity *entity)
 {
-	t_object		*obj;
-	t_vector3		vtarget;
-	t_mat4x4		matcamera;
-	t_mat4x4		matview;
-	int				i;
 	int				index;
+	t_object		*obj;
+	t_vector3		temp;
 
-	vtarget = vector3_add(render.position, render.lookdir);
-	matcamera = matrix_lookat(render.position, vtarget, (t_vector3){0, 0, 1});
-	matview = matrix_quickinverse(matcamera);
-	i = 0;
-	while (i < sdl.objectcount)
+	obj = entity->obj;
+	index = 0;
+	while (index < obj->vertice_count)
 	{
-		obj = &sdl.objects[i];
-		index = 0;
-		while (index < obj->vertice_count)
-		{
-			render.q[index] = vector3_to_quaternion(obj->vertices[index]);
-			render.q[index] = quaternion_mul_matrix(render.matworld, render.q[index]);
-			index++;
-		}
-		index = 0;
-		while (index < obj->face_count)
-		{
-			t_triangle tritransformed;
-			t_vector3 normal;	
-			t_vector3 vcameraray;	
-
-			tritransformed = (t_triangle){render.q[obj->faces[index].v_indices[0] - 1], render.q[obj->faces[index].v_indices[1] - 1], render.q[obj->faces[index].v_indices[2] - 1]};
-			if (obj->uv_count != 0)
-			{
-				tritransformed.t[0] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[0] - 1]);
-				tritransformed.t[1] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[1] - 1]);
-				tritransformed.t[2] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[2] - 1]);
-			}
-			normal = normal_calc(tritransformed);
-			vcameraray = vector3_sub(tritransformed.p[0].v, render.position);
-			if (vector3_dot(normal, vcameraray) < 0.0f || 1) //TODO: Currently ignoring normals with || 1
-			{
-				t_triangle clipped[2];
-				int nclippedtriangles = clippedtriangles(tritransformed, matview, clipped);
-				for (int n = 0; n < nclippedtriangles; n++)
-				{
-					render.calc_triangles[render.calc_tri_count++] = triangle_to_screenspace(render.matproj, clipped[n], sdl);
-				}
-			}
-			index++;
-		}
-		render.img = obj->materials[0].img;
-		if (!render.img)
-			render.img = render.debug_img;
-		clipped(render, sdl);
-		render.calc_tri_count = 0;
-		render.draw_tri_count = 0;
-		i++;
+		//TODO: Matrix rotations
+		temp = vector3_add(entity->transform.location, obj->vertices[index]);
+		temp = vector3_mul_vector3(entity->transform.scale, temp);
+		render.q[index] = vector3_to_quaternion(temp);
+		render.q[index] = quaternion_mul_matrix(render.matworld, render.q[index]);
+		index++;
 	}
-	i = 0;
-	while(i < game.tri_count)//TODO:(legacy code)Remove whole while loop after walls are added to objects in sdl struct
+	index = 0;
+	while (index < obj->face_count)
 	{
-		t_triangle tritransformed;
-		t_vector3 normal;
-		t_vector3 vcameraray;
+		t_triangle	tritransformed;
+		t_vector3	normal;	
+		t_vector3	vcameraray;	
 
-		tritransformed = transform_calc(render.matworld, game.triangles[i]);
+		tritransformed = (t_triangle){render.q[obj->faces[index].v_indices[0] - 1], render.q[obj->faces[index].v_indices[1] - 1], render.q[obj->faces[index].v_indices[2] - 1]};
+		if (obj->uv_count != 0)
+		{
+			tritransformed.t[0] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[0] - 1]);
+			tritransformed.t[1] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[1] - 1]);
+			tritransformed.t[2] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[2] - 1]);
+		}
 		normal = normal_calc(tritransformed);
 		vcameraray = vector3_sub(tritransformed.p[0].v, render.position);
 		if (vector3_dot(normal, vcameraray) < 0.0f || 1) //TODO: Currently ignoring normals with || 1
 		{
 			t_triangle clipped[2];
-			int nclippedtriangles = clippedtriangles(tritransformed, matview, clipped);
+			int nclippedtriangles = clippedtriangles(tritransformed, render.matview, clipped);
 			for (int n = 0; n < nclippedtriangles; n++)
 			{
 				render.calc_triangles[render.calc_tri_count++] = triangle_to_screenspace(render.matproj, clipped[n], sdl);
 			}
 		}
-		i++;
+		index++;
 	}
-	render.img = render.debug_img;
+	render.img = obj->materials[0].img;
+	if (!render.img)
+		render.img = render.debug_img;
 	clipped(render, sdl);
+	render.calc_tri_count = 0;
+	render.draw_tri_count = 0;
+}
+
+void engine3d(t_sdlcontext sdl, t_render render)
+{
+	t_object		*obj;
+	t_vector3		vtarget;
+	t_mat4x4		matcamera;
+	t_mat4x4		matview;
+	t_list			*head;
+	int				i;
+	int				index;
+
+	render.vtarget = vector3_add(render.position, render.lookdir);
+	render.matcamera = matrix_lookat(render.position, render.vtarget, (t_vector3){0, 0, 1});
+	render.matview = matrix_quickinverse(render.matcamera);
+	
+	head = render.listwall;
+	while (head)
+	{
+		render_object(sdl, render, &((t_wall *)head->content)->entity);
+		head = head->next;
+	}
+	head = render.listitem;
+	while (head)
+	{
+		render_object(sdl, render, &((t_item *)head->content)->entity);
+		head = head->next;
+	}
+	head = render.listbot;
+	while (head)
+	{
+		render_object(sdl, render, &((t_bot *)head->content)->entity);
+		head = head->next;
+	}
 }
