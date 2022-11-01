@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 17:23:34 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/01 23:25:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "editor_tools.h"
 #include "file_io.h"
 #include "inputhelp.h"
+#include "objects.h"
 /*
 void entity_tool_append_list(t_editor *ed, t_entity ent) //TODO: make 
 {
@@ -103,24 +104,36 @@ static void	entity_tool_cleanup(t_editor *ed)
 
 void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 {
-	
+	t_entity	*ent;
+
+	ent = (t_entity *)ed->tool->tooldata;
+	if (ent->obj != &sdl.objects[ent->object_index])
+		ent->obj = &sdl.objects[ent->object_index];
+	render_object(sdl, ed->render, ent);
 }
 
 
 void	entity_tool_update(t_editor *ed)
 {
-	t_entity	ent;
+	t_entity	*ent;
+	float		indexer;
 
+	ent = (t_entity *)ed->tool->tooldata;
+	ent->transform.location = (t_vector3){ed->offset.x, -ed->offset.y, 0};
+	ent->object_index += ((ed->keystate >> KEYS_SPACEMASK) & 1);
+	if (ent->object_index >= 2)
+		ent->object_index = 0;
 	if (mouse_clicked(ed->mouse, MOUSE_LEFT))
 	{
-		ed->reload_objects = true;
+		/*ed->reload_objects = true;
 		ft_bzero(&ent, sizeof(t_entity));
 		ent.obj = NULL;
 		printf("ENTITY TOOL CLICK!!\n");
 		ent.object_index = 1;
 		ent.transform.scale = vector3_one();
-		ent.transform.location = (t_vector3){ed->offset.x, -ed->offset.y, ed->offset.z};
-		list_push(&ed->entitylist, &ent, sizeof(t_entity));
+		ent.transform.location = (t_vector3){ed->offset.x, -ed->offset.y, ed->offset.z};*/
+		list_push(&ed->entitylist, ent, sizeof(t_entity));
+		printf("after list push, list len is %i \n", ft_listlen(ed->entitylist));
 	}
 		
 }
@@ -131,12 +144,16 @@ t_tool	*get_entity_tool()
 	= {
 		entity_tool_update, entity_tool_draw 
 	};
+	t_entity		*ent; //TODO: make entity tool use it's own tooldata struct,
 
 	if (tool.tooldata == NULL)
 	{
 		tool.tooldata = ft_memalloc(sizeof(t_entity));
 		if (tool.tooldata == NULL)
 			error_log(EC_MALLOC);
+		ent = (t_entity *)tool.tooldata;
+		ent->transform.scale = vector3_one();
+		ent->object_index = 1;
 	}
 	ft_strcpy(tool.icon_name, "entitytool.png");
 	return (&tool);

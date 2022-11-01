@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game_3d.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/01 17:22:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/01 23:25:36 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -304,6 +304,9 @@ void render_object(t_sdlcontext sdl, t_render render, t_entity *entity)
 	t_object		*obj;
 	t_vector3		temp;
 
+	render.vtarget = vector3_add(render.position, render.lookdir);
+	render.matcamera = matrix_lookat(render.position, render.vtarget, (t_vector3){0, 0, 1});
+	render.matview = matrix_quickinverse(render.matcamera);
 	obj = entity->obj;
 	if (obj == NULL)
 		return;
@@ -365,7 +368,6 @@ void engine3d(t_sdlcontext sdl, t_render render)
 	render.vtarget = vector3_add(render.position, render.lookdir);
 	render.matcamera = matrix_lookat(render.position, render.vtarget, (t_vector3){0, 0, 1});
 	render.matview = matrix_quickinverse(render.matcamera);
-	
 	head = render.listwall;
 	while (head)
 	{

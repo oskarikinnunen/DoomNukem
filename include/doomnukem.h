@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 16:57:47 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/01 22:30:26 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,20 +133,6 @@ typedef struct s_clock
 	Uint32	delta;
 } t_clock;
 
-typedef struct s_editor
-{
-	t_line			line; //the line that is being edited right now //TODO: this should be moved to point_tool
-	t_list			*linelist;
-	t_list			*entitylist;
-	t_list			*buttonlist;
-	t_mouse			mouse;
-	t_clock			clock;
-	t_vector3		offset;
-	struct s_tool	*tool;
-	uint32_t		keystate;
-	bool			reload_objects; //Doesn't actually reload them :3
-}	t_editor;
-
 /* Playmode */
 
 typedef struct s_player
@@ -233,6 +219,21 @@ typedef struct s_render
 	t_img			*debug_img;
 	t_quaternion	*q;
 }	t_render;
+
+typedef struct s_editor
+{
+	t_line			line; //the line that is being edited right now //TODO: this should be moved to point_tool
+	t_list			*linelist;
+	t_list			*entitylist;
+	t_list			*buttonlist;
+	t_mouse			mouse;
+	t_clock			clock;
+	t_vector3		offset;
+	t_render		render;
+	struct s_tool	*tool;
+	uint32_t		keystate;
+	bool			reload_objects; //Doesn't actually reload them :3
+}	t_editor;
 
 typedef struct s_game
 {

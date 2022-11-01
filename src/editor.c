@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 17:30:43 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/01 23:05:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,11 +72,24 @@ static void	reload_objects(t_list **entitylist, t_sdlcontext sdl)
 	}
 }
 
+static void render_editor3d(t_sdlcontext sdl, t_editor ed)
+{
+	t_list	*l;
+	t_entity	ent;
+
+	l = ed.entitylist;
+	while (l != NULL)
+	{
+		ent = *(t_entity *)l->content;
+		render_object(sdl, ed.render, &ent);
+		l = l->next;
+	}
+}
+
 int	editorloop(t_sdlcontext sdl)
 {
 	t_editor		ed;
 	t_gamereturn	gr;
-	t_render		render;
 
 	bzero(&ed, sizeof(t_editor));
 	ed.linelist = load_chunk("map_test1", "WALL", sizeof(t_line));
@@ -84,32 +97,16 @@ int	editorloop(t_sdlcontext sdl)
 	initialize_buttons(ed.buttonlist, sdl);
 	ed.tool = get_point_tool();
 	gr = game_continue;
-	render = init_render(sdl);
+	ed.render = init_render(sdl);
 	while (gr == game_continue)
 	{
 		update_deltatime(&ed.clock);
-		update_render_editor(&render, ed);
+		update_render_editor(&ed.render, ed);
 		ft_bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
+		ft_bzero(sdl.zbuffer, sizeof(float) * sdl.window_h * sdl.window_w);
 		gr = editor_events(&ed);
-		ft_bzero(sdl.zbuffer, sdl.window_h * sdl.window_w * sizeof(float));
-		engine3d(sdl, render);
-		//ft_bzero(sdl.zbuffer, sdl.window_h * sdl.window_w * sizeof(float));
-		render_object(sdl, render, render.listbot->content);
-		if (ed.entitylist != NULL)
-		{
-			render.listbot = ed.entitylist;
-			render_object(sdl, render, ed.entitylist->content);
-		}
-			
-		if (ed.reload_objects)
-		{
-			reload_objects(&ed.entitylist, sdl);
-			ed.reload_objects = false;
-		}
-			
-		//render
-		//drawgrid(sdl, ed.offset);
-		//renderlines(&sdl, &ed);
+		
+		render_editor3d(sdl, ed);
 		draw_buttons(ed, sdl);
 		if (ed.tool != NULL)
 		{
