@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/01 14:40:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/01 14:46:44 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -307,6 +307,7 @@ void engine3d(t_sdlcontext sdl, t_render render)
 	int				i;
 	int				index;
 
+	ft_bzero(sdl.zbuffer, sdl.window_w * sdl.window_h * sizeof(float));
 	vtarget = vector3_add(render.position, render.lookdir);
 	matcamera = matrix_lookat(render.position, vtarget, (t_vector3){0, 0, 1});
 	matview = matrix_quickinverse(matcamera);

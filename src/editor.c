@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 14:17:32 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/01 15:08:10 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static void	drawgrid(t_sdlcontext sdl, t_point origin)
 
 static void	update_render_editor(t_render *render, t_editor ed)
 {
-	render->position = (t_vector3){ed.offset.x, -ed.offset.y, 0.0f};
+	render->position = (t_vector3){ed.offset.x, -ed.offset.y, ed.offset.z};
 	render->lookdir = (t_vector3){0.0f, -0.015f, -1.0f};
 }
 
@@ -73,8 +73,9 @@ int	editorloop(t_sdlcontext sdl)
 		update_render_editor(&render, ed);
 		ft_bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 		gr = editor_events(&ed);
-		drawgrid(sdl, ed.offset);
-		renderlines(&sdl, &ed);
+		engine3d(sdl, render);
+		//drawgrid(sdl, ed.offset);
+		//renderlines(&sdl, &ed);
 		draw_buttons(ed, sdl);
 		if (ed.tool != NULL)
 		{
@@ -86,7 +87,7 @@ int	editorloop(t_sdlcontext sdl)
 				ed.tool->icon = get_image_by_name(sdl, ed.tool->icon_name);
 		}
 		ed.mouse.click_unhandled = false;
-		engine3d(sdl, render);
+		
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 	}

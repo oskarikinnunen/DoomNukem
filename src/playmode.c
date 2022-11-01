@@ -69,8 +69,6 @@ static void update_render(t_render *render, t_player player)
 {
 	render->lookdir = player.lookdir;
 	render->position = player.position;
-	printf("pos %f %f %f, lookdir %f %f %f \n", render->position.x, render->position.y, render->position.z,
-		render->lookdir.x, render->lookdir.y, render->lookdir.z);
 }
 
 /*main game loop*/
