@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 15:01:49 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/02 20:54:09 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -327,8 +327,9 @@ void	drawrectangle(t_sdlcontext, t_rectangle rect, uint32_t clr);
 // Draws a text that has been saved to font->texts[i] with save_text()
 void	draw_saved_text(t_sdlcontext *sdl, t_img *text, t_point pos);
 
-// Draws a text without saving it anywhere
-void	draw_text(t_sdlcontext *sdl, t_font *font, const char *str, t_point pos);
+// Draws a text without saving it anywhere.
+// Fonts: 0 = 11, 1 = 12, 2 = 14, 3 = 16, 4 = 18, 5 = 20, 6 = 22
+void	draw_text(t_sdlcontext *sdl, const char *str, t_point pos, int font_size);
 
 /* EDITOR_BUTTONS.C */
 void	draw_editor_buttons(t_sdlcontext sdl, uint8_t tool_selected); //TODO: MOVE TO EDITOR_TOOLS
@@ -338,7 +339,7 @@ void	check_tool_change_click(t_point cursor, t_editor *ed); //TODO: MOVE TO EDIT
 void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale);
 
 /* FONT.C */
-void	load_font(t_sdlcontext *sdl, const char *filename);
+void	load_fonts(t_sdlcontext *sdl);
 
 /* PERFGRAPH.C */
 void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
@@ -367,6 +368,7 @@ void	error_log(int error_code);
 void	quit_game(t_sdlcontext *sdl);
 
 /* TEXT.C */
+// font[0] = 11, [1] = 12, [2] = 14, [3] = 16, [4] = 18, [5] = 20, [6] = 22
 void	save_text(t_font *font, const char *str);
 
 /* LIST_HELPER.C */
