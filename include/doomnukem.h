@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 15:23:49 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/02 14:54:28 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,7 +289,11 @@ void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr);
 void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr);
 void	drawcircle(t_sdlcontext sdl, t_point pos, int size, uint32_t clr);
 void	drawrectangle(t_sdlcontext, t_rectangle rect, uint32_t clr);
+
+// Draws a text that has been saved to font->texts[i] with save_text()
 void	draw_saved_text(t_sdlcontext *sdl, t_img *text, t_point pos);
+
+// Draws a text without saving it anywhere
 void	draw_text(t_sdlcontext *sdl, t_font *font, const char *str, t_point pos);
 
 /* EDITOR_BUTTONS.C */
