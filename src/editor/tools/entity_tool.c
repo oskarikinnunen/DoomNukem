@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 14:37:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 16:43:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,7 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 {
 	t_entity	*ent;
 
+	//text
 	ent = (t_entity *)ed->tool->tooldata;
 	ent->object_index = ft_clamp(ent->object_index, 0, sdl.objectcount - 1);
 	if (ent->obj != &sdl.objects[ent->object_index])
