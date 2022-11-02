@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   obj_parse_uvs.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 14:17:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 16:26:10 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/01 14:34:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ t_vector2	parse_uv(char *line)
 
 	uv_strs = ft_strsplit(line, ' ');
 	i = 0;
+	result = vector2_zero();
 	while (i < 2 && uv_strs[i] != NULL)
 	{
 		if (i == 0)

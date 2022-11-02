@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   spaceconversions.c                                 :+:      :+:    :+:   */
+/*   walltool.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/26 13:31:43 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 15:07:21 by okinnune         ###   ########.fr       */
+/*   Created: 2022/10/31 15:17:04 by okinnune          #+#    #+#             */
+/*   Updated: 2022/10/31 15:37:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "doomnukem.h"
-#include "vectors.h"
+#ifndef WALLTOOL_H
+# define WALLTOOL_H
 
-t_point worldtoeditorspace(t_editor *ed, t_vector2 worldcrd)
+#include "objects.h"
+
+typedef struct s_walltooldata
 {
-	t_point	result;
+	t_object	current;
+}	t_walltooldata;
 
-	result = vector2_to_point(worldcrd);
-	//result = point_add(result, ed->offset);
-	return (result);
-}
+#endif

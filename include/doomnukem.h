@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 14:54:28 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/02 15:01:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,13 +83,6 @@ typedef enum e_entityID
 {
 	player
 }	t_entityID;
-
-typedef struct s_entity
-{
-	t_entityID	id;
-	t_vector2	position;
-	char		test1;
-}	t_entity;
 
 typedef struct s_img
 {
@@ -173,7 +166,7 @@ typedef struct s_editor
 	t_list			*buttonlist;
 	t_mouse			mouse;
 	t_clock			clock;
-	t_point			offset;
+	t_vector3		offset;
 	struct s_tool	*tool;
 	uint32_t		keystate;
 }	t_editor;
@@ -215,8 +208,42 @@ typedef struct	s_triangle
 	uint32_t	clr;
 }	t_triangle;
 
+typedef struct s_transform
+{
+	t_vector3	location;
+	t_vector3	rotation;
+	t_vector3	scale;
+}	t_transform;
+
+typedef struct s_entity
+{
+	t_transform		transform;
+	struct s_object	*obj;
+}	t_entity;
+
+typedef struct s_bot
+{
+	t_entity	entity;
+}	t_bot;
+
+typedef struct s_wall
+{
+	t_entity	entity;
+}	t_wall;
+
+typedef struct s_item
+{
+	t_entity	entity;
+}	t_item;
+
 typedef struct s_render
 {
+	t_list			*listwall;
+	t_list			*listbot;
+	t_list			*listitem;
+	t_vector3		vtarget;
+	t_mat4x4		matcamera;
+	t_mat4x4		matview;
 	t_mat4x4		matworld;
 	t_mat4x4		matproj;
 	t_vector3		position;
@@ -228,10 +255,14 @@ typedef struct s_render
 	t_img			*img;
 	t_img			*debug_img;
 	t_quaternion	*q;
-} t_render;
+}	t_render;
 
 typedef struct s_game
 {
+	t_list			*listwall;
+	t_list			*listbot;
+	t_list			*listitem;
+	//t_entity		entity[1000];
 	int				tri_count;
 	t_triangle		*triangles;
 	t_list			*linelist;
@@ -258,7 +289,7 @@ int		editor_events(t_editor *ed);
 bool	iskey(SDL_Event e, int keycode);
 
 /* EDITOR_RENDER.C */
-void	renderlines(t_sdlcontext *sdl, t_editor *ed); //TODO:  better name?
+void	renderlines(t_sdlcontext *sdl, t_editor *ed); //TODO:  LEGACY, remove
 
 /* EDITOR_MOUSE.C */
 t_point	mousetoworldspace(t_editor *ed);
@@ -284,7 +315,10 @@ t_img	*get_image_by_name(t_sdlcontext sdl, char *name);
 /* DELTATIME.C */
 void	update_deltatime(t_clock *c);
 
-/* DRAW.C*/
+/* INIT_RENDER.C */
+t_render	init_render(t_sdlcontext sdl);
+
+/* DRAW.C */
 void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr);
 void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr);
 void	drawcircle(t_sdlcontext sdl, t_point pos, int size, uint32_t clr);
@@ -312,7 +346,7 @@ void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
 void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle, t_img img);
-void	engine3d(t_sdlcontext sdl, t_game game, t_render render);
+void	engine3d(t_sdlcontext sdl, t_render render);
 
 /* PHYSICS.C */
 bool	pointrectanglecollision(t_point p, t_rectangle rect);

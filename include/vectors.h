@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 01:00:38 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/10/31 15:48:26 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,8 +152,14 @@ t_point		point_add(t_point first, t_point second);
 //returns point 'first' substracted by point 'second'
 t_point		point_sub(t_point first, t_point second);
 
+//returns point 'point' where 'x = x % mod' and 'y = y % mod'
+t_point		point_mod(t_point point, int	mod);
+
 //returns point 'point' with 'add' added to x and y
 t_point		point_add_xy(t_point point, int add);
+
+//returns point 'point' snapped into 'grid' that is the size of 'interval' //TODO: better explanation
+t_point		point_snap(t_point point, int interval);
 
 //returns point 'point' multiplied by 'mul'
 t_point		point_mul(t_point point, int mul);

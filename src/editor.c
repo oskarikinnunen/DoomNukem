@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 14:56:03 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/02 15:02:06 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,27 +47,34 @@ static void	drawgrid(t_sdlcontext sdl, t_point origin)
 	}
 }
 
-void	buttoncreator(t_editor *ed, t_sdlcontext sdl);
+static void	update_render_editor(t_render *render, t_editor ed)
+{
+	render->position = (t_vector3){ed.offset.x, -ed.offset.y, ed.offset.z};
+	render->lookdir = (t_vector3){0.0f, -0.015f, -1.0f};
+}
 
 int	editorloop(t_sdlcontext sdl)
 {
 	t_editor		ed;
 	t_gamereturn	gr;
+	t_render		render;
 
 	bzero(&ed, sizeof(t_editor));
 	ed.linelist = load_chunk("map_test1", "WALL", sizeof(t_line));
-	ed.entitylist = load_chunk("map_test1", "ENT_", sizeof(t_entity));
 	ed.buttonlist = load_chunk("buttons", "BUTN", sizeof(t_guibutton));
 	initialize_buttons(ed.buttonlist, sdl);
 	ed.tool = get_point_tool();
 	gr = game_continue;
+	render = init_render(sdl);
 	while (gr == game_continue)
 	{
 		update_deltatime(&ed.clock);
+		update_render_editor(&render, ed);
 		ft_bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 		gr = editor_events(&ed);
-		drawgrid(sdl, ed.offset);
-		renderlines(&sdl, &ed);
+		engine3d(sdl, render);
+		//drawgrid(sdl, ed.offset);
+		//renderlines(&sdl, &ed);
 		draw_buttons(ed, sdl);
 		if (ed.tool != NULL)
 		{
@@ -79,6 +86,7 @@ int	editorloop(t_sdlcontext sdl)
 				ed.tool->icon = get_image_by_name(sdl, ed.tool->icon_name);
 		}
 		ed.mouse.click_unhandled = false;
+		
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 	}

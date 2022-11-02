@@ -16,10 +16,13 @@ images =
 	"stop.png",
 	"redball.png",
 	"sans-serif-pink-bg.png",
-	"sans-serif-black-bg.png"
+	"sans-serif-black-bg.png",
+	"redball.png",	
+	"quake2.png",
+	"quake3.png"
 }
 objects =
 {
-	"cube.obj",
+	"tex_cube.obj",
 	"cy__000000.obj"
 }
