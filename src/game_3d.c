@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/02 14:12:08 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 16:16:53 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,8 +233,8 @@ static int clippedtriangles(t_triangle tritransformed, t_mat4x4 matview, t_trian
 	triviewed.t[1] = tritransformed.t[1];
 	triviewed.t[2] = tritransformed.t[2];
 	return (Triangle_ClipAgainstPlane(
+	(t_vector3){0.0f, 0.0f, 0.1f},
 	(t_vector3){0.0f, 0.0f, 0.2f},
-	(t_vector3){0.0f, 0.0f, 1.0f},
 	&triviewed, clipped));
 }
 
