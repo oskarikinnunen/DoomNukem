@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game_3d.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/01 23:25:36 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 14:12:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,9 +124,9 @@ static void draw_triangles(t_sdlcontext sdl, t_render render)
 	while (index < render.draw_tri_count)
 	{
 		z_fill_tri(sdl, render.draw_triangles[index], *render.img);
-		drawline(sdl, (t_point){render.draw_triangles[index].p[0].v.x, render.draw_triangles[index].p[0].v.y}, (t_point){render.draw_triangles[index].p[1].v.x, render.draw_triangles[index].p[1].v.y}, INT_MAX);
+		/*drawline(sdl, (t_point){render.draw_triangles[index].p[0].v.x, render.draw_triangles[index].p[0].v.y}, (t_point){render.draw_triangles[index].p[1].v.x, render.draw_triangles[index].p[1].v.y}, INT_MAX);
 		drawline(sdl, (t_point){render.draw_triangles[index].p[2].v.x, render.draw_triangles[index].p[2].v.y}, (t_point){render.draw_triangles[index].p[1].v.x, render.draw_triangles[index].p[1].v.y}, INT_MAX);
-		drawline(sdl, (t_point){render.draw_triangles[index].p[0].v.x, render.draw_triangles[index].p[0].v.y}, (t_point){render.draw_triangles[index].p[2].v.x, render.draw_triangles[index].p[2].v.y}, INT_MAX);
+		drawline(sdl, (t_point){render.draw_triangles[index].p[0].v.x, render.draw_triangles[index].p[0].v.y}, (t_point){render.draw_triangles[index].p[2].v.x, render.draw_triangles[index].p[2].v.y}, INT_MAX);*/
 		index++;
 	}
 }
@@ -347,7 +347,8 @@ void render_object(t_sdlcontext sdl, t_render render, t_entity *entity)
 		}
 		index++;
 	}
-	render.img = obj->materials[0].img;
+	if (obj->material_count != 0)
+		render.img = obj->materials[0].img;
 	if (!render.img)
 		render.img = render.debug_img;
 	clipped(render, sdl);

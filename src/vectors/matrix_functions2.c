@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   matrix_functions2.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:22:51 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/19 14:23:34 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/02 14:00:40 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ t_vector3 lookdirection(t_vector2 angle)
 	t_mat4x4		matcamerarot;
 
 	matcamerarot = matrix_makerotationy(angle.y);
-	temp = quaternion_mul_matrix(matcamerarot, (t_quaternion){1, 0, 0, 1});
+	//temp = quaternion_mul_matrix(matcamerarot, (t_quaternion){0.0f, 0.0f, 1.0f, 1.0f});
+	//temp = quaternion_mul_matrix(matcamerarot, (t_quaternion){1, 1, 1, 1});
 	matcamerarot = matrix_makerotationz(angle.x);
 	temp = quaternion_mul_matrix(matcamerarot, temp);
 

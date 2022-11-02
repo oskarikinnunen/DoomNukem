@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 23:25:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 14:37:27 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,8 +107,11 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	t_entity	*ent;
 
 	ent = (t_entity *)ed->tool->tooldata;
+	ent->object_index = ft_clamp(ent->object_index, 0, sdl.objectcount - 1);
 	if (ent->obj != &sdl.objects[ent->object_index])
 		ent->obj = &sdl.objects[ent->object_index];
+	if (ent->obj == NULL)
+		ent->obj = object_plane();
 	render_object(sdl, ed->render, ent);
 }
 
@@ -116,15 +119,18 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 void	entity_tool_update(t_editor *ed)
 {
 	t_entity	*ent;
-	float		indexer;
+	t_vector3	dir;
 
 	ent = (t_entity *)ed->tool->tooldata;
-	ent->transform.location = (t_vector3){ed->offset.x, -ed->offset.y, 0};
-	ent->object_index += ((ed->keystate >> KEYS_SPACEMASK) & 1);
-	if (ent->object_index >= 2)
-		ent->object_index = 0;
+	//ent->transform.location = (t_vector3){ed->offset.x, ed->offset.y, 0};
+	dir = vector3_sub((t_vector3){ed->offset.x, ed->offset.y, 0}, ent->transform.location);
+	ent->transform.location = vector3_movetowards(ent->transform.location, dir, ed->clock.delta * 0.05f);
+	if ((ed->keystate >> KEYS_SHIFTMASK) & 1)
+		ent->object_index += ed->mouse.scroll_delta;
 	if (mouse_clicked(ed->mouse, MOUSE_LEFT))
 	{
+		list_push(&ed->entitylist, ent, sizeof(t_entity));
+	}
 		/*ed->reload_objects = true;
 		ft_bzero(&ent, sizeof(t_entity));
 		ent.obj = NULL;
@@ -132,9 +138,8 @@ void	entity_tool_update(t_editor *ed)
 		ent.object_index = 1;
 		ent.transform.scale = vector3_one();
 		ent.transform.location = (t_vector3){ed->offset.x, -ed->offset.y, ed->offset.z};*/
-		list_push(&ed->entitylist, ent, sizeof(t_entity));
-		printf("after list push, list len is %i \n", ft_listlen(ed->entitylist));
-	}
+		//list_push(&ed->entitylist, ent, sizeof(t_entity));
+		//printf("after list push, list len is %i \n", ft_listlen(ed->entitylist));
 		
 }
 

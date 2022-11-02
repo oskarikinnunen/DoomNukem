@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 23:05:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 14:34:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,9 @@ static void	drawgrid(t_sdlcontext sdl, t_point origin)
 
 static void	update_render_editor(t_render *render, t_editor ed) //TODO: move game3d matrix stuff 
 {
-	render->position = (t_vector3){ed.offset.x, -ed.offset.y, ed.offset.z};
-	render->lookdir = (t_vector3){0.0f, -0.015f, -1.0f};
+	render->position = (t_vector3){ed.offset.x, ed.offset.y - (ed.forward_offset.y * 75.0f), ed.offset.z};
+	//render->lookdir = lookdirection(ed.lookangle);
+	render->lookdir = (t_vector3){0.0f, -0.015f + ed.forward_offset.y, -1.0f};
 }
 
 static void	reload_objects(t_list **entitylist, t_sdlcontext sdl)
@@ -98,6 +99,16 @@ int	editorloop(t_sdlcontext sdl)
 	ed.tool = get_point_tool();
 	gr = game_continue;
 	ed.render = init_render(sdl);
+
+	
+	//DEBUGGING SKYBOX
+	t_entity	skybox;
+	ft_bzero(&skybox, sizeof(t_entity));
+	skybox.obj = &sdl.objects[1];
+	skybox.transform.scale = vector3_mul(vector3_one(), 20.0f);
+	list_push(&ed.entitylist, &skybox, sizeof(t_entity));
+	//
+
 	while (gr == game_continue)
 	{
 		update_deltatime(&ed.clock);
@@ -105,7 +116,6 @@ int	editorloop(t_sdlcontext sdl)
 		ft_bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 		ft_bzero(sdl.zbuffer, sizeof(float) * sdl.window_h * sdl.window_w);
 		gr = editor_events(&ed);
-		
 		render_editor3d(sdl, ed);
 		draw_buttons(ed, sdl);
 		if (ed.tool != NULL)

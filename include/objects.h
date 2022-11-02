@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 12:41:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 15:53:55 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 13:15:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,5 +46,6 @@ struct s_list	*get_uv_list(int fd);
 struct s_list	*get_vertex_list(int fd);
 struct s_list	*get_face_list(int fd);
 void			objects_init(struct s_sdlcontext *sdl);
+t_object		*object_plane();
 
 #endif

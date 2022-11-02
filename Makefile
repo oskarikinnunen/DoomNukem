@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
+#    By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/01 14:00:06 by okinnune         ###   ########.fr        #
+#    Updated: 2022/11/02 12:22:37 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,6 +42,7 @@ SRCFILES= main.c draw.c img.c deltatime.c anim.c\
 		obj_parser/obj_parse_faces.c \
 		obj_parser/obj_parse_uvs.c \
 		object_init.c \
+		object_primitives.c \
 		init_render.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \

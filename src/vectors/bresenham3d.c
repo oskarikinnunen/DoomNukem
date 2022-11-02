@@ -1,19 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   bresenham.c                                        :+:      :+:    :+:   */
+/*   bresenham3d.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/15 12:09:50 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 14:49:18 by okinnune         ###   ########.fr       */
+/*   Created: 2022/11/02 14:50:09 by okinnune          #+#    #+#             */
+/*   Updated: 2022/11/02 14:51:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "v3lib.h"
-#include "bresenham.h"
+#include "vectors.h"
 
-void	step_bresenham_x(t_bresenham *b)
+typedef struct s_raycast
+{
+	t_vector3	pos;
+	t_vector3	dir;
+	t_vector3	err;
+}	t_raycast;
+/*void	step_bresenham_x(t_bresenham *b)
 {
 	if (b->error * 2 < b->diff.x && b->local.y != b->target.y)
 	{
@@ -46,3 +51,4 @@ void	populate_bresenham(t_bresenham *b, t_point from, t_point to)
 	b->target = to;
 	b->error = b->diff.x + b->diff.y;
 }
+*/

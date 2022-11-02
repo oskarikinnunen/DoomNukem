@@ -16,10 +16,11 @@ images =
 	"stop.png",
 	"redball.png",	
 	"quake2.png",
-	"quake3.png"
+	"quake3.png",
+	"car_red.png"
 }
 objects =
 {
-	"tex_cube.obj",
-	"cy__000000.obj"
+	"car2.obj",
+	"primitive_cube_textured.obj"
 }

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 14:34:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 17:03:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 14:08:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,29 @@ void	set_tool_entity(t_editor *ed)
 	ed->mouse.click_unhandled = false;
 }
 
+void	editor_angle_x_sub(t_editor *ed)
+{
+	//ed->lookangle.x -= ft_degtorad(45.0f);
+}
+
+void	editor_angle_x_add(t_editor *ed)
+{
+	//ed->lookangle.x += ft_degtorad(45.0f);
+}
+
+void	editor_angle_y_sub(t_editor *ed)
+{
+	if (ed->forward_offset.y != -1.0f)
+		ed->forward_offset.y = -1.0f;
+	else
+		ed->forward_offset.y = 0.0f;
+}
+
+void	editor_angle_y_add(t_editor *ed)
+{
+	ed->forward_offset.y += 1.0f;
+}
+
 #include "assert.h"
 
 t_click_func_def	get_button_func(int	index)
@@ -54,7 +77,11 @@ t_click_func_def	get_button_func(int	index)
 		{"set_tool_button", set_tool_button},
 		{"set_tool_point", set_tool_point},
 		{"set_tool_entity", set_tool_entity},
-		{"set_tool_wall", set_tool_wall}
+		{"set_tool_wall", set_tool_wall},
+		{"editor_angle_x_sub", editor_angle_x_sub},
+		{"editor_angle_x_add", editor_angle_x_add},
+		{"editor_angle_y_sub", editor_angle_y_sub},
+		{"editor_angle_y_add", editor_angle_y_add}
 	};
 	int	i;
 

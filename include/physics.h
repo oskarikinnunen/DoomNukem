@@ -1,21 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_degtorad.c                                      :+:      :+:    :+:   */
+/*   physics.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/22 10:04:43 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 13:47:47 by okinnune         ###   ########.fr       */
+/*   Created: 2022/11/02 14:53:58 by okinnune          #+#    #+#             */
+/*   Updated: 2022/11/02 15:06:43 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#ifndef PHYSICS_H
+# define PHYSICS_H
 
-/*
-	2π rad == 360 degrees
-*/
-double	ft_degtorad(double angle)
+#include "doomnukem.h" //TODO: only needs entity
+
+typedef struct s_physics
 {
-	return (angle * (PI / 180.0f));
-}
+	t_entity	*entities[20]; //points to entities in 'editor->entitylist'
+	uint8_t		cube[512][512][512];
+}	t_physics;
+
+//void	physics_gather_entities
+
+#endif

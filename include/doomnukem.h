@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 22:30:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 15:14:00 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@
 # define COLLISION_ON //Comment/uncomment to toggle experimental collision
 
 
-# define EDITOR_MOVESPEED 1.2f
+# define EDITOR_MOVESPEED 0.1f
 # define MOVESPEED 10.010f
 # define MAXMOVEMENTSPEED 0.08f
 # define ROTATESPEED 0.002f
@@ -167,7 +167,7 @@ typedef struct	s_triangle
 {
 	t_quaternion	p[3];
 	t_texture		t[3];
-	uint32_t	clr;
+	uint32_t		clr;
 }	t_triangle;
 
 typedef struct s_transform
@@ -229,6 +229,7 @@ typedef struct s_editor
 	t_mouse			mouse;
 	t_clock			clock;
 	t_vector3		offset;
+	t_vector2		forward_offset;
 	t_render		render;
 	struct s_tool	*tool;
 	uint32_t		keystate;

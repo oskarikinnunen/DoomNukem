@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   png.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:10:14 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 15:05:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 12:50:26 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ t_img	pngparse(char *filename)
 	png.height = rev_bytes(*(uint32_t *)(ptr + 4));
 	if (png.width >= 165 || png.height >= 165)
 	{
-		printf("images with size over ~165 pixels are unsupported, pls fix the png reader!\n");
+		printf("images with size over ~165 pixels are unsupported, pls fix the png reader! (image was %s , assumed size %ix%i\n", filename, png.width, png.height);
 		exit(0);
 	}
 	ptr += 8;

@@ -3,15 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   physics.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 13:52:50 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 14:18:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 14:27:34 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "shapes.h"
+
+t_vector3	raycast_result(t_vector3 origin, t_vector3 direction, t_list *entitylist)
+{
+	
+}
 
 bool	pointrectanglecollision(t_point p, t_rectangle rect) //dunno if this should be in physics
 {
