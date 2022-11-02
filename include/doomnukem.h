@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 15:14:00 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 16:47:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,30 @@ typedef struct s_img
 	uint32_t	length;
 }	t_img;
 
+typedef struct s_font_chars
+{
+	char			id;
+	t_point			pos;
+	t_point			size;
+	t_point			offset;
+	int				xadvance;
+}	t_font_chars;
+
+typedef struct s_font
+{
+	char			*name;
+	char			*file_name;
+	int				size;
+	int				padding;
+	int				spacing;
+	int				line_height;
+	t_point			scale;
+	int				char_count;
+	t_font_chars	*chars;
+	t_img			*bitmap;
+	t_img			*texts[20];
+}	t_font;
+
 typedef struct s_sdlcontext
 {
 	SDL_Window				*window;
@@ -102,6 +126,7 @@ typedef struct s_sdlcontext
 	uint32_t				imagecount;
 	struct s_object			*objects;
 	uint32_t				objectcount;
+	t_font					*font;
 	uint32_t				window_w;
 	uint32_t				window_h;
 }	t_sdlcontext;
@@ -303,12 +328,21 @@ void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr);
 void	drawcircle(t_sdlcontext sdl, t_point pos, int size, uint32_t clr);
 void	drawrectangle(t_sdlcontext, t_rectangle rect, uint32_t clr);
 
+// Draws a text that has been saved to font->texts[i] with save_text()
+void	draw_saved_text(t_sdlcontext *sdl, t_img *text, t_point pos);
+
+// Draws a text without saving it anywhere
+void	draw_text(t_sdlcontext *sdl, t_font *font, const char *str, t_point pos);
+
 /* EDITOR_BUTTONS.C */
 void	draw_editor_buttons(t_sdlcontext sdl, uint8_t tool_selected); //TODO: MOVE TO EDITOR_TOOLS
 void	check_tool_change_click(t_point cursor, t_editor *ed); //TODO: MOVE TO EDITOR_TOOLS
 
 //Draws image 'img' to pixels 'pxls', offset by point 'pos' and scaled to 'scale'
 void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale);
+
+/* FONT.C */
+void	load_font(t_sdlcontext *sdl, const char *filename);
 
 /* PERFGRAPH.C */
 void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
@@ -336,6 +370,9 @@ void	error_log(int error_code);
 
 /* SDL */
 void	quit_game(t_sdlcontext *sdl);
+
+/* TEXT.C */
+void	save_text(t_font *font, const char *str);
 
 /* LIST_HELPER.C */
 void	list_push(t_list **head, void *content, size_t content_size);

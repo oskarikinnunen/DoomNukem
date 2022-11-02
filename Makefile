@@ -6,7 +6,7 @@
 #    By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/02 12:22:37 by okinnune         ###   ########.fr        #
+#    Updated: 2022/11/02 16:46:09 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ LUAFOLDER= lua-5.3.6
 LUA= $(LUAFOLDER)/install/lib/liblua.a #TODO: find out real name!
 
 #Source files:
-SRCFILES= main.c draw.c img.c deltatime.c anim.c\
+SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		editor.c editor_mouse.c editor_events.c editor_render.c \
 		editor_map_io.c	\
 		editor/tools/point_tool.c \
@@ -41,6 +41,7 @@ SRCFILES= main.c draw.c img.c deltatime.c anim.c\
 		obj_parser/obj_parse_vertex.c \
 		obj_parser/obj_parse_faces.c \
 		obj_parser/obj_parse_uvs.c \
+		font.c text.c \
 		object_init.c \
 		object_primitives.c \
 		init_render.c
