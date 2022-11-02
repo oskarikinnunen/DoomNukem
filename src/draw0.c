@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw0.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 22:14:00 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/02 19:00:17 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale)
 
 	if (img.size.x == 0 || img.size.y == 0 || img.length == 0)
 		return ;
-	scale.y += 2; //LUL this is to fix the shitty png reader
+	//scale.y += 2; //LUL this is to fix the shitty png reader
 	scalar.x = ((float)img.size.x / scale.x);
 	scalar.y = ((float)img.size.y / scale.y);
 	pixel.y = 0;

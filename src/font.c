@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 22:00:00 by raho              #+#    #+#             */
-/*   Updated: 2022/10/31 22:00:00 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/02 21:01:56 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static void	save_font_info(t_font *font, int fd)
 	while (rows < 4)
 	{
 		k = 0;
-		ret = get_next_line(fd, &line); // invalid read of size 1 & 4 by valgrind using oskari's gnl
+		ret = get_next_line(fd, &line); // using Rene's gnl - invalid read of size 1 & 4 by valgrind using oskari's gnl
 		if (line == NULL || ret < 0)
 			error_log(EC_GETNEXTLINE);
 		if (rows == 0)
@@ -110,46 +110,55 @@ static void	save_char_info(t_font_chars *c, char *str)
 	}
 }
 
-void	load_font(t_sdlcontext *sdl, const char *filename)
+void	load_fonts(t_sdlcontext *sdl)
 {
 	int		fd;
 	char	*line;
 	int		ret;
 	int		i;
+	int		j;
 	t_img	*bitmap;
+	char	path[19];
 
-	fd = open(filename, O_RDONLY);
-	if (fd < 0)
-		error_log(EC_OPEN);
-	sdl->font = ft_memalloc(sizeof(t_font));
+
+	sdl->font = ft_memalloc(sizeof(t_font) * 7); // We have 7 different font sizes for now
 	if (sdl->font == NULL)
 		error_log(EC_MALLOC);
-	
-	save_font_info(sdl->font, fd);
-	sdl->font->chars = ft_memalloc(sizeof(t_font_chars) * sdl->font->char_count);
-	if (sdl->font->chars == NULL)
-		error_log(EC_MALLOC);
-	line = NULL;
+	ft_strcpy(path, "assets/fonts/0.fnt");
 	i = 0;
-	ret = 1;
-	while (i < sdl->font->char_count)
+	while (i < 7)
 	{
-		ret = get_next_line(fd, &line); // invalid read of size 1 & 4 valgrind using oskari's gnl
-		if (line == NULL || ret < 0)
-			error_log(EC_GETNEXTLINE);
-		save_char_info(&sdl->font->chars[i], line);
-		if (line)
-			free(line);
+		fd = open(path, O_RDONLY);
+		if (fd < 0)
+			error_log(EC_OPEN);
+		save_font_info(&sdl->font[i], fd);
+		sdl->font[i].chars = ft_memalloc(sizeof(t_font_chars) * sdl->font[i].char_count);
+		if (sdl->font[i].chars == NULL)
+			error_log(EC_MALLOC);
+		line = NULL;
+		j = 0;
+		ret = 1;
+		while (j < sdl->font[i].char_count)
+		{
+			ret = get_next_line(fd, &line); // using Rene's gnl - invalid read of size 1 & 4 valgrind using oskari's gnl
+			if (line == NULL || ret < 0)
+				error_log(EC_GETNEXTLINE);
+			save_char_info(&sdl->font[i].chars[j], line);
+			if (line)
+				free(line);
+			j++;
+		}
+		sdl->font[i].file_name = ft_strjoin(sdl->font[i].name, ".png");
+		if (!sdl->font[i].file_name)
+			error_log(EC_MALLOC);
+		bitmap = get_image_by_name(*sdl, sdl->font[i].file_name);
+		sdl->font[i].bitmap = bitmap;
+		if (close(fd) == -1)
+			error_log(EC_CLOSE);
+		path[13] = path[13] + 1;
 		i++;
 	}
-	sdl->font->file_name = ft_strjoin(sdl->font->name, ".png");
-    if (!sdl->font->file_name)
-        error_log(EC_MALLOC);
-	bitmap = get_image_by_name(*sdl, sdl->font->file_name);
-	sdl->font->bitmap = bitmap;
-	if (close(fd) == -1)
-		error_log(EC_CLOSE);
-
+	
     // These printfs are for troubleshooting in case something is off
 
 	/*
