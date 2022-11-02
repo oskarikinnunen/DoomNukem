@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_events.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/30 23:12:18 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/01 15:08:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ void		move_editor_offset(t_editor *ed)
 		ed->offset.x += EDITOR_MOVESPEED * ed->clock.delta;
 	if ((ed->keystate >> KEYS_RIGHTMASK) & 1)
 		ed->offset.x -= EDITOR_MOVESPEED * ed->clock.delta;
+	ed->offset.z += ed->mouse.scroll_delta * 30.0f;
 }
 
 int		editor_events(t_editor *ed)

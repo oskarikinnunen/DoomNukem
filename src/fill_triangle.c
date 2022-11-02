@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fill_triangle.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/31 17:24:26 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/01 14:42:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,7 +188,6 @@ static void fill_tri_top(t_sdlcontext sdl, t_triangle triangle, t_img *img)
 	while (q[1].v.y < q[0].v.y)
 	{
 		step_ab(&t_step[2], triangle, 1.0f / (q[2].v.x - q[1].v.x));
-	
 		t[0].u = t[1].u;
 		t[0].v = t[1].v;
 		t[0].w = t[1].w;

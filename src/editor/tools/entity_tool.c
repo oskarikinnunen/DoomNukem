@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/30 23:40:36 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/01 13:30:16 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "editor_tools.h"
 #include "file_io.h"
 
+/*
 void entity_tool_append_list(t_editor *ed, t_entity ent) //TODO: make 
 {
 	list_push(&ed->entitylist, &ent, sizeof(t_entity));
@@ -93,12 +94,12 @@ static void	entity_tool_cleanup(t_editor *ed)
 {
 	SDL_ShowCursor(SDL_ENABLE);
 }
-
+*/
 t_tool	*get_entity_tool()
 {
 	static t_tool	tool
 	= {
-		entity_tool_update, entity_tool_draw
+		NULL, NULL 
 	};
 
 	if (tool.tooldata == NULL)

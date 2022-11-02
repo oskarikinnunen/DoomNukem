@@ -1,6 +1,7 @@
 #include "doomnukem.h"
 #include "inputhelp.h"
 #include "file_io.h"
+#include "objects.h"
 //	Good resource for remembering bitwise operations:
 //			https://stackoverflow.com/a/47990/1725220
 //	TODO: move playermode events to separate file
@@ -65,20 +66,6 @@ static int handleinput(t_game *game)
 	return(game_continue);
 }
 
-static t_render init_render(t_sdlcontext sdl)
-{
-	t_render	render;
-
-	bzero(&render, sizeof(t_render));
-	render.matworld = matrix_makeidentity();
-	render.matproj = matrix_makeprojection(90.0f, (float)sdl.window_h / (float)sdl.window_w, 2.0f, 1000.0f);
-	render.calc_triangles = malloc(sizeof(t_triangle) * 10000);
-	render.draw_triangles = malloc(sizeof(t_triangle) * 10000);
-	render.q = malloc(sizeof(t_quaternion) * 10000); //TODO: should be multiplied by the largest obj vertex count
-	render.debug_img = get_image_by_name(sdl, "");
-	return(render);
-}
-
 static void update_render(t_render *render, t_player player)
 {
 	render->lookdir = player.lookdir;
@@ -104,7 +91,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 		gr = handleinput(&game);
 		moveplayer(&game);
 		if (game.cam_mode == player_view)
-			engine3d(sdl, game, render);
+			engine3d(sdl, render);
 		else
 			render_overhead(&game, sdl);
 		drawperfgraph(&pgraph, game.clock.delta, sdl);
@@ -261,17 +248,7 @@ int playmode(t_sdlcontext sdl)
 
 	bzero(&game, sizeof(t_game));
 	bzero(&obj, sizeof(t_obj));
-	sdl.zbuffer = malloc(sdl.window_w * sdl.window_h * sizeof(float));
 	game.linelist = load_chunk("map_test1", "WALL", sizeof(t_line));
-	game.entitylist = load_chunk("map_test1", "ENT_", sizeof(t_entity));
-	if (game.entitylist != NULL) //player position is set from first entitys position, TODO: use entityID to determine which one is the player
-	{
-		game.player.position.x = (*(t_entity *)game.entitylist->content).position.x;
-		game.player.position.y = (*(t_entity *)game.entitylist->content).position.y;
-		game.player.angle.x = 0;
-		game.player.angle.y = 0;
-	}
-
 	lines_to_obj(&obj, game.linelist);
 	set_tri_array(&game, &obj);
 	//Locks mouse
