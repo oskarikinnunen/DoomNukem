@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 15:31:27 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/02 14:56:03 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,6 @@ int	editorloop(t_sdlcontext sdl)
 	t_editor		ed;
 	t_gamereturn	gr;
 
-	save_text(sdl.font, "1234567890 draw_saved_text");
-	save_text(sdl.font, "| | | | |");
 	bzero(&ed, sizeof(t_editor));
 	ed.linelist = load_chunk("map_test1", "WALL", sizeof(t_line));
 	ed.entitylist = load_chunk("map_test1", "ENT_", sizeof(t_entity));
@@ -80,10 +78,6 @@ int	editorloop(t_sdlcontext sdl)
 			else if (ed.tool->icon_name[0] != '\0')
 				ed.tool->icon = get_image_by_name(sdl, ed.tool->icon_name);
 		}
-		draw_saved_text(&sdl, sdl.font->texts[0], (t_point){400, 100});
-		draw_text(&sdl, sdl.font, "1234567890 draw_text", (t_point){400, 150});
-		draw_saved_text(&sdl, sdl.font->texts[1], (t_point){400, 200});
-		draw_text(&sdl, sdl.font, "| | | | |", (t_point){400, 250});
 		ed.mouse.click_unhandled = false;
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
