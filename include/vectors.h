@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vectors.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 15:48:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 18:49:34 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,10 @@
 #include <math.h>
 #include <stdbool.h>
 #include "libft.h"
+
+
+//returns lerped value from to, delta being between 0 and 1
+float flerp(float from, float to, float delta);
 
 /* t_vector2 functions */
 typedef struct s_vector2
@@ -66,6 +70,9 @@ float		vector2_dot(t_vector2 first, t_vector2 second);
 //returns true if both vectors are identical
 bool		vector2_cmp(t_vector2 first, t_vector2 second);
 
+//returns lerped value from to, delta being between 0 and 1
+t_vector2 vector2_lerp(t_vector2 from, t_vector2 to, float delta);
+
 //returns copy of 'vec' but with magnitude clamped to 'max_magnitude'
 t_vector2	vector2_clamp_magnitude(t_vector2 vec, float max_magnitude);
 
@@ -115,6 +122,9 @@ float		vector3_dot(t_vector3 first, t_vector3 second);
 
 //returns true if both vectors are identical
 bool		vector3_cmp(t_vector3 first, t_vector3 second);
+
+//returns lerped value from to, delta being between 0 and 1
+t_vector3 vector3_lerp(t_vector3 from, t_vector3 to, float delta);
 
 //returns vector3 multiplied by vector 'v1' and vector 'v2'
 t_vector3	vector3_mul_vector3(t_vector3 v1, t_vector3 v2);

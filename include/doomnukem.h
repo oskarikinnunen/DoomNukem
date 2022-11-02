@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 15:01:49 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/02 20:17:38 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,9 +215,16 @@ typedef struct s_transform
 	t_vector3	scale;
 }	t_transform;
 
+typedef struct s_bounds
+{
+	float		height;
+	float		width;
+}	t_bounds;
+
 typedef struct s_entity
 {
 	t_transform		transform;
+	t_bounds		bounds;
 	struct s_object	*obj;
 }	t_entity;
 
@@ -235,6 +242,8 @@ typedef struct s_item
 {
 	t_entity	entity;
 }	t_item;
+
+#include "objects.h"
 
 typedef struct s_render
 {
@@ -255,6 +264,10 @@ typedef struct s_render
 	t_img			*img;
 	t_img			*debug_img;
 	t_quaternion	*q;
+	t_object		obj;
+	bool			is_occluder;
+	t_entity		occluder[100];
+	uint32_t		occluder_count;
 }	t_render;
 
 typedef struct s_game
@@ -376,12 +389,13 @@ void	*list_to_ptr(t_list *source, uint32_t *set_length);
 void	list_remove(t_list **head, void *match, size_t content_size);
 
 /*DEBUG FILES*/
-void printf_tri(t_triangle tri);
-void printf_quat(t_quaternion v);
-void printf_vec(t_vector3 v);
-void printf_matrix(t_mat4x4 m);
-void printf_point(t_point p);
-void printf_texture(t_texture t);
-void printf_face(void *face);
+void print_tri(t_triangle tri);
+void print_quat(t_quaternion v);
+void print_vector3(t_vector3 v);
+void print_matrix(t_mat4x4 m);
+void print_point(t_point p);
+void print_texture(t_texture t);
+void print_face(void *face);
+void print_vector2(t_vector2 v);
 
 #endif

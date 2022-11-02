@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fill_triangle.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/01 14:42:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 18:49:50 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,12 +70,6 @@ static void	sort_tris(t_quaternion	*q, t_texture *t)
 		s_j = 0;
 		s_x++;
 	}
-}
-
-float flerp(float from, float to, float delta)
-{
-
-	return (from + ((to - from) * delta));
 }
 
 static void  calc_step(float x_step[2], t_texture t_step[2], t_triangle triangle, float delta)
@@ -212,7 +206,6 @@ static void fill_tri_top(t_sdlcontext sdl, t_triangle triangle, t_img *img)
 		q[1].v.y++;
 	}
 }
-
 
 /*
 creates two triangles from the given triangle one flat top and one flat bottom.

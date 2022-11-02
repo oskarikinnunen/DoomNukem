@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game_3d.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/01 16:33:01 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 20:35:06 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,16 +226,13 @@ static int clippedtriangles(t_triangle tritransformed, t_mat4x4 matview, t_trian
 {
 	t_triangle triviewed;
 
-	triviewed.p[0] = quaternion_mul_matrix(matview, tritransformed.p[0]);
-	triviewed.p[1] = quaternion_mul_matrix(matview, tritransformed.p[1]);
-	triviewed.p[2] = quaternion_mul_matrix(matview, tritransformed.p[2]);
-	triviewed.t[0] = tritransformed.t[0];
-	triviewed.t[1] = tritransformed.t[1];
-	triviewed.t[2] = tritransformed.t[2];
+	tritransformed.p[0] = quaternion_mul_matrix(matview, tritransformed.p[0]);
+	tritransformed.p[1] = quaternion_mul_matrix(matview, tritransformed.p[1]);
+	tritransformed.p[2] = quaternion_mul_matrix(matview, tritransformed.p[2]);
 	return (Triangle_ClipAgainstPlane(
 	(t_vector3){0.0f, 0.0f, 0.2f},
 	(t_vector3){0.0f, 0.0f, 1.0f},
-	&triviewed, clipped));
+	&tritransformed, clipped));
 }
 
 static t_triangle triangle_to_screenspace(t_mat4x4 matproj, t_triangle clipped, t_sdlcontext sdl)
@@ -298,21 +295,49 @@ static t_texture	vector2_to_texture(t_vector2 v)
 	return(t);
 }
 
-static void render_object(t_sdlcontext sdl, t_render render, t_entity *entity)
+static void render_object(t_sdlcontext sdl, t_render *render, t_entity *entity)
 {
 	int				index;
 	t_object		*obj;
 	t_vector3		temp;
+	t_object		*o;
 
+	o = &render->obj;
 	obj = entity->obj;
 	index = 0;
+	if (render->is_occluder == true)
+	{
+		render->occluder[render->occluder_count++] = *entity;
+	}
+	else
+	{
+		int i = 0;
+		while (i < render->occluder_count)
+		{
+			float a, b;
+			a = vector2_dist((t_vector2){render->position.x, render->position.y}, (t_vector2){render->occluder[i].transform.location.x, render->occluder[i].transform.location.y});
+			b = vector2_dist((t_vector2){render->position.x, render->position.y}, (t_vector2){entity->transform.location.x, entity->transform.location.y});
+			if (a < b && b > vector2_dist((t_vector2){render->occluder[i].transform.location.x, render->occluder[i].transform.location.y}, (t_vector2){entity->transform.location.x, entity->transform.location.y}))
+			{
+				t_vector2	temp;
+				temp = vector2_lerp((t_vector2){render->position.x, render->position.y}, (t_vector2){entity->transform.location.x, entity->transform.location.y}, a / b);
+				if (render->occluder[i].bounds.width > vector2_dist((t_vector2){render->occluder[i].transform.location.x, render->occluder[i].transform.location.y}, temp))
+				{
+					return;
+				}
+			}
+			i++;
+		}
+		// check distance between player and occluder, player and obj, if occluder is closer check if its width and height are enough to block the obj.
+
+	}
 	while (index < obj->vertice_count)
 	{
 		//TODO: Matrix rotations
 		temp = vector3_add(entity->transform.location, obj->vertices[index]);
 		temp = vector3_mul_vector3(entity->transform.scale, temp);
-		render.q[index] = vector3_to_quaternion(temp);
-		render.q[index] = quaternion_mul_matrix(render.matworld, render.q[index]);
+		render->q[index] = vector3_to_quaternion(temp);
+		render->q[index] = quaternion_mul_matrix(render->matworld, render->q[index]);
 		index++;
 	}
 	index = 0;
@@ -322,7 +347,7 @@ static void render_object(t_sdlcontext sdl, t_render render, t_entity *entity)
 		t_vector3	normal;	
 		t_vector3	vcameraray;	
 
-		tritransformed = (t_triangle){render.q[obj->faces[index].v_indices[0] - 1], render.q[obj->faces[index].v_indices[1] - 1], render.q[obj->faces[index].v_indices[2] - 1]};
+		tritransformed = (t_triangle){render->q[obj->faces[index].v_indices[0] - 1], render->q[obj->faces[index].v_indices[1] - 1], render->q[obj->faces[index].v_indices[2] - 1]};
 		if (obj->uv_count != 0)
 		{
 			tritransformed.t[0] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[0] - 1]);
@@ -330,24 +355,24 @@ static void render_object(t_sdlcontext sdl, t_render render, t_entity *entity)
 			tritransformed.t[2] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[2] - 1]);
 		}
 		normal = normal_calc(tritransformed);
-		vcameraray = vector3_sub(tritransformed.p[0].v, render.position);
+		vcameraray = vector3_sub(tritransformed.p[0].v, render->position);
 		if (vector3_dot(normal, vcameraray) < 0.0f || 1) //TODO: Currently ignoring normals with || 1
 		{
 			t_triangle clipped[2];
-			int nclippedtriangles = clippedtriangles(tritransformed, render.matview, clipped);
+			int nclippedtriangles = clippedtriangles(tritransformed, render->matview, clipped);
 			for (int n = 0; n < nclippedtriangles; n++)
 			{
-				render.calc_triangles[render.calc_tri_count++] = triangle_to_screenspace(render.matproj, clipped[n], sdl);
+				render->calc_triangles[render->calc_tri_count++] = triangle_to_screenspace(render->matproj, clipped[n], sdl);
 			}
 		}
 		index++;
 	}
-	render.img = obj->materials[0].img;
-	if (!render.img)
-		render.img = render.debug_img;
-	clipped(render, sdl);
-	render.calc_tri_count = 0;
-	render.draw_tri_count = 0;
+	render->img = obj->materials[0].img;
+	if (!render->img)
+		render->img = render->debug_img;
+	clipped(*render, sdl);
+	render->calc_tri_count = 0;
+	render->draw_tri_count = 0;
 }
 
 void engine3d(t_sdlcontext sdl, t_render render)
@@ -368,19 +393,22 @@ void engine3d(t_sdlcontext sdl, t_render render)
 	head = render.listwall;
 	while (head)
 	{
-		render_object(sdl, render, &((t_wall *)head->content)->entity);
+		render.is_occluder = true;
+		render_object(sdl, &render, &((t_wall *)head->content)->entity);
 		head = head->next;
 	}
 	head = render.listitem;
 	while (head)
 	{
-		render_object(sdl, render, &((t_item *)head->content)->entity);
+		render.is_occluder = true;
+		render_object(sdl, &render, &((t_item *)head->content)->entity);
 		head = head->next;
 	}
 	head = render.listbot;
 	while (head)
 	{
-		render_object(sdl, render, &((t_bot *)head->content)->entity);
+		render.is_occluder = false;
+		render_object(sdl, &render, &((t_bot *)head->content)->entity);
 		head = head->next;
 	}
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_render.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 16:31:58 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 20:29:05 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,25 @@ t_render init_render(t_sdlcontext sdl)
 	render.calc_triangles = malloc(sizeof(t_triangle) * 10000);
 	render.draw_triangles = malloc(sizeof(t_triangle) * 10000);
 	render.q = malloc(sizeof(t_quaternion) * 10000); //TODO: should be multiplied by the largest obj vertex count
+	render.obj.faces = malloc(sizeof(t_face) * 10000);
+	render.obj.uvs = malloc(sizeof(t_vector2) * 10000);
+	render.obj.vertices = malloc(sizeof(t_vector3) * 10000);
 	render.debug_img = get_image_by_name(sdl, "");
 	/*temp testing render loop with .bot .wall .item*/
 	t_entity	temp;
-
 	bzero(&temp, sizeof(t_entity));
 	temp.obj = &sdl.objects[1];
 	temp.transform.scale = vector3_one();
 	list_push(&render.listbot, &temp, sizeof(t_bot));
 	temp.obj = &sdl.objects[0];
+	for (int i = 0; i < sdl.objects[0].vertice_count; i++)
+	{
+		if (temp.bounds.width < vector2_dist((t_vector2){sdl.objects[0].vertices[i].x, sdl.objects[0].vertices[i].y}, vector2_zero()))
+			temp.bounds.width = vector2_dist((t_vector2){sdl.objects[0].vertices[i].x, sdl.objects[0].vertices[i].y}, vector2_zero());
+		if (temp.bounds.height < sdl.objects[0].vertices[i].z)
+			temp.bounds.height = sdl.objects[0].vertices[i].z;
+	}
+	temp.transform.location.x += 1500;
 	list_push(&render.listitem, &temp, sizeof(t_item));
 	return(render);
 }
