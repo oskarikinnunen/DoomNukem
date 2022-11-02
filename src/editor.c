@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 16:47:20 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 20:05:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,8 @@ int	editorloop(t_sdlcontext sdl)
 	ed.linelist = load_chunk("map_test1", "WALL", sizeof(t_line));
 	ed.buttonlist = load_chunk("buttons", "BUTN", sizeof(t_guibutton));
 	initialize_buttons(ed.buttonlist, sdl);
-	ed.tool = get_point_tool();
+	//ed.tool = get_entity_tool();
+	ed.tool = NULL;
 	gr = game_continue;
 	ed.render = init_render(sdl);
 
@@ -106,7 +107,6 @@ int	editorloop(t_sdlcontext sdl)
 	ft_bzero(&skybox, sizeof(t_entity));
 	skybox.obj = &sdl.objects[1];
 	skybox.transform.scale = vector3_mul(vector3_one(), 20.0f);
-	list_push(&ed.entitylist, &skybox, sizeof(t_entity));
 	//
 
 	while (gr == game_continue)
@@ -116,7 +116,9 @@ int	editorloop(t_sdlcontext sdl)
 		ft_bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 		ft_bzero(sdl.zbuffer, sizeof(float) * sdl.window_h * sdl.window_w);
 		gr = editor_events(&ed);
+		render_object(sdl, ed.render, &skybox);
 		render_editor3d(sdl, ed);
+		
 		draw_buttons(ed, sdl);
 		if (ed.tool != NULL)
 		{

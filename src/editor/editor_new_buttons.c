@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 14:34:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 14:08:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 18:41:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,10 @@ void draw_buttons(t_editor ed, t_sdlcontext sdl)
 		if (button.img != NULL)
 			draw_image(sdl, button.rect.position, *button.img, button.rect.size);
 		if (pointrectanglecollision(ed.mouse.pos, button.rect))
+		{
 			drawrectangle(sdl, button.rect, CLR_GREEN);
+		}
+			
 		l = l->next;
 	}
 }

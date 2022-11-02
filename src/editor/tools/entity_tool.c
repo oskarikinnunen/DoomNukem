@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 16:43:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 20:39:27 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,13 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	if (ent->obj == NULL)
 		ent->obj = object_plane();
 	render_object(sdl, ed->render, ent);
+	draw_colliders(ed->world.physics, sdl, ed->render);
+
+	//char	*vstr;
+	//vstr = ft_itoa(ent->transform.location.x);
+	//TODO: print current entity position with draw_text
+	
+	//draw_text(sdl, sdl.font, ft_itoa)
 }
 
 
@@ -131,6 +138,11 @@ void	entity_tool_update(t_editor *ed)
 	if (mouse_clicked(ed->mouse, MOUSE_LEFT))
 	{
 		list_push(&ed->entitylist, ent, sizeof(t_entity));
+	}
+	if (mouse_clicked(ed->mouse, MOUSE_RIGHT))
+	{
+		ed->world.physics.entities[0] = ed->entitylist->content;
+		calculate_colliders(&ed->world.physics);
 	}
 		/*ed->reload_objects = true;
 		ft_bzero(&ent, sizeof(t_entity));

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 15:06:48 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 18:35:32 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static t_point	line_dir(t_line line)
 
 static bool	is_legal_line(t_editor *ed) //Only kinda protects the user from drawing overlapping lines
 {
-	t_list		*l;
+	/*t_list		*l;
 	t_line		cur;
 	t_vector2	cur_dir;
 	t_vector2	ed_dir;
@@ -43,12 +43,12 @@ static bool	is_legal_line(t_editor *ed) //Only kinda protects the user from draw
 			}
 		l = l->next;
 	}
-	return (true);
+	return (true);*/
 }
 
 static void point_tool_click(t_editor *ed)
 {
-	static t_point_tool_state	state;
+	/*static t_point_tool_state	state;
 
 	ed->mouse.click_unhandled = false;
 	if (ed->mouse.click_button == MOUSE_LEFT)
@@ -67,20 +67,7 @@ static void point_tool_click(t_editor *ed)
 			ed->line.end = point_zero();
 			state = place_start;
 		}
-	}
-	else if (ed->mouse.click_button == MOUSE_RIGHT)
-	{
-		if (state == place_end)
-		{
-			state = place_start;
-			ed->line.start = point_zero();
-			ed->line.end = point_zero();
-		}
-		else
-			point_tool_delete(ed, mousetogridspace(ed));
-		//If we haven't started placing a line, try to remove existing lines from ed linelist, don't change state
-		//Otherwise just delete the line we're currently placing and change state to place_start
-	}
+	}*/
 }
 
 
@@ -96,24 +83,13 @@ static void	render_cursorball(t_editor ed, t_sdlcontext sdl)
 
 static void	point_tool_draw(t_editor *ed, t_sdlcontext sdl) //This needs to access editors state, so pass editor here??
 {
-	t_line			ss_line;
-
-	if (point_cmp(ed->line.end, point_zero()) && !point_cmp(ed->line.start, point_zero()))
-	{
-		ss_line.start = point_mul(ed->line.start, TILESIZE);
-		//ss_line.start = point_add(ss_line.start, ed->offset);
-		
-		ss_line.end = ed->mouse.pos;
-		drawline(sdl, ss_line.start, ss_line.end, CLR_TURQ);
-	}
-	render_cursorball(*ed, sdl);
 	return ;
 }
 
 static void	point_tool_update(t_editor *ed) //This needs to access editors state, so pass editor here??
 {
-	if (ed->mouse.click_unhandled)
-		point_tool_click(ed);
+	/*if (ed->mouse.click_unhandled)
+		point_tool_click(ed);*/
 	return ;
 }
 

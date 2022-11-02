@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw0.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 22:14:00 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/02 18:56:59 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 
 void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr)
 {
-	if (pos.x < 0 || pos.x >= sdl.window_w - 1
-		|| pos.y < 0 || pos.y >= sdl.window_h - 1)
+	if (pos.x < 0 || pos.x >= sdl.window_w - 2
+		|| pos.y < 0 || pos.y >= sdl.window_h - 2)
 		return ;
 	((uint32_t *)sdl.surface->pixels)[pos.x + (pos.y * sdl.window_w)] = clr;
 }
@@ -53,7 +53,7 @@ void	drawrectangle(t_sdlcontext sdl, t_rectangle rect, uint32_t clr)
 	to = point_add(from, (t_point){rect.size.x, 0});
 	drawline(sdl, from, to, clr); 
 	to = point_add(from, (t_point){0, rect.size.y});
-	drawline(sdl, from, to, clr); 
+	drawline(sdl, from, to, clr);
 	from = point_add(rect.position, rect.size);
 	to = point_add(from, (t_point){0, -rect.size.y});
 	drawline(sdl, from, to, clr);

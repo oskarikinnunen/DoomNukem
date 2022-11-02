@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/02 14:53:58 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 15:06:43 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 20:33:37 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,14 @@
 
 typedef struct s_physics
 {
-	t_entity	*entities[20]; //points to entities in 'editor->entitylist'
-	uint8_t		cube[512][512][512];
+	struct s_entity	*entities[20]; //points to entities in 'editor->entitylist'
+	int				cube[100][100][10];
 }	t_physics;
 
-//void	physics_gather_entities
+struct s_render;
+struct s_sdlcontext;
+
+void calculate_colliders(t_physics *p);
+void draw_colliders(t_physics p, struct s_sdlcontext sdl, struct s_render render);
 
 #endif

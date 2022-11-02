@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 16:47:08 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 20:01:58 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include "vectors.h"
 # include <stdbool.h>
 # include "shapes.h"
+# include "physics.h"
 
 # define TILESIZE 32 //EDITOR tilesize
 # define GRIDSIZE 64 //EDITOR gridsize (how many addressable coordinates we have)
@@ -245,9 +246,14 @@ typedef struct s_render
 	t_quaternion	*q;
 }	t_render;
 
+typedef struct s_world
+{
+	t_physics	physics;
+}	t_world;
+
+
 typedef struct s_editor
 {
-	t_line			line; //the line that is being edited right now //TODO: this should be moved to point_tool
 	t_list			*linelist;
 	t_list			*entitylist;
 	t_list			*buttonlist;
@@ -256,6 +262,7 @@ typedef struct s_editor
 	t_vector3		offset;
 	t_vector2		forward_offset;
 	t_render		render;
+	t_world			world;
 	struct s_tool	*tool;
 	uint32_t		keystate;
 	bool			reload_objects; //Doesn't actually reload them :3

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 16:47:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 18:31:47 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	if (sdl->surface == NULL)
 		error_log(EC_SDL_GETWINDOW_SURFACE);
 	load_font(sdl, "assets/fonts/sans-serif-black-bg.fnt");
+	printf("IM HERE!!!\n");
+	//ft_abs()
 	sdl->zbuffer = malloc(sdl->window_w * sdl->window_h * sizeof(float));
 	objects_init(sdl);
 }
