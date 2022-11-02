@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 20:39:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 22:46:25 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,8 +116,19 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	render_object(sdl, ed->render, ent);
 	draw_colliders(ed->world.physics, sdl, ed->render);
 
-	//char	*vstr;
-	//vstr = ft_itoa(ent->transform.location.x);
+	char	*vstr;
+	//vstr = ftoa(ent->transform.location.x);
+	vstr = ft_ftoa(ent->transform.location.x, 2);
+	draw_text(&sdl, sdl.font, vstr, (t_point){200, sdl.window_h - 60});
+	free(vstr);
+
+	vstr = ft_ftoa(ent->transform.location.y, 2);
+	draw_text(&sdl, sdl.font, vstr, (t_point){200, sdl.window_h - 40});
+	free(vstr);
+	
+	vstr = ft_ftoa(ent->transform.location.z, 2);
+	draw_text(&sdl, sdl.font, vstr, (t_point){200, sdl.window_h - 20});
+	free(vstr);
 	//TODO: print current entity position with draw_text
 	
 	//draw_text(sdl, sdl.font, ft_itoa)
@@ -141,7 +152,15 @@ void	entity_tool_update(t_editor *ed)
 	}
 	if (mouse_clicked(ed->mouse, MOUSE_RIGHT))
 	{
-		ed->world.physics.entities[0] = ed->entitylist->content;
+		t_list	*l;
+		l = ed->entitylist;
+		int i = 0;
+		while (l != NULL)
+		{
+			ed->world.physics.entities[i] = (t_entity *)l->content;
+			l = l->next;
+			i++;
+		}
 		calculate_colliders(&ed->world.physics);
 	}
 		/*ed->reload_objects = true;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bresenham.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 12:09:50 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 18:56:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 22:39:27 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ int		step_bresenham(t_bresenham *b)
 {
 	step_bresenham_x(b);
 	step_bresenham_y(b);
-	printf("b.local %i %i b->target %i %i \n", b->local.x, b->local.y, b->target.x, b->target.y);
 	return (b->local.x == b->target.x && b->local.y == b->target.y);
 }
 

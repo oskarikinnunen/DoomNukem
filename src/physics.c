@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   physics.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 13:52:50 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 20:36:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 23:16:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,19 +25,20 @@ void draw_colliders(t_physics p, t_sdlcontext sdl, t_render render)
 	t_entity	ent;
 
 	indexer = vector3_zero();
-	while (indexer.z < 10)
+	while (indexer.z < 10.0f)
 	{
 		indexer.x = 0;
-		while (indexer.x < 100)
+		while (indexer.x < 100.0f)
 		{
 			indexer.y = 0;
-			while (indexer.y < 100)
+			while (indexer.y < 100.0f)
 			{
+				//printf("ind %f %f %f \n", indexer.x, indexer.y, indexer.z);
 				if (p.cube[(int)indexer.x][(int)indexer.y][(int)indexer.z] == 1)
 				{
-					ent.obj = &sdl.objects[0];
-					ent.transform.location = indexer;
-					ent.transform.scale = vector3_one();
+					ent.obj = &sdl.objects[1];
+					ent.transform.location = vector3_mul(indexer, 10.0f);
+					ent.transform.scale = (t_vector3){1.0f, 5.0f, 0.1f};
 					render_object(sdl, render, &ent);
 				}
 				indexer.y++;
@@ -63,8 +64,11 @@ void calculate_colliders(t_physics *p)
 		v_i = 0;
 		while (v_i < ent.obj->vertice_count)
 		{
-			vertex_ws = vector3_mul_vector3(ent.obj->vertices[v_i], ent.transform.scale);
+			vertex_ws = vector3_mul_vector3(ent.obj->vertices[v_i], vector3_mul(ent.transform.scale, 0.1f));
 			vertex_ws = vector3_add(vertex_ws, ent.transform.location);
+			vertex_ws.z += 6.0f;
+			vertex_ws = vector3_mul(vertex_ws, 0.1f);
+			printf_vec(vertex_ws);
 			p->cube[(int)vertex_ws.x][(int)vertex_ws.y][(int)vertex_ws.z] = 1;
 			v_i++;
 		}
