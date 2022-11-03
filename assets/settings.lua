@@ -4,8 +4,6 @@ images =
 {
 	"entitytool.png",
 	"linetool.png",
-	"spritefont1.png",
-	"spritefont2.png",
 	"button.png",
 	"entity.png",
 	"wall.png",
@@ -18,12 +16,18 @@ images =
 	"sans-serif-pink-bg.png",
 	"sans-serif-black-bg.png",
 	"redball.png",	
+	"quake1.png",
 	"quake2.png",
 	"quake3.png",
-	"car_red.png"
+	"car_red.png",
+	"minus.png",
+	"one.png",
+	"plus.png",
+	"view.png"
 }
 objects =
 {
 	"car2.obj",
-	"primitive_cube_textured.obj"
+	"primitive_cube_textured.obj",
+	"cube.obj"
 }

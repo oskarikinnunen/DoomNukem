@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   physics.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/02 14:53:58 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 20:33:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/03 14:49:53 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,10 @@ typedef struct s_physics
 
 struct s_render;
 struct s_sdlcontext;
+struct s_entity;
 
-void calculate_colliders(t_physics *p);
-void draw_colliders(t_physics p, struct s_sdlcontext sdl, struct s_render render);
+void			calculate_colliders(t_physics *p);
+void			draw_colliders(t_physics p, struct s_sdlcontext sdl, struct s_render render);
+struct s_entity	*entity_collides(t_physics p, struct s_entity ent);
 
 #endif

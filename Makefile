@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+         #
+#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/02 16:46:09 by okinnune         ###   ########.fr        #
+#    Updated: 2022/11/03 18:35:44 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ LUA= $(LUAFOLDER)/install/lib/liblua.a #TODO: find out real name!
 
 #Source files:
 SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
-		editor.c editor_mouse.c editor_events.c editor_render.c \
+		editor.c editor_mouse.c editor_events.c \
 		editor_map_io.c	\
 		editor/tools/point_tool.c \
 		editor/tools/point_tool_delete.c \
@@ -32,6 +32,7 @@ SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		editor/tools/button_tool.c \
 		editor/imagedropdown.c \
 		editor/editor_new_buttons.c \
+		editor/editor_instant_button.c \
 		playmode.c inputhelper.c playmode_overhead.c \
 		moveplayer.c physics.c errors.c \
 		game_3d.c fill_triangle.c perfgraph.c \
@@ -44,6 +45,7 @@ SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		font.c text.c \
 		object_init.c \
 		object_primitives.c \
+		world.c \
 		init_render.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \
@@ -65,7 +67,7 @@ OBJ= $(SRC:.c=.o)
 INCLUDE= -ISDL_built/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
 CC= gcc
 LIBS= $(LIBFT) -lm
-CFLAGS= $(INCLUDE) -g -finline-functions -O1
+CFLAGS= $(INCLUDE) -g -finline-functions -Ofast
 
 all: $(SDL2) $(LUA) $(LIBFT) $(OBJ)
 	$(CC) $(OBJ) -o $(NAME) `SDL_built/bin/sdl2-config --cflags --libs` $(INCLUDE) $(LIBS) $(LUA)

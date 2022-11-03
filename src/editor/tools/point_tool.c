@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   point_tool.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 18:35:32 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/03 19:41:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,6 @@ t_tool	*get_point_tool()
 	= {
 		point_tool_update, point_tool_draw
 	};
-
 	ft_strcpy(tool.icon_name, "linetool.png");
 	return (&tool);
 }

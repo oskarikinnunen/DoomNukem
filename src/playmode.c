@@ -48,6 +48,11 @@ static int key_events(SDL_Event e, t_game *game)
 static void updatemouse(t_mouse *mouse)
 {
 	SDL_GetRelativeMouseState(&mouse->delta.x, &mouse->delta.y);
+	if (mouse->delta.x > 200 || mouse->delta.y > 200)
+	{
+		mouse->delta.x = 0;
+		mouse->delta.y = 0;
+	}
 }
 
 /*check for keyboard/mouse input*/
@@ -82,18 +87,17 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	alloc_image(&pgraph.image, PERFGRAPH_SAMPLES + 1, PERFGRAPH_SAMPLES + 1);
 	gr = game_continue;
 	render = init_render(sdl);
+	game.world = load_world("world1", sdl);
+	game.player.position = (t_vector3) {500.0f, 500.0f, 500.0f};
 	while (gr == game_continue)
 	{
 		update_deltatime(&game.clock);
 		update_render(&render, game.player);
-		bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
-		bzero(sdl.zbuffer, sizeof(float) * sdl.window_h * sdl.window_w);
 		gr = handleinput(&game);
 		moveplayer(&game);
-		if (game.cam_mode == player_view)
-			engine3d(sdl, render);
-		else
-			render_overhead(&game, sdl);
+
+		screen_blank(sdl);
+		render_world3d(sdl, game.world, render);
 		drawperfgraph(&pgraph, game.clock.delta, sdl);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
@@ -103,154 +107,13 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	return(gr); // for now
 }
 
-static t_triangle set_tri(int *p1, int *p2, int *p3)
-{
-	return((t_triangle){
-		(t_quaternion){p1[X], p1[Y], p1[Z], 1},
-		(t_quaternion){p2[X], p2[Y], p2[Z], 1},
-		(t_quaternion){p3[X], p3[Y], p3[Z], 1}
-		});
-}
-
-static void set_tex1(t_triangle *tri)
-{
-	tri->t[0].u = 0.0f;
-	tri->t[0].v = 0.0f;
-
-	tri->t[1].u = 1.0f;
-	tri->t[1].v = 0.0f;
-
-	tri->t[2].u = 0.0f;
-	tri->t[2].v = 1.0f;
-
-	tri->t[0].w = 1.0f;
-	tri->t[1].w = 1.0f;
-	tri->t[2].w = 1.0f;
-}
-
-static void set_tex2(t_triangle *tri)
-{
-	tri->t[0].u = 0.0f;
-	tri->t[0].v = 1.0f;
-
-	tri->t[1].u = 1.0f;
-	tri->t[1].v = 0.0f;
-
-	tri->t[2].u = 1.0f;
-	tri->t[2].v = 1.0f;
-
-	tri->t[0].w = 1.0f;
-	tri->t[1].w = 1.0f;
-	tri->t[2].w = 1.0f;
-}
-
-static void set_tri_array(t_game *game, t_obj *obj)
-{
-	int		i;
-	int		len;
-	int32_t	**verts;
-
-	i = 0;
-	verts = obj->verts;
-	len = obj->v_count;
-	game->triangles = malloc(sizeof(t_triangle) * (len / 2));
-	game->tri_count = len / 2;
-	while (i < len)
-	{
-		game->triangles[i / 2] = set_tri(verts[i], verts[i + 1], verts[i + 2]);
-		game->triangles[(i / 2) + 1] = set_tri(verts[i + 2], verts[i + 1], verts[i + 3]);
-		set_tex1(&game->triangles[i / 2]);
-		set_tex2(&game->triangles[(i / 2) + 1]);
-		i += 4;
-	}
-}
-
-static void linefaces(t_obj *obj, uint32_t i)
-{
-	//TODO: Protect allocations plz
-	int	fi;
-
-	fi = i;
-	if (i > 0)
-		fi = i / 2;
-	obj->faces[fi] = ft_memalloc(3 * sizeof (uint32_t));
-	obj->faces[fi][0] = i;
-	obj->faces[fi][1] = i + 1;
-	obj->faces[fi][2] = i + 2;
-	fi++;
-	obj->faces[fi] = ft_memalloc(3 * sizeof (uint32_t));
-	obj->faces[fi][0] = i + 1;
-	obj->faces[fi][1] = i + 2;
-	obj->faces[fi][2] = i + 3;
-}
-
-static void	i3_mul(int *i3, int mul)
-{
-	i3[X] = i3[X] * mul;
-	i3[Y] = i3[Y] * mul;
-	i3[Z] = i3[Z] * mul;
-}
-
-static void copyverts(t_obj *obj, t_line line, int i) //Ghetto, TODO: make cpyv2fromv3 function?
-{
-	obj->verts[i][X] = line.start.x;
-	obj->verts[i][Y] = line.start.y;
-	obj->verts[i + 1][X] = line.end.x;
-	obj->verts[i + 1][Y] = line.end.y;
-	obj->verts[i + 2][X] = line.start.x;
-	obj->verts[i + 2][Y] = line.start.y;
-	obj->verts[i + 3][X] = line.end.x;
-	obj->verts[i + 3][Y] = line.end.y;
-}
-
-static void lines_to_obj(t_obj *obj, t_list *linelist)
-{
-	t_list		*l;
-	int			len;
-	uint32_t	i;
-
-	l = linelist;
-	len = ft_listlen(l);
-	obj->v_count = len * 4;
-	obj->verts = ft_memalloc(obj->v_count * sizeof(int32_t *));
-	obj->f_count = len * 2;
-	obj->faces = ft_memalloc(obj->f_count * sizeof(uint32_t *));
-	i = 0;
-	if (obj->mtlcolors)
-		free(obj->mtlcolors);
-	obj->mtlcolors = ft_memalloc(sizeof(uint32_t));
-	obj->mtlcolors[0] = CLR_PRPL;
-	while (l != NULL)
-	{
-		obj->verts[i] = ft_memalloc(3 * sizeof(int32_t *));
-		obj->verts[i + 1] = ft_memalloc(3 * sizeof(int32_t *));
-		obj->verts[i + 2] = ft_memalloc(3 * sizeof(int32_t *));
-		obj->verts[i + 3] = ft_memalloc(3 * sizeof(int32_t *));
-		copyverts(obj, *((t_line *)l->content), i);
-		obj->verts[i + 2][Z] = 5; //HEIGHT OF THE WALL
-		obj->verts[i + 3][Z] = 5;
-		i3_mul(obj->verts[i], TILESIZE);
-		i3_mul(obj->verts[i + 1], TILESIZE);
-		i3_mul(obj->verts[i + 2], TILESIZE);
-		i3_mul(obj->verts[i + 3], TILESIZE);
-		linefaces(obj, i);
-		l = l->next;
-		i += 4;
-	}
-}
-
 /*setup and call gameloop*/
 int playmode(t_sdlcontext sdl)
 {
 	t_game			game;
 	t_gamereturn	gr;
-	t_obj			obj;
 
 	bzero(&game, sizeof(t_game));
-	bzero(&obj, sizeof(t_obj));
-	game.linelist = load_chunk("map_test1", "WALL", sizeof(t_line));
-	lines_to_obj(&obj, game.linelist);
-	set_tri_array(&game, &obj);
 	//Locks mouse
 	if (SDL_SetRelativeMouseMode(SDL_TRUE) < 0)
 		error_log(EC_SDL_SETRELATIVEMOUSEMODE);

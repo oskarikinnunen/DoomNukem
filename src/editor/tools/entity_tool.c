@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 22:46:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/03 19:35:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,9 +102,37 @@ static void	entity_tool_cleanup(t_editor *ed)
 
 }*/
 
+char	*floatstr(float f)
+{
+	static char	final[8];
+	char	*strinteger;
+	char	*strdecimal;
+	int		neg;
+	int		i;
+
+	i = (int)f;
+	f = f - i;
+	int dec = 2;
+	f = f * (ft_pow(10, dec));
+	neg = (f < 0.0f);
+	strinteger = ft_itoa(ft_abs(i));
+	strdecimal = ft_itoa(ft_abs((int)f));
+	//final = ft_strnew(ft_strlen(strinteger) + ft_strlen(strdecimal) + 1 + neg);
+	ft_bzero(final, sizeof(final));
+	if (neg)
+		ft_strcat(final, "-");
+	ft_strcat(final, strinteger);
+	ft_strcat(final, ",");
+	ft_strcat(final, strdecimal);
+	free(strinteger);
+	free(strdecimal);
+	return (final);
+}
+
 void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 {
 	t_entity	*ent;
+	t_entity	*collide;
 
 	//text
 	ent = (t_entity *)ed->tool->tooldata;
@@ -113,66 +141,69 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 		ent->obj = &sdl.objects[ent->object_index];
 	if (ent->obj == NULL)
 		ent->obj = object_plane();
+	ed->render.wireframe = true;
+	ed->render.gizmocolor = INT_MAX;
+	collide = entity_collides(ed->world.physics, *ent);
+	if (collide != NULL)
+		ed->render.gizmocolor = CLR_PRPL;
 	render_object(sdl, ed->render, ent);
+	ed->render.wireframe = false;
 	draw_colliders(ed->world.physics, sdl, ed->render);
+	draw_text(sdl, sdl.font, "POS:", (t_point){20, 144});
+	draw_text(sdl, sdl.font, floatstr(ent->transform.location.x), (t_point){20, 164});
+	draw_text(sdl, sdl.font, floatstr(ent->transform.location.y), (t_point){20, 184});
+	draw_text(sdl, sdl.font, floatstr(ent->transform.location.z), (t_point){20, 204});
 
-	char	*vstr;
-	//vstr = ftoa(ent->transform.location.x);
-	vstr = ft_ftoa(ent->transform.location.x, 2);
-	draw_text(&sdl, sdl.font, vstr, (t_point){200, sdl.window_h - 60});
-	free(vstr);
+	if (collide == NULL)
+	{
+		draw_text(sdl, sdl.font, "ADD:", (t_point){sdl.window_w / 2, sdl.window_h - 20});
+		draw_text(sdl, sdl.font, ent->obj->name, (t_point){sdl.window_w / 2 + 60, sdl.window_h - 20});
+	}
+	else
+	{
+		draw_text(sdl, sdl.font, "DEL:", (t_point){sdl.window_w / 2, sdl.window_h - 20});
+		draw_text(sdl, sdl.font, collide->obj->name, (t_point){sdl.window_w / 2 + 60, sdl.window_h - 20});
+	}
 
-	vstr = ft_ftoa(ent->transform.location.y, 2);
-	draw_text(&sdl, sdl.font, vstr, (t_point){200, sdl.window_h - 40});
-	free(vstr);
-	
-	vstr = ft_ftoa(ent->transform.location.z, 2);
-	draw_text(&sdl, sdl.font, vstr, (t_point){200, sdl.window_h - 20});
-	free(vstr);
-	//TODO: print current entity position with draw_text
-	
-	//draw_text(sdl, sdl.font, ft_itoa)
+	draw_text(sdl, sdl.font, "SCALE:", (t_point){20, 100});
+	if (instantbutton((t_rectangle) {20, 120, 20, 20}, &ed->mouse, sdl, "minus.png"))
+		ent->transform.scale = vector3_add_xyz(ent->transform.scale, -0.25f);
+	if (instantbutton((t_rectangle) {42, 120, 20, 20}, &ed->mouse, sdl, "one.png"))
+		ent->transform.scale = vector3_one();
+	if (instantbutton((t_rectangle) {64, 120, 20, 20}, &ed->mouse, sdl, "plus.png"))
+		ent->transform.scale = vector3_add_xyz(ent->transform.scale, 0.25f);
 }
-
 
 void	entity_tool_update(t_editor *ed)
 {
 	t_entity	*ent;
 	t_vector3	dir;
 
+	sizeof(t_sdlcontext);
 	ent = (t_entity *)ed->tool->tooldata;
-	//ent->transform.location = (t_vector3){ed->offset.x, ed->offset.y, 0};
-	dir = vector3_sub((t_vector3){ed->offset.x, ed->offset.y, 0}, ent->transform.location);
-	ent->transform.location = vector3_movetowards(ent->transform.location, dir, ed->clock.delta * 0.05f);
+	dir = vector3_sub((t_vector3){ed->offset.x, ed->offset.y, 20.0f}, ent->transform.location);
+	ent->transform.location = vector3_movetowards(ent->transform.location, dir, ed->clock.delta * 1.0f);
 	if ((ed->keystate >> KEYS_SHIFTMASK) & 1)
 		ent->object_index += ed->mouse.scroll_delta;
+
 	if (mouse_clicked(ed->mouse, MOUSE_LEFT))
 	{
-		list_push(&ed->entitylist, ent, sizeof(t_entity));
+		t_entity *collision_ent = entity_collides(ed->world.physics, *ent);
+		if (collision_ent == NULL)
+		{
+			list_push(&ed->world.entitylist, ent, sizeof(t_entity));
+			calculate_colliders_for_entities(&ed->world);
+		}
 	}
 	if (mouse_clicked(ed->mouse, MOUSE_RIGHT))
 	{
-		t_list	*l;
-		l = ed->entitylist;
-		int i = 0;
-		while (l != NULL)
+		t_entity *collision_ent = entity_collides(ed->world.physics, *ent);
+		if (collision_ent != NULL)
 		{
-			ed->world.physics.entities[i] = (t_entity *)l->content;
-			l = l->next;
-			i++;
+			list_remove(&ed->world.entitylist, collision_ent, sizeof(t_entity));
+			calculate_colliders_for_entities(&ed->world);
 		}
-		calculate_colliders(&ed->world.physics);
 	}
-		/*ed->reload_objects = true;
-		ft_bzero(&ent, sizeof(t_entity));
-		ent.obj = NULL;
-		printf("ENTITY TOOL CLICK!!\n");
-		ent.object_index = 1;
-		ent.transform.scale = vector3_one();
-		ent.transform.location = (t_vector3){ed->offset.x, -ed->offset.y, ed->offset.z};*/
-		//list_push(&ed->entitylist, ent, sizeof(t_entity));
-		//printf("after list push, list len is %i \n", ft_listlen(ed->entitylist));
-		
 }
 
 t_tool	*get_entity_tool()

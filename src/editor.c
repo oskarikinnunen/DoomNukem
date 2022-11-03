@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 20:05:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/03 19:44:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,10 @@ static void	drawgrid(t_sdlcontext sdl, t_point origin)
 static void	update_render_editor(t_render *render, t_editor ed) //TODO: move game3d matrix stuff 
 {
 	render->position = (t_vector3){ed.offset.x, ed.offset.y - (ed.forward_offset.y * 75.0f), ed.offset.z};
-	//render->lookdir = lookdirection(ed.lookangle);
-	render->lookdir = (t_vector3){0.0f, -0.015f + ed.forward_offset.y, -1.0f};
+	render->lookdir = lookdirection(ed.angle);
+	render->vtarget = vector3_add(render->position, render->lookdir);
+	render->matcamera = matrix_lookat(render->position, render->vtarget, (t_vector3){0, 0, 1});
+	render->matview = matrix_quickinverse(render->matcamera);
 }
 
 static void	reload_objects(t_list **entitylist, t_sdlcontext sdl)
@@ -73,7 +75,7 @@ static void	reload_objects(t_list **entitylist, t_sdlcontext sdl)
 	}
 }
 
-static void render_editor3d(t_sdlcontext sdl, t_editor ed)
+/*static void render_editor3d(t_sdlcontext sdl, t_editor ed)
 {
 	t_list	*l;
 	t_entity	ent;
@@ -85,7 +87,7 @@ static void render_editor3d(t_sdlcontext sdl, t_editor ed)
 		render_object(sdl, ed.render, &ent);
 		l = l->next;
 	}
-}
+}*/
 
 int	editorloop(t_sdlcontext sdl)
 {
@@ -93,22 +95,14 @@ int	editorloop(t_sdlcontext sdl)
 	t_gamereturn	gr;
 
 	bzero(&ed, sizeof(t_editor));
-	ed.linelist = load_chunk("map_test1", "WALL", sizeof(t_line));
 	ed.buttonlist = load_chunk("buttons", "BUTN", sizeof(t_guibutton));
 	initialize_buttons(ed.buttonlist, sdl);
-	//ed.tool = get_entity_tool();
+	ed.world = load_world("world1", sdl);
 	ed.tool = NULL;
 	gr = game_continue;
 	ed.render = init_render(sdl);
-
-	
-	//DEBUGGING SKYBOX
-	t_entity	skybox;
-	ft_bzero(&skybox, sizeof(t_entity));
-	skybox.obj = &sdl.objects[1];
-	skybox.transform.scale = vector3_mul(vector3_one(), 20.0f);
-	//
-
+	ed.angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
+	ed.offset = (t_vector3){500.0f, 500.0f, 200.0f};
 	while (gr == game_continue)
 	{
 		update_deltatime(&ed.clock);
@@ -116,25 +110,25 @@ int	editorloop(t_sdlcontext sdl)
 		ft_bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 		ft_bzero(sdl.zbuffer, sizeof(float) * sdl.window_h * sdl.window_w);
 		gr = editor_events(&ed);
-		render_object(sdl, ed.render, &skybox);
-		render_editor3d(sdl, ed);
-		
+		render_world3d(sdl, ed.world, ed.render);
 		draw_buttons(ed, sdl);
 		if (ed.tool != NULL)
 		{
+			ed.tool->draw_update(&ed, sdl); //Instant buttons here can toggle mouse.click unhandled, so draw first
 			ed.tool->update(&ed);
-			ed.tool->draw_update(&ed, sdl);
 			if (ed.tool->icon != NULL) //Indicates which tool is selected
 				draw_image(sdl, (t_point){ 8, sdl.window_h - 40 }, *ed.tool->icon, (t_point){32, 32});
 			else if (ed.tool->icon_name[0] != '\0')
 				ed.tool->icon = get_image_by_name(sdl, ed.tool->icon_name);
 		}
+		//draw_buttons(ed, sdl);
 		ed.mouse.click_unhandled = false;
 		
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 	}
-	save_lists_to_file(&ed);
+	save_world("world1", ed.world);
+	save_editordata(&ed);
 	if (gr == game_exit)
 		quit_game(&sdl);
 	return (gr);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   conversions.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 17:23:31 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 13:27:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/03 12:42:01 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,4 +28,9 @@ t_vector2	point_to_vector2(t_point point)
 	result.x = (float)point.x;
 	result.y = (float)point.y;
 	return (result);
+}
+
+t_quaternion	vector3_to_quaternion(t_vector3 v)
+{
+	return((t_quaternion){v.x, v.y, v.z, 1.0f});
 }

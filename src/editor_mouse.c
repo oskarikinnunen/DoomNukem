@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_mouse.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 17:03:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/03 15:26:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,11 @@ static void	mouseclick(t_editor *ed)
 		if (pointrectanglecollision(ed->mouse.pos, button.rect) && ed->mouse.click_button == MOUSE_LEFT)
 		{
 			if (button.onclick != NULL)
+			{
 				button.onclick(ed);
+				ed->mouse.click_unhandled = false;
+			}
+				
 		}
 		l = l->next;
 	}

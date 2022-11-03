@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   object_init.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 19:50:18 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 13:18:40 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/03 13:11:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,4 +35,23 @@ void	objects_init(t_sdlcontext *sdl)
 		}
 		i++;
 	}
+}
+
+t_object	*get_object_by_name(t_sdlcontext sdl, char *name)
+{
+	int		i;
+	char	fullname[256];
+
+	ft_bzero(fullname, sizeof(fullname));
+	ft_strcpy(fullname, name);
+	if (ft_strstr(name, ".obj") == NULL)
+		ft_strcat(fullname, ".obj");
+	i = 0;
+	while (i < sdl.objectcount)
+	{
+		if (ft_strcmp(sdl.objects[i].name, fullname) == 0)
+			return (&sdl.objects[i]);
+		i++;
+	}
+	return (&sdl.objects[0]); //TODO: debug object!!
 }

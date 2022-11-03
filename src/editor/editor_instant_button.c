@@ -1,36 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   point_tool_delete.c                                :+:      :+:    :+:   */
+/*   editor_instant_button.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/18 21:22:18 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/03 18:14:47 by okinnune         ###   ########.fr       */
+/*   Created: 2022/11/03 18:30:57 by okinnune          #+#    #+#             */
+/*   Updated: 2022/11/03 18:42:32 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "shapes.h"
 #include "doomnukem.h"
-#include "editor_tools.h"
+#include "inputhelp.h"
 
-//Use 
-void	point_tool_delete(t_editor *ed, t_point crd)
+bool	instantbutton(t_rectangle rect, t_mouse *m, t_sdlcontext sdl, char *imgname)
 {
-	/*t_list	*node;
-	t_line	line;
-
-	node = ed->linelist;
-	while (node != NULL)
+	draw_image(sdl, rect.position, *get_image_by_name(sdl, imgname), rect.size);
+	if (pointrectanglecollision(m->pos, rect))
 	{
-		line = *(t_line *)node->content;
-		if (node->content == NULL)
-			return ;
-		if ((point_cmp(crd, line.start)
-			|| point_cmp(crd, line.end)))
+		drawrectangle(sdl, rect, CLR_GREEN);
+		if (mouse_clicked(*m, MOUSE_LEFT))
 		{
-			list_remove(&ed->linelist, &line, sizeof(t_line));
-			return ;
+			m->click_unhandled = false;
+			return (true);
 		}
-		node = node->next;
-	}*/
+	}
+	return (false);
 }

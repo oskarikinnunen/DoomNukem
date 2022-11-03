@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_new_buttons.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 14:34:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 18:41:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/03 16:21:32 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,16 @@ void	editor_angle_x_add(t_editor *ed)
 
 void	editor_angle_y_sub(t_editor *ed)
 {
-	if (ed->forward_offset.y != -1.0f)
-		ed->forward_offset.y = -1.0f;
+	if (ed->angle.y == -RAD90 * 0.99f)
+	{
+		ed->angle.y += ft_degtorad(45.0f);
+		ed->forward_offset.y = -2.0f;
+	}
 	else
+	{
+		ed->angle.y = -RAD90 * 0.99f;
 		ed->forward_offset.y = 0.0f;
+	}
 }
 
 void	editor_angle_y_add(t_editor *ed)
