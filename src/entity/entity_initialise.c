@@ -1,21 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_degtorad.c                                      :+:      :+:    :+:   */
+/*   entity_initialise.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/22 10:04:43 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 13:47:47 by okinnune         ###   ########.fr       */
+/*   Created: 2022/11/01 16:46:45 by okinnune          #+#    #+#             */
+/*   Updated: 2022/11/01 16:54:27 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "objects.h"
+#include "doomnukem.h"
 
-/*
-	2π rad == 360 degrees
-*/
-double	ft_degtorad(double angle)
+void	entity_loadobject(t_sdlcontext sdl, t_entity *entity, t_list **tolist)
 {
-	return (angle * (PI / 180.0f));
+	if (entity->obj == NULL)
+	{
+		if (entity->object_index < sdl.objectcount)
+			entity->obj = &sdl.objects[entity->object_index];
+		else
+			entity->obj = &sdl.objects[0];
+	}
+
 }

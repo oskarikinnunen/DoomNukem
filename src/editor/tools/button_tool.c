@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   button_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/30 15:40:24 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 15:20:59 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/03 19:54:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,7 @@ void	button_tool_update(t_editor *ed)
 	hover = hovered(ed->buttonlist, ed->mouse.pos);
 	if (tdat->selected != hover && hover != NULL)
 		tdat->selected = hover;
-	if ((mouse_clicked(ed->mouse, MOUSE_RIGHT) && !hover) || ed->mouse.held == 0)
+	if ((mouse_clicked(ed->mouse, MOUSE_RIGHT) && !hover))
 		tdat->selected = NULL;
 	if (tdat->selected != NULL)
 	{

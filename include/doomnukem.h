@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 15:01:49 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/03 19:50:13 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include "vectors.h"
 # include <stdbool.h>
 # include "shapes.h"
+# include "physics.h"
 
 # define TILESIZE 32 //EDITOR tilesize
 # define GRIDSIZE 64 //EDITOR gridsize (how many addressable coordinates we have)
@@ -56,7 +57,7 @@
 # define COLLISION_ON //Comment/uncomment to toggle experimental collision
 
 
-# define EDITOR_MOVESPEED 1.2f
+# define EDITOR_MOVESPEED 0.2f
 # define MOVESPEED 10.010f
 # define MAXMOVEMENTSPEED 0.08f
 # define ROTATESPEED 0.002f
@@ -131,6 +132,7 @@ typedef struct s_sdlcontext
 	uint32_t				window_h;
 }	t_sdlcontext;
 
+void	screen_blank(t_sdlcontext sdl);
 # define PERFGRAPH_SAMPLES 64
 
 typedef struct s_perfgraph
@@ -157,19 +159,6 @@ typedef struct s_clock
 	Uint32	prev_time;
 	Uint32	delta;
 } t_clock;
-
-typedef struct s_editor
-{
-	t_line			line; //the line that is being edited right now //TODO: this should be moved to point_tool
-	t_list			*linelist;
-	t_list			*entitylist;
-	t_list			*buttonlist;
-	t_mouse			mouse;
-	t_clock			clock;
-	t_vector3		offset;
-	struct s_tool	*tool;
-	uint32_t		keystate;
-}	t_editor;
 
 /* Playmode */
 
@@ -205,7 +194,7 @@ typedef struct	s_triangle
 {
 	t_quaternion	p[3];
 	t_texture		t[3];
-	uint32_t	clr;
+	uint32_t		clr;
 }	t_triangle;
 
 typedef struct s_transform
@@ -218,6 +207,7 @@ typedef struct s_transform
 typedef struct s_entity
 {
 	t_transform		transform;
+	uint32_t		object_index;
 	struct s_object	*obj;
 }	t_entity;
 
@@ -255,10 +245,39 @@ typedef struct s_render
 	t_img			*img;
 	t_img			*debug_img;
 	t_quaternion	*q;
+	bool			wireframe;
+	uint32_t		gizmocolor;
 }	t_render;
+
+typedef struct s_world
+{
+	t_physics	physics;
+	t_list		*entitylist;
+	t_entity	skybox;
+}	t_world;
+
+void	calculate_colliders_for_entities(t_world *world);
+void	render_world3d(t_sdlcontext sdl, t_world world, t_render render);
+t_world	load_world(char *filename, t_sdlcontext sdl);
+void	save_world(char *filename, t_world world);
+
+typedef struct s_editor
+{
+	t_world			world;
+	t_list			*buttonlist;
+	t_mouse			mouse;
+	t_clock			clock;
+	t_vector3		offset;
+	t_vector2		forward_offset;
+	t_vector2		angle;
+	t_render		render;
+	struct s_tool	*tool;
+	uint32_t		keystate;
+}	t_editor;
 
 typedef struct s_game
 {
+	t_world			world;
 	t_list			*listwall;
 	t_list			*listbot;
 	t_list			*listitem;
@@ -328,7 +347,7 @@ void	drawrectangle(t_sdlcontext, t_rectangle rect, uint32_t clr);
 void	draw_saved_text(t_sdlcontext *sdl, t_img *text, t_point pos);
 
 // Draws a text without saving it anywhere
-void	draw_text(t_sdlcontext *sdl, t_font *font, const char *str, t_point pos);
+void	draw_text(t_sdlcontext sdl, t_font *font, const char *str, t_point pos);
 
 /* EDITOR_BUTTONS.C */
 void	draw_editor_buttons(t_sdlcontext sdl, uint8_t tool_selected); //TODO: MOVE TO EDITOR_TOOLS
@@ -346,7 +365,9 @@ void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
 void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle, t_img img);
-void	engine3d(t_sdlcontext sdl, t_render render);
+void	render_object(t_sdlcontext sdl, t_render render, t_entity *entity);
+void	render_gizmo(t_sdlcontext sdl, t_render render, t_entity *entity);
+void	draw_screen_to_worldspace_ray(t_sdlcontext sdl, t_render render, t_point origin, t_vector2 angle);
 
 /* PHYSICS.C */
 bool	pointrectanglecollision(t_point p, t_rectangle rect);

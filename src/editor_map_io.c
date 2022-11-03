@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/28 14:17:47 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/03 19:51:28 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,14 +120,9 @@ t_list *load_chunk(char *filename, char *chunkname, size_t size)
 	return (NULL);
 }
 
-void	save_lists_to_file(t_editor *ed)
+void	save_editordata(t_editor *ed)
 {
 	int	fd;
-
-	fd = fileopen("map_test1", O_RDWR | O_CREAT | O_TRUNC); //Empty the file or create a new one if it doesn't exist
-	close(fd);
-	save_chunk("map_test1", "ENT_", ed->entitylist);
-	save_chunk("map_test1", "WALL", ed->linelist);
 	fd = fileopen("buttons", O_RDWR | O_CREAT | O_TRUNC); //Empty the file or create a new one if it doesn't exist
 	close(fd);
 	save_chunk("buttons", "BUTN", ed->buttonlist);

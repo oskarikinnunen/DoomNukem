@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 15:48:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/03 19:50:40 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,9 @@ t_vector3	vector3_mul(t_vector3 vec, float mul);
 
 //returns vector 'vec' divided by 'div'
 t_vector3	vector3_div(t_vector3 vec, float div);
+
+//returns vector 'vec' moved towards set 'direction' //TODO: explain delta
+t_vector3	vector3_movetowards(t_vector3 vec, t_vector3 direction, float delta);
 
 //returns the magnitude of the vector 'vec'
 float		vector3_magnitude(t_vector3 vec);
@@ -253,7 +256,11 @@ t_vector3	lookdirection(t_vector2 angle);
 
 //returns vector3 'i' multiplied by matrix 'm'
 t_vector3 vector3_mul_matrix(t_mat4x4 m, t_vector3 i);
+
 /* CONVERSIONS */
+
+
+t_quaternion	vector3_to_quaternion(t_vector3 v);
 
 //Returns t_vector2 'vec' casted to t_point. (Shorthand for '*(t_point *)&vec').
 t_point			vector2_to_point(t_vector2 vec);
