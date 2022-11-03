@@ -81,26 +81,28 @@ static void update_render(t_render *render, t_player player)
 static int gameloop(t_sdlcontext sdl, t_game game)
 {
 	t_gamereturn	gr;
-	t_perfgraph		pgraph;
 	t_render		render;
 
-	alloc_image(&pgraph.image, PERFGRAPH_SAMPLES + 1, PERFGRAPH_SAMPLES + 1);
+	//alloc_image(&pgraph.image, PERFGRAPH_SAMPLES + 1, PERFGRAPH_SAMPLES + 1);
 	gr = game_continue;
 	render = init_render(sdl);
 	game.world = load_world("world1", sdl);
 	game.player.position = (t_vector3) {500.0f, 500.0f, 500.0f};
+	game.player.angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
 	while (gr == game_continue)
 	{
 		update_deltatime(&game.clock);
 		update_render(&render, game.player);
 		gr = handleinput(&game);
 		moveplayer(&game);
-
 		screen_blank(sdl);
+		
 		render_world3d(sdl, game.world, render);
-		//drawperfgraph(&pgraph, game.clock.delta, sdl);
+		draw_text(sdl, sdl.font, "PLAYMODE", point_zero());
+		//DRAWPERFGRAPH
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
+		//gr = game_switchmode;
 	}
 	if (gr == game_exit)
 		quit_game(&sdl);
@@ -112,7 +114,6 @@ int playmode(t_sdlcontext sdl)
 {
 	t_game			game;
 	t_gamereturn	gr;
-	t_obj			obj;
 
 	bzero(&game, sizeof(t_game));
 	//Locks mouse

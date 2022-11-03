@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/03 19:52:00 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/03 20:23:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,6 @@ int	editorloop(t_sdlcontext sdl)
 		ft_bzero(sdl.zbuffer, sizeof(float) * sdl.window_h * sdl.window_w);
 		gr = editor_events(&ed);
 		render_world3d(sdl, ed.world, ed.render);
-		draw_buttons(ed, sdl);
 		if (ed.tool != NULL)
 		{
 			ed.tool->draw_update(&ed, sdl); //Instant buttons here can toggle mouse.click unhandled, so draw first
@@ -122,7 +121,7 @@ int	editorloop(t_sdlcontext sdl)
 			else if (ed.tool->icon_name[0] != '\0')
 				ed.tool->icon = get_image_by_name(sdl, ed.tool->icon_name);
 		}
-		//draw_buttons(ed, sdl);
+		draw_buttons(ed, sdl);
 		ed.mouse.click_unhandled = false;
 		
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)

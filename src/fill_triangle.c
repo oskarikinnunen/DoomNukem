@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fill_triangle.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/01 14:42:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/03 20:02:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,8 @@ static void fill_tri_bot(t_sdlcontext sdl, t_triangle triangle, t_img *img)
 				t[0].u += (t_step[2].u * index);
 				t[0].v += (t_step[2].v * index);
 				index = 1;
-				((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w] = img->data[img->size.x * (int)((t[0].u / t[0].w) * img->size.x - 1) + (int)((t[0].v / t[0].w) * img->size.y - 1)];
+				((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w]
+					= img->data[img->size.x * (int)((t[0].u / t[0].w) * img->size.x - 1) + (int)((t[0].v / t[0].w) * img->size.y - 1)];
 			}
 			else
 				index++;
