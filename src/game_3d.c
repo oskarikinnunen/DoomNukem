@@ -317,11 +317,30 @@ static void render_object(t_sdlcontext sdl, t_render *render, t_entity *entity)
 			float a, b;
 			a = vector2_dist((t_vector2){render->position.x, render->position.y}, (t_vector2){render->occluder[i].transform.location.x, render->occluder[i].transform.location.y});
 			b = vector2_dist((t_vector2){render->position.x, render->position.y}, (t_vector2){entity->transform.location.x, entity->transform.location.y});
-			if (a < b && b > vector2_dist((t_vector2){render->occluder[i].transform.location.x, render->occluder[i].transform.location.y}, (t_vector2){entity->transform.location.x, entity->transform.location.y}))
+			if (a < b)//b > vector2_dist((t_vector2){render->occluder[i].transform.location.x, render->occluder[i].transform.location.y}, (t_vector2){entity->transform.location.x, entity->transform.location.y})
 			{
-				t_vector2	temp;
+				t_vector2	temp, temp1;
 				temp = vector2_lerp((t_vector2){render->position.x, render->position.y}, (t_vector2){entity->transform.location.x, entity->transform.location.y}, a / b);
-				if (render->occluder[i].bounds.width > vector2_dist((t_vector2){render->occluder[i].transform.location.x, render->occluder[i].transform.location.y}, temp))
+				temp1 = temp;
+				if (vector2_dist(temp, (t_vector2){render->occluder[i].transform.location.x, render->occluder[i].transform.location.y}) > render->occluder[i].bounds.width)
+				{
+					i++;
+					continue;
+				}
+				temp = vector2_sub(temp, (t_vector2){render->occluder[i].transform.location.x, render->occluder[i].transform.location.y});
+				temp = vector2_add(vector2_mul(temp, render->occluder[i].bounds.width), (t_vector2){render->occluder[i].transform.location.x, render->occluder[i].transform.location.y});
+				float shortest_dist = render->occluder[i].bounds.width + 1.0f;
+				t_vector2 temp2;
+				for (int c = 0; c < render->occluder->obj->vertice_count; c++)
+				{
+					if (shortest_dist < vector2_dist((t_vector2){render->occluder->obj->vertices[c].x, render->occluder->obj->vertices[c].y}, temp))
+					{
+						shortest_dist = vector2_dist((t_vector2){render->occluder->obj->vertices[c].x, render->occluder->obj->vertices[c].y}, temp);
+						temp2 = (t_vector2){render->occluder->obj->vertices[c].x, render->occluder->obj->vertices[c].y};
+					}
+				}		
+
+				if (entity->bounds.width < vector2_dist(temp1, temp2))
 				{
 					return;
 				}

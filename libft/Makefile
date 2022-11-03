@@ -28,7 +28,7 @@ FILES= ft_abs.c ft_atoi.c ft_bzero.c ft_digitcount.c ft_isalnum.c ft_isalpha.c\
 	ft_get_next_line.c ft_strscrape.c ft_strreplace.c ft_degtorad.c \
 	ft_absf.c ft_listlen.c ft_strcdup.c get_next_line.c
 V_FILES= v3_basics.c bresenham.c
-CFLAGS= -Wall -Wextra -Werror -O2 -c -I.
+CFLAGS= -O2 -c -I.#-Wall -Wextra -Werror
 CC= gcc
 
 V_SRCS= $(addprefix v3_src/, $(V_FILES))
