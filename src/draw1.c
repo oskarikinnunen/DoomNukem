@@ -31,85 +31,81 @@ void	draw_saved_text(t_sdlcontext *sdl, t_img *text, t_point pos)
 	}
 }
 
-float	scale_font_pixel(float value, float oldmin, float oldmax, float newmin, float newmax)
-{
-	float	temp;
-	float	result;
-
-	temp = (newmax - newmin) * (value - oldmin);
-	result = (temp / (oldmax - oldmin)) + newmin;
-	return (result);
-}
-
 void	draw_text(t_sdlcontext *sdl, const char *str, t_point pos, int font_size)
 {
 	int			i;
 	int			j;
+	int			k;
 	t_point		cursor;
 	t_point		counter;
 	t_point		screen;
-	int			text_width;
+	int			word_length;
 
-	// Avoids infinite loop when splitting the next character to the next line
-	/*
-	if (max_width < 23)
-		max_width = 23;
-	*/
-
-	// Calculates the width of the text to be drawed
-	/*
-	text_width = 0;
-	i = 0;
-	while (str[i] != '\0')
+	if (pos.x < 5 || pos.x > sdl->window_w - 5 || pos.y < 5 || pos.y > sdl->window_h - 5)
 	{
-		j = str[i] - 32;
-		if (str[i + 1] == '\0')
-		{
-			text_width += sdl->font->chars[j].offset.x;
-			text_width += sdl->font->chars[j].size.x;
-		}
-		else
-			text_width += sdl->font->chars[j].xadvance;
-		i++;
+		printf("Trying to draw text outside of bounds. Text's starting position can't be closer than 5 pixels to the edges.\n");
+		return ;
 	}
-	if (pos.x + text_width > sdl->window_w)
-		pos.y += 100;
-	*/
 
+	word_length = 0;
 	cursor.x = 0;
 	cursor.y = 0;
 	i = 0;
+	k = 0;
+
 	while (str[i] != '\0')
 	{
+		// Calculate the next word's length
+		if (str[i] != ' ' && k == 0)
+		{
+			word_length = 0;
+			while (str[i + k] != '\0' && str[i + k] != ' ')
+			{
+				j = str[i + k] - 32;
+				if (str[i + k + 1] == '\0')
+					word_length += sdl->font[font_size].chars[j].xadvance;
+				else
+				{
+					word_length += sdl->font[font_size].chars[j].offset.x;
+					word_length += sdl->font[font_size].chars[j].size.x;
+				}
+				k++;
+			}
+
+			// Does the word fit the line? If not, move the cursor to the next line
+			if (cursor.x + pos.x + word_length > sdl->window_w - 5) // Right now text shouldn't go closer to the edges than 5 pixels
+			{
+				cursor.x = 0;
+				cursor.y += sdl->font[font_size].line_height;
+
+				// Does the word fit now? If not, stop the function and print and error
+				if (cursor.x + pos.x + word_length > sdl->window_w - 5) // Right now text shouldn't go closer to the edges than 5 pixels
+				{
+					printf("Not enough space widthwise to draw the text: %s\n", str);
+					return ;
+				}
+			}
+		}
+
 		j = str[i] - 32;
 
-		// Splits the next character to the next line
-		/*
-		if (cursor.x + sdl->font->chars[j].offset.x + sdl->font->chars[j].size.x > max_width)
-		{
-			cursor.x = 0;
-			cursor.y += sdl->font->line_height;
-		}
-		*/
-		
-		cursor.x += sdl->font[font_size].chars[j].offset.x;
-		cursor.y += sdl->font[font_size].chars[j].offset.y;
 		counter.y = 0;
 		while (counter.y < sdl->font[font_size].chars[j].size.y)
 		{
-			screen.y = cursor.y + counter.y;
+			screen.y = cursor.y + sdl->font[font_size].chars[j].offset.y + counter.y;
 			counter.x = 0;
 			while (counter.x < sdl->font[font_size].chars[j].size.x)
 			{
-				screen.x = cursor.x + counter.x;
+				screen.x = cursor.x + sdl->font[font_size].chars[j].offset.x + counter.x;
 				draw(*sdl, point_add(screen, pos), sdl->font[font_size].bitmap->data[(sdl->font[font_size].chars[j].pos.x + counter.x) + ((sdl->font[font_size].chars[j].pos.y + counter.y) * sdl->font[font_size].bitmap->size.x)]);
 				counter.x++;
 			}
 			counter.y++;
 		}
-		cursor.x -= sdl->font[font_size].chars[j].offset.x;
-		cursor.y -= sdl->font[font_size].chars[j].offset.y;
+
 		cursor.x += sdl->font[font_size].chars[j].xadvance;
+		if (k > 0)
+			k--;
 		i++;
 	}
 }

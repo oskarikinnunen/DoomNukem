@@ -93,8 +93,7 @@ int	editorloop(t_sdlcontext sdl)
 		draw_text(&sdl, "is this recognizeable? out of ammo! left click to select", (t_point){200, 400}, 4);
 		draw_text(&sdl, "is this recognizeable? out of ammo! left click to select", (t_point){200, 450}, 5);
 		draw_text(&sdl, "is this recognizeable? out of ammo! left click to select", (t_point){200, 500}, 6);
-		draw_text(&sdl, "is this recognizeable? out of ammo! left click to select", (t_point){200, 550}, 6);
-		draw_text(&sdl, "is this recognizeable? out of ammo! left click to select", (t_point){200, 600}, 6);
+		draw_text(&sdl, "is this recognizeable? out of ammo! left click to select", (t_point){1080, 550}, 6);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 	}
