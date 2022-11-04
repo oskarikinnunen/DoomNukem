@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_tools.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/03 19:50:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/04 15:15:21 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,6 @@ t_guibutton			*hovered(t_list *buttonlist, t_point mousepos);
 void				draw_buttons(t_editor ed, t_sdlcontext sdl); //TODO: move somewhere else so game can use it aswell?
 bool				instantbutton(struct s_rectangle rect, struct s_mouse *m, struct s_sdlcontext sdl, char *imgname);
 void				empty_click_func(t_editor *ed);
-t_tool				*get_point_tool(void);
 t_tool				*get_wall_tool(void);
 t_tool				*get_entity_tool(void);
 t_tool				*get_button_editor_tool();

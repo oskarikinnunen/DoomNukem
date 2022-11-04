@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wall_tool.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:13:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/03 19:54:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/04 16:36:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ t_point	snapped_cursor(t_editor *ed)
 	return (snapped);
 }
 
-static void	wall_tool_draw(t_editor *ed, t_sdlcontext sdl)
+static void	wall_tool_draw(t_editor *ed, t_sdlcontext sdl) //TODO: ROTATE AROUND AXIS, SCREENSPACE
 {
 	drawcircle(sdl, ed->mouse.pos, 10, CLR_TURQ);
 	drawcircle(sdl, snapped_cursor(ed), 10, CLR_PRPL);

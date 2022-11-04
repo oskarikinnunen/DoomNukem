@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   init_render.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/03 19:52:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/04 16:10:14 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "objects.h"
 
-t_render init_render(t_sdlcontext sdl)
+t_render	init_render(t_sdlcontext sdl)
 {
 	t_render	render;
 
@@ -28,16 +28,12 @@ t_render init_render(t_sdlcontext sdl)
 	render.matcamera = matrix_lookat(render.position, render.vtarget, (t_vector3){0, 0, 1});
 	render.matview = matrix_quickinverse(render.matcamera);
 	/*temp testing render loop with .bot .wall .item*/
-	
-	
-	t_entity	temp;
-
-	bzero(&temp, sizeof(t_entity));
-	temp.obj = &sdl.objects[1];
-	temp.transform.scale = vector3_one();
-	list_push(&render.listbot, &temp, sizeof(t_bot));
-	temp.obj = &sdl.objects[0];
-	temp.transform.scale = vector3_one();
-	list_push(&render.listitem, &temp, sizeof(t_item));
 	return(render);
+}
+
+void	free_render(t_render render)
+{
+	free(render.calc_triangles);
+	free(render.draw_triangles);
+	free(render.q);
 }

@@ -104,6 +104,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 		//gr = game_switchmode;
 	}
+	free_render(render);
 	if (gr == game_exit)
 		quit_game(&sdl);
 	return(gr); // for now

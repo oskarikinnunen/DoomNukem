@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/04 14:45:32 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/04 17:15:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,12 +73,6 @@ typedef struct s_mouse
 	int		click_button;
 	int		held;
 }	t_mouse;
-
-typedef	struct s_line
-{
-	t_point	start;
-	t_point	end;
-}	t_line;
 
 typedef enum e_entityID
 {
@@ -217,9 +211,16 @@ typedef struct s_bot
 	t_entity	entity;
 }	t_bot;
 
+typedef struct s_line
+{
+	t_vector2	start;
+	t_vector2	end;
+}	t_line;
+
 typedef struct s_wall
 {
 	t_entity	entity;
+	t_line		line;
 }	t_wall;
 
 typedef struct s_item
@@ -227,11 +228,9 @@ typedef struct s_item
 	t_entity	entity;
 }	t_item;
 
+
 typedef struct s_render
 {
-	t_list			*listwall;
-	t_list			*listbot;
-	t_list			*listitem;
 	t_vector3		vtarget;
 	t_mat4x4		matcamera;
 	t_mat4x4		matview;
@@ -254,6 +253,7 @@ typedef struct s_world
 {
 	t_physics	physics;
 	t_list		*entitylist;
+	t_list		*walllist;
 	t_entity	skybox;
 }	t_world;
 
@@ -265,34 +265,28 @@ void	save_world(char *filename, t_world world);
 typedef struct s_editor
 {
 	t_world			world;
-	t_list			*buttonlist;
-	t_mouse			mouse;
 	t_clock			clock;
+	t_mouse			mouse;
+	uint32_t		keystate;
+	/* typedef s_camera { */
 	t_vector3		offset;
 	t_vector2		forward_offset;
 	t_vector2		angle;
+	/*} t_camera */
+	t_list			*buttonlist;
 	t_render		render;
 	struct s_tool	*tool;
-	uint32_t		keystate;
+	
 }	t_editor;
 
 typedef struct s_game
 {
 	t_world			world;
-	t_list			*listwall;
-	t_list			*listbot;
-	t_list			*listitem;
-	//t_entity		entity[1000];
-	int				tri_count;
-	t_triangle		*triangles;
-	t_list			*linelist;
-	t_list			*entitylist;
 	t_clock			clock;
 	t_mouse			mouse;
+	uint32_t		keystate;
 	t_player		player;
-	int32_t			keystate;
-	t_cam_mode		cam_mode;
-	t_vector2		overheadcam_pos;
+	t_cam_mode		cam_mode; //Unused but will be reimplemented?
 } t_game;
 
 typedef struct s_zbuff
@@ -307,9 +301,6 @@ int		editorloop(t_sdlcontext sdl);
 /* EDITOR_EVENTS.C */
 int		editor_events(t_editor *ed);
 bool	iskey(SDL_Event e, int keycode);
-
-/* EDITOR_RENDER.C */
-void	renderlines(t_sdlcontext *sdl, t_editor *ed); //TODO:  LEGACY, remove
 
 /* EDITOR_MOUSE.C */
 t_point	mousetoworldspace(t_editor *ed);
@@ -337,6 +328,7 @@ void	update_deltatime(t_clock *c);
 
 /* INIT_RENDER.C */
 t_render	init_render(t_sdlcontext sdl);
+void		free_render(t_render render);
 
 /* DRAW.C */
 void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr);
@@ -365,10 +357,6 @@ void	draw_screen_to_worldspace_ray(t_sdlcontext sdl, t_render render, t_point or
 bool	pointrectanglecollision(t_point p, t_rectangle rect);
 bool	pointcirclecollision(t_vector2 p, t_vector2 cp, float r);
 bool	linecirclecollision(t_line line, t_vector2 cp, float r);
-
-/* PLAYMODE_OVERHEAD.C */
-void	render_overhead(t_game *game, t_sdlcontext sdl);
-void	move_overhead(t_game *game);
 
 /* MOVEPLAYER.C */
 void	moveplayer(t_game *game);

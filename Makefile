@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
+#    By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/03 19:49:27 by okinnune         ###   ########.fr        #
+#    Updated: 2022/11/04 17:15:49 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,15 +25,13 @@ LUA= $(LUAFOLDER)/install/lib/liblua.a #TODO: find out real name!
 SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		editor.c editor_mouse.c editor_events.c \
 		editor_map_io.c	\
-		editor/tools/point_tool.c \
-		editor/tools/point_tool_delete.c \
 		editor/tools/entity_tool.c \
 		editor/tools/wall_tool.c \
 		editor/tools/button_tool.c \
 		editor/imagedropdown.c \
 		editor/editor_new_buttons.c \
 		editor/editor_instant_button.c \
-		playmode.c inputhelper.c playmode_overhead.c \
+		playmode.c inputhelper.c \
 		moveplayer.c physics.c errors.c \
 		game_3d.c fill_triangle.c perfgraph.c \
 		png.c lua_conf.c list_helper.c \

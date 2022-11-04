@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 21:02:36 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/04 16:13:24 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,24 +57,6 @@ static void	update_render_editor(t_render *render, t_editor ed) //TODO: move gam
 	render->matview = matrix_quickinverse(render->matcamera);
 }
 
-static void	reload_objects(t_list **entitylist, t_sdlcontext sdl)
-{
-	t_list		*l;
-	t_entity	*ent;
-
-	l = *entitylist;
-	while (l != NULL)
-	{
-		ent = (t_entity *)l->content;
-		printf("reloaded object with %i object \n", ent->object_index);
-		//ent->transform.location
-		printf_vec(ent->transform.location);
-		printf_vec(ent->transform.scale);
-		ent->obj = &sdl.objects[ent->object_index]; //TODO: Protect!!s
-		l = l->next;
-	}
-}
-
 /*static void render_editor3d(t_sdlcontext sdl, t_editor ed)
 {
 	t_list	*l;
@@ -93,7 +75,6 @@ int	editorloop(t_sdlcontext sdl)
 {
 	t_editor		ed;
 	t_gamereturn	gr;
-	t_render		render;
 
 	bzero(&ed, sizeof(t_editor));
 	ed.buttonlist = load_chunk("buttons", "BUTN", sizeof(t_guibutton));
@@ -128,6 +109,7 @@ int	editorloop(t_sdlcontext sdl)
 	}
 	save_world("world1", ed.world);
 	save_editordata(&ed);
+	free_render(ed.render);
 	if (gr == game_exit)
 		quit_game(&sdl);
 	return (gr);

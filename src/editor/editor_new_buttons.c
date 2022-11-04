@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_new_buttons.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 14:34:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/03 19:53:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/04 15:17:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,6 @@ void	set_tool_button(t_editor *ed)
 	ed->mouse.click_unhandled = false;
 }
 
-void	set_tool_point(t_editor *ed)
-{
-	ed->tool = get_point_tool();
-	ed->mouse.click_unhandled = false;
-}
-
 void	set_tool_wall(t_editor *ed)
 {
 	ed->tool = get_wall_tool();
@@ -42,16 +36,6 @@ void	set_tool_entity(t_editor *ed)
 {
 	ed->tool = get_entity_tool();
 	ed->mouse.click_unhandled = false;
-}
-
-void	editor_angle_x_sub(t_editor *ed)
-{
-	//ed->lookangle.x -= ft_degtorad(45.0f);
-}
-
-void	editor_angle_x_add(t_editor *ed)
-{
-	//ed->lookangle.x += ft_degtorad(45.0f);
 }
 
 void	editor_angle_y_sub(t_editor *ed)
@@ -68,11 +52,6 @@ void	editor_angle_y_sub(t_editor *ed)
 	}
 }
 
-void	editor_angle_y_add(t_editor *ed)
-{
-	ed->forward_offset.y += 1.0f;
-}
-
 #include "assert.h"
 
 t_click_func_def	get_button_func(int	index)
@@ -81,13 +60,13 @@ t_click_func_def	get_button_func(int	index)
 	{
 		{"empty_click", empty_click_func},
 		{"set_tool_button", set_tool_button},
-		{"set_tool_point", set_tool_point},
+		{"currently unused", empty_click_func},
 		{"set_tool_entity", set_tool_entity},
 		{"set_tool_wall", set_tool_wall},
-		{"editor_angle_x_sub", editor_angle_x_sub},
-		{"editor_angle_x_add", editor_angle_x_add},
-		{"editor_angle_y_sub", editor_angle_y_sub},
-		{"editor_angle_y_add", editor_angle_y_add}
+		{"currently unused", empty_click_func},
+		{"currently unused", empty_click_func},
+		{"editor_angle_toggle", editor_angle_y_sub},
+		{"currently unused", empty_click_func}
 	};
 	int	i;
 

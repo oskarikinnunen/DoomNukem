@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_mouse.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/03 19:51:35 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/04 15:20:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,6 @@
 bool	mouse_clicked(t_mouse mouse, int button)
 {
 	return (mouse.click_unhandled == true && mouse.click_button == button);
-}
-
-t_point	mousetoworldspace(t_editor *ed)
-{
-	return (point_zero());
-	//return (point_sub(ed->mouse.pos, ed->offset));
 }
 
 t_point	mousetogridspace(t_editor *ed)
