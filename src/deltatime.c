@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   deltatime.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:25:00 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/17 17:25:45 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/04 17:25:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,7 @@ void	update_deltatime(t_clock *c)
 	betweenframes++;
 	if (time_now >= prev_fpstime + 1000)
 	{
-		ft_putstr("FPS: ");
-		ft_putnbr(1000 / (add / betweenframes));
-		ft_putstr("\n");
+		c->fps = 1000 / (add / betweenframes);
 		add = 0;
 		betweenframes = 0;
 		prev_fpstime = time_now;

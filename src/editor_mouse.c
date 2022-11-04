@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/04 15:20:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/04 20:23:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ t_point	mousetogridspace(t_editor *ed)
 	t_point	result;
 	t_point	mod;
 
-	result.x = -(ed->offset.x - ed->mouse.pos.x); //USED MOUSEDRAG
-	result.y = -(ed->offset.y - ed->mouse.pos.y); //USED MOUSEDRAG
+	result.x = -(ed->position.x - ed->mouse.pos.x); //USED MOUSEDRAG
+	result.y = -(ed->position.y - ed->mouse.pos.y); //USED MOUSEDRAG
 	mod.x = result.x % TILESIZE;
 	mod.y = result.y % TILESIZE;
 	result = point_div(result, TILESIZE);
@@ -64,7 +64,6 @@ static void	mouseclick(t_editor *ed)
 				button.onclick(ed);
 				ed->mouse.click_unhandled = false;
 			}
-				
 		}
 		l = l->next;
 	}
@@ -72,7 +71,9 @@ static void	mouseclick(t_editor *ed)
 
 void	mouse_event(SDL_Event e, t_editor *ed)
 {
-	SDL_GetMouseState(&ed->mouse.pos.x, &ed->mouse.pos.y);
+	if (!ed->mouse.relative)
+		SDL_GetMouseState(&ed->mouse.pos.x, &ed->mouse.pos.y);
+	printf("%i %i \n", ed->mouse.delta.x, ed->mouse.delta.y);
 	if (e.type == SDL_MOUSEBUTTONDOWN)
 	{
 		ed->mouse.held = e.button.button;

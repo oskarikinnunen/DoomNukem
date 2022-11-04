@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/04 15:49:08 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/04 20:40:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,7 +174,7 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	if (ent->obj == NULL)
 		ent->obj = object_plane();
 	/* SPLIT HERE */
-	ed->render.wireframe = true;
+	//ed->render.wireframe = true;
 	ed->render.gizmocolor = INT_MAX;
 	collide = entity_collides(ed->world.physics, *ent);
 	if (collide != NULL)
@@ -183,7 +183,9 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 		render_object(sdl, ed->render, collide);
 	}
 	render_object(sdl, ed->render, ent);
-	ed->render.wireframe = false;
+	
+	//ed->render.wireframe = false;
+	draw_colliders(ed->world.physics, sdl, ed->render);
 	/* END SPLIT */
 	set_font_size(&sdl, 0);
 	draw_transform_info(ent->transform, sdl);
@@ -203,7 +205,7 @@ void	entity_tool_update(t_editor *ed)
 
 	sizeof(t_sdlcontext);
 	ent = (t_entity *)ed->tool->tooldata;
-	dir = vector3_sub((t_vector3){ed->offset.x, ed->offset.y, 20.0f}, ent->transform.location);
+	dir = vector3_sub((t_vector3){ed->position.x, ed->position.y, 20.0f}, ent->transform.location);
 	ent->transform.location = vector3_movetowards(ent->transform.location, dir, ed->clock.delta * 1.0f);
 	if ((ed->keystate >> KEYS_SHIFTMASK) & 1)
 		ent->object_index += ed->mouse.scroll_delta;

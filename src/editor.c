@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/04 16:13:24 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/04 20:38:51 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,50 +48,57 @@ static void	drawgrid(t_sdlcontext sdl, t_point origin)
 	}
 }
 
+/*static void	moveplayer2(t_game *game)
+{
+	t_vector3	move_vector;
+	t_vector3	potential_pos; //Unused right now, will be used when collision is reimplemented
+	float	angle;
+
+	move_vector = vector3_zero();
+	angle = 0;
+	angle -= game->mouse.delta.x * MOUSESPEED;
+	angle *= game->clock.delta;
+	game->player.angle.x += angle;
+	angle = 0;
+	angle -= game->mouse.delta.y * MOUSESPEED;
+	angle *= game->clock.delta;
+	game->player.angle.y += angle;
+	game->player.angle.y = ft_clampf(game->player.angle.y, -RAD90 * 0.99f, RAD90 * 0.99f);
+	game->player.lookdir = lookdirection(game->player.angle);
+	move_vector = movementvector(game->keystate, game->player.lookdir);
+	move_vector = vector3_mul(move_vector, game->clock.delta * MOVESPEED);
+	game->player.position = vector3_add(game->player.position, move_vector);
+}*/
+
 static void	update_render_editor(t_render *render, t_editor ed) //TODO: move game3d matrix stuff 
 {
-	render->position = (t_vector3){ed.offset.x, ed.offset.y - (ed.forward_offset.y * 75.0f), ed.offset.z};
-	render->lookdir = lookdirection(ed.angle);
-	render->vtarget = vector3_add(render->position, render->lookdir);
-	render->matcamera = matrix_lookat(render->position, render->vtarget, (t_vector3){0, 0, 1});
-	render->matview = matrix_quickinverse(render->matcamera);
+	render->position = ed.position;
+	render->lookdir = ed.forward;
+	//render->matcamera = matrix_lookat(render->position, render->vtarget, (t_vector3){0, 0, 1});
+	//render->matview = matrix_quickinverse(render->matcamera);
 }
-
-/*static void render_editor3d(t_sdlcontext sdl, t_editor ed)
-{
-	t_list	*l;
-	t_entity	ent;
-
-	l = ed.entitylist;
-	while (l != NULL)
-	{
-		ent = *(t_entity *)l->content;
-		render_object(sdl, ed.render, &ent);
-		l = l->next;
-	}
-}*/
 
 int	editorloop(t_sdlcontext sdl)
 {
 	t_editor		ed;
-	t_gamereturn	gr;
 
 	bzero(&ed, sizeof(t_editor));
 	ed.buttonlist = load_chunk("buttons", "BUTN", sizeof(t_guibutton));
 	initialize_buttons(ed.buttonlist, sdl);
 	ed.world = load_world("world1", sdl);
 	ed.tool = get_entity_tool();
-	gr = game_continue;
+	ed.gamereturn = game_continue;
 	ed.render = init_render(sdl);
-	ed.angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
-	ed.offset = (t_vector3){500.0f, 500.0f, 200.0f};
-	while (gr == game_continue)
+	//ed.angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
+	ed.angle = (t_vector2){-20.0f, -RAD90 * 0.99f};
+	ed.position = (t_vector3){500.0f, 500.0f, 200.0f};
+	while (ed.gamereturn == game_continue)
 	{
 		update_deltatime(&ed.clock);
+		ed.gamereturn = editor_events(&ed);
+		move_editor(&ed);
 		update_render_editor(&ed.render, ed);
-		ft_bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
-		ft_bzero(sdl.zbuffer, sizeof(float) * sdl.window_h * sdl.window_w);
-		gr = editor_events(&ed);
+		screen_blank(sdl);
 		render_world3d(sdl, ed.world, ed.render);
 		if (ed.tool != NULL)
 		{
@@ -104,13 +111,16 @@ int	editorloop(t_sdlcontext sdl)
 		}
 		draw_buttons(ed, sdl);
 		ed.mouse.click_unhandled = false;
+		char *fps = ft_itoa(ed.clock.fps);
+		draw_text_boxed(&sdl, fps, (t_point){sdl.window_w - 80, 10}, (t_point){sdl.window_w, sdl.window_h});
+		free(fps);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 	}
 	save_world("world1", ed.world);
 	save_editordata(&ed);
 	free_render(ed.render);
-	if (gr == game_exit)
+	if (ed.gamereturn == game_exit)
 		quit_game(&sdl);
-	return (gr);
+	return (ed.gamereturn);
 }

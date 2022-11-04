@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/04 17:15:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/04 19:00:25 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ typedef struct s_mouse
 {
 	t_point	pos;
 	t_point	delta;
+	bool	relative;
 	int		scroll;
 	int		scroll_delta;
 	bool	click_unhandled;
@@ -153,6 +154,7 @@ typedef struct s_clock
 {
 	Uint32	prev_time;
 	Uint32	delta;
+	Uint32	fps;
 } t_clock;
 
 /* Playmode */
@@ -268,9 +270,11 @@ typedef struct s_editor
 	t_clock			clock;
 	t_mouse			mouse;
 	uint32_t		keystate;
+	t_gamereturn	gamereturn;
 	/* typedef s_camera { */
-	t_vector3		offset;
-	t_vector2		forward_offset;
+	t_vector3		position;
+	t_vector3		forward;
+	t_vector2		forward_offset; //TODO: remove
 	t_vector2		angle;
 	/*} t_camera */
 	t_list			*buttonlist;
@@ -299,8 +303,10 @@ typedef struct s_zbuff
 int		editorloop(t_sdlcontext sdl);
 
 /* EDITOR_EVENTS.C */
-int		editor_events(t_editor *ed);
-bool	iskey(SDL_Event e, int keycode);
+t_gamereturn	editor_events(t_editor *ed);
+bool			iskey(SDL_Event e, int keycode);
+
+void			move_editor(t_editor *ed);
 
 /* EDITOR_MOUSE.C */
 t_point	mousetoworldspace(t_editor *ed);

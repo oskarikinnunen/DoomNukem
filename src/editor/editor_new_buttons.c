@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 14:34:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/04 15:17:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/04 17:58:53 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,11 @@ void	editor_angle_y_sub(t_editor *ed)
 		ed->angle.y = -RAD90 * 0.99f;
 		ed->forward_offset.y = 0.0f;
 	}
+}
+
+void	editor_goto_playmode(t_editor *ed)
+{
+	ed->gamereturn = game_switchmode;
 }
 
 #include "assert.h"

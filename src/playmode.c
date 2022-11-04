@@ -49,10 +49,7 @@ static void updatemouse(t_mouse *mouse)
 {
 	SDL_GetRelativeMouseState(&mouse->delta.x, &mouse->delta.y);
 	if (mouse->delta.x > 200 || mouse->delta.y > 200)
-	{
-		mouse->delta.x = 0;
-		mouse->delta.y = 0;
-	}
+		mouse->delta = point_zero();
 }
 
 /*check for keyboard/mouse input*/
@@ -92,11 +89,10 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	while (gr == game_continue)
 	{
 		update_deltatime(&game.clock);
-		update_render(&render, game.player);
 		gr = handleinput(&game);
 		moveplayer(&game);
+		update_render(&render, game.player);
 		screen_blank(sdl);
-		
 		render_world3d(sdl, game.world, render);
 		draw_text_boxed(&sdl, "PLAYMODE", (t_point){5, 5}, (t_point){sdl.window_w, sdl.window_h});
 		//DRAWPERFGRAPH
