@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
+#    By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/11 17:57:56 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/04 15:00:44 by okinnune         ###   ########.fr        #
+#    Updated: 2022/11/04 14:27:03 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,9 +26,9 @@ FILES= ft_abs.c ft_atoi.c ft_bzero.c ft_digitcount.c ft_isalnum.c ft_isalpha.c\
 	ft_strsub.c ft_strtrim.c ft_tolower.c ft_toupper.c ft_isspace.c \
 	ft_ftoa.c ft_memdup.c ft_clamp.c ft_clampf.c ft_min_max.c \
 	ft_get_next_line.c ft_strscrape.c ft_strreplace.c ft_degtorad.c \
-	ft_absf.c ft_listlen.c
+	ft_absf.c ft_listlen.c ft_strcdup.c get_next_line.c
 V_FILES= v3_basics.c bresenham.c
-CFLAGS= -O2 -c -I.#-Wall -Wextra -Werror -O2 -c -I.
+CFLAGS= -Wall -Wextra -Werror -O2 -finline-functions -c -I.
 CC= gcc
 
 V_SRCS= $(addprefix v3_src/, $(V_FILES))

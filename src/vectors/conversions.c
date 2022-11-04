@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   conversions.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 17:23:31 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/25 17:13:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/04 14:42:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,4 +28,48 @@ t_vector2	point_to_vector2(t_point point)
 	result.x = (float)point.x;
 	result.y = (float)point.y;
 	return (result);
+}
+
+t_quaternion	vector3_to_quaternion(t_vector3 v)
+{
+	return((t_quaternion){v.x, v.y, v.z, 1.0f});
+}
+
+static char	*floatstr(float f)
+{
+	static char	final[8];
+	char	*strinteger;
+	char	*strdecimal;
+	int		neg;
+	int		i;
+
+	i = (int)f;
+	f = f - i;
+	f = f * (ft_pow(10, 1));
+	neg = (f < 0.0f);
+	strinteger = ft_itoa(ft_abs(i));
+	strdecimal = ft_itoa(ft_abs((int)f));
+	ft_bzero(final, sizeof(final));
+	if (neg)
+		ft_strcat(final, "-");
+	ft_strcat(final, strinteger);
+	ft_strcat(final, ",");
+	ft_strcat(final, strdecimal);
+	free(strinteger);
+	free(strdecimal);
+	return (final);
+}
+
+char	*vector_string(t_vector3 vec)
+{
+	static char str[128]; //TODO: this is too long
+
+	*str = '\0';
+	ft_strcat(str, "x:");
+	ft_strcat(str, floatstr(vec.x));
+	ft_strcat(str, " y:");
+	ft_strcat(str, floatstr(vec.y));
+	ft_strcat(str, " z:");
+	ft_strcat(str, floatstr(vec.z));
+	return (str);
 }

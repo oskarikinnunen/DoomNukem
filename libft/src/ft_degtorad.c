@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/22 10:04:43 by okinnune          #+#    #+#             */
-/*   Updated: 2022/09/11 07:39:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/02 13:47:47 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,5 +17,5 @@
 */
 double	ft_degtorad(double angle)
 {
-	return (angle * 180 / PI);
+	return (angle * (PI / 180.0f));
 }

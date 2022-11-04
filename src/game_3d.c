@@ -6,13 +6,15 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/28 20:09:30 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/04 21:40:54 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "inputhelp.h"
 #include "bresenham.h"
+#include "objects.h"
+#include "vectors.h"
 
 static void save_clipped_points(float dist[3], t_triangle *tris[3], int points[4])
 {
@@ -117,46 +119,32 @@ static int Triangle_ClipAgainstPlane(t_vector3 plane_p, t_vector3 plane_n, t_tri
 	return(0);
 }
 
-static void draw_triangles(t_sdlcontext sdl, t_triangle *triangles, int index, int end, t_img img, uint32_t *pixels)
+static void draw_triangles(t_sdlcontext sdl, t_render render)
 {
-	while (index < end)
+	int index = 0;
+	while (index < render.draw_tri_count)
 	{
-		z_fill_tri(sdl, triangles[index], img, pixels);
-		drawline(sdl, (t_point){triangles[index].p[0].v.x, triangles[index].p[0].v.y}, (t_point){triangles[index].p[1].v.x, triangles[index].p[1].v.y}, INT_MAX);
-		drawline(sdl, (t_point){triangles[index].p[2].v.x, triangles[index].p[2].v.y}, (t_point){triangles[index].p[1].v.x, triangles[index].p[1].v.y}, INT_MAX);
-		drawline(sdl, (t_point){triangles[index].p[0].v.x, triangles[index].p[0].v.y}, (t_point){triangles[index].p[2].v.x, triangles[index].p[2].v.y}, INT_MAX);
-		
+		if (render.view == fill)
+			z_fill_tri(sdl, render.draw_triangles[index], *render.img);
+		else if (render.view == wireframe)
+		{
+			drawline(sdl, (t_point){render.draw_triangles[index].p[0].v.x, render.draw_triangles[index].p[0].v.y}, (t_point){render.draw_triangles[index].p[1].v.x, render.draw_triangles[index].p[1].v.y}, render.gizmocolor);
+			drawline(sdl, (t_point){render.draw_triangles[index].p[2].v.x, render.draw_triangles[index].p[2].v.y}, (t_point){render.draw_triangles[index].p[1].v.x, render.draw_triangles[index].p[1].v.y}, render.gizmocolor);
+			drawline(sdl, (t_point){render.draw_triangles[index].p[0].v.x, render.draw_triangles[index].p[0].v.y}, (t_point){render.draw_triangles[index].p[2].v.x, render.draw_triangles[index].p[2].v.y}, render.gizmocolor);
+		}
+		else if (render.view == fill_wireframe)
+		{
+			z_fill_tri(sdl, render.draw_triangles[index], *render.img);
+			drawline(sdl, (t_point){render.draw_triangles[index].p[0].v.x, render.draw_triangles[index].p[0].v.y}, (t_point){render.draw_triangles[index].p[1].v.x, render.draw_triangles[index].p[1].v.y}, render.gizmocolor);
+			drawline(sdl, (t_point){render.draw_triangles[index].p[2].v.x, render.draw_triangles[index].p[2].v.y}, (t_point){render.draw_triangles[index].p[1].v.x, render.draw_triangles[index].p[1].v.y}, render.gizmocolor);
+			drawline(sdl, (t_point){render.draw_triangles[index].p[0].v.x, render.draw_triangles[index].p[0].v.y}, (t_point){render.draw_triangles[index].p[2].v.x, render.draw_triangles[index].p[2].v.y}, render.gizmocolor);
+		}
 		index++;
 	}
 }
 
-static void swap(t_triangle *t1, t_triangle *t2)
-{
-	t_triangle *temp;
-	temp = t1;
-	t1 = t2;
-	t2 = temp;
-}
-
-//(t1.p[0].z + t1.p[1].z + t1.p[2].z) / 3.0f;
-static int partition(t_triangle *triangles, int low, int high)
-{
-	int pivot = (triangles[high].t[0].w + triangles[high].t[1].w + triangles[high].t[2].w) / 3.0f;
-	int i = (low -1);
-
-	for (int j = low; j < high - 1; j++)
-	{
-		if (((triangles[j].t[0].w + triangles[j].t[1].w + triangles[j].t[2].w) / 3.0f) > pivot)
-		{
-			i++;
-			swap(&triangles[i], &triangles[j]);
-		}
-	}
-	swap(&triangles[i + 1], &triangles[high]);
-	return(i + 1);
-}
-
-static void sort_triangles(t_triangle *triangles, int low, int high)
+//TODO: temp remove after occlusion is added
+static void sort_triangles(t_triangle *triangles, int high)
 {
 	int i, j;
 	t_triangle key;
@@ -173,24 +161,18 @@ static void sort_triangles(t_triangle *triangles, int low, int high)
 	}
 }
 
-
-static void clipped(int count, t_triangle *triangles_calc, t_sdlcontext sdl, t_img img, uint32_t *pixels)
+static void clipped(t_render render, t_sdlcontext sdl)
 {
-	int counter = 0;
-	int counting = 0;
 	int i = 0;
 	int start = 0;
 	int end = 0;
-	int lol = 0;
 
-	t_triangle	tris[10000];
-	t_triangle triangles[200];
-	t_triangle clipped[2];
+	t_triangle	triangles[200];
+	t_triangle	clipped[2];
 
-	//printf("\n\n");
-	while (i < count && 1)
+	while (i < render.calc_tri_count)
 	{
-		triangles[end++] = triangles_calc[i];
+		triangles[end++] = render.calc_triangles[i];
 		int nnewtriangles = 1;
 		for (int p = 0; p < 4; p++)
 		{
@@ -214,21 +196,15 @@ static void clipped(int count, t_triangle *triangles_calc, t_sdlcontext sdl, t_i
 			}
 			nnewtriangles = end - start;
 		}
-	//	printf("counter %d\n", counter++);
-		counting += end - start;
 		while (start < end)
 		{
-			tris[lol++] = triangles[start];
-			start++;
+			render.draw_triangles[render.draw_tri_count++] = triangles[start++];
 		}
 		start = 0;
 		end = 0;
 		i++;
 	}
-	//printf("triangle count %d\n", lol);
-	sort_triangles(tris, 0, lol);
-	draw_triangles(sdl, tris, 0, lol, img, pixels);
-	counter = counting;
+	draw_triangles(sdl, render);
 }
 
 static t_triangle transform_calc(t_mat4x4 matworld, t_triangle triangles)
@@ -269,8 +245,8 @@ static int clippedtriangles(t_triangle tritransformed, t_mat4x4 matview, t_trian
 	triviewed.t[1] = tritransformed.t[1];
 	triviewed.t[2] = tritransformed.t[2];
 	return (Triangle_ClipAgainstPlane(
+	(t_vector3){0.0f, 0.0f, 0.1f},
 	(t_vector3){0.0f, 0.0f, 0.2f},
-	(t_vector3){0.0f, 0.0f, 1.0f},
 	&triviewed, clipped));
 }
 
@@ -320,99 +296,157 @@ static t_triangle triangle_to_screenspace(t_mat4x4 matproj, t_triangle clipped, 
 	return(triprojected);
 }
 
-#include "objects.h"
-
-void printf_face(t_face face)
+t_quaternion quaternion_to_screenspace(t_mat4x4 matproj, t_quaternion q, t_sdlcontext sdl)
 {
-	uint32_t *f;
+	t_quaternion	proj_q;
 
-	f = face.indices;
-	if (DEBUG_ON == 0)
-		return;
-	printf("%d, %d, %d\n", f[0], f[1], f[2]);
+	proj_q = quaternion_mul_matrix(matproj, q);
+
+
+	proj_q.v = vector3_div(proj_q.v, proj_q.w);
+
+	proj_q.v = vector3_negative(proj_q.v);
+
+	t_vector3 voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
+	proj_q.v = vector3_add(proj_q.v, voffsetview);
+
+	proj_q.v.x *= 0.5f * (float)sdl.window_w;
+	proj_q.v.y *= 0.5f * (float)sdl.window_h;
+
+	return(proj_q);
 }
 
-void engine3d(t_sdlcontext sdl, t_game game, uint32_t *pixels)
+static t_texture	vector2_to_texture(t_vector2 v)
 {
-	static t_img 	debug_img;
-	t_triangle		triangles_calc[2000];
-	t_quaternion	q[10000];
-	int			i;
-	int			count = 0;
-	t_object	*obj;
-	int			index = 0;
+	t_texture t;
+	t.u = v.x;
+	t.v = v.y;
+	t.w = 1.0f;
+	return(t);
+}
 
-	t_vector3 vtarget;
-	t_mat4x4 matworld = matrix_makeidentity();
-	t_mat4x4 matproj = matrix_makeprojection(90.0f, (float)sdl.window_h / (float)sdl.window_w, 2.0f, 1000.0f);
+void render_object(t_sdlcontext sdl, t_render render, t_entity *entity)
+{
+	int				index;
+	t_object		*obj;
+	t_vector3		temp;
 
-	vtarget = vector3_add(game.player.position, game.player.lookdir);
-	t_mat4x4 matcamera = matrix_lookat(game.player.position, vtarget, (t_vector3){0, 0, 1});
-	t_mat4x4 matview = matrix_quickinverse(matcamera);
-	i = 0;
-	while (i < sdl.objectcount)
+	obj = entity->obj;
+	if (obj == NULL)
+		return;
+	index = 0;
+	while (index < obj->vertice_count)
 	{
-		obj = sdl.objects + i;
-		//printf("\n\n");
-		index = 0;
-		while (index < obj->vertice_count)
-		{
-			q[index] = (t_quaternion){obj->vertices[index].x, obj->vertices[index].y, obj->vertices[index].z, 1.0f};
-			//q[index] = quaternion_mul(q[index], (t_quaternion){10.0f, 10.0f, 10.0f, 1.0f});
-			//printf_quat(q[index]);
-			q[index] = quaternion_mul_matrix(matworld, q[index]);
-			//printf_quat(q[index]);
-			index++;
-		}
-		index = 0;
-		while (index < obj->face_count)
-		{
-			t_triangle tritransformed;
-			t_vector3 normal;	
-			t_vector3 vcameraray;	
-
-			tritransformed = (t_triangle){q[obj->faces[index].indices[0] - 1], q[obj->faces[index].indices[1] - 1], q[obj->faces[index].indices[2] - 1]};
-			normal = normal_calc(tritransformed);
-			vcameraray = vector3_sub(tritransformed.p[0].v, game.player.position);
-			if (vector3_dot(normal, vcameraray) < 0.0f || 1) //TODO: Currently ignoring normals with || 1
-			{
-				t_triangle clipped[2];
-				int nclippedtriangles = clippedtriangles(tritransformed, matview, clipped);
-				for (int n = 0; n < nclippedtriangles; n++)
-				{
-					triangles_calc[count++] = triangle_to_screenspace(matproj, clipped[n], sdl);
-					//printf_tri(triangles_calc[count - 1]);
-				}
-			}
-			index++;
-		}
-		//sdl.objects->vertices;
-		//while()
-		i++;
+		//TODO: Matrix rotations
+		temp = vector3_mul_vector3(entity->transform.scale, obj->vertices[index]);
+		temp = vector3_add(entity->transform.location, temp);
+		render.q[index] = vector3_to_quaternion(temp);
+		render.q[index] = quaternion_mul_matrix(render.matworld, render.q[index]);
+		index++;
 	}
-	i = 0;
-	while(i < game.tri_count)
+	index = 0;
+	while (index < obj->face_count)
 	{
-		t_triangle tritransformed;
-		t_vector3 normal;
-		t_vector3 vcameraray;
+		t_triangle	tritransformed;
+		t_vector3	normal;	
+		t_vector3	vcameraray;	
 
-		tritransformed = transform_calc(matworld, game.triangles[i]);
+		tritransformed = (t_triangle){render.q[obj->faces[index].v_indices[0] - 1], render.q[obj->faces[index].v_indices[1] - 1], render.q[obj->faces[index].v_indices[2] - 1]};
+		if (obj->uv_count != 0)
+		{
+			tritransformed.t[0] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[0] - 1]);
+			tritransformed.t[1] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[1] - 1]);
+			tritransformed.t[2] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[2] - 1]);
+		}
 		normal = normal_calc(tritransformed);
-		vcameraray = vector3_sub(tritransformed.p[0].v, game.player.position);
-		if (vector3_dot(normal, vcameraray) < 0.0f || 0) //TODO: Currently ignoring normals with || 1
+		vcameraray = vector3_sub(tritransformed.p[0].v, render.position);
+		if (vector3_dot(normal, vcameraray) < 0.0f || 1) //TODO: Currently ignoring normals with || 1
 		{
 			t_triangle clipped[2];
-			int nclippedtriangles = clippedtriangles(tritransformed, matview, clipped);
+			int nclippedtriangles = clippedtriangles(tritransformed, render.matview, clipped);
 			for (int n = 0; n < nclippedtriangles; n++)
 			{
-				triangles_calc[count++] = triangle_to_screenspace(matproj, clipped[n], sdl);
+				render.calc_triangles[render.calc_tri_count++] = triangle_to_screenspace(render.matproj, clipped[n], sdl);
 			}
 		}
-		i++;
+		index++;
 	}
-	//printf("index is %d\n", i);
-	if (debug_img.length == 0) // TODO: Get image from obj file, when obj handling is done, currently only for debugging textures
-		debug_img = get_image_by_name(sdl, "");
-	clipped(count, triangles_calc, sdl, debug_img, pixels);
+	if (obj->material_count != 0)
+		render.img = obj->materials[0].img;
+	if (!render.img)
+		render.img = render.debug_img;
+	clipped(render, sdl);
+	render.calc_tri_count = 0;
+	render.draw_tri_count = 0;
+}
+
+void render_gizmo(t_sdlcontext sdl, t_render render, t_entity *entity)
+{
+	t_object		obj;
+	t_vector3		vertex;
+
+	obj.vertice_count = 1;
+	vertex = vector3_zero();
+	obj.vertices = &vertex;
+	vertex = vector3_mul_vector3(entity->transform.scale, vertex);
+	vertex = vector3_add(entity->transform.location, vertex);
+	render.q[0] = vector3_to_quaternion(vertex);
+	render.q[0] = quaternion_mul_matrix(render.matworld, render.q[0]);
+	render.q[0] = quaternion_mul_matrix(render.matview, render.q[0]);
+	render.q[0] = quaternion_to_screenspace(render.matproj, render.q[0], sdl);
+	if (render.q[0].w > 0.0f)
+		drawcircle(sdl, (t_point){render.q[0].v.x, render.q[0].v.y}, 2, render.gizmocolor);
+	render.calc_tri_count = 0;
+	render.draw_tri_count = 0;
+}
+
+
+
+static t_vector3 lookdirection2(t_vector2 angle)
+{
+	t_quaternion	temp;
+	t_mat4x4		matcamerarot;
+
+	matcamerarot = matrix_makerotationz(angle.x);
+	temp = quaternion_mul_matrix(matcamerarot, (t_quaternion){1.0f, 0.0f, 0.0f, 1.0f});
+
+	return (temp.v);
+}
+
+//TODO: this don't work
+void	draw_screen_to_worldspace_ray(t_sdlcontext sdl, t_render render, t_point origin, t_vector2 og_angle)
+{
+	t_vector3	curstep;
+	t_vector3	dir;
+	t_vector2	angle;
+	t_entity	ent;
+	int	debug_iter;
+	
+
+	curstep = render.position;
+	angle.y = (((sdl.window_h / 2) - (float)origin.y) / (sdl.window_h / 2.0f)); //[1][1] should be FOV in radians;
+	angle.y = angle.y * ft_degtorad(45.0f);
+
+	angle.x = (((sdl.window_w / 2) - (float)origin.x) / (sdl.window_w / 2.0f));
+	angle.x = angle.x * (ft_degtorad(45.0f) * ((float)sdl.window_w / (float)sdl.window_h));
+	//angle.x = 0.0f;
+	//angle.x = 0;
+	dir = vector3_zero();
+	dir.y = -lookdirection((t_vector2){og_angle.x, og_angle.y + angle.y}).y;
+	dir.x = -lookdirection2((t_vector2){og_angle.x + angle.x, og_angle.y + angle.y}).x;
+	dir.y *= render.position.z * 1.4f;
+	dir.x *= render.position.z * ((float)sdl.window_w / (float)sdl.window_h);
+	dir.z = render.position.z;
+	/*dir.x *= 2.0f;
+	dir.y *= 2.0f;
+	dir.z = 2.0f;*/ //WORKS
+	debug_iter = 0;
+	while (curstep.z > 0.0f && debug_iter < 400)
+	{
+		curstep = vector3_movetowards(curstep, dir, 0.01f);
+		ent.transform.location = curstep;
+		ent.transform.scale = vector3_one();
+		render_gizmo(sdl, render, &ent);
+		debug_iter++;
+	}
 }

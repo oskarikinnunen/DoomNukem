@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vectors.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/27 18:33:11 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/04 14:40:35 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,9 @@ t_vector3	vector3_mul(t_vector3 vec, float mul);
 //returns vector 'vec' divided by 'div'
 t_vector3	vector3_div(t_vector3 vec, float div);
 
+//returns vector 'vec' moved towards set 'direction' //TODO: explain delta
+t_vector3	vector3_movetowards(t_vector3 vec, t_vector3 direction, float delta);
+
 //returns the magnitude of the vector 'vec'
 float		vector3_magnitude(t_vector3 vec);
 
@@ -152,8 +155,14 @@ t_point		point_add(t_point first, t_point second);
 //returns point 'first' substracted by point 'second'
 t_point		point_sub(t_point first, t_point second);
 
+//returns point 'point' where 'x = x % mod' and 'y = y % mod'
+t_point		point_mod(t_point point, int	mod);
+
 //returns point 'point' with 'add' added to x and y
 t_point		point_add_xy(t_point point, int add);
+
+//returns point 'point' snapped into 'grid' that is the size of 'interval' //TODO: better explanation
+t_point		point_snap(t_point point, int interval);
 
 //returns point 'point' multiplied by 'mul'
 t_point		point_mul(t_point point, int mul);
@@ -166,6 +175,9 @@ t_point		point_fmul(t_point point, float mul);
 
 //returns point 'point' divided by float 'mul'
 t_point		point_fdiv(t_point point, float mul);
+
+//returns point 'point' with absolute x and y values
+t_point		point_abs(t_point point);
 
 //returns point 'point' normalised
 t_point		point_normalise(t_point point);
@@ -244,12 +256,19 @@ t_vector3	lookdirection(t_vector2 angle);
 
 //returns vector3 'i' multiplied by matrix 'm'
 t_vector3 vector3_mul_matrix(t_mat4x4 m, t_vector3 i);
+
 /* CONVERSIONS */
+
+
+t_quaternion	vector3_to_quaternion(t_vector3 v);
 
 //Returns t_vector2 'vec' casted to t_point. (Shorthand for '*(t_point *)&vec').
 t_point			vector2_to_point(t_vector2 vec);
 
 //Returns t_point 'point' casted to t_vector2. (Shorthand for '*(t_vector2 *)&point').
 t_vector2		point_to_vector2(t_point point);
+
+//Returns static str for given vector3
+char			*vector_string(t_vector3 vec);
 
 #endif

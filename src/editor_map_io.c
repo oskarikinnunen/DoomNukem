@@ -6,12 +6,13 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/26 15:44:20 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/03 19:51:28 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "filechunks.h"
+#include "editor_tools.h"
 
 static int	fileopen(char *filename, int flags)
 {
@@ -93,18 +94,13 @@ void	save_chunk(char *filename, char *chunkname, t_list *content)
 	write(fd, "CEND", CHUNKSIZE);
 }
 
-t_list *load_chunk(char *filename, char *chunkname)
+t_list *load_chunk(char *filename, char *chunkname, size_t size)
 {
 	int		fd;
 	int		br;
 	char	buf[CHUNKSIZE + 1];
 	t_list	*result;
 	int		i;
-	static	t_chunkloader cls[2] =
-	{
-		{"ENT_", sizeof(t_entity)},
-		{"WALL", sizeof(t_line)}
-	};
 
 	fd = open(filename, O_RDONLY, 0666);
 	if (fd == -1)
@@ -113,29 +109,21 @@ t_list *load_chunk(char *filename, char *chunkname)
 	br = read(fd, buf, CHUNKSIZE);
 	while (br > 0)
 	{
-		i = 0;
-		while (i < 2)
+		if (ft_strcmp(chunkname, buf) == 0)
 		{
-			if (ft_strcmp(chunkname, cls[i].chunkname) == 0
-				&& ft_strcmp(cls[i].chunkname, buf) == 0)
-			{
-				//printf("found chunk %s \n", buf); //TODO: don't remove, going to be used for logging
-				result = parse_chunk(fd, cls[i].size);
-				return (result);
-			}
-			i++;
+			//printf("found chunk %s \n", buf); //TODO: don't remove, going to be used for logging
+			result = parse_chunk(fd, size);
+			return (result);
 		}
 		br = read(fd, buf, CHUNKSIZE);
 	}
 	return (NULL);
 }
 
-void	save_lists_to_file(t_editor *ed)
+void	save_editordata(t_editor *ed)
 {
 	int	fd;
-
-	fd = fileopen("map_test1", O_RDWR | O_CREAT | O_TRUNC); //Empty the file or create a new one if it doesn't exist
+	fd = fileopen("buttons", O_RDWR | O_CREAT | O_TRUNC); //Empty the file or create a new one if it doesn't exist
 	close(fd);
-	save_chunk("map_test1", "ENT_", ed->entitylist);
-	save_chunk("map_test1", "WALL", ed->linelist);
+	save_chunk("buttons", "BUTN", ed->buttonlist);
 }

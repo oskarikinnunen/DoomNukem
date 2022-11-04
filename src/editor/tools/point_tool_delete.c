@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 21:22:18 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/26 14:31:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/03 19:54:30 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 //Use 
 void	point_tool_delete(t_editor *ed, t_point crd)
 {
-	t_list	*node;
+	/*t_list	*node;
 	t_line	line;
 
 	node = ed->linelist;
@@ -32,5 +32,5 @@ void	point_tool_delete(t_editor *ed, t_point crd)
 			return ;
 		}
 		node = node->next;
-	}
+	}*/
 }

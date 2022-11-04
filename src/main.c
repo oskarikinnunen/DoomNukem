@@ -6,21 +6,22 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/26 17:12:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/03 20:11:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "png.h"
 #include "game_lua.h"
+#include "objects.h"
 
 static void	create_sdl_context(t_sdlcontext *sdl)
 {
+	load_lua_conf(sdl);
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		error_log(EC_SDL_INIT);
 	if (SDL_Init(SDL_INIT_EVENTS) < 0)
 		error_log(EC_SDL_INIT);
-	load_lua_conf(sdl);
 	sdl->window = SDL_CreateWindow("DoomNukem",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		sdl->window_w, sdl->window_h, SDL_WINDOW_SHOWN);
@@ -29,14 +30,9 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	sdl->surface = SDL_GetWindowSurface(sdl->window);
 	if (sdl->surface == NULL)
 		error_log(EC_SDL_GETWINDOW_SURFACE);
-	//sdl->renderer = SDL_CreateRenderer(sdl->window, -1, SDL_RENDERER_SOFTWARE);
-	//missing something at the end sdl->texture = SDL_CreateTexture(sdl->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, sdl->window_w, sdl);
-
-
-	//sdl->renderer = SDL_CreateRenderer(sdl->window,)
-	//SDL_LockSurface(sdl->surface);
-	//sdl->texture = SDL_CreateTexture()
-
+	load_fonts(sdl);
+	sdl->zbuffer = malloc(sdl->window_w * sdl->window_h * sizeof(float));
+	objects_init(sdl);
 }
 
 void	quit_game(t_sdlcontext *sdl)
@@ -56,9 +52,9 @@ int	main(int argc, char **argv)
 	while (gr == game_switchmode)
 	{
 		gr = editorloop(sdl); // quit & exit is handled inside the loop
-		printf("%s\ngamereturn after editor %i \n", CLEARSCREEN, gr);
+		//printf("%s\ngamereturn after editor %i \n", CLEARSCREEN, gr);
 		gr = playmode(sdl); // quit & exit is handled inside the loop
-		printf("%s\ngamereturn after playmode %i \n", CLEARSCREEN, gr);
+		//printf("%s\ngamereturn after playmode %i \n", CLEARSCREEN, gr);
 	}
 	//shouldn't get here?
 	return (0);

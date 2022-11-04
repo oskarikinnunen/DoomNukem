@@ -6,14 +6,15 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/26 17:32:53 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/03 19:51:15 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "inputhelp.h"
+#include "editor_tools.h"
 
-void	editor_toggle_keystates(t_editor *ed, SDL_Event e)
+void		editor_toggle_keystates(t_editor *ed, SDL_Event e)
 {
 	if (e.type == SDL_KEYDOWN)
 	{
@@ -21,6 +22,9 @@ void	editor_toggle_keystates(t_editor *ed, SDL_Event e)
 		ed->keystate |= keyismoveright(e) << KEYS_RIGHTMASK;
 		ed->keystate |= keyismoveup(e) << KEYS_UPMASK;
 		ed->keystate |= keyismovedown(e) << KEYS_DOWNMASK;
+		ed->keystate |= iskey(e, SDLK_LCTRL) << KEYS_CTRLMASK;
+		ed->keystate |= iskey(e, SDLK_SPACE) << KEYS_SPACEMASK;
+		ed->keystate |= iskey(e, SDLK_LSHIFT) << KEYS_SHIFTMASK;
 	}
 	if (e.type == SDL_KEYUP)
 	{
@@ -28,19 +32,31 @@ void	editor_toggle_keystates(t_editor *ed, SDL_Event e)
 		ed->keystate &= ~(keyismoveright(e) << KEYS_RIGHTMASK);
 		ed->keystate &= ~(keyismoveup(e) << KEYS_UPMASK);
 		ed->keystate &= ~(keyismovedown(e) << KEYS_DOWNMASK);
+		ed->keystate &= ~(iskey(e, SDLK_LCTRL) << KEYS_CTRLMASK);
+		ed->keystate &= ~(iskey(e, SDLK_SPACE) << KEYS_SPACEMASK);
+		ed->keystate &= ~(iskey(e, SDLK_LSHIFT) << KEYS_SHIFTMASK);
 	}
 }
 
-void	move_editor_offset(t_editor *ed)
+void		move_editor_offset(t_editor *ed)
 {
-	if ((ed->keystate >> KEYS_UPMASK) & 1) 
-		ed->offset.y += EDITOR_MOVESPEED * ed->clock.delta;
+	float	speed = EDITOR_MOVESPEED * ed->clock.delta;
+	if ((ed->keystate >> KEYS_SHIFTMASK) & 1)
+		speed *= 2.5f;
+	if ((ed->keystate >> KEYS_CTRLMASK) & 1)
+		speed *= 0.45f;
 	if ((ed->keystate >> KEYS_DOWNMASK) & 1)
-		ed->offset.y -= EDITOR_MOVESPEED * ed->clock.delta;
+		ed->offset.y += speed;
+	if ((ed->keystate >> KEYS_UPMASK) & 1)
+		ed->offset.y -= speed;
 	if ((ed->keystate >> KEYS_LEFTMASK) & 1)
-		ed->offset.x += EDITOR_MOVESPEED * ed->clock.delta;
+		ed->offset.x += speed;
 	if ((ed->keystate >> KEYS_RIGHTMASK) & 1)
-		ed->offset.x -= EDITOR_MOVESPEED * ed->clock.delta;
+		ed->offset.x -= speed;
+	if (((ed->keystate >> KEYS_SHIFTMASK) & 1) == 0)
+		ed->offset.z += ed->mouse.scroll_delta * 30.0f;
+	ed->offset.x = ft_clampf(ed->offset.x, 0.0f, 1000.0f);
+	ed->offset.y = ft_clampf(ed->offset.y, 0.0f, 1000.0f);
 }
 
 int		editor_events(t_editor *ed)
@@ -50,8 +66,8 @@ int		editor_events(t_editor *ed)
 	ed->mouse.scroll_delta = 0; //Needs to be reseted outside of eventloop
 	while (SDL_PollEvent(&e))
 	{
-		mouse_event(e, ed);
 		editor_toggle_keystates(ed, e);
+		mouse_event(e, ed);
 		if (e.type == SDL_KEYDOWN)
 		{
 			if (iskey(e, SDLK_ESCAPE))

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/27 18:42:23 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/04 22:21:20 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include "vectors.h"
 # include <stdbool.h>
 # include "shapes.h"
+# include "physics.h"
 
 # define TILESIZE 32 //EDITOR tilesize
 # define GRIDSIZE 64 //EDITOR gridsize (how many addressable coordinates we have)
@@ -41,6 +42,7 @@
 # define CLR_PRPL 14231500
 # define CLR_TURQ 5505010
 # define CLR_GRAY 4868682
+# define CLR_DARKGRAY 0x292929
 # define CLR_GREEN 3002977
 # define CLEARSCREEN "\e[1;1H\e[2J"
 
@@ -55,7 +57,7 @@
 # define COLLISION_ON //Comment/uncomment to toggle experimental collision
 
 
-# define EDITOR_MOVESPEED 1.2f
+# define EDITOR_MOVESPEED 0.2f
 # define MOVESPEED 10.010f
 # define MAXMOVEMENTSPEED 0.08f
 # define ROTATESPEED 0.002f
@@ -78,31 +80,10 @@ typedef	struct s_line
 	t_point	end;
 }	t_line;
 
-typedef struct s_wall
-{
-	t_line	line;
-	int		height;
-}	t_wall;
-
 typedef enum e_entityID
 {
 	player
 }	t_entityID;
-
-typedef struct s_entity
-{
-	t_entityID	id;
-	t_vector2	position;
-	char		test1;
-}	t_entity;
-
-typedef enum e_editorstate
-{
-	e_place_start,
-	e_place_end,
-	display3d
-}	t_editorstate;
-
 
 typedef struct s_img
 {
@@ -112,22 +93,47 @@ typedef struct s_img
 	uint32_t	length;
 }	t_img;
 
+typedef struct s_font_chars
+{
+	char			id;
+	t_point			pos;
+	t_point			size;
+	t_point			offset;
+	int				xadvance;
+}	t_font_chars;
+
+typedef struct s_font
+{
+	char			*name;
+	char			*file_name;
+	int				size;
+	int				padding;
+	int				spacing;
+	int				line_height;
+	t_point			scale;
+	int				char_count;
+	t_font_chars	*chars;
+	t_img			*bitmap;
+	t_img			*texts[20];
+}	t_font;
+
 typedef struct s_sdlcontext
 {
 	SDL_Window				*window;
 	SDL_Surface				*surface;
 	float					*zbuffer;
 	SDL_Renderer			*renderer; //TODO: for testing remove.
-	SDL_Texture				*texture;
 	t_img					*images;
-	uint					imagecount;
+	uint32_t				imagecount;
 	struct s_object			*objects;
-	uint					objectcount;
+	uint32_t				objectcount;
+	t_font					*font;
+	t_font					*all_fonts;
 	uint32_t				window_w;
 	uint32_t				window_h;
-	uint32_t				*pxls;
 }	t_sdlcontext;
 
+void	screen_blank(t_sdlcontext sdl);
 # define PERFGRAPH_SAMPLES 64
 
 typedef struct s_perfgraph
@@ -136,7 +142,7 @@ typedef struct s_perfgraph
 	uint32_t	deltas[PERFGRAPH_SAMPLES];
 }	t_perfgraph;
 
-typedef struct s_obj //TODO: move obj/fdf related stuff to separate header?
+typedef struct s_obj //TODO: this will be deprecated, t_object defined in 'objects.h' is the current object struct
 {
 	char		**mtlnames;
 	uint32_t	*mtlcolors; //obj color type 3
@@ -148,45 +154,12 @@ typedef struct s_obj //TODO: move obj/fdf related stuff to separate header?
 	uint32_t	f_count;
 }	t_obj;
 
-//TODO: add ping-pong, repeat
-typedef enum	e_anim_mode
-{
-	anim_forwards,
-	anim_backwards
-} t_anim_mode;
 
 typedef struct s_clock
 {
 	Uint32	prev_time;
 	Uint32	delta;
 } t_clock;
-
-typedef struct s_anim
-{
-	bool		active;
-	uint32_t	time;
-	int32_t		frame;
-	int32_t		lastframe;
-	uint8_t		framerate;
-	float		lerp;
-	t_anim_mode	mode;
-}	t_anim;
-
-typedef struct s_editor
-{
-	t_editorstate	state;
-	t_line			line; //the line that is being edited right now
-	t_list			*linelist;
-	t_list			*entitylist;
-	t_mouse			mouse;
-	float			threedee_zoom;
-	t_anim			transition;
-	t_clock			clock;
-	t_point			offset;
-	struct s_tool	*tool;
-	uint8_t			tool_selected;
-	uint32_t		keystate;
-}	t_editor;
 
 /* Playmode */
 
@@ -222,11 +195,120 @@ typedef struct	s_triangle
 {
 	t_quaternion	p[3];
 	t_texture		t[3];
-	uint32_t	clr;
+	uint32_t		clr;
 }	t_triangle;
+
+typedef struct s_transform
+{
+	t_vector3	location;
+	t_vector3	rotation;
+	t_vector3	scale;
+}	t_transform;
+
+typedef struct s_bounds
+{
+	float		height;
+	float		width;
+	t_vector3	loc;
+}	t_bounds;
+
+typedef struct s_entity
+{
+	t_transform		transform;
+	t_bounds		bounds;
+	uint32_t		object_index;
+	struct s_object	*obj;
+	bool			occluder;
+}	t_entity;
+
+typedef struct s_bot
+{
+	t_entity	entity;
+}	t_bot;
+
+typedef struct s_wall
+{
+	t_entity	entity;
+}	t_wall;
+
+typedef struct s_item
+{
+	t_entity	entity;
+}	t_item;
+
+typedef enum e_view
+{
+	fill,
+	wireframe,
+	fill_wireframe
+}	t_view;
+
+typedef enum e_occlusion
+{
+	ignore,
+	occluder,
+	occluded
+}	t_occlusion;
+
+typedef struct s_render
+{
+	t_entity		*occluder;
+	uint32_t		occluder_count;
+	t_occlusion		occlusion;
+	t_view			view;
+	t_list			*listwall;
+	t_list			*listbot;
+	t_list			*listitem;
+	t_vector3		vtarget;
+	t_mat4x4		matcamera;
+	t_mat4x4		matview;
+	t_mat4x4		matworld;
+	t_mat4x4		matproj;
+	t_vector3		position;
+	t_vector3		lookdir;
+	t_triangle		*draw_triangles;
+	t_triangle		*calc_triangles;
+	uint32_t		draw_tri_count;
+	uint32_t		calc_tri_count;
+	t_img			*img;
+	t_img			*debug_img;
+	t_quaternion	*q;
+	uint32_t		gizmocolor;
+}	t_render;
+
+typedef struct s_world
+{
+	t_physics	physics;
+	t_list		*entitylist;
+	t_entity	skybox;
+}	t_world;
+
+void	calculate_colliders_for_entities(t_world *world);
+void	render_world3d(t_sdlcontext sdl, t_world world, t_render render);
+t_world	load_world(char *filename, t_sdlcontext sdl);
+void	save_world(char *filename, t_world world);
+
+typedef struct s_editor
+{
+	t_world			world;
+	t_list			*buttonlist;
+	t_mouse			mouse;
+	t_clock			clock;
+	t_vector3		offset;
+	t_vector2		forward_offset;
+	t_vector2		angle;
+	t_render		render;
+	struct s_tool	*tool;
+	uint32_t		keystate;
+}	t_editor;
 
 typedef struct s_game
 {
+	t_world			world;
+	t_list			*listwall;
+	t_list			*listbot;
+	t_list			*listitem;
+	//t_entity		entity[1000];
 	int				tri_count;
 	t_triangle		*triangles;
 	t_list			*linelist;
@@ -253,7 +335,7 @@ int		editor_events(t_editor *ed);
 bool	iskey(SDL_Event e, int keycode);
 
 /* EDITOR_RENDER.C */
-void	renderlines(t_sdlcontext *sdl, t_editor *ed); //TODO:  better name?
+void	renderlines(t_sdlcontext *sdl, t_editor *ed); //TODO:  LEGACY, remove
 
 /* EDITOR_MOUSE.C */
 t_point	mousetoworldspace(t_editor *ed);
@@ -273,17 +355,14 @@ void	savemap(t_editor *ed, char *filename);
 
 /* IMG.C */
 void	alloc_image(t_img *img, int width, int height);
-t_img	get_image_by_name(t_sdlcontext sdl, char *name);
-
-/* INPUTHELPER.C */
-bool	iskey(SDL_Event e, int keycode);
+t_img	*get_image_by_index(t_sdlcontext sdl, int index);
+t_img	*get_image_by_name(t_sdlcontext sdl, char *name);
 
 /* DELTATIME.C */
 void	update_deltatime(t_clock *c);
 
-/* ANIM.C */
-void	update_anim(t_anim *anim, uint32_t delta);
-void	start_anim(t_anim *anim, t_anim_mode mode);
+/* INIT_RENDER.C */
+t_render	init_render(t_sdlcontext sdl);
 
 /* DRAW.C */
 void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr);
@@ -303,16 +382,20 @@ void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
-void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle, t_img img, uint32_t *pixels);
-void	engine3d(t_sdlcontext sdl, t_game game, uint32_t *pixels);
+void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle, t_img img);
+void	render_object(t_sdlcontext sdl, t_render render, t_entity *entity);
+void	render_gizmo(t_sdlcontext sdl, t_render render, t_entity *entity);
+void	draw_screen_to_worldspace_ray(t_sdlcontext sdl, t_render render, t_point origin, t_vector2 angle);
 
 /* PHYSICS.C */
+bool	pointrectanglecollision(t_point p, t_rectangle rect);
 bool	pointcirclecollision(t_vector2 p, t_vector2 cp, float r);
 bool	linecirclecollision(t_line line, t_vector2 cp, float r);
 
 /* PLAYMODE_OVERHEAD.C */
 void	render_overhead(t_game *game, t_sdlcontext sdl);
 void	move_overhead(t_game *game);
+t_quaternion	quaternion_to_screenspace(t_mat4x4 matproj, t_quaternion q, t_sdlcontext sdl);
 
 /* MOVEPLAYER.C */
 void	moveplayer(t_game *game);
@@ -322,6 +405,32 @@ void	error_log(int error_code);
 
 /* SDL */
 void	quit_game(t_sdlcontext *sdl);
+
+/* FONT.C */
+
+void	load_fonts(t_sdlcontext *sdl);
+void	black_text_background(t_sdlcontext *sdl, t_point pos, t_point size);
+// Fonts: 0 = 11, 1 = 12, 2 = 14, 3 = 16, 4 = 18, 5 = 20, 6 = 22
+void	set_font_size(t_sdlcontext *sdl, int font_size);
+
+/* TEXT.C */
+
+// Saves the text to font->texts[i] in sequential order.
+// Can be drawn with draw_saved_text()
+void	save_text(t_font *font, const char *str);
+
+// Draws a text that has been saved to font->texts[i] with save_text()
+void	draw_saved_text(t_sdlcontext *sdl, t_img *text, t_point pos);
+
+// Draws text without saving it anywhere
+// Uses a pre-set font size that can be changed by calling set_font_size()
+// Fonts: 0 = 11, 1 = 12, 2 = 14, 3 = 16, 4 = 18, 5 = 20, 6 = 22
+void	draw_text(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundaries);
+
+// Draws text, with a black box in the background, without saving it anywhere
+// Uses a pre-set font size that can be changed by calling set_font_size()
+// Fonts: 0 = 11, 1 = 12, 2 = 14, 3 = 16, 4 = 18, 5 = 20, 6 = 22
+void	draw_text_boxed(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundaries);
 
 /* LIST_HELPER.C */
 void	list_push(t_list **head, void *content, size_t content_size);
@@ -335,5 +444,7 @@ void printf_quat(t_quaternion v);
 void printf_vec(t_vector3 v);
 void printf_matrix(t_mat4x4 m);
 void printf_point(t_point p);
+void printf_texture(t_texture t);
+void printf_face(void *face);
 
 #endif

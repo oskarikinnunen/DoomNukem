@@ -6,16 +6,23 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/26 13:31:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/03 19:51:35 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "editor_tools.h"
+#include "inputhelp.h"
+
+bool	mouse_clicked(t_mouse mouse, int button)
+{
+	return (mouse.click_unhandled == true && mouse.click_button == button);
+}
 
 t_point	mousetoworldspace(t_editor *ed)
 {
-	return (point_sub(ed->mouse.pos, ed->offset));
+	return (point_zero());
+	//return (point_sub(ed->mouse.pos, ed->offset));
 }
 
 t_point	mousetogridspace(t_editor *ed)
@@ -48,9 +55,25 @@ t_point	screentogridspace(t_point point)
 
 static void	mouseclick(t_editor *ed)
 {
-	if (ed->tool == NULL)
-		ed->mouse.click_unhandled = false;
-	check_tool_change_click(ed->mouse.pos, ed);
+	t_list		*l;
+	t_guibutton	button;
+
+	l = ed->buttonlist;
+
+	while (l != NULL)
+	{
+		button = *(t_guibutton *)l->content;
+		if (pointrectanglecollision(ed->mouse.pos, button.rect) && ed->mouse.click_button == MOUSE_LEFT)
+		{
+			if (button.onclick != NULL)
+			{
+				button.onclick(ed);
+				ed->mouse.click_unhandled = false;
+			}
+				
+		}
+		l = l->next;
+	}
 }
 
 void	mouse_event(SDL_Event e, t_editor *ed)
@@ -72,6 +95,8 @@ void	mouse_event(SDL_Event e, t_editor *ed)
 		ed->mouse.scroll_delta = e.wheel.y;
 		ed->mouse.scroll = ft_clamp(ed->mouse.scroll, -20, 20);
 	}
-	if (ed->mouse.click_unhandled)
+	if (ed->mouse.click_unhandled
+		&& ((ed->keystate >> KEYS_CTRLMASK) & 1) == false
+		&& ((ed->keystate >> KEYS_SHIFTMASK) & 1) == false)
 		mouseclick(ed);
 }

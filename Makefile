@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/10/27 15:55:37 by okinnune         ###   ########.fr        #
+#    Updated: 2022/11/03 19:49:27 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,18 +22,31 @@ LUAFOLDER= lua-5.3.6
 LUA= $(LUAFOLDER)/install/lib/liblua.a #TODO: find out real name!
 
 #Source files:
-SRCFILES= main.c draw.c img.c deltatime.c anim.c\
-		editor.c editor_mouse.c editor_events.c editor_render.c \
-		editor_map_io.c	editor_buttons.c \
+SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
+		editor.c editor_mouse.c editor_events.c \
+		editor_map_io.c	\
 		editor/tools/point_tool.c \
 		editor/tools/point_tool_delete.c \
 		editor/tools/entity_tool.c \
+		editor/tools/wall_tool.c \
+		editor/tools/button_tool.c \
+		editor/imagedropdown.c \
+		editor/editor_new_buttons.c \
+		editor/editor_instant_button.c \
 		playmode.c inputhelper.c playmode_overhead.c \
 		moveplayer.c physics.c errors.c \
 		game_3d.c fill_triangle.c perfgraph.c \
 		png.c lua_conf.c list_helper.c \
-		spaceconversions.c obj_parse.c \
-		obj_parse_vertex.c obj_parse_faces.c
+		spaceconversions.c \
+		obj_parser/obj_parse.c \
+		obj_parser/obj_parse_vertex.c \
+		obj_parser/obj_parse_faces.c \
+		obj_parser/obj_parse_uvs.c \
+		font.c text.c \
+		object_init.c \
+		object_primitives.c \
+		world.c \
+		init_render.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \
 		vector2_elementary.c vector2_shorthands.c \
@@ -44,7 +57,7 @@ VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		quaternion_shorthands.c quaternions.c \
 		matrix_shorthands.c matrix_rotations.c \
 		matrix_functions.c matrix_functions2.c \
-		debug_vectors.c
+		debug_vectors.c point_more.c
 VECTORSRC= $(addprefix src/vectors/,$(VECTORSRCFILES))
 SRC= $(addprefix src/,$(SRCFILES))
 SRC+= $(VECTORSRC)
@@ -54,12 +67,12 @@ OBJ= $(SRC:.c=.o)
 INCLUDE= -ISDL_built/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
 CC= gcc
 LIBS= $(LIBFT) -lm
-CFLAGS= $(INCLUDE) -g -finline-functions -Ofast
+CFLAGS= $(INCLUDE) -g -finline-functions -O1
 
 all: $(SDL2) $(LUA) $(LIBFT) $(OBJ)
 	$(CC) $(OBJ) -o $(NAME) `SDL_built/bin/sdl2-config --cflags --libs` $(INCLUDE) $(LIBS) $(LUA)
 
-$(OBJ): include/doomnukem.h Makefile
+$(OBJ): include/*.h Makefile
 
 clean:
 	rm -f $(OBJ)

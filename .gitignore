@@ -8,6 +8,9 @@ SDL-release-2.0.8/build/*
 libft/libft.a
 libft/**.o
 lua-5.3.6/install/
+lua-5.3.6/src/liblua.a
+lua-5.3.6/src/lua
+lua-5.3.6/src/luac
 mapfile1
 !SDL_built/DontRemoveMe
 callgrind.out*

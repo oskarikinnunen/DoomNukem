@@ -1,25 +1,23 @@
 build/SDL_vulkan_utils.lo: \
- /home/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/video/SDL_vulkan_utils.c \
- /home/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/video/../SDL_internal.h \
- /home/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/video/../dynapi/SDL_dynapi.h \
- /home/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/video/../dynapi/SDL_dynapi_overrides.h \
- include/SDL_config.h \
- /home/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_platform.h \
- /home/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/begin_code.h \
- /home/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/close_code.h \
- /home/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/video/SDL_vulkan_internal.h \
- /home/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_stdinc.h \
- /home/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_config.h \
- /home/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/video/./khronos/vulkan/vulkan.h \
- /home/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/video/./khronos/vulkan/./vk_platform.h \
- /home/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_vulkan.h \
- /home/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_video.h \
- /home/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_stdinc.h \
- /home/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_pixels.h \
- /home/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_endian.h \
- /home/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_rect.h \
- /home/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_error.h \
- /home/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_rwops.h \
- /home/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_surface.h \
- /home/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_blendmode.h \
- /home/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_error.h
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/video/SDL_vulkan_utils.c \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/video/../SDL_internal.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/video/../dynapi/SDL_dynapi.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/video/../dynapi/SDL_dynapi_overrides.h \
+  include/SDL_config.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_platform.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/begin_code.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/close_code.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/video/SDL_vulkan_internal.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_stdinc.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_config.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/video/./khronos/vulkan/vulkan.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/video/./khronos/vulkan/./vk_platform.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_vulkan.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_video.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_pixels.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_endian.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_rect.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_error.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_rwops.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_surface.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_blendmode.h
