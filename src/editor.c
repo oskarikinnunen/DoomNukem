@@ -86,14 +86,6 @@ int	editorloop(t_sdlcontext sdl)
 				ed.tool->icon = get_image_by_name(sdl, ed.tool->icon_name);
 		}
 		ed.mouse.click_unhandled = false;
-		draw_text(&sdl, "is this recognizeable? out of ammo! left click to select", (t_point){200, 200}, 0);
-		draw_text(&sdl, "is this recognizeable? out of ammo! left click to select", (t_point){200, 250}, 1);
-		draw_text(&sdl, "is this recognizeable? out of ammo! left click to select", (t_point){200, 300}, 2);
-		draw_text(&sdl, "is this recognizeable? out of ammo! left click to select", (t_point){200, 350}, 3);
-		draw_text(&sdl, "is this recognizeable? out of ammo! left click to select", (t_point){200, 400}, 4);
-		draw_text(&sdl, "is this recognizeable? out of ammo! left click to select", (t_point){200, 450}, 5);
-		draw_text(&sdl, "is this recognizeable? out of ammo! left click to select", (t_point){200, 500}, 6);
-		draw_text(&sdl, "is this recognizeable? out of ammo! left click to select", (t_point){1080, 550}, 6);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 	}

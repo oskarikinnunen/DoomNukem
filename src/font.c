@@ -12,6 +12,11 @@
 
 #include "doomnukem.h"
 
+void	set_font_size(t_sdlcontext *sdl, int font_size)
+{
+	sdl->font = &sdl->all_fonts[font_size];
+}
+
 static void	save_font_info(t_font *font, int fd)
 {
 	int		ret;
@@ -121,8 +126,8 @@ void	load_fonts(t_sdlcontext *sdl)
 	char	path[19];
 
 
-	sdl->font = ft_memalloc(sizeof(t_font) * 7); // We have 7 different font sizes for now
-	if (sdl->font == NULL)
+	sdl->all_fonts = ft_memalloc(sizeof(t_font) * 7); // We have 7 different font sizes for now
+	if (sdl->all_fonts == NULL)
 		error_log(EC_MALLOC);
 	ft_strcpy(path, "assets/fonts/0.fnt");
 	i = 0;
@@ -131,36 +136,36 @@ void	load_fonts(t_sdlcontext *sdl)
 		fd = open(path, O_RDONLY);
 		if (fd < 0)
 			error_log(EC_OPEN);
-		save_font_info(&sdl->font[i], fd);
-		sdl->font[i].chars = ft_memalloc(sizeof(t_font_chars) * sdl->font[i].char_count);
-		if (sdl->font[i].chars == NULL)
+		save_font_info(&sdl->all_fonts[i], fd);
+		sdl->all_fonts[i].chars = ft_memalloc(sizeof(t_font_chars) * sdl->all_fonts[i].char_count);
+		if (sdl->all_fonts[i].chars == NULL)
 			error_log(EC_MALLOC);
 		line = NULL;
 		j = 0;
 		ret = 1;
-		while (j < sdl->font[i].char_count)
+		while (j < sdl->all_fonts[i].char_count)
 		{
 			ret = get_next_line(fd, &line); // using Rene's gnl - invalid read of size 1 & 4 valgrind using oskari's gnl
 			if (line == NULL || ret < 0)
 				error_log(EC_GETNEXTLINE);
-			save_char_info(&sdl->font[i].chars[j], line);
+			save_char_info(&sdl->all_fonts[i].chars[j], line);
 			if (line)
 				free(line);
 			j++;
 		}
-		sdl->font[i].file_name = ft_strjoin(sdl->font[i].name, ".png");
-		if (!sdl->font[i].file_name)
+		sdl->all_fonts[i].file_name = ft_strjoin(sdl->all_fonts[i].name, ".png");
+		if (!sdl->all_fonts[i].file_name)
 			error_log(EC_MALLOC);
-		bitmap = get_image_by_name(*sdl, sdl->font[i].file_name);
-		sdl->font[i].bitmap = bitmap;
+		bitmap = get_image_by_name(*sdl, sdl->all_fonts[i].file_name);
+		sdl->all_fonts[i].bitmap = bitmap;
 		if (close(fd) == -1)
 			error_log(EC_CLOSE);
 		path[13] = path[13] + 1;
 		i++;
 	}
+	set_font_size(sdl, 6);
 	
     // These printfs are for troubleshooting in case something is off
-
 	/*
 	printf("font name: %s\n", sdl->font->name);
 	printf("font size: %d\n", sdl->font->size);

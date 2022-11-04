@@ -127,6 +127,7 @@ typedef struct s_sdlcontext
 	struct s_object			*objects;
 	uint32_t				objectcount;
 	t_font					*font;
+	t_font					*all_fonts;
 	uint32_t				window_w;
 	uint32_t				window_h;
 }	t_sdlcontext;
@@ -324,22 +325,12 @@ void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr);
 void	drawcircle(t_sdlcontext sdl, t_point pos, int size, uint32_t clr);
 void	drawrectangle(t_sdlcontext, t_rectangle rect, uint32_t clr);
 
-// Draws a text that has been saved to font->texts[i] with save_text()
-void	draw_saved_text(t_sdlcontext *sdl, t_img *text, t_point pos);
-
-// Draws a text without saving it anywhere.
-// Fonts: 0 = 11, 1 = 12, 2 = 14, 3 = 16, 4 = 18, 5 = 20, 6 = 22
-void	draw_text(t_sdlcontext *sdl, const char *str, t_point pos, int font_size);
-
 /* EDITOR_BUTTONS.C */
 void	draw_editor_buttons(t_sdlcontext sdl, uint8_t tool_selected); //TODO: MOVE TO EDITOR_TOOLS
 void	check_tool_change_click(t_point cursor, t_editor *ed); //TODO: MOVE TO EDITOR_TOOLS
 
 //Draws image 'img' to pixels 'pxls', offset by point 'pos' and scaled to 'scale'
 void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale);
-
-/* FONT.C */
-void	load_fonts(t_sdlcontext *sdl);
 
 /* PERFGRAPH.C */
 void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
@@ -367,9 +358,31 @@ void	error_log(int error_code);
 /* SDL */
 void	quit_game(t_sdlcontext *sdl);
 
+/* FONT.C */
+
+void	load_fonts(t_sdlcontext *sdl);
+
+// Fonts: 0 = 11, 1 = 12, 2 = 14, 3 = 16, 4 = 18, 5 = 20, 6 = 22
+void	set_font_size(t_sdlcontext *sdl, int font_size);
+
 /* TEXT.C */
-// font[0] = 11, [1] = 12, [2] = 14, [3] = 16, [4] = 18, [5] = 20, [6] = 22
+
+// Saves the text to font->texts[i] in sequential order.
+// Can be drawn with draw_saved_text()
 void	save_text(t_font *font, const char *str);
+
+// Draws a text that has been saved to font->texts[i] with save_text()
+void	draw_saved_text(t_sdlcontext *sdl, t_img *text, t_point pos);
+
+// Draws text without saving it anywhere
+// Uses a pre-set font size that can be changed by calling set_font_size()
+// Fonts: 0 = 11, 1 = 12, 2 = 14, 3 = 16, 4 = 18, 5 = 20, 6 = 22
+void	draw_text(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundaries);
+
+// Draws text, with a black box in the background, without saving it anywhere
+// Uses a pre-set font size that can be changed by calling set_font_size()
+// Fonts: 0 = 11, 1 = 12, 2 = 14, 3 = 16, 4 = 18, 5 = 20, 6 = 22
+void	draw_text_boxed(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundaries);
 
 /* LIST_HELPER.C */
 void	list_push(t_list **head, void *content, size_t content_size);
