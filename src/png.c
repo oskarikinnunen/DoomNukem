@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:10:14 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 15:05:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/03 20:17:20 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void	sample_ouroboros(t_img *orig) //samples the image into itself
 	uint32_t	*newdata;
 	t_point		sample;
 
-	newdata = ft_memalloc(orig->length * sizeof(uint32_t));
+	newdata = ft_memalloc((orig->length * 2) * sizeof(uint32_t));
 	sample = point_zero();
 	while (sample.y < orig->size.y)
 	{
@@ -144,7 +144,7 @@ t_img	pngparse(char *filename)
 	png.height = rev_bytes(*(uint32_t *)(ptr + 4));
 	if (png.width >= 165 || png.height >= 165)
 	{
-		printf("images with size over ~165 pixels are unsupported, pls fix the png reader!\n");
+		printf("images with size over ~165 pixels are unsupported, pls fix the png reader! (image was %s , assumed size %ix%i\n", filename, png.width, png.height);
 		exit(0);
 	}
 	ptr += 8;

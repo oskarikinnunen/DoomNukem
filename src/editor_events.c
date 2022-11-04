@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_events.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 15:08:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/03 19:51:15 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,15 +40,23 @@ void		editor_toggle_keystates(t_editor *ed, SDL_Event e)
 
 void		move_editor_offset(t_editor *ed)
 {
-	if ((ed->keystate >> KEYS_UPMASK) & 1)
-		ed->offset.y += EDITOR_MOVESPEED * ed->clock.delta;
+	float	speed = EDITOR_MOVESPEED * ed->clock.delta;
+	if ((ed->keystate >> KEYS_SHIFTMASK) & 1)
+		speed *= 2.5f;
+	if ((ed->keystate >> KEYS_CTRLMASK) & 1)
+		speed *= 0.45f;
 	if ((ed->keystate >> KEYS_DOWNMASK) & 1)
-		ed->offset.y -= EDITOR_MOVESPEED * ed->clock.delta;
+		ed->offset.y += speed;
+	if ((ed->keystate >> KEYS_UPMASK) & 1)
+		ed->offset.y -= speed;
 	if ((ed->keystate >> KEYS_LEFTMASK) & 1)
-		ed->offset.x += EDITOR_MOVESPEED * ed->clock.delta;
+		ed->offset.x += speed;
 	if ((ed->keystate >> KEYS_RIGHTMASK) & 1)
-		ed->offset.x -= EDITOR_MOVESPEED * ed->clock.delta;
-	ed->offset.z += ed->mouse.scroll_delta * 30.0f;
+		ed->offset.x -= speed;
+	if (((ed->keystate >> KEYS_SHIFTMASK) & 1) == 0)
+		ed->offset.z += ed->mouse.scroll_delta * 30.0f;
+	ed->offset.x = ft_clampf(ed->offset.x, 0.0f, 1000.0f);
+	ed->offset.y = ft_clampf(ed->offset.y, 0.0f, 1000.0f);
 }
 
 int		editor_events(t_editor *ed)

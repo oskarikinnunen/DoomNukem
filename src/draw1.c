@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   draw1.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 22:15:00 by raho              #+#    #+#             */
 /*   Updated: 2022/11/02 20:55:05 by raho             ###   ########.fr       */
@@ -93,7 +93,6 @@ void	draw_text(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundari
 		}
 
 		j = str[i] - 32;
-
 		counter.y = 0;
 		while (counter.y < sdl->font->chars[j].size.y)
 		{
@@ -153,7 +152,7 @@ void	draw_text_boxed(t_sdlcontext *sdl, const char *str, t_point pos, t_point bo
 	}
 
 	text_size.x = 0;
-	text_size.y = sdl->font->line_height;
+	text_size.y = 0;
 	word_length = 0;
 	cursor.x = 0;
 	cursor.y = 0;

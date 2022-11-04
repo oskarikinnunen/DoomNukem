@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 20:16:50 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/03 20:11:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,9 @@ int	main(int argc, char **argv)
 	while (gr == game_switchmode)
 	{
 		gr = editorloop(sdl); // quit & exit is handled inside the loop
-		printf("%s\ngamereturn after editor %i \n", CLEARSCREEN, gr);
+		//printf("%s\ngamereturn after editor %i \n", CLEARSCREEN, gr);
 		gr = playmode(sdl); // quit & exit is handled inside the loop
-		printf("%s\ngamereturn after playmode %i \n", CLEARSCREEN, gr);
+		//printf("%s\ngamereturn after playmode %i \n", CLEARSCREEN, gr);
 	}
 	//shouldn't get here?
 	return (0);

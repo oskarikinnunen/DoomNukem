@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 17:23:31 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/25 17:13:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/03 19:55:00 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,4 +28,9 @@ t_vector2	point_to_vector2(t_point point)
 	result.x = (float)point.x;
 	result.y = (float)point.y;
 	return (result);
+}
+
+t_quaternion	vector3_to_quaternion(t_vector3 v)
+{
+	return((t_quaternion){v.x, v.y, v.z, 1.0f});
 }

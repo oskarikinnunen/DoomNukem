@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 00:57:36 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/03 19:52:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ void	load_objects(lua_State *lua, t_sdlcontext *sdl)
 		lua_getglobal(lua, "eval");
 		sprintf(objectname, "%s%s", OBJPATH, lua_tostring(lua, -1));
 		sdl->objects[i - 1] = objparse(objectname);
+		ft_strcpy(sdl->objects[i - 1].name, lua_tostring(lua, -1));
 		i++;
 	}
 }

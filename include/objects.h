@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   objects.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 12:41:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/01 15:53:55 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/03 19:50:30 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,5 +46,7 @@ struct s_list	*get_uv_list(int fd);
 struct s_list	*get_vertex_list(int fd);
 struct s_list	*get_face_list(int fd);
 void			objects_init(struct s_sdlcontext *sdl);
+t_object		*get_object_by_name(struct s_sdlcontext sdl, char *name);
+t_object		*object_plane();
 
 #endif

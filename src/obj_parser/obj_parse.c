@@ -40,13 +40,11 @@ t_material	parsemat(int fd, char *name)
 		}
 		if (ft_strnstr(line, "map_Kd ", sizeof("map_Kd")) != NULL)
 		{
-			ft_strcpy(mat.texturename, ft_strrchr(line, '/') + 1);
-			printf("MAT NAME %s \n ", mat.texturename);
-		}
-		if (ft_strlen(line) == 0)
-		{
-			free(line);
-			break ;
+			if (ft_strrchr(line, '/') != NULL)
+				ft_strcpy(mat.texturename, ft_strrchr(line, '/') + 1);
+			else
+				ft_strcpy(mat.texturename, line + sizeof("map_Kd"));
+			printf("MAT NAME %s \n", mat.texturename);
 		}
 		free (line);
 	}
