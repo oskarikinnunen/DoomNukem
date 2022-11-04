@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vectors.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/03 19:50:40 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/04 14:40:35 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,5 +267,8 @@ t_point			vector2_to_point(t_vector2 vec);
 
 //Returns t_point 'point' casted to t_vector2. (Shorthand for '*(t_vector2 *)&point').
 t_vector2		point_to_vector2(t_point point);
+
+//Returns static str for given vector3
+char			*vector_string(t_vector3 vec);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/03 19:54:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/04 15:03:59 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ char	*floatstr(float f)
 
 	i = (int)f;
 	f = f - i;
-	int dec = 2;
+	int dec = 1;
 	f = f * (ft_pow(10, dec));
 	neg = (f < 0.0f);
 	strinteger = ft_itoa(ft_abs(i));
@@ -129,31 +129,27 @@ char	*floatstr(float f)
 	return (final);
 }
 
-void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
+static t_img	black_image()
 {
-	t_entity	*ent;
-	t_entity	*collide;
+	static t_img	black;
 
-	//text
-	ent = (t_entity *)ed->tool->tooldata;
-	ent->object_index = ft_clamp(ent->object_index, 0, sdl.objectcount - 1);
-	if (ent->obj != &sdl.objects[ent->object_index])
-		ent->obj = &sdl.objects[ent->object_index];
-	if (ent->obj == NULL)
-		ent->obj = object_plane();
-	ed->render.wireframe = true;
-	ed->render.gizmocolor = INT_MAX;
-	collide = entity_collides(ed->world.physics, *ent);
-	if (collide != NULL)
-		ed->render.gizmocolor = CLR_PRPL;
-	render_object(sdl, ed->render, ent);
-	ed->render.wireframe = false;
-	draw_colliders(ed->world.physics, sdl, ed->render);
-	draw_text_boxed(&sdl, "POS:", (t_point){20, 144}, (t_point){sdl.window_w, sdl.window_h});
-	draw_text_boxed(&sdl, floatstr(ent->transform.location.x), (t_point){20, 164}, (t_point){sdl.window_w, sdl.window_h});
-	draw_text_boxed(&sdl, floatstr(ent->transform.location.y), (t_point){20, 184}, (t_point){sdl.window_w, sdl.window_h});
-	draw_text_boxed(&sdl, floatstr(ent->transform.location.z), (t_point){20, 204}, (t_point){sdl.window_w, sdl.window_h});
+	black.data = (uint32_t[1]) {0};
+	black.length = 1;
+	black.size = point_one();
+	return (black);
+}
 
+static void	draw_transform_info(t_transform t, t_sdlcontext sdl)
+{
+	draw_image(sdl, (t_point){17, 100}, black_image(), (t_point){180, 58});
+	draw_text_boxed(&sdl, "POS  :", (t_point){20, 143}, (t_point){sdl.window_w, sdl.window_h});
+	draw_text_boxed(&sdl, vector_string(t.location), (t_point){65, 143}, (t_point){sdl.window_w, sdl.window_h});
+	draw_text_boxed(&sdl, "SCALE:", (t_point){20, 105}, (t_point){sdl.window_w, sdl.window_h});
+	draw_text_boxed(&sdl, vector_string(t.scale), (t_point){65, 105}, (t_point){sdl.window_w, sdl.window_h});
+}
+
+static void	draw_current_operation(t_entity *ent, t_entity *collide, t_sdlcontext sdl)
+{
 	if (collide == NULL)
 	{
 		draw_text_boxed(&sdl, "ADD:", (t_point){sdl.window_w / 2, sdl.window_h - 25}, (t_point){sdl.window_w, sdl.window_h});
@@ -164,13 +160,39 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 		draw_text_boxed(&sdl, "DEL:", (t_point){sdl.window_w / 2, sdl.window_h - 25}, (t_point){sdl.window_w, sdl.window_h});
 		draw_text_boxed(&sdl, collide->obj->name, (t_point){sdl.window_w / 2 + 60, sdl.window_h - 25}, (t_point){sdl.window_w, sdl.window_h});
 	}
+}
 
-	draw_text_boxed(&sdl, "SCALE:", (t_point){20, 100}, (t_point){sdl.window_w, sdl.window_h});
-	if (instantbutton((t_rectangle) {20, 120, 20, 20}, &ed->mouse, sdl, "minus.png"))
+void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
+{
+	t_entity	*ent;
+	t_entity	*collide;
+
+	ent = (t_entity *)ed->tool->tooldata;
+	ent->object_index = ft_clamp(ent->object_index, 0, sdl.objectcount - 1);
+	if (ent->obj != &sdl.objects[ent->object_index])
+		ent->obj = &sdl.objects[ent->object_index];
+	if (ent->obj == NULL)
+		ent->obj = object_plane();
+	/* SPLIT HERE */
+	ed->render.wireframe = true;
+	ed->render.gizmocolor = INT_MAX;
+	collide = entity_collides(ed->world.physics, *ent);
+	if (collide != NULL)
+	{
+		ed->render.gizmocolor = CLR_PRPL;
+		render_object(sdl, ed->render, collide);
+	}
+	render_object(sdl, ed->render, ent);
+	ed->render.wireframe = false;
+	/* END SPLIT */
+	set_font_size(&sdl, 0);
+	draw_transform_info(ent->transform, sdl);
+	draw_current_operation(ent, collide, sdl);
+	if (instantbutton((t_rectangle) {30, 120, 20, 20}, &ed->mouse, sdl, "minus.png"))
 		ent->transform.scale = vector3_add_xyz(ent->transform.scale, -0.25f);
-	if (instantbutton((t_rectangle) {42, 120, 20, 20}, &ed->mouse, sdl, "one.png"))
+	if (instantbutton((t_rectangle) {52, 120, 20, 20}, &ed->mouse, sdl, "one.png"))
 		ent->transform.scale = vector3_one();
-	if (instantbutton((t_rectangle) {64, 120, 20, 20}, &ed->mouse, sdl, "plus.png"))
+	if (instantbutton((t_rectangle) {74, 120, 20, 20}, &ed->mouse, sdl, "plus.png"))
 		ent->transform.scale = vector3_add_xyz(ent->transform.scale, 0.25f);
 }
 

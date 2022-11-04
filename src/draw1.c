@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw1.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 22:15:00 by raho              #+#    #+#             */
-/*   Updated: 2022/11/02 20:55:05 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/04 14:45:21 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ void	draw_text(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundari
 	}
 }
 
-static void	black_text_background(t_sdlcontext *sdl, t_point pos, t_point size)
+void	black_text_background(t_sdlcontext *sdl, t_point pos, t_point size)
 {
 	t_point	i;
 

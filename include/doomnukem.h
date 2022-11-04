@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 20:54:09 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/04 14:45:32 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -382,7 +382,7 @@ void	quit_game(t_sdlcontext *sdl);
 /* FONT.C */
 
 void	load_fonts(t_sdlcontext *sdl);
-
+void	black_text_background(t_sdlcontext *sdl, t_point pos, t_point size);
 // Fonts: 0 = 11, 1 = 12, 2 = 14, 3 = 16, 4 = 18, 5 = 20, 6 = 22
 void	set_font_size(t_sdlcontext *sdl, int font_size);
 
