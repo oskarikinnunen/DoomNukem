@@ -16,8 +16,8 @@ t_object	*object_plane()
 		error_log(EC_MALLOC);
 	plane.vertices[0] = (t_vector3){0.0f, 0.0f, 0.0f};
 	plane.vertices[1] = (t_vector3){10.0f, 0.0f, 0.0f};
-	plane.vertices[2] = (t_vector3){0.0f, 10.0f, 0.0f};
-	plane.vertices[3] = (t_vector3){10.0f, 10.0f, 0.0f};
+	plane.vertices[2] = (t_vector3){0.0f, 0.0f, 10.0f};
+	plane.vertices[3] = (t_vector3){10.0f, 0.0f, 10.0f};
 	 //first tri:
 	plane.faces[0].v_indices[0] = 1;
 	plane.faces[0].v_indices[1] = 2;

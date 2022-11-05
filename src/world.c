@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/03 20:21:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/05 17:03:25 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,6 @@ void render_world3d(t_sdlcontext sdl, t_world world, t_render render)
 	t_list		*l;
 	t_entity	ent;
 
-	render.vtarget = vector3_add(render.position, render.lookdir);
-	render.matcamera = matrix_lookat(render.position, render.vtarget, (t_vector3){0, 0, 1});
-	render.matview = matrix_quickinverse(render.matcamera);
 	l = world.entitylist;
 	render_object(sdl, render, &world.skybox);
 	while (l != NULL)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/04 19:00:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/05 18:30:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,8 @@
 # define PLAYERRADIUS 16
 # define COLLISION_ON //Comment/uncomment to toggle experimental collision
 
-
 # define EDITOR_MOVESPEED 0.2f
-# define MOVESPEED 10.010f
+# define MOVESPEED 0.5f
 # define MAXMOVEMENTSPEED 0.08f
 # define ROTATESPEED 0.002f
 # define MOUSESPEED 0.0002f
@@ -137,19 +136,6 @@ typedef struct s_perfgraph
 	uint32_t	deltas[PERFGRAPH_SAMPLES];
 }	t_perfgraph;
 
-typedef struct s_obj //TODO: this will be deprecated, t_object defined in 'objects.h' is the current object struct
-{
-	char		**mtlnames;
-	uint32_t	*mtlcolors; //obj color type 3
-	uint8_t		*colors; //Points to colors in mtlcolors
-	int32_t		**verts;
-	uint32_t	**faces;
-	uint32_t	m_count;
-	uint32_t	v_count;
-	uint32_t	f_count;
-}	t_obj;
-
-
 typedef struct s_clock
 {
 	Uint32	prev_time;
@@ -201,10 +187,17 @@ typedef struct s_transform
 	t_vector3	scale;
 }	t_transform;
 
+typedef struct s_bound
+{
+	float	min;
+	float	max;
+}	t_bound;
+
 typedef struct s_entity
 {
 	t_transform		transform;
 	uint32_t		object_index;
+	t_bound			z_bound;
 	struct s_object	*obj;
 }	t_entity;
 
@@ -221,7 +214,7 @@ typedef struct s_line
 
 typedef struct s_wall
 {
-	t_entity	entity;
+	t_entity	entity; //TODO: make this an object
 	t_line		line;
 }	t_wall;
 
@@ -335,6 +328,7 @@ void	update_deltatime(t_clock *c);
 /* INIT_RENDER.C */
 t_render	init_render(t_sdlcontext sdl);
 void		free_render(t_render render);
+void		render_start(t_render *render);
 
 /* DRAW.C */
 void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr);

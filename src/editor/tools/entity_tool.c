@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/04 20:40:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/05 18:03:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,6 +162,28 @@ static void	draw_current_operation(t_entity *ent, t_entity *collide, t_sdlcontex
 	}
 }
 
+static void findbounds(t_entity *ent)
+{
+	t_bound		zbound;
+	t_vector3	v;
+	int			i;
+
+	zbound.max = -10000.0f;
+	zbound.min= 10000.0f;
+	i = 0;
+	while (i < ent->obj->vertice_count)
+	{
+		v = ent->obj->vertices[i];
+		if (v.z < zbound.min)
+			zbound.min = v.z;
+		if (v.z > zbound.max)
+			zbound.max = v.z;
+		i++;
+	}
+	ent->z_bound = zbound;
+	printf("zbound %f %f \n", ent->z_bound.min, ent->z_bound.max);
+}
+
 void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 {
 	t_entity	*ent;
@@ -170,12 +192,15 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	ent = (t_entity *)ed->tool->tooldata;
 	ent->object_index = ft_clamp(ent->object_index, 0, sdl.objectcount - 1);
 	if (ent->obj != &sdl.objects[ent->object_index])
+	{
 		ent->obj = &sdl.objects[ent->object_index];
+		findbounds(ent);
+	}
 	if (ent->obj == NULL)
 		ent->obj = object_plane();
 	/* SPLIT HERE */
-	//ed->render.wireframe = true;
-	ed->render.gizmocolor = INT_MAX;
+	ed->render.wireframe = true;
+	ed->render.gizmocolor = CLR_GREEN;
 	collide = entity_collides(ed->world.physics, *ent);
 	if (collide != NULL)
 	{
@@ -184,7 +209,7 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	}
 	render_object(sdl, ed->render, ent);
 	
-	//ed->render.wireframe = false;
+	ed->render.wireframe = false;
 	draw_colliders(ed->world.physics, sdl, ed->render);
 	/* END SPLIT */
 	set_font_size(&sdl, 0);
@@ -206,7 +231,8 @@ void	entity_tool_update(t_editor *ed)
 	sizeof(t_sdlcontext);
 	ent = (t_entity *)ed->tool->tooldata;
 	dir = vector3_sub((t_vector3){ed->position.x, ed->position.y, 20.0f}, ent->transform.location);
-	ent->transform.location = vector3_movetowards(ent->transform.location, dir, ed->clock.delta * 1.0f);
+	ent->transform.location = raycast(ed);//vector3_movetowards(ent->transform.location, dir, ed->clock.delta * 1.0f);
+	ent->transform.location.z -= ent->z_bound.min * ent->transform.scale.z;
 	if ((ed->keystate >> KEYS_SHIFTMASK) & 1)
 		ent->object_index += ed->mouse.scroll_delta;
 

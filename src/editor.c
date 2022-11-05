@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/04 20:38:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/05 18:33:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,27 +48,6 @@ static void	drawgrid(t_sdlcontext sdl, t_point origin)
 	}
 }
 
-/*static void	moveplayer2(t_game *game)
-{
-	t_vector3	move_vector;
-	t_vector3	potential_pos; //Unused right now, will be used when collision is reimplemented
-	float	angle;
-
-	move_vector = vector3_zero();
-	angle = 0;
-	angle -= game->mouse.delta.x * MOUSESPEED;
-	angle *= game->clock.delta;
-	game->player.angle.x += angle;
-	angle = 0;
-	angle -= game->mouse.delta.y * MOUSESPEED;
-	angle *= game->clock.delta;
-	game->player.angle.y += angle;
-	game->player.angle.y = ft_clampf(game->player.angle.y, -RAD90 * 0.99f, RAD90 * 0.99f);
-	game->player.lookdir = lookdirection(game->player.angle);
-	move_vector = movementvector(game->keystate, game->player.lookdir);
-	move_vector = vector3_mul(move_vector, game->clock.delta * MOVESPEED);
-	game->player.position = vector3_add(game->player.position, move_vector);
-}*/
 
 static void	update_render_editor(t_render *render, t_editor ed) //TODO: move game3d matrix stuff 
 {
@@ -92,6 +71,7 @@ int	editorloop(t_sdlcontext sdl)
 	//ed.angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
 	ed.angle = (t_vector2){-20.0f, -RAD90 * 0.99f};
 	ed.position = (t_vector3){500.0f, 500.0f, 200.0f};
+	set_font_size(&sdl, 0);
 	while (ed.gamereturn == game_continue)
 	{
 		update_deltatime(&ed.clock);
@@ -99,6 +79,7 @@ int	editorloop(t_sdlcontext sdl)
 		move_editor(&ed);
 		update_render_editor(&ed.render, ed);
 		screen_blank(sdl);
+		render_start(&ed.render);
 		render_world3d(sdl, ed.world, ed.render);
 		if (ed.tool != NULL)
 		{
@@ -111,6 +92,7 @@ int	editorloop(t_sdlcontext sdl)
 		}
 		draw_buttons(ed, sdl);
 		ed.mouse.click_unhandled = false;
+		draw_text_boxed(&sdl, "tab to unlock/lock mouse, enter to go to playmode", (t_point){sdl.window_w / 2, 10}, (t_point){sdl.window_w, sdl.window_h});
 		char *fps = ft_itoa(ed.clock.fps);
 		draw_text_boxed(&sdl, fps, (t_point){sdl.window_w - 80, 10}, (t_point){sdl.window_w, sdl.window_h});
 		free(fps);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_events.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/04 20:27:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/05 16:18:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ t_gamereturn	editor_events(t_editor *ed)
 	static SDL_Event	e;
 	
 	ed->mouse.scroll_delta = 0; //Needs to be reseted outside of eventloop
+	/*if (!point_cmp(ed->mouse.delta, point_zero()))
+		printf("%i %i \n", ed->mouse.delta.x, ed->mouse.delta.y);*/
 	if (ed->mouse.relative)
 		SDL_GetRelativeMouseState(&ed->mouse.delta.x, &ed->mouse.delta.y);
 	while (SDL_PollEvent(&e))
@@ -78,6 +80,7 @@ t_gamereturn	editor_events(t_editor *ed)
 			{
 				ed->mouse.relative = !ed->mouse.relative;
 				SDL_SetRelativeMouseMode(ed->mouse.relative);
+				ed->mouse.delta = point_zero();
 			}
 			else if (iskey(e, SDLK_RETURN))
 				return(game_switchmode);

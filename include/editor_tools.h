@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_tools.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/04 15:15:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/05 18:04:25 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,5 +83,6 @@ t_tool				*get_button_editor_tool();
 void				start_imagedropdown(t_point origin, t_imagedropdown *dd);
 void				update_imagedropdown(t_editor *ed, t_imagedropdown *dd);
 void				draw_imagedropdown(t_sdlcontext sdl, t_imagedropdown dd);
+t_vector3			raycast(t_editor *ed);
 
 #endif

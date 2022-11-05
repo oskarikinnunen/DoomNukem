@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vectors.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/04 14:40:35 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/05 16:23:59 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,12 @@ t_vector3	vector3_zero();
 
 //shorthand for (t_vector3){1, 1, 1}
 t_vector3	vector3_one();
+
+//shorthand for (t_vector3){0, 0, 1}
+t_vector3	vector3_up();
+
+//shorthand for (t_vector3){0, 0, -1}
+t_vector3	vector3_down();
 
 //returns 'vec' but with x, y, and z signs flipped //TODO: explain this better lol
 t_vector3	vector3_negative(t_vector3 vec);

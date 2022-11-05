@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_mouse.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/04 20:23:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/05 16:15:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,6 @@ void	mouse_event(SDL_Event e, t_editor *ed)
 {
 	if (!ed->mouse.relative)
 		SDL_GetMouseState(&ed->mouse.pos.x, &ed->mouse.pos.y);
-	printf("%i %i \n", ed->mouse.delta.x, ed->mouse.delta.y);
 	if (e.type == SDL_MOUSEBUTTONDOWN)
 	{
 		ed->mouse.held = e.button.button;

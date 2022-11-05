@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/04 15:31:40 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/05 16:32:12 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,8 @@ int	main(int argc, char **argv)
 	{
 		
 		//printf("%s\ngamereturn after editor %i \n", CLEARSCREEN, gr);
-		gr = playmode(sdl); // quit & exit is handled inside the loop
 		gr = editorloop(sdl); // quit & exit is handled inside the loop
+		gr = playmode(sdl); // quit & exit is handled inside the loop
 		//printf("%s\ngamereturn after playmode %i \n", CLEARSCREEN, gr);
 	}
 	//shouldn't get here?

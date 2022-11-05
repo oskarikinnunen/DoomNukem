@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wall_tool.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:13:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/04 16:36:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/05 18:14:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,30 +15,33 @@
 #include "file_io.h"
 #include "tools/walltool.h"
 
-t_point	snapped_cursor(t_editor *ed)
-{
-	t_point	snapped;
-
-	snapped = point_mul(screentogridspace(ed->mouse.pos), 32);
-	//snapped = point_add(snapped, point_mod(ed->offset, 32);
-	return (snapped);
-}
-
 static void	wall_tool_draw(t_editor *ed, t_sdlcontext sdl) //TODO: ROTATE AROUND AXIS, SCREENSPACE
 {
-	drawcircle(sdl, ed->mouse.pos, 10, CLR_TURQ);
-	drawcircle(sdl, snapped_cursor(ed), 10, CLR_PRPL);
-	//drawline()
-	///point_snap()
-	//TODO: point_snap the cursor and draw cursorball?
-	return ;
+	t_walltooldata	*dat;
+	t_wall			*wall;
+
+	dat = (t_walltooldata *)ed->tool->tooldata;
+	wall = &dat->wall;
+	ed->render.gizmocolor = CLR_GREEN;
+	ed->render.wireframe = true;
+	render_object(sdl, ed->render, &wall->entity);
+	ed->render.wireframe = false;
 }
 
 static void	wall_tool_update(t_editor *ed) //This needs to access editors state, so pass editor here??
 {
-	t_walltooldata	*wtd;
+	t_walltooldata	*dat;
+	t_wall			*wall;
+	t_vector3		rc;
 
-	wtd = (t_walltooldata *)ed->tool->tooldata;
+	dat = (t_walltooldata *)ed->tool->tooldata;
+	wall = &dat->wall;
+	rc = raycast(ed);
+	if (dat->mode == place_first)
+	{
+		/*wall->line.start = raycast(ed);
+		wall->line.end = raycast(ed);*/
+	}
 }
 
 t_tool	*get_wall_tool()
@@ -57,7 +60,9 @@ t_tool	*get_wall_tool()
 		if (tool.tooldata == NULL)
 			error_log(EC_MALLOC);
 		wtd = (t_walltooldata *)tool.tooldata;
-		//wtd->current = object_plane();
+		wtd->wall.entity.obj = object_plane();
+		wtd->wall.entity.transform.scale = vector3_mul(vector3_one(), 10.0f);
+		wtd->mode = place_first;
 	}
 	ft_strcpy(tool.icon_name, "linetool.png");
 	return (&tool);

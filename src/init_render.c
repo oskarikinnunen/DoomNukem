@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_render.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/04 16:10:14 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/05 17:02:47 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,13 @@ t_render	init_render(t_sdlcontext sdl)
 	render.matview = matrix_quickinverse(render.matcamera);
 	/*temp testing render loop with .bot .wall .item*/
 	return(render);
+}
+
+void	render_start(t_render *render)
+{
+	render->vtarget = vector3_add(render->position, render->lookdir);
+	render->matcamera = matrix_lookat(render->position, render->vtarget, (t_vector3){0, 0, 1});
+	render->matview = matrix_quickinverse(render->matcamera);
 }
 
 void	free_render(t_render render)
