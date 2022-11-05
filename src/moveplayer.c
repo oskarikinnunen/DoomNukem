@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   moveplayer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/04 18:08:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/05 18:36:29 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,47 +56,31 @@ static t_vector3	movementvector(int32_t keystate, float angle)
 	return (movement);
 }
 */
-static t_vector3	editor_movementvector(int32_t keystate, t_vector3 lookdir)
+static t_vector3	player_movementvector(int32_t keystate, t_vector3 lookdir)
 {
 	t_vector3	movement;
 	t_vector3	forward;
+	float		speed;
 
 	movement = vector3_zero();
-	forward = vector3_mul_vector3(lookdir, (t_vector3){1, 1, 0});
+	//forward.z = 0;
+	forward = vector3_mul_vector3(lookdir, (t_vector3){1.0f, 1.0f, 0.0f});
+	forward = vector3_normalise(forward);
 	if ((keystate >> KEYS_UPMASK) & 1) 
-	{
 		movement = vector3_add(movement, forward);
-	}
 	if ((keystate >> KEYS_DOWNMASK) & 1)
-	{
 		movement = vector3_sub(movement, forward);
-	}
-	// strafe
 	if ((keystate >> KEYS_LEFTMASK) & 1)
-	{
 		movement = vector3_sub(movement,
-			vector3_crossproduct(forward, (t_vector3){0.0f, 0.0f, 1.0f}));
-		//movement.x += sin(angle + RAD90);
-		//movement.y += cos(angle + RAD90);
-	}
+			vector3_crossproduct(forward, vector3_up()));
 	if ((keystate >> KEYS_RIGHTMASK) & 1)
-	{
 		movement = vector3_add(movement,
-			vector3_crossproduct(forward, (t_vector3){0.0f, 0.0f, 1.0f}));
-		//movement.x += -sin(angle + RAD90);
-		//movement.y += -cos(angle + RAD90);
-	}
-	//flying
-	if ((keystate >> KEYS_SPACEMASK) & 1)
-	{
-		movement.z += 0.25f;
-	}
-	if ((keystate >> KEYS_CTRLMASK) & 1)
-	{
-		movement.z -= 0.25f;
-	}
-	
-	movement = vector3_clamp_magnitude(movement, MAXMOVEMENTSPEED);
+			vector3_crossproduct(forward, vector3_up()));
+	speed = 1.0f + (float)((keystate >> KEYS_SHIFTMASK) & 1);
+	movement.z += 1.5f * ((keystate >> KEYS_SPACEMASK) & 1);
+	movement.z -= 1.5f * ((keystate >> KEYS_CTRLMASK) & 1);
+	movement = vector3_mul(movement, speed);
+	movement = vector3_clamp_magnitude(movement, speed);
 	return (movement);
 }
 
@@ -117,7 +101,7 @@ void	moveplayer(t_game *game)
 	game->player.angle.y += angle;
 	game->player.angle.y = ft_clampf(game->player.angle.y, -RAD90 * 0.99f, RAD90 * 0.99f);
 	game->player.lookdir = lookdirection(game->player.angle);
-	move_vector = editor_movementvector(game->keystate, game->player.lookdir);
+	move_vector = player_movementvector(game->keystate, game->player.lookdir);
 	move_vector = vector3_mul(move_vector, game->clock.delta * MOVESPEED);
 	game->player.position = vector3_add(game->player.position, move_vector);
 }

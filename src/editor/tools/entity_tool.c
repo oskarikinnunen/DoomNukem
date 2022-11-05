@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/05 18:03:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/05 18:37:37 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,7 +181,6 @@ static void findbounds(t_entity *ent)
 		i++;
 	}
 	ent->z_bound = zbound;
-	printf("zbound %f %f \n", ent->z_bound.min, ent->z_bound.max);
 }
 
 void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
