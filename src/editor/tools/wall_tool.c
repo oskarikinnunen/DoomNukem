@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wall_tool.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:13:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/07 07:27:32 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/07 09:03:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,7 +160,7 @@ static void	applywallmesh(t_wall *wall)
 	wall->object.vertices[2] = (t_vector3){wall->line.start.x, wall->line.start.y, wall->height};
 	wall->object.vertices[3] = (t_vector3){wall->line.end.x, wall->line.end.y, wall->height};
 
-	float dist = vector2_dist(wall->line.start, wall->line.end);
+	float dist = vector2_dist(wall->line.start, wall->line.end) + 2.0f;
 	wall->object.uvs[1] = (t_vector2){dist / 100.0f, 0.0f};
 	wall->object.uvs[2] = (t_vector2){0.0f, wall->height / 100.0f};
 	wall->object.uvs[3] = (t_vector2){dist / 100.0f, wall->height / 100.0f};
