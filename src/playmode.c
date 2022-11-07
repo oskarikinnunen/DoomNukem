@@ -94,7 +94,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 		update_render(&render, game.player);
 		screen_blank(sdl); //Combine with render_start?
 		render_start(&render);
-		render_world3d(sdl, game.world, render);
+		render_world3d(sdl, game.world, &render);
 		draw_text_boxed(&sdl, "PLAYMODE", (t_point){5, 5}, (t_point){sdl.window_w, sdl.window_h});
 		//DRAWPERFGRAPH
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)

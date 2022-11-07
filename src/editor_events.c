@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_events.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/05 16:18:08 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/07 03:35:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,8 +82,8 @@ t_gamereturn	editor_events(t_editor *ed)
 				SDL_SetRelativeMouseMode(ed->mouse.relative);
 				ed->mouse.delta = point_zero();
 			}
-			else if (iskey(e, SDLK_RETURN))
-				return(game_switchmode);
+			/*else if (iskey(e, SDLK_RETURN))
+				return(game_switchmode);*/
 		}
 	}
 	//move_editor_offset(ed);

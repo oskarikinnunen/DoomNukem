@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
+#    By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/05 18:04:44 by okinnune         ###   ########.fr        #
+#    Updated: 2022/11/07 03:10:17 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,6 +51,7 @@ VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \
 		vector2_elementary.c vector2_shorthands.c \
 		vector2_complex.c vector2_clamp.c \
+		vector2_more.c \
 		point_elementary.c point_shorthands.c \
 		point_complex.c point_float_ops.c \
 		conversions.c vector3_complex3.c \
@@ -67,7 +68,7 @@ OBJ= $(SRC:.c=.o)
 INCLUDE= -ISDL_built/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
 CC= gcc
 LIBS= $(LIBFT) -lm
-CFLAGS= $(INCLUDE) -g -finline-functions -O1
+CFLAGS= $(INCLUDE) -g -finline-functions -O2
 
 all: $(SDL2) $(LUA) $(LIBFT) $(OBJ)
 	$(CC) $(OBJ) -o $(NAME) `SDL_built/bin/sdl2-config --cflags --libs` $(INCLUDE) $(LIBS) $(LUA)

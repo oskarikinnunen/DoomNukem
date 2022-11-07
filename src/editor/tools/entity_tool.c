@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/05 18:37:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/07 00:49:32 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,9 +204,9 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	if (collide != NULL)
 	{
 		ed->render.gizmocolor = CLR_PRPL;
-		render_object(sdl, ed->render, collide);
+		render_entity(sdl, ed->render, collide);
 	}
-	render_object(sdl, ed->render, ent);
+	render_entity(sdl, ed->render, ent);
 	
 	ed->render.wireframe = false;
 	draw_colliders(ed->world.physics, sdl, ed->render);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/05 18:30:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/07 05:57:28 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@
 # define CLR_GRAY 4868682
 # define CLR_DARKGRAY 0x292929
 # define CLR_GREEN 3002977
+# define CLR_RED 0xFF2919
 # define CLEARSCREEN "\e[1;1H\e[2J"
 
 # define DEBUG_ON 1
@@ -206,18 +207,6 @@ typedef struct s_bot
 	t_entity	entity;
 }	t_bot;
 
-typedef struct s_line
-{
-	t_vector2	start;
-	t_vector2	end;
-}	t_line;
-
-typedef struct s_wall
-{
-	t_entity	entity; //TODO: make this an object
-	t_line		line;
-}	t_wall;
-
 typedef struct s_item
 {
 	t_entity	entity;
@@ -248,12 +237,12 @@ typedef struct s_world
 {
 	t_physics	physics;
 	t_list		*entitylist;
-	t_list		*walllist;
+	t_list		*wall_list;
 	t_entity	skybox;
 }	t_world;
 
 void	calculate_colliders_for_entities(t_world *world);
-void	render_world3d(t_sdlcontext sdl, t_world world, t_render render);
+void	render_world3d(t_sdlcontext sdl, t_world world, t_render *render);
 t_world	load_world(char *filename, t_sdlcontext sdl);
 void	save_world(char *filename, t_world world);
 
@@ -349,14 +338,16 @@ void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
 void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle, t_img img);
-void	render_object(t_sdlcontext sdl, t_render render, t_entity *entity);
-void	render_gizmo(t_sdlcontext sdl, t_render render, t_entity *entity);
+void	render_entity(t_sdlcontext sdl, t_render render, t_entity *entity);
+void	render_object(t_sdlcontext sdl, t_render render, struct s_object *obj);
+void	render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos);
+void	render_ray(t_sdlcontext sdl, t_render render, t_vector3 from, t_vector3 to);
 void	draw_screen_to_worldspace_ray(t_sdlcontext sdl, t_render render, t_point origin, t_vector2 angle);
 
 /* PHYSICS.C */
 bool	pointrectanglecollision(t_point p, t_rectangle rect);
 bool	pointcirclecollision(t_vector2 p, t_vector2 cp, float r);
-bool	linecirclecollision(t_line line, t_vector2 cp, float r);
+//bool	linecirclecollision(t_line line, t_vector2 cp, float r);
 
 /* MOVEPLAYER.C */
 void	moveplayer(t_game *game);

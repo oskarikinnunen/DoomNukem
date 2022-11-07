@@ -28,7 +28,9 @@ images =
 	"minus.png",
 	"one.png",
 	"plus.png",
-	"view.png"
+	"view.png",
+	"grid.png",
+	"gwall.png"
 }
 objects =
 {

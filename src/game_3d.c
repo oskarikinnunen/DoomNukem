@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game_3d.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/05 18:20:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/07 04:05:58 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -319,7 +319,7 @@ static t_texture	vector2_to_texture(t_vector2 v)
 	return(t);
 }
 
-void render_object(t_sdlcontext sdl, t_render render, t_entity *entity)
+void render_entity(t_sdlcontext sdl, t_render render, t_entity *entity)
 {
 	int				index;
 	t_object		*obj;
@@ -374,7 +374,77 @@ void render_object(t_sdlcontext sdl, t_render render, t_entity *entity)
 	render.draw_tri_count = 0;
 }
 
-void render_gizmo(t_sdlcontext sdl, t_render render, t_entity *entity)
+void render_object(t_sdlcontext sdl, t_render render, t_object *obj)
+{
+	int				index;
+	t_vector3		temp;
+
+	if (obj == NULL)
+		return ;
+	index = 0;
+	while (index < obj->vertice_count)
+	{
+		//TODO: Matrix rotations
+		temp = obj->vertices[index];
+		render.q[index] = vector3_to_quaternion(temp);
+		render.q[index] = quaternion_mul_matrix(render.matworld, render.q[index]);
+		index++;
+	}
+	index = 0;
+	while (index < obj->face_count)
+	{
+		t_triangle	tritransformed;
+		t_vector3	normal;	
+		t_vector3	vcameraray;	
+
+		tritransformed = (t_triangle){render.q[obj->faces[index].v_indices[0] - 1], render.q[obj->faces[index].v_indices[1] - 1], render.q[obj->faces[index].v_indices[2] - 1]};
+		if (obj->uv_count != 0 && !render.wireframe)
+		{
+			tritransformed.t[0] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[0] - 1]);
+			tritransformed.t[1] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[1] - 1]);
+			tritransformed.t[2] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[2] - 1]);
+		}
+		normal = normal_calc(tritransformed);
+		vcameraray = vector3_sub(tritransformed.p[0].v, render.position);
+		if (vector3_dot(normal, vcameraray) < 0.0f || 1) //TODO: Currently ignoring normals with || 1
+		{
+			t_triangle clipped[2];
+			int nclippedtriangles = clippedtriangles(tritransformed, render.matview, clipped);
+			for (int n = 0; n < nclippedtriangles; n++)
+			{
+				render.calc_triangles[render.calc_tri_count++] = triangle_to_screenspace(render.matproj, clipped[n], sdl);
+			}
+		}
+		index++;
+	}
+	if (obj->material_count != 0)
+		render.img = obj->materials[0].img;
+	if (!render.img)
+		return ;
+	clipped(render, sdl);
+	render.calc_tri_count = 0;
+	render.draw_tri_count = 0;
+}
+
+void render_ray(t_sdlcontext sdl, t_render render, t_vector3 from, t_vector3 to)
+{
+	render.q[0] = vector3_to_quaternion(from);
+	render.q[0] = quaternion_mul_matrix(render.matworld, render.q[0]);
+	render.q[0] = quaternion_mul_matrix(render.matview, render.q[0]);
+	render.q[0] = quaternion_to_screenspace(render.matproj, render.q[0], sdl);
+	render.q[1] = vector3_to_quaternion(to);
+	render.q[1] = quaternion_mul_matrix(render.matworld, render.q[1]);
+	render.q[1] = quaternion_mul_matrix(render.matview, render.q[1]);
+	render.q[1] = quaternion_to_screenspace(render.matproj, render.q[1], sdl);
+	drawline(sdl,
+		(t_point) {render.q[0].v.x, render.q[0].v.y},
+		(t_point) {render.q[1].v.x, render.q[1].v.y}, render.gizmocolor);
+		
+	render.calc_tri_count = 0;
+	render.draw_tri_count = 0;
+}
+
+void render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos)
 {
 	t_object		obj;
 	t_vector3		vertex;
@@ -382,19 +452,19 @@ void render_gizmo(t_sdlcontext sdl, t_render render, t_entity *entity)
 	obj.vertice_count = 1;
 	vertex = vector3_zero();
 	obj.vertices = &vertex;
-	vertex = vector3_mul_vector3(entity->transform.scale, vertex);
-	vertex = vector3_add(entity->transform.location, vertex);
+	//vertex = vector3_mul_vector3(entity->transform.scale, vertex);
+	vertex = pos;
 	render.q[0] = vector3_to_quaternion(vertex);
 	render.q[0] = quaternion_mul_matrix(render.matworld, render.q[0]);
 	render.q[0] = quaternion_mul_matrix(render.matview, render.q[0]);
 	render.q[0] = quaternion_to_screenspace(render.matproj, render.q[0], sdl);
-	if (render.q[0].w > 0.0f)
+	if (render.q[0].w > 0.0f
+		&& render.q[0].v.x >= 0.0f && render.q[0].v.x < sdl.window_w
+		&& render.q[0].v.y >= 0.0f && render.q[0].v.y < sdl.window_h)
 		drawcircle(sdl, (t_point){render.q[0].v.x, render.q[0].v.y}, 2, render.gizmocolor);
 	render.calc_tri_count = 0;
 	render.draw_tri_count = 0;
 }
-
-
 
 static t_vector3 lookdirection2(t_vector2 angle)
 {
@@ -440,7 +510,7 @@ void	draw_screen_to_worldspace_ray(t_sdlcontext sdl, t_render render, t_point or
 		curstep = vector3_movetowards(curstep, dir, 0.01f);
 		ent.transform.location = curstep;
 		ent.transform.scale = vector3_one();
-		render_gizmo(sdl, render, &ent);
+		//render_gizmo(sdl, render, &ent);
 		debug_iter++;
 	}
 }

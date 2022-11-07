@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   objects.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 12:41:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/03 19:50:30 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/07 03:51:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define OBJECTS_H
 
 #include <inttypes.h>
+#include "vectors.h"
 
 typedef struct s_material
 {
@@ -40,6 +41,24 @@ typedef struct s_object
 	uint32_t			uv_count;
 	uint32_t			face_count;
 }	t_object;
+
+typedef struct s_line
+{
+	t_vector2	start;
+	t_vector2	end;
+}	t_line;
+
+typedef struct s_wall
+{
+	t_object	object;
+	t_line		line;
+	uint32_t	height;
+	char		texname[256];
+	/*
+	
+
+	*/
+}	t_wall;
 
 t_object		objparse(char *filename);
 struct s_list	*get_uv_list(int fd);

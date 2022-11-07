@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vectors.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/05 16:23:59 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/07 01:56:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,9 @@ t_vector2	vector2_sub(t_vector2 first, t_vector2 second);
 
 //returns vector 'vec' with 'add' added to x and y
 t_vector2	vector2_add_xy(t_vector2 vec, float add);
+
+//returns vector 'vec' snapped into 'grid' that is the size of 'interval' //TODO: better explanation
+t_vector2	vector2_snap(t_vector2 vec, int interval);
 
 //returns vector 'vec' multiplied by 'mul'
 t_vector2	vector2_mul(t_vector2 vec, float mul);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/05 18:33:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/07 05:57:44 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	editorloop(t_sdlcontext sdl)
 	ed.buttonlist = load_chunk("buttons", "BUTN", sizeof(t_guibutton));
 	initialize_buttons(ed.buttonlist, sdl);
 	ed.world = load_world("world1", sdl);
-	ed.tool = get_entity_tool();
+	ed.tool = get_wall_tool();
 	ed.gamereturn = game_continue;
 	ed.render = init_render(sdl);
 	//ed.angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
@@ -80,7 +80,7 @@ int	editorloop(t_sdlcontext sdl)
 		update_render_editor(&ed.render, ed);
 		screen_blank(sdl);
 		render_start(&ed.render);
-		render_world3d(sdl, ed.world, ed.render);
+		render_world3d(sdl, ed.world, &ed.render);
 		if (ed.tool != NULL)
 		{
 			ed.tool->draw_update(&ed, sdl); //Instant buttons here can toggle mouse.click unhandled, so draw first
