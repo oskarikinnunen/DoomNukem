@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/08 04:55:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/08 12:35:44 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,13 +126,31 @@ static void draw_triangles(t_sdlcontext sdl, t_render render)
 	int index = 0;
 	while (index < render.draw_tri_count)
 	{
-		if (!render.wireframe)
+		if (!render.wireframe && render.img != NULL)
 			z_fill_tri(sdl, render.draw_triangles[index], *render.img);
-		else
+		if (render.wireframe)
 		{
 			drawline(sdl, (t_point){render.draw_triangles[index].p[0].v.x, render.draw_triangles[index].p[0].v.y}, (t_point){render.draw_triangles[index].p[1].v.x, render.draw_triangles[index].p[1].v.y}, render.gizmocolor);
 			drawline(sdl, (t_point){render.draw_triangles[index].p[2].v.x, render.draw_triangles[index].p[2].v.y}, (t_point){render.draw_triangles[index].p[1].v.x, render.draw_triangles[index].p[1].v.y}, render.gizmocolor);
 			drawline(sdl, (t_point){render.draw_triangles[index].p[0].v.x, render.draw_triangles[index].p[0].v.y}, (t_point){render.draw_triangles[index].p[2].v.x, render.draw_triangles[index].p[2].v.y}, render.gizmocolor);
+		}
+		else if (render.img == NULL)
+		{
+			t_img	img;
+
+			img.data = (uint32_t [1]) {render.draw_triangles[index].clr};
+			img.size.x = 1;
+			img.size.y = 1;
+			img.length = 1;
+			render.img = &img;
+			z_fill_tri(sdl, render.draw_triangles[index], *render.img);
+			render.img = NULL;
+			//render.draw_triangles[index].clr = CLR_RED;
+			//printf("color r %i \n", render.draw_triangles[index].clr & 0xFF);
+			//z_fill_tri_solid(sdl, render.draw_triangles[index]);
+			/*drawline(sdl, (t_point){render.draw_triangles[index].p[0].v.x, render.draw_triangles[index].p[0].v.y}, (t_point){render.draw_triangles[index].p[1].v.x, render.draw_triangles[index].p[1].v.y}, render.draw_triangles[index].clr);
+			drawline(sdl, (t_point){render.draw_triangles[index].p[2].v.x, render.draw_triangles[index].p[2].v.y}, (t_point){render.draw_triangles[index].p[1].v.x, render.draw_triangles[index].p[1].v.y}, render.draw_triangles[index].clr);
+			drawline(sdl, (t_point){render.draw_triangles[index].p[0].v.x, render.draw_triangles[index].p[0].v.y}, (t_point){render.draw_triangles[index].p[2].v.x, render.draw_triangles[index].p[2].v.y}, render.draw_triangles[index].clr);*/
 		}
 		index++;
 	}
@@ -238,6 +256,7 @@ static int clippedtriangles(t_triangle tritransformed, t_mat4x4 matview, t_trian
 	triviewed.t[0] = tritransformed.t[0];
 	triviewed.t[1] = tritransformed.t[1];
 	triviewed.t[2] = tritransformed.t[2];
+	triviewed.clr = tritransformed.clr;
 	return (Triangle_ClipAgainstPlane(
 	(t_vector3){0.0f, 0.0f, 0.1f},
 	(t_vector3){0.0f, 0.0f, 0.2f},
@@ -286,6 +305,7 @@ static t_triangle triangle_to_screenspace(t_mat4x4 matproj, t_triangle clipped, 
 	triprojected.p[1].v.y *= 0.5f * (float)sdl.window_h;
 	triprojected.p[2].v.x *= 0.5f * (float)sdl.window_w;
 	triprojected.p[2].v.y *= 0.5f * (float)sdl.window_h;
+	triprojected.clr = clipped.clr;
 
 	return(triprojected);
 }
@@ -317,6 +337,19 @@ static t_texture	vector2_to_texture(t_vector2 v)
 	t.v = v.y;
 	t.w = 1.0f;
 	return(t);
+}
+
+uint32_t shade(uint32_t clr, float norm)
+{
+	float		mul;
+	uint32_t	final;
+
+	//return (clr);
+	mul = ft_clampf(norm, 0.75f, 1.0f);
+	final = (clr & 0xFF) * mul;
+	final += (uint32_t)((clr >> 8 & 0xFF) * mul) << 8;
+	final += (uint32_t)((clr >> 16 & 0xFF) * mul) << 16;
+	return (final);
 }
 
 void render_entity(t_sdlcontext sdl, t_render render, t_entity *entity)
@@ -352,23 +385,24 @@ void render_entity(t_sdlcontext sdl, t_render render, t_entity *entity)
 			tritransformed.t[1] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[1] - 1]);
 			tritransformed.t[2] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[2] - 1]);
 		}
+		tritransformed.clr = obj->faces[index].material->kd;
+		tritransformed.clr = shade(tritransformed.clr,
+									1.0f - vector3_dot(normal, (t_vector3){1.0f, 0.0f, 0.0f}));
+		//printf("transftri has clr r %i \n", tritransformed.clr & 0xFF);
 		normal = normal_calc(tritransformed);
 		vcameraray = vector3_sub(tritransformed.p[0].v, render.position);
-		if (vector3_dot(normal, vcameraray) < 0.0f || 1) //TODO: Currently ignoring normals with || 1
+		if (vector3_dot(normal, vcameraray) < 0.0f || 1)
 		{
 			t_triangle clipped[2];
 			int nclippedtriangles = clippedtriangles(tritransformed, render.matview, clipped);
 			for (int n = 0; n < nclippedtriangles; n++)
-			{
 				render.calc_triangles[render.calc_tri_count++] = triangle_to_screenspace(render.matproj, clipped[n], sdl);
-			}
 		}
 		index++;
 	}
+	render.img = NULL;
 	if (obj->material_count != 0)
 		render.img = obj->materials[0].img;
-	if (!render.img)
-		render.img = render.debug_img;
 	clipped(render, sdl);
 	render.calc_tri_count = 0;
 	render.draw_tri_count = 0;

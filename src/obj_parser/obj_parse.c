@@ -1,6 +1,5 @@
 
 
-
 #include "libft.h"
 #include "doomnukem.h"
 #include "objects.h"
@@ -18,7 +17,7 @@ t_material	parsemat(int fd, char *name)
 	int			i;
 
 	ft_bzero(&mat, sizeof(t_material));
-	ft_strcpy(mat.texturename, name);
+	ft_strcpy(mat.name, name);
 	while (ft_get_next_line(fd, &line))
 	{
 		if (ft_strnstr(line, "Kd ", 3) != NULL)
@@ -34,6 +33,7 @@ t_material	parsemat(int fd, char *name)
 				free(kd_strs[i]);
 				i++;
 			}
+			printcolor(mat.kd);
 			free(kd_strs);
 			if (i != 3)
 				printf("invalid kd string! \n"); //TODO: log?
@@ -44,7 +44,12 @@ t_material	parsemat(int fd, char *name)
 				ft_strcpy(mat.texturename, ft_strrchr(line, '/') + 1);
 			else
 				ft_strcpy(mat.texturename, line + sizeof("map_Kd"));
-			printf("MAT NAME %s \n", mat.texturename);
+			printf("MAT TEX NAME %s \n", mat.texturename);
+		}
+		if (ft_strlen(line) == 0)
+		{
+			free(line);
+			break ;
 		}
 		free (line);
 	}
@@ -66,6 +71,7 @@ void	parse_mtllib(t_list **list, char *filename)
 	{
 		if (ft_strstr(line, "newmtl ") != NULL)
 		{
+			printf("found mat %s \n", line + sizeof("newmtl"));
 			mat = parsemat(fd, line + sizeof("newmtl"));
 			list_push(list, &mat, sizeof(t_material));
 			#ifdef	OBJ_DEBUG
@@ -117,7 +123,7 @@ t_object	objparse(char *filename)
 	materials = get_material_list(fd);
 	vertices = get_vertex_list(fd);
 	uvs = get_uv_list(fd);
-	faces = get_face_list(fd);
+	faces = get_face_list(fd, materials);
 	#ifdef	OBJ_DEBUG
 	printf("found %i materials \n", ft_listlen(materials));
 	printf("found %i vertices \n", ft_listlen(vertices));

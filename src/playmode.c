@@ -52,8 +52,40 @@ static void updatemouse(t_mouse *mouse)
 		mouse->delta = point_zero();
 }
 
+typedef	enum	e_inputmode /* Put this in inputhelp.h header */
+{
+	keyboard,
+	controller
+} t_inputmode;
+
+typedef struct s_input /* Put this in inputhelp.h header */
+{
+	t_inputmode	mode;
+	t_vector2	move;
+	bool		crouch;
+	bool		jump;
+	t_vector2	turn;
+}	t_input;
+
+void	updateinput(t_input *input, int keystate, t_mouse m/* also pass controller data somehow */)
+{
+	if (input->mode == keyboard)
+	{
+		input->move.x -= (keystate >> KEYS_LEFTMASK) & 1;
+		input->move.x += (keystate >> KEYS_RIGHTMASK) & 1;
+		/* etc*/
+		input->turn = point_to_vector2(m.delta);
+	}
+	else
+	{
+		/* input->move.x = controllerdata.x_axis;
+			etc.
+		*/
+	}
+}
+
 /*check for keyboard/mouse input*/
-static int handleinput(t_game *game)
+static int handleinput(t_game *game) //Should be renamed to handle_events or something, feel free to rename
 {
 	static SDL_Event	e;
 	t_gamereturn		gr;
@@ -61,6 +93,7 @@ static int handleinput(t_game *game)
 	updatemouse(&game->mouse);
 	while (SDL_PollEvent(&e))
 	{
+		
 		gr = key_events(e, game);
 		if (gr != game_continue)
 			return (gr);
@@ -72,6 +105,7 @@ static void update_render(t_render *render, t_player player)
 {
 	render->lookdir = player.lookdir;
 	render->position = player.position;
+	//render.
 }
 
 static void player_init(t_player *player)

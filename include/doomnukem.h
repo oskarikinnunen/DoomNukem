@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 06:43:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/08 10:20:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,6 +154,7 @@ typedef struct s_player
 	t_vector2	angle;
 	t_vector3	lookdir;
 	t_anim		jump;
+	float		height;
 }	t_player;
 
 typedef enum	e_cam_mode
@@ -341,6 +342,7 @@ void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
 void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle, t_img img);
+void	z_fill_tri_solid(t_sdlcontext sdl, t_triangle triangle);
 void	render_entity(t_sdlcontext sdl, t_render render, t_entity *entity);
 void	render_object(t_sdlcontext sdl, t_render render, struct s_object *obj);
 void	render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size);

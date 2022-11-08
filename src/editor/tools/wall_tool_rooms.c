@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 05:07:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/08 10:58:38 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,10 @@ t_floorcalc	generate_floor(t_walltooldata *dat)
 	while (i < MAXSELECTED)
 	{
 		if (dat->selected[i] != NULL)
+		{
 			fc.edges[fc.edgecount++] = dat->selected[i]->line.start;
+		}
+			
 		i++;
 	}
 	return (fc);

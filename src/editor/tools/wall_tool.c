@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:13:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 06:18:30 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/08 11:34:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,7 @@ static t_point vector3_to_screenspace(t_render r, t_vector3 vec, t_sdlcontext sd
 	proj_q = quaternion_mul_matrix(r.matworld, proj_q);
 	proj_q = quaternion_mul_matrix(r.matview, proj_q);
 	proj_q = quaternion_mul_matrix(r.matproj, proj_q);
-
-
 	proj_q.v = vector3_div(proj_q.v, proj_q.w);
-
 	proj_q.v = vector3_negative(proj_q.v);
 
 	t_vector3 voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
@@ -228,6 +225,11 @@ static void	wall_tool_draw(t_editor *ed, t_sdlcontext sdl) //TODO: ROTATE AROUND
 	{
 		if (instantbutton((t_rectangle){20, 180, 80, 80}, &ed->mouse, sdl, "debug1.png"))
 			dat->fc = generate_floor(dat);
+		//dat->wall.texname = imagedrawer((t_rectangle){20, 180, 80, 80}, ed->mouse, sdl);
+		/*
+		
+
+		*/
 	}
 	if (dat->fc.edgecount != 0)
 		floorcalc_debugdraw(ed, &sdl, dat->fc);

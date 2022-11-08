@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 12:41:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 05:37:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/08 08:44:47 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 typedef struct s_material
 {
 	char			texturename[256];
+	char			name[256];
 	uint32_t		kd;
 	struct s_img	*img;
 }	t_material;
@@ -27,6 +28,7 @@ typedef struct s_face //Indexer for constructing faces (triangles)
 {
 	uint32_t	v_indices[3];
 	uint32_t	uv_indices[3];
+	t_material	*material;
 }	t_face;
 
 typedef struct s_object
@@ -62,7 +64,7 @@ struct s_world;
 t_object		objparse(char *filename);
 struct s_list	*get_uv_list(int fd);
 struct s_list	*get_vertex_list(int fd);
-struct s_list	*get_face_list(int fd);
+t_list			*get_face_list(int fd, t_list *materials);
 void			objects_init(struct s_sdlcontext *sdl);
 t_object		*get_object_by_name(struct s_sdlcontext sdl, char *name);
 t_object		*object_plane();
