@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 04:55:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/08 13:43:24 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,6 +246,21 @@ void	calculate_colliders_for_entities(t_world *world);
 void	render_world3d(t_sdlcontext sdl, t_world world, t_render *render);
 t_world	load_world(char *filename, t_sdlcontext sdl);
 void	save_world(char *filename, t_world world);
+
+typedef sruct s_inputmode
+{
+	keyboard,
+	controller
+}	t_inputmode;
+
+typedef struct s_input
+{
+	t_inputmode	mode;
+	t_vector2	move;
+	bool		crouch;
+	bool		jump;
+	t_vector2	turn;
+}	t_input;
 
 typedef struct s_editor
 {
