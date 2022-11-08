@@ -134,7 +134,6 @@ t_object	objparse(char *filename)
 	result.vertices = list_to_ptr(vertices, &result.vertice_count);
 	result.uvs = list_to_ptr(uvs, &result.uv_count);
 	result.faces = list_to_ptr(faces, &result.face_count);
-
 	ft_lstdel(&materials, free_list_node);
 	ft_lstdel(&vertices, free_list_node);
 	ft_lstdel(&uvs, free_list_node);

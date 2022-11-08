@@ -6,7 +6,7 @@
 #    By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/08 05:35:49 by okinnune         ###   ########.fr        #
+#    Updated: 2022/11/08 13:52:02 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -69,8 +69,8 @@ OBJ= $(SRC:.c=.o)
 #Compilation stuff:
 INCLUDE= -ISDL_built/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
 CC= gcc
-LIBS= $(LIBFT) -lm
-CFLAGS= $(INCLUDE) -g -finline-functions -O2
+LIBS= $(LIBFT) -lm -lGL
+CFLAGS= $(INCLUDE) -g -finline-functions -O2#-march=native
 
 all: $(SDL2) $(LUA) $(LIBFT) $(OBJ)
 	$(CC) $(OBJ) -o $(NAME) `SDL_built/bin/sdl2-config --cflags --libs` $(INCLUDE) $(LIBS) $(LUA)

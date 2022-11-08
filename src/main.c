@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 11:07:49 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/08 14:40:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,23 @@
 #include "png.h"
 #include "game_lua.h"
 #include "objects.h"
+#include <GL/gl.h>
 
 static void	create_sdl_context(t_sdlcontext *sdl)
 {
 	load_lua_conf(sdl);
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-		error_log(EC_SDL_INIT);
-	if (SDL_Init(SDL_INIT_EVENTS) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO) < 0
+		|| SDL_Init(SDL_INIT_EVENTS) < 0)
 		error_log(EC_SDL_INIT);
 	sdl->window = SDL_CreateWindow("DoomNukem",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		sdl->window_w, sdl->window_h, SDL_WINDOW_SHOWN);
+		sdl->window_w, sdl->window_h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+	//SDL_CreateWindowAndRenderer(0, 0, )
 	if (sdl->window == NULL)
 		error_log(EC_SDL_CREATEWINDOW);
 	sdl->surface = SDL_GetWindowSurface(sdl->window);
+	//sdl->surface->format = SDL_pixeSDL_PIXELFORMAT_BGR24;
+	sdl->surface->format->format = SDL_PIXELFORMAT_ABGR1555;
 	//SDL_setw
 	//sdl->surface
 	if (sdl->surface == NULL)
@@ -35,6 +38,31 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	load_fonts(sdl);
 	sdl->zbuffer = malloc(sdl->window_w * sdl->window_h * sizeof(float));
 	objects_init(sdl);
+
+
+	/* create context here, call gl clear in render start, glbegin in drawtriangles etc */
+	SDL_GLContext glc = SDL_GL_CreateContext(sdl->window);
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glLoadIdentity();
+	glEnable(GL_DEPTH_TEST);
+
+	//glBegin( GL_QUADS );
+	
+	glBegin(GL_TRIANGLES);
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glVertex3f( -0.5f, -0.5f, 0.2f);
+	glVertex3f( 0.5f, -0.5f, 0.5f);
+	glVertex3f( 0.5f, 0.5f, 1.0f);
+	glColor3f(1.0f, 1.0f, 0.0f);
+	glVertex3f( -0.6f, -0.6f, 2.0f);
+	glVertex3f( 0.5f, -0.6f, 2.0f);
+	glVertex3f( 0.1f, 0.3f, -2.0f);
+	//glVertex2f( -0.5f, 0.5f );
+	glEnd();
+	SDL_GL_SwapWindow(sdl->window);
+	SDL_Delay(2000);
+	printf("%s \n", glGetString(GL_RENDERER));
+	//SDL_GL_GetProcAddress("glGetString");
 }
 
 void	quit_game(t_sdlcontext *sdl)
