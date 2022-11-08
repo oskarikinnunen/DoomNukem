@@ -37,5 +37,6 @@ objects =
 {
 	"car2.obj",
 	"primitive_cube_textured.obj",
-	"cube.obj"
+	"cube.obj",
+	"dummy.obj"
 }

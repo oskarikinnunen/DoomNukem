@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 04:55:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/08 06:43:13 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <stdbool.h>
 # include "shapes.h"
 # include "physics.h"
+# include "animation.h" //PLAYER USES THIS, MOVE PLAYER TO SEPARATE HEADER
 
 # define TILESIZE 32 //EDITOR tilesize
 # define GRIDSIZE 64 //EDITOR gridsize (how many addressable coordinates we have)
@@ -58,7 +59,7 @@
 # define COLLISION_ON //Comment/uncomment to toggle experimental collision
 
 # define EDITOR_MOVESPEED 0.2f
-# define MOVESPEED 0.5f
+# define MOVESPEED 0.2f
 # define MAXMOVEMENTSPEED 0.08f
 # define ROTATESPEED 0.002f
 # define MOUSESPEED 0.0002f
@@ -152,6 +153,7 @@ typedef struct s_player
 	t_vector3	position; //TODO: might be changed to int[2], don't know yet
 	t_vector2	angle;
 	t_vector3	lookdir;
+	t_anim		jump;
 }	t_player;
 
 typedef enum	e_cam_mode

@@ -74,6 +74,14 @@ static void update_render(t_render *render, t_player player)
 	render->position = player.position;
 }
 
+static void player_init(t_player *player)
+{
+	player->position = (t_vector3) {500.0f, 500.0f, 500.0f};
+	player->angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
+	player->jump.framerate = 30;
+	player->jump.lastframe = 15;
+}
+
 /*main game loop*/
 static int gameloop(t_sdlcontext sdl, t_game game)
 {
@@ -84,8 +92,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	gr = game_continue;
 	render = init_render(sdl);
 	game.world = load_world("world1", sdl);
-	game.player.position = (t_vector3) {500.0f, 500.0f, 500.0f};
-	game.player.angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
+	player_init(&game.player);
 	while (gr == game_continue)
 	{
 		update_deltatime(&game.clock);
