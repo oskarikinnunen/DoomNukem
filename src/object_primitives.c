@@ -48,9 +48,9 @@ t_object	*object_plane()
 	plane->uvs = ft_memalloc(sizeof(t_vector2) * 4);
 	plane->uv_count = 4;
 	plane->uvs[0] = (t_vector2){0.0f, 0.0f};
-	plane->uvs[1] = (t_vector2){2.0f, 0.0f};
-	plane->uvs[2] = (t_vector2){0.0f, 2.0f};
-	plane->uvs[3] = (t_vector2){2.0f, 2.0f};
+	plane->uvs[1] = (t_vector2){1.0f, 0.0f};
+	plane->uvs[2] = (t_vector2){0.0f, 1.0f};
+	plane->uvs[3] = (t_vector2){1.0f, 1.0f};
 
 	/*sizeof(t_wall);
 	sizeof(t_object);*/

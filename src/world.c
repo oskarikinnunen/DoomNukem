@@ -6,27 +6,13 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/07 05:57:14 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/08 06:11:35 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "file_io.h"
 #include "objects.h"
-
-static void	applywallmesh(t_wall *wall)
-{
-	wall->object.vertices[0] = (t_vector3){wall->line.start.x, wall->line.start.y, 0.0f};
-	wall->object.vertices[1] = (t_vector3){wall->line.end.x, wall->line.end.y, 0.0f};
-	
-	wall->object.vertices[2] = (t_vector3){wall->line.start.x, wall->line.start.y, wall->height};
-	wall->object.vertices[3] = (t_vector3){wall->line.end.x, wall->line.end.y, wall->height};
-
-	float dist = vector2_dist(wall->line.start, wall->line.end);
-	wall->object.uvs[1] = (t_vector2){dist / 100.0f, 0.0f};
-	wall->object.uvs[2] = (t_vector2){0.0f, wall->height / 100.0f};
-	wall->object.uvs[3] = (t_vector2){dist / 100.0f, wall->height / 100.0f};
-}
 
 void render_world3d(t_sdlcontext sdl, t_world world, t_render *render)
 {
@@ -97,17 +83,36 @@ void	scale_skybox_uvs(t_object *obj)
 	}
 }
 
+static void load_walltextures(t_world *world, t_sdlcontext sdl)
+{
+	t_list		*l;
+	t_wall		*wall;
+	t_material	*mat;
+
+	l = world->wall_list;
+	while (l != NULL)
+	{
+		wall = (t_wall *)l->content;
+		mat = &wall->object.materials[0];
+		mat->img = get_image_by_name(sdl, mat->texturename);
+		l = l->next;
+	}
+}
+
 t_world	load_world(char *filename, t_sdlcontext sdl)
 {
 	t_world	world;
 
 	ft_bzero(&world, sizeof(t_world));
 	world.entitylist = load_chunk(filename, "ENT_", sizeof(t_entity));
+	world.wall_list = load_chunk(filename, "WALL", sizeof(t_wall));
 	entity_init(&world, sdl);
+	walls_init(&world);
+	load_walltextures(&world, sdl);
 	ft_bzero(&world.skybox, sizeof(t_entity));
 	world.skybox.obj = get_object_by_name(sdl, "cube");
 	world.skybox.obj->materials[0].img = get_image_by_name(sdl, "grid.png");
-	scale_skybox_uvs(world.skybox.obj);
+	//scale_skybox_uvs(world.skybox.obj);
 	world.skybox.transform.scale = vector3_mul(vector3_one(), 1000.0f);
 	world.skybox.transform.location = (t_vector3){500.0f, 500.0f, 500.0f};
 	calculate_colliders_for_entities(&world);
@@ -132,4 +137,6 @@ void	save_world(char *filename, t_world world)
 	fd = fileopen(filename, O_RDWR | O_CREAT | O_TRUNC); //Empty the file or create a new one if it doesn't exist
 	close(fd);
 	save_chunk(filename, "ENT_", world.entitylist);
+	save_chunk(filename, "WALL", world.wall_list);
+	//unscale_skybox_uvs(world.skybox.obj);
 }

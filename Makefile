@@ -6,7 +6,7 @@
 #    By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/07 03:10:17 by okinnune         ###   ########.fr        #
+#    Updated: 2022/11/08 05:35:49 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,6 +27,7 @@ SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		editor_map_io.c	\
 		editor/tools/entity_tool.c \
 		editor/tools/wall_tool.c \
+		editor/tools/wall_tool_rooms.c \
 		editor/tools/button_tool.c \
 		editor/imagedropdown.c \
 		editor/editor_new_buttons.c \
@@ -34,6 +35,7 @@ SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		editor/editor_movement.c \
 		editor/editor_raycast.c \
 		playmode.c inputhelper.c \
+		walls.c \
 		moveplayer.c physics.c errors.c \
 		game_3d.c fill_triangle.c perfgraph.c \
 		png.c lua_conf.c list_helper.c \

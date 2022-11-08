@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/07 04:05:58 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/08 04:55:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -444,7 +444,7 @@ void render_ray(t_sdlcontext sdl, t_render render, t_vector3 from, t_vector3 to)
 	render.draw_tri_count = 0;
 }
 
-void render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos)
+void render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size)
 {
 	t_object		obj;
 	t_vector3		vertex;
@@ -461,7 +461,7 @@ void render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos)
 	if (render.q[0].w > 0.0f
 		&& render.q[0].v.x >= 0.0f && render.q[0].v.x < sdl.window_w
 		&& render.q[0].v.y >= 0.0f && render.q[0].v.y < sdl.window_h)
-		drawcircle(sdl, (t_point){render.q[0].v.x, render.q[0].v.y}, 2, render.gizmocolor);
+		drawcircle(sdl, (t_point){render.q[0].v.x, render.q[0].v.y}, size, render.gizmocolor);
 	render.calc_tri_count = 0;
 	render.draw_tri_count = 0;
 }

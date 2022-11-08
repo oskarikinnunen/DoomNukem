@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 13:52:50 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/07 07:08:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/08 04:56:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,11 @@ void draw_colliders(t_physics p, t_sdlcontext sdl, t_render render)
 				worldpos = vector3_mul(indexer, 10.0f);
 				if (p.cube[(int)indexer.x][(int)indexer.y][(int)indexer.z] != 0) {
 					render.gizmocolor = CLR_PRPL;
-					render_gizmo(sdl, render, worldpos);
+					render_gizmo(sdl, render, worldpos, 2);
 				}
 				if (indexer.y == 0 || indexer.y == 99.0f || indexer.x == 0 || indexer.x == 99.0f) {
 					render.gizmocolor = CLR_GREEN;
-					render_gizmo(sdl, render, worldpos);
+					render_gizmo(sdl, render, worldpos, 2);
 				}
 				indexer.y++;
 			}

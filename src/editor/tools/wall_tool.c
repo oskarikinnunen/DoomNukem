@@ -3,20 +3,45 @@
 /*                                                        :::      ::::::::   */
 /*   wall_tool.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:13:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/07 09:03:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/08 06:18:30 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "editor_tools.h"
-//#include "file_io.h"
 #include "inputhelp.h"
 #include "tools/walltool.h"
 #include "objects.h"
 
+static t_point vector3_to_screenspace(t_render r, t_vector3 vec, t_sdlcontext sdl)
+{
+	t_quaternion	proj_q;
+	t_point			result;
+
+	proj_q = vector3_to_quaternion(vec);
+	proj_q = quaternion_mul_matrix(r.matworld, proj_q);
+	proj_q = quaternion_mul_matrix(r.matview, proj_q);
+	proj_q = quaternion_mul_matrix(r.matproj, proj_q);
+
+
+	proj_q.v = vector3_div(proj_q.v, proj_q.w);
+
+	proj_q.v = vector3_negative(proj_q.v);
+
+	t_vector3 voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
+	proj_q.v = vector3_add(proj_q.v, voffsetview);
+
+	proj_q.v.x *= 0.5f * (float)sdl.window_w;
+	proj_q.v.y *= 0.5f * (float)sdl.window_h;
+
+	if (proj_q.w < 0.0f)
+		return ((t_point) {-100, -100});
+	result = (t_point){proj_q.v.x, proj_q.v.y};
+	return(result);
+}
 
 static t_quaternion quaternion_to_screenspace(t_render r, t_quaternion q, t_sdlcontext sdl)
 {
@@ -44,6 +69,20 @@ static bool quat_offscreen(t_sdlcontext *sdl, t_quaternion q)
 {
 	return (q.v.x < 0.0f || q.v.x > sdl->window_w
 		|| q.v.y < 0.0f || q.v.y > sdl->window_h);
+}
+
+static bool has_selected(t_walltooldata *dat)
+{
+		int	i;
+
+	i = 0;
+	while (i < MAXSELECTED)
+	{
+		if (dat->selected[i] != NULL)
+			return (true);
+		i++;
+	}
+	return (false);
 }
 
 t_wall	*wallcollision(t_editor *ed, t_sdlcontext *sdl)
@@ -79,15 +118,12 @@ t_wall	*wallcollision(t_editor *ed, t_sdlcontext *sdl)
 		{
 			return (wall);
 		}
-			
-		//quaternoi
-		//wall.object.vertices
 		l = l->next;
 	}
 	return (NULL);
 }
 
-static void	draw_snapgrid(t_editor *ed, t_sdlcontext *sdl, t_vector2 wallpos, bool shift)
+static void	draw_snapgrid(t_editor *ed, t_sdlcontext *sdl, t_vector2 wallpos, bool shift, bool hover)
 {
 	t_point		indexer;
 	t_vector3	origin;
@@ -96,7 +132,7 @@ static void	draw_snapgrid(t_editor *ed, t_sdlcontext *sdl, t_vector2 wallpos, bo
 
 	indexer = point_zero();
 	origin = (t_vector3){wallpos.x - 40.0f, wallpos.y - 40.0f, 0.0f};
-	clen = 40 + (shift * 500);
+	clen = 40 + (shift && !hover) * 220;
 	ed->render.gizmocolor = CLR_GRAY;
 	while (indexer.y < 90)
 	{
@@ -106,7 +142,10 @@ static void	draw_snapgrid(t_editor *ed, t_sdlcontext *sdl, t_vector2 wallpos, bo
 			ws = (t_vector3){origin.x + indexer.x, origin.y + indexer.y, 0.0f};
 			if (indexer.x == 40 && indexer.y == 40)
 			{
-				ed->render.gizmocolor = CLR_RED;
+				if (hover)
+					ed->render.gizmocolor = CLR_RED;
+				else
+					ed->render.gizmocolor = CLR_PRPL;
 				render_ray(*sdl, ed->render, ws, (t_vector3){ws.x, ws.y, clen});
 				render_ray(*sdl, ed->render, ws, (t_vector3){ws.x + clen, ws.y, 0.0f});
 				render_ray(*sdl, ed->render, ws, (t_vector3){ws.x - clen, ws.y, 0.0f});
@@ -115,12 +154,44 @@ static void	draw_snapgrid(t_editor *ed, t_sdlcontext *sdl, t_vector2 wallpos, bo
 			}
 			else
 				ed->render.gizmocolor = CLR_GRAY;
-			render_gizmo(*sdl, ed->render, ws);
+			render_gizmo(*sdl, ed->render, ws, 2);
 			indexer.x += 10;
 		}
 		//render_gizmo(*sdl, ed->render, v.x)
 		indexer.y += 10;
 	}
+}
+
+static void draw_selected(t_editor *ed, t_sdlcontext sdl, t_walltooldata *dat)
+{
+	int			i;
+	int			count;
+	char		text[256] = { };
+
+	i = 0;
+	count = 0;
+	ed->render.wireframe = true;
+	ed->render.gizmocolor = CLR_PRPL;
+	while (i < MAXSELECTED)
+	{
+		if (dat->selected[i] != NULL)
+		{
+			sprintf(text, "room: %i wallheight %i", dat->selected[i]->roomindex, dat->selected[i]->height);
+			t_vector3 corner = vector3_add(dat->selected[i]->object.vertices[0], dat->selected[i]->object.vertices[3]);
+			corner = vector3_div(corner, 2.0f);
+			draw_text_boxed(&sdl, text, vector3_to_screenspace(ed->render, corner, sdl), sdl.screensize);
+			render_object(sdl, ed->render, &dat->selected[i]->object);
+			count++;
+		}
+		i++;
+	}
+	if (count != 0)
+	{
+		ft_bzero(text, 256);
+		sprintf(text, "selected %i walls", count);
+		draw_text_boxed(&sdl, text, (t_point) {20, 120}, sdl.screensize);
+	}
+	ed->render.wireframe = false;
 }
 
 static void	wall_tool_draw(t_editor *ed, t_sdlcontext sdl) //TODO: ROTATE AROUND AXIS, SCREENSPACE
@@ -130,54 +201,110 @@ static void	wall_tool_draw(t_editor *ed, t_sdlcontext sdl) //TODO: ROTATE AROUND
 
 	dat = (t_walltooldata *)ed->tool->tooldata;
 	wall = &dat->wall;
-
+	dat->hover = wallcollision(ed, &sdl);
 	if (wall->object.materials[0].img == NULL)
 	{
 		printf("NULL IMAGE IN WALLTOOLDRAW! '%s' \n", wall->object.materials[0].texturename);
 		wall->object.materials[0].img =
 			get_image_by_name(sdl, wall->object.materials[0].texturename);
 	}
-		
-	draw_snapgrid(ed, &sdl, wall->line.end, (ed->keystate >> KEYS_SHIFTMASK) & 1);
+	draw_selected(ed, sdl, dat);
+	draw_snapgrid(ed, &sdl, wall->line.end, (ed->keystate >> KEYS_SHIFTMASK) & 1, dat->hover != NULL);
 	ed->render.gizmocolor = CLR_GREEN;
 	render_object(sdl, ed->render, &wall->object);
-
-	dat->hover = wallcollision(ed, &sdl);
 	if (dat->hover != NULL)
 	{
+		drawcircle(sdl, point_div(sdl.screensize, 2), 2, CLR_RED);
+		//char wallinfo[128];
+		//sprintf(wallinfo, "room: %i height: %i", dat->hover->roomindex, dat->hover->height);
+		//draw_text_boxed(&sdl, wallinfo, (t_point) { 20, 80}, (t_point){sdl.window_w, sdl.window_h});
 		ed->render.gizmocolor = CLR_RED;
 		ed->render.wireframe = true;
 		render_object(sdl, ed->render, &dat->hover->object);
 		ed->render.wireframe = false;
 	}
-}
 
-static void	applywallmesh(t_wall *wall)
-{
-	wall->object.vertices[0] = (t_vector3){wall->line.start.x, wall->line.start.y, 0.0f};
-	wall->object.vertices[1] = (t_vector3){wall->line.end.x, wall->line.end.y, 0.0f};
-	
-	wall->object.vertices[2] = (t_vector3){wall->line.start.x, wall->line.start.y, wall->height};
-	wall->object.vertices[3] = (t_vector3){wall->line.end.x, wall->line.end.y, wall->height};
-
-	float dist = vector2_dist(wall->line.start, wall->line.end) + 2.0f;
-	wall->object.uvs[1] = (t_vector2){dist / 100.0f, 0.0f};
-	wall->object.uvs[2] = (t_vector2){0.0f, wall->height / 100.0f};
-	wall->object.uvs[3] = (t_vector2){dist / 100.0f, wall->height / 100.0f};
-}
-
-void	init_walls(t_world *world)
-{
-	t_wall	*wall;
-	t_list	*l;
-
-	l = world->wall_list;
-	while (l != NULL) 
+	if (has_selected(dat))
 	{
-		wall = (t_wall *)l->content;
-		wall->object = *object_plane();
-		applywallmesh(wall);
-		l = l->next;
+		if (instantbutton((t_rectangle){20, 180, 80, 80}, &ed->mouse, sdl, "debug1.png"))
+			dat->fc = generate_floor(dat);
+	}
+	if (dat->fc.edgecount != 0)
+		floorcalc_debugdraw(ed, &sdl, dat->fc);
+}
+
+static void unselect_wall(t_walltooldata *dat)
+{
+	int	i;
+
+	i = 0;
+	while (i < MAXSELECTED)
+	{
+		if (dat->selected[i] == dat->hover)
+		{
+			dat->selected[i] = NULL;
+			return ;
+		}
+		i++;
+	}
+}
+
+static void	raise_selected(t_walltooldata *dat, int mousedelta)
+{
+	int	i;
+
+	i = 0;
+	while (i < MAXSELECTED)
+	{
+		if (dat->selected[i] != NULL)
+		{
+			dat->selected[i]->height += mousedelta * 10;
+			dat->selected[i]->height = ft_clamp(dat->selected[i]->height, 0, 200);
+			applywallmesh(dat->selected[i]);
+		}
+		i++;
+	}
+}
+
+bool	has_points_incommon(t_walltooldata *dat, t_wall *check)
+{
+	int		i;
+	t_wall	*cur;
+
+	i = 0;
+	while (i < MAXSELECTED)
+	{
+		cur = dat->selected[i];
+		if (cur != NULL
+			&& (vector2_cmp(check->line.start, cur->line.start)
+			|| vector2_cmp(check->line.start, cur->line.end)
+			|| vector2_cmp(check->line.end, cur->line.start)
+			|| vector2_cmp(check->line.end, cur->line.end)))
+			return (true);
+		i++;
+	}
+	return (false);
+}
+
+static void	select_wall(t_walltooldata *dat, t_wall *select)
+{
+	int	i;
+
+	i = 0;
+	while (i < MAXSELECTED)
+	{
+		if (dat->selected[i] == select)
+		{
+			dat->selected[i] = NULL;
+			return ;
+		}
+		if (dat->selected[i] == NULL)
+		{
+			if (has_points_incommon(dat, select) || !has_selected(dat))
+				dat->selected[i] = select;
+			return ;
+		}
+		i++;
 	}
 }
 
@@ -190,46 +317,58 @@ static void	wall_tool_update(t_editor *ed) //This needs to access editors state,
 	dat = (t_walltooldata *)ed->tool->tooldata;
 	wall = &dat->wall;
 	rc = raycast(ed);
-	if (dat->mode == place_first)
+	if (has_selected(dat) && dat->mode != place_end)
 	{
-		wall->line.start = (t_vector2){rc.x, rc.y};
-		wall->line.end = (t_vector2){rc.x, rc.y};
+		raise_selected(dat, ed->mouse.scroll_delta);
+		if (mouse_clicked(ed->mouse, MOUSE_RIGHT) && dat->hover == NULL)
+			ft_bzero(dat->selected, sizeof(t_wall *) * MAXSELECTED);
 	}
-	if (dat->mode == place_end)
+	if (dat->hover == NULL)
 	{
-		wall->line.end = (t_vector2){rc.x, rc.y};
-		wall->height += ed->mouse.scroll_delta * 10;
-		wall->height = ft_clamp(wall->height, 50, 150);
-	}
-	wall->line.start = vector2_snap(wall->line.start, 10);
-	wall->line.end = vector2_snap(wall->line.end, 10);
-	applywallmesh(wall);
-	if (mouse_clicked(ed->mouse, MOUSE_LEFT))
-	{
-		dat->mode++;
-		if (dat->mode == place_height)
+		if (dat->mode == place_first)
 		{
-			list_push(&ed->world.wall_list, wall, sizeof(t_wall));
-			init_walls(&ed->world);
-			wall->object = *object_plane();
-			dat->mode = 0;
+			wall->line.start = (t_vector2){rc.x, rc.y};
+			wall->line.end = (t_vector2){rc.x, rc.y};
+		}
+		if (dat->mode == place_end)
+		{
+			wall->line.end = (t_vector2){rc.x, rc.y};
+			wall->height += ed->mouse.scroll_delta * 10;
+			wall->height = ft_clamp(wall->height, 50, 200);
+		}
+		wall->line.start = vector2_snap(wall->line.start, 10);
+		wall->line.end = vector2_snap(wall->line.end, 10);
+		applywallmesh(wall);
+		if (mouse_clicked(ed->mouse, MOUSE_RIGHT) && dat->mode == place_end)
+			dat->mode = place_start;
+		if (mouse_clicked(ed->mouse, MOUSE_LEFT))
+		{
+			dat->mode++;
+			if (dat->mode == place_height)
+			{
+				list_push(&ed->world.wall_list, wall, sizeof(t_wall));
+				walls_init(&ed->world);
+				dat->mode = 0;
+				if ((ed->keystate >> KEYS_SHIFTMASK) & 1)
+				{
+					select_wall(dat, list_findlast(ed->world.wall_list));
+					wall->line.start = (t_vector2){rc.x, rc.y};
+					wall->line.end = (t_vector2){rc.x, rc.y};
+					dat->mode++;
+				}
+			}
 		}
 	}
-	if (mouse_clicked(ed->mouse, MOUSE_RIGHT) && dat->hover != NULL)
+	else
 	{
-		list_remove(&ed->world.wall_list, dat->hover, sizeof(t_wall));
+		if (mouse_clicked(ed->mouse, MOUSE_LEFT))
+			select_wall(dat, dat->hover);
+		if (mouse_clicked(ed->mouse, MOUSE_RIGHT))
+		{
+			list_remove(&ed->world.wall_list, dat->hover, sizeof(t_wall));
+			unselect_wall(dat);
+		}
 	}
-	
-}
-
-static	t_material *wallmat()
-{
-	/*static t_material	*mat;
-
-	if (mat == NULL)
-	{
-		mat = ft_memalloc(sizeof)
-	}*/
 }
 
 t_tool	*get_wall_tool()
@@ -242,17 +381,11 @@ t_tool	*get_wall_tool()
 
 	if (tool.tooldata == NULL)
 	{
-		//tool.tooldata = ft_memalloc(sizeof(t_entity));
 		tool.tooldata = ft_memalloc(sizeof(t_walltooldata));
-		
 		if (tool.tooldata == NULL)
 			error_log(EC_MALLOC);
 		wtd = (t_walltooldata *)tool.tooldata;
 		wtd->wall.object = *object_plane();
-		//wtd->wall.object.
-		//wtd->wall.object.materials[0].img
-		//NEEDS UV COUNT, UVs and texture
-
 		wtd->wall.height = 100.0f;
 		wtd->mode = place_first;
 	}

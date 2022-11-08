@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:10:14 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/07 05:17:00 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/08 00:24:18 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ void	pngtosimpleimg(t_pngdata *png, t_img *img) //dis bad, make return t_img ins
 	i = 0;
 	while (i < img->length - 1)
 	{
-		img->data[i] = png->palette.plte[png->data[i]];
+		img->data[i] = png->palette.plte[png->data[i]] & 0xFFFFFF;
 		i++;
 	}
 	sample_ouroboros(img);

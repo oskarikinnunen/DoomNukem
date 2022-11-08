@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw0.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/03 19:50:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/08 02:18:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ void	drawcircle(t_sdlcontext sdl, t_point pos, int size, uint32_t clr)
 	angl = 0.0f;
 	while (i < CRCL_SIDES + 1)
 	{
-		edges[i].x = pos.x + (sin(angl) * size);
-		edges[i].y = pos.y + (cos(angl) * size);
+		edges[i].x = pos.x + (sinf(angl) * size);
+		edges[i].y = pos.y + (cosf(angl) * size);
 		if (i >= 1)
 			drawline(sdl, edges[i - 1], edges[i], clr);
 		angl += FULLRAD / CRCL_SIDES;

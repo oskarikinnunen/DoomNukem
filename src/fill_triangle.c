@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fill_triangle.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/07 09:06:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/08 00:34:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,8 +143,7 @@ static uint32_t sample_img(t_img *img, t_texture t)
 	xsample = (x8b * (img->size.x - 1)) / 255;
 	y8b = (t.v / t.w) * 255;
 	ysample = (y8b * (img->size.y - 1)) / 255;
-	return (img->data[(xsample * img->size.x)
-		+ ysample]);
+	return (img->data[(xsample * img->size.x) + ysample]);
 }
 
 static void fill_tri_bot(t_sdlcontext sdl, t_triangle triangle, t_img *img)

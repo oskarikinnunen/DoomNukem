@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lua_conf.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/03 19:52:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/08 01:21:36 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ void	load_resolution(lua_State *lua, t_sdlcontext *sdl)
 		sdl->window_h = 1280;
 		sdl->window_w = 720;
 	}
+	sdl->screensize = (t_point) {sdl->window_w, sdl->window_h};
 }
 
 void	load_lua_conf(t_sdlcontext *sdl)

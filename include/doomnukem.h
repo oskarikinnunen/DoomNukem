@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/07 05:57:28 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/08 04:55:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 # define GRIDSIZE 64 //EDITOR gridsize (how many addressable coordinates we have)
 
 # define PI	3.14159265359
-# define FULLRAD PI * 2.0
+# define FULLRAD M_PI * 2.0
 # define RAD90		1.57079633f //90 degrees in radian
 
 # define X 0
@@ -126,6 +126,7 @@ typedef struct s_sdlcontext
 	t_font					*all_fonts;
 	uint32_t				window_w;
 	uint32_t				window_h;
+	t_point					screensize;
 }	t_sdlcontext;
 
 void	screen_blank(t_sdlcontext sdl);
@@ -340,7 +341,7 @@ int		playmode(t_sdlcontext sdl);
 void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle, t_img img);
 void	render_entity(t_sdlcontext sdl, t_render render, t_entity *entity);
 void	render_object(t_sdlcontext sdl, t_render render, struct s_object *obj);
-void	render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos);
+void	render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size);
 void	render_ray(t_sdlcontext sdl, t_render render, t_vector3 from, t_vector3 to);
 void	draw_screen_to_worldspace_ray(t_sdlcontext sdl, t_render render, t_point origin, t_vector2 angle);
 
@@ -386,7 +387,9 @@ void	draw_text_boxed(t_sdlcontext *sdl, const char *str, t_point pos, t_point bo
 
 /* LIST_HELPER.C */
 void	list_push(t_list **head, void *content, size_t content_size);
+void	*list_findlast(t_list *head);
 void	*list_to_ptr(t_list *source, uint32_t *set_length);
+void	*list_find(t_list *head, void *match, size_t content_size);
 //TODO: documentation here
 void	list_remove(t_list **head, void *match, size_t content_size);
 
