@@ -3,13 +3,12 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+         #
+#    By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/08 05:35:49 by okinnune         ###   ########.fr        #
+#    Updated: 2022/11/08 13:24:34 by kfum             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
-
 
 
 NAME= DoomNukem
@@ -17,6 +16,14 @@ NAME= DoomNukem
 SDLFOLDER= SDL-release-2.0.8
 SDL2= SDL_built/lib/libSDL2.a
 LIBFT= libft/libft.a
+
+SRC_PATH = src/
+OBJ_PATH = obj/
+# VEC_PATH = vectors/
+# EDITOR_PATH = editor/
+# TOOL_PATH = tools/
+# ENTITY_PATH = entity/
+# OBJ_PAR_PATH = obj_parser/
 
 LUAFOLDER= lua-5.3.6
 LUA= $(LUAFOLDER)/install/lib/liblua.a #TODO: find out real name!
@@ -27,7 +34,6 @@ SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		editor_map_io.c	\
 		editor/tools/entity_tool.c \
 		editor/tools/wall_tool.c \
-		editor/tools/wall_tool_rooms.c \
 		editor/tools/button_tool.c \
 		editor/imagedropdown.c \
 		editor/editor_new_buttons.c \
@@ -35,7 +41,6 @@ SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		editor/editor_movement.c \
 		editor/editor_raycast.c \
 		playmode.c inputhelper.c \
-		walls.c \
 		moveplayer.c physics.c errors.c \
 		game_3d.c fill_triangle.c perfgraph.c \
 		png.c lua_conf.c list_helper.c \
@@ -61,10 +66,15 @@ VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		matrix_shorthands.c matrix_rotations.c \
 		matrix_functions.c matrix_functions2.c \
 		debug_vectors.c point_more.c
-VECTORSRC= $(addprefix src/vectors/,$(VECTORSRCFILES))
-SRC= $(addprefix src/,$(SRCFILES))
-SRC+= $(VECTORSRC)
-OBJ= $(SRC:.c=.o)
+		
+# VECTORSRC= $(addprefix src/vectors/,$(VECTORSRCFILES))
+# SRC= $(addprefix src/,$(SRCFILES))
+# SRC+= $(VECTORSRC)
+# OBJ= $(SRC:.c=.o)
+
+OBJ = $(patsubst %.c, $(OBJ_PATH)%.o, $(SRCFILES))
+VECTORSRC= $(addprefix vectors/, $(VECTORSRCFILES))
+VEC_OBJ = $(patsubst %.c, $(OBJ_PATH)%.o, $(VECTORSRC))
 
 #Compilation stuff:
 INCLUDE= -ISDL_built/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
@@ -72,13 +82,22 @@ CC= gcc
 LIBS= $(LIBFT) -lm
 CFLAGS= $(INCLUDE) -g -finline-functions -O2
 
-all: $(SDL2) $(LUA) $(LIBFT) $(OBJ)
-	$(CC) $(OBJ) -o $(NAME) `SDL_built/bin/sdl2-config --cflags --libs` $(INCLUDE) $(LIBS) $(LUA)
+all: $(SDL2) $(LUA) $(LIBFT) $(OBJ_PATH) $(OBJ) $(VEC_OBJ)
+	$(CC) $(OBJ) $(VEC_OBJ) -o $(NAME) `SDL_built/bin/sdl2-config --cflags --libs` $(INCLUDE) $(LIBS) $(LUA)
+
+$(OBJ_PATH):
+	@mkdir -p $(OBJ_PATH)/editor/tools
+	@mkdir -p $(OBJ_PATH)/entity
+	@mkdir -p $(OBJ_PATH)/obj_parser
+	@mkdir -p $(OBJ_PATH)/vectors
+
+$(OBJ_PATH)%.o: $(SRC_PATH)%.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ): include/*.h Makefile
 
 clean:
-	rm -f $(OBJ)
+	rm -rf $(OBJ_PATH)
 
 re: clean all
 
@@ -103,4 +122,4 @@ $(LUA):
 	cd $(LUAFOLDER) && make generic && make local
 
 $(SDL2):
-	cd $(SDLFOLDER)/build &&../configure --prefix=$(PWD)/SDL_built/ && make install
+	cd $(SDLFOLDER)/build &&../configure --prefix=$(PWD)/SDL_built/ && make install && make install
