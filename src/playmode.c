@@ -58,31 +58,6 @@ typedef	enum	e_inputmode /* Put this in inputhelp.h header */
 	controller
 } t_inputmode;
 
-typedef struct s_input /* Put this in inputhelp.h header */
-{
-	t_inputmode	mode;
-	t_vector2	move;
-	bool		crouch;
-	bool		jump;
-	t_vector2	turn;
-}	t_input;
-
-void	updateinput(t_input *input, int keystate, t_mouse m/* also pass controller data somehow */)
-{
-	if (input->mode == keyboard)
-	{
-		input->move.x -= (keystate >> KEYS_LEFTMASK) & 1;
-		input->move.x += (keystate >> KEYS_RIGHTMASK) & 1;
-		/* etc*/
-		input->turn = point_to_vector2(m.delta);
-	}
-	else
-	{
-		/* input->move.x = controllerdata.x_axis;
-			etc.
-		*/
-	}
-}
 
 /*check for keyboard/mouse input*/
 static int handleinput(t_game *game) //Should be renamed to handle_events or something, feel free to rename
@@ -98,6 +73,7 @@ static int handleinput(t_game *game) //Should be renamed to handle_events or som
 		if (gr != game_continue)
 			return (gr);
 	}
+
 	return(game_continue);
 }
 

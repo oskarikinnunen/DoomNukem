@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 12:23:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/09 17:04:36 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,6 @@ void	moveplayer(t_game *game)
 	game->player.angle.y += angle;
 	game->player.angle.y = ft_clampf(game->player.angle.y, -RAD90 * 0.99f, RAD90 * 0.99f);
 	game->player.lookdir = lookdirection(game->player.angle);
-
 	if (game->player.jump.active)
 		update_anim(&game->player.jump, game->clock.delta);
 	move_vector = player_movementvector(game->keystate, &game->player);

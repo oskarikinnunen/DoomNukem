@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/08 14:39:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/09 12:18:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -372,6 +372,7 @@ void render_entity(t_sdlcontext sdl, t_render render, t_entity *entity)
 		index++;
 	}
 	index = 0;
+	//render_object()
 	while (index < obj->face_count)
 	{
 		t_triangle	tritransformed;
@@ -385,6 +386,7 @@ void render_entity(t_sdlcontext sdl, t_render render, t_entity *entity)
 			tritransformed.t[1] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[1] - 1]);
 			tritransformed.t[2] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[2] - 1]);
 		}
+
 		tritransformed.clr = obj->faces[index].material->kd;
 		tritransformed.clr = shade(tritransformed.clr,
 									1.0f - vector3_dot(normal, (t_vector3){1.0f, 0.0f, 0.0f}));

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 15:55:15 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 09:04:20 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/09 04:44:35 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,11 +68,7 @@ t_list	*get_face_list(int fd, t_list *materials)
 	while (ft_get_next_line(fd, &line))
 	{
 		if (ft_strnstr(line, "usemtl ", sizeof("usemtl")))
-		{
 			mat = find_materialmatch(line + sizeof("usemtl"), materials);
-			printf("face mtl set to %s , clr r %i\n", mat->name, mat->kd & 0xFF);
-		}
-			
 		if (ft_strnstr(line, "f ", sizeof("f")))
 		{
 			face = parse_face(line + (sizeof("f")));

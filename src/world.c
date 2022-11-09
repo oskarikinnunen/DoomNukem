@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 06:11:35 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/09 10:01:44 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void render_world3d(t_sdlcontext sdl, t_world world, t_render *render)
 	t_entity	ent;
 	t_wall		wall;
 
-	render_entity(sdl, *render, &world.skybox);
+	
 	l = world.wall_list;
 	while (l != NULL)
 	{
@@ -35,6 +35,8 @@ void render_world3d(t_sdlcontext sdl, t_world world, t_render *render)
 		render_entity(sdl, *render, &ent);
 		l = l->next;
 	}
+	render_entity(sdl, *render, &world.skybox);
+	//render_entity(sdl, *render, &world.skybox);
 }
 
 void	calculate_colliders_for_entities(t_world *world)

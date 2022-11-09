@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 17:57:33 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/05 15:19:23 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/09 07:11:55 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,10 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include "get_next_line.h"
+# include <math.h>
 
 # define INT_MAX 2147483647
-# define PI 3.14159265359
+//# define PI 3.14159265359
 
 /* memory	*/
 void			*ft_memset(void *ptr, int value, size_t num);

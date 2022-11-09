@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 10:20:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/09 12:17:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@
 
 # define CLR_PRPL 14231500
 # define CLR_TURQ 5505010
+# define CLR_BLUE 255
 # define CLR_GRAY 4868682
 # define CLR_DARKGRAY 0x292929
 # define CLR_GREEN 3002977
@@ -198,6 +199,17 @@ typedef struct s_bound
 	float	max;
 }	t_bound;
 
+
+/*typedef struct s_animframe
+{
+	struct deltamove = 
+	{
+		int			index;
+		t_vector3	delta;
+	};
+	int deltaverticecount;
+}	t_animframe;*/
+
 typedef struct s_entity
 {
 	t_transform		transform;
@@ -302,6 +314,7 @@ void	mouse_event(SDL_Event e, t_editor *ed);
 
 /* SPACECONVERSIONS.C */
 t_point	worldtoeditorspace(t_editor *ed, t_vector2 worldcrd);
+t_point vector3_to_screenspace(t_render r, t_vector3 vec, t_sdlcontext sdl);
 
 /* EDITOR_SAVELINE.C */
 void	saveline(t_editor *ed);

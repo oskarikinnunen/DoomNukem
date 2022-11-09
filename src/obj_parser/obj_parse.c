@@ -33,7 +33,6 @@ t_material	parsemat(int fd, char *name)
 				free(kd_strs[i]);
 				i++;
 			}
-			printcolor(mat.kd);
 			free(kd_strs);
 			if (i != 3)
 				printf("invalid kd string! \n"); //TODO: log?
@@ -44,7 +43,7 @@ t_material	parsemat(int fd, char *name)
 				ft_strcpy(mat.texturename, ft_strrchr(line, '/') + 1);
 			else
 				ft_strcpy(mat.texturename, line + sizeof("map_Kd"));
-			printf("MAT TEX NAME %s \n", mat.texturename);
+			//printf("MAT TEX NAME %s \n", mat.texturename);
 		}
 		if (ft_strlen(line) == 0)
 		{

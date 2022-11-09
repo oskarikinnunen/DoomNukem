@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/08 10:14:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/09 17:19:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,10 +158,10 @@ static void step_ab(t_texture *step, t_triangle triangle, float delta)
 
 static uint32_t sample_img(t_img *img, t_texture t)
 {
-	uint8_t	x8b;
-	uint8_t	y8b;
-	uint16_t	xsample;
-	uint16_t	ysample;
+	static uint8_t	x8b;
+	static uint8_t	y8b;
+	uint8_t	xsample;
+	uint8_t	ysample;
 
 	x8b = (t.u / t.w) * 255;
 	xsample = (x8b * (img->size.x - 1)) / 255;

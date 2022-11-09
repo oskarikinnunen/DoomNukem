@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:17:04 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 04:50:38 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/09 08:23:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,9 @@ typedef struct s_floortri
 typedef struct s_floorcalc
 {
 	t_vector2	edges[32];
+	t_face		faces[32];
 	uint8_t		edgecount;
+	uint8_t		facecount;
 }	t_floorcalc;
 
 typedef struct s_walltooldata
@@ -46,6 +48,6 @@ typedef struct s_walltooldata
 }	t_walltooldata;
 
 t_floorcalc	generate_floor(t_walltooldata *dat);
-void		floorcalc_debugdraw(t_editor *ed, t_sdlcontext *sdl, t_floorcalc fc);
+void		floorcalc_debugdraw(t_editor *ed, t_sdlcontext *sdl, t_floorcalc fc, int tri_i);
 
 #endif

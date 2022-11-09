@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 17:23:31 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 01:02:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/09 07:27:24 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,11 @@ static char	*floatstr(float f)
 	free(strinteger);
 	free(strdecimal);
 	return (final);
+}
+
+float	radtodeg(float rad)
+{
+	return (rad * (180.0 / M_PI));
 }
 
 char	*vector_string(t_vector3 vec)

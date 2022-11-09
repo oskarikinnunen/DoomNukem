@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:13:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 13:30:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/09 09:02:53 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,30 +15,6 @@
 #include "inputhelp.h"
 #include "tools/walltool.h"
 #include "objects.h"
-
-static t_point vector3_to_screenspace(t_render r, t_vector3 vec, t_sdlcontext sdl)
-{
-	t_quaternion	proj_q;
-	t_point			result;
-
-	proj_q = vector3_to_quaternion(vec);
-	proj_q = quaternion_mul_matrix(r.matworld, proj_q);
-	proj_q = quaternion_mul_matrix(r.matview, proj_q);
-	proj_q = quaternion_mul_matrix(r.matproj, proj_q);
-	proj_q.v = vector3_div(proj_q.v, proj_q.w);
-	proj_q.v = vector3_negative(proj_q.v);
-
-	t_vector3 voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
-	proj_q.v = vector3_add(proj_q.v, voffsetview);
-
-	proj_q.v.x *= 0.5f * (float)sdl.window_w;
-	proj_q.v.y *= 0.5f * (float)sdl.window_h;
-
-	if (proj_q.w < 0.0f)
-		return ((t_point) {-100, -100});
-	result = (t_point){proj_q.v.x, proj_q.v.y};
-	return(result);
-}
 
 static t_quaternion quaternion_to_screenspace(t_render r, t_quaternion q, t_sdlcontext sdl)
 {
@@ -176,7 +152,7 @@ static void draw_selected(t_editor *ed, t_sdlcontext sdl, t_walltooldata *dat)
 			sprintf(text, "room: %i wallheight %i", dat->selected[i]->roomindex, dat->selected[i]->height);
 			t_vector3 corner = vector3_add(dat->selected[i]->object.vertices[0], dat->selected[i]->object.vertices[3]);
 			corner = vector3_div(corner, 2.0f);
-			draw_text_boxed(&sdl, text, vector3_to_screenspace(ed->render, corner, sdl), sdl.screensize);
+			//draw_text_boxed(&sdl, text, vector3_to_screenspace(ed->render, corner, sdl), sdl.screensize);
 			render_object(sdl, ed->render, &dat->selected[i]->object);
 			count++;
 		}
@@ -191,10 +167,16 @@ static void draw_selected(t_editor *ed, t_sdlcontext sdl, t_walltooldata *dat)
 	ed->render.wireframe = false;
 }
 
+static t_vector3 vector2_to_vector3(t_vector2 vec)
+{
+	return ((t_vector3){vec.x, vec.y, 0.0f});
+}
+
 static void	wall_tool_draw(t_editor *ed, t_sdlcontext sdl) //TODO: ROTATE AROUND AXIS, SCREENSPACE
 {
 	t_walltooldata	*dat;
 	t_wall			*wall;
+	static			int8_t	tri_i;
 
 	dat = (t_walltooldata *)ed->tool->tooldata;
 	wall = &dat->wall;
@@ -206,7 +188,7 @@ static void	wall_tool_draw(t_editor *ed, t_sdlcontext sdl) //TODO: ROTATE AROUND
 			get_image_by_name(sdl, wall->object.materials[0].texturename);
 	}
 	draw_selected(ed, sdl, dat);
-	draw_snapgrid(ed, &sdl, wall->line.end, (ed->keystate >> KEYS_SHIFTMASK) & 1, dat->hover != NULL);
+	
 	ed->render.gizmocolor = CLR_GREEN;
 	render_object(sdl, ed->render, &wall->object);
 	if (dat->hover != NULL)
@@ -215,11 +197,15 @@ static void	wall_tool_draw(t_editor *ed, t_sdlcontext sdl) //TODO: ROTATE AROUND
 		//char wallinfo[128];
 		//sprintf(wallinfo, "room: %i height: %i", dat->hover->roomindex, dat->hover->height);
 		//draw_text_boxed(&sdl, wallinfo, (t_point) { 20, 80}, (t_point){sdl.window_w, sdl.window_h});
+		draw_text_boxed(&sdl, vector_string(vector2_to_vector3(dat->hover->line.start)), point_sub(sdl.screensize, (t_point) {200, 100}), sdl.screensize);
+		draw_text_boxed(&sdl, vector_string(vector2_to_vector3(dat->hover->line.end)), point_sub(sdl.screensize, (t_point) {200, 60}), sdl.screensize);
 		ed->render.gizmocolor = CLR_RED;
 		ed->render.wireframe = true;
 		render_object(sdl, ed->render, &dat->hover->object);
 		ed->render.wireframe = false;
 	}
+	else
+		draw_snapgrid(ed, &sdl, wall->line.end, (ed->keystate >> KEYS_SHIFTMASK) & 1, dat->hover != NULL);
 
 	if (has_selected(dat))
 	{
@@ -232,7 +218,14 @@ static void	wall_tool_draw(t_editor *ed, t_sdlcontext sdl) //TODO: ROTATE AROUND
 		*/
 	}
 	if (dat->fc.edgecount != 0)
-		floorcalc_debugdraw(ed, &sdl, dat->fc);
+	{
+		tri_i += ed->mouse.scroll_delta;
+		tri_i = ft_clamp(tri_i, 0, dat->fc.facecount - 1);
+		char *tristr = ft_itoa(tri_i);
+		draw_text_boxed(&sdl, tristr, point_sub(sdl.screensize, (t_point) {200, 100}), sdl.screensize);
+		free (tristr);
+		floorcalc_debugdraw(ed, &sdl, dat->fc, tri_i);
+	}
 }
 
 static void unselect_wall(t_walltooldata *dat)
@@ -321,7 +314,7 @@ static void	wall_tool_update(t_editor *ed) //This needs to access editors state,
 	rc = raycast(ed);
 	if (has_selected(dat) && dat->mode != place_end)
 	{
-		raise_selected(dat, ed->mouse.scroll_delta);
+		//raise_selected(dat, ed->mouse.scroll_delta);
 		if (mouse_clicked(ed->mouse, MOUSE_RIGHT) && dat->hover == NULL)
 			ft_bzero(dat->selected, sizeof(t_wall *) * MAXSELECTED);
 	}

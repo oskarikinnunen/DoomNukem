@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 14:40:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/09 04:43:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 
 
 	/* create context here, call gl clear in render start, glbegin in drawtriangles etc */
-	SDL_GLContext glc = SDL_GL_CreateContext(sdl->window);
+	/*SDL_GLContext glc = SDL_GL_CreateContext(sdl->window);
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 	glEnable(GL_DEPTH_TEST);
@@ -59,10 +59,9 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	glVertex3f( 0.1f, 0.3f, -2.0f);
 	//glVertex2f( -0.5f, 0.5f );
 	glEnd();
-	SDL_GL_SwapWindow(sdl->window);
-	SDL_Delay(2000);
-	printf("%s \n", glGetString(GL_RENDERER));
-	//SDL_GL_GetProcAddress("glGetString");
+	SDL_GL_SwapWindow(sdl->window);*/
+	SDL_GLContext glc = SDL_GL_CreateContext(sdl->window);
+	printf("OPENGL RENDERER: '%s' \n", glGetString(GL_RENDERER));
 }
 
 void	quit_game(t_sdlcontext *sdl)

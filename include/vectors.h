@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/07 01:56:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/09 07:58:53 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,9 @@ float		vector2_dist(t_vector2 first, t_vector2 second);
 
 //returns dot product of vector 'first' and vector 'second'
 float		vector2_dot(t_vector2 first, t_vector2 second);
+
+//returns cross product of vector 'first' and vector 'second'
+float		vector2_cross(t_vector2 first, t_vector2 second);
 
 //returns true if both vectors are identical
 bool		vector2_cmp(t_vector2 first, t_vector2 second);
@@ -267,7 +270,7 @@ t_vector3	lookdirection(t_vector2 angle);
 t_vector3 vector3_mul_matrix(t_mat4x4 m, t_vector3 i);
 
 /* CONVERSIONS */
-
+float	radtodeg(float rad);
 
 t_quaternion	vector3_to_quaternion(t_vector3 v);
 
