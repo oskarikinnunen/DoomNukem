@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:36:01 by raho              #+#    #+#             */
-/*   Updated: 2022/11/09 14:15:37 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/09 14:18:22 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,13 +152,13 @@ int	controller_events(SDL_Event e, t_game *game)
 		// ps
 		if (e.jbutton.button == 12)
 		{
-			
+			return (game_exit);
 		}
 
 		// touchpad
 		if (e.jbutton.button == 13)
 		{
-			
+			return (game_switchmode);
 		}
 	}
 
