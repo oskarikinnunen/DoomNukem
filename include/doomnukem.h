@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/09 17:42:41 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/09 19:53:23 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,25 +267,29 @@ typedef struct s_editor
 	
 }	t_editor;
 
+/* TODO: Move to inputhelp and fix unknown type names */
 typedef enum s_inputmode
 {
 	keyboard,
 	controller
 }	t_inputmode;
 
+/* TODO: Move to inputhelp and fix unknown type names */
 typedef struct s_input
 {
 	t_inputmode	mode;
 	t_vector2	move;
 	bool		crouch;
 	bool		jump;
+	bool		run;
 	t_vector2	turn;
 }	t_input;
 
+/* TODO: Move to inputhelp and fix unknown type names */
 typedef struct s_controller
 {
-	int		leftanalog[2];
-	int		rightanalog[2];
+	t_vector2	leftanalog;
+	t_vector2	rightanalog;
 	int		dpad;
 	bool	square;
 	bool	cross;
@@ -443,5 +447,6 @@ void printf_matrix(t_mat4x4 m);
 void printf_point(t_point p);
 void printf_texture(t_texture t);
 void printf_face(void *face);
+
 
 #endif

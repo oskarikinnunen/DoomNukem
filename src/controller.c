@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:36:01 by raho              #+#    #+#             */
-/*   Updated: 2022/11/09 17:41:55 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/09 19:52:22 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,25 @@ static void	analog_sticks(SDL_JoyAxisEvent jaxis, t_controller *controller)
 	// left-right
 	if (jaxis.axis == 0)
 	{
-		printf("left stick - left-right: jaxis.axis: %d\n", jaxis.value);
-		controller->leftanalog[0] = jaxis.value;
+		//printf("left stick - left-right: jaxis.axis: %d\n", jaxis.value);
+		if (jaxis.value < -3200)
+			controller->leftanalog.x = -1;
+		if (jaxis.value > 3200)
+			controller->leftanalog.x = 1;
+		else
+			controller->leftanalog.x = 0;
 	}
 	
 	// up-down
 	if (jaxis.axis == 1)
 	{
-		printf("left stick - up-down: jaxis.axis: %d\n", jaxis.value);
-		controller->leftanalog[1] = jaxis.value;	
+		//printf("left stick - up-down: jaxis.axis: %d\n", jaxis.value);
+		if (jaxis.value < -3200)
+			controller->leftanalog.y = -1;
+		if (jaxis.value > 3200)
+			controller->leftanalog.y = 1;
+		else
+			controller->leftanalog.y = 0;	
 	}
 
 
@@ -37,15 +47,25 @@ static void	analog_sticks(SDL_JoyAxisEvent jaxis, t_controller *controller)
 	// left-right
 	if (jaxis.axis == 2)
 	{
-		printf("right stick - left-right: jaxis.axis: %d\n", jaxis.value);
-		controller->rightanalog[0] = jaxis.value;
+		//printf("right stick - left-right: jaxis.axis: %d\n", jaxis.value);
+		if (jaxis.value < -3200)
+			controller->rightanalog.x = -1;
+		if (jaxis.value > 3200)
+			controller->rightanalog.x = 1;
+		else
+			controller->rightanalog.x = 0;
 	}
 			
 	// up-down
 	if (jaxis.axis == 5)
 	{
-		printf("right stick - up-down: jaxis.axis: %d\n", jaxis.value);
-		controller->rightanalog[1] = jaxis.value;
+		//printf("right stick - up-down: jaxis.axis: %d\n", jaxis.value);
+		if (jaxis.value < -3200)
+			controller->rightanalog.y = -1;
+		if (jaxis.value > 3200)
+			controller->rightanalog.y = 1;
+		else
+			controller->rightanalog.y = 0;
 	}
 }
 

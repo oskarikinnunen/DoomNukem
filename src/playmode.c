@@ -32,7 +32,7 @@ static int key_events(SDL_Event e, t_game *game)
 	}
 	else if(e.type == SDL_KEYUP)
 	{
-		game->keystate &= ~(keyismoveleft(e)) << KEYS_LEFTMASK;
+		game->keystate &= ~(keyismoveleft(e) << KEYS_LEFTMASK);
 		game->keystate &= ~(keyismoveright(e) << KEYS_RIGHTMASK);
 		game->keystate &= ~(keyismoveup(e) << KEYS_UPMASK);
 		game->keystate &= ~(keyismovedown(e) << KEYS_DOWNMASK);
@@ -52,9 +52,28 @@ static void updatemouse(t_mouse *mouse)
 		mouse->delta = point_zero();
 }
 
-static void updateinput(t_input input, int keystate, t_mouse m)
+static void updateinput(t_input *input, int keystate, t_mouse m, t_controller controller)
 {
-
+	input->move = vector2_zero();
+	if (input->mode == keyboard)
+	{
+		input->move.x -= (keystate >> KEYS_LEFTMASK) & 1;
+		input->move.x += (keystate >> KEYS_RIGHTMASK) & 1;
+		input->move.y -= (keystate >> KEYS_DOWNMASK) & 1;
+		input->move.y += (keystate >> KEYS_UPMASK) & 1;
+		input->crouch = (keystate >> KEYS_CTRLMASK) & 1;
+		input->jump = (keystate >> KEYS_SPACEMASK) & 1;
+		input->run = (keystate >> KEYS_SHIFTMASK) & 1;
+		input->turn = point_to_vector2(m.delta);
+	}
+	else
+	{
+		input->move = controller.leftanalog;
+		input->crouch = controller.circle;
+		input->jump = controller.cross;
+		input->run = controller.l2;
+		input->turn = controller.rightanalog;
+	}
 }
 
 /*check for keyboard/mouse/joystick input*/
@@ -69,7 +88,7 @@ static int handleinput(t_game *game)
 		if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP)
 		{
 			game->input.mode = keyboard;
-			gr = key_events(e, &game->input);
+			gr = key_events(e, game);
 		}
 		else
 		{
@@ -79,7 +98,7 @@ static int handleinput(t_game *game)
 		if (gr != game_continue)
 			return (gr);
 	}
-	updateinput(game->input, game->keystate, game->mouse);
+	updateinput(&game->input, game->keystate, game->mouse, game->controller);
 	return(game_continue);
 }
 
