@@ -52,6 +52,11 @@ static void updatemouse(t_mouse *mouse)
 		mouse->delta = point_zero();
 }
 
+static void updateinput(t_input input, int keystate, t_mouse m)
+{
+
+}
+
 /*check for keyboard/mouse input*/
 static int handleinput(t_game *game)
 {
@@ -61,10 +66,12 @@ static int handleinput(t_game *game)
 	updatemouse(&game->mouse);
 	while (SDL_PollEvent(&e))
 	{
+		gr = controller_events(e, game);
 		gr = key_events(e, game);
 		if (gr != game_continue)
 			return (gr);
 	}
+	updateinput(game->input, game->keystate, game->mouse);
 	return(game_continue);
 }
 

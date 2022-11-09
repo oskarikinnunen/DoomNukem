@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 13:43:24 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/09 13:46:16 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,7 @@ typedef struct s_sdlcontext
 {
 	SDL_Window				*window;
 	SDL_Surface				*surface;
+	SDL_Joystick			*joystick;
 	float					*zbuffer;
 	SDL_Renderer			*renderer; //TODO: for testing remove.
 	t_img					*images;
@@ -247,7 +248,7 @@ void	render_world3d(t_sdlcontext sdl, t_world world, t_render *render);
 t_world	load_world(char *filename, t_sdlcontext sdl);
 void	save_world(char *filename, t_world world);
 
-typedef sruct s_inputmode
+typedef enum s_inputmode
 {
 	keyboard,
 	controller
@@ -288,6 +289,7 @@ typedef struct s_game
 	t_mouse			mouse;
 	uint32_t		keystate;
 	t_player		player;
+	t_input			input;
 	t_cam_mode		cam_mode; //Unused but will be reimplemented?
 } t_game;
 
@@ -311,6 +313,9 @@ t_point	mousetoworldspace(t_editor *ed);
 t_point	mousetogridspace(t_editor *ed);
 t_point	screentogridspace(t_point point);
 void	mouse_event(SDL_Event e, t_editor *ed);
+
+/* CONTROLLER.C */
+int		controller_events(SDL_Event e, t_game *game);
 
 /* SPACECONVERSIONS.C */
 t_point	worldtoeditorspace(t_editor *ed, t_vector2 worldcrd);
