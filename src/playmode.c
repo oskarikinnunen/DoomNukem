@@ -67,9 +67,15 @@ static int handleinput(t_game *game)
 	while (SDL_PollEvent(&e))
 	{
 		if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP)
-			gr = key_events(e, game);
+		{
+			game->input.mode = keyboard;
+			gr = key_events(e, &game->input);
+		}
 		else
-			gr = controller_events(e, game);
+		{
+			game->input.mode = controller;
+			gr = controller_events(e, &game->controller);
+		}
 		if (gr != game_continue)
 			return (gr);
 	}

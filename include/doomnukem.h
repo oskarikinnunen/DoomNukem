@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/09 13:46:16 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/09 17:42:41 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,21 +248,6 @@ void	render_world3d(t_sdlcontext sdl, t_world world, t_render *render);
 t_world	load_world(char *filename, t_sdlcontext sdl);
 void	save_world(char *filename, t_world world);
 
-typedef enum s_inputmode
-{
-	keyboard,
-	controller
-}	t_inputmode;
-
-typedef struct s_input
-{
-	t_inputmode	mode;
-	t_vector2	move;
-	bool		crouch;
-	bool		jump;
-	t_vector2	turn;
-}	t_input;
-
 typedef struct s_editor
 {
 	t_world			world;
@@ -282,12 +267,49 @@ typedef struct s_editor
 	
 }	t_editor;
 
+typedef enum s_inputmode
+{
+	keyboard,
+	controller
+}	t_inputmode;
+
+typedef struct s_input
+{
+	t_inputmode	mode;
+	t_vector2	move;
+	bool		crouch;
+	bool		jump;
+	t_vector2	turn;
+}	t_input;
+
+typedef struct s_controller
+{
+	int		leftanalog[2];
+	int		rightanalog[2];
+	int		dpad;
+	bool	square;
+	bool	cross;
+	bool	circle;
+	bool	triangle;
+	bool	l1;
+	bool	r1;
+	bool	l2;
+	bool	r2;
+	bool	share;
+	bool	options;
+	bool	l3;
+	bool	r3;
+	bool	home;
+	bool	touchpad;
+}	t_controller;
+
 typedef struct s_game
 {
 	t_world			world;
 	t_clock			clock;
 	t_mouse			mouse;
 	uint32_t		keystate;
+	t_controller	controller;
 	t_player		player;
 	t_input			input;
 	t_cam_mode		cam_mode; //Unused but will be reimplemented?
@@ -313,9 +335,6 @@ t_point	mousetoworldspace(t_editor *ed);
 t_point	mousetogridspace(t_editor *ed);
 t_point	screentogridspace(t_point point);
 void	mouse_event(SDL_Event e, t_editor *ed);
-
-/* CONTROLLER.C */
-int		controller_events(SDL_Event e, t_game *game);
 
 /* SPACECONVERSIONS.C */
 t_point	worldtoeditorspace(t_editor *ed, t_vector2 worldcrd);
@@ -355,6 +374,9 @@ void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale);
 
 /* PERFGRAPH.C */
 void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
+
+/* JOYSTICK.C */
+int		controller_events(SDL_Event e, t_controller *controller);
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
