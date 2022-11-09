@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   moveplayer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/05 18:36:29 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/09 21:16:51 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,9 @@ static t_vector3	movementvector(int32_t keystate, float angle)
 	return (movement);
 }
 */
+
+/* Previous working version before implementing updateinput */
+/*
 static t_vector3	player_movementvector(int32_t keystate, t_vector3 lookdir)
 {
 	t_vector3	movement;
@@ -83,6 +86,36 @@ static t_vector3	player_movementvector(int32_t keystate, t_vector3 lookdir)
 	movement = vector3_clamp_magnitude(movement, speed);
 	return (movement);
 }
+*/
+
+static t_vector3	player_movementvector(t_input input, t_vector3 lookdir)
+{
+	t_vector3	movement;
+	t_vector3	forward;
+	float		speed;
+
+	movement = vector3_zero();
+	//forward.z = 0;
+	forward = vector3_mul_vector3(lookdir, (t_vector3){1.0f, 1.0f, 0.0f});
+	forward = vector3_normalise(forward);
+	//printf("input.move.y: %f	input.move.x: %f\n", input.move.y, input.move.x);
+	if (input.move.y < 0) 
+		movement = vector3_add(movement, forward);
+	if (input.move.y > 0)
+		movement = vector3_sub(movement, forward);
+	if (input.move.x < 0)
+		movement = vector3_sub(movement,
+			vector3_crossproduct(forward, vector3_up()));
+	if (input.move.x > 0)
+		movement = vector3_add(movement,
+			vector3_crossproduct(forward, vector3_up()));
+	speed = 1.0f + input.run;
+	movement.z += 1.5f * input.jump;
+	movement.z -= 1.5f * input.crouch;
+	movement = vector3_mul(movement, speed);
+	movement = vector3_clamp_magnitude(movement, speed);
+	return (movement);
+}
 
 void	moveplayer(t_game *game)
 {
@@ -101,7 +134,7 @@ void	moveplayer(t_game *game)
 	game->player.angle.y += angle;
 	game->player.angle.y = ft_clampf(game->player.angle.y, -RAD90 * 0.99f, RAD90 * 0.99f);
 	game->player.lookdir = lookdirection(game->player.angle);
-	move_vector = player_movementvector(game->keystate, game->player.lookdir);
+	move_vector = player_movementvector(game->input, game->player.lookdir);
 	move_vector = vector3_mul(move_vector, game->clock.delta * MOVESPEED);
 	game->player.position = vector3_add(game->player.position, move_vector);
 }

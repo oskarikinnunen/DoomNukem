@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:36:01 by raho              #+#    #+#             */
-/*   Updated: 2022/11/09 19:52:22 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/09 21:10:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static void	analog_sticks(SDL_JoyAxisEvent jaxis, t_controller *controller)
 		//printf("left stick - left-right: jaxis.axis: %d\n", jaxis.value);
 		if (jaxis.value < -3200)
 			controller->leftanalog.x = -1;
-		if (jaxis.value > 3200)
+		else if (jaxis.value > 3200)
 			controller->leftanalog.x = 1;
 		else
 			controller->leftanalog.x = 0;
@@ -36,7 +36,7 @@ static void	analog_sticks(SDL_JoyAxisEvent jaxis, t_controller *controller)
 		//printf("left stick - up-down: jaxis.axis: %d\n", jaxis.value);
 		if (jaxis.value < -3200)
 			controller->leftanalog.y = -1;
-		if (jaxis.value > 3200)
+		else if (jaxis.value > 3200)
 			controller->leftanalog.y = 1;
 		else
 			controller->leftanalog.y = 0;	
@@ -50,7 +50,7 @@ static void	analog_sticks(SDL_JoyAxisEvent jaxis, t_controller *controller)
 		//printf("right stick - left-right: jaxis.axis: %d\n", jaxis.value);
 		if (jaxis.value < -3200)
 			controller->rightanalog.x = -1;
-		if (jaxis.value > 3200)
+		else if (jaxis.value > 3200)
 			controller->rightanalog.x = 1;
 		else
 			controller->rightanalog.x = 0;
@@ -62,7 +62,7 @@ static void	analog_sticks(SDL_JoyAxisEvent jaxis, t_controller *controller)
 		//printf("right stick - up-down: jaxis.axis: %d\n", jaxis.value);
 		if (jaxis.value < -3200)
 			controller->rightanalog.y = -1;
-		if (jaxis.value > 3200)
+		else if (jaxis.value > 3200)
 			controller->rightanalog.y = 1;
 		else
 			controller->rightanalog.y = 0;

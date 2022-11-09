@@ -52,28 +52,25 @@ static void updatemouse(t_mouse *mouse)
 		mouse->delta = point_zero();
 }
 
-static void updateinput(t_input *input, int keystate, t_mouse m, t_controller controller)
+static void updateinput(t_input *input, int keystate, t_mouse m, t_controller *controller)
 {
 	input->move = vector2_zero();
-	if (input->mode == keyboard)
-	{
-		input->move.x -= (keystate >> KEYS_LEFTMASK) & 1;
-		input->move.x += (keystate >> KEYS_RIGHTMASK) & 1;
-		input->move.y -= (keystate >> KEYS_DOWNMASK) & 1;
-		input->move.y += (keystate >> KEYS_UPMASK) & 1;
-		input->crouch = (keystate >> KEYS_CTRLMASK) & 1;
-		input->jump = (keystate >> KEYS_SPACEMASK) & 1;
-		input->run = (keystate >> KEYS_SHIFTMASK) & 1;
-		input->turn = point_to_vector2(m.delta);
-	}
-	else
-	{
-		input->move = controller.leftanalog;
-		input->crouch = controller.circle;
-		input->jump = controller.cross;
-		input->run = controller.l2;
-		input->turn = controller.rightanalog;
-	}
+
+	input->move.x -= (keystate >> KEYS_LEFTMASK) & 1;
+	input->move.x += (keystate >> KEYS_RIGHTMASK) & 1;
+	input->move.y += (keystate >> KEYS_DOWNMASK) & 1;
+	input->move.y -= (keystate >> KEYS_UPMASK) & 1;
+	input->crouch = (keystate >> KEYS_CTRLMASK) & 1;
+	input->jump = (keystate >> KEYS_SPACEMASK) & 1;
+	input->run = (keystate >> KEYS_SHIFTMASK) & 1;
+	input->turn = point_to_vector2(m.delta);
+
+	input->move.x += controller->leftanalog.x;
+	input->move.y += controller->leftanalog.y;
+	input->crouch += controller->circle;
+	input->jump += controller->cross;
+	input->run += controller->l2;
+	//input->turn = controller->rightanalog;
 }
 
 /*check for keyboard/mouse/joystick input*/
@@ -98,7 +95,7 @@ static int handleinput(t_game *game)
 		if (gr != game_continue)
 			return (gr);
 	}
-	updateinput(&game->input, game->keystate, game->mouse, game->controller);
+	updateinput(&game->input, game->keystate, game->mouse, &game->controller);
 	return(game_continue);
 }
 
