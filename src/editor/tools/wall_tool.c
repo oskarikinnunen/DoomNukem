@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:13:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/09 09:02:53 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/10 07:33:04 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,6 +177,7 @@ static void	wall_tool_draw(t_editor *ed, t_sdlcontext sdl) //TODO: ROTATE AROUND
 	t_walltooldata	*dat;
 	t_wall			*wall;
 	static			int8_t	tri_i;
+	static			float	rad;
 
 	dat = (t_walltooldata *)ed->tool->tooldata;
 	wall = &dat->wall;
@@ -221,10 +222,11 @@ static void	wall_tool_draw(t_editor *ed, t_sdlcontext sdl) //TODO: ROTATE AROUND
 	{
 		tri_i += ed->mouse.scroll_delta;
 		tri_i = ft_clamp(tri_i, 0, dat->fc.facecount - 1);
+		rad += (float)ed->mouse.scroll_delta * 0.005f * ed->clock.delta;
 		char *tristr = ft_itoa(tri_i);
 		draw_text_boxed(&sdl, tristr, point_sub(sdl.screensize, (t_point) {200, 100}), sdl.screensize);
 		free (tristr);
-		floorcalc_debugdraw(ed, &sdl, dat->fc, tri_i);
+		floorcalc_debugdraw(ed, &sdl, dat->fc, tri_i, rad);
 	}
 }
 
