@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/11 16:12:42 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/11 18:45:53 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ typedef struct s_sdlcontext
 {
 	SDL_Window				*window;
 	SDL_Surface				*surface;
-	SDL_Joystick			*joystick;
+	SDL_GameController		*gamecontroller;
 	t_platform				platform;
 	float					*zbuffer;
 	SDL_Renderer			*renderer; //TODO: for testing remove.
@@ -348,8 +348,8 @@ void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale);
 /* PERFGRAPH.C */
 void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
 
-/* JOYSTICK.C */
-int		controller_events(SDL_Event e, t_controller *controller, t_platform platform);
+/* CONTROLLER.C */
+int		controller_events(SDL_Event e, t_controller *controller);
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);

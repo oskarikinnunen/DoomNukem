@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/09 14:47:17 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/11 18:18:17 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,11 +86,11 @@ t_gamereturn	editor_events(t_editor *ed)
 				&& iskey(e, SDLK_RETURN))
 				return(game_switchmode);
 		}
-		if (e.type == SDL_JOYBUTTONDOWN)
+		if (e.type == SDL_CONTROLLERBUTTONDOWN)
 		{
-			if (e.type == SDL_JOYBUTTONDOWN && e.jbutton.button == 13)
+			if (e.cbutton.button == SDL_CONTROLLER_BUTTON_BACK)
 				return (game_switchmode);
-			if (e.type == SDL_JOYBUTTONDOWN && e.jbutton.button == 12)
+			if (e.cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE)
 				return (game_exit);
 		}
 	}

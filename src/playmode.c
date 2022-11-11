@@ -65,14 +65,14 @@ static void updateinput(t_input *input, int keystate, t_mouse m, t_controller *c
 
 	input->move.x += controller->leftanalog.x;
 	input->move.y += controller->leftanalog.y;
-	input->crouch += controller->circle;
-	input->jump += controller->cross;
-	input->run += controller->l2;
+	input->crouch += controller->b;
+	input->jump += controller->a;
+	input->run += controller->lefttrigger;
 	input->turn = vector2_add(input->turn, vector2_mul(controller->rightanalog, CONTROLLER_SENS));
 }
 
 /*check for keyboard/mouse/joystick input*/
-static int handleinput(t_game *game, t_platform platform)
+static int handleinput(t_game *game)
 {
 	static SDL_Event	e;
 	t_gamereturn		gr;
@@ -88,7 +88,7 @@ static int handleinput(t_game *game, t_platform platform)
 		else
 		{
 			game->input.mode = controller;
-			gr = controller_events(e, &game->controller, platform);
+			gr = controller_events(e, &game->controller);
 		}
 		if (gr != game_continue)
 			return (gr);
@@ -118,7 +118,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	while (gr == game_continue)
 	{
 		update_deltatime(&game.clock);
-		gr = handleinput(&game, sdl.platform);
+		gr = handleinput(&game);
 		moveplayer(&game);
 		update_render(&render, game.player);
 		screen_blank(sdl); //Combine with render_start?

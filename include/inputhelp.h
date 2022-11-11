@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 09:30:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/11 16:12:34 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/11 18:42:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,21 +46,24 @@ typedef struct s_controller
 {
 	t_vector2	leftanalog;
 	t_vector2	rightanalog;
-	int			dpad;
-	bool		square;
-	bool		cross;
-	bool		circle;
-	bool		triangle;
-	bool		l1;
-	bool		r1;
-	bool		l2;
-	bool		r2;
-	bool		share;
-	bool		options;
-	bool		l3;
-	bool		r3;
-	bool		home;
-	bool		touchpad;
+	float		lefttrigger;
+	float		righttrigger;
+	bool		a;
+	bool		b;
+	bool		x;
+	bool		y;
+	bool		back;
+	bool		guide;
+	bool		start;
+	bool		leftstick;
+	bool		rightstick;
+	bool		leftshoulder;
+	bool		rightshoulder;
+	bool		dpad_up;
+	bool		dpad_down;
+	bool		dpad_left;
+	bool		dpad_right;
+	bool		max;
 }	t_controller;
 
 struct s_mouse;

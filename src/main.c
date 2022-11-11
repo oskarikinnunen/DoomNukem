@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/11 16:18:48 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/11 18:49:40 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 		error_log(EC_SDL_INIT);
 	if (SDL_Init(SDL_INIT_EVENTS) < 0)
 		error_log(EC_SDL_INIT);
-	if (SDL_Init(SDL_INIT_JOYSTICK) < 0)
+	if (SDL_Init(SDL_INIT_GAMECONTROLLER) < 0)
 		error_log(EC_SDL_INIT);
 		
 	platform = SDL_GetPlatform();
@@ -37,7 +37,7 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	else
 	{
 		sdl->platform = unsupported;
-		printf("platform %s has no controller support\n", platform);
+		printf("platform %s not supported\n", platform);
 	}
 	
 	sdl->window = SDL_CreateWindow("DoomNukem",
@@ -50,14 +50,14 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 		error_log(EC_SDL_GETWINDOW_SURFACE);
 		
 	joysticks = SDL_NumJoysticks();
-	printf("number of joysticks: %i\n", joysticks);
+	printf("number of joysticks/controllers: %i\n", joysticks);
 	if (joysticks > 0)
 	{
-		SDL_JoystickEventState(SDL_ENABLE);
-		sdl->joystick = SDL_JoystickOpen(0);
-		if (sdl->joystick == NULL)
+		if (SDL_IsGameController(0))
+			sdl->gamecontroller = SDL_GameControllerOpen(0);
+		if (!sdl->gamecontroller)
 			error_log(EC_SDL_JOYSTICKOPEN);
-		printf("joystick nbr %i opened\n", 0);
+		SDL_GameControllerEventState(SDL_ENABLE);
 	}
 	
 	load_fonts(sdl);
@@ -68,8 +68,8 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 
 void	quit_game(t_sdlcontext *sdl)
 {
-	SDL_JoystickEventState(SDL_IGNORE); // could be utilized earlier if controller input is not wanted
-	SDL_JoystickClose(sdl->joystick); // could be closed after joystick's been unplugged
+	SDL_GameControllerEventState(SDL_IGNORE);		// could be utilized earlier if controller input is not wanted
+	SDL_GameControllerClose(sdl->gamecontroller); 	// could be closed after joystick's been unplugged
 	SDL_DestroyWindow(sdl->window);
 	SDL_Quit();
 	exit(0);
