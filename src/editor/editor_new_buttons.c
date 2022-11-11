@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 14:34:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/04 17:58:53 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/11 12:10:14 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,12 @@ void	set_tool_button(t_editor *ed)
 void	set_tool_wall(t_editor *ed)
 {
 	ed->tool = get_wall_tool();
+	ed->mouse.click_unhandled = false;
+}
+
+void	set_tool_room(t_editor *ed)
+{
+	ed->tool = get_room_tool();
 	ed->mouse.click_unhandled = false;
 }
 
@@ -65,7 +71,7 @@ t_click_func_def	get_button_func(int	index)
 	{
 		{"empty_click", empty_click_func},
 		{"set_tool_button", set_tool_button},
-		{"currently unused", empty_click_func},
+		{"set_tool_room", set_tool_room},
 		{"set_tool_entity", set_tool_entity},
 		{"set_tool_wall", set_tool_wall},
 		{"currently unused", empty_click_func},

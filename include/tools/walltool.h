@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:17:04 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/10 07:20:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/11 12:13:10 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,11 @@ typedef struct s_walltooldata
 	uint8_t			fc_debug;
 }	t_walltooldata;
 
+struct s_sdlcontext;
+struct s_editor;
+
 t_floorcalc	generate_floor(t_walltooldata *dat);
-void		floorcalc_debugdraw(t_editor *ed, t_sdlcontext *sdl, t_floorcalc fc, int tri_i, float rad);
+void		floorcalc_debugdraw(struct s_editor *ed, struct s_sdlcontext *sdl, t_floorcalc fc, int tri_i, float rad);
+void		render_snapgrid(struct s_editor *ed, struct s_sdlcontext *sdl, t_vector2 wallpos, bool shift, bool hover); //TODO: move somewhere
 
 #endif

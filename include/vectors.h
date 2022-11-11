@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/09 07:58:53 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/11 13:14:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,9 @@ float		vector2_dot(t_vector2 first, t_vector2 second);
 
 //returns cross product of vector 'first' and vector 'second'
 float		vector2_cross(t_vector2 first, t_vector2 second);
+
+//returns the angle in radians between two vectors
+float vector2_anglebetween(t_vector2 first, t_vector2 second);
 
 //returns true if both vectors are identical
 bool		vector2_cmp(t_vector2 first, t_vector2 second);

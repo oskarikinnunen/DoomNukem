@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 06:06:18 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/11 12:17:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,12 +65,13 @@ int	editorloop(t_sdlcontext sdl)
 	ed.buttonlist = load_chunk("buttons", "BUTN", sizeof(t_guibutton));
 	initialize_buttons(ed.buttonlist, sdl);
 	ed.world = load_world("world1", sdl);
-	ed.tool = get_wall_tool();
+	
 	ed.gamereturn = game_continue;
 	ed.render = init_render(sdl);
 	//ed.angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
 	ed.angle = (t_vector2){-20.0f, -RAD90 * 0.99f};
 	ed.position = (t_vector3){500.0f, 500.0f, 200.0f};
+	ed.tool = get_room_tool();
 	set_font_size(&sdl, 0);
 	while (ed.gamereturn == game_continue)
 	{

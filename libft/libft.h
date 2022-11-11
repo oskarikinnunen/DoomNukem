@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 17:57:33 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/09 07:11:55 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/11 09:07:26 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,8 @@ int				ft_sqrt(int nb);/*extra*/
 int				ft_clamp(int val, int min, int max);
 int				ft_min(int i1, int i2);
 int				ft_max(int i1, int i2);
+float			ft_minf(float f1, float f2);
+float			ft_maxf(float f1, float f2);
 float			ft_clampf(float val, float min, float max);
 double			ft_degtorad(double angle);
 

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:13:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/10 07:33:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/11 16:01:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,45 +96,6 @@ t_wall	*wallcollision(t_editor *ed, t_sdlcontext *sdl)
 	return (NULL);
 }
 
-static void	draw_snapgrid(t_editor *ed, t_sdlcontext *sdl, t_vector2 wallpos, bool shift, bool hover)
-{
-	t_point		indexer;
-	t_vector3	origin;
-	t_vector3	ws;
-	float		clen;
-
-	indexer = point_zero();
-	origin = (t_vector3){wallpos.x - 40.0f, wallpos.y - 40.0f, 0.0f};
-	clen = 40 + (shift && !hover) * 220;
-	ed->render.gizmocolor = CLR_GRAY;
-	while (indexer.y < 90)
-	{
-		indexer.x = 0;
-		while (indexer.x < 90)
-		{
-			ws = (t_vector3){origin.x + indexer.x, origin.y + indexer.y, 0.0f};
-			if (indexer.x == 40 && indexer.y == 40)
-			{
-				if (hover)
-					ed->render.gizmocolor = CLR_RED;
-				else
-					ed->render.gizmocolor = CLR_PRPL;
-				render_ray(*sdl, ed->render, ws, (t_vector3){ws.x, ws.y, clen});
-				render_ray(*sdl, ed->render, ws, (t_vector3){ws.x + clen, ws.y, 0.0f});
-				render_ray(*sdl, ed->render, ws, (t_vector3){ws.x - clen, ws.y, 0.0f});
-				render_ray(*sdl, ed->render, ws, (t_vector3){ws.x, ws.y + clen, 0.0f});
-				render_ray(*sdl, ed->render, ws, (t_vector3){ws.x, ws.y - clen, 0.0f});
-			}
-			else
-				ed->render.gizmocolor = CLR_GRAY;
-			render_gizmo(*sdl, ed->render, ws, 2);
-			indexer.x += 10;
-		}
-		//render_gizmo(*sdl, ed->render, v.x)
-		indexer.y += 10;
-	}
-}
-
 static void draw_selected(t_editor *ed, t_sdlcontext sdl, t_walltooldata *dat)
 {
 	int			i;
@@ -206,8 +167,7 @@ static void	wall_tool_draw(t_editor *ed, t_sdlcontext sdl) //TODO: ROTATE AROUND
 		ed->render.wireframe = false;
 	}
 	else
-		draw_snapgrid(ed, &sdl, wall->line.end, (ed->keystate >> KEYS_SHIFTMASK) & 1, dat->hover != NULL);
-
+		render_snapgrid(ed, &sdl, wall->line.end, (ed->keystate >> KEYS_SHIFTMASK) & 1, dat->hover != NULL);
 	if (has_selected(dat))
 	{
 		if (instantbutton((t_rectangle){20, 180, 80, 80}, &ed->mouse, sdl, "debug1.png"))
@@ -344,7 +304,7 @@ static void	wall_tool_update(t_editor *ed) //This needs to access editors state,
 			if (dat->mode == place_height)
 			{
 				list_push(&ed->world.wall_list, wall, sizeof(t_wall));
-				walls_init(&ed->world);
+				//walls_init(&ed->world);
 				dat->mode = 0;
 				if ((ed->keystate >> KEYS_SHIFTMASK) & 1)
 				{

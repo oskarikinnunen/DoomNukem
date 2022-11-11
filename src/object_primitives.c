@@ -4,11 +4,14 @@
 
 static t_material	*planemat()
 {
-	static	t_material	mat;
+	t_material	*mat;
 
-	ft_bzero(&mat, sizeof(t_material));
-	ft_strcpy(mat.texturename, "gwall.png");
-	return (&mat);
+	mat = ft_memalloc(sizeof(t_material));
+	if (mat == NULL)
+		error_log(EC_MALLOC);
+	ft_strcpy(mat->texturename, "gwall.png");
+	mat->kd = INT_MAX;
+	return (mat);
 }
 
 

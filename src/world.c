@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/09 10:01:44 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/11 16:05:12 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ t_world	load_world(char *filename, t_sdlcontext sdl)
 	world.entitylist = load_chunk(filename, "ENT_", sizeof(t_entity));
 	world.wall_list = load_chunk(filename, "WALL", sizeof(t_wall));
 	entity_init(&world, sdl);
-	walls_init(&world);
+	walls_init(&world, &sdl);
 	load_walltextures(&world, sdl);
 	ft_bzero(&world.skybox, sizeof(t_entity));
 	world.skybox.obj = get_object_by_name(sdl, "cube");

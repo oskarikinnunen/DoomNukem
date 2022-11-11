@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/10 16:58:08 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/11 13:39:48 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,6 @@
 	takes index, indexes to that point and draws the attempted triangle to screen
 
 */
-
-
-static float anglebetween(t_vector2 first, t_vector2 second)
-{
-	/*float	dot = first.x * second.x + first.y * second.y;
-	float	det = first.x * second.y - first.y * second.y;*/
-	t_vector2 temp = vector2_sub(second, first);
-	return (atan2f(temp.y, temp.x));
-}
 
 t_vector2	*transformed_around(t_vector2 og, float angle, t_vector2 *t, int count)
 {
@@ -70,6 +61,10 @@ t_vector2	*transformed_around(t_vector2 og, float angle, t_vector2 *t, int count
 static bool intersect(t_line line1, t_vector2 *edges, int edgecount)
 {
 	t_line	line2;
+	float	xdiff1;
+	float	xdiff2;
+	float	ydiff1;
+	float	ydiff2;
 	int		i;
 	float	res;
 
@@ -81,21 +76,36 @@ static bool intersect(t_line line1, t_vector2 *edges, int edgecount)
 			line2.end = edges[0];
 		else
 			line2.end = edges[i + 1];
-		res = (line1.start.x - line1.end.x)
-			 * (line2.start.y - line2.start.y)
-			 - (line1.start.y - line1.end.y)
-			 * (line2.start.x - line2.end.x);
+		
+		xdiff1 = line1.start.x - line1.end.x;
+		xdiff2 = line2.start.x - line2.end.x;
+		ydiff1 = line1.start.y - line1.end.y;
+		ydiff2 = line2.start.y - line2.end.y;
+		res = xdiff1 * ydiff2 - ydiff1 * xdiff2;
+		
 		if (fabsf(res) > 0.01f)
-			return (true);
+		{
+			float fa = line1.start.x * line1.end.y - line1.start.y * line1.end.x;
+			float fb = line2.start.x * line2.end.y - line2.start.y * line2.end.x;
+
+			float x = (fa * xdiff2 - fb * xdiff1) / res;
+			float y = (fa * ydiff2 - fb * ydiff1) / res;
+			if ((ft_minf(line1.start.x, line1.end.x) < x
+				&& ft_maxf(line1.start.x, line1.end.x) > x
+				&& ft_minf(line2.start.x, line2.end.x) < x
+				&& ft_maxf(line2.start.x, line2.end.x) > x)
+				|| (ft_minf(line1.start.y, line1.end.y) < y
+				&& ft_maxf(line1.start.y, line1.end.y) > y
+				&& ft_minf(line2.start.y, line2.end.y) < y
+				&& ft_maxf(line2.start.y, line2.end.y) > y))
+				{
+					printf("\nLINE COLLIDES WITH %i->%i \n", i, i + 1);
+					return (true);
+				}
+		}
 		i++;
 	}
 	return (false);
-	/*float x12 = x1 - x2;
-	float x34 = x3 - x4;
-	float y12 = y1 - y2;
-	float y34 = y3 - y4;
-
-	float c = x12 * y34 - y12 * x34;*/
 }
 
 static	bool correctangle_new(t_floorcalc fc, int *valid, int validcount) //TODO: takes 'fc', 'valid' array and 'validcount'
@@ -111,7 +121,7 @@ static	bool correctangle_new(t_floorcalc fc, int *valid, int validcount) //TODO:
 	first = fc.edges[valid[validcount - 1]];
 	center = fc.edges[valid[0]];
 	second = fc.edges[valid[1]];
-	angle = anglebetween(first, second);
+	angle = vector2_anglebetween(first, second);
 	i = 0;
 	while (i < validcount) 
 	{
@@ -146,7 +156,7 @@ static	bool correctangle_new(t_floorcalc fc, int *valid, int validcount) //TODO:
 static	bool correctangle(t_vector2 vs[3]) //TODO: takes 'fc', 'valid' array and 'validcount'
 {
 	t_vector2	*tr;
-	float		angle = anglebetween(vs[0], vs[2]);
+	float		angle = vector2_anglebetween(vs[0], vs[2]);
 
 	tr = transformed_around(vs[2], -angle, vs, 3);
 	return (tr[1].y >= tr[0].y && tr[1].y >= tr[2].y);
@@ -189,7 +199,7 @@ void	floorcalc_debugdraw(t_editor *ed, t_sdlcontext *sdl, t_floorcalc fc, int tr
 	}
 	i = tri_i;
 	ed->render.gizmocolor = CLR_PRPL;
-	ws = (t_vector3){fc.edges[fc.faces[i].v_indices[0]].x,
+	/*ws = (t_vector3){fc.edges[fc.faces[i].v_indices[0]].x,
 					fc.edges[fc.faces[i].v_indices[0]].y, 0.0f};
 	ws_to = (t_vector3){fc.edges[fc.faces[i].v_indices[1]].x,
 					fc.edges[fc.faces[i].v_indices[1]].y, 0.0f};
@@ -198,46 +208,40 @@ void	floorcalc_debugdraw(t_editor *ed, t_sdlcontext *sdl, t_floorcalc fc, int tr
 					fc.edges[fc.faces[i].v_indices[1]].y, 0.0f};
 	ws_to = (t_vector3){fc.edges[fc.faces[i].v_indices[2]].x,
 					fc.edges[fc.faces[i].v_indices[2]].y, 0.0f};
-	render_ray(*sdl, ed->render, ws, ws_to);
+	render_ray(*sdl, ed->render, ws, ws_to);*/
+	
 	/*CREATED LINE */
 	t_vector2 first = fc.edges[fc.faces[i].v_indices[0]];
 	t_vector2 center = fc.edges[fc.faces[i].v_indices[1]];
 	t_vector2 second = fc.edges[fc.faces[i].v_indices[2]];
 	indexesdebug(sdl, fc, i);
-	char *stra;
-	/*char *stra = ft_itoa(radtodeg(rad));
-	draw_text_boxed(sdl, stra, point_div(sdl->screensize, 2), sdl->screensize);
-	free(stra);*/
-	if (correctangle((t_vector2 [3]) {first, center, second}))
-		ed->render.gizmocolor = CLR_BLUE;
-	else
-		ed->render.gizmocolor = CLR_RED;
-	ws = (t_vector3){fc.edges[fc.faces[i].v_indices[2]].x,
+	
+	/*ws = (t_vector3){fc.edges[fc.faces[i].v_indices[2]].x,
 					fc.edges[fc.faces[i].v_indices[2]].y, 0.0f};
 	ws_to = (t_vector3){fc.edges[fc.faces[i].v_indices[0]].x,
 					fc.edges[fc.faces[i].v_indices[0]].y, 0.0f};
-	render_ray(*sdl, ed->render, ws, ws_to);
+	render_ray(*sdl, ed->render, ws, ws_to);*/
 
-
-	float a1 = anglebetween(first, second);
-	float a2 = anglebetween(first, center);
+	char *stra;
+	float a1 = vector2_anglebetween(first, second);
+	float a2 = vector2_anglebetween(first, center);
 	t_vector2 t1 = (t_vector2) {2.0f, 2.0f};
 	t_vector2 t2 = (t_vector2) {2.0f, 3.0f};
-	float a3 = anglebetween(t1, t2);
-	float aw1 = anglebetween(center, second);
-	float angleworld = anglebetween(vector2_sub(first, first), vector2_sub(second, first)); //'better' one
+	float a3 = vector2_anglebetween(t1, t2);
+	float aw1 = vector2_anglebetween(center, second);
+	float angleworld = vector2_anglebetween(vector2_sub(first, first), vector2_sub(second, first)); //'better' one
 	//float angleworld = anglebetween(vector2_sub(first, second), vector2_sub(first, center)); //demo one
 	stra = ft_itoa(radtodeg(a1)); //DIV with m_pi to get internal triangle angles
-	draw_text_boxed(sdl, stra, (t_point) {300, 300}, sdl->screensize);
+	draw_text_boxed(sdl, stra, (t_point) {300, 200}, sdl->screensize);
 	free(stra);
 	stra = ft_itoa(radtodeg(a2)); //Internal angle M_PI - ((a1 / M_PI) + (a3 / M_PI)))
-	draw_text_boxed(sdl, stra, (t_point) {350, 300}, sdl->screensize);
+	draw_text_boxed(sdl, stra, (t_point) {350, 200}, sdl->screensize);
 	free(stra);
 	stra = ft_itoa(radtodeg(a3));
-	draw_text_boxed(sdl, stra, (t_point) {400, 300}, sdl->screensize);
+	draw_text_boxed(sdl, stra, (t_point) {400, 200}, sdl->screensize);
 	free(stra);
 	stra = ft_itoa(radtodeg(angleworld));
-	draw_text_boxed(sdl, stra, (t_point) {400, 400}, sdl->screensize);
+	draw_text_boxed(sdl, stra, (t_point) {400, 300}, sdl->screensize);
 	free(stra);
 
 	//printf("M_PI MINUS %f, in deg %f\n", 0.0f, radtodeg(M_PI + a3));
@@ -260,17 +264,28 @@ void	floorcalc_debugdraw(t_editor *ed, t_sdlcontext *sdl, t_floorcalc fc, int tr
 		}
 		i++;
 	}
-	temp1 = vector2_add(tr[fc.faces[tri_i].v_indices[2]],(t_vector2){sdl->window_w / 2, sdl->window_h / 2});
-	temp2 = vector2_add(tr[fc.faces[tri_i].v_indices[0]],(t_vector2){sdl->window_w / 2, sdl->window_h / 2});
-	drawline(*sdl, vector2_to_point(temp1), vector2_to_point(temp2), CLR_BLUE);
-	temp1 = vector2_add(tr[fc.faces[tri_i].v_indices[0]],(t_vector2){sdl->window_w / 2, sdl->window_h / 2});
-	temp2 = vector2_add(tr[fc.faces[tri_i].v_indices[1]],(t_vector2){sdl->window_w / 2, sdl->window_h / 2});
-	drawline(*sdl, vector2_to_point(temp1), vector2_to_point(temp2), CLR_PRPL);
-	temp1 = vector2_add(tr[fc.faces[tri_i].v_indices[1]],(t_vector2){sdl->window_w / 2, sdl->window_h / 2});
-	temp2 = vector2_add(tr[fc.faces[tri_i].v_indices[2]],(t_vector2){sdl->window_w / 2, sdl->window_h / 2});
-	drawline(*sdl, vector2_to_point(temp1), vector2_to_point(temp2), CLR_PRPL);
-	temp1 = vector2_add(tr[fc.faces[tri_i].v_indices[1]],(t_vector2){sdl->window_w / 2, sdl->window_h / 2});
-	drawcircle(*sdl, vector2_to_point(temp1), 5, CLR_BLUE);
+	i = 0;
+	while (i <= tri_i) {
+		temp1 = vector2_add(tr[fc.faces[i].v_indices[2]],(t_vector2){sdl->window_w / 2, sdl->window_h / 2});
+		temp2 = vector2_add(tr[fc.faces[i].v_indices[0]],(t_vector2){sdl->window_w / 2, sdl->window_h / 2});
+		if (i == tri_i)
+			drawline(*sdl, vector2_to_point(temp1), vector2_to_point(temp2), CLR_BLUE);
+		else
+			drawline(*sdl, vector2_to_point(temp1), vector2_to_point(temp2), CLR_RED);
+/*		temp1 = vector2_add(tr[fc.faces[i].v_indices[0]],(t_vector2){sdl->window_w / 2, sdl->window_h / 2});
+		temp2 = vector2_add(tr[fc.faces[i].v_indices[1]],(t_vector2){sdl->window_w / 2, sdl->window_h / 2});
+		drawline(*sdl, vector2_to_point(temp1), vector2_to_point(temp2), CLR_PRPL);
+		temp1 = vector2_add(tr[fc.faces[i].v_indices[1]],(t_vector2){sdl->window_w / 2, sdl->window_h / 2});
+		temp2 = vector2_add(tr[fc.faces[i].v_indices[2]],(t_vector2){sdl->window_w / 2, sdl->window_h / 2});
+		drawline(*sdl, vector2_to_point(temp1), vector2_to_point(temp2), CLR_PRPL);*/
+		temp1 = vector2_add(tr[fc.faces[i].v_indices[1]],(t_vector2){sdl->window_w / 2, sdl->window_h / 2});
+		if (i == tri_i)
+			drawcircle(*sdl, vector2_to_point(temp1), 5, CLR_BLUE);
+		else
+			drawcircle(*sdl, vector2_to_point(temp1), 5, CLR_RED);
+		i++;
+	}
+	
 }
 
 /*static void gen_tris()
@@ -372,28 +387,27 @@ void	triangulate(t_floorcalc *fc)
 {
 	int	valid[MAXSELECTED];
 	int	validcount;
-	
-	int i = 0;
-	int	n_i;
-	int	p_i;
-	fc->facecount = 0;
-	i = 0;
-	while (i < fc->edgecount)
+	int	i;
+
+	validcount = 0;
+	while (validcount < fc->edgecount)
 	{
-		valid[i] = i;
-		i++;
+		valid[validcount] = validcount;
+		validcount++;
 	}
-	validcount = fc->edgecount;
 	i = 0;
-	//shiftvalid(valid, validcount);
+	fc->facecount = 0;
 	printf("\nMAKING NEW FACES: \n");
-	while (validcount > 2) //while validcount > 3?
+	while (validcount > 2)
 	{
 		printf("try %i %i %i \n", valid[validcount - 1], valid[0], valid[1]);
 		t_line line1;
 		line1.start = fc->edges[valid[validcount - 1]];
 		line1.end = fc->edges[valid[1]];
-		if (correctangle_new(*fc, valid, validcount) && !intersect(line1, fc->edges, fc->edgecount))
+		t_vector2 first = fc->edges[valid[validcount - 1]];
+		t_vector2 center = fc->edges[valid[0]];
+		t_vector2 second = fc->edges[valid[1]];
+		if (correctangle((t_vector2[3]){first,center,second}) && !intersect(line1, fc->edges, fc->edgecount))
 		{
 			fc->faces[fc->facecount].v_indices[0] = valid[validcount - 1];
 			fc->faces[fc->facecount].v_indices[1] = valid[0];
@@ -401,15 +415,12 @@ void	triangulate(t_floorcalc *fc)
 			printf("connect %i %i %i \n", valid[validcount - 1], valid[0], valid[1]);
 			removevalid(valid, validcount--, 0);
 			fc->facecount++;
-			//shiftvalid_left(valid, validcount);
 		}
 		else
 			shiftvalid(valid, validcount);
-		//removevalid(valid, validcount--, 0);
-		//fc->facecount++;
 		printvalid(valid, validcount);
 		i++;
-		if (i > 30)
+		if (i > 300)
 			break ;
 	}
 	printf("made %i faces \n", fc->facecount);
@@ -427,10 +438,19 @@ t_floorcalc	generate_floor(t_walltooldata *dat)
 	{
 		if (dat->selected[i] != NULL)
 		{
-			if (isunique(fc, dat->selected[i]->line.start))
+			if (i == 0)
+			{
 				fc.edges[fc.edgecount++] = dat->selected[i]->line.start;
-			else if (isunique(fc, dat->selected[i]->line.end))
 				fc.edges[fc.edgecount++] = dat->selected[i]->line.end;
+			}
+			else
+			{
+				if (isunique(fc, dat->selected[i]->line.start))
+					fc.edges[fc.edgecount++] = dat->selected[i]->line.start;
+				else if (isunique(fc, dat->selected[i]->line.end))
+					fc.edges[fc.edgecount++] = dat->selected[i]->line.end;
+			}
+			
 		}
 		i++;
 	}

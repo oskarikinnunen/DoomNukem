@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 12:41:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 08:44:47 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/11 16:04:24 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,12 @@ typedef struct s_wall
 	uint32_t	height;
 	uint8_t		roomindex;
 	char		texname[256];
+	struct s_wall	*next;
+	struct s_wall	*prev;
 }	t_wall;
 
 struct s_world;
+struct s_sdlcontext;
 
 t_object		objparse(char *filename);
 struct s_list	*get_uv_list(int fd);
@@ -69,6 +72,6 @@ void			objects_init(struct s_sdlcontext *sdl);
 t_object		*get_object_by_name(struct s_sdlcontext sdl, char *name);
 t_object		*object_plane();
 void			applywallmesh(t_wall *wall);
-void			walls_init(struct s_world *world);
+void			walls_init(struct s_world *world, struct s_sdlcontext *sdl);
 
 #endif

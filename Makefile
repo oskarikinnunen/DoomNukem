@@ -6,7 +6,7 @@
 #    By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/09 05:18:23 by okinnune         ###   ########.fr        #
+#    Updated: 2022/11/11 12:11:18 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,7 @@ SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		editor/tools/entity_tool.c \
 		editor/tools/wall_tool.c \
 		editor/tools/wall_tool_rooms.c \
+		editor/tools/room_tool.c \
 		editor/tools/button_tool.c \
 		editor/imagedropdown.c \
 		editor/editor_new_buttons.c \
