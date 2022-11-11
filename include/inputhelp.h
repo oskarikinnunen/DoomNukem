@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 09:30:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/11 15:33:29 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/11 16:12:34 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 # define KEYS_CTRLMASK 5
 # define KEYS_SHIFTMASK 6
 # define KEYS_MMASK 7
+# define CONTROLLER_SENS 0.002f
+# define DEADZONE 0.1f
 
 typedef enum s_inputmode
 {

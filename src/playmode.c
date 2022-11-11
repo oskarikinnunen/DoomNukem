@@ -50,8 +50,6 @@ static void updatemouse(t_mouse *mouse)
 	SDL_GetRelativeMouseState(&mouse->delta.x, &mouse->delta.y);
 }
 
-#define JOYSENS 0.002f
-
 static void updateinput(t_input *input, int keystate, t_mouse m, t_controller *controller)
 {
 	input->move = vector2_zero();
@@ -70,11 +68,11 @@ static void updateinput(t_input *input, int keystate, t_mouse m, t_controller *c
 	input->crouch += controller->circle;
 	input->jump += controller->cross;
 	input->run += controller->l2;
-	input->turn = vector2_add(input->turn, vector2_mul(controller->rightanalog, JOYSENS));
+	input->turn = vector2_add(input->turn, vector2_mul(controller->rightanalog, CONTROLLER_SENS));
 }
 
 /*check for keyboard/mouse/joystick input*/
-static int handleinput(t_game *game)
+static int handleinput(t_game *game, t_platform platform)
 {
 	static SDL_Event	e;
 	t_gamereturn		gr;
@@ -90,7 +88,7 @@ static int handleinput(t_game *game)
 		else
 		{
 			game->input.mode = controller;
-			gr = controller_events(e, &game->controller);
+			gr = controller_events(e, &game->controller, platform);
 		}
 		if (gr != game_continue)
 			return (gr);
@@ -120,7 +118,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	while (gr == game_continue)
 	{
 		update_deltatime(&game.clock);
-		gr = handleinput(&game);
+		gr = handleinput(&game, sdl.platform);
 		moveplayer(&game);
 		update_render(&render, game.player);
 		screen_blank(sdl); //Combine with render_start?
