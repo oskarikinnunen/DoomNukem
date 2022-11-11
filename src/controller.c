@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   controller.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:36:01 by raho              #+#    #+#             */
-/*   Updated: 2022/11/09 21:10:38 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/11 14:54:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static float	dead_zone(float axis)
 	if (ft_absf(axis) > deadzone)
 		return (axis);
 	else
-		return (0.f);
+		return (0.0f);
 }
 
 static void	analog_sticks(SDL_JoyAxisEvent jaxis, t_controller *controller)
@@ -42,7 +42,7 @@ static void	analog_sticks(SDL_JoyAxisEvent jaxis, t_controller *controller)
 
 		// SDL jaxis value range is from -32768 to 32767
 		controller->leftanalog.x = dead_zone(ft_clampf((jaxis.value / 32767.f), -1.f, 1.f));
-		printf("left stick - left-right: jaxis.axis: %f\n", controller->leftanalog.x);
+		//printf("left stick - left-right: jaxis.axis: %f\n", controller->leftanalog.x);
 	}
 	
 	// up-down
@@ -52,13 +52,13 @@ static void	analog_sticks(SDL_JoyAxisEvent jaxis, t_controller *controller)
 
 		// SDL jaxis value range is from -32768 to 32767
 		controller->leftanalog.y = dead_zone(ft_clampf((jaxis.value / 32767.f), -1.f, 1.f));
-		printf("left stick - up-down: jaxis.axis: %f\n", controller->leftanalog.y);
+		//printf("left stick - up-down: jaxis.axis: %f\n", controller->leftanalog.y);
 	}
 
 
 	// Right analog stick
 	// left-right
-	if (jaxis.axis == 2 || 3) 
+	if (jaxis.axis == 3) 
 	
 	{
 		//printf("right stick - left-right: jaxis.axis: %d\n", jaxis.value);
@@ -69,7 +69,7 @@ static void	analog_sticks(SDL_JoyAxisEvent jaxis, t_controller *controller)
 	}
 			
 	// up-down
-	if (jaxis.axis == 5 || 4)
+	if (jaxis.axis == 4)
 	{
 		//printf("right stick - up-down: jaxis.axis: %d\n", jaxis.value);
 

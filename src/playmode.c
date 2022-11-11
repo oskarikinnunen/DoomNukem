@@ -48,9 +48,11 @@ static int key_events(SDL_Event e, t_game *game)
 static void updatemouse(t_mouse *mouse)
 {
 	SDL_GetRelativeMouseState(&mouse->delta.x, &mouse->delta.y);
-	if (mouse->delta.x > 200 || mouse->delta.y > 200)
-		mouse->delta = point_zero();
+	/*if (mouse->delta.x > 200 || mouse->delta.y > 200)
+		mouse->delta = point_zero();*/
 }
+
+#define JOYSENS 0.002f
 
 static void updateinput(t_input *input, int keystate, t_mouse m, t_controller *controller)
 {
@@ -63,14 +65,14 @@ static void updateinput(t_input *input, int keystate, t_mouse m, t_controller *c
 	input->crouch = (keystate >> KEYS_CTRLMASK) & 1;
 	input->jump = (keystate >> KEYS_SPACEMASK) & 1;
 	input->run = (keystate >> KEYS_SHIFTMASK) & 1;
-	input->turn = point_to_vector2(m.delta);
+	input->turn = vector2_mul(point_to_vector2(m.delta), MOUSESPEED);
 
 	input->move.x += controller->leftanalog.x;
 	input->move.y += controller->leftanalog.y;
 	input->crouch += controller->circle;
 	input->jump += controller->cross;
 	input->run += controller->l2;
-	//input->turn = controller->rightanalog;
+	input->turn = vector2_add(input->turn, vector2_mul(controller->rightanalog, JOYSENS));
 }
 
 /*check for keyboard/mouse/joystick input*/

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   moveplayer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/09 21:16:51 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/11 14:56:55 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,17 +98,10 @@ static t_vector3	player_movementvector(t_input input, t_vector3 lookdir)
 	//forward.z = 0;
 	forward = vector3_mul_vector3(lookdir, (t_vector3){1.0f, 1.0f, 0.0f});
 	forward = vector3_normalise(forward);
-	//printf("input.move.y: %f	input.move.x: %f\n", input.move.y, input.move.x);
-	if (input.move.y < 0) 
-		movement = vector3_add(movement, forward);
-	if (input.move.y > 0)
-		movement = vector3_sub(movement, forward);
-	if (input.move.x < 0)
-		movement = vector3_sub(movement,
-			vector3_crossproduct(forward, vector3_up()));
-	if (input.move.x > 0)
-		movement = vector3_add(movement,
-			vector3_crossproduct(forward, vector3_up()));
+	movement = vector3_mul(forward, -input.move.y);
+	t_vector3 right = vector3_crossproduct(forward, vector3_up());
+	t_vector3 strafe = vector3_mul(right, input.move.x);
+	movement = vector3_add(movement, strafe);
 	speed = 1.0f + input.run;
 	movement.z += 1.5f * input.jump;
 	movement.z -= 1.5f * input.crouch;
@@ -124,14 +117,15 @@ void	moveplayer(t_game *game)
 	float	angle;
 
 	move_vector = vector3_zero();
-	angle = 0;
+	/*angle = 0;
 	angle -= game->mouse.delta.x * MOUSESPEED;
 	angle *= game->clock.delta;
 	game->player.angle.x += angle;
 	angle = 0;
 	angle -= game->mouse.delta.y * MOUSESPEED;
-	angle *= game->clock.delta;
-	game->player.angle.y += angle;
+	angle *= game->clock.delta;*/
+	t_vector2 delta_angle = vector2_mul(game->input.turn, game->clock.delta);
+	game->player.angle = vector2_sub(game->player.angle, delta_angle);
 	game->player.angle.y = ft_clampf(game->player.angle.y, -RAD90 * 0.99f, RAD90 * 0.99f);
 	game->player.lookdir = lookdirection(game->player.angle);
 	move_vector = player_movementvector(game->input, game->player.lookdir);
