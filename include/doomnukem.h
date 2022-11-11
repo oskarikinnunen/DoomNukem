@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/09 21:09:55 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/11 15:15:08 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <stdbool.h>
 # include "shapes.h"
 # include "physics.h"
+# include "inputhelp.h"
 
 # define TILESIZE 32 //EDITOR tilesize
 # define GRIDSIZE 64 //EDITOR gridsize (how many addressable coordinates we have)
@@ -266,46 +267,6 @@ typedef struct s_editor
 	struct s_tool	*tool;
 	
 }	t_editor;
-
-/* TODO: Move to inputhelp and fix unknown type names */
-typedef enum s_inputmode
-{
-	keyboard,
-	controller
-}	t_inputmode;
-
-/* TODO: Move to inputhelp and fix unknown type names */
-typedef struct s_input
-{
-	t_inputmode	mode;
-	t_vector2	move;
-	bool		crouch;
-	bool		jump;
-	bool		run;
-	t_vector2	turn;
-}	t_input;
-
-/* TODO: Move to inputhelp and fix unknown type names */
-typedef struct s_controller
-{
-	t_vector2	leftanalog;
-	t_vector2	rightanalog;
-	int		dpad;
-	bool	square;
-	bool	cross;
-	bool	circle;
-	bool	triangle;
-	bool	l1;
-	bool	r1;
-	bool	l2;
-	bool	r2;
-	bool	share;
-	bool	options;
-	bool	l3;
-	bool	r3;
-	bool	home;
-	bool	touchpad;
-}	t_controller;
 
 typedef struct s_game
 {

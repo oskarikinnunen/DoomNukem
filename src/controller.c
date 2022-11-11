@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   controller.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:36:01 by raho              #+#    #+#             */
-/*   Updated: 2022/11/11 14:54:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/11 15:14:33 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
+#include "inputhelp.h"
 
 // On mac ps4 controller's color indicator didn't light up but SDL recognized it as a joystick.
 // On linux VM I had to enable the controller through usb input settings -> the color indicator light up

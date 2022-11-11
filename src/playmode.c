@@ -48,8 +48,6 @@ static int key_events(SDL_Event e, t_game *game)
 static void updatemouse(t_mouse *mouse)
 {
 	SDL_GetRelativeMouseState(&mouse->delta.x, &mouse->delta.y);
-	/*if (mouse->delta.x > 200 || mouse->delta.y > 200)
-		mouse->delta = point_zero();*/
 }
 
 #define JOYSENS 0.002f
