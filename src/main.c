@@ -31,12 +31,12 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	platform = SDL_GetPlatform();
 	printf("platform: %s\n", platform);
 	if (ft_strequ(platform, "Mac OS X"))
-		sdl->platform = macosx;
+		sdl->platform = os_mac;
 	else if (ft_strequ(platform, "Linux"))
-		sdl->platform = linux;
+		sdl->platform = os_linux;
 	else
 	{
-		sdl->platform = unsupported;
+		sdl->platform = os_unsupported;
 		printf("platform %s not supported\n", platform);
 	}
 	

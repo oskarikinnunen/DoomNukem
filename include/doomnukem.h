@@ -115,9 +115,9 @@ typedef struct s_font
 
 typedef enum e_platform
 {
-	macosx,
-	linux,
-	unsupported
+	os_mac,
+	os_linux,
+	os_unsupported
 }	t_platform;
 
 typedef struct s_sdlcontext
