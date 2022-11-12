@@ -59,6 +59,8 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 			error_log(EC_SDL_JOYSTICKOPEN);
 		SDL_GameControllerEventState(SDL_ENABLE);
 	}
+	else
+		sdl->gamecontroller = NULL;
 	
 	load_fonts(sdl);
 	
@@ -68,8 +70,11 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 
 void	quit_game(t_sdlcontext *sdl)
 {
-	SDL_GameControllerEventState(SDL_IGNORE);		// could be utilized earlier if controller input is not wanted
-	SDL_GameControllerClose(sdl->gamecontroller); 	// could be closed after joystick's been unplugged
+	if (sdl->gamecontroller != NULL)
+	{
+		SDL_GameControllerEventState(SDL_IGNORE);		// could be utilized earlier if controller input is not wanted
+		SDL_GameControllerClose(sdl->gamecontroller); 	// could be closed after joystick's been unplugged
+	}
 	SDL_DestroyWindow(sdl->window);
 	SDL_Quit();
 	exit(0);
