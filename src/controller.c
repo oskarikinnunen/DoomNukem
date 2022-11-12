@@ -39,15 +39,15 @@ static void	axis_move(SDL_ControllerAxisEvent caxis, t_controller *controller)
 	if (caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT)
 		controller->righttrigger = dead_zone(ft_clampf((caxis.value / 32767.f), -1.f, 1.f));
 	
-	if (controller->lefttrigger > 0.f)
+	/* if (controller->lefttrigger > 0.f)
 		printf("lefttrigger: %f\n", controller->lefttrigger);
 	if (controller->righttrigger > 0.f)
-		printf("righttrigger: %f\n", controller->righttrigger);
+		printf("righttrigger: %f\n", controller->righttrigger); */
 }
 
 static void	button_press(SDL_ControllerButtonEvent cbutton, t_controller *controller)
 {
-	printf("buttondown: %d\n", cbutton.button);
+	//printf("buttondown: %d\n", cbutton.button);
 
 	if (cbutton.button == SDL_CONTROLLER_BUTTON_A)
 		controller->a = true;
@@ -85,7 +85,7 @@ static void	button_press(SDL_ControllerButtonEvent cbutton, t_controller *contro
 
 static void	button_release(SDL_ControllerButtonEvent cbutton, t_controller *controller)
 {
-	printf("buttonup: %d\n", cbutton.button);
+	//printf("buttonup: %d\n", cbutton.button);
 
 	if (cbutton.button == SDL_CONTROLLER_BUTTON_A)
 		controller->a = false;
