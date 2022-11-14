@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 12:41:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/11 16:04:24 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/14 16:09:26 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,12 @@ typedef struct s_object
 	uint32_t			face_count;
 }	t_object;
 
+typedef struct s_meshtri
+{
+	t_entity	ent;
+	t_face		face;
+}	t_meshtri;
+
 typedef struct s_line
 {
 	t_vector2	start;
@@ -71,6 +77,7 @@ t_list			*get_face_list(int fd, t_list *materials);
 void			objects_init(struct s_sdlcontext *sdl);
 t_object		*get_object_by_name(struct s_sdlcontext sdl, char *name);
 t_object		*object_plane();
+t_object		*object_tri(struct s_sdlcontext *sdl);
 void			applywallmesh(t_wall *wall);
 void			walls_init(struct s_world *world, struct s_sdlcontext *sdl);
 

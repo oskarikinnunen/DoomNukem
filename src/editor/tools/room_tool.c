@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/11 16:40:20 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/14 14:36:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,13 +147,14 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	snap = vector2_snap((t_vector2){rc.x, rc.y}, 10);
 	render_snapgrid(ed, &sdl, snap, false, false);
 
-	if (instantbutton((t_rectangle){20, 200, 60, 60}, &ed->mouse, sdl, "debug1.png"))
-	{
-		printf("FLOOR GENERATE!\n");
-	}
+	/*if (instantbutton((t_rectangle){20, 200, 60, 60}, &ed->mouse, sdl, "debug1.png"))
+		makefloor(ed, *dat, &sdl);*/
 	render_selected(ed, sdl, dat);
-	//walls_init(&ed->world);
-	//applywallmesh(cur);
+	if (dat->fc.edgecount == 0)
+	{
+		makefloor(ed, *dat, &sdl);
+		dat->fc.edgecount = 1;
+	}
 }
 
 void	room_tool_draw(t_editor *ed, t_sdlcontext sdl)

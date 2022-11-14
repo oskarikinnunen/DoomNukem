@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:13:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/11 16:01:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/14 13:53:22 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,11 +126,6 @@ static void draw_selected(t_editor *ed, t_sdlcontext sdl, t_walltooldata *dat)
 		draw_text_boxed(&sdl, text, (t_point) {20, 120}, sdl.screensize);
 	}
 	ed->render.wireframe = false;
-}
-
-static t_vector3 vector2_to_vector3(t_vector2 vec)
-{
-	return ((t_vector3){vec.x, vec.y, 0.0f});
 }
 
 static void	wall_tool_draw(t_editor *ed, t_sdlcontext sdl) //TODO: ROTATE AROUND AXIS, SCREENSPACE

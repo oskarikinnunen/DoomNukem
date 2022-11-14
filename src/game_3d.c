@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/11 16:07:01 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/14 16:02:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -386,7 +386,8 @@ void render_entity(t_sdlcontext sdl, t_render render, t_entity *entity)
 			tritransformed.t[1] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[1] - 1]);
 			tritransformed.t[2] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[2] - 1]);
 		}
-		tritransformed.clr = obj->faces[index].material->kd;
+		if (obj->faces[index].material != NULL)
+			tritransformed.clr = obj->faces[index].material->kd;
 		normal = normal_calc(tritransformed);
 		vcameraray = vector3_sub(tritransformed.p[0].v, render.position);
 		if (obj->materials[0].img == NULL)

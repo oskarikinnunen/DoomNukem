@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/11 13:39:48 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/14 17:20:43 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "editor_tools.h"
 #include "inputhelp.h"
 #include "tools/walltool.h"
+#include "tools/roomtool.h"
 #include "objects.h"
 
 
@@ -424,6 +425,93 @@ void	triangulate(t_floorcalc *fc)
 			break ;
 	}
 	printf("made %i faces \n", fc->facecount);
+}
+
+void		makefloor(t_editor *ed, t_roomtooldata dat, t_sdlcontext *sdl)
+{
+	t_floorcalc	fc;
+	t_wall		*w;
+	t_object	*obj;
+	t_entity	ent;
+	int			i;
+
+	ft_bzero(&fc, sizeof(fc));
+	w = &dat.wall;
+	while (w != NULL)
+	{
+		fc.edges[fc.edgecount++] = w->line.end;
+		if (w->prev == NULL)
+			fc.edges[fc.edgecount++] = w->line.start;
+		w = w->prev;
+	}
+	triangulate(&fc);
+	i = 0;
+	while (i < fc.facecount)
+	{
+		obj = object_tri(sdl);
+		//obj->faces[i] = fc.faces[i];
+		obj->vertices[0] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[0]]);
+		obj->vertices[1] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[1]]);
+		obj->vertices[2] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[2]]);
+		
+		obj->uvs[0] = fc.edges[fc.faces[i].v_indices[0]];
+		obj->uvs[1] = fc.edges[fc.faces[i].v_indices[1]];
+		obj->uvs[2] = fc.edges[fc.faces[i].v_indices[2]];
+		/*
+		//obj->uvs[0] = vector2_zero();
+		obj->uvs[1] = vector2_sub(fc.edges[fc.faces[i].v_indices[0]], fc.edges[fc.faces[i].v_indices[1]]);
+		obj->uvs[2] = vector2_sub(fc.edges[fc.faces[i].v_indices[0]], fc.edges[fc.faces[i].v_indices[2]]);
+		obj->uvs[1] = vector2_div(obj->uvs[1], 50.0f);
+		obj->uvs[2] = vector2_div(obj->uvs[2], 50.0f);
+		*/
+		obj->uvs[0] = vector2_div(obj->uvs[0], 50.0f);
+		obj->uvs[1] = vector2_div(obj->uvs[1], 50.0f);
+		obj->uvs[2] = vector2_div(obj->uvs[2], 50.0f);
+		ft_bzero(&ent, sizeof(t_entity));
+		ent.transform.location = vector3_zero();
+		ent.transform.scale = vector3_one();
+		ent.obj = obj;
+		list_push(&ed->world.entitylist, &ent, sizeof(t_entity));
+		i++;
+	}
+}
+
+t_floorcalc	generate_floor_room(t_roomtooldata dat)
+{
+	t_floorcalc	fc;
+	t_wall		*w;
+
+	ft_bzero(&fc, sizeof(fc));
+	w = &dat.wall;
+	while (w != NULL)
+	{
+		fc.edges[fc.edgecount++] = w->line.end;
+		if (w->prev == NULL)
+			fc.edges[fc.edgecount++] = w->line.start;
+		w = w->prev;
+	}
+	/*while (i < MAXSELECTED)
+	{
+		if (dat->selected[i] != NULL)
+		{
+			if (i == 0)
+			{
+				fc.edges[fc.edgecount++] = dat->selected[i]->line.start;
+				fc.edges[fc.edgecount++] = dat->selected[i]->line.end;
+			}
+			else
+			{
+				if (isunique(fc, dat->selected[i]->line.start))
+					fc.edges[fc.edgecount++] = dat->selected[i]->line.start;
+				else if (isunique(fc, dat->selected[i]->line.end))
+					fc.edges[fc.edgecount++] = dat->selected[i]->line.end;
+			}
+			
+		}
+		i++;
+	}*/
+	triangulate(&fc);
+	return (fc);
 }
 
 t_floorcalc	generate_floor(t_walltooldata *dat)

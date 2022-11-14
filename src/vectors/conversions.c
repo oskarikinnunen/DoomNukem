@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 17:23:31 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/10 09:45:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/14 12:55:55 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,11 @@ t_point	vector2_to_point(t_vector2 vec)
 	result.x = (int)vec.x;
 	result.y = (int)vec.y;
 	return (result);
+}
+
+t_vector3	vector2_to_vector3(t_vector2 vec)
+{
+	return ((t_vector3){vec.x, vec.y, 0.0f});
 }
 
 t_vector2	point_to_vector2(t_point point)

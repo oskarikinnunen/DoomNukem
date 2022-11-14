@@ -117,7 +117,6 @@ t_object	objparse(char *filename)
 	if (fd == -1)
 		return ((t_object){"NULLOBJECT"}); //TODO: return a crash bandicoot here
 	ft_bzero(&result, sizeof(t_object));
-	
 	printf("reading object %s \n", filename);
 	materials = get_material_list(fd);
 	vertices = get_vertex_list(fd);

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/09 12:17:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/14 17:17:40 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,6 +214,7 @@ typedef struct s_entity
 {
 	t_transform		transform;
 	uint32_t		object_index;
+	char			object_name[64];
 	t_bound			z_bound;
 	struct s_object	*obj;
 }	t_entity;
@@ -253,7 +254,9 @@ typedef struct s_world
 {
 	t_physics	physics;
 	t_list		*entitylist;
+	t_list		*meshlist;
 	t_list		*wall_list;
+	t_list		*roomlist;
 	t_entity	skybox;
 }	t_world;
 
@@ -297,6 +300,15 @@ typedef struct s_zbuff
 	int	*zbuff;
 }	t_zbuff;
 
+typedef struct s_room
+{
+	char	name[64];
+	int		wallindexes[256];
+	int		floorindexes[256];
+	int		wallcount;
+	int		floorcount;
+}	t_room;
+
 /* EDITOR.C */
 int		editorloop(t_sdlcontext sdl);
 
@@ -313,7 +325,7 @@ t_point	screentogridspace(t_point point);
 void	mouse_event(SDL_Event e, t_editor *ed);
 
 /* SPACECONVERSIONS.C */
-t_point	worldtoeditorspace(t_editor *ed, t_vector2 worldcrd);
+t_point	worldto_editorspace(t_editor *ed, t_vector2 worldcrd);
 t_point vector3_to_screenspace(t_render r, t_vector3 vec, t_sdlcontext sdl);
 
 /* EDITOR_SAVELINE.C */

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/11 16:05:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/14 14:26:12 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ void render_world3d(t_sdlcontext sdl, t_world world, t_render *render)
 		l = l->next;
 	}
 	render_entity(sdl, *render, &world.skybox);
-	//render_entity(sdl, *render, &world.skybox);
 }
 
 void	calculate_colliders_for_entities(t_world *world)
@@ -116,8 +115,8 @@ t_world	load_world(char *filename, t_sdlcontext sdl)
 	world.skybox.obj->materials[0].img = get_image_by_name(sdl, "grid.png");
 	//scale_skybox_uvs(world.skybox.obj);
 	world.skybox.transform.scale = vector3_mul(vector3_one(), 1000.0f);
-	world.skybox.transform.location = (t_vector3){500.0f, 500.0f, 500.0f};
-	calculate_colliders_for_entities(&world);
+	world.skybox.transform.location = (t_vector3){500.0f, 500.0f, 499.0f};
+	//calculate_colliders_for_entities(&world);
 	return (world);
 }
 
