@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 15:53:51 by raho              #+#    #+#             */
-/*   Updated: 2022/11/08 15:04:31 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/14 22:24:19 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 static void	sdl_errors(int error_code)
 {
 	if (error_code == EC_SDL_INIT)
-		fprintf(stderr, "SDL_Init failed: %s\n", SDL_GetError());
+		fprintf(stderr, "SDL_Init failed: %s", SDL_GetError());
 	if (error_code == EC_SDL_CREATEWINDOW)
 		fprintf(stderr, "SDL_CreateWindow failed: %s\n", SDL_GetError());
 	if (error_code == EC_SDL_GETWINDOW_SURFACE)
@@ -28,8 +28,10 @@ static void	sdl_errors(int error_code)
 		fprintf(stderr, "SDL_UpdateWindowSurface failed: %s\n", SDL_GetError());
 	if (error_code == EC_SDL_SETRELATIVEMOUSEMODE)
 		fprintf(stderr, "SDL_SetRelativeMouseMode failed: %s\n", SDL_GetError());
-	if (error_code == EC_SDL_JOYSTICKOPEN)
-		fprintf(stderr, "SDL_JoystickOpen failed: %s\n", SDL_GetError());
+	if (error_code == EC_SDL_GAMECONTROLLEROPEN)
+		fprintf(stderr, "SDL_GameControllerOpen failed: %s\n", SDL_GetError());
+	if (error_code == EC_SDL_JOYSTICKINSTANCEID)
+		fprintf(stderr, "SDL_JoystickInstanceID failed: %s\n", SDL_GetError());
 	exit (1);
 }
 

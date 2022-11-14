@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 09:30:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/14 13:41:00 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/14 21:17:41 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,10 @@
 # define KEYS_CTRLMASK 5
 # define KEYS_SHIFTMASK 6
 # define KEYS_MMASK 7
+
 # define CONTROLLER_SENS 0.002f
 # define DEADZONE 0.1f
+# define MAX_CONTROLLERS 2
 
 typedef enum s_inputmode
 {
@@ -44,25 +46,28 @@ typedef struct s_input
 
 typedef struct s_controller
 {
-	t_vector2	leftanalog;
-	t_vector2	rightanalog;
-	float		lefttrigger;
-	float		righttrigger;
-	bool		a;
-	bool		b;
-	bool		x;
-	bool		y;
-	bool		back;
-	bool		guide;
-	bool		start;
-	bool		leftstick;
-	bool		rightstick;
-	bool		leftshoulder;
-	bool		rightshoulder;
-	bool		dpad_up;
-	bool		dpad_down;
-	bool		dpad_left;
-	bool		dpad_right;
+	SDL_GameController		*gamecontroller;
+	SDL_JoystickID			instance_id;
+	bool					connected;
+	t_vector2				leftanalog;
+	t_vector2				rightanalog;
+	float					lefttrigger;
+	float					righttrigger;
+	bool					a;
+	bool					b;
+	bool					x;
+	bool					y;
+	bool					back;
+	bool					guide;
+	bool					start;
+	bool					leftstick;
+	bool					rightstick;
+	bool					leftshoulder;
+	bool					rightshoulder;
+	bool					dpad_up;
+	bool					dpad_down;
+	bool					dpad_left;
+	bool					dpad_right;
 }	t_controller;
 
 struct s_mouse;

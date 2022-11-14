@@ -83,11 +83,11 @@ static int handleinput(t_game *game)
 		gr = key_events(e, game);
 		if (gr != game_continue)
 			return (gr);
-		gr = controller_events(e, &game->controller);
+		gr = controller_events(e, game);
 		if (gr != game_continue)
 			return (gr);
 	}
-	updateinput(&game->input, game->keystate, game->mouse, &game->controller);
+	updateinput(&game->input, game->keystate, game->mouse, &game->controller[0]);
 	return(game_continue);
 }
 
@@ -109,6 +109,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	game.world = load_world("world1", sdl);
 	game.player.position = (t_vector3) {500.0f, 500.0f, 500.0f};
 	game.player.angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
+	initialize_controllers(&game);
 	while (gr == game_continue)
 	{
 		update_deltatime(&game.clock);

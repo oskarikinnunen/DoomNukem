@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/14 16:42:09 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/14 20:46:01 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,6 @@ typedef struct s_sdlcontext
 {
 	SDL_Window				*window;
 	SDL_Surface				*surface;
-	SDL_GameController		*gamecontroller;
 	t_platform				platform;
 	float					*zbuffer;
 	SDL_Renderer			*renderer; //TODO: for testing remove.
@@ -284,7 +283,7 @@ typedef struct s_game
 	t_clock			clock;
 	t_mouse			mouse;
 	uint32_t		keystate;
-	t_controller	controller;
+	t_controller	controller[2];
 	t_player		player;
 	t_input			input;
 	t_cam_mode		cam_mode; //Unused but will be reimplemented?
@@ -351,7 +350,8 @@ void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale);
 void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
 
 /* CONTROLLER.C */
-int		controller_events(SDL_Event e, t_controller *controller);
+void	initialize_controllers(t_game *game);
+int		controller_events(SDL_Event e, t_game *game);
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);

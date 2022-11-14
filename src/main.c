@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/14 13:12:50 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/14 22:17:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 
 static void	create_sdl_context(t_sdlcontext *sdl)
 {
-	int			joysticks;
 	const char	*platform;
 
 	load_lua_conf(sdl);
@@ -48,19 +47,6 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	sdl->surface = SDL_GetWindowSurface(sdl->window);
 	if (sdl->surface == NULL)
 		error_log(EC_SDL_GETWINDOW_SURFACE);
-		
-	joysticks = SDL_NumJoysticks();
-	printf("number of joysticks/controllers: %i\n", joysticks);
-	if (joysticks > 0)
-	{
-		if (SDL_IsGameController(0))
-			sdl->gamecontroller = SDL_GameControllerOpen(0);
-		if (!sdl->gamecontroller)
-			error_log(EC_SDL_JOYSTICKOPEN);
-		SDL_GameControllerEventState(SDL_ENABLE);
-	}
-	else
-		sdl->gamecontroller = NULL;
 	
 	load_fonts(sdl);
 	
@@ -70,12 +56,6 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 
 void	quit_game(t_sdlcontext *sdl)
 {
-	if (sdl->gamecontroller != NULL)
-	{
-		SDL_GameControllerEventState(SDL_IGNORE);		// could be utilized earlier if controller input is not wanted
-		SDL_GameControllerClose(sdl->gamecontroller); 	// could be closed after joystick's been unplugged
-	}
-	SDL_DestroyWindow(sdl->window);
 	SDL_Quit();
 	exit(0);
 }
