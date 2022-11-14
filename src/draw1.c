@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   draw1.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 22:15:00 by raho              #+#    #+#             */
-/*   Updated: 2022/11/08 06:17:23 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/14 16:53:34 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
+#include "vectors.h"
 
 void	draw_saved_text(t_sdlcontext *sdl, t_img *text, t_point pos)
 {
@@ -114,17 +115,15 @@ void	draw_text(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundari
 	}
 }
 
-void	black_text_background(t_sdlcontext *sdl, t_point pos, t_point size)
+void	draw_black_background(t_sdlcontext *sdl, t_point pos, t_point size)
 {
 	t_point	i;
 
-	pos.x -= 3; // for borders because some letters start with as much as -3 offset
-	pos.y -= 3; // for borders because some letters start with as much as -3 offset
 	i.y = 0;
-	while (i.y < size.y + 6) // + 6 for borders
+	while (i.y < size.y)
 	{
 		i.x = 0;
-		while (i.x < size.x + 6) // + 6 for borders
+		while (i.x < size.x)
 		{
 			draw(*sdl, point_add(pos, i), 0);
 			i.x++;
@@ -133,7 +132,7 @@ void	black_text_background(t_sdlcontext *sdl, t_point pos, t_point size)
 	}
 }
 
-void	draw_text_boxed(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundaries)
+t_rectangle	draw_text_boxed(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundaries)
 {
 	int			i;
 	int			j;
@@ -144,11 +143,12 @@ void	draw_text_boxed(t_sdlcontext *sdl, const char *str, t_point pos, t_point bo
 	int			word_length;
 	t_point		text_size;
 	t_img		*background;
+	t_rectangle	rect;
 
 	if (pos.x < 5 || pos.x > sdl->window_w - 5 || pos.y < 5 || pos.y > sdl->window_h - 5)
 	{
-		//printf("Trying to draw text outside of bounds. Text's starting position can't be closer than 5 pixels to the edges.\n");
-		return ;
+		printf("Trying to draw text outside of bounds. Text's starting position can't be closer than 5 pixels to the edges.\n");
+		return ((t_rectangle){0});
 	}
 
 	text_size.x = 0;
@@ -189,12 +189,12 @@ void	draw_text_boxed(t_sdlcontext *sdl, const char *str, t_point pos, t_point bo
 				if (cursor.x + word_length > boundaries.x - 5) // Right now text shouldn't go closer to the edges than 5 pixels
 				{
 					printf("Not enough space widthwise to draw the text: %s\n", str);
-					return ;
+					return ((t_rectangle){0});
 				}
 				if (cursor.y > boundaries.y)
 				{
 					printf("Not enough space heightwise to draw the text: %s\n", str);
-					return ;
+					return ((t_rectangle){0});
 				}
 			}
 		}
@@ -225,8 +225,13 @@ void	draw_text_boxed(t_sdlcontext *sdl, const char *str, t_point pos, t_point bo
 		i++;
 	}
 
+	// Final size and position of the textbox
+	rect.size = point_add_xy(text_size, TEXTBACKGROUND_BORDERPADDING); // adding 6 pixels for some border padding
+	rect.position = point_add_xy(pos, -(TEXTBACKGROUND_BORDERPADDING / 2));
+	
 	// Draw the background
-	black_text_background(sdl, pos, text_size);
+	draw_black_background(sdl, rect.position, rect.size); // offsetting the border padding from the position
 	// Draw the text
 	draw_text(sdl, str, pos, boundaries);
+	return (rect);
 }

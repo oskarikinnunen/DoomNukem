@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/11 18:45:53 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/14 16:42:09 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@
 # define MAXMOVEMENTSPEED 0.08f
 # define ROTATESPEED 0.002f
 # define MOUSESPEED 0.0002f
+
+# define TEXTBACKGROUND_BORDERPADDING 6
 
 typedef struct s_mouse
 {
@@ -377,7 +379,9 @@ void	quit_game(t_sdlcontext *sdl);
 /* FONT.C */
 
 void	load_fonts(t_sdlcontext *sdl);
-void	black_text_background(t_sdlcontext *sdl, t_point pos, t_point size);
+
+void	draw_black_background(t_sdlcontext *sdl, t_point pos, t_point size);
+
 // Fonts: 0 = 11, 1 = 12, 2 = 14, 3 = 16, 4 = 18, 5 = 20, 6 = 22
 void	set_font_size(t_sdlcontext *sdl, int font_size);
 
@@ -398,7 +402,8 @@ void	draw_text(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundari
 // Draws text, with a black box in the background, without saving it anywhere
 // Uses a pre-set font size that can be changed by calling set_font_size()
 // Fonts: 0 = 11, 1 = 12, 2 = 14, 3 = 16, 4 = 18, 5 = 20, 6 = 22
-void	draw_text_boxed(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundaries);
+// Returns the rectangle of the drawed textbox
+t_rectangle	draw_text_boxed(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundaries);
 
 /* LIST_HELPER.C */
 void	list_push(t_list **head, void *content, size_t content_size);
