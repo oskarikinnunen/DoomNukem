@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 22:15:00 by raho              #+#    #+#             */
-/*   Updated: 2022/11/14 16:53:34 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/14 18:32:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,10 +227,10 @@ t_rectangle	draw_text_boxed(t_sdlcontext *sdl, const char *str, t_point pos, t_p
 
 	// Final size and position of the textbox
 	rect.size = point_add_xy(text_size, TEXTBACKGROUND_BORDERPADDING); // adding 6 pixels for some border padding
-	rect.position = point_add_xy(pos, -(TEXTBACKGROUND_BORDERPADDING / 2));
+	rect.position = point_add_xy(pos, -(TEXTBACKGROUND_BORDERPADDING / 2)); // offsetting the border padding from the position
 	
 	// Draw the background
-	draw_black_background(sdl, rect.position, rect.size); // offsetting the border padding from the position
+	draw_black_background(sdl, rect.position, rect.size); 
 	// Draw the text
 	draw_text(sdl, str, pos, boundaries);
 	return (rect);
