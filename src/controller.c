@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:36:01 by raho              #+#    #+#             */
-/*   Updated: 2022/11/11 18:45:27 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/14 15:24:08 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,6 @@ static void	button_press(SDL_ControllerButtonEvent cbutton, t_controller *contro
 		controller->dpad_left = true;
 	if (cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT)
 		controller->dpad_right = true;
-	if (cbutton.button == SDL_CONTROLLER_BUTTON_MAX)
-		controller->max = true;
 }
 
 static void	button_release(SDL_ControllerButtonEvent cbutton, t_controller *controller)
@@ -117,8 +115,6 @@ static void	button_release(SDL_ControllerButtonEvent cbutton, t_controller *cont
 		controller->dpad_left = false;
 	if (cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT)
 		controller->dpad_right = false;
-	if (cbutton.button == SDL_CONTROLLER_BUTTON_MAX)
-		controller->max = false;
 }
 
 int	controller_events(SDL_Event e, t_controller *controller)

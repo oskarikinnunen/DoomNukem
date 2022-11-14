@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 09:30:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/11 18:42:38 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/14 13:41:00 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ typedef struct s_controller
 	bool		dpad_down;
 	bool		dpad_left;
 	bool		dpad_right;
-	bool		max;
 }	t_controller;
 
 struct s_mouse;

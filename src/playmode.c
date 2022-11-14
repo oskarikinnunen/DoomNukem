@@ -80,16 +80,10 @@ static int handleinput(t_game *game)
 	updatemouse(&game->mouse);
 	while (SDL_PollEvent(&e))
 	{
-		if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP)
-		{
-			game->input.mode = keyboard;
-			gr = key_events(e, game);
-		}
-		else
-		{
-			game->input.mode = controller;
-			gr = controller_events(e, &game->controller);
-		}
+		gr = key_events(e, game);
+		if (gr != game_continue)
+			return (gr);
+		gr = controller_events(e, &game->controller);
 		if (gr != game_continue)
 			return (gr);
 	}
