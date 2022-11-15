@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/14 22:17:49 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/15 16:18:47 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,20 @@
 #include "png.h"
 #include "game_lua.h"
 #include "objects.h"
+
+static void	tryout_ttf(void)
+{
+	TTF_Font	*newfont;
+	SDL_Surface	*surfacetext;
+
+	newfont = TTF_OpenFont("./assets/fonts/grixel_acme_9/Acme_9_Regular.ttf", 32); // what is 32?
+	if (newfont == NULL)
+	{
+		printf("couldn't load the ttf font file\n");
+		exit(0);
+	}
+	TTF_RenderText_Blended();
+}
 
 static void	create_sdl_context(t_sdlcontext *sdl)
 {
@@ -26,7 +40,13 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 		error_log(EC_SDL_INIT);
 	if (SDL_Init(SDL_INIT_GAMECONTROLLER) < 0)
 		error_log(EC_SDL_INIT);
-		
+	if (TTF_Init() == -1)
+		printf("%s\n", TTF_GetError());
+	else
+		printf("TTF_Init succesful\n");
+
+	tryout_ttf();
+	
 	platform = SDL_GetPlatform();
 	printf("platform: %s\n", platform);
 	if (ft_strequ(platform, "Mac OS X"))
