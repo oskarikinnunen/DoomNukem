@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/14 17:17:40 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/15 17:33:12 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,7 +229,6 @@ typedef struct s_item
 	t_entity	entity;
 }	t_item;
 
-
 typedef struct s_render
 {
 	t_vector3		vtarget;
@@ -293,21 +292,6 @@ typedef struct s_game
 	t_player		player;
 	t_cam_mode		cam_mode; //Unused but will be reimplemented?
 } t_game;
-
-typedef struct s_zbuff
-{
-	int	w;
-	int	*zbuff;
-}	t_zbuff;
-
-typedef struct s_room
-{
-	char	name[64];
-	int		wallindexes[256];
-	int		floorindexes[256];
-	int		wallcount;
-	int		floorcount;
-}	t_room;
 
 /* EDITOR.C */
 int		editorloop(t_sdlcontext sdl);
@@ -415,6 +399,7 @@ void	draw_text(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundari
 void	draw_text_boxed(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundaries);
 
 /* LIST_HELPER.C */
+t_list	*ptr_to_list(void	*src, uint32_t len, size_t size);
 void	list_push(t_list **head, void *content, size_t content_size);
 void	*list_findlast(t_list *head);
 void	*list_to_ptr(t_list *source, uint32_t *set_length);

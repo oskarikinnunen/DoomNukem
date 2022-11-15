@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:42:04 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/14 16:11:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/15 13:17:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ typedef enum e_roomtoolmode
 typedef struct s_roomtooldata
 {
 	t_roomtoolmode	rtm;
+	t_room			room;
 	t_wall			wall;
 	t_floorcalc		fc;
 }	t_roomtooldata;

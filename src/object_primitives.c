@@ -48,7 +48,7 @@ t_object	*object_tri(t_sdlcontext *sdl)
 	return (tri);
 }
 
-t_object	*object_plane()
+t_object	*object_plane(t_sdlcontext *sdl)
 {
 	t_object	*plane;
 
@@ -80,6 +80,9 @@ t_object	*object_plane()
 
 	plane->materials = planemat();
 	plane->material_count = 1;
+	plane->faces[0].material = &plane->materials[0];
+	plane->faces[1].material = &plane->materials[0];
+	plane->materials->img = get_image_by_name(*sdl, plane->materials->texturename);
 	plane->uvs = ft_memalloc(sizeof(t_vector2) * 4);
 	plane->uv_count = 4;
 	plane->uvs[0] = (t_vector2){0.0f, 0.0f};

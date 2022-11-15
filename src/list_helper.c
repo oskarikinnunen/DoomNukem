@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 12:32:25 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/14 14:43:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/15 17:31:43 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,22 @@ void	list_remove(t_list **head, void *match, size_t content_size)
 		prev = node;
 		node = node->next;
 	}
+}
+
+t_list	*ptr_to_list(void	*src, uint32_t len, size_t size)
+{
+	int		i;
+	t_list	*head;
+
+	i = 0;
+	head = NULL;
+	while (i < len)
+	{
+		void *cur = src + (size * i);
+		list_push(&head, cur, size);
+		i++;
+	}
+	return (head);
 }
 
 //Returns a mallocated and NULL terminated array of list contents.

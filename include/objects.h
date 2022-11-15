@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 12:41:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/14 16:09:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/15 17:13:28 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define OBJECTS_H
 
 #include <inttypes.h>
+#include "doomnukem.h"
 #include "vectors.h"
 
 typedef struct s_material
@@ -46,7 +47,7 @@ typedef struct s_object
 
 typedef struct s_meshtri
 {
-	t_entity	ent;
+	t_entity	entity;
 	t_face		face;
 }	t_meshtri;
 
@@ -58,14 +59,22 @@ typedef struct s_line
 
 typedef struct s_wall
 {
-	t_object	object;
+	t_entity	entity;
 	t_line		line;
 	uint32_t	height;
-	uint8_t		roomindex;
 	char		texname[256];
-	struct s_wall	*next;
-	struct s_wall	*prev;
 }	t_wall;
+
+typedef struct s_room
+{
+	char		name[32];
+	t_wall		*walls;
+	t_meshtri	*floors;
+	t_meshtri	*ceilings;
+	uint32_t	wallcount;
+	uint32_t	floorcount;
+	uint32_t	ceilingcount;
+}	t_room;
 
 struct s_world;
 struct s_sdlcontext;
@@ -75,8 +84,9 @@ struct s_list	*get_uv_list(int fd);
 struct s_list	*get_vertex_list(int fd);
 t_list			*get_face_list(int fd, t_list *materials);
 void			objects_init(struct s_sdlcontext *sdl);
+void			init_roomwalls(t_room *room, t_sdlcontext *sdl);
 t_object		*get_object_by_name(struct s_sdlcontext sdl, char *name);
-t_object		*object_plane();
+t_object		*object_plane(struct s_sdlcontext *sdl);
 t_object		*object_tri(struct s_sdlcontext *sdl);
 void			applywallmesh(t_wall *wall);
 void			walls_init(struct s_world *world, struct s_sdlcontext *sdl);

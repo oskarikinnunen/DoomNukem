@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/07 00:49:32 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/15 15:34:21 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,8 +195,6 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 		ent->obj = &sdl.objects[ent->object_index];
 		findbounds(ent);
 	}
-	if (ent->obj == NULL)
-		ent->obj = object_plane();
 	/* SPLIT HERE */
 	ed->render.wireframe = true;
 	ed->render.gizmocolor = CLR_GREEN;

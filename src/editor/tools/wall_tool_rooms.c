@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/14 17:20:43 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/15 17:15:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -427,121 +427,56 @@ void	triangulate(t_floorcalc *fc)
 	printf("made %i faces \n", fc->facecount);
 }
 
-void		makefloor(t_editor *ed, t_roomtooldata dat, t_sdlcontext *sdl)
+void	makefloor_room(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 {
 	t_floorcalc	fc;
 	t_wall		*w;
-	t_object	*obj;
-	t_entity	ent;
+	t_meshtri	*mtri;
+	float		circum_angle;
 	int			i;
 
 	ft_bzero(&fc, sizeof(fc));
-	w = &dat.wall;
+	circum_angle = 0.0f;
+	i = 0;
+	while (i < room->wallcount)
+	{
+		fc.edges[fc.edgecount++] = room->walls[i].line.end;
+		if (i == room->wallcount - 1)
+			fc.edges[fc.edgecount++] = room->walls[i].line.start;
+		i++;
+	}
+	/*
 	while (w != NULL)
 	{
 		fc.edges[fc.edgecount++] = w->line.end;
 		if (w->prev == NULL)
 			fc.edges[fc.edgecount++] = w->line.start;
 		w = w->prev;
-	}
+	}*/
 	triangulate(&fc);
+	room->floors = ft_memalloc(sizeof(t_meshtri) * fc.facecount);
+	room->floorcount = fc.facecount;
+	if (room->floors == NULL)
+		error_log(EC_MALLOC);
 	i = 0;
 	while (i < fc.facecount)
 	{
-		obj = object_tri(sdl);
+		mtri = &room->floors[i];
+		ft_bzero(&mtri->entity, sizeof(t_entity));
+		mtri->entity.obj = object_tri(sdl);
 		//obj->faces[i] = fc.faces[i];
-		obj->vertices[0] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[0]]);
-		obj->vertices[1] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[1]]);
-		obj->vertices[2] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[2]]);
-		
-		obj->uvs[0] = fc.edges[fc.faces[i].v_indices[0]];
-		obj->uvs[1] = fc.edges[fc.faces[i].v_indices[1]];
-		obj->uvs[2] = fc.edges[fc.faces[i].v_indices[2]];
-		/*
-		//obj->uvs[0] = vector2_zero();
-		obj->uvs[1] = vector2_sub(fc.edges[fc.faces[i].v_indices[0]], fc.edges[fc.faces[i].v_indices[1]]);
-		obj->uvs[2] = vector2_sub(fc.edges[fc.faces[i].v_indices[0]], fc.edges[fc.faces[i].v_indices[2]]);
-		obj->uvs[1] = vector2_div(obj->uvs[1], 50.0f);
-		obj->uvs[2] = vector2_div(obj->uvs[2], 50.0f);
-		*/
-		obj->uvs[0] = vector2_div(obj->uvs[0], 50.0f);
-		obj->uvs[1] = vector2_div(obj->uvs[1], 50.0f);
-		obj->uvs[2] = vector2_div(obj->uvs[2], 50.0f);
-		ft_bzero(&ent, sizeof(t_entity));
-		ent.transform.location = vector3_zero();
-		ent.transform.scale = vector3_one();
-		ent.obj = obj;
-		list_push(&ed->world.entitylist, &ent, sizeof(t_entity));
+		mtri->entity.obj->vertices[0] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[0]]);
+		mtri->entity.obj->vertices[1] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[1]]);
+		mtri->entity.obj->vertices[2] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[2]]);
+		mtri->entity.obj->uvs[0] = fc.edges[fc.faces[i].v_indices[0]];
+		mtri->entity.obj->uvs[1] = fc.edges[fc.faces[i].v_indices[1]];
+		mtri->entity.obj->uvs[2] = fc.edges[fc.faces[i].v_indices[2]];
+		mtri->entity.obj->uvs[0] = vector2_div(mtri->entity.obj->uvs[0], 50.0f);
+		mtri->entity.obj->uvs[1] = vector2_div(mtri->entity.obj->uvs[1], 50.0f);
+		mtri->entity.obj->uvs[2] = vector2_div(mtri->entity.obj->uvs[2], 50.0f);
+		mtri->entity.transform.location = vector3_zero();
+		mtri->entity.transform.scale = vector3_one();
+		//list_push(&ed->world.entitylist, &ent, sizeof(t_entity));
 		i++;
 	}
-}
-
-t_floorcalc	generate_floor_room(t_roomtooldata dat)
-{
-	t_floorcalc	fc;
-	t_wall		*w;
-
-	ft_bzero(&fc, sizeof(fc));
-	w = &dat.wall;
-	while (w != NULL)
-	{
-		fc.edges[fc.edgecount++] = w->line.end;
-		if (w->prev == NULL)
-			fc.edges[fc.edgecount++] = w->line.start;
-		w = w->prev;
-	}
-	/*while (i < MAXSELECTED)
-	{
-		if (dat->selected[i] != NULL)
-		{
-			if (i == 0)
-			{
-				fc.edges[fc.edgecount++] = dat->selected[i]->line.start;
-				fc.edges[fc.edgecount++] = dat->selected[i]->line.end;
-			}
-			else
-			{
-				if (isunique(fc, dat->selected[i]->line.start))
-					fc.edges[fc.edgecount++] = dat->selected[i]->line.start;
-				else if (isunique(fc, dat->selected[i]->line.end))
-					fc.edges[fc.edgecount++] = dat->selected[i]->line.end;
-			}
-			
-		}
-		i++;
-	}*/
-	triangulate(&fc);
-	return (fc);
-}
-
-t_floorcalc	generate_floor(t_walltooldata *dat)
-{
-	t_floorcalc	fc;
-	int			i;
-
-	i = 0;
-	fc.edgecount = 0;
-	ft_bzero(&fc, sizeof(fc));
-	while (i < MAXSELECTED)
-	{
-		if (dat->selected[i] != NULL)
-		{
-			if (i == 0)
-			{
-				fc.edges[fc.edgecount++] = dat->selected[i]->line.start;
-				fc.edges[fc.edgecount++] = dat->selected[i]->line.end;
-			}
-			else
-			{
-				if (isunique(fc, dat->selected[i]->line.start))
-					fc.edges[fc.edgecount++] = dat->selected[i]->line.start;
-				else if (isunique(fc, dat->selected[i]->line.end))
-					fc.edges[fc.edgecount++] = dat->selected[i]->line.end;
-			}
-			
-		}
-		i++;
-	}
-	triangulate(&fc);
-	return (fc);
 }

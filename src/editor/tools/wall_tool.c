@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:13:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/14 13:53:22 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/15 15:46:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ static bool has_selected(t_walltooldata *dat)
 
 t_wall	*wallcollision(t_editor *ed, t_sdlcontext *sdl)
 {
-	t_list	*l;
+	/*t_list	*l;
 	t_wall	*wall;
 
 	l = ed->world.wall_list;
@@ -93,12 +93,12 @@ t_wall	*wallcollision(t_editor *ed, t_sdlcontext *sdl)
 		}
 		l = l->next;
 	}
-	return (NULL);
+	return (NULL);*/
 }
 
 static void draw_selected(t_editor *ed, t_sdlcontext sdl, t_walltooldata *dat)
 {
-	int			i;
+	/*int			i;
 	int			count;
 	char		text[256] = { };
 
@@ -125,12 +125,12 @@ static void draw_selected(t_editor *ed, t_sdlcontext sdl, t_walltooldata *dat)
 		sprintf(text, "selected %i walls", count);
 		draw_text_boxed(&sdl, text, (t_point) {20, 120}, sdl.screensize);
 	}
-	ed->render.wireframe = false;
+	ed->render.wireframe = false;*/
 }
 
 static void	wall_tool_draw(t_editor *ed, t_sdlcontext sdl) //TODO: ROTATE AROUND AXIS, SCREENSPACE
 {
-	t_walltooldata	*dat;
+	/*t_walltooldata	*dat;
 	t_wall			*wall;
 	static			int8_t	tri_i;
 	static			float	rad;
@@ -166,12 +166,7 @@ static void	wall_tool_draw(t_editor *ed, t_sdlcontext sdl) //TODO: ROTATE AROUND
 	if (has_selected(dat))
 	{
 		if (instantbutton((t_rectangle){20, 180, 80, 80}, &ed->mouse, sdl, "debug1.png"))
-			dat->fc = generate_floor(dat);
-		//dat->wall.texname = imagedrawer((t_rectangle){20, 180, 80, 80}, ed->mouse, sdl);
-		/*
-		
-
-		*/
+			printf("lol no floor for you\n");
 	}
 	if (dat->fc.edgecount != 0)
 	{
@@ -182,7 +177,7 @@ static void	wall_tool_draw(t_editor *ed, t_sdlcontext sdl) //TODO: ROTATE AROUND
 		draw_text_boxed(&sdl, tristr, point_sub(sdl.screensize, (t_point) {200, 100}), sdl.screensize);
 		free (tristr);
 		floorcalc_debugdraw(ed, &sdl, dat->fc, tri_i, rad);
-	}
+	}*/
 }
 
 static void unselect_wall(t_walltooldata *dat)
@@ -203,7 +198,7 @@ static void unselect_wall(t_walltooldata *dat)
 
 static void	raise_selected(t_walltooldata *dat, int mousedelta)
 {
-	int	i;
+	/*int	i;
 
 	i = 0;
 	while (i < MAXSELECTED)
@@ -215,7 +210,7 @@ static void	raise_selected(t_walltooldata *dat, int mousedelta)
 			applywallmesh(dat->selected[i]);
 		}
 		i++;
-	}
+	}*/
 }
 
 bool	has_points_incommon(t_walltooldata *dat, t_wall *check)
@@ -262,7 +257,7 @@ static void	select_wall(t_walltooldata *dat, t_wall *select)
 
 static void	wall_tool_update(t_editor *ed) //This needs to access editors state, so pass editor here??
 {
-	t_walltooldata	*dat;
+	/*t_walltooldata	*dat;
 	t_wall			*wall;
 	t_vector3		rc;
 
@@ -290,7 +285,7 @@ static void	wall_tool_update(t_editor *ed) //This needs to access editors state,
 		}
 		wall->line.start = vector2_snap(wall->line.start, 10);
 		wall->line.end = vector2_snap(wall->line.end, 10);
-		applywallmesh(wall);
+		//applywallmesh(wall);
 		if (mouse_clicked(ed->mouse, MOUSE_RIGHT) && dat->mode == place_end)
 			dat->mode = place_start;
 		if (mouse_clicked(ed->mouse, MOUSE_LEFT))
@@ -320,7 +315,7 @@ static void	wall_tool_update(t_editor *ed) //This needs to access editors state,
 			list_remove(&ed->world.wall_list, dat->hover, sizeof(t_wall));
 			unselect_wall(dat);
 		}
-	}
+	}*/
 }
 
 t_tool	*get_wall_tool()
@@ -337,7 +332,7 @@ t_tool	*get_wall_tool()
 		if (tool.tooldata == NULL)
 			error_log(EC_MALLOC);
 		wtd = (t_walltooldata *)tool.tooldata;
-		wtd->wall.object = *object_plane();
+		//wtd->wall.object = *object_plane();
 		wtd->wall.height = 100.0f;
 		wtd->mode = place_first;
 	}
