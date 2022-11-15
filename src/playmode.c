@@ -32,7 +32,7 @@ static int key_events(SDL_Event e, t_game *game)
 	}
 	else if(e.type == SDL_KEYUP)
 	{
-		game->keystate &= ~(keyismoveleft(e)) << KEYS_LEFTMASK;
+		game->keystate &= ~(keyismoveleft(e) << KEYS_LEFTMASK);
 		game->keystate &= ~(keyismoveright(e) << KEYS_RIGHTMASK);
 		game->keystate &= ~(keyismoveup(e) << KEYS_UPMASK);
 		game->keystate &= ~(keyismovedown(e) << KEYS_DOWNMASK);
@@ -48,11 +48,30 @@ static int key_events(SDL_Event e, t_game *game)
 static void updatemouse(t_mouse *mouse)
 {
 	SDL_GetRelativeMouseState(&mouse->delta.x, &mouse->delta.y);
-	if (mouse->delta.x > 200 || mouse->delta.y > 200)
-		mouse->delta = point_zero();
 }
 
-/*check for keyboard/mouse input*/
+static void updateinput(t_input *input, int keystate, t_mouse m, t_controller *controller)
+{
+	input->move = vector2_zero();
+
+	input->move.x -= (keystate >> KEYS_LEFTMASK) & 1;
+	input->move.x += (keystate >> KEYS_RIGHTMASK) & 1;
+	input->move.y += (keystate >> KEYS_DOWNMASK) & 1;
+	input->move.y -= (keystate >> KEYS_UPMASK) & 1;
+	input->crouch = (keystate >> KEYS_CTRLMASK) & 1;
+	input->jump = (keystate >> KEYS_SPACEMASK) & 1;
+	input->run = (keystate >> KEYS_SHIFTMASK) & 1;
+	input->turn = vector2_mul(point_to_vector2(m.delta), MOUSESPEED);
+
+	input->move.x += controller->leftanalog.x;
+	input->move.y += controller->leftanalog.y;
+	input->crouch += controller->b;
+	input->jump += controller->a;
+	input->run += controller->lefttrigger;
+	input->turn = vector2_add(input->turn, vector2_mul(controller->rightanalog, CONTROLLER_SENS));
+}
+
+/*check for keyboard/mouse/joystick input*/
 static int handleinput(t_game *game)
 {
 	static SDL_Event	e;
@@ -64,7 +83,11 @@ static int handleinput(t_game *game)
 		gr = key_events(e, game);
 		if (gr != game_continue)
 			return (gr);
+		gr = controller_events(e, game);
+		if (gr != game_continue)
+			return (gr);
 	}
+	updateinput(&game->input, game->keystate, game->mouse, &game->controller[0]);
 	return(game_continue);
 }
 
@@ -86,6 +109,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	game.world = load_world("world1", sdl);
 	game.player.position = (t_vector3) {500.0f, 500.0f, 500.0f};
 	game.player.angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
+	initialize_controllers(&game);
 	while (gr == game_continue)
 	{
 		update_deltatime(&game.clock);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_events.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 05:41:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/11 18:18:17 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,13 @@ t_gamereturn	editor_events(t_editor *ed)
 			else if (((ed->keystate >> KEYS_SHIFTMASK) & 1)
 				&& iskey(e, SDLK_RETURN))
 				return(game_switchmode);
+		}
+		if (e.type == SDL_CONTROLLERBUTTONDOWN)
+		{
+			if (e.cbutton.button == SDL_CONTROLLER_BUTTON_BACK)
+				return (game_switchmode);
+			if (e.cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE)
+				return (game_exit);
 		}
 	}
 	//move_editor_offset(ed);

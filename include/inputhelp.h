@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   inputhelp.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 09:30:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 00:55:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/14 21:17:41 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,56 @@
 # define KEYS_SHIFTMASK 6
 # define KEYS_MMASK 7
 
+# define CONTROLLER_SENS 0.002f
+# define DEADZONE 0.1f
+# define MAX_CONTROLLERS 2
+
+typedef enum s_inputmode
+{
+	keyboard,
+	controller
+}	t_inputmode;
+
+typedef struct s_input
+{
+	t_inputmode	mode;
+	t_vector2	move;
+	bool		crouch;
+	bool		jump;
+	bool		run;
+	t_vector2	turn;
+}	t_input;
+
+typedef struct s_controller
+{
+	SDL_GameController		*gamecontroller;
+	SDL_JoystickID			instance_id;
+	bool					connected;
+	t_vector2				leftanalog;
+	t_vector2				rightanalog;
+	float					lefttrigger;
+	float					righttrigger;
+	bool					a;
+	bool					b;
+	bool					x;
+	bool					y;
+	bool					back;
+	bool					guide;
+	bool					start;
+	bool					leftstick;
+	bool					rightstick;
+	bool					leftshoulder;
+	bool					rightshoulder;
+	bool					dpad_up;
+	bool					dpad_down;
+	bool					dpad_left;
+	bool					dpad_right;
+}	t_controller;
+
+struct s_mouse;
+
 bool	iskey(SDL_Event e, int keycode);
-bool	mouse_clicked(t_mouse mouse, int button);
+bool	mouse_clicked(struct s_mouse mouse, int button);
 bool	keyismoveleft(SDL_Event e);
 bool	keyismoveright(SDL_Event e);
 bool	keyismoveup(SDL_Event e);

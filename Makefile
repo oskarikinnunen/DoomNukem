@@ -6,7 +6,7 @@
 #    By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/08 13:24:34 by kfum             ###   ########.fr        #
+#    Updated: 2022/11/15 12:02:43 by kfum             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -53,7 +53,8 @@ SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		object_init.c \
 		object_primitives.c \
 		world.c \
-		init_render.c
+		init_render.c \
+		controller.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \
 		vector2_elementary.c vector2_shorthands.c \
