@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/14 22:42:10 by raho             ###   ########.fr        #
+#    Updated: 2022/11/15 15:26:18 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,11 @@ NAME= DoomNukem
 SDLFOLDER= SDL-release-2.0.8
 SDL2= SDL_built/lib/libSDL2.a
 LIBFT= libft/libft.a
+
+FREETYPE_DIR = freetype-2.9
+FREETYPE = freetype_built/lib/libfreetype.a
+SDL2_TTF_DIR = SDL2_ttf-2.0.15
+SDL2_TTF = SDL2_ttf_built/lib/libSDL2_ttf.a
 
 LUAFOLDER= lua-5.3.6
 LUA= $(LUAFOLDER)/install/lib/liblua.a #TODO: find out real name!
@@ -73,7 +78,7 @@ CC= gcc
 LIBS= $(LIBFT) -lm
 CFLAGS= $(INCLUDE) -g -finline-functions -O2
 
-all: $(SDL2) $(LUA) $(LIBFT) $(OBJ)
+all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(LUA) $(LIBFT) $(OBJ)
 	$(CC) $(OBJ) -o $(NAME) `SDL_built/bin/sdl2-config --cflags --libs` $(INCLUDE) $(LIBS) $(LUA)
 
 $(OBJ): include/*.h Makefile
@@ -105,3 +110,9 @@ $(LUA):
 
 $(SDL2):
 	cd $(SDLFOLDER)/build &&../configure --prefix=$(PWD)/SDL_built/ && make install
+
+$(FREETYPE):
+	cd $(FREETYPE_DIR) && ./configure --prefix=$(PWD)/freetype_built/ && make install
+
+$(SDL2_TTF):
+	cd $(SDL2_TTF_DIR) && ./configure --prefix=$(PWD)/SDL2_ttf_built/ --with-ft-prefix=$(PWD)/freetype_built --with-sdl-prefix=$(PWD)/SDL_built/ && make install

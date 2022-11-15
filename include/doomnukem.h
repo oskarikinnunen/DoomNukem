@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/14 20:46:01 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/15 15:26:53 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define DOOMNUKEM_H
 
 # include "../SDL_built/include/SDL2/SDL.h" //TODO: make this work without relative path?
+# include "../SDL2_ttf_built/include/SDL2/SDL_ttf.h"
 # include "libft.h"
 # include "error_log.h"
 # include "limits.h" //TODO: remove mby? just define INT_MAX yourself
