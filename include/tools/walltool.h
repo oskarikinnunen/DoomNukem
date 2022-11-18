@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:17:04 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/15 14:06:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/18 17:20:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,11 @@ typedef	enum e_walltoolmode
 
 #define MAXSELECTED 32
 
-typedef struct s_floortri
-{
-	t_vector2	p[3];
-}	t_floortri;
-
 typedef struct s_floorcalc
 {
 	t_vector2	edges[32];
 	t_face		faces[32];
+	t_line		normals[32];
 	uint8_t		edgecount;
 	uint8_t		facecount;
 }	t_floorcalc;

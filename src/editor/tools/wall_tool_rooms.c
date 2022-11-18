@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/15 17:15:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/18 19:44:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,16 +200,6 @@ void	floorcalc_debugdraw(t_editor *ed, t_sdlcontext *sdl, t_floorcalc fc, int tr
 	}
 	i = tri_i;
 	ed->render.gizmocolor = CLR_PRPL;
-	/*ws = (t_vector3){fc.edges[fc.faces[i].v_indices[0]].x,
-					fc.edges[fc.faces[i].v_indices[0]].y, 0.0f};
-	ws_to = (t_vector3){fc.edges[fc.faces[i].v_indices[1]].x,
-					fc.edges[fc.faces[i].v_indices[1]].y, 0.0f};
-	render_ray(*sdl, ed->render, ws, ws_to);
-	ws = (t_vector3){fc.edges[fc.faces[i].v_indices[1]].x,
-					fc.edges[fc.faces[i].v_indices[1]].y, 0.0f};
-	ws_to = (t_vector3){fc.edges[fc.faces[i].v_indices[2]].x,
-					fc.edges[fc.faces[i].v_indices[2]].y, 0.0f};
-	render_ray(*sdl, ed->render, ws, ws_to);*/
 	
 	/*CREATED LINE */
 	t_vector2 first = fc.edges[fc.faces[i].v_indices[0]];
@@ -273,17 +263,26 @@ void	floorcalc_debugdraw(t_editor *ed, t_sdlcontext *sdl, t_floorcalc fc, int tr
 			drawline(*sdl, vector2_to_point(temp1), vector2_to_point(temp2), CLR_BLUE);
 		else
 			drawline(*sdl, vector2_to_point(temp1), vector2_to_point(temp2), CLR_RED);
-/*		temp1 = vector2_add(tr[fc.faces[i].v_indices[0]],(t_vector2){sdl->window_w / 2, sdl->window_h / 2});
-		temp2 = vector2_add(tr[fc.faces[i].v_indices[1]],(t_vector2){sdl->window_w / 2, sdl->window_h / 2});
-		drawline(*sdl, vector2_to_point(temp1), vector2_to_point(temp2), CLR_PRPL);
-		temp1 = vector2_add(tr[fc.faces[i].v_indices[1]],(t_vector2){sdl->window_w / 2, sdl->window_h / 2});
-		temp2 = vector2_add(tr[fc.faces[i].v_indices[2]],(t_vector2){sdl->window_w / 2, sdl->window_h / 2});
-		drawline(*sdl, vector2_to_point(temp1), vector2_to_point(temp2), CLR_PRPL);*/
 		temp1 = vector2_add(tr[fc.faces[i].v_indices[1]],(t_vector2){sdl->window_w / 2, sdl->window_h / 2});
 		if (i == tri_i)
 			drawcircle(*sdl, vector2_to_point(temp1), 5, CLR_BLUE);
 		else
 			drawcircle(*sdl, vector2_to_point(temp1), 5, CLR_RED);
+		i++;
+	}
+
+	ft_bzero(sdl->surface->pixels, sizeof(uint32_t) * sdl->window_h * sdl->window_w);
+	i = 0;
+	while (i < fc.edgecount - 2)
+	{
+		temp1 = vector2_add(fc.edges[i],(t_vector2){sdl->window_w / 2, 0.0f});
+		temp2 = vector2_add(fc.edges[i + 1],(t_vector2){sdl->window_w / 2, 0.0f});
+		drawline(*sdl, vector2_to_point(temp1),
+			vector2_to_point(temp2), CLR_RED);
+		temp1 = vector2_add(fc.normals[i].start,(t_vector2){sdl->window_w / 2, 0.0f});
+		temp2 = vector2_add(fc.normals[i].end,(t_vector2){sdl->window_w / 2, 0.0f});
+		drawline(*sdl, vector2_to_point(temp1),
+			vector2_to_point(temp2), CLR_BLUE);
 		i++;
 	}
 	
@@ -350,7 +349,7 @@ static void printvalid(int valid[MAXSELECTED], int count)
 }
 
 
-static	void shiftvalid(int *valid, int count)
+static	void shiftvalid(int valid[32], int count)
 {
 	int	temp;
 	int	f_temp;
@@ -384,20 +383,63 @@ static	void shiftvalid_left(int *valid, int count)
 	}
 }
 
+void	populatevalid(int	valid[32], int *validcount, t_floorcalc fc)
+{
+	*validcount = 0;
+	while (*validcount < fc.edgecount)
+	{
+		valid[*validcount] = *validcount;
+		*validcount = *validcount + 1;
+	}
+}
+
+void	populatevalid_l(int	valid[32], int *validcount, t_floorcalc fc)
+{
+	*validcount = 0;
+	while (*validcount < fc.edgecount)
+	{
+		valid[*validcount] = fc.edgecount - *validcount - 1;
+		//printf("pop %i \n", valid[*validcount]);
+		*validcount = *validcount + 1;
+	}
+}
+
+bool	checkroomnormal(t_floorcalc *fc)
+{
+	int	i;
+
+	i = 0;
+	while (i < fc->edgecount - 2)
+	{
+		t_vector2	normal;
+		t_line		nline;
+		//normal = vector2_cross(fc.edges[i], fc.edges[i + 1]);
+		nline.start = vector2_add(fc->edges[i], vector2_one());
+		/*nline.end = vector2_sub(fc->edges[i], fc->edges[i + 1]);
+		
+		float	temp = nline.end.y;
+		nline.end.y = -nline.end.x;
+		nline.end.x = -temp;
+		nline.end = vector2_mul(vector2_normalise(nline.end), 500.0f);*/
+		nline.end = vector2_lerp(fc->edges[i], fc->edges[i + 1], 0.5f);
+		/*if (!intersect(nline, fc->edges, fc->edgecount))
+			return (true);*/
+		fc->normals[i] = nline;
+		i++;
+	}
+	return (false);
+}
+
 void	triangulate(t_floorcalc *fc)
 {
 	int	valid[MAXSELECTED];
 	int	validcount;
 	int	i;
 
-	validcount = 0;
-	while (validcount < fc->edgecount)
-	{
-		valid[validcount] = validcount;
-		validcount++;
-	}
+	populatevalid(valid, &validcount, *fc);
 	i = 0;
 	fc->facecount = 0;
+	checkroomnormal(fc);
 	printf("\nMAKING NEW FACES: \n");
 	while (validcount > 2)
 	{
@@ -418,11 +460,18 @@ void	triangulate(t_floorcalc *fc)
 			fc->facecount++;
 		}
 		else
+		{
 			shiftvalid(valid, validcount);
+		}
+			
 		printvalid(valid, validcount);
 		i++;
 		if (i > 300)
-			break ;
+		{
+			populatevalid_l(valid, &validcount, *fc);
+			fc->facecount = 0;
+			i = 0;
+		}
 	}
 	printf("made %i faces \n", fc->facecount);
 }
@@ -445,14 +494,6 @@ void	makefloor_room(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 			fc.edges[fc.edgecount++] = room->walls[i].line.start;
 		i++;
 	}
-	/*
-	while (w != NULL)
-	{
-		fc.edges[fc.edgecount++] = w->line.end;
-		if (w->prev == NULL)
-			fc.edges[fc.edgecount++] = w->line.start;
-		w = w->prev;
-	}*/
 	triangulate(&fc);
 	room->floors = ft_memalloc(sizeof(t_meshtri) * fc.facecount);
 	room->floorcount = fc.facecount;
@@ -464,19 +505,18 @@ void	makefloor_room(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 		mtri = &room->floors[i];
 		ft_bzero(&mtri->entity, sizeof(t_entity));
 		mtri->entity.obj = object_tri(sdl);
-		//obj->faces[i] = fc.faces[i];
-		mtri->entity.obj->vertices[0] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[0]]);
-		mtri->entity.obj->vertices[1] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[1]]);
-		mtri->entity.obj->vertices[2] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[2]]);
-		mtri->entity.obj->uvs[0] = fc.edges[fc.faces[i].v_indices[0]];
-		mtri->entity.obj->uvs[1] = fc.edges[fc.faces[i].v_indices[1]];
-		mtri->entity.obj->uvs[2] = fc.edges[fc.faces[i].v_indices[2]];
-		mtri->entity.obj->uvs[0] = vector2_div(mtri->entity.obj->uvs[0], 50.0f);
-		mtri->entity.obj->uvs[1] = vector2_div(mtri->entity.obj->uvs[1], 50.0f);
-		mtri->entity.obj->uvs[2] = vector2_div(mtri->entity.obj->uvs[2], 50.0f);
+		mtri->v[0] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[0]]);
+		mtri->v[1] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[1]]);
+		mtri->v[2] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[2]]);
+		mtri->uv[0] = fc.edges[fc.faces[i].v_indices[0]];
+		mtri->uv[1] = fc.edges[fc.faces[i].v_indices[1]];
+		mtri->uv[2] = fc.edges[fc.faces[i].v_indices[2]];
+		mtri->uv[0] = vector2_div(mtri->uv[0], 50.0f);
+		mtri->uv[1] = vector2_div(mtri->uv[1], 50.0f);
+		mtri->uv[2] = vector2_div(mtri->uv[2], 50.0f);
+		applytrimesh(*mtri, mtri->entity.obj);
 		mtri->entity.transform.location = vector3_zero();
 		mtri->entity.transform.scale = vector3_one();
-		//list_push(&ed->world.entitylist, &ent, sizeof(t_entity));
 		i++;
 	}
 }

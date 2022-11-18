@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 12:41:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/15 17:13:28 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/18 13:12:53 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ typedef struct s_meshtri
 {
 	t_entity	entity;
 	t_face		face;
+	t_vector3	v[3];
+	t_vector2	uv[3];
 }	t_meshtri;
 
 typedef struct s_line
@@ -89,6 +91,9 @@ t_object		*get_object_by_name(struct s_sdlcontext sdl, char *name);
 t_object		*object_plane(struct s_sdlcontext *sdl);
 t_object		*object_tri(struct s_sdlcontext *sdl);
 void			applywallmesh(t_wall *wall);
+void			applytrimesh(t_meshtri tri, t_object *obj);
+void			init_room_meshes(t_room *room, t_sdlcontext *sdl);
+bool			object_lookedat(t_editor *ed, t_sdlcontext sdl, t_object *obj);
 void			walls_init(struct s_world *world, struct s_sdlcontext *sdl);
 
 #endif

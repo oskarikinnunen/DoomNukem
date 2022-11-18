@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 13:31:43 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/09 05:22:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/18 15:12:21 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ t_point vector3_to_screenspace(t_render r, t_vector3 vec, t_sdlcontext sdl)
 	proj_q = vector3_to_quaternion(vec);
 	proj_q = quaternion_mul_matrix(r.matworld, proj_q);
 	proj_q = quaternion_mul_matrix(r.matview, proj_q);
+	//clip
 	proj_q = quaternion_mul_matrix(r.matproj, proj_q);
 	proj_q.v = vector3_div(proj_q.v, proj_q.w);
 	proj_q.v = vector3_negative(proj_q.v);

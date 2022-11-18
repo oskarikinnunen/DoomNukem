@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/15 17:33:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/18 14:58:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -356,6 +356,7 @@ void	render_entity(t_sdlcontext sdl, t_render render, t_entity *entity);
 void	render_object(t_sdlcontext sdl, t_render render, struct s_object *obj);
 void	render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size);
 void	render_ray(t_sdlcontext sdl, t_render render, t_vector3 from, t_vector3 to);
+int		triangle_clipagainstplane(t_vector3 plane_p, t_vector3 plane_n, t_triangle *in_tri, t_triangle out_tri[2]);
 void	draw_screen_to_worldspace_ray(t_sdlcontext sdl, t_render render, t_point origin, t_vector2 angle);
 
 /* PHYSICS.C */

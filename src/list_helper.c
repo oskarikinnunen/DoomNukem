@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 12:32:25 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/15 17:31:43 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/18 16:26:22 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ void	list_remove(t_list **head, void *match, size_t content_size)
 			return ;
 		if (ft_memcmp(match, node->content, content_size) == 0)
 		{
+			printf("found match, removing");
 			if (prev != NULL)
 				prev->next = node->next;
 			else

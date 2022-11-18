@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/15 15:34:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/18 19:19:41 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,6 +189,10 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	t_entity	*collide;
 
 	ent = (t_entity *)ed->tool->tooldata;
+	if (instantbutton((t_rectangle) {52, 200, 20, 20}, &ed->mouse, sdl, "minus.png"))
+		ent->object_index--;
+	if (instantbutton((t_rectangle) {74, 200, 20, 20}, &ed->mouse, sdl, "plus.png"))
+		ent->object_index++;
 	ent->object_index = ft_clamp(ent->object_index, 0, sdl.objectcount - 1);
 	if (ent->obj != &sdl.objects[ent->object_index])
 	{

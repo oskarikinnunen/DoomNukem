@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/15 16:07:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/18 14:58:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static void save_clipped_points(float dist[3], t_triangle *tris[3], int points[4
 	}
 }
 
-static int Triangle_ClipAgainstPlane(t_vector3 plane_p, t_vector3 plane_n, t_triangle *in_tri, t_triangle out_tri[2])
+int triangle_clipagainstplane(t_vector3 plane_p, t_vector3 plane_n, t_triangle *in_tri, t_triangle out_tri[2])
 {
 	t_triangle	tri_inside;
 	t_triangle	tri_outside;
@@ -196,10 +196,10 @@ static void clipped(t_render render, t_sdlcontext sdl)
 				nnewtriangles--;
 				switch (p)
 				{
-				case 0: ntristoadd = Triangle_ClipAgainstPlane((t_vector3){0.0f, 0.0f, 0.0f}, (t_vector3){0.0f, 1.0f, 0.0f}, &test, clipped); break;
-				case 1: ntristoadd = Triangle_ClipAgainstPlane((t_vector3){0.0f, (float)sdl.window_h - 1.0f, 0.0f}, (t_vector3){0.0f, -1.0f, 0.0f}, &test, clipped); break;
-				case 2: ntristoadd = Triangle_ClipAgainstPlane((t_vector3){0.0f, 0.0f, 0.0f}, (t_vector3){1.0f, 0.0f, 0.0f}, &test, clipped); break;
-				case 3: ntristoadd = Triangle_ClipAgainstPlane((t_vector3){(float)sdl.window_w - 1.0f, 0.0f, 0.0f}, (t_vector3){-1.0f, 0.0f, 0.0f}, &test, clipped); break;
+				case 0: ntristoadd = triangle_clipagainstplane((t_vector3){0.0f, 0.0f, 0.0f}, (t_vector3){0.0f, 1.0f, 0.0f}, &test, clipped); break;
+				case 1: ntristoadd = triangle_clipagainstplane((t_vector3){0.0f, (float)sdl.window_h - 1.0f, 0.0f}, (t_vector3){0.0f, -1.0f, 0.0f}, &test, clipped); break;
+				case 2: ntristoadd = triangle_clipagainstplane((t_vector3){0.0f, 0.0f, 0.0f}, (t_vector3){1.0f, 0.0f, 0.0f}, &test, clipped); break;
+				case 3: ntristoadd = triangle_clipagainstplane((t_vector3){(float)sdl.window_w - 1.0f, 0.0f, 0.0f}, (t_vector3){-1.0f, 0.0f, 0.0f}, &test, clipped); break;
 				}
 				for (int w = 0; w < ntristoadd; w++)
 				{
@@ -257,7 +257,7 @@ static int clippedtriangles(t_triangle tritransformed, t_mat4x4 matview, t_trian
 	triviewed.t[1] = tritransformed.t[1];
 	triviewed.t[2] = tritransformed.t[2];
 	triviewed.clr = tritransformed.clr;
-	return (Triangle_ClipAgainstPlane(
+	return (triangle_clipagainstplane(
 	(t_vector3){0.0f, 0.0f, 0.1f},
 	(t_vector3){0.0f, 0.0f, 0.2f},
 	&triviewed, clipped));

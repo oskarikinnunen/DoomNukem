@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/15 16:30:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/17 16:50:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,22 +77,32 @@ void	init_roomwalls(t_room *room, t_sdlcontext *sdl)
 		room->walls[i].entity.obj = object_plane(sdl);
 		applywallmesh(&room->walls[i]);
 		i++;
-		//entity
 	}
 }
 
-void	walls_init(struct s_world *world, struct s_sdlcontext *sdl) //TODO: deprecated
+void	applytrimesh(t_meshtri tri, t_object *obj)
 {
-	t_wall	*wall;
-	t_list	*l;
+	obj->vertices[0] = tri.v[0];
+	obj->vertices[1] = tri.v[1];
+	obj->vertices[2] = tri.v[2];
+	obj->uvs[0] = tri.uv[0];
+	obj->uvs[1] = tri.uv[1];
+	obj->uvs[2] = tri.uv[2];
+}
 
-	l = world->wall_list;
-	while (l != NULL) 
+void	init_room_meshes(t_room *room, t_sdlcontext *sdl)
+{
+	int	i;
+
+	i = 0;
+	while (i < room->floorcount)
 	{
-		wall = (t_wall *)l->content;
-		/*wall->object = *object_plane();
-		wall->object.materials->img = get_image_by_name(*sdl, "gwall.png");
-		applywallmesh(wall);*/
-		l = l->next;
+		room->floors[i].entity.obj = object_tri(sdl);
+		applytrimesh(room->floors[i], room->floors[i].entity.obj);
+		/*room->walls[i].entity.transform.location = vector3_zero();
+		room->walls[i].entity.transform.scale = vector3_one();
+		room->walls[i].entity.obj = object_plane(sdl);
+		applywallmesh(&room->walls[i]);*/
+		i++;
 	}
 }
