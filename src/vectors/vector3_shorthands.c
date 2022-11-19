@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 11:34:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/20 14:18:14 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/05 16:23:18 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,22 @@
 
 t_vector3	vector3_zero()
 {
-	return ((t_vector3) {0, 0, 0});
+	return ((t_vector3) {0.0f, 0.0f, 0.0f});
+}
+
+t_vector3	vector3_up()
+{
+	return ((t_vector3) {0.0f, 0.0f, 1.0f});
+}
+
+t_vector3	vector3_down()
+{
+	return ((t_vector3) {0.0f, 0.0f, -1.0f});
 }
 
 t_vector3	vector3_one()
 {
-	return ((t_vector3) {1, 1, 1});
+	return ((t_vector3) {1.0f, 1.0f, 1.0f});
 }
 
 t_vector3	vector3_negative(t_vector3 vec)

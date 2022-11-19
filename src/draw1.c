@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 22:15:00 by raho              #+#    #+#             */
-/*   Updated: 2022/11/04 14:45:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/08 06:17:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	draw_text(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundari
 
 	if (pos.x < 5 || pos.x > sdl->window_w - 5 || pos.y < 5 || pos.y > sdl->window_h - 5)
 	{
-		printf("Trying to draw text outside of bounds. Text's starting position can't be closer than 5 pixels to the edges.\n");
+		//printf("Trying to draw text outside of bounds. Text's starting position can't be closer than 5 pixels to the edges.\n");
 		return ;
 	}
 
@@ -147,7 +147,7 @@ void	draw_text_boxed(t_sdlcontext *sdl, const char *str, t_point pos, t_point bo
 
 	if (pos.x < 5 || pos.x > sdl->window_w - 5 || pos.y < 5 || pos.y > sdl->window_h - 5)
 	{
-		printf("Trying to draw text outside of bounds. Text's starting position can't be closer than 5 pixels to the edges.\n");
+		//printf("Trying to draw text outside of bounds. Text's starting position can't be closer than 5 pixels to the edges.\n");
 		return ;
 	}
 

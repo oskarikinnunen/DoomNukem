@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fill_triangle.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/03 20:02:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/10 13:05:11 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,20 @@ static void step_ab(t_texture *step, t_triangle triangle, float delta)
 	step->w = (t[2].w - t[1].w) * delta;
 }
 
+static uint32_t sample_img(t_img *img, t_texture t)
+{
+	static uint8_t		x8b;
+	static uint8_t		y8b;
+	static uint16_t	xsample;
+	static uint16_t	ysample;
+
+	x8b = (t.u / t.w) * 255;
+	xsample = (x8b * (img->size.x - 1)) / 255;
+	y8b = (t.v / t.w) * 255;
+	ysample = (y8b * (img->size.y - 1)) / 255;
+	return (img->data[(xsample * img->size.x) + ysample]);
+}
+
 static void fill_tri_bot(t_sdlcontext sdl, t_triangle triangle, t_img *img)
 {
 	t_quaternion	*q;
@@ -147,7 +161,6 @@ static void fill_tri_bot(t_sdlcontext sdl, t_triangle triangle, t_img *img)
 	while (q[0].v.y < q[1].v.y)
 	{
 		step_ab(&t_step[2], triangle, 1.0f / (q[2].v.x - q[1].v.x));
-	
 		t[0].u = t[1].u;
 		t[0].v = t[1].v;
 		t[0].w = t[1].w;
@@ -160,12 +173,21 @@ static void fill_tri_bot(t_sdlcontext sdl, t_triangle triangle, t_img *img)
 				sdl.zbuffer[(int)(i) + (int)q[1].v.y * sdl.window_w] = t[0].w;
 				t[0].u += (t_step[2].u * index);
 				t[0].v += (t_step[2].v * index);
-				index = 1;
-				((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w]
-					= img->data[img->size.x * (int)((t[0].u / t[0].w) * img->size.x - 1) + (int)((t[0].v / t[0].w) * img->size.y - 1)];
+				index = 0;
+				 uint8_t		x8b;
+				 uint8_t		y8b;
+				 uint8_t	xsample;
+				 uint8_t	ysample;
+
+				x8b = (t[0].u / t[0].w) * 255;
+				xsample = (x8b * (img->size.x - 1)) / 255;
+				y8b = (t[0].v / t[0].w) * 255;
+				ysample = (y8b * (img->size.y - 1)) / 255;
+				//return (img->data[(xsample * img->size.x) + ysample]);
+				((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w]// = INT_MAX;
+					= img->data[(xsample * img->size.x) + ysample];
 			}
-			else
-				index++;
+			index++;
 			t[0].w += t_step[2].w;
 			i++;
 		}
@@ -201,11 +223,21 @@ static void fill_tri_top(t_sdlcontext sdl, t_triangle triangle, t_img *img)
 				sdl.zbuffer[(int)(i) + (int)q[1].v.y * sdl.window_w] = t[0].w;
 				t[0].u += (t_step[2].u * index);
 				t[0].v += (t_step[2].v * index);
-				index = 1;
-				((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w] = img->data[img->size.x * (int)((t[0].u / t[0].w) * img->size.x - 1) + (int)((t[0].v / t[0].w) * img->size.y - 1)];
+				index = 0;
+				 uint8_t		x8b;
+				 uint8_t		y8b;
+				 uint8_t	xsample;
+				 uint8_t	ysample;
+
+				x8b = (t[0].u / t[0].w) * 255;
+				xsample = (x8b * (img->size.x - 1)) / 255;
+				y8b = (t[0].v / t[0].w) * 255;
+				ysample = (y8b * (img->size.y - 1)) / 255;
+				//return (img->data[(xsample * img->size.x) + ysample]);
+				((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w]// = INT_MAX;
+					= img->data[(xsample * img->size.x) + ysample];
 			}
-			else
-				index++;
+			index++;
 			t[0].w += t_step[2].w;
 			i++;
 		}

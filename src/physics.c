@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   physics.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 13:52:50 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/04 20:37:07 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/08 04:56:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,9 @@ t_entity *entity_collides(t_physics p, t_entity ent)
 void draw_colliders(t_physics p, t_sdlcontext sdl, t_render render)
 {
 	t_vector3	indexer;
-	t_entity	ent;
+	t_vector3	worldpos;
 
 	indexer = vector3_zero();
-	ent.obj = get_object_by_name(sdl, "cube");
-	ent.transform.scale = (t_vector3){1.0f, 1.0f, 1.0f};
-	render.view = wireframe;
 	while (indexer.z < 10.0f)
 	{
 		indexer.x = 0;
@@ -77,14 +74,14 @@ void draw_colliders(t_physics p, t_sdlcontext sdl, t_render render)
 			indexer.y = 0;
 			while (indexer.y < 100.0f)
 			{
-				ent.transform.location = vector3_mul(indexer, 10.0f);
+				worldpos = vector3_mul(indexer, 10.0f);
 				if (p.cube[(int)indexer.x][(int)indexer.y][(int)indexer.z] != 0) {
 					render.gizmocolor = CLR_PRPL;
-					render_gizmo(sdl, render, &ent);
+					render_gizmo(sdl, render, worldpos, 2);
 				}
-				if (indexer.y == 0 || indexer.y == 99.0f || indexer.x == 0 || indexer.x == 99.0f || indexer.z == 0) {
+				if (indexer.y == 0 || indexer.y == 99.0f || indexer.x == 0 || indexer.x == 99.0f) {
 					render.gizmocolor = CLR_GREEN;
-					render_gizmo(sdl, render, &ent);
+					render_gizmo(sdl, render, worldpos, 2);
 				}
 				indexer.y++;
 			}
@@ -92,7 +89,6 @@ void draw_colliders(t_physics p, t_sdlcontext sdl, t_render render)
 		}
 		indexer.z++;
 	}
-	render.view = fill;
 }
 
 void calculate_colliders(t_physics *p)
@@ -130,6 +126,26 @@ bool	pointrectanglecollision(t_point p, t_rectangle rect) //dunno if this should
 bool	pointcirclecollision(t_vector2 p, t_vector2 cp, float r)
 {
 	return (vector2_dist(p, cp) <= r);
+}
+
+float sign (t_point p1, t_vector3 p2, t_vector3 p3)
+{
+    return ((float)p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * ((float)p1.y - p3.y);
+}
+
+bool pointtrianglecollision (t_point point, t_triangle tri)
+{
+    float d1, d2, d3;
+    bool has_neg, has_pos;
+
+    d1 = sign(point, tri.p[0].v, tri.p[1].v);
+    d2 = sign(point, tri.p[1].v, tri.p[2].v);
+    d3 = sign(point, tri.p[2].v, tri.p[0].v);
+
+    has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+    has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+    return !(has_neg && has_pos);
 }
 
 //TODO: no worky, look at https://www.jeffreythompson.org/collision-detection/line-circle.php and fix

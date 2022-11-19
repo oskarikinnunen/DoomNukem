@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
+#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/03 19:49:27 by okinnune         ###   ########.fr        #
+#    Updated: 2022/11/08 13:29:37 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,15 +25,17 @@ LUA= $(LUAFOLDER)/install/lib/liblua.a #TODO: find out real name!
 SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		editor.c editor_mouse.c editor_events.c \
 		editor_map_io.c	\
-		editor/tools/point_tool.c \
-		editor/tools/point_tool_delete.c \
 		editor/tools/entity_tool.c \
 		editor/tools/wall_tool.c \
+		editor/tools/wall_tool_rooms.c \
 		editor/tools/button_tool.c \
 		editor/imagedropdown.c \
 		editor/editor_new_buttons.c \
 		editor/editor_instant_button.c \
-		playmode.c inputhelper.c playmode_overhead.c \
+		editor/editor_movement.c \
+		editor/editor_raycast.c \
+		playmode.c inputhelper.c \
+		walls.c \
 		moveplayer.c physics.c errors.c \
 		game_3d.c fill_triangle.c perfgraph.c \
 		png.c lua_conf.c list_helper.c \
@@ -51,6 +53,7 @@ VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \
 		vector2_elementary.c vector2_shorthands.c \
 		vector2_complex.c vector2_clamp.c \
+		vector2_more.c \
 		point_elementary.c point_shorthands.c \
 		point_complex.c point_float_ops.c \
 		conversions.c vector3_complex3.c \

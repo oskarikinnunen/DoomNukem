@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   png.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:10:14 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/03 20:17:20 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/08 00:24:18 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void	sample_ouroboros(t_img *orig) //samples the image into itself
 	uint32_t	*newdata;
 	t_point		sample;
 
-	newdata = ft_memalloc((orig->length * 2) * sizeof(uint32_t));
+	newdata = ft_memalloc((orig->length) * sizeof(uint32_t));
 	sample = point_zero();
 	while (sample.y < orig->size.y)
 	{
@@ -113,7 +113,7 @@ void	pngtosimpleimg(t_pngdata *png, t_img *img) //dis bad, make return t_img ins
 	i = 0;
 	while (i < img->length - 1)
 	{
-		img->data[i] = png->palette.plte[png->data[i]];
+		img->data[i] = png->palette.plte[png->data[i]] & 0xFFFFFF;
 		i++;
 	}
 	sample_ouroboros(img);

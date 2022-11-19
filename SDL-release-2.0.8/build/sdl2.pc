@@ -1,6 +1,6 @@
 # sdl pkg-config source file
 
-prefix=/Users/vlaine/vscode/DoomNukem/SDL_built
+prefix=/Users/vlaine/vscode/DoomNukem-main/SDL_built
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include

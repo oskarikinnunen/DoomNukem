@@ -1,4 +1,4 @@
-resolution_width = 1280
+resolution_width = 1080
 resolution_height = 720
 images =
 {
@@ -28,7 +28,10 @@ images =
 	"minus.png",
 	"one.png",
 	"plus.png",
-	"view.png"
+	"view.png",
+	"grid.png",
+	"grid3.png",
+	"gwall.png"
 }
 objects =
 {

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/03 19:50:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/05 18:04:25 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,12 +77,12 @@ t_guibutton			*hovered(t_list *buttonlist, t_point mousepos);
 void				draw_buttons(t_editor ed, t_sdlcontext sdl); //TODO: move somewhere else so game can use it aswell?
 bool				instantbutton(struct s_rectangle rect, struct s_mouse *m, struct s_sdlcontext sdl, char *imgname);
 void				empty_click_func(t_editor *ed);
-t_tool				*get_point_tool(void);
 t_tool				*get_wall_tool(void);
 t_tool				*get_entity_tool(void);
 t_tool				*get_button_editor_tool();
 void				start_imagedropdown(t_point origin, t_imagedropdown *dd);
 void				update_imagedropdown(t_editor *ed, t_imagedropdown *dd);
 void				draw_imagedropdown(t_sdlcontext sdl, t_imagedropdown dd);
+t_vector3			raycast(t_editor *ed);
 
 #endif

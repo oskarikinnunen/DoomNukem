@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_map_io.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/03 19:51:28 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/08 06:10:04 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,11 @@ static int	fileopen(char *filename, int flags)
 
 int		find_chunk_count(int fd)
 {
-	char	buf[CHUNKSIZE + 1];
+	char	buf[CHUNKSIZE + 1] = { };
 	int		br;
 	int		count;
 
 	br = read(fd, buf, CHUNKSIZE);
-
 	count = 0;
 	while (br > 0)
 	{
@@ -92,6 +91,7 @@ void	save_chunk(char *filename, char *chunkname, t_list *content)
 		write(fd, "PADD", CHUNKSIZE - (written % CHUNKSIZE));
 	}
 	write(fd, "CEND", CHUNKSIZE);
+	close(fd);
 }
 
 t_list *load_chunk(char *filename, char *chunkname, size_t size)
@@ -113,10 +113,12 @@ t_list *load_chunk(char *filename, char *chunkname, size_t size)
 		{
 			//printf("found chunk %s \n", buf); //TODO: don't remove, going to be used for logging
 			result = parse_chunk(fd, size);
+			close(fd);
 			return (result);
 		}
 		br = read(fd, buf, CHUNKSIZE);
 	}
+	close(fd);
 	return (NULL);
 }
 

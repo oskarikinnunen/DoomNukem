@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/02 21:02:36 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/08 06:06:18 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,70 +48,39 @@ static void	drawgrid(t_sdlcontext sdl, t_point origin)
 	}
 }
 
+
 static void	update_render_editor(t_render *render, t_editor ed) //TODO: move game3d matrix stuff 
 {
-	render->position = (t_vector3){ed.offset.x, ed.offset.y - (ed.forward_offset.y * 75.0f), ed.offset.z};
-	render->lookdir = lookdirection(ed.angle);
-	render->vtarget = vector3_add(render->position, render->lookdir);
-	render->matcamera = matrix_lookat(render->position, render->vtarget, (t_vector3){0, 0, 1});
-	render->matview = matrix_quickinverse(render->matcamera);
+	render->position = ed.position;
+	render->lookdir = ed.forward;
+	//render->matcamera = matrix_lookat(render->position, render->vtarget, (t_vector3){0, 0, 1});
+	//render->matview = matrix_quickinverse(render->matcamera);
 }
-
-static void	reload_objects(t_list **entitylist, t_sdlcontext sdl)
-{
-	t_list		*l;
-	t_entity	*ent;
-
-	l = *entitylist;
-	while (l != NULL)
-	{
-		ent = (t_entity *)l->content;
-		printf("reloaded object with %i object \n", ent->object_index);
-		//ent->transform.location
-		printf_vec(ent->transform.location);
-		printf_vec(ent->transform.scale);
-		ent->obj = &sdl.objects[ent->object_index]; //TODO: Protect!!s
-		l = l->next;
-	}
-}
-
-/*static void render_editor3d(t_sdlcontext sdl, t_editor ed)
-{
-	t_list	*l;
-	t_entity	ent;
-
-	l = ed.entitylist;
-	while (l != NULL)
-	{
-		ent = *(t_entity *)l->content;
-		render_object(sdl, ed.render, &ent);
-		l = l->next;
-	}
-}*/
 
 int	editorloop(t_sdlcontext sdl)
 {
 	t_editor		ed;
-	t_gamereturn	gr;
-	t_render		render;
 
 	bzero(&ed, sizeof(t_editor));
 	ed.buttonlist = load_chunk("buttons", "BUTN", sizeof(t_guibutton));
 	initialize_buttons(ed.buttonlist, sdl);
 	ed.world = load_world("world1", sdl);
-	ed.tool = get_entity_tool();
-	gr = game_continue;
+	ed.tool = get_wall_tool();
+	ed.gamereturn = game_continue;
 	ed.render = init_render(sdl);
-	ed.angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
-	ed.offset = (t_vector3){500.0f, 500.0f, 200.0f};
-	while (gr == game_continue)
+	//ed.angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
+	ed.angle = (t_vector2){-20.0f, -RAD90 * 0.99f};
+	ed.position = (t_vector3){500.0f, 500.0f, 200.0f};
+	set_font_size(&sdl, 0);
+	while (ed.gamereturn == game_continue)
 	{
 		update_deltatime(&ed.clock);
+		ed.gamereturn = editor_events(&ed);
+		move_editor(&ed);
 		update_render_editor(&ed.render, ed);
-		ft_bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
-		ft_bzero(sdl.zbuffer, sizeof(float) * sdl.window_h * sdl.window_w);
-		gr = editor_events(&ed);
-		render_world3d(sdl, ed.world, ed.render);
+		screen_blank(sdl);
+		render_start(&ed.render);
+		render_world3d(sdl, ed.world, &ed.render);
 		if (ed.tool != NULL)
 		{
 			ed.tool->draw_update(&ed, sdl); //Instant buttons here can toggle mouse.click unhandled, so draw first
@@ -123,12 +92,17 @@ int	editorloop(t_sdlcontext sdl)
 		}
 		draw_buttons(ed, sdl);
 		ed.mouse.click_unhandled = false;
+		draw_text_boxed(&sdl, "tab to unlock/lock mouse, shift + enter to go to playmode", (t_point){sdl.window_w / 2, 10}, (t_point){sdl.window_w, sdl.window_h});
+		char *fps = ft_itoa(ed.clock.fps);
+		draw_text_boxed(&sdl, fps, (t_point){sdl.window_w - 80, 10}, (t_point){sdl.window_w, sdl.window_h});
+		free(fps);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 	}
 	save_world("world1", ed.world);
 	save_editordata(&ed);
-	if (gr == game_exit)
+	free_render(ed.render);
+	if (ed.gamereturn == game_exit)
 		quit_game(&sdl);
-	return (gr);
+	return (ed.gamereturn);
 }

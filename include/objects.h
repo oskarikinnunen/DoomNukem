@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   objects.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 12:41:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/03 19:50:30 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/09 13:04:28 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define OBJECTS_H
 
 #include <inttypes.h>
+#include "vectors.h"
+#include "entity.h"
 
 typedef struct s_material
 {
@@ -41,6 +43,23 @@ typedef struct s_object
 	uint32_t			face_count;
 }	t_object;
 
+typedef struct s_line
+{
+	t_vector2	start;
+	t_vector2	end;
+}	t_line;
+
+typedef struct s_wall
+{
+	t_entity	entity;
+	t_line		line;
+	uint32_t	height;
+	uint8_t		roomindex;
+	char		texname[256];
+}	t_wall;
+
+struct s_world;
+
 t_object		objparse(char *filename);
 struct s_list	*get_uv_list(int fd);
 struct s_list	*get_vertex_list(int fd);
@@ -48,5 +67,7 @@ struct s_list	*get_face_list(int fd);
 void			objects_init(struct s_sdlcontext *sdl);
 t_object		*get_object_by_name(struct s_sdlcontext sdl, char *name);
 t_object		*object_plane();
+void			applywallmesh(t_wall *wall);
+void			walls_init(struct s_world *world);
 
 #endif

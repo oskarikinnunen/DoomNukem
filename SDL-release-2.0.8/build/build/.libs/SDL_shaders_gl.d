@@ -1,23 +1,23 @@
 build/SDL_shaders_gl.lo: \
-  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/render/opengl/SDL_shaders_gl.c \
-  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/render/opengl/../../SDL_internal.h \
-  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/render/opengl/../../dynapi/SDL_dynapi.h \
-  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/render/opengl/../../dynapi/SDL_dynapi_overrides.h \
+  /Users/vlaine/vscode/DoomNukem-main/SDL-release-2.0.8/src/render/opengl/SDL_shaders_gl.c \
+  /Users/vlaine/vscode/DoomNukem-main/SDL-release-2.0.8/src/render/opengl/../../SDL_internal.h \
+  /Users/vlaine/vscode/DoomNukem-main/SDL-release-2.0.8/src/render/opengl/../../dynapi/SDL_dynapi.h \
+  /Users/vlaine/vscode/DoomNukem-main/SDL-release-2.0.8/src/render/opengl/../../dynapi/SDL_dynapi_overrides.h \
   include/SDL_config.h \
-  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_platform.h \
-  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/begin_code.h \
-  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/close_code.h \
-  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_stdinc.h \
-  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_config.h \
-  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_log.h \
-  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_opengl.h \
-  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_opengl_glext.h \
-  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_video.h \
-  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_pixels.h \
-  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_endian.h \
-  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_rect.h \
-  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_error.h \
-  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_rwops.h \
-  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_surface.h \
-  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_blendmode.h \
-  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/render/opengl/SDL_shaders_gl.h
+  /Users/vlaine/vscode/DoomNukem-main/SDL-release-2.0.8/include/SDL_platform.h \
+  /Users/vlaine/vscode/DoomNukem-main/SDL-release-2.0.8/include/begin_code.h \
+  /Users/vlaine/vscode/DoomNukem-main/SDL-release-2.0.8/include/close_code.h \
+  /Users/vlaine/vscode/DoomNukem-main/SDL-release-2.0.8/include/SDL_stdinc.h \
+  /Users/vlaine/vscode/DoomNukem-main/SDL-release-2.0.8/include/SDL_config.h \
+  /Users/vlaine/vscode/DoomNukem-main/SDL-release-2.0.8/include/SDL_log.h \
+  /Users/vlaine/vscode/DoomNukem-main/SDL-release-2.0.8/include/SDL_opengl.h \
+  /Users/vlaine/vscode/DoomNukem-main/SDL-release-2.0.8/include/SDL_opengl_glext.h \
+  /Users/vlaine/vscode/DoomNukem-main/SDL-release-2.0.8/include/SDL_video.h \
+  /Users/vlaine/vscode/DoomNukem-main/SDL-release-2.0.8/include/SDL_pixels.h \
+  /Users/vlaine/vscode/DoomNukem-main/SDL-release-2.0.8/include/SDL_endian.h \
+  /Users/vlaine/vscode/DoomNukem-main/SDL-release-2.0.8/include/SDL_rect.h \
+  /Users/vlaine/vscode/DoomNukem-main/SDL-release-2.0.8/include/SDL_error.h \
+  /Users/vlaine/vscode/DoomNukem-main/SDL-release-2.0.8/include/SDL_rwops.h \
+  /Users/vlaine/vscode/DoomNukem-main/SDL-release-2.0.8/include/SDL_surface.h \
+  /Users/vlaine/vscode/DoomNukem-main/SDL-release-2.0.8/include/SDL_blendmode.h \
+  /Users/vlaine/vscode/DoomNukem-main/SDL-release-2.0.8/src/render/opengl/SDL_shaders_gl.h

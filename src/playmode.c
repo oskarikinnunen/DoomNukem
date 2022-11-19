@@ -49,10 +49,7 @@ static void updatemouse(t_mouse *mouse)
 {
 	SDL_GetRelativeMouseState(&mouse->delta.x, &mouse->delta.y);
 	if (mouse->delta.x > 200 || mouse->delta.y > 200)
-	{
-		mouse->delta.x = 0;
-		mouse->delta.y = 0;
-	}
+		mouse->delta = point_zero();
 }
 
 /*check for keyboard/mouse input*/
@@ -89,40 +86,29 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	game.world = load_world("world1", sdl);
 	game.player.position = (t_vector3) {500.0f, 500.0f, 500.0f};
 	game.player.angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
-	t_entity	temp;
-
-	bzero(&temp, sizeof(t_entity));
-	temp.obj = &sdl.objects[0];
-	bzero(&temp.bounds, sizeof(t_bounds));
-	for (int i = 0; i < sdl.objects[0].vertice_count; i++)
-	{
-		if (temp.bounds.width < vector2_dist((t_vector2){sdl.objects[0].vertices[i].x, sdl.objects[0].vertices[i].y}, vector2_zero()))
-		{
-			temp.bounds.loc = sdl.objects[0].vertices[i];
-			temp.bounds.width = vector2_dist((t_vector2){sdl.objects[0].vertices[i].x, sdl.objects[0].vertices[i].y}, vector2_zero());
-		}
-		if (temp.bounds.height < sdl.objects[0].vertices[i].z)
-			temp.bounds.height = sdl.objects[0].vertices[i].z;
-	}
-	temp.transform.scale = (t_vector3){1, 1, 1};
-	//temp.transform.scale.y = 0.5;
-	//temp.transform.location.x += 1500;
-	temp.object_index = 0;
-	//list_push(&game.world.entitylist, &temp, sizeof(t_item));
 	while (gr == game_continue)
 	{
 		update_deltatime(&game.clock);
 		gr = handleinput(&game);
-		update_render(&render, game.player);
 		moveplayer(&game);
-		screen_blank(sdl);		
-		render_world3d(sdl, game.world, render);
+		//printf_vec(game.player.lookdir);
+		///printf_vec(game.player.position);
+		//game.player.lookdir = (t_vector3){-0.391241, 0.904104, -0.171831};
+		//game.player.position = (t_vector3){869.611389, 73.996613, 50.339905};
+		update_render(&render, game.player);
+		screen_blank(sdl); //Combine with render_start?
+		render_start(&render);
+		render_world3d(sdl, game.world, &render);
 		draw_text_boxed(&sdl, "PLAYMODE", (t_point){5, 5}, (t_point){sdl.window_w, sdl.window_h});
 		//DRAWPERFGRAPH
+		char *fps = ft_itoa(game.clock.delta);
+		draw_text_boxed(&sdl, fps, (t_point){sdl.window_w - 80, 10}, (t_point){sdl.window_w, sdl.window_h});
+		free(fps);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 		//gr = game_switchmode;
 	}
+	free_render(render);
 	if (gr == game_exit)
 		quit_game(&sdl);
 	return(gr); // for now
