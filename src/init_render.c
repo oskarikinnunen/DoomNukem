@@ -31,6 +31,7 @@ t_render	init_render(t_sdlcontext sdl)
 	render.tri_occluder = malloc(sizeof(t_triangle) * 10000);
 	render.occluder_normal = malloc(sizeof(t_vector3) * 10000);
 	render.occluder_vector = malloc(sizeof(t_vector3) * 10000);
+	render.occluder = malloc(sizeof(t_occluder) * 10000);
 
 	render.debug_img = get_image_by_name(sdl, "");
 	render.vtarget = vector3_add(render.position, render.lookdir);

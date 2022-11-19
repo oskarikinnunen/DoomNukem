@@ -421,7 +421,6 @@ static bool PointInTriangle (t_vector3 pt, t_triangle t)
 void tri_occluder(t_render *render, t_sdlcontext sdl, t_entity *entity)
 {
 	int				clipamount;
-	int				start;
 	int				index;
 	int				max;
 	int				add;
@@ -430,13 +429,20 @@ void tri_occluder(t_render *render, t_sdlcontext sdl, t_entity *entity)
 	t_triangle		t;
 	t_triangle		clipped[2];
 	t_quaternion	temp;
+	uint32_t		id;
 
-	printf("\n\n\n\n\nOCCLUDER SETUP FUNCTION!\n\n\n\n\n");
-	start = render->tri_occluder_count;
+	//printf("\n\n\n\n\nOCCLUDER SETUP FUNCTION!\n\n\n\n\n");
+	if (render->occluder_count != 0)
+	{
+		id = render->occluder[render->occluder_count - 1].id + 1;
+	}
+	else
+		id = 0;
+	render->tri_occluder_count = 0;
 	b = get_entity_boundingbox_transformed(entity);
 	if (b.is_wall == false)
 	{
-		printf("ent\n\n");
+		//printf("ent\n\n");
 		max = 4;
 		add = 4;
 	}
@@ -444,7 +450,7 @@ void tri_occluder(t_render *render, t_sdlcontext sdl, t_entity *entity)
 	{
 		max = 1;
 		add = 2;
-		printf("wall\n\n");
+		//printf("wall\n\n");
 	}
 	i = 0;
 	while (i < max)
@@ -454,25 +460,27 @@ void tri_occluder(t_render *render, t_sdlcontext sdl, t_entity *entity)
 		t.p[2] = vector3_to_quaternion(b.boundingbox[i + add]);
 		clipamount = triangle_to_projection(sdl, render, t, clipped);
 		index = 0;
-		printf("first clip %d\n\n", clipamount);
+		//printf("first clip %d\n\n", clipamount);
 		while (index < clipamount)
 		{
 			render->tri_occluder[render->tri_occluder_count++] = clipped[index];
+			//print_tri(render->tri_occluder[render->tri_occluder_count - 1]);
 			index++;
 		}
 		t.p[2] = vector3_to_quaternion(b.boundingbox[(i + 1) % 4]);
 		clipamount = triangle_to_projection(sdl, render, t, clipped);
 		index = 0;
-		printf("second clip %d\n\n", clipamount);
+		//printf("second clip %d\n\n", clipamount);
 		while (index < clipamount)
 		{
 			render->tri_occluder[render->tri_occluder_count++] = clipped[index];
+			//print_tri(render->tri_occluder[render->tri_occluder_count - 1]);
 			index++;
 		}
 		i++;
 	}
-	i = start;
-	printf("occluder count start %d tri count %d\n", render->occluder_count, render->tri_occluder_count - start);
+	i = 0;
+	//printf("occluder count start %d tri count %d\n", render->occluder_count, render->tri_occluder_count - start);
 	while (i < render->tri_occluder_count)
 	{
 		bool distneg = false;
@@ -495,7 +503,7 @@ void tri_occluder(t_render *render, t_sdlcontext sdl, t_entity *entity)
 
 			distneg = false;
 			distpos = false;
-			index = start;
+			index = 0;
 			while (index < render->tri_occluder_count)
 			{
 				/*
@@ -504,9 +512,10 @@ void tri_occluder(t_render *render, t_sdlcontext sdl, t_entity *entity)
 					index++;
 					continue;
 				}*/
-				dist[0] = vector3_fdist_to_plane(render->tri_occluder[index].p[0].v, plane_n, plane_p);
-				dist[1] = vector3_fdist_to_plane(render->tri_occluder[index].p[1].v, plane_n, plane_p);
-				dist[2] = vector3_fdist_to_plane(render->tri_occluder[index].p[2].v, plane_n, plane_p);
+				dist[0] = roundf(vector3_fdist_to_plane(render->tri_occluder[index].p[0].v, plane_n, plane_p));
+				dist[1] = roundf(vector3_fdist_to_plane(render->tri_occluder[index].p[1].v, plane_n, plane_p));
+				dist[2] = roundf(vector3_fdist_to_plane(render->tri_occluder[index].p[2].v, plane_n, plane_p));
+				//printf(" d1 %f d2 %f d3 %f\n", dist[0], dist[1], dist[2]);
 				if (dist[0] >= 0.0f && dist[1] >= 0.0f && dist[2] >= 0.0f)
 					distpos = true;
 				else
@@ -529,19 +538,27 @@ void tri_occluder(t_render *render, t_sdlcontext sdl, t_entity *entity)
 					plane_n.y = -1.0f * plane_n.y;
 					//flip normal
 				}
-				render->occluder_normal[render->occluder_count] = plane_n;
-				render->occluder_vector[render->occluder_count++] = plane_p;
+				//printf("added\n");
+				render->occluder[render->occluder_count].id = id;
+				render->occluder[render->occluder_count].normal = plane_n;
+				render->occluder[render->occluder_count++].vector = plane_p;
 			}
+			//else
+				//printf("Didnt add\n");
 		}
 		i++;
 	}
-	printf("occluder count end %d\n", render->occluder_count);
+	//printf("occluder count end %d\n", render->occluder_count);
+}
+
+static int occluder(t_render *render)
+{
+
 }
 
 int is_occluded_tri(t_render *render, t_sdlcontext sdl, t_entity *entity)
 {
 	int				clipamount;
-	int				start;
 	int				index;
 	int				max;
 	int				add;
@@ -550,9 +567,10 @@ int is_occluded_tri(t_render *render, t_sdlcontext sdl, t_entity *entity)
 	t_triangle		t;
 	t_triangle		clipped[2];
 	t_quaternion	temp;
+	uint32_t		id;
 
 	printf("\n\n\n\n\n\nCHECK OCCLUSION FUNCTION!\n\n\n");
-	start = render->tri_occluder_count;
+	render->tri_occluder_count = 0;
 	b = get_entity_boundingbox_transformed(entity);
 	if (b.is_wall == false)
 	{
@@ -589,30 +607,70 @@ int is_occluded_tri(t_render *render, t_sdlcontext sdl, t_entity *entity)
 		}
 		i++;
 	}
-	printf("i is %d\n", i);
-	printf("occluder count start %d tri count %d\n", render->occluder_count, render->tri_occluder_count - start);
+	//return(occluder(render));
 	render->calc_tri_count = 0;
-	index = start;
-	while (index < render->tri_occluder_count)
+	id = 0;
+	i = 0;
+	while (i < render->occluder_count)
 	{
-		i = 0;
-		while (i < render->occluder_count)
+		printf("occluder id %d %d %d\n", render->occluder[i].id, i, render->tri_occluder_count);
+		if (id == render->occluder[i].id)
 		{
-			clipamount = clip_triangle_against_plane(render->occluder_vector[i], render->occluder_normal[i], render->tri_occluder[index], clipped);
-		//	print_vector3(render->occluder_vector[i]);
-		//	print_vector3(render->occluder_normal[i]);
-		//	printf("%d\n", render->occluder_count);
-			for (int w = 0; w < clipamount; w++)
+			index = 0;
+			while (index < render->tri_occluder_count)
 			{
-				render->calc_triangles[render->calc_tri_count++] = clipped[w];
+				clipamount = clip_triangle_against_plane(render->occluder[i].vector, render->occluder[i].normal, render->tri_occluder[index], clipped);
+
+				for (int w = 0; w < clipamount; w++)
+				{
+					render->calc_triangles[render->calc_tri_count++] = clipped[w];
+				}
+				index++;
 			}
-			i++;
 		}
-		index++;
+		else if (id + 1 == render->occluder[i].id)
+		{
+			if (render->occluder[i - 1].id == id)
+			{
+				render->tri_occluder_count = 0;
+				if (render->calc_tri_count == 0)
+				{
+					printf("exit 1\n");
+					return(1);
+				}
+			}
+			index = 0;
+			while (index < render->calc_tri_count)
+			{
+				clipamount = clip_triangle_against_plane(render->occluder[i].vector, render->occluder[i].normal, render->calc_triangles[index], clipped);
+
+				for (int w = 0; w < clipamount; w++)
+				{
+					render->tri_occluder[render->tri_occluder_count++] = clipped[w];
+				}
+				index++;
+			}
+		}
+		else
+		{
+
+			render->calc_tri_count = 0;
+			if (render->tri_occluder_count == 0)
+			{
+				printf("exit 2\n");
+				return(1);
+			}
+			id = render->occluder[i].id;
+			continue;
+		}
+		i++;
 	}
-	//print_render_statistics(render->stats);
-	printf("render calc tri count %d\n", render->calc_tri_count);
-	if (render->calc_tri_count > 0)
+	if (render->occluder[i - 1].id == id)
+		render->tri_occluder_count = 0;
+	else
+		render->calc_tri_count = 0;
+	printf("end of function %d %d\n", render->calc_tri_count, render->tri_occluder_count);
+	if (render->calc_tri_count > 0 || render->tri_occluder_count > 0)
 		return(0);
 	else
 		return(1);
@@ -664,7 +722,7 @@ void render_world3d(t_sdlcontext sdl, t_world world, t_render *render)
 	{
 		wall = *(t_wall *)l->content;
 		//if (check_occlusion(render, sdl, &wall.entity) == 0)
-		//if (is_occluded_tri(render, sdl, &wall.entity) == 0)
+		if (is_occluded_tri(render, sdl, &wall.entity) == 0)
 			render_entity(sdl, render, &wall.entity);
 		render->rendermode = fill;
 		l = l->next;

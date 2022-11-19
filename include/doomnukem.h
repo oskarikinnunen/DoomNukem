@@ -190,6 +190,13 @@ typedef struct s_render_statistics
 	uint32_t	render_count; // render_entity called count per frame
 }	t_render_statistics;
 
+typedef struct s_occluder
+{
+	t_vector3		vector; // position vector matches normal len
+	t_vector3		normal; // which way the occluder plane points to in 2d screenspace in theory should be able to do this in 3d space, saving time
+	uint32_t		id;
+}	t_occluder;
+
 typedef struct s_render
 {
 	struct s_object	*t_obj; //TODO: Implement name
@@ -218,6 +225,7 @@ typedef struct s_render
 	uint32_t		*debug_occlusion;
 	t_vector3		*occluder_vector;
 	t_vector3		*occluder_normal;
+	t_occluder		*occluder;
 	uint32_t		occluder_count;
 	t_render_statistics	stats;
 }	t_render;
