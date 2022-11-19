@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/17 16:50:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/19 18:52:51 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,10 @@ void	init_roomwalls(t_room *room, t_sdlcontext *sdl)
 	while (i < room->wallcount)
 	{
 		room->walls[i].entity.transform.location = vector3_zero();
-		room->walls[i].entity.transform.scale = vector3_one();
+		if (!room->walls[i].disabled)
+			room->walls[i].entity.transform.scale = vector3_one();
+		else
+			room->walls[i].entity.transform.scale = vector3_zero();
 		room->walls[i].entity.obj = object_plane(sdl);
 		applywallmesh(&room->walls[i]);
 		i++;

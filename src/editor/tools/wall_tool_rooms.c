@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/18 19:44:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/19 18:45:25 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ static bool intersect(t_line line1, t_vector2 *edges, int edgecount)
 				&& ft_minf(line2.start.y, line2.end.y) < y
 				&& ft_maxf(line2.start.y, line2.end.y) > y))
 				{
-					printf("\nLINE COLLIDES WITH %i->%i \n", i, i + 1);
+					//printf("\nLINE COLLIDES WITH %i->%i \n", i, i + 1);
 					return (true);
 				}
 		}
@@ -383,6 +383,17 @@ static	void shiftvalid_left(int *valid, int count)
 	}
 }
 
+bool	isaligned(t_vector2 vs[3])
+{
+	t_vector2	align1 = vector2_sub(vs[1], vs[2]);
+	t_vector2	align2 = vector2_sub(vs[1], vs[0]);
+	align1 = vector2_normalise(align1);
+	align2 = vector2_normalise(align2);
+	align1 = vector2_abs(align1);
+	align2 = vector2_abs(align2);
+	return (vector2_cmp(align1, align2));
+}
+
 void	populatevalid(int	valid[32], int *validcount, t_floorcalc fc)
 {
 	*validcount = 0;
@@ -439,23 +450,30 @@ void	triangulate(t_floorcalc *fc)
 	populatevalid(valid, &validcount, *fc);
 	i = 0;
 	fc->facecount = 0;
-	checkroomnormal(fc);
+	//checkroomnormal(fc);
 	printf("\nMAKING NEW FACES: \n");
+	printf("triangulating shape with %i edges\n", fc->edgecount);
 	while (validcount > 2)
 	{
-		printf("try %i %i %i \n", valid[validcount - 1], valid[0], valid[1]);
+		//printf("try %i %i %i \n", valid[validcount - 1], valid[0], valid[1]);
 		t_line line1;
 		line1.start = fc->edges[valid[validcount - 1]];
 		line1.end = fc->edges[valid[1]];
 		t_vector2 first = fc->edges[valid[validcount - 1]];
 		t_vector2 center = fc->edges[valid[0]];
 		t_vector2 second = fc->edges[valid[1]];
+		if (isaligned((t_vector2[3]){first,center,second}))
+		{
+			printf("removed aligned %i \n", valid[0]);
+			removevalid(valid, validcount--, 0);
+		}
+			
 		if (correctangle((t_vector2[3]){first,center,second}) && !intersect(line1, fc->edges, fc->edgecount))
 		{
 			fc->faces[fc->facecount].v_indices[0] = valid[validcount - 1];
 			fc->faces[fc->facecount].v_indices[1] = valid[0];
 			fc->faces[fc->facecount].v_indices[2] = valid[1];
-			printf("connect %i %i %i \n", valid[validcount - 1], valid[0], valid[1]);
+			//printf("connect %i %i %i \n", valid[validcount - 1], valid[0], valid[1]);
 			removevalid(valid, validcount--, 0);
 			fc->facecount++;
 		}
@@ -463,17 +481,48 @@ void	triangulate(t_floorcalc *fc)
 		{
 			shiftvalid(valid, validcount);
 		}
-			
-		printvalid(valid, validcount);
+		//printvalid(valid, validcount);
 		i++;
-		if (i > 300)
+		if (i == 24000)
 		{
 			populatevalid_l(valid, &validcount, *fc);
 			fc->facecount = 0;
-			i = 0;
 		}
+		if (i > 48000)
+		{
+			fc->facecount = 0;
+			return ;
+			//TODO: return fail, don't generate floor mesh and prompt user somehow? to change the room geometry etc
+			printf("OVER 48000 ITERATIONS!\n");
+			exit(0);
+		}
+			
 	}
 	printf("made %i faces \n", fc->facecount);
+}
+
+void	free_object(t_object *object)
+{
+	if (object->faces != NULL)
+		free(object->faces);
+	if (object->materials != NULL)
+		free(object->materials);
+	if (object->uvs != NULL)
+		free(object->uvs);
+	if (object->vertices != NULL)
+		free(object->vertices);
+}
+
+void	free_floor(t_room *room)
+{
+	int	i;
+
+	i = 0;
+	while (i < room->floorcount)
+	{
+		free_object(room->floors[i].entity.obj);
+		i++;
+	}
 }
 
 void	makefloor_room(t_editor *ed, t_sdlcontext *sdl, t_room *room)
@@ -487,14 +536,19 @@ void	makefloor_room(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 	ft_bzero(&fc, sizeof(fc));
 	circum_angle = 0.0f;
 	i = 0;
+	free_floor(room);
 	while (i < room->wallcount)
 	{
-		fc.edges[fc.edgecount++] = room->walls[i].line.end;
-		if (i == room->wallcount - 1)
-			fc.edges[fc.edgecount++] = room->walls[i].line.start;
+		// Check if vector between previous edge and current one is the same as current one to next one, if it is then ignore current edge
+		// Might be better to do that in triangulate ^ because the indexes
+		fc.edges[fc.edgecount++] = room->walls[i].line.start;
+		/*if (i == room->wallcount - 1)
+			fc.edges[fc.edgecount++] = room->walls[i].line.start;*/
 		i++;
 	}
 	triangulate(&fc);
+	if (fc.facecount == 0)
+		return ;
 	room->floors = ft_memalloc(sizeof(t_meshtri) * fc.facecount);
 	room->floorcount = fc.facecount;
 	if (room->floors == NULL)

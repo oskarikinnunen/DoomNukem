@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:42:04 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/18 13:19:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/19 16:26:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ typedef struct s_roomtooldata
 	t_roomtoolmode	rtm;
 	t_room			*room;
 	t_wall			wall;
+	t_wall			*ed_wall;
+	t_wall			doorwalls[3];
 	t_floorcalc		fc;
 }	t_roomtooldata;
 

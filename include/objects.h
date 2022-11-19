@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 12:41:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/18 13:12:53 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/19 18:50:48 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ typedef struct s_meshtri
 	t_face		face;
 	t_vector3	v[3];
 	t_vector2	uv[3];
+	char		texname[256];
 }	t_meshtri;
 
 typedef struct s_line
@@ -64,6 +65,7 @@ typedef struct s_wall
 	t_entity	entity;
 	t_line		line;
 	uint32_t	height;
+	bool		disabled; //TODO: implement
 	char		texname[256];
 }	t_wall;
 

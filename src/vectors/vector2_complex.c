@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 11:43:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/18 18:15:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/19 15:54:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ t_vector2	vector2_lerp(t_vector2 v1, t_vector2 v2, float lerp)
 	t_vector2 result;
 
 	//lerp = lerp * vector2_dist(v1, v2);
-	result.x = v1.x + (lerp * (v1.x - v2.x));
-	result.y = v1.y + (lerp * (v1.y - v2.y));
+	result.x = v1.x - (lerp * (v1.x - v2.x));
+	result.y = v1.y - (lerp * (v1.y - v2.y));
 	return (result);
 }
 

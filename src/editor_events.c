@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 05:41:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/19 16:00:01 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,13 @@ void		move_editor_offset(t_editor *ed)
 		ed->position.z += ed->mouse.scroll_delta * 30.0f;
 	ed->position.x = ft_clampf(ed->position.x, 0.0f, 1000.0f);
 	ed->position.y = ft_clampf(ed->position.y, 0.0f, 1000.0f);*/
+}
+
+void	force_mouseunlock(t_editor *ed)
+{
+	ed->mouse.relative = !ed->mouse.relative;
+	SDL_SetRelativeMouseMode(ed->mouse.relative);
+	ed->mouse.delta = point_zero();
 }
 
 t_gamereturn	editor_events(t_editor *ed)

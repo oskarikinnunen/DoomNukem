@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/18 18:09:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/19 18:34:15 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,9 @@ float		vector2_cross(t_vector2 first, t_vector2 second);
 
 //returns interpolated vector between 'v1' and 'v2' TODO: explain better lol
 t_vector2	vector2_lerp(t_vector2 v1, t_vector2 v2, float lerp);
+
+//returns absolute vector2
+t_vector2	vector2_abs(t_vector2 vec);
 
 //returns the angle in radians between two vectors
 float vector2_anglebetween(t_vector2 first, t_vector2 second);
