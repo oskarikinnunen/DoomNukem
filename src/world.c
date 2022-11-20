@@ -532,16 +532,52 @@ void tri_occluder(t_render *render, t_sdlcontext sdl, t_entity *entity)
 			}
 			if (distneg != distpos)
 			{
-				if (distpos == true)
-				{
-					plane_n.x = -1.0f * plane_n.x;
-					plane_n.y = -1.0f * plane_n.y;
-					//flip normal
-				}
 				//printf("added\n");
 				render->occluder[render->occluder_count].id = id;
-				render->occluder[render->occluder_count].normal = plane_n;
-				render->occluder[render->occluder_count++].vector = plane_p;
+				render->occluder[render->occluder_count].normal[0] = plane_n;
+
+				render->occluder[render->occluder_count].vector[0] = plane_p;
+				render->occluder[render->occluder_count].vector[1] = render->tri_occluder[i].p[(e + 1) % 3].v;
+
+				float delta = vector3_dist(render->tri_occluder[i].p[(e - 1) % 3].v, render->tri_occluder[i].p[e].v) / vector3_dist(render->tri_occluder[i].p[(e + 1) % 3].v, render->tri_occluder[i].p[e].v);
+				render->occluder[render->occluder_count].normal[1].x = flerp(render->tri_occluder[i].p[e].v.x, render->tri_occluder[i].p[(e + 1) % 3].v.x, delta);
+				render->occluder[render->occluder_count].normal[1].y = flerp(render->tri_occluder[i].p[e].v.y, render->tri_occluder[i].p[(e + 1) % 3].v.y, delta);
+				
+				render->occluder[render->occluder_count].normal[1] = vector3_sub(render->tri_occluder[i].p[(e - 1) % 3].v, render->occluder[render->occluder_count].normal[1]);
+				render->occluder[render->occluder_count].normal[1].z = render->occluder[render->occluder_count].normal[1].x;
+				render->occluder[render->occluder_count].normal[1].x = -render->occluder[render->occluder_count].normal[1].y;
+				render->occluder[render->occluder_count].normal[1].y = render->occluder[render->occluder_count].normal[1].z;
+				render->occluder[render->occluder_count].normal[1].z = 0.0f;
+				test = vector2_magnitude((t_vector2){render->occluder[render->occluder_count].normal[1].x, render->occluder[render->occluder_count].normal[1].y});
+				render->occluder[render->occluder_count].normal[1] = (t_vector3){.x = render->occluder[render->occluder_count].normal[1].x/test, .y = render->occluder[render->occluder_count].normal[1].y/test};
+				
+
+				e++;
+				delta = vector3_dist(render->tri_occluder[i].p[(e - 1) % 3].v, render->tri_occluder[i].p[e].v) / vector3_dist(render->tri_occluder[i].p[(e + 1) % 3].v, render->tri_occluder[i].p[e].v);
+				render->occluder[render->occluder_count].normal[2].x = flerp(render->tri_occluder[i].p[e].v.x, render->tri_occluder[i].p[(e + 1) % 3].v.x, delta);
+				render->occluder[render->occluder_count].normal[2].y = flerp(render->tri_occluder[i].p[e].v.y, render->tri_occluder[i].p[(e + 1) % 3].v.y, delta);
+				
+				render->occluder[render->occluder_count].normal[2] = vector3_sub(render->tri_occluder[i].p[(e - 1) % 3].v, render->occluder[render->occluder_count].normal[2]);
+				render->occluder[render->occluder_count].normal[2].z = render->occluder[render->occluder_count].normal[2].x;
+				render->occluder[render->occluder_count].normal[2].x = -render->occluder[render->occluder_count].normal[2].y;
+				render->occluder[render->occluder_count].normal[2].y = render->occluder[render->occluder_count].normal[2].z;
+				render->occluder[render->occluder_count].normal[2].z = 0.0f;
+				test = vector2_magnitude((t_vector2){render->occluder[render->occluder_count].normal[2].x, render->occluder[render->occluder_count].normal[2].y});
+				render->occluder[render->occluder_count].normal[2] = (t_vector3){.x = render->occluder[render->occluder_count].normal[2].x/test, .y = render->occluder[render->occluder_count].normal[2].y/test};
+			
+				if (distpos == true)
+				{
+					render->occluder[render->occluder_count].normal[0].x = -render->occluder[render->occluder_count].normal[0].x;
+					render->occluder[render->occluder_count].normal[0].y = -render->occluder[render->occluder_count].normal[0].y;
+
+					render->occluder[render->occluder_count].normal[1].x = -render->occluder[render->occluder_count].normal[1].x;
+					render->occluder[render->occluder_count].normal[1].y = -render->occluder[render->occluder_count].normal[1].y;
+
+					render->occluder[render->occluder_count].normal[2].x = -render->occluder[render->occluder_count].normal[2].x;
+					render->occluder[render->occluder_count].normal[2].y = -render->occluder[render->occluder_count].normal[2].y;
+					//flip normal
+				}
+				render->occluder_count++;
 			}
 			//else
 				//printf("Didnt add\n");
@@ -608,6 +644,10 @@ int is_occluded_tri(t_render *render, t_sdlcontext sdl, t_entity *entity)
 		i++;
 	}
 	//return(occluder(render));
+
+	uint32_t	uclipamount, vclipamount, wclipamount;
+	t_triangle	uclipped[2], vclipped[2], wclipped[2];
+
 	render->calc_tri_count = 0;
 	id = 0;
 	i = 0;
@@ -619,11 +659,20 @@ int is_occluded_tri(t_render *render, t_sdlcontext sdl, t_entity *entity)
 			index = 0;
 			while (index < render->tri_occluder_count)
 			{
-				clipamount = clip_triangle_against_plane(render->occluder[i].vector, render->occluder[i].normal, render->tri_occluder[index], clipped);
+				uclipamount = clip_triangle_against_plane(render->occluder[i].vector[0], render->occluder[i].normal[0], render->tri_occluder[index], uclipped);
 
-				for (int w = 0; w < clipamount; w++)
+				for (int u = 0; u < uclipamount; u++)
 				{
-					render->calc_triangles[render->calc_tri_count++] = clipped[w];
+					vclipamount = clip_triangle_against_plane(render->occluder[i].vector[0], render->occluder[i].normal[1], render->tri_occluder[index], vclipped);
+					for (int v = 0; v < vclipamount; v++)
+					{
+						wclipamount = clip_triangle_against_plane(render->occluder[i].vector[1], render->occluder[i].normal[2], render->tri_occluder[index], wclipped);
+						for (int w = 0; w < wclipamount; w++)
+						{
+							render->calc_triangles[render->calc_tri_count++] = wclipped[w];
+							//saves them
+						}
+					}
 				}
 				index++;
 			}
@@ -642,11 +691,20 @@ int is_occluded_tri(t_render *render, t_sdlcontext sdl, t_entity *entity)
 			index = 0;
 			while (index < render->calc_tri_count)
 			{
-				clipamount = clip_triangle_against_plane(render->occluder[i].vector, render->occluder[i].normal, render->calc_triangles[index], clipped);
+				uclipamount = clip_triangle_against_plane(render->occluder[i].vector[0], render->occluder[i].normal[0], render->calc_triangles[index], uclipped);
 
-				for (int w = 0; w < clipamount; w++)
+				for (int u = 0; u < uclipamount; u++)
 				{
-					render->tri_occluder[render->tri_occluder_count++] = clipped[w];
+					vclipamount = clip_triangle_against_plane(render->occluder[i].vector[0], render->occluder[i].normal[1], render->tri_occluder[index], vclipped);
+					for (int v = 0; v < vclipamount; v++)
+					{
+						wclipamount = clip_triangle_against_plane(render->occluder[i].vector[1], render->occluder[i].normal[2], render->tri_occluder[index], wclipped);
+						for (int w = 0; w < wclipamount; w++)
+						{
+							render->tri_occluder[render->tri_occluder_count++] = wclipped[w];
+							//saves them
+						}
+					}
 				}
 				index++;
 			}
