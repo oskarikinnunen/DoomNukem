@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 21:07:56 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/21 21:48:34 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,11 +141,16 @@ static t_img	black_image()
 
 static void	draw_transform_info(t_transform t, t_sdlcontext sdl)
 {
+	SDL_Color	temp;
+
+	temp = sdl.ttfont->color;
+	sdl.ttfont->color = sdl.ttfont->font_colors.white;
 	draw_image(sdl, (t_point){17, 100}, black_image(), (t_point){180, 58});
-	print_ttftext(&sdl, "POS  :", (t_point){20, 143});
-	print_ttftext(&sdl, vector_string(t.location), (t_point){65, 143});
-	print_ttftext(&sdl, "SCALE:", (t_point){20, 105});
-	print_ttftext(&sdl, vector_string(t.scale), (t_point){65, 105});
+	print_ttftext(&sdl, "POS:", (t_point){19, 137});
+	print_ttftext(&sdl, vector_string(t.location), (t_point){65, 137});
+	print_ttftext(&sdl, "SCALE:", (t_point){19, 98});
+	print_ttftext(&sdl, vector_string(t.scale), (t_point){80, 98});
+	sdl.ttfont->color = temp;
 }
 
 static void	draw_current_operation(t_entity *ent, t_entity *collide, t_sdlcontext sdl)
