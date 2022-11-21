@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 19:37:11 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/21 20:59:16 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,7 +175,7 @@ typedef struct s_clock
 	Uint32	prev_time;
 	Uint32	delta;
 	Uint32	fps;
-} t_clock;
+}	t_clock;
 
 /* Playmode */
 
@@ -409,23 +409,14 @@ void	set_font_size(t_sdlcontext *sdl, int font_size);
 
 /* TEXT.C */
 
-// Saves the text to font->texts[i] in sequential order.
-// Can be drawn with draw_saved_text()
-void	save_text(t_font *font, const char *str);
+// Prints text and returns the rectangle of the printed text
+// Font size and color can be set using:
+// sdl->ttfont->font = sdll->ttfont->font_sizes[x] where x can be 0-3
+// sdl->ttfont->color = sdl->ttfont->font_colors.x where x is the color
+t_rectangle	print_ttftext(t_sdlcontext *sdl, const char *text, t_point pos);
 
-// Draws a text that has been saved to font->texts[i] with save_text()
-void	draw_saved_text(t_sdlcontext *sdl, t_img *text, t_point pos);
-
-// Draws text without saving it anywhere
-// Uses a pre-set font size that can be changed by calling set_font_size()
-// Fonts: 0 = 11, 1 = 12, 2 = 14, 3 = 16, 4 = 18, 5 = 20, 6 = 22
-void	draw_text(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundaries);
-
-// Draws text, with a black box in the background, without saving it anywhere
-// Uses a pre-set font size that can be changed by calling set_font_size()
-// Fonts: 0 = 11, 1 = 12, 2 = 14, 3 = 16, 4 = 18, 5 = 20, 6 = 22
-// Returns the rectangle of the drawed textbox
-t_rectangle	draw_text_boxed(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundaries);
+// Does the same as print_ttftext but also fills in the background for the text
+t_rectangle	print_ttftext_boxed(t_sdlcontext *sdl, const char *text, t_point pos);
 
 /* LIST_HELPER.C */
 void	list_push(t_list **head, void *content, size_t content_size);

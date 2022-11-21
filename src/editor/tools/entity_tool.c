@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/07 00:49:32 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/21 21:07:56 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,23 +142,23 @@ static t_img	black_image()
 static void	draw_transform_info(t_transform t, t_sdlcontext sdl)
 {
 	draw_image(sdl, (t_point){17, 100}, black_image(), (t_point){180, 58});
-	draw_text_boxed(&sdl, "POS  :", (t_point){20, 143}, (t_point){sdl.window_w, sdl.window_h});
-	draw_text_boxed(&sdl, vector_string(t.location), (t_point){65, 143}, (t_point){sdl.window_w, sdl.window_h});
-	draw_text_boxed(&sdl, "SCALE:", (t_point){20, 105}, (t_point){sdl.window_w, sdl.window_h});
-	draw_text_boxed(&sdl, vector_string(t.scale), (t_point){65, 105}, (t_point){sdl.window_w, sdl.window_h});
+	print_ttftext(&sdl, "POS  :", (t_point){20, 143});
+	print_ttftext(&sdl, vector_string(t.location), (t_point){65, 143});
+	print_ttftext(&sdl, "SCALE:", (t_point){20, 105});
+	print_ttftext(&sdl, vector_string(t.scale), (t_point){65, 105});
 }
 
 static void	draw_current_operation(t_entity *ent, t_entity *collide, t_sdlcontext sdl)
 {
 	if (collide == NULL)
 	{
-		draw_text_boxed(&sdl, "ADD:", (t_point){sdl.window_w / 2, sdl.window_h - 25}, (t_point){sdl.window_w, sdl.window_h});
-		draw_text_boxed(&sdl, ent->obj->name, (t_point){sdl.window_w / 2 + 60, sdl.window_h - 25}, (t_point){sdl.window_w, sdl.window_h});
+		print_ttftext(&sdl, "ADD:", (t_point){sdl.window_w / 2, sdl.window_h - 25});
+		print_ttftext(&sdl, ent->obj->name, (t_point){sdl.window_w / 2 + 60, sdl.window_h - 25});
 	}
 	else
 	{
-		draw_text_boxed(&sdl, "DEL:", (t_point){sdl.window_w / 2, sdl.window_h - 25}, (t_point){sdl.window_w, sdl.window_h});
-		draw_text_boxed(&sdl, collide->obj->name, (t_point){sdl.window_w / 2 + 60, sdl.window_h - 25}, (t_point){sdl.window_w, sdl.window_h});
+		print_ttftext(&sdl, "DEL:", (t_point){sdl.window_w / 2, sdl.window_h - 25});
+		print_ttftext(&sdl, collide->obj->name, (t_point){sdl.window_w / 2 + 60, sdl.window_h - 25});
 	}
 }
 
@@ -211,7 +211,6 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	ed->render.wireframe = false;
 	draw_colliders(ed->world.physics, sdl, ed->render);
 	/* END SPLIT */
-	set_font_size(&sdl, 0);
 	draw_transform_info(ent->transform, sdl);
 	draw_current_operation(ent, collide, sdl);
 	if (instantbutton((t_rectangle) {30, 120, 20, 20}, &ed->mouse, sdl, "minus.png"))
