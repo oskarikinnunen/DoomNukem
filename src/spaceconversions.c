@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 13:31:43 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/18 15:12:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/21 16:19:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,17 @@ t_point worldtoeditorspace(t_editor *ed, t_vector2 worldcrd)
 
 	result = vector2_to_point(worldcrd);
 	//result = point_add(result, ed->offset);
+	return (result);
+}
+
+t_quaternion	transformed_vector3(t_transform transform, t_vector3 v)
+{
+	t_quaternion	result;
+
+	result.v = vector3_mul_vector3(transform.scale, v);
+	result = quaternion_rotate_euler(result.v, transform.rotation);
+	result.v = vector3_add(transform.location, result.v);
+	//result.w = 1.0f;
 	return (result);
 }
 

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/18 14:58:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/21 16:25:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -356,7 +356,8 @@ void render_entity(t_sdlcontext sdl, t_render render, t_entity *entity)
 {
 	int				index;
 	t_object		*obj;
-	t_vector3		temp;
+	t_quaternion	temp;
+	t_vector3		lookd;
 
 	obj = entity->obj;
 	if (obj == NULL)
@@ -364,10 +365,11 @@ void render_entity(t_sdlcontext sdl, t_render render, t_entity *entity)
 	index = 0;
 	while (index < obj->vertice_count)
 	{
-		//TODO: Matrix rotations
-		temp = vector3_mul_vector3(entity->transform.scale, obj->vertices[index]);
-		temp = vector3_add(entity->transform.location, temp);
-		render.q[index] = vector3_to_quaternion(temp);
+		/*temp.v = vector3_mul_vector3(entity->transform.scale, obj->vertices[index]);
+		temp.v = rotate(temp.v, entity->transform.rotation);
+		temp.v = vector3_add(entity->transform.location, temp.v);
+		temp.w = 1.0f;*/
+		render.q[index] = transformed_vector3(entity->transform, obj->vertices[index]);
 		render.q[index] = quaternion_mul_matrix(render.matworld, render.q[index]);
 		index++;
 	}

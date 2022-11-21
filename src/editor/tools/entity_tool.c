@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/18 19:19:41 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/21 17:39:26 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,6 +183,22 @@ static void findbounds(t_entity *ent)
 	ent->z_bound = zbound;
 }
 
+t_entity *selected_entity(t_editor *ed, t_sdlcontext sdl)
+{
+	t_list		*l;
+	t_entity	*cur;
+	
+	l = ed->world.entitylist;
+	while (l != NULL)
+	{
+		cur = l->content;
+		if (entity_lookedat(ed, sdl, cur))
+			return (cur);
+		l = l->next;
+	}
+	return (NULL);
+}
+
 void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 {
 	t_entity	*ent;
@@ -202,16 +218,10 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	/* SPLIT HERE */
 	ed->render.wireframe = true;
 	ed->render.gizmocolor = CLR_GREEN;
-	collide = entity_collides(ed->world.physics, *ent);
-	if (collide != NULL)
-	{
-		ed->render.gizmocolor = CLR_PRPL;
-		render_entity(sdl, ed->render, collide);
-	}
+	collide = selected_entity(ed, sdl);
 	render_entity(sdl, ed->render, ent);
 	
 	ed->render.wireframe = false;
-	draw_colliders(ed->world.physics, sdl, ed->render);
 	/* END SPLIT */
 	set_font_size(&sdl, 0);
 	draw_transform_info(ent->transform, sdl);
@@ -222,6 +232,25 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 		ent->transform.scale = vector3_one();
 	if (instantbutton((t_rectangle) {74, 120, 20, 20}, &ed->mouse, sdl, "plus.png"))
 		ent->transform.scale = vector3_add_xyz(ent->transform.scale, 0.25f);
+	if ((ed->keystate >> KEYS_SHIFTMASK) & 1)
+		ent->transform.rotation.y += ed->mouse.scroll_delta * ft_degtorad(15.0f);
+	else if ((ed->keystate >> KEYS_LALTMASK) & 1)
+		ent->transform.rotation.z += ed->mouse.scroll_delta * ft_degtorad(15.0f);
+	else
+		ent->transform.rotation.x += ed->mouse.scroll_delta * ft_degtorad(15.0f);
+	if (mouse_clicked(ed->mouse, MOUSE_MDL))
+		ent->transform.rotation = vector3_zero();
+	if (collide != NULL)
+	{
+		ed->render.gizmocolor = CLR_PRPL;
+		ed->render.wireframe = true;
+		render_entity(sdl, ed->render, collide);
+		ed->render.wireframe = false;
+		if (mouse_clicked(ed->mouse, MOUSE_RIGHT))
+			list_remove(&ed->world.entitylist, collide, sizeof(t_entity));
+	}
+	if (mouse_clicked(ed->mouse, MOUSE_LEFT) && collide == NULL) //and selected is null, move to drawupdate
+		list_push(&ed->world.entitylist, ent, sizeof(t_entity));
 }
 
 void	entity_tool_update(t_editor *ed)
@@ -234,27 +263,6 @@ void	entity_tool_update(t_editor *ed)
 	dir = vector3_sub((t_vector3){ed->position.x, ed->position.y, 20.0f}, ent->transform.location);
 	ent->transform.location = raycast(ed);//vector3_movetowards(ent->transform.location, dir, ed->clock.delta * 1.0f);
 	ent->transform.location.z -= ent->z_bound.min * ent->transform.scale.z;
-	if ((ed->keystate >> KEYS_SHIFTMASK) & 1)
-		ent->object_index += ed->mouse.scroll_delta;
-
-	if (mouse_clicked(ed->mouse, MOUSE_LEFT))
-	{
-		t_entity *collision_ent = entity_collides(ed->world.physics, *ent);
-		if (collision_ent == NULL)
-		{
-			list_push(&ed->world.entitylist, ent, sizeof(t_entity));
-			calculate_colliders_for_entities(&ed->world);
-		}
-	}
-	if (mouse_clicked(ed->mouse, MOUSE_RIGHT))
-	{
-		t_entity *collision_ent = entity_collides(ed->world.physics, *ent);
-		if (collision_ent != NULL)
-		{
-			list_remove(&ed->world.entitylist, collision_ent, sizeof(t_entity));
-			calculate_colliders_for_entities(&ed->world);
-		}
-	}
 }
 
 t_tool	*get_entity_tool()

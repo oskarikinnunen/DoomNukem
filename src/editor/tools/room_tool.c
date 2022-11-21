@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/19 19:34:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/21 13:56:34 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -304,10 +304,6 @@ bool	looking_atcorner(t_editor *ed, t_sdlcontext sdl, t_vector2 snap, t_room *ro
 	}
 	return (false);
 }
-
-/*TODO: write floor function that frees previous floor and generates new
-write door create function (click wall and select door width / position)
-*/
 
 static void insertwall(t_wall current, t_room *room, t_wall new[3])
 {

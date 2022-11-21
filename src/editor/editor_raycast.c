@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 18:03:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/18 16:06:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/21 16:02:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,28 @@ static bool	tri_lookedat(t_render r, t_triangle tri, t_sdlcontext sdl)
 		/*vector3_to
 		drawcircle(sdl, clipped[i].p[0].v)*/
 		if (pointtrianglecollision(point_div(sdl.screensize, 2), clipped[i]))
+			return (true);
+		i++;
+	}
+	return (false);
+}
+
+bool	entity_lookedat(t_editor *ed, t_sdlcontext sdl, t_entity *entity)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (i < entity->obj->face_count)
+	{
+		t_triangle	t;
+		t.p[0] = vector3_to_quaternion(entity->obj->vertices[entity->obj->faces[i].v_indices[0] - 1]);
+		t.p[1] = vector3_to_quaternion(entity->obj->vertices[entity->obj->faces[i].v_indices[1] - 1]);
+		t.p[2] = vector3_to_quaternion(entity->obj->vertices[entity->obj->faces[i].v_indices[2] - 1]);
+		t.p[0] = transformed_vector3(entity->transform, t.p[0].v);
+		t.p[1] = transformed_vector3(entity->transform, t.p[1].v);
+		t.p[2] = transformed_vector3(entity->transform, t.p[2].v);
+		if (tri_lookedat(ed->render, t, sdl))
 			return (true);
 		i++;
 	}

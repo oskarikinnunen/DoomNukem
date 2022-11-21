@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   inputhelp.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 09:30:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 00:55:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/21 15:35:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # define KEYS_CTRLMASK 5
 # define KEYS_SHIFTMASK 6
 # define KEYS_MMASK 7
+# define KEYS_LALTMASK 8
 
 bool	iskey(SDL_Event e, int keycode);
 bool	mouse_clicked(t_mouse mouse, int button);

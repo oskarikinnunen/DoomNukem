@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/19 18:34:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/21 16:19:04 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,9 @@ t_vector3	vector3_crossproduct(t_vector3 v1, t_vector3 v2);
 //returns copy of 'vec' but with magnitude clamped to 'max_magnitude'
 t_vector3	vector3_clamp_magnitude(t_vector3 vec, float max_magnitude);
 
+//returs vector 'vec' rotated around vector3_zero() by eulerangles
+t_vector3	vector3_rotate_euler(t_vector3 original, t_vector3 eulers);
+
 //returns signed shortest distance from point to plane, plane normal must be normalised
 float		vector3_fdist_to_plane(t_vector3 p, t_vector3 plane_n, t_vector3 plane_p);
 
@@ -226,6 +229,9 @@ typedef struct s_quaternion
 
 //shorthand for writing (t_quaternion){1.0f, 1.0f, 1.0f, 1.0f}
 t_quaternion	quaternion_identity();
+
+
+t_quaternion	quaternion_rotate_euler(t_vector3 original, t_vector3 eulers);
 
 //returns quaternion multiplication result 'first * second'
 t_quaternion	quaternion_mul(t_quaternion first, t_quaternion second);

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/19 16:00:14 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/21 15:53:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -303,10 +303,11 @@ void			force_mouseunlock(t_editor *ed);
 void			move_editor(t_editor *ed);
 
 /* EDITOR_MOUSE.C */
-t_point	mousetoworldspace(t_editor *ed);
-t_point	mousetogridspace(t_editor *ed);
-t_point	screentogridspace(t_point point);
-void	mouse_event(SDL_Event e, t_editor *ed);
+t_point			mousetoworldspace(t_editor *ed);
+t_point			mousetogridspace(t_editor *ed);
+t_point			screentogridspace(t_point point);
+t_quaternion	transformed_vector3(t_transform transform, t_vector3 v);
+void			mouse_event(SDL_Event e, t_editor *ed);
 
 /* SPACECONVERSIONS.C */
 t_point	worldto_editorspace(t_editor *ed, t_vector2 worldcrd);
