@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/15 15:26:18 by raho             ###   ########.fr        #
+#    Updated: 2022/11/21 20:33:23 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -73,13 +73,13 @@ SRC+= $(VECTORSRC)
 OBJ= $(SRC:.c=.o)
 
 #Compilation stuff:
-INCLUDE= -ISDL_built/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
+INCLUDE= -ISDL_built/include/SDL2/ -ISDL2_ttf_built/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
 CC= gcc
 LIBS= $(LIBFT) -lm
 CFLAGS= $(INCLUDE) -g -finline-functions -O2
 
 all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(LUA) $(LIBFT) $(OBJ)
-	$(CC) $(OBJ) -o $(NAME) `SDL_built/bin/sdl2-config --cflags --libs` $(INCLUDE) $(LIBS) $(LUA)
+	$(CC) $(OBJ) -o $(NAME) `SDL_built/bin/sdl2-config --cflags --libs` -LSDL2_ttf_built/lib -lSDL2_ttf $(INCLUDE) $(LIBS) $(LUA)
 
 $(OBJ): include/*.h Makefile
 

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/14 16:53:57 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/21 20:33:43 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,40 @@ static void	update_render_editor(t_render *render, t_editor ed) //TODO: move gam
 	//render->matview = matrix_quickinverse(render->matcamera);
 }
 
+static void	join_surfaces(SDL_Surface *base, SDL_Surface *new, t_point pos)
+{
+	t_point	i;
+
+	i.y = 0;
+	while (i.y < new->h)
+	{
+		i.x = 0;
+		while (i.x < new->w)
+		{
+			if (((uint32_t *)new->pixels)[i.x + (i.y * new->w)] >> 24 != 0)
+				((uint32_t *)base->pixels)[(i.x + pos.x) + ((i.y + pos.y) * base->w)] = ((uint32_t *)new->pixels)[i.x + (i.y * new->w)];
+			i.x++;
+		}
+		i.y++;
+	}
+}
+
+void	print_ttftext(t_sdlcontext *sdl, const char *text, t_point pos)
+{
+	SDL_Surface	*surfacetext;
+
+	surfacetext = TTF_RenderText_Blended(sdl->ttfont->font, text, sdl->ttfont->color);
+	if (!surfacetext)
+		error_log(EC_TTF_RENDERTEXTBLENDED);
+	join_surfaces(sdl->surface, surfacetext, pos);
+	SDL_FreeSurface(surfacetext);
+}
+
+
 int	editorloop(t_sdlcontext sdl)
 {
 	t_editor		ed;
+	int				i;
 
 	bzero(&ed, sizeof(t_editor));
 	ed.buttonlist = load_chunk("buttons", "BUTN", sizeof(t_guibutton));
@@ -72,6 +103,7 @@ int	editorloop(t_sdlcontext sdl)
 	ed.angle = (t_vector2){-20.0f, -RAD90 * 0.99f};
 	ed.position = (t_vector3){500.0f, 500.0f, 200.0f};
 	set_font_size(&sdl, 0);
+	i = 0;
 	while (ed.gamereturn == game_continue)
 	{
 		update_deltatime(&ed.clock);
@@ -95,6 +127,17 @@ int	editorloop(t_sdlcontext sdl)
 		draw_text_boxed(&sdl, "tab to unlock/lock mouse, shift + enter to go to playmode", (t_point){sdl.window_w / 2, 10}, (t_point){sdl.window_w, sdl.window_h});
 		char *fps = ft_itoa(ed.clock.fps);
 		draw_text_boxed(&sdl, fps, (t_point){sdl.window_w - 80, 10}, (t_point){sdl.window_w, sdl.window_h});
+
+		sdl.ttfont->color = sdl.ttfont->font_colors.black;
+		sdl.ttfont->font = sdl.ttfont->font_sizes[0];
+		print_ttftext(&sdl, "coming in hot guns blazing", (t_point){10, 100});
+		sdl.ttfont->font = sdl.ttfont->font_sizes[1];
+		print_ttftext(&sdl, "coming in hot guns blazing", (t_point){10, 200});
+		sdl.ttfont->font = sdl.ttfont->font_sizes[2];
+		print_ttftext(&sdl, "coming in hot guns blazing", (t_point){10, 300});
+		sdl.ttfont->font = sdl.ttfont->font_sizes[3];
+		print_ttftext(&sdl, "coming in hot guns blazing", (t_point){10, 400});
+		
 		free(fps);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);

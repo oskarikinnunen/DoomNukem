@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/15 15:26:53 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/21 19:37:11 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,25 @@ typedef struct s_font
 	t_img			*texts[20];
 }	t_font;
 
+typedef struct s_fontcolors
+{
+	SDL_Color	black;
+	SDL_Color	white;
+	SDL_Color	red;
+	SDL_Color	green;
+	SDL_Color	blue;
+	SDL_Color	crimson;
+}	t_fontcolors;
+
+typedef struct s_ttfont
+{
+	t_fontcolors	font_colors;
+	SDL_Color		color;
+	TTF_Font		*font_sizes[4];
+	TTF_Font		*font;
+	char			*text;
+}	t_ttfont;
+
 typedef enum e_platform
 {
 	os_mac,
@@ -139,6 +158,7 @@ typedef struct s_sdlcontext
 	uint32_t				window_w;
 	uint32_t				window_h;
 	t_point					screensize;
+	t_ttfont				*ttfont;
 }	t_sdlcontext;
 
 void	screen_blank(t_sdlcontext sdl);
@@ -380,6 +400,7 @@ void	quit_game(t_sdlcontext *sdl);
 /* FONT.C */
 
 void	load_fonts(t_sdlcontext *sdl);
+void	load_ttfonts(t_ttfont *ttfont);
 
 void	draw_black_background(t_sdlcontext *sdl, t_point pos, t_point size);
 
