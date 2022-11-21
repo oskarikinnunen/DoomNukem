@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 22:00:00 by raho              #+#    #+#             */
-/*   Updated: 2022/11/21 21:56:02 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/21 22:23:33 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,27 @@ static void	join_surfaces_boxed(SDL_Surface *base, SDL_Surface *new, t_point pos
 {
 	t_point		i;
 	uint32_t	background;
+	t_point		padding;
 
-	background = 0xFFFFFF;
-	i.y = 0;
-	while (i.y < new->h)
+	background = 0;
+	padding.x = 3;
+	padding.y = 3;
+	i.y = 0 - padding.y;
+	while (i.y < new->h + padding.y)
 	{
-		i.x = 0;
-		while (i.x < new->w)
+		i.x = 0 - padding.x;
+		while (i.x < new->w + padding.x)
 		{
 			if (i.x + pos.x > 0 && i.x + pos.x < base->w && \
 				i.y + pos.y > 0 && i.y + pos.y < base->h)
 			{
-				if (((uint32_t *)new->pixels)[i.x + (i.y * new->w)] >> 24 != 0) // checking alpha
-					((uint32_t *)base->pixels)[(i.x + pos.x) + ((i.y + pos.y) * base->w)] = ((uint32_t *)new->pixels)[i.x + (i.y * new->w)];
+				if (i.x >= 0 && i.x < new->w && i.y >= 0 && i.y < new->h)
+				{	
+					if (((uint32_t *)new->pixels)[i.x + (i.y * new->w)] >> 24 != 0) // checking alpha
+						((uint32_t *)base->pixels)[(i.x + pos.x) + ((i.y + pos.y) * base->w)] = ((uint32_t *)new->pixels)[i.x + (i.y * new->w)];
+					else
+						((uint32_t *)base->pixels)[(i.x + pos.x) + ((i.y + pos.y) * base->w)] = background;
+				}
 				else
 					((uint32_t *)base->pixels)[(i.x + pos.x) + ((i.y + pos.y) * base->w)] = background;
 			}

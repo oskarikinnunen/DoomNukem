@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 21:50:37 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/21 22:23:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,10 +93,10 @@ int	editorloop(t_sdlcontext sdl)
 		}
 		draw_buttons(ed, sdl);
 		ed.mouse.click_unhandled = false;
-		print_text(&sdl, "tab to unlock/lock mouse", (t_point){sdl.window_w / 2, 10});
-		print_text(&sdl, "shift + enter to go to playmode", (t_point){sdl.window_w / 2, 30});
+		print_text_boxed(&sdl, "tab to unlock/lock mouse", (t_point){sdl.window_w / 2, 10});
+		print_text_boxed(&sdl, "shift + enter to go to playmode", (t_point){sdl.window_w / 2, 45});
 		char *fps = ft_itoa(ed.clock.fps);
-		print_text(&sdl, fps, (t_point){sdl.window_w - 80, 10});
+		print_text_boxed(&sdl, fps, (t_point){sdl.window_w - 80, 10});
 		
 		free(fps);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
