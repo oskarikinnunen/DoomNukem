@@ -119,7 +119,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 		screen_blank(sdl); //Combine with render_start?
 		render_start(&render);
 		render_world3d(sdl, game.world, &render);
-		print_ttftext(&sdl, "PLAYMODE", (t_point){5, 5});
+		print_text(&sdl, "PLAYMODE", (t_point){5, 5});
 		//DRAWPERFGRAPH
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);

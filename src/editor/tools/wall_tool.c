@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:13:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 21:22:00 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/21 21:56:16 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,7 @@ static void draw_selected(t_editor *ed, t_sdlcontext sdl, t_walltooldata *dat)
 			sprintf(text, "room: %i wallheight %i", dat->selected[i]->roomindex, dat->selected[i]->height);
 			t_vector3 corner = vector3_add(dat->selected[i]->object.vertices[0], dat->selected[i]->object.vertices[3]);
 			corner = vector3_div(corner, 2.0f);
-			print_ttftext(&sdl, text, vector3_to_screenspace(ed->render, corner, sdl));
+			print_text(&sdl, text, vector3_to_screenspace(ed->render, corner, sdl));
 			render_object(sdl, ed->render, &dat->selected[i]->object);
 			count++;
 		}
@@ -189,7 +189,7 @@ static void draw_selected(t_editor *ed, t_sdlcontext sdl, t_walltooldata *dat)
 	{
 		ft_bzero(text, 256);
 		sprintf(text, "selected %i walls", count);
-		print_ttftext(&sdl, text, (t_point) {20, 120});
+		print_text(&sdl, text, (t_point) {20, 120});
 	}
 	ed->render.wireframe = false;
 }
@@ -217,7 +217,7 @@ static void	wall_tool_draw(t_editor *ed, t_sdlcontext sdl) //TODO: ROTATE AROUND
 		drawcircle(sdl, point_div(sdl.screensize, 2), 2, CLR_RED);
 		//char wallinfo[128];
 		//sprintf(wallinfo, "room: %i height: %i", dat->hover->roomindex, dat->hover->height);
-		//print_ttftext(&sdl, wallinfo, (t_point) { 20, 80});
+		//print_text(&sdl, wallinfo, (t_point){ 20, 80});
 		ed->render.gizmocolor = CLR_RED;
 		ed->render.wireframe = true;
 		render_object(sdl, ed->render, &dat->hover->object);

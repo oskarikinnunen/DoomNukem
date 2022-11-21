@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 18:30:57 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 21:20:09 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/21 21:55:15 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ bool	instant_text_button(t_sdlcontext sdl, t_mouse *m, const char *str, t_point 
 {
 	t_rectangle	rect;
 
-	rect = print_ttftext(&sdl, str, pos);
+	rect = print_text(&sdl, str, pos);
 	if (pointrectanglecollision(m->pos, rect))
 	{
 		drawrectangle(sdl, rect, CLR_GREEN);

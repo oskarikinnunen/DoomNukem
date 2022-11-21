@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 20:59:16 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/21 21:54:55 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,30 +92,6 @@ typedef struct s_img
 	uint32_t	length;
 }	t_img;
 
-typedef struct s_font_chars
-{
-	char			id;
-	t_point			pos;
-	t_point			size;
-	t_point			offset;
-	int				xadvance;
-}	t_font_chars;
-
-typedef struct s_font
-{
-	char			*name;
-	char			*file_name;
-	int				size;
-	int				padding;
-	int				spacing;
-	int				line_height;
-	t_point			scale;
-	int				char_count;
-	t_font_chars	*chars;
-	t_img			*bitmap;
-	t_img			*texts[20];
-}	t_font;
-
 typedef struct s_fontcolors
 {
 	SDL_Color	black;
@@ -126,14 +102,14 @@ typedef struct s_fontcolors
 	SDL_Color	crimson;
 }	t_fontcolors;
 
-typedef struct s_ttfont
+typedef struct s_font
 {
 	t_fontcolors	font_colors;
 	SDL_Color		color;
 	TTF_Font		*font_sizes[4];
 	TTF_Font		*font;
 	char			*text;
-}	t_ttfont;
+}	t_font;
 
 typedef enum e_platform
 {
@@ -153,12 +129,10 @@ typedef struct s_sdlcontext
 	uint32_t				imagecount;
 	struct s_object			*objects;
 	uint32_t				objectcount;
-	t_font					*font;
-	t_font					*all_fonts;
 	uint32_t				window_w;
 	uint32_t				window_h;
 	t_point					screensize;
-	t_ttfont				*ttfont;
+	t_font				*font;
 }	t_sdlcontext;
 
 void	screen_blank(t_sdlcontext sdl);
@@ -399,24 +373,20 @@ void	quit_game(t_sdlcontext *sdl);
 
 /* FONT.C */
 
-void	load_fonts(t_sdlcontext *sdl);
-void	load_ttfonts(t_ttfont *ttfont);
+void	load_fonts(t_font *font);
 
 void	draw_black_background(t_sdlcontext *sdl, t_point pos, t_point size);
-
-// Fonts: 0 = 11, 1 = 12, 2 = 14, 3 = 16, 4 = 18, 5 = 20, 6 = 22
-void	set_font_size(t_sdlcontext *sdl, int font_size);
 
 /* TEXT.C */
 
 // Prints text and returns the rectangle of the printed text
 // Font size and color can be set using:
-// sdl->ttfont->font = sdll->ttfont->font_sizes[x] where x can be 0-3
-// sdl->ttfont->color = sdl->ttfont->font_colors.x where x is the color
-t_rectangle	print_ttftext(t_sdlcontext *sdl, const char *text, t_point pos);
+// sdl->font->font = sdll->font->font_sizes[x] where x can be 0-3
+// sdl->font->color = sdl->font->font_colors.x where x is the color
+t_rectangle	print_text(t_sdlcontext *sdl, const char *text, t_point pos);
 
-// Does the same as print_ttftext but also fills in the background for the text
-t_rectangle	print_ttftext_boxed(t_sdlcontext *sdl, const char *text, t_point pos);
+// Does the same as print_ftext but also fills in the background for the text
+t_rectangle	print_text_boxed(t_sdlcontext *sdl, const char *text, t_point pos);
 
 /* LIST_HELPER.C */
 void	list_push(t_list **head, void *content, size_t content_size);
