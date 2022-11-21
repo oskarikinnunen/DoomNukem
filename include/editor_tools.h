@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 16:06:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/21 17:45:04 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ t_click_func_def	get_button_func(int	index);
 t_guibutton			*hovered(t_list *buttonlist, t_point mousepos);
 void				draw_buttons(t_editor ed, t_sdlcontext sdl); //TODO: move somewhere else so game can use it aswell?
 bool				instantbutton(struct s_rectangle rect, struct s_mouse *m, struct s_sdlcontext sdl, char *imgname);
+// Combines draw_text_boxed and instantbutton to make a button out of the text
+bool				instant_text_button(t_sdlcontext sdl, t_mouse *m, const char *str, t_point pos);
 void				empty_click_func(t_editor *ed);
 t_tool				*get_wall_tool(void);
 t_tool				*get_room_tool(void);

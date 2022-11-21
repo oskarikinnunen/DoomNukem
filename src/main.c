@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/10 14:34:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/21 17:47:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,27 @@
 
 static void	create_sdl_context(t_sdlcontext *sdl)
 {
+	const char	*platform;
+
 	load_lua_conf(sdl);
 	if (SDL_Init(SDL_INIT_VIDEO) < 0
 		|| SDL_Init(SDL_INIT_EVENTS) < 0)
 		error_log(EC_SDL_INIT);
+	if (SDL_Init(SDL_INIT_GAMECONTROLLER) < 0)
+		error_log(EC_SDL_INIT);
+		
+	platform = SDL_GetPlatform();
+	printf("platform: %s\n", platform);
+	if (ft_strequ(platform, "Mac OS X"))
+		sdl->platform = os_mac;
+	else if (ft_strequ(platform, "Linux"))
+		sdl->platform = os_linux;
+	else
+	{
+		sdl->platform = os_unsupported;
+		printf("platform %s not supported\n", platform);
+	}
+	
 	sdl->window = SDL_CreateWindow("DoomNukem",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		sdl->window_w, sdl->window_h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
@@ -35,7 +52,9 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	//sdl->surface
 	if (sdl->surface == NULL)
 		error_log(EC_SDL_GETWINDOW_SURFACE);
+	
 	load_fonts(sdl);
+	
 	sdl->zbuffer = malloc(sdl->window_w * sdl->window_h * sizeof(float));
 	objects_init(sdl);
 
@@ -66,7 +85,6 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 
 void	quit_game(t_sdlcontext *sdl)
 {
-	SDL_DestroyWindow(sdl->window);
 	SDL_Quit();
 	exit(0);
 }

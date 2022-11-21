@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 15:53:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/21 17:44:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include "shapes.h"
 # include "physics.h"
 # include "animation.h" //PLAYER USES THIS, MOVE PLAYER TO SEPARATE HEADER
+# include "inputhelp.h"
 
 # define TILESIZE 32 //EDITOR tilesize
 # define GRIDSIZE 64 //EDITOR gridsize (how many addressable coordinates we have)
@@ -64,6 +65,8 @@
 # define MAXMOVEMENTSPEED 0.08f
 # define ROTATESPEED 0.002f
 # define MOUSESPEED 0.0002f
+
+# define TEXTBACKGROUND_BORDERPADDING 6
 
 typedef struct s_mouse
 {
@@ -114,10 +117,18 @@ typedef struct s_font
 	t_img			*texts[20];
 }	t_font;
 
+typedef enum e_platform
+{
+	os_mac,
+	os_linux,
+	os_unsupported
+}	t_platform;
+
 typedef struct s_sdlcontext
 {
 	SDL_Window				*window;
 	SDL_Surface				*surface;
+	t_platform				platform;
 	float					*zbuffer;
 	SDL_Renderer			*renderer; //TODO: for testing remove.
 	t_img					*images;
@@ -289,7 +300,9 @@ typedef struct s_game
 	t_clock			clock;
 	t_mouse			mouse;
 	uint32_t		keystate;
+	t_controller	controller[2];
 	t_player		player;
+	t_input			input;
 	t_cam_mode		cam_mode; //Unused but will be reimplemented?
 } t_game;
 
@@ -349,6 +362,10 @@ void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale);
 /* PERFGRAPH.C */
 void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
 
+/* CONTROLLER.C */
+void	initialize_controllers(t_game *game);
+int		controller_events(SDL_Event e, t_game *game);
+
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
 void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle, t_img img);
@@ -377,7 +394,9 @@ void	quit_game(t_sdlcontext *sdl);
 /* FONT.C */
 
 void	load_fonts(t_sdlcontext *sdl);
-void	black_text_background(t_sdlcontext *sdl, t_point pos, t_point size);
+
+void	draw_black_background(t_sdlcontext *sdl, t_point pos, t_point size);
+
 // Fonts: 0 = 11, 1 = 12, 2 = 14, 3 = 16, 4 = 18, 5 = 20, 6 = 22
 void	set_font_size(t_sdlcontext *sdl, int font_size);
 
@@ -398,7 +417,8 @@ void	draw_text(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundari
 // Draws text, with a black box in the background, without saving it anywhere
 // Uses a pre-set font size that can be changed by calling set_font_size()
 // Fonts: 0 = 11, 1 = 12, 2 = 14, 3 = 16, 4 = 18, 5 = 20, 6 = 22
-void	draw_text_boxed(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundaries);
+// Returns the rectangle of the drawed textbox
+t_rectangle	draw_text_boxed(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundaries);
 
 /* LIST_HELPER.C */
 t_list	*ptr_to_list(void	*src, uint32_t len, size_t size);
@@ -417,5 +437,6 @@ void printf_matrix(t_mat4x4 m);
 void printf_point(t_point p);
 void printf_texture(t_texture t);
 void printf_face(void *face);
+
 
 #endif
