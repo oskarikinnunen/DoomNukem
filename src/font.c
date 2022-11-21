@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 22:00:00 by raho              #+#    #+#             */
-/*   Updated: 2022/11/21 21:58:40 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/21 23:04:08 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,10 @@ static void	initialize_colors(t_font *font)
 	temp.r = 255;
 	temp.g = 255;
 	font->font_colors.white = temp;
+	temp.b = 0;
+	font->font_colors.yellow = temp;
+	temp.g = 165;
+	font->font_colors.orange = temp;
 }
 
 void	load_fonts(t_font *font)
@@ -55,6 +59,6 @@ void	load_fonts(t_font *font)
 		error_log(EC_TTF_OPENFONT);
 	font->font = font->font_sizes[0]; // initialize the font pointer to the smallest font
 	initialize_colors(font);
-	font->color = font->font_colors.green; // initialize the font's color to crimson
+	font->color = font->font_colors.black; // initialize the font's color to crimson
 	font->text = ft_strcpy(text, "text"); // initialize text if it's used before being set to something specific
 }

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 21:54:55 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/21 22:40:55 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,9 @@ typedef struct s_fontcolors
 	SDL_Color	red;
 	SDL_Color	green;
 	SDL_Color	blue;
+	SDL_Color	yellow;
 	SDL_Color	crimson;
+	SDL_Color	orange;
 }	t_fontcolors;
 
 typedef struct s_font
@@ -132,7 +134,7 @@ typedef struct s_sdlcontext
 	uint32_t				window_w;
 	uint32_t				window_h;
 	t_point					screensize;
-	t_font				*font;
+	t_font					font;
 }	t_sdlcontext;
 
 void	screen_blank(t_sdlcontext sdl);

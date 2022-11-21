@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 21:50:54 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/21 22:43:07 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,16 +141,12 @@ static t_img	black_image()
 
 static void	draw_transform_info(t_transform t, t_sdlcontext sdl)
 {
-	SDL_Color	temp;
-
-	temp = sdl.font->color;
-	sdl.font->color = sdl.font->font_colors.white;
+	sdl.font.color = sdl.font.font_colors.white;
 	draw_image(sdl, (t_point){17, 100}, black_image(), (t_point){180, 58});
 	print_text(&sdl, "POS:", (t_point){19, 137});
 	print_text(&sdl, vector_string(t.location), (t_point){65, 137});
 	print_text(&sdl, "SCALE:", (t_point){19, 98});
 	print_text(&sdl, vector_string(t.scale), (t_point){80, 98});
-	sdl.font->color = temp;
 }
 
 static void	draw_current_operation(t_entity *ent, t_entity *collide, t_sdlcontext sdl)

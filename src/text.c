@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 22:00:00 by raho              #+#    #+#             */
-/*   Updated: 2022/11/21 22:23:33 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/21 22:47:04 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ t_rectangle	print_text_boxed(t_sdlcontext *sdl, const char *text, t_point pos)
 	SDL_Surface	*surfacetext;
 	t_rectangle	rect;
 
-	surfacetext = TTF_RenderText_Blended(sdl->font->font, text, sdl->font->color);
+	surfacetext = TTF_RenderText_Blended(sdl->font.font, text, sdl->font.color);
 	if (!surfacetext)
 		error_log(EC_TTF_RENDERTEXTBLENDED);
 	rect.position = pos;
@@ -89,7 +89,7 @@ t_rectangle	print_text(t_sdlcontext *sdl, const char *text, t_point pos)
 	SDL_Surface	*surfacetext;
 	t_rectangle	rect;
 
-	surfacetext = TTF_RenderText_Blended(sdl->font->font, text, sdl->font->color);
+	surfacetext = TTF_RenderText_Blended(sdl->font.font, text, sdl->font.color);
 	if (!surfacetext)
 		error_log(EC_TTF_RENDERTEXTBLENDED);
 	rect.position = pos;
