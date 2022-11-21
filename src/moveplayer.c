@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 17:46:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/21 18:10:53 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ static t_vector3	player_movementvector(int32_t keystate, t_vector3 lookdir)
 }
 */
 
-static t_vector3	player_movementvector(t_input input, t_vector3 lookdir)
+static t_vector3	player_movementvector(t_input input, t_player player)
 {
 	t_vector3	movement;
 	t_vector3	forward;
@@ -108,7 +108,7 @@ static t_vector3	player_movementvector(t_input input, t_vector3 lookdir)
 
 	movement = vector3_zero();
 	//forward.z = 0;
-	forward = vector3_mul_vector3(lookdir, (t_vector3){1.0f, 1.0f, 0.0f});
+	forward = vector3_mul_vector3(player.lookdir, (t_vector3){1.0f, 1.0f, 0.0f});
 	forward = vector3_normalise(forward);
 	movement = vector3_mul(forward, -input.move.y);
 	t_vector3 right = vector3_crossproduct(forward, vector3_up());
@@ -129,18 +129,11 @@ void	moveplayer(t_game *game)
 	float	angle;
 
 	move_vector = vector3_zero();
-	/*angle = 0;
-	angle -= game->mouse.delta.x * MOUSESPEED;
-	angle *= game->clock.delta;
-	game->player.angle.x += angle;
-	angle = 0;
-	angle -= game->mouse.delta.y * MOUSESPEED;
-	angle *= game->clock.delta;*/
 	t_vector2 delta_angle = vector2_mul(game->input.turn, game->clock.delta);
 	game->player.angle = vector2_sub(game->player.angle, delta_angle);
 	game->player.angle.y = ft_clampf(game->player.angle.y, -RAD90 * 0.99f, RAD90 * 0.99f);
 	game->player.lookdir = lookdirection(game->player.angle);
-	move_vector = player_movementvector(game->input, game->player.lookdir);
+	move_vector = player_movementvector(game->input, game->player);
 	move_vector = vector3_mul(move_vector, game->clock.delta * MOVESPEED);
 	game->player.position = vector3_add(game->player.position, move_vector);
 	game->player.position.z = ft_clampf(game->player.position.z, game->player.height, 1000.0f);

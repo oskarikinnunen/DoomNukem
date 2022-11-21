@@ -6,7 +6,7 @@
 #    By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/21 17:44:34 by okinnune         ###   ########.fr        #
+#    Updated: 2022/11/21 19:55:03 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,7 +36,7 @@ SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		editor/editor_movement.c \
 		editor/editor_raycast.c \
 		playmode.c inputhelper.c \
-		walls.c \
+		walls.c file_open.c \
 		moveplayer.c physics.c errors.c \
 		game_3d.c fill_triangle.c perfgraph.c \
 		png.c lua_conf.c list_helper.c \
@@ -45,6 +45,7 @@ SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		obj_parser/obj_parse_vertex.c \
 		obj_parser/obj_parse_faces.c \
 		obj_parser/obj_parse_uvs.c \
+		obj_parser/obj_parse_anim.c\
 		font.c text.c \
 		object_init.c \
 		object_primitives.c \

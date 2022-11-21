@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 17:44:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/21 19:52:32 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -382,6 +382,8 @@ bool	pointrectanglecollision(t_point p, t_rectangle rect);
 bool	pointcirclecollision(t_vector2 p, t_vector2 cp, float r);
 //bool	linecirclecollision(t_line line, t_vector2 cp, float r);
 
+
+
 /* MOVEPLAYER.C */
 void	moveplayer(t_game *game);
 
@@ -422,6 +424,7 @@ t_rectangle	draw_text_boxed(t_sdlcontext *sdl, const char *str, t_point pos, t_p
 
 /* LIST_HELPER.C */
 t_list	*ptr_to_list(void	*src, uint32_t len, size_t size);
+void	ptr_add(void **ptr, uint32_t *len, size_t size, void *add);
 void	list_push(t_list **head, void *content, size_t content_size);
 void	*list_findlast(t_list *head);
 void	*list_to_ptr(t_list *source, uint32_t *set_length);

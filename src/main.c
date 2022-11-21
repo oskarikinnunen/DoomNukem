@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 17:47:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/21 19:24:47 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,8 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	
 	sdl->zbuffer = malloc(sdl->window_w * sdl->window_h * sizeof(float));
 	objects_init(sdl);
-
+	t_object *o = get_object_by_name(*sdl, "cyborg");
+	parseanim(o, "walk");
 
 	/* create context here, call gl clear in render start, glbegin in drawtriangles etc */
 	/*SDL_GLContext glc = SDL_GL_CreateContext(sdl->window);

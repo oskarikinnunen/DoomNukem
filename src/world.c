@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/18 17:32:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/21 19:23:28 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ void	scale_skybox_uvs(t_object *obj)
 	}
 }
 
-static int	fileopen(char *filename, int flags)
+/*int	fileopen(char *filename, int flags)
 {
 	int	fd;
 
@@ -111,7 +111,7 @@ static int	fileopen(char *filename, int flags)
 	if (fd == -1)
 		error_log(EC_WRITE);
 	return (fd);
-}
+}*/
 
 static void load_walltextures(t_world *world, t_sdlcontext sdl) //TODO: Deprecated
 {

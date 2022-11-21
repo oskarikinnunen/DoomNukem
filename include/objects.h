@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 12:41:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/19 18:50:48 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/21 19:51:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,28 @@ typedef struct s_face //Indexer for constructing faces (triangles)
 {
 	uint32_t	v_indices[3];
 	uint32_t	uv_indices[3];
+	uint32_t	materialindex;
 	t_material	*material;
 }	t_face;
+
+typedef	struct s_deltavertex
+{
+	uint32_t	v_index;
+	t_vector3	delta;
+}	t_deltavertex;
+
+typedef struct s_objectanimframe
+{
+	t_deltavertex	*deltavertices;
+	uint32_t		vertcount;
+}	t_objectanimframe;
+
+typedef struct s_objectanim
+{
+	t_objectanimframe	*frames;
+	uint32_t			framecount;
+} t_objectanim;
+
 
 typedef struct s_object
 {
@@ -43,6 +63,7 @@ typedef struct s_object
 	uint32_t			vertice_count;
 	uint32_t			uv_count;
 	uint32_t			face_count;
+	t_objectanim		o_anim;
 }	t_object;
 
 typedef struct s_meshtri
@@ -88,6 +109,8 @@ struct s_list	*get_uv_list(int fd);
 struct s_list	*get_vertex_list(int fd);
 t_list			*get_face_list(int fd, t_list *materials);
 void			objects_init(struct s_sdlcontext *sdl);
+void			parseanim(t_object *object, char *animname);
+void			parse_animframe(int fd, t_objectanimframe *frame, t_object *object);
 void			init_roomwalls(t_room *room, t_sdlcontext *sdl);
 t_object		*get_object_by_name(struct s_sdlcontext sdl, char *name);
 t_object		*object_plane(struct s_sdlcontext *sdl);

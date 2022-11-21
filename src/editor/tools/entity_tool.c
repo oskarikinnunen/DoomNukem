@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 17:39:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/21 18:07:37 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,17 +199,31 @@ t_entity *selected_entity(t_editor *ed, t_sdlcontext sdl)
 	return (NULL);
 }
 
+int	object_selector(t_editor *ed, t_sdlcontext sdl, int	original)
+{
+	int	i;
+
+	i = 0;
+	while (i < sdl.objectcount)
+	{
+		if (instant_text_button(sdl, &ed->mouse, sdl.objects[i].name, (t_point){20, 200 + (i * 20)}))
+			return (i);
+		i++;
+	}
+	return (original);
+}
+
 void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 {
 	t_entity	*ent;
 	t_entity	*collide;
 
 	ent = (t_entity *)ed->tool->tooldata;
-	if (instantbutton((t_rectangle) {52, 200, 20, 20}, &ed->mouse, sdl, "minus.png"))
+	/*if (instantbutton((t_rectangle) {52, 200, 20, 20}, &ed->mouse, sdl, "minus.png"))
 		ent->object_index--;
 	if (instantbutton((t_rectangle) {74, 200, 20, 20}, &ed->mouse, sdl, "plus.png"))
-		ent->object_index++;
-	ent->object_index = ft_clamp(ent->object_index, 0, sdl.objectcount - 1);
+		ent->object_index++;*/
+	ent->object_index = object_selector(ed, sdl, ent->object_index);
 	if (ent->obj != &sdl.objects[ent->object_index])
 	{
 		ent->obj = &sdl.objects[ent->object_index];
