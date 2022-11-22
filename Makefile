@@ -115,4 +115,4 @@ $(FREETYPE):
 	cd $(FREETYPE_DIR) && ./configure --prefix=$(PWD)/freetype_built/ && make install
 
 $(SDL2_TTF):
-	cd $(SDL2_TTF_DIR) && ./configure --prefix=$(PWD)/SDL2_ttf_built/ --with-ft-prefix=$(PWD)/freetype_built --with-sdl-prefix=$(PWD)/SDL_built/ && make install
+	cd $(SDL2_TTF_DIR) && ./autogen.sh && ./configure --prefix=$(PWD)/SDL2_ttf_built/ --with-ft-prefix=$(PWD)/freetype_built --with-sdl-prefix=$(PWD)/SDL_built/ && make install
