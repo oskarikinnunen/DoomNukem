@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 17:39:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/23 15:00:21 by kfum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,8 @@ char	*floatstr(float f)
 	return (final);
 }
 
-static t_img	black_image()
+/**/
+t_img	black_image()
 {
 	static t_img	black;
 
@@ -138,6 +139,7 @@ static t_img	black_image()
 	black.size = point_one();
 	return (black);
 }
+/**/
 
 static void	draw_transform_info(t_transform t, t_sdlcontext sdl)
 {

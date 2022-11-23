@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wall_tool.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:13:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/15 15:46:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/23 15:03:29 by kfum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,31 @@ t_wall	*wallcollision(t_editor *ed, t_sdlcontext *sdl)
 	return (NULL);*/
 }
 
+/**/
+static void wall_texSelection(t_editor ed, t_sdlcontext sdl)
+{
+	int i;
+	static int wall_texId;
+	static int size;
+	t_guibutton	butn;
+
+	i = 0;
+	size = 50;	
+	while (i < 2)
+	{
+		if(instantbutton((t_rectangle){35, 275 + (i * 70), size, size}, &ed.mouse, sdl, get_image_by_index(sdl, wall_texId + i)->name))
+		{
+			butn.onclick = get_button_func(butn.func_index).onclick;
+		}
+		draw_text_boxed(&sdl, get_image_by_index(sdl, wall_texId + i)->name, (t_point){38, 330 + (i * 70)}, (t_point){sdl.window_w, sdl.window_h});
+		i++;
+	}
+	wall_texId += ed.mouse.scroll_delta;
+	wall_texId = ft_clamp(wall_texId, 0, sdl.imagecount - 2);
+
+}
+/**/
+
 static void draw_selected(t_editor *ed, t_sdlcontext sdl, t_walltooldata *dat)
 {
 	/*int			i;
@@ -178,6 +203,8 @@ static void	wall_tool_draw(t_editor *ed, t_sdlcontext sdl) //TODO: ROTATE AROUND
 		free (tristr);
 		floorcalc_debugdraw(ed, &sdl, dat->fc, tri_i, rad);
 	}*/
+	draw_image(sdl, (t_point){30, 270}, black_image(), (t_point){60, 145});//215 4 3
+	wall_texSelection(*(ed), sdl);
 }
 
 static void unselect_wall(t_walltooldata *dat)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 17:47:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/23 14:49:23 by kfum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "png.h"
 #include "game_lua.h"
 #include "objects.h"
-#include <GL/gl.h>
+#include <OpenGL/gl.h>
 
 static void	create_sdl_context(t_sdlcontext *sdl)
 {

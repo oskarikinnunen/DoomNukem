@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_tools.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 17:45:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/23 15:01:50 by kfum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,5 +89,8 @@ void				update_imagedropdown(t_editor *ed, t_imagedropdown *dd);
 void				draw_imagedropdown(t_sdlcontext sdl, t_imagedropdown dd);
 t_vector3			raycast(t_editor *ed);
 bool				entity_lookedat(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
+/**/
+t_img				black_image();
+/**/
 
 #endif
