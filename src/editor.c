@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 17:45:24 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/22 15:46:06 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,17 +71,18 @@ int	editorloop(t_sdlcontext sdl)
 	//ed.angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
 	ed.angle = (t_vector2){-20.0f, -RAD90 * 0.99f};
 	ed.position = (t_vector3){500.0f, 500.0f, 200.0f};
-	ed.tool = get_room_tool();
+	ed.tool = get_npc_tool();
 	set_font_size(&sdl, 0);
 	while (ed.gamereturn == game_continue)
 	{
 		update_deltatime(&ed.clock);
+		update_deltatime(&ed.world.clock);
 		ed.gamereturn = editor_events(&ed);
 		move_editor(&ed);
 		update_render_editor(&ed.render, ed);
 		screen_blank(sdl);
 		render_start(&ed.render);
-		render_world3d(sdl, ed.world, &ed.render);
+		update_world3d(sdl, &ed.world, &ed.render);
 		if (ed.tool != NULL)
 		{
 			ed.tool->draw_update(&ed, sdl); //Instant buttons here can toggle mouse.click unhandled, so draw first

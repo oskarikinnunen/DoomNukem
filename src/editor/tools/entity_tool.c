@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 18:07:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/22 11:59:24 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,7 +232,6 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	/* SPLIT HERE */
 	ed->render.wireframe = true;
 	ed->render.gizmocolor = CLR_GREEN;
-	collide = selected_entity(ed, sdl);
 	render_entity(sdl, ed->render, ent);
 	
 	ed->render.wireframe = false;
@@ -254,11 +253,13 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 		ent->transform.rotation.x += ed->mouse.scroll_delta * ft_degtorad(15.0f);
 	if (mouse_clicked(ed->mouse, MOUSE_MDL))
 		ent->transform.rotation = vector3_zero();
+	collide = selected_entity(ed, sdl);
 	if (collide != NULL)
 	{
 		ed->render.gizmocolor = CLR_PRPL;
 		ed->render.wireframe = true;
 		render_entity(sdl, ed->render, collide);
+		entity_start_anim(collide, "walk");
 		ed->render.wireframe = false;
 		if (mouse_clicked(ed->mouse, MOUSE_RIGHT))
 			list_remove(&ed->world.entitylist, collide, sizeof(t_entity));

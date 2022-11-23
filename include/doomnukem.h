@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 19:52:32 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/23 17:51:10 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,14 +70,15 @@
 
 typedef struct s_mouse
 {
-	t_point	pos;
-	t_point	delta;
-	bool	relative;
-	int		scroll;
-	int		scroll_delta;
-	bool	click_unhandled;
-	int		click_button;
-	int		held;
+	t_point		pos;
+	t_point		delta;
+	bool		relative;
+	int			scroll;
+	int			scroll_delta;
+	bool		click_unhandled;
+	int			click_button;
+	int			held;
+	uint32_t	heldstate;
 }	t_mouse;
 
 typedef enum e_entityID
@@ -160,15 +161,6 @@ typedef struct s_clock
 
 /* Playmode */
 
-typedef struct s_player
-{
-	t_vector3	position; //TODO: might be changed to int[2], don't know yet
-	t_vector2	angle;
-	t_vector3	lookdir;
-	t_anim		jump;
-	float		height;
-}	t_player;
-
 typedef enum	e_cam_mode
 {
 	player_view,
@@ -199,10 +191,25 @@ typedef struct	s_triangle
 
 typedef struct s_transform
 {
-	t_vector3	location;
-	t_vector3	rotation;
-	t_vector3	scale;
+	t_vector3			location;
+	t_vector3			rotation;
+	t_vector3			scale;
+	struct s_transform	*parent;
 }	t_transform;
+
+
+typedef struct s_player
+{
+	t_transform		transform;
+	t_vector3		speed; //read-only player speed used for animations etc
+	t_vector3		lookdir;
+	t_anim			jump;
+	float			height;
+	struct s_gun	*gun;
+	t_vector3		gunholsterpos;
+	t_vector3		gunaimpos;
+}	t_player;
+
 
 typedef struct s_bound
 {
@@ -227,13 +234,43 @@ typedef struct s_entity
 	uint32_t		object_index;
 	char			object_name[64];
 	t_bound			z_bound;
+	t_anim			animation;
 	struct s_object	*obj;
 }	t_entity;
 
-typedef struct s_bot
+/*
+	
+
+*/
+
+typedef struct s_capsulecollider
 {
-	t_entity	entity;
-}	t_bot;
+	uint32_t	start_vertex;
+	uint32_t	end_vertex;
+}	t_capsulecollider;
+
+typedef struct s_humancolliders
+{
+	t_capsulecollider	head;
+	t_capsulecollider	body;
+	t_capsulecollider	arms[2];
+	t_capsulecollider	legs[2];
+}	t_humancolliders;
+
+typedef struct s_npc
+{
+	t_entity			entity;
+	t_vector3			destination;
+	t_humancolliders	colliders;
+	/*t_capsulecollider	handcolliders[2];
+	t_capsulecollider	bodycollider;*/
+	bool		active;
+}	t_npc;
+
+/*
+	void	spawn_npc(t_world *world, char *objectname, t_vector3 position)
+	void	update_npcs(t_world *world) //moves npcs towards their destination, updates their animations
+*/
 
 typedef struct s_item
 {
@@ -262,7 +299,9 @@ typedef struct s_render
 
 typedef struct s_world
 {
+	t_clock		clock;
 	t_physics	physics;
+	t_npc		npcpool[128];
 	t_list		*entitylist;
 	t_list		*meshlist;
 	t_list		*wall_list;
@@ -271,7 +310,7 @@ typedef struct s_world
 }	t_world;
 
 void	calculate_colliders_for_entities(t_world *world);
-void	render_world3d(t_sdlcontext sdl, t_world world, t_render *render);
+void	update_world3d(t_sdlcontext sdl, t_world *world, t_render *render);
 t_world	load_world(char *filename, t_sdlcontext sdl);
 void	save_world(char *filename, t_world world);
 
@@ -320,7 +359,7 @@ t_point			mousetoworldspace(t_editor *ed);
 t_point			mousetogridspace(t_editor *ed);
 t_point			screentogridspace(t_point point);
 t_quaternion	transformed_vector3(t_transform transform, t_vector3 v);
-void			mouse_event(SDL_Event e, t_editor *ed);
+void			mouse_event(SDL_Event e, t_mouse *mouse);
 
 /* SPACECONVERSIONS.C */
 t_point	worldto_editorspace(t_editor *ed, t_vector2 worldcrd);
@@ -335,7 +374,7 @@ void	savemap(t_editor *ed, char *filename);
 
 /* IMG.C */
 void	alloc_image(t_img *img, int width, int height);
-t_img	*get_image_by_index(t_sdlcontext sdl, int index);
+t_img	*get_image_by_index(t_sdlcontext sdl, int index); //TODO: add comments
 t_img	*get_image_by_name(t_sdlcontext sdl, char *name);
 
 /* DELTATIME.C */
@@ -422,6 +461,8 @@ void	draw_text(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundari
 // Returns the rectangle of the drawed textbox
 t_rectangle	draw_text_boxed(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundaries);
 
+
+void			entity_start_anim(t_entity *entity, char *animname);
 /* LIST_HELPER.C */
 t_list	*ptr_to_list(void	*src, uint32_t len, size_t size);
 void	ptr_add(void **ptr, uint32_t *len, size_t size, void *add);

@@ -39,5 +39,6 @@ objects =
 	"primitive_cube_textured.obj",
 	"cube.obj",
 	"dummy.obj",
-	"cyborg.obj"
+	"cyborg.obj",
+	"Pistol_1.obj"
 }

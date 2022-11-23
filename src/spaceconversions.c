@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 13:31:43 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 16:19:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/23 15:06:22 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,41 @@ t_point worldtoeditorspace(t_editor *ed, t_vector2 worldcrd)
 t_quaternion	transformed_vector3(t_transform transform, t_vector3 v)
 {
 	t_quaternion	result;
+	t_vector3		forward;
+	t_vector3		right;
+	t_vector3		up;
 
 	result.v = vector3_mul_vector3(transform.scale, v);
 	result = quaternion_rotate_euler(result.v, transform.rotation);
-	result.v = vector3_add(transform.location, result.v);
+	if (transform.parent != NULL)
+	{
+		result = quaternion_rotate_euler(result.v, transform.parent->rotation);
+		forward = lookdirection((t_vector2){transform.parent->rotation.x, transform.parent->rotation.y});
+		up = lookdirection((t_vector2){transform.parent->rotation.x, transform.parent->rotation.y + RAD90});
+		right = vector3_crossproduct(forward, vector3_up());
+		forward = vector3_normalise(forward);
+		right = vector3_normalise(right);
+		up = vector3_normalise(up);
+		result.v = vector3_add(result.v, vector3_mul(forward, transform.location.y));
+		result.v = vector3_add(result.v, vector3_mul(right, transform.location.x));
+		result.v = vector3_add(result.v, vector3_mul(up, transform.location.z));
+		result.v = vector3_add(transform.parent->location, result.v);
+		
+	}
+	else
+	{
+		result.v = vector3_add(transform.location, result.v);
+	}
+		
+	/*
+		if transform.parent != NULL
+			move y towards parents forward,
+			x towards parent right
+			z towars parent up
+			rotate object with parents eulers
+			rotate object with own eulers
+
+	*/
 	//result.w = 1.0f;
 	return (result);
 }

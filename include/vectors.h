@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 16:19:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/23 17:00:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,6 +157,9 @@ t_vector3	vector3_rotate_euler(t_vector3 original, t_vector3 eulers);
 
 //returns signed shortest distance from point to plane, plane normal must be normalised
 float		vector3_fdist_to_plane(t_vector3 p, t_vector3 plane_n, t_vector3 plane_p);
+
+//returns linearly interpolated value between 'v1' and 'v2' using lerp (which should be in range 0.0 - 1.0f)
+t_vector3	vector3_lerp(t_vector3 v1, t_vector3 v2, float lerp);
 
 typedef struct s_point
 {

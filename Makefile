@@ -6,7 +6,7 @@
 #    By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/21 19:55:03 by okinnune         ###   ########.fr        #
+#    Updated: 2022/11/22 15:49:27 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,7 @@ SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		editor/tools/entity_tool.c \
 		editor/tools/wall_tool.c \
 		editor/tools/wall_tool_rooms.c \
+		editor/tools/npc_tool.c \
 		editor/tools/room_tool.c \
 		editor/tools/button_tool.c \
 		editor/imagedropdown.c \
@@ -41,6 +42,7 @@ SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		game_3d.c fill_triangle.c perfgraph.c \
 		png.c lua_conf.c list_helper.c \
 		spaceconversions.c \
+		entity/entity_animate.c \
 		obj_parser/obj_parse.c \
 		obj_parser/obj_parse_vertex.c \
 		obj_parser/obj_parse_faces.c \

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_mouse.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/05 16:15:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/23 18:48:53 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,50 +47,32 @@ t_point	screentogridspace(t_point point)
 	return (result);
 }
 
-static void	mouseclick(t_editor *ed)
+void	mouse_event(SDL_Event e, t_mouse *mouse)
 {
-	t_list		*l;
-	t_guibutton	button;
-
-	l = ed->buttonlist;
-
-	while (l != NULL)
+	if (!mouse->relative)
+		SDL_GetMouseState(&mouse->pos.x, &mouse->pos.y);
+	if (e.type == SDL_MOUSEBUTTONDOWN) //TODO: bitshift mouseheldstate
 	{
-		button = *(t_guibutton *)l->content;
-		if (pointrectanglecollision(ed->mouse.pos, button.rect) && ed->mouse.click_button == MOUSE_LEFT)
-		{
-			if (button.onclick != NULL)
-			{
-				button.onclick(ed);
-				ed->mouse.click_unhandled = false;
-			}
-		}
-		l = l->next;
-	}
-}
-
-void	mouse_event(SDL_Event e, t_editor *ed)
-{
-	if (!ed->mouse.relative)
-		SDL_GetMouseState(&ed->mouse.pos.x, &ed->mouse.pos.y);
-	if (e.type == SDL_MOUSEBUTTONDOWN)
-	{
-		ed->mouse.held = e.button.button;
+		mouse->held = e.button.button;
+		mouse->heldstate |= (e.button.button == MOUSE_LEFT) << MOUSE_LEFT;
+		mouse->heldstate |= (e.button.button == MOUSE_RIGHT) << MOUSE_RIGHT;
 	}
 	if (e.type == SDL_MOUSEBUTTONUP)
 	{
-		ed->mouse.click_unhandled = true;
-		ed->mouse.click_button = e.button.button;
-		ed->mouse.held = 0;
+		mouse->click_unhandled = true;
+		mouse->click_button = e.button.button;
+		mouse->heldstate &= ~((e.button.button == MOUSE_LEFT) << MOUSE_LEFT);
+		mouse->heldstate &= ~((e.button.button == MOUSE_RIGHT) << MOUSE_RIGHT);
+		mouse->held = 0;
 	}
 	if (e.type == SDL_MOUSEWHEEL)
 	{
-		ed->mouse.scroll += e.wheel.y;
-		ed->mouse.scroll_delta = e.wheel.y;
-		ed->mouse.scroll = ft_clamp(ed->mouse.scroll, -20, 20);
+		mouse->scroll += e.wheel.y;
+		mouse->scroll_delta = e.wheel.y;
+		mouse->scroll = ft_clamp(mouse->scroll, -20, 20);
 	}
-	if (ed->mouse.click_unhandled
-		&& ((ed->keystate >> KEYS_CTRLMASK) & 1) == false
+	/*if (ed->mouse.click_unhandled
+		/*&& ((ed->keystate >> KEYS_CTRLMASK) & 1) == false
 		&& ((ed->keystate >> KEYS_SHIFTMASK) & 1) == false)
-		mouseclick(ed);
+		mouseclick(ed);*/
 }

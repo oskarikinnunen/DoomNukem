@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/21 18:56:55 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/23 13:45:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -369,7 +369,12 @@ void render_entity(t_sdlcontext sdl, t_render render, t_entity *entity)
 		temp.v = rotate(temp.v, entity->transform.rotation);
 		temp.v = vector3_add(entity->transform.location, temp.v);
 		temp.w = 1.0f;*/
-		render.q[index] = transformed_vector3(entity->transform, obj->vertices[index]);
+		temp.v = obj->vertices[index];
+		if (entity->animation.active)
+		{
+			temp.v = vector3_add(entity->obj->o_anim.frames[entity->animation.frame].deltavertices[index].delta, temp.v);
+		}
+		render.q[index] = transformed_vector3(entity->transform, temp.v);
 		render.q[index] = quaternion_mul_matrix(render.matworld, render.q[index]);
 		index++;
 	}

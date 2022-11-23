@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 12:41:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 19:51:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/23 18:57:20 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ typedef struct s_objectanim
 {
 	t_objectanimframe	*frames;
 	uint32_t			framecount;
+	char				name[128];
 } t_objectanim;
 
 
@@ -100,6 +101,19 @@ typedef struct s_room
 	uint32_t	floorcount;
 	uint32_t	ceilingcount;
 }	t_room;
+
+typedef struct s_gun
+{
+	t_entity	entity;
+	t_anim		shoot_anim;
+	t_vector3	holsterpos;
+	t_vector3	aimpos;
+	bool		readytoshoot;
+	float		firerate;
+	t_vector2	recoil;
+	t_vector2	recoilspread;
+	bool		semiauto;
+}	t_gun;
 
 struct s_world;
 struct s_sdlcontext;

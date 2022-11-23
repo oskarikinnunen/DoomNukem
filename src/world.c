@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 19:23:28 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/22 16:19:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,27 +33,79 @@ void render_room(t_sdlcontext sdl, t_render render, t_room room)
 
 }
 
-void render_world3d(t_sdlcontext sdl, t_world world, t_render *render)
+/*static void	updateanim(t_entity *entity)
+{
+
+}*/
+
+void	update_npcs(t_world *world)
+{
+	int	i;
+
+	i = 0;
+	while (i < 128)
+	{
+		if (world->npcpool[i].active)
+		{
+			//if (world.npcpool->entity.animation.active)
+			t_npc *cur;
+			cur = &world->npcpool[i];
+			t_vector3 dir = vector3_sub(cur->destination, cur->entity.transform.location);
+			cur->entity.transform.location = vector3_movetowards(cur->entity.transform.location, dir, world->clock.delta * MOVESPEED * 0.25f);
+			cur->entity.transform.rotation.x = vector2_anglebetween((t_vector2){cur->entity.transform.location.x, cur->entity.transform.location.y},
+														(t_vector2){cur->destination.x, cur->destination.y});
+			if (vector3_cmp(cur->destination, cur->entity.transform.location))
+			{
+				if (cur->destination.x == 200.0f)
+					cur->destination = (t_vector3) {500.0f, 500.0f, 0.0f};
+				else
+					cur->destination = (t_vector3) {200.0f, 200.0f, 0.0f};
+			}
+			update_anim(&(cur->entity.animation), world->clock.delta);
+		}
+		i++;
+	}
+}
+
+void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 {
 	t_list		*l;
-	t_entity	ent;
+	t_entity	*ent;
 	t_wall		wall;
-
+	int			i;
 	
-	l = world.roomlist;
+	l = world->roomlist;
 	while (l != NULL)
 	{
 		render_room(sdl, *render, *(t_room *)l->content);
 		l = l->next;
 	}
-	l = world.entitylist;
+	l = world->entitylist;
 	while (l != NULL)
 	{
-		ent = *(t_entity *)l->content;
-		render_entity(sdl, *render, &ent);
+		ent = (t_entity *)l->content;
+		render_entity(sdl, *render, ent);
+		update_anim(&ent->animation, world->clock.delta);
+		//printf("world clock delta %i \n", world.clock.delta);
+		/*if (ent->animation.frame != 0)
+			printf("ANIMFRAME %i \n", ent->animation.frame);*/
 		l = l->next;
 	}
-	render_entity(sdl, *render, &world.skybox);
+	update_npcs(world);
+	i = 0;
+	while (i < 128)
+	{
+		if (world->npcpool[i].active)
+		{
+			t_npc npc = world->npcpool[i];
+			t_vector3 dir = vector3_sub(world->npcpool[i].entity.transform.location, world->npcpool[i].destination);
+			render_ray(sdl, *render, npc.entity.transform.location, npc.destination);
+			render_entity(sdl, *render, &world->npcpool[i].entity);
+		}
+			
+		i++;
+	}
+	render_entity(sdl, *render, &world->skybox);
 }
 
 
@@ -87,6 +139,8 @@ static void	entity_init(t_world *world, t_sdlcontext sdl)
 			ent->obj = &sdl.objects[ent->object_index]; //TODO: getobjectbyindex
 		else
 			ent->obj = &sdl.objects[0];
+		ent->animation.frame = 0;
+		ent->animation.active = false;
 		l = l->next;
 	}
 }
@@ -127,6 +181,26 @@ static void load_walltextures(t_world *world, t_sdlcontext sdl) //TODO: Deprecat
 		mat->img = get_image_by_name(sdl, mat->texturename);
 		l = l->next;
 	}*/
+}
+
+void	spawn_npc(t_world *world, char *objectname, t_vector3 position, t_sdlcontext *sdl)
+{
+	int	i;
+
+	i = 0;
+	while (i < 128)
+	{
+		if (!world->npcpool[i].active)
+		{
+			world->npcpool[i].active = true;
+			world->npcpool[i].entity.obj = get_object_by_name(*sdl, objectname);
+			world->npcpool[i].entity.transform.location = position;
+			entity_start_anim(&world->npcpool[i].entity, "walk");
+			world->npcpool[i].entity.transform.scale = vector3_one();
+			return ;
+		}
+		i++;
+	}
 }
 
 t_room	load_room(char *filename)
@@ -180,6 +254,9 @@ t_world	load_world(char *filename, t_sdlcontext sdl)
 	//scale_skybox_uvs(world.skybox.obj);
 	world.skybox.transform.scale = vector3_mul(vector3_one(), 1000.0f);
 	world.skybox.transform.location = (t_vector3){500.0f, 500.0f, 499.0f};
+
+	spawn_npc(&world, "cyborg", (t_vector3){500.0f, 500.0f, 0.0f}, &sdl);
+	world.npcpool[0].destination = (t_vector3){200.0f, 200.0f, 0.0f};
 	//calculate_colliders_for_entities(&world);
 	return (world);
 }

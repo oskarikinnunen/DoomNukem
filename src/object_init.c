@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 19:50:18 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 19:54:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/22 11:51:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,18 +47,17 @@ void	parseanim(t_object *object, char *animname)
 	while (fd != -1)
 	{
 		char name[256] = { 0 };
-		sprintf(name, "assets/objects/animations/%s_%s%i.obj", base, animname, i);
+		sprintf(name, "assets/objects/animations/%s_%s%i.obj", base, animname, i); //TODO: protect
 		fd = open(name, O_RDONLY);
 		printf("%s \n", name);
 		if (fd != -1)
 		{
-			//object->o_anim.framecount++;
+			ft_strcpy(object->o_anim.name, animname); //TODO: protect
 			parse_animframe(fd, &frame, object);
-			ptr_add(&object->o_anim.frames, &object->o_anim.framecount, sizeof(t_objectanimframe), &frame);
+			ptr_add((void **)&object->o_anim.frames, &object->o_anim.framecount, sizeof(t_objectanimframe), &frame);
 			//ptr_add()
 			close(fd);
 		}
-			
 		i++;
 	}
 	free(base);

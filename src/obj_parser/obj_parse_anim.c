@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 19:44:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 19:50:43 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/22 13:32:59 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@ void	parse_animframe(int fd, t_objectanimframe *frame, t_object *object)
 	int			i;
 
 	verticelist = get_vertex_list(fd);
-	list_to_ptr(vertices, &vertexcount);
+	vertices = list_to_ptr(verticelist, &vertexcount);
 	i = 0;
-	frame->deltavertices = ft_memalloc(sizeof(t_vector3) * vertexcount);
+	frame->deltavertices = ft_memalloc(sizeof(t_deltavertex) * vertexcount);
 	while (i < vertexcount)
 	{
-		frame->deltavertices[i].delta = vector3_sub(object->vertices[i], vertices[i]);
+		frame->deltavertices[i].delta = vector3_sub(vertices[i], object->vertices[i]);
 		frame->deltavertices[i].v_index = i;
 		i++;
 	}
