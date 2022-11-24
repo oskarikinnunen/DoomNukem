@@ -90,8 +90,10 @@ UNAME= $(shell uname)
 ifeq ($(UNAME), Darwin)
 override CFLAGS += '-D GL_SILENCE_DEPRECATION'
 LIBS= $(LIBFT) -lm -framework OpenGL `$(INSTALLED_LIBS_DIR)/bin/sdl2-config --cflags --libs` -L$(INSTALLED_LIBS_DIR)/lib -lSDL2_ttf
+AUTOGEN =
 else ifeq ($(UNAME), Linux)
 LIBS =  $(LIBFT) -lm -lGL `$(INSTALLED_LIBS_DIR)/bin/sdl2-config --cflags --libs` -L$(INSTALLED_LIBS_DIR)/lib -lSDL2_ttf
+AUTOGEN = ./autogen.sh &&
 else
 warning:
 	@echo "Compilation for platform $(UNAME) not supported."
@@ -148,7 +150,7 @@ $(FREETYPE_DIR)/configured: $(FREETYPE_DIR)/unpacked
 # On Linux autogen.sh must be executed in SDL2_TTF_DIR before running configure and make install
 # Also on Linux pkg-config overrides prefixes with default path. Maybe --dont-define-prefix or --define-prefix will help?
 $(SDL2_TTF_DIR)/configured: $(SDL2_TTF_DIR)/unpacked
-	cd $(SDL2_TTF_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR)	\
+	cd $(SDL2_TTF_DIR) && $(AUTOGEN) ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR)	\
 	--with-ft-prefix=$(PWD)/$(INSTALLED_LIBS_DIR)							\
 	--with-sdl-prefix=$(PWD)/$(INSTALLED_LIBS_DIR) && touch configured
 
