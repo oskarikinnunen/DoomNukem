@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+         #
+#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/22 15:49:27 by okinnune         ###   ########.fr        #
+#    Updated: 2022/11/24 14:23:17 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -74,8 +74,20 @@ OBJ= $(SRC:.c=.o)
 #Compilation stuff:
 INCLUDE= -ISDL_built/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
 CC= gcc
-LIBS= $(LIBFT) -lm -lGL
+
 CFLAGS= $(INCLUDE) -g -finline-functions -O2#-march=native
+UNAME= $(shell uname)
+ifeq ($(UNAME), Darwin)
+override CFLAGS += '-D GL_SILENCE_DEPRECATION'
+LIBS= $(LIBFT) -lm -framework OpenGL
+else ifeq ($(UNAME), Linux)
+LIBS =  $(LIBFT) -lm -lGL
+else
+warning:
+	@echo "Compilation for platform $(UNAME) not supported."
+	exit 1
+endif
+
 
 all: $(SDL2) $(LUA) $(LIBFT) $(OBJ)
 	$(CC) $(OBJ) -o $(NAME) `SDL_built/bin/sdl2-config --cflags --libs` $(INCLUDE) $(LIBS) $(LUA)

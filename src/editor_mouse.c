@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_mouse.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/23 18:48:53 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 14:14:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,4 @@ void	mouse_event(SDL_Event e, t_mouse *mouse)
 		mouse->scroll_delta = e.wheel.y;
 		mouse->scroll = ft_clamp(mouse->scroll, -20, 20);
 	}
-	/*if (ed->mouse.click_unhandled
-		/*&& ((ed->keystate >> KEYS_CTRLMASK) & 1) == false
-		&& ((ed->keystate >> KEYS_SHIFTMASK) & 1) == false)
-		mouseclick(ed);*/
 }
