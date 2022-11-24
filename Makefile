@@ -129,6 +129,7 @@ $(FREETYPE_DIR)/configured: $(FREETYPE_DIR)/unpacked
 	cd $(FREETYPE_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR) && touch configured
 
 # On Linux autogen.sh must be executed in SDL2_TTF_DIR before running configure and make install
+# Also on Linux pkg-config overrides prefixes with default path. Maybe --dont-define-prefix or --define-prefix will help?
 $(SDL2_TTF_DIR)/configured: $(SDL2_TTF_DIR)/unpacked
 	cd $(SDL2_TTF_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR)	\
 	--with-ft-prefix=$(PWD)/$(INSTALLED_LIBS_DIR)							\
