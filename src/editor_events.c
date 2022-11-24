@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/23 18:52:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 14:49:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,17 @@ void		editor_toggle_keystates(t_editor *ed, SDL_Event e)
 
 void	force_mouseunlock(t_editor *ed)
 {
-	ed->mouse.relative = !ed->mouse.relative;
+	ed->mouse.relative = false;
 	SDL_SetRelativeMouseMode(ed->mouse.relative);
 	ed->mouse.delta = point_zero();
+}
+
+void	force_mouselock(t_editor *ed)
+{
+	ed->mouse.relative = true;
+	SDL_SetRelativeMouseMode(ed->mouse.relative);
+	ed->mouse.delta = point_zero();
+	ed->mouse.pos = point_zero();
 }
 
 static void	buttons_click(t_editor *ed)

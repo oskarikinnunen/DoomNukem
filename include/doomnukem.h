@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 13:50:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 14:41:36 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -347,6 +347,7 @@ int		editorloop(t_sdlcontext sdl);
 t_gamereturn	editor_events(t_editor *ed);
 bool			iskey(SDL_Event e, int keycode);
 void			force_mouseunlock(t_editor *ed);
+void			force_mouselock(t_editor *ed);
 void			move_editor(t_editor *ed);
 
 /* EDITOR_MOUSE.C */

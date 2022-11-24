@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 19:55:41 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 14:51:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,6 +193,9 @@ static void	createmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	snap = vector2_snap((t_vector2){rc.x, rc.y}, 10);
 	if (dat->room->wallcount == 0)
 		draw_text_boxed(&sdl, "place room starting point", (t_point) {20, 240}, sdl.screensize);
+	else if (dat->room->wallcount > 1)
+		draw_text_boxed(&sdl, "shift + click to finish room", (t_point) {20, 240}, sdl.screensize);
+	
 	cur->line.end = snap;
 	if ((ed->keystate >> KEYS_SHIFTMASK) & 1 && dat->room->wallcount > 0)
 		cur->line.end = dat->room->walls[0].line.start;
@@ -468,6 +471,7 @@ void	room_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	{
 		dat->room = ft_memalloc(sizeof(t_room));
 		dat->rtm = rtm_create;
+		force_mouselock(ed);
 	}
 	if (dat->rtm == rtm_modify && dat->room != NULL)
 		modifymode(ed, sdl, dat);
