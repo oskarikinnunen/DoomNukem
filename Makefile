@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+         #
+#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/21 17:44:34 by okinnune         ###   ########.fr        #
+#    Updated: 2022/11/24 14:01:56 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -71,7 +71,7 @@ OBJ= $(SRC:.c=.o)
 #Compilation stuff:
 INCLUDE= -ISDL_built/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
 CC= gcc
-LIBS= $(LIBFT) -lm -lGL
+LIBS= $(LIBFT) -lm -framework OpenGL #-lGL on linux instead of -framework OpenGL
 CFLAGS= $(INCLUDE) -g -finline-functions -O2#-march=native
 
 all: $(SDL2) $(LUA) $(LIBFT) $(OBJ)

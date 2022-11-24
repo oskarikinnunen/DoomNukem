@@ -107,12 +107,85 @@ static void player_init(t_player *player)
 	player->jump.lastframe = 15;
 }
 
+void	fill_audio(void *udata, Uint8 *stream, int len, Uint32 audio_len, Uint8 *audio_pos)
+{
+	/* Only play if we have data left */
+	if (audio_len == 0)
+		return ;
+	
+	/* Mix as much data as possible */
+	if (len > audio_len)
+		len = audio_len;
+	else
+		len = len;
+	SDL_MixAudio(stream, audio_pos, len, SDL_MIX_MAXVOLUME);
+	audio_pos += len;
+	audio_len -= len;
+}
+
+void	test_sound(t_sdlcontext *sdl)
+{
+	SDL_AudioSpec	wanted;
+	extern void	fill_audio(void *udata, Uint8 *strem, int len, Uint32 audio_len, Uint8 *audio_pos);
+
+	SDL_memset(&wanted, 0, sizeof(wanted)); /* or SDL_zero(wanted) */
+	wanted.freq = 22050;
+	wanted.format = AUDIO_S16;
+	wanted.channels = 2;	// 1 = mono, 2 = stereo 
+	wanted.samples = 1024;	// good low-latency value for callback
+	wanted.callback = fill_audio;
+	
+	//With SDL >= 2.0.4 you can choose to avoid callbacks and use SDL_QueueAudio() instead, if you like. Just open your audio device with a NULL callback.
+	//want.callback = NULL;
+	//SDL_AudioDeviceID dev = SDL_OpenAudioDevice(NULL, 0, &want, &have, SDL_AUDIO_ALLOW_FORMAT_CHANGE);
+	//if (dev == 0)
+	//	error_log(EC_SDL_OPENAUDIODEVICE);
+
+	if (SDL_OpenAudio(&wanted, NULL) < 0)
+		error_log(EC_SDL_OPENAUDIODEVICE);
+
+
+
+	static Uint8 *audio_chunk;
+	static Uint32 audio_len;
+	static Uint8 *audio_pos;
+
+	/* The audio function callback takes the following parameters:
+       stream:  A pointer to the audio buffer to be filled
+       len:     The length (in bytes) of the audio buffer
+    */
+
+	/* Load the audio data ... */
+
+	wanted = SDL_LoadWAV("assets/audio/cloud-10_gunshot.wav", wanted, audio_chunk, audio_len);
+
+	audio_pos = audio_chunk;
+
+	/* Let the callback function play the audio chunk */
+    //SDL_PauseAudio(0);
+
+    /* Do some processing */
+
+    ;;;;;
+
+    /* Wait for sound to complete */
+    while ( audio_len > 0 ) {
+        SDL_Delay(100);         /* Sleep 1/10 second */
+    }
+    SDL_CloseAudio();
+
+}
+
+
+
+
 /*main game loop*/
 static int gameloop(t_sdlcontext sdl, t_game game)
 {
 	t_gamereturn	gr;
 	t_render		render;
 
+	test_sound(&sdl);
 	//alloc_image(&pgraph.image, PERFGRAPH_SAMPLES + 1, PERFGRAPH_SAMPLES + 1);
 	gr = game_continue;
 	render = init_render(sdl);

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 15:53:51 by raho              #+#    #+#             */
-/*   Updated: 2022/11/14 22:24:19 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/24 14:10:51 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ static void	sdl_errors(int error_code)
 		fprintf(stderr, "SDL_GameControllerOpen failed: %s\n", SDL_GetError());
 	if (error_code == EC_SDL_JOYSTICKINSTANCEID)
 		fprintf(stderr, "SDL_JoystickInstanceID failed: %s\n", SDL_GetError());
+	if (error_code == EC_SDL_OPENAUDIODEVICE)
+		fprintf(stderr, "SDL_OpenAudioDevice failed: %s\n", SDL_GetError());
 	exit (1);
 }
 

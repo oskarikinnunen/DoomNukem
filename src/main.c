@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 17:47:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 14:02:20 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,17 @@
 #include "png.h"
 #include "game_lua.h"
 #include "objects.h"
-#include <GL/gl.h>
+#include <OpenGL/gl.h> // <GL/gl.h> on linux
 
 static void	create_sdl_context(t_sdlcontext *sdl)
 {
 	const char	*platform;
 
 	load_lua_conf(sdl);
-	if (SDL_Init(SDL_INIT_VIDEO) < 0
-		|| SDL_Init(SDL_INIT_EVENTS) < 0)
-		error_log(EC_SDL_INIT);
-	if (SDL_Init(SDL_INIT_GAMECONTROLLER) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO) < 0 \
+		|| SDL_Init(SDL_INIT_AUDIO) < 0 \
+		|| SDL_Init(SDL_INIT_EVENTS) < 0 \
+		|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0)
 		error_log(EC_SDL_INIT);
 		
 	platform = SDL_GetPlatform();
