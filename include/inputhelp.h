@@ -6,14 +6,14 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 09:30:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/14 21:17:41 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/24 12:40:15 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef INPUTHELP_H
 # define INPUTHELP_H
 
-# include "../SDL_built/include/SDL2/SDL.h"
+# include "../libs/installed_libs/include/SDL2/SDL.h"
 
 # define KEYS_LEFTMASK 0
 # define KEYS_RIGHTMASK 1
