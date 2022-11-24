@@ -1,7 +1,7 @@
 #ifndef NPCTOOL_H
 # define NPCTOOL_H
 
-#include "doomnukem.h"
+#include "room.h"
 
 typedef struct s_npctooldata
 {
