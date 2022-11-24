@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/22 11:59:24 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 14:32:53 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,20 +148,6 @@ static void	draw_transform_info(t_transform t, t_sdlcontext sdl)
 	draw_text_boxed(&sdl, vector_string(t.scale), (t_point){65, 105}, (t_point){sdl.window_w, sdl.window_h});
 }
 
-static void	draw_current_operation(t_entity *ent, t_entity *collide, t_sdlcontext sdl)
-{
-	if (collide == NULL)
-	{
-		draw_text_boxed(&sdl, "ADD:", (t_point){sdl.window_w / 2, sdl.window_h - 25}, (t_point){sdl.window_w, sdl.window_h});
-		draw_text_boxed(&sdl, ent->obj->name, (t_point){sdl.window_w / 2 + 60, sdl.window_h - 25}, (t_point){sdl.window_w, sdl.window_h});
-	}
-	else
-	{
-		draw_text_boxed(&sdl, "DEL:", (t_point){sdl.window_w / 2, sdl.window_h - 25}, (t_point){sdl.window_w, sdl.window_h});
-		draw_text_boxed(&sdl, collide->obj->name, (t_point){sdl.window_w / 2 + 60, sdl.window_h - 25}, (t_point){sdl.window_w, sdl.window_h});
-	}
-}
-
 static void findbounds(t_entity *ent)
 {
 	t_bound		zbound;
@@ -219,10 +205,6 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	t_entity	*collide;
 
 	ent = (t_entity *)ed->tool->tooldata;
-	/*if (instantbutton((t_rectangle) {52, 200, 20, 20}, &ed->mouse, sdl, "minus.png"))
-		ent->object_index--;
-	if (instantbutton((t_rectangle) {74, 200, 20, 20}, &ed->mouse, sdl, "plus.png"))
-		ent->object_index++;*/
 	ent->object_index = object_selector(ed, sdl, ent->object_index);
 	if (ent->obj != &sdl.objects[ent->object_index])
 	{
@@ -238,7 +220,6 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	/* END SPLIT */
 	set_font_size(&sdl, 0);
 	draw_transform_info(ent->transform, sdl);
-	draw_current_operation(ent, collide, sdl);
 	if (instantbutton((t_rectangle) {30, 120, 20, 20}, &ed->mouse, sdl, "minus.png"))
 		ent->transform.scale = vector3_add_xyz(ent->transform.scale, -0.25f);
 	if (instantbutton((t_rectangle) {52, 120, 20, 20}, &ed->mouse, sdl, "one.png"))
@@ -273,7 +254,6 @@ void	entity_tool_update(t_editor *ed)
 	t_entity	*ent;
 	t_vector3	dir;
 
-	sizeof(t_sdlcontext);
 	ent = (t_entity *)ed->tool->tooldata;
 	dir = vector3_sub((t_vector3){ed->position.x, ed->position.y, 20.0f}, ent->transform.location);
 	ent->transform.location = raycast(ed);//vector3_movetowards(ent->transform.location, dir, ed->clock.delta * 1.0f);
