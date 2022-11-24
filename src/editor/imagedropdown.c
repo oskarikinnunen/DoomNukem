@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/30 16:21:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/09 14:11:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 17:13:38 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,9 @@ void	update_imagedropdown(t_editor *ed, t_imagedropdown *dd)
 	i = 0;
 	while (i < 3)
 	{
-		if (ed->mouse.click_unhandled && ed->mouse.click_button == MOUSE_LEFT)
+		if (ed->hid.mouse.click_unhandled && ed->hid.mouse.click_button == MOUSE_LEFT)
 		{
-			if (pointrectanglecollision(ed->mouse.pos, dd->buttons[i].rect))
+			if (pointrectanglecollision(ed->hid.mouse.pos, dd->buttons[i].rect))
 			{
 				dd->selected = i + dd->scroll;
 				printf("SELECTED IMAGE %i \n", i + dd->scroll);
@@ -74,6 +74,6 @@ void	update_imagedropdown(t_editor *ed, t_imagedropdown *dd)
 		}
 		i++;
 	}
-	dd->scroll += ed->mouse.scroll_delta;
+	dd->scroll += ed->hid.mouse.scroll_delta;
 	dd->scroll = ft_clamp(dd->scroll, 0, 256);
 }

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/22 15:46:06 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 17:05:44 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ int	editorloop(t_sdlcontext sdl)
 				ed.tool->icon = get_image_by_name(sdl, ed.tool->icon_name);
 		}
 		draw_buttons(ed, sdl);
-		ed.mouse.click_unhandled = false;
+		ed.hid.mouse.click_unhandled = false;
 		draw_text_boxed(&sdl, "tab to unlock/lock mouse, shift + enter to go to playmode", (t_point){sdl.window_w / 2, 10}, (t_point){sdl.window_w, sdl.window_h});
 		char *fps = ft_itoa(ed.clock.fps);
 		draw_text_boxed(&sdl, fps, (t_point){sdl.window_w - 80, 10}, (t_point){sdl.window_w, sdl.window_h});

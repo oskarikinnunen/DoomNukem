@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 14:32:53 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 17:12:19 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,7 +192,7 @@ int	object_selector(t_editor *ed, t_sdlcontext sdl, int	original)
 	i = 0;
 	while (i < sdl.objectcount)
 	{
-		if (instant_text_button(sdl, &ed->mouse, sdl.objects[i].name, (t_point){20, 200 + (i * 20)}))
+		if (instant_text_button(sdl, &ed->hid.mouse, sdl.objects[i].name, (t_point){20, 200 + (i * 20)}))
 			return (i);
 		i++;
 	}
@@ -220,19 +220,19 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	/* END SPLIT */
 	set_font_size(&sdl, 0);
 	draw_transform_info(ent->transform, sdl);
-	if (instantbutton((t_rectangle) {30, 120, 20, 20}, &ed->mouse, sdl, "minus.png"))
+	if (instantbutton((t_rectangle) {30, 120, 20, 20}, &ed->hid.mouse, sdl, "minus.png"))
 		ent->transform.scale = vector3_add_xyz(ent->transform.scale, -0.25f);
-	if (instantbutton((t_rectangle) {52, 120, 20, 20}, &ed->mouse, sdl, "one.png"))
+	if (instantbutton((t_rectangle) {52, 120, 20, 20}, &ed->hid.mouse, sdl, "one.png"))
 		ent->transform.scale = vector3_one();
-	if (instantbutton((t_rectangle) {74, 120, 20, 20}, &ed->mouse, sdl, "plus.png"))
+	if (instantbutton((t_rectangle) {74, 120, 20, 20}, &ed->hid.mouse, sdl, "plus.png"))
 		ent->transform.scale = vector3_add_xyz(ent->transform.scale, 0.25f);
-	if ((ed->keystate >> KEYS_SHIFTMASK) & 1)
-		ent->transform.rotation.y += ed->mouse.scroll_delta * ft_degtorad(15.0f);
-	else if ((ed->keystate >> KEYS_LALTMASK) & 1)
-		ent->transform.rotation.z += ed->mouse.scroll_delta * ft_degtorad(15.0f);
+	if ((ed->hid.keystate >> KEYS_SHIFTMASK) & 1)
+		ent->transform.rotation.y += ed->hid.mouse.scroll_delta * ft_degtorad(15.0f);
+	else if ((ed->hid.keystate >> KEYS_LALTMASK) & 1)
+		ent->transform.rotation.z += ed->hid.mouse.scroll_delta * ft_degtorad(15.0f);
 	else
-		ent->transform.rotation.x += ed->mouse.scroll_delta * ft_degtorad(15.0f);
-	if (mouse_clicked(ed->mouse, MOUSE_MDL))
+		ent->transform.rotation.x += ed->hid.mouse.scroll_delta * ft_degtorad(15.0f);
+	if (mouse_clicked(ed->hid.mouse, MOUSE_MDL))
 		ent->transform.rotation = vector3_zero();
 	collide = selected_entity(ed, sdl);
 	if (collide != NULL)
@@ -242,10 +242,10 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 		render_entity(sdl, ed->render, collide);
 		entity_start_anim(collide, "walk");
 		ed->render.wireframe = false;
-		if (mouse_clicked(ed->mouse, MOUSE_RIGHT))
+		if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
 			list_remove(&ed->world.entitylist, collide, sizeof(t_entity));
 	}
-	if (mouse_clicked(ed->mouse, MOUSE_LEFT) && collide == NULL) //and selected is null, move to drawupdate
+	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT) && collide == NULL) //and selected is null, move to drawupdate
 		list_push(&ed->world.entitylist, ent, sizeof(t_entity));
 }
 

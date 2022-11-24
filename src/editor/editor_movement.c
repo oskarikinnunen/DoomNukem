@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_movement.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 18:03:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/05 16:33:24 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 17:14:27 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,13 +48,13 @@ void	move_editor(t_editor *ed)
 	//t_vector3	forward
 	t_vector2	new_angle;
 
-	new_angle.x = -ed->mouse.delta.x;
-	new_angle.y = -ed->mouse.delta.y;
+	new_angle.x = -ed->hid.mouse.delta.x;
+	new_angle.y = -ed->hid.mouse.delta.y;
 	new_angle = vector2_mul(new_angle, MOUSESPEED * (float)ed->clock.delta);
 	ed->angle = vector2_add(ed->angle, new_angle);
 	ed->angle.y = ft_clampf(ed->angle.y, -RAD90 * 0.99f, RAD90 * 0.99f);
 	ed->forward = lookdirection(ed->angle);
-	move_vector = editor_movementvector(ed->keystate, ed->forward);
+	move_vector = editor_movementvector(ed->hid.keystate, ed->forward);
 	move_vector = vector3_mul(move_vector, ed->clock.delta * MOVESPEED);
 	ed->position = vector3_add(ed->position, move_vector);
 }

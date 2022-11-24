@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 14:41:36 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 17:05:14 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -309,12 +309,23 @@ void	update_world3d(t_sdlcontext sdl, t_world *world, t_render *render);
 t_world	load_world(char *filename, t_sdlcontext sdl);
 void	save_world(char *filename, t_world world);
 
+
+
+typedef struct s_hid_info
+{
+	t_mouse			mouse;
+	uint32_t		keystate;
+	t_controller	controller[2];
+	t_input			input;
+}	t_hid_info;
+
 typedef struct s_editor
 {
 	t_world			world;
 	t_clock			clock;
-	t_mouse			mouse;
-	uint32_t		keystate;
+	/*t_mouse			mouse;
+	uint32_t		keystate;*/
+	t_hid_info		hid;
 	t_gamereturn	gamereturn;
 	/* typedef s_camera { */
 	t_vector3		position;
@@ -325,18 +336,14 @@ typedef struct s_editor
 	t_list			*buttonlist;
 	t_render		render;
 	struct s_tool	*tool;
-	
 }	t_editor;
 
 typedef struct s_game
 {
 	t_world			world;
 	t_clock			clock;
-	t_mouse			mouse;
-	uint32_t		keystate;
-	t_controller	controller[2];
+	t_hid_info		hid;
 	t_player		player;
-	t_input			input;
 	t_cam_mode		cam_mode; //Unused but will be reimplemented?
 } t_game;
 
@@ -351,9 +358,6 @@ void			force_mouselock(t_editor *ed);
 void			move_editor(t_editor *ed);
 
 /* EDITOR_MOUSE.C */
-t_point			mousetoworldspace(t_editor *ed);
-t_point			mousetogridspace(t_editor *ed);
-t_point			screentogridspace(t_point point);
 t_quaternion	transformed_vector3(t_transform transform, t_vector3 v);
 void			mouse_event(SDL_Event e, t_mouse *mouse);
 
@@ -398,8 +402,8 @@ void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale);
 void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
 
 /* CONTROLLER.C */
-void	initialize_controllers(t_game *game);
-int		controller_events(SDL_Event e, t_game *game);
+void	initialize_controllers(t_hid_info *hid);
+int		controller_events(SDL_Event e, t_hid_info *hid);
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);

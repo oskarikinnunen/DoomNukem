@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 14:03:29 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 17:05:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,13 +148,13 @@ void	updateguntransform(t_game *game, t_player *player)
 	t_gun			*gun;
 
 	gun = player->gun;
-	if (game->input.aim)
+	if (game->hid.input.aim)
 		lerp += 0.02f * game->clock.delta;
 	else
 		lerp -= 0.02f * game->clock.delta;
 	lerp = ft_clampf(lerp, 0.0f, 1.0f);
 	gun->entity.transform.location = vector3_lerp(gun->holsterpos, gun->aimpos, lerp);
-	if (game->input.shoot && gun->readytoshoot)
+	if (game->hid.input.shoot && gun->readytoshoot)
 	{
 		gun->shoot_anim.framerate = 120;
 		gun->shoot_anim.loop = false;
@@ -162,19 +162,20 @@ void	updateguntransform(t_game *game, t_player *player)
 		start_anim(&gun->shoot_anim, anim_forwards);
 		gun->readytoshoot = false;
 	}
-	else if (!game->input.shoot && !gun->shoot_anim.active)
+	else if (!game->hid.input.shoot && !gun->shoot_anim.active)
+	
 		gun->readytoshoot = true;
 	update_anim(&gun->shoot_anim, game->clock.delta);
 	gun->entity.transform.location = vector3_add(gun->entity.transform.location, vector3_mul(vector3_up(), gun->shoot_anim.lerp * -1.0f));
 	gun->entity.transform.location = vector3_add(gun->entity.transform.location, vector3_mul((t_vector3){.x = 1.0f}, gun->shoot_anim.lerp * -0.25f));
-	gun->entity.transform.location.z += vector2_magnitude(game->input.move) * cosf((game->clock.prev_time * 0.007f)) * 0.2f;
-	gun->entity.transform.rotation.z += vector2_magnitude(game->input.move) * cosf((game->clock.prev_time * 0.007f)) * ft_degtorad(0.15f);
-	gun->entity.transform.rotation.y = fmovetowards(gun->entity.transform.rotation.y, ft_degtorad(game->input.move.y * 1.15f), 0.0006f * game->clock.delta);
+	gun->entity.transform.location.z += vector2_magnitude(game->hid.input.move) * cosf((game->clock.prev_time * 0.007f)) * 0.2f;
+	gun->entity.transform.rotation.z += vector2_magnitude(game->hid.input.move) * cosf((game->clock.prev_time * 0.007f)) * ft_degtorad(0.15f);
+	gun->entity.transform.rotation.y = fmovetowards(gun->entity.transform.rotation.y, ft_degtorad(game->hid.input.move.y * 1.15f), 0.0006f * game->clock.delta);
 	gun->entity.transform.rotation.y += ft_flerp(0.0f, ft_degtorad(10.0f), gun->shoot_anim.lerp);
 	gun->entity.transform.rotation.y = ft_clampf(gun->entity.transform.rotation.y, ft_degtorad(-0.5f), ft_degtorad(15.0f));
 	gun->entity.transform.rotation.x = ft_flerp(0.0f, ft_degtorad(2.0f), gun->shoot_anim.lerp);
-	float	zturn = game->input.move.x * 2.0f;
-	zturn += game->input.turn.x * 5.0f;
+	float	zturn = game->hid.input.move.x * 2.0f;
+	zturn += game->hid.input.turn.x * 5.0f;
 	zturn = ft_clampf(zturn, ft_degtorad(-2.5f), ft_degtorad(2.5f));
 	gun->entity.transform.rotation.z = fmovetowards(gun->entity.transform.rotation.z, zturn, 0.0004f * game->clock.delta);
 	player->transform.rotation.y += gun->shoot_anim.lerp * game->clock.delta * 0.001f;
@@ -188,11 +189,11 @@ void	moveplayer(t_game *game)
 
 	updateguntransform(game, &game->player);
 	move_vector = vector3_zero();
-	t_vector2 delta_angle = vector2_mul(game->input.turn, game->clock.delta);
+	t_vector2 delta_angle = vector2_mul(game->hid.input.turn, game->clock.delta);
 	game->player.transform.rotation = vector3_sub(game->player.transform.rotation, (t_vector3){delta_angle.x, delta_angle.y, 0.0f}); //TODO: this
 	game->player.transform.rotation.y = ft_clampf(game->player.transform.rotation.y, -RAD90 * 0.99f, RAD90 * 0.99f);
 	game->player.lookdir = lookdirection((t_vector2){game->player.transform.rotation.x, game->player.transform.rotation.y});
-	move_vector = player_movementvector(game->input, game->player);
+	move_vector = player_movementvector(game->hid.input, game->player);
 	move_vector = vector3_mul(move_vector, game->clock.delta * MOVESPEED);
 	game->player.speed = move_vector;
 	game->player.transform.location = vector3_add(game->player.transform.location, move_vector);

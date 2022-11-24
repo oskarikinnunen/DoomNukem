@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   button_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/30 15:40:24 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/03 19:54:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 17:13:21 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,9 +88,9 @@ void	button_tool_draw(t_editor *ed, t_sdlcontext sdl)
 		if (tdat->selected->img != get_image_by_index(sdl, tdat->selected->imageindex))
 			tdat->selected->img = get_image_by_index(sdl, tdat->selected->imageindex);
 	}
-	if ((ed->keystate >> KEYS_CTRLMASK) & 1)
+	if ((ed->hid.keystate >> KEYS_CTRLMASK) & 1)
 		draw_moveindicators(ed, sdl);
-	if ((ed->keystate >> KEYS_SHIFTMASK) & 1)
+	if ((ed->hid.keystate >> KEYS_SHIFTMASK) & 1)
 		draw_resizeindicators(ed, sdl);
 }
 
@@ -116,33 +116,33 @@ void	modify_selected(t_editor *ed, t_buttontooldata *btd)
 		select->imageindex = dd->selected;
 		dd->changed = false;
 	}
-	if (ed->mouse.scroll_delta != 0 && !dd->inprogress)
+	if (ed->hid.mouse.scroll_delta != 0 && !dd->inprogress)
 	{
 		//system("code -g src/editor/editor_new_buttons.c:50"); TODO: do this after we have text rendering, redo the function selector
-		select->func_index += ed->mouse.scroll_delta;
+		select->func_index += ed->hid.mouse.scroll_delta;
 		select->func_index = ft_clamp(select->func_index, 0, 10); //TODO: READ actual function count, 10 will do for now tho
 		select->onclick = get_button_func(select->func_index).onclick;
 		printf("on click changed to %s, index %i\n",
 			get_button_func(select->func_index).func_name, select->func_index);
 	}
-	if (ed->mouse.held == MOUSE_LEFT && !dd->inprogress)
+	if (ed->hid.mouse.held == MOUSE_LEFT && !dd->inprogress)
 	{
-		if ((ed->keystate >> KEYS_SHIFTMASK) & 1)
+		if ((ed->hid.keystate >> KEYS_SHIFTMASK) & 1)
 		{
-			select->rect.size = snap_point(point_sub(ed->mouse.pos, select->rect.position));
+			select->rect.size = snap_point(point_sub(ed->hid.mouse.pos, select->rect.position));
 			select->rect.size.x = ft_clamp(select->rect.size.x, 20, 260);
 			select->rect.size.y = ft_clamp(select->rect.size.y, 20, 260);
 			select->rect.size.x -= 3;
 			select->rect.size.y -= 3;
 		}
-		else if ((ed->keystate >> KEYS_CTRLMASK) & 1)
+		else if ((ed->hid.keystate >> KEYS_CTRLMASK) & 1)
 		{
-			select->rect.position = snap_point(ed->mouse.pos);
+			select->rect.position = snap_point(ed->hid.mouse.pos);
 		}
 	}
-	if (mouse_clicked(ed->mouse, MOUSE_MDL))
-		start_imagedropdown(ed->mouse.pos, dd);
-	if (mouse_clicked(ed->mouse, MOUSE_RIGHT))
+	if (mouse_clicked(ed->hid.mouse, MOUSE_MDL))
+		start_imagedropdown(ed->hid.mouse.pos, dd);
+	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
 	{
 		list_remove(&ed->buttonlist, select, sizeof(t_guibutton));
 		btd->selected = NULL;
@@ -158,10 +158,10 @@ void	button_tool_update(t_editor *ed)
 	tdat = (t_buttontooldata *)ed->tool->tooldata;
 	update_imagedropdown(ed, &tdat->dropdown);
 	button = &tdat->button;
-	hover = hovered(ed->buttonlist, ed->mouse.pos);
+	hover = hovered(ed->buttonlist, ed->hid.mouse.pos);
 	if (tdat->selected != hover && hover != NULL)
 		tdat->selected = hover;
-	if ((mouse_clicked(ed->mouse, MOUSE_RIGHT) && !hover))
+	if ((mouse_clicked(ed->hid.mouse, MOUSE_RIGHT) && !hover))
 		tdat->selected = NULL;
 	if (tdat->selected != NULL)
 	{
@@ -171,18 +171,18 @@ void	button_tool_update(t_editor *ed)
 		
 	if (tdat->dropdown.inprogress)
 		return ;
-	if (ed->mouse.held == MOUSE_LEFT && point_cmp(button->rect.position, point_zero()))
-		button->rect.position = ed->mouse.pos;
-	if (ed->mouse.held == MOUSE_LEFT && !point_cmp(button->rect.position, point_zero()))
+	if (ed->hid.mouse.held == MOUSE_LEFT && point_cmp(button->rect.position, point_zero()))
+		button->rect.position = ed->hid.mouse.pos;
+	if (ed->hid.mouse.held == MOUSE_LEFT && !point_cmp(button->rect.position, point_zero()))
 	{
-		button->rect.size = point_abs(point_sub(ed->mouse.pos, button->rect.position));
+		button->rect.size = point_abs(point_sub(ed->hid.mouse.pos, button->rect.position));
 		button->rect.size.x = button->rect.size.x - (button->rect.size.x % 16);
 		button->rect.size.y = button->rect.size.y - (button->rect.size.y % 16);
 		//button->rect.size = point_div(button->rect.size, 4);
 		//button->rect.size = point_mul(button->rect.size, 4);
 	}
 		
-	if (ed->mouse.held == 0 && !point_cmp(button->rect.position, point_zero()) && !point_cmp(button->rect.size, point_zero()))
+	if (ed->hid.mouse.held == 0 && !point_cmp(button->rect.position, point_zero()) && !point_cmp(button->rect.size, point_zero()))
 	{
 		list_push(&ed->buttonlist, button, sizeof(t_guibutton));
 		ft_bzero(button, sizeof(t_guibutton));

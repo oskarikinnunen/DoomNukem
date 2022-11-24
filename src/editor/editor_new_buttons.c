@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 14:34:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/22 15:16:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 17:14:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,31 +17,31 @@ typedef void	(*t_button_click_fptr)(t_editor *ed);
 
 void	empty_click_func(t_editor *ed)
 {
-	ed->mouse.click_unhandled = false;
+	ed->hid.mouse.click_unhandled = false;
 }
 
 void	set_tool_button(t_editor *ed)
 {
 	ed->tool = get_button_editor_tool();
-	ed->mouse.click_unhandled = false;
+	ed->hid.mouse.click_unhandled = false;
 }
 
 void	set_tool_wall(t_editor *ed)
 {
 	ed->tool = get_wall_tool();
-	ed->mouse.click_unhandled = false;
+	ed->hid.mouse.click_unhandled = false;
 }
 
 void	set_tool_room(t_editor *ed)
 {
 	ed->tool = get_room_tool();
-	ed->mouse.click_unhandled = false;
+	ed->hid.mouse.click_unhandled = false;
 }
 
 void	set_tool_entity(t_editor *ed)
 {
 	ed->tool = get_entity_tool();
-	ed->mouse.click_unhandled = false;
+	ed->hid.mouse.click_unhandled = false;
 }
 
 void	editor_angle_y_sub(t_editor *ed)
@@ -120,7 +120,7 @@ void draw_buttons(t_editor ed, t_sdlcontext sdl)
 		button = *(t_guibutton *)l->content;
 		if (button.img != NULL)
 			draw_image(sdl, button.rect.position, *button.img, button.rect.size);
-		if (pointrectanglecollision(ed.mouse.pos, button.rect))
+		if (pointrectanglecollision(ed.hid.mouse.pos, button.rect))
 		{
 			drawrectangle(sdl, button.rect, CLR_GREEN);
 		}

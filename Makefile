@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
+#    By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/24 14:23:17 by okinnune         ###   ########.fr        #
+#    Updated: 2022/11/24 17:02:47 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -75,7 +75,7 @@ OBJ= $(SRC:.c=.o)
 INCLUDE= -ISDL_built/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
 CC= gcc
 
-CFLAGS= $(INCLUDE) -g -finline-functions -O2#-march=native
+CFLAGS= $(INCLUDE) -g -O2#-march=native
 UNAME= $(shell uname)
 ifeq ($(UNAME), Darwin)
 override CFLAGS += '-D GL_SILENCE_DEPRECATION'

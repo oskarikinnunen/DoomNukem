@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 14:51:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 17:12:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,9 +197,9 @@ static void	createmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		draw_text_boxed(&sdl, "shift + click to finish room", (t_point) {20, 240}, sdl.screensize);
 	
 	cur->line.end = snap;
-	if ((ed->keystate >> KEYS_SHIFTMASK) & 1 && dat->room->wallcount > 0)
+	if ((ed->hid.keystate >> KEYS_SHIFTMASK) & 1 && dat->room->wallcount > 0)
 		cur->line.end = dat->room->walls[0].line.start;
-	if (mouse_clicked(ed->mouse, MOUSE_LEFT) && !illegalwall(cur, dat->room))
+	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT) && !illegalwall(cur, dat->room))
 	{
 		if (vector2_cmp(cur->line.start, vector2_zero()))
 		{
@@ -210,7 +210,7 @@ static void	createmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		init_roomwalls(dat->room, &sdl);
 		printf("wallcount in room %i \n", dat->room->wallcount);
 		cur->line.start = snap;
-		if ((ed->keystate >> KEYS_SHIFTMASK) & 1)
+		if ((ed->hid.keystate >> KEYS_SHIFTMASK) & 1)
 		{
 			dat->rtm = rtm_modify;
 			list_push(&ed->world.roomlist, dat->room, sizeof(t_room));
@@ -221,7 +221,7 @@ static void	createmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 			return ;
 		}
 	}
-	else if (mouse_clicked(ed->mouse, MOUSE_RIGHT))
+	else if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
 	{
 		if (dat->room->wallcount >= 1)
 		{
@@ -354,7 +354,7 @@ static void walleditmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	highlight_object(ed, sdl, &dat->ed_wall->entity, CLR_GREEN);
 	snprintf(text, 64, "make door");
 	draw_text_boxed(&sdl, text, (t_point){20, 280}, sdl.screensize);
-	if (instantbutton((t_rectangle){20, 300, 40, 40}, &ed->mouse, sdl, "stop.png"))
+	if (instantbutton((t_rectangle){20, 300, 40, 40}, &ed->hid.mouse, sdl, "stop.png"))
 	{
 		dat->ed_wall->entity.transform.scale = vector3_zero();
 		dat->doorwalls[0].line.start = dat->ed_wall->line.start;
@@ -374,12 +374,12 @@ static void walleditmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		dat->ed_wall = NULL;
 		return ;
 	}
-	if (instantbutton((t_rectangle){20, 345, 40, 40}, &ed->mouse, sdl, "one.png"))
+	if (instantbutton((t_rectangle){20, 345, 40, 40}, &ed->hid.mouse, sdl, "one.png"))
 	{
 		dat->ed_wall->disabled = !dat->ed_wall->disabled;
 		init_roomwalls(dat->room, &sdl);
 	}
-	if (mouse_clicked(ed->mouse, MOUSE_RIGHT))
+	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
 		dat->ed_wall = NULL;
 }
 
@@ -401,27 +401,27 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	snap = vector2_snap((t_vector2){rc.x, rc.y}, 10);
 	highlight_room(ed, sdl, *dat->room, CLR_GREEN);
 	look_wall = selectedwall(ed, sdl, dat->room);
-	if (looking_atcorner(ed, sdl, snap, dat->room) && ed->mouse.held == MOUSE_LEFT)
+	if (looking_atcorner(ed, sdl, snap, dat->room) && ed->hid.mouse.held == MOUSE_LEFT)
 		applydrag(snap, dat->room);
 	else if (dat->room->floorcount == 0)
 		makefloor_room(ed, &sdl, dat->room);
 	if (!looking_atcorner(ed, sdl, snap, dat->room) && look_wall != NULL)
 		highlight_object(ed, sdl, &look_wall->entity, CLR_BLUE);
-	if (!looking_atcorner(ed, sdl, snap, dat->room) && mouse_clicked(ed->mouse, MOUSE_LEFT))
+	if (!looking_atcorner(ed, sdl, snap, dat->room) && mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 	{
 		force_mouseunlock(ed);
 		dat->ed_wall = look_wall;
 	}
-	if (mouse_clicked(ed->mouse, MOUSE_RIGHT))
+	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
 	{
 		dat->wall.line.start = vector2_zero();
 		dat->wall.line.end = vector2_zero();
 		dat->room = NULL;
 		dat->rtm = rtm_create;
 	}
-	if (ed->mouse.scroll_delta != 0)
-		modifywallheights(dat->room, ed->mouse.scroll_delta);
-	if (instantbutton((t_rectangle){20, 300, 80, 40}, &ed->mouse, sdl, "minus.png"))
+	if (ed->hid.mouse.scroll_delta != 0)
+		modifywallheights(dat->room, ed->hid.mouse.scroll_delta);
+	if (instantbutton((t_rectangle){20, 300, 80, 40}, &ed->hid.mouse, sdl, "minus.png"))
 	{
 		list_remove(&ed->world.roomlist, dat->room, sizeof(t_room));
 		dat->wall.line.start = vector2_zero();
@@ -457,17 +457,17 @@ void	room_tool_draw(t_editor *ed, t_sdlcontext sdl)
 		if (hover != NULL)
 		{
 			highlight_room(ed, sdl, *hover, CLR_BLUE);
-			if (mouse_clicked(ed->mouse, MOUSE_LEFT))
+			if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 			{
 				dat->room = hover;
 				dat->rtm = rtm_modify;
-				ed->mouse.click_unhandled = false;
+				ed->hid.mouse.click_unhandled = false;
 			}
 		}
 	} else if (dat->rtm == rtm_create)
 		createmode(ed, sdl, dat);
 	set_font_size(&sdl, 2);
-	if (instant_text_button(sdl, &ed->mouse, "Add Room", (t_point){20, 200}))
+	if (instant_text_button(sdl, &ed->hid.mouse, "Add Room", (t_point){20, 200}))
 	{
 		dat->room = ft_memalloc(sizeof(t_room));
 		dat->rtm = rtm_create;

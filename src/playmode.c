@@ -8,7 +8,7 @@
 /*place holder for inits*/
 void	move(t_game *game);
 
-static int key_events(SDL_Event e, t_game *game)
+static int key_events(SDL_Event e, t_hid_info *hid)
 {
 	t_vector2 temp;
 	if (e.type == SDL_KEYDOWN)
@@ -17,29 +17,29 @@ static int key_events(SDL_Event e, t_game *game)
 			return (game_exit);
 		if (iskey(e, SDLK_TAB))
 			return (game_switchmode);
-		game->keystate |= keyismoveleft(e) << KEYS_LEFTMASK;
-		game->keystate |= keyismoveright(e) << KEYS_RIGHTMASK;
-		game->keystate |= keyismoveup(e) << KEYS_UPMASK;
-		game->keystate |= keyismovedown(e) << KEYS_DOWNMASK;
-		game->keystate |= iskey(e, SDLK_SPACE) << KEYS_SPACEMASK;
-		game->keystate |= iskey(e, SDLK_LCTRL) << KEYS_CTRLMASK;
-		game->keystate |= iskey(e, SDLK_LSHIFT) << KEYS_SHIFTMASK;
-		game->keystate |= iskey(e, SDLK_m) << KEYS_MMASK;
-		if (iskey(e, SDLK_m))
+		hid->keystate |= keyismoveleft(e) << KEYS_LEFTMASK;
+		hid->keystate |= keyismoveright(e) << KEYS_RIGHTMASK;
+		hid->keystate |= keyismoveup(e) << KEYS_UPMASK;
+		hid->keystate |= keyismovedown(e) << KEYS_DOWNMASK;
+		hid->keystate |= iskey(e, SDLK_SPACE) << KEYS_SPACEMASK;
+		hid->keystate |= iskey(e, SDLK_LCTRL) << KEYS_CTRLMASK;
+		hid->keystate |= iskey(e, SDLK_LSHIFT) << KEYS_SHIFTMASK;
+		hid->keystate |= iskey(e, SDLK_m) << KEYS_MMASK;
+		/*if (iskey(e, SDLK_m))
 		{
 			game->cam_mode = !game->cam_mode;
-		}
+		}*/
 	}
 	else if(e.type == SDL_KEYUP)
 	{
-		game->keystate &= ~(keyismoveleft(e) << KEYS_LEFTMASK);
-		game->keystate &= ~(keyismoveright(e) << KEYS_RIGHTMASK);
-		game->keystate &= ~(keyismoveup(e) << KEYS_UPMASK);
-		game->keystate &= ~(keyismovedown(e) << KEYS_DOWNMASK);
-		game->keystate &= ~(iskey(e, SDLK_SPACE) << KEYS_SPACEMASK);
-		game->keystate &= ~(iskey(e, SDLK_LCTRL) << KEYS_CTRLMASK);
-		game->keystate &= ~(iskey(e, SDLK_LSHIFT) << KEYS_SHIFTMASK);
-		game->keystate &= ~(iskey(e, SDLK_m) << KEYS_MMASK);
+		hid->keystate &= ~(keyismoveleft(e) << KEYS_LEFTMASK);
+		hid->keystate &= ~(keyismoveright(e) << KEYS_RIGHTMASK);
+		hid->keystate &= ~(keyismoveup(e) << KEYS_UPMASK);
+		hid->keystate &= ~(keyismovedown(e) << KEYS_DOWNMASK);
+		hid->keystate &= ~(iskey(e, SDLK_SPACE) << KEYS_SPACEMASK);
+		hid->keystate &= ~(iskey(e, SDLK_LCTRL) << KEYS_CTRLMASK);
+		hid->keystate &= ~(iskey(e, SDLK_LSHIFT) << KEYS_SHIFTMASK);
+		hid->keystate &= ~(iskey(e, SDLK_m) << KEYS_MMASK);
 	}
 	return (game_continue);
 }
@@ -50,10 +50,9 @@ static void updatemouse(t_mouse *mouse)
 	SDL_GetRelativeMouseState(&mouse->delta.x, &mouse->delta.y);
 }
 
-static void updateinput(t_input *input, int keystate, t_mouse m, t_controller *controller)
+void updateinput(t_input *input, int keystate, t_mouse m, t_controller *controller)
 {
 	input->move = vector2_zero();
-
 	input->move.x -= (keystate >> KEYS_LEFTMASK) & 1;
 	input->move.x += (keystate >> KEYS_RIGHTMASK) & 1;
 	input->move.y += (keystate >> KEYS_DOWNMASK) & 1;
@@ -74,23 +73,23 @@ static void updateinput(t_input *input, int keystate, t_mouse m, t_controller *c
 }
 
 /*check for keyboard/mouse/joystick input*/
-static int handleinput(t_game *game)
+static int handleinput(t_hid_info	*hid)
 {
 	static SDL_Event	e;
 	t_gamereturn		gr;
 
-	updatemouse(&game->mouse);
+	updatemouse(&hid->mouse);
 	while (SDL_PollEvent(&e))
 	{
-		mouse_event(e, &game->mouse);
-		gr = key_events(e, game);
+		mouse_event(e, &hid->mouse);
+		gr = key_events(e, hid);
 		if (gr != game_continue)
 			return (gr);
-		gr = controller_events(e, game);
+		//gr = controller_events(e, game);
 		if (gr != game_continue)
 			return (gr);
 	}
-	updateinput(&game->input, game->keystate, game->mouse, &game->controller[0]);
+	updateinput(&hid->input, hid->keystate, hid->mouse, &hid->controller[0]);
 	return(game_continue);
 }
 
@@ -133,12 +132,12 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	game.player.transform.location = (t_vector3) {500.0f, 500.0f, 500.0f};
 	game.player.transform.rotation = (t_vector3){-RAD90, -RAD90 * 0.99f, 0.0f}; //TODO: implement transform for player
 	game.player.transform.scale = vector3_one();
-	initialize_controllers(&game);
+	initialize_controllers(&game.hid);
 	while (gr == game_continue)
 	{
 		update_deltatime(&game.clock);
 		update_deltatime(&game.world.clock);
-		gr = handleinput(&game);
+		gr = handleinput(&game.hid);
 		moveplayer(&game);
 		update_render(&render, &game.player);
 		screen_blank(sdl); //Combine with render_start?
