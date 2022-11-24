@@ -38,6 +38,10 @@ static void	initialize_colors(t_font *font)
 	font->font_colors.yellow = temp;
 	temp.g = 165;
 	font->font_colors.orange = temp;
+	temp.r = 135;
+	temp.g = 206;
+	temp.b = 235;
+	font->font_colors.skyblue = temp;
 }
 
 void	load_fonts(t_font *font)

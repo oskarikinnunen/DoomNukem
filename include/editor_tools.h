@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_tools.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/14 15:55:15 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/24 14:41:19 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,6 @@
 
 # include "shapes.h"
 # include "doomnukem.h"
-
-struct	s_editor;
-struct	s_sdlcontext;
 
 typedef struct s_tool
 {
@@ -69,6 +66,10 @@ typedef struct s_buttontooldata
 	t_imagedropdown	dropdown;
 }	t_buttontooldata;
 
+struct	s_sdlcontext;
+struct	s_mouse;
+struct	s_editor;
+
 void				initialize_buttons(t_list *buttonlist, t_sdlcontext sdl);
 void				point_tool_delete(struct s_editor *ed, t_point crd);
 t_click_func_def	get_button_func(int	index);
@@ -76,15 +77,20 @@ t_click_func_def	get_button_func(int	index);
 t_guibutton			*hovered(t_list *buttonlist, t_point mousepos);
 void				draw_buttons(t_editor ed, t_sdlcontext sdl); //TODO: move somewhere else so game can use it aswell?
 bool				instantbutton(struct s_rectangle rect, struct s_mouse *m, struct s_sdlcontext sdl, char *imgname);
-// Combines draw_text_boxed and instantbutton to make a button out of the text
+int					object_selector(t_editor *ed, struct s_sdlcontext sdl, int	original);
+// Combines print_text_boxed and instantbutton to make a button out of the text
 bool				instant_text_button(t_sdlcontext sdl, t_mouse *m, const char *str, t_point pos);
 void				empty_click_func(t_editor *ed);
 t_tool				*get_wall_tool(void);
+t_tool				*get_room_tool(void);
 t_tool				*get_entity_tool(void);
+t_tool				*get_npc_tool(void);
 t_tool				*get_button_editor_tool();
 void				start_imagedropdown(t_point origin, t_imagedropdown *dd);
 void				update_imagedropdown(t_editor *ed, t_imagedropdown *dd);
 void				draw_imagedropdown(t_sdlcontext sdl, t_imagedropdown dd);
 t_vector3			raycast(t_editor *ed);
+bool				entity_lookedat(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
+t_entity			*selected_entity(t_editor *ed, t_sdlcontext sdl);
 
 #endif

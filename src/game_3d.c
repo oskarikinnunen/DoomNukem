@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/08 04:55:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/23 13:45:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static void save_clipped_points(float dist[3], t_triangle *tris[3], int points[4
 	}
 }
 
-static int Triangle_ClipAgainstPlane(t_vector3 plane_p, t_vector3 plane_n, t_triangle *in_tri, t_triangle out_tri[2])
+int triangle_clipagainstplane(t_vector3 plane_p, t_vector3 plane_n, t_triangle *in_tri, t_triangle out_tri[2])
 {
 	t_triangle	tri_inside;
 	t_triangle	tri_outside;
@@ -126,13 +126,31 @@ static void draw_triangles(t_sdlcontext sdl, t_render render)
 	int index = 0;
 	while (index < render.draw_tri_count)
 	{
-		if (!render.wireframe)
+		if (!render.wireframe && render.img != NULL)
 			z_fill_tri(sdl, render.draw_triangles[index], *render.img);
-		else
+		if (render.wireframe)
 		{
 			drawline(sdl, (t_point){render.draw_triangles[index].p[0].v.x, render.draw_triangles[index].p[0].v.y}, (t_point){render.draw_triangles[index].p[1].v.x, render.draw_triangles[index].p[1].v.y}, render.gizmocolor);
 			drawline(sdl, (t_point){render.draw_triangles[index].p[2].v.x, render.draw_triangles[index].p[2].v.y}, (t_point){render.draw_triangles[index].p[1].v.x, render.draw_triangles[index].p[1].v.y}, render.gizmocolor);
 			drawline(sdl, (t_point){render.draw_triangles[index].p[0].v.x, render.draw_triangles[index].p[0].v.y}, (t_point){render.draw_triangles[index].p[2].v.x, render.draw_triangles[index].p[2].v.y}, render.gizmocolor);
+		}
+		if (render.img == NULL)
+		{
+			t_img	img;
+
+			img.data = (uint32_t [1]) {render.draw_triangles[index].clr};
+			img.size.x = 1;
+			img.size.y = 1;
+			img.length = 1;
+			render.img = &img;
+			z_fill_tri(sdl, render.draw_triangles[index], *render.img);
+			render.img = NULL;
+			//render.draw_triangles[index].clr = CLR_RED;
+			//printf("color r %i \n", render.draw_triangles[index].clr & 0xFF);
+			//z_fill_tri_solid(sdl, render.draw_triangles[index]);
+			/*drawline(sdl, (t_point){render.draw_triangles[index].p[0].v.x, render.draw_triangles[index].p[0].v.y}, (t_point){render.draw_triangles[index].p[1].v.x, render.draw_triangles[index].p[1].v.y}, render.draw_triangles[index].clr);
+			drawline(sdl, (t_point){render.draw_triangles[index].p[2].v.x, render.draw_triangles[index].p[2].v.y}, (t_point){render.draw_triangles[index].p[1].v.x, render.draw_triangles[index].p[1].v.y}, render.draw_triangles[index].clr);
+			drawline(sdl, (t_point){render.draw_triangles[index].p[0].v.x, render.draw_triangles[index].p[0].v.y}, (t_point){render.draw_triangles[index].p[2].v.x, render.draw_triangles[index].p[2].v.y}, render.draw_triangles[index].clr);*/
 		}
 		index++;
 	}
@@ -178,10 +196,10 @@ static void clipped(t_render render, t_sdlcontext sdl)
 				nnewtriangles--;
 				switch (p)
 				{
-				case 0: ntristoadd = Triangle_ClipAgainstPlane((t_vector3){0.0f, 0.0f, 0.0f}, (t_vector3){0.0f, 1.0f, 0.0f}, &test, clipped); break;
-				case 1: ntristoadd = Triangle_ClipAgainstPlane((t_vector3){0.0f, (float)sdl.window_h - 1.0f, 0.0f}, (t_vector3){0.0f, -1.0f, 0.0f}, &test, clipped); break;
-				case 2: ntristoadd = Triangle_ClipAgainstPlane((t_vector3){0.0f, 0.0f, 0.0f}, (t_vector3){1.0f, 0.0f, 0.0f}, &test, clipped); break;
-				case 3: ntristoadd = Triangle_ClipAgainstPlane((t_vector3){(float)sdl.window_w - 1.0f, 0.0f, 0.0f}, (t_vector3){-1.0f, 0.0f, 0.0f}, &test, clipped); break;
+				case 0: ntristoadd = triangle_clipagainstplane((t_vector3){0.0f, 0.0f, 0.0f}, (t_vector3){0.0f, 1.0f, 0.0f}, &test, clipped); break;
+				case 1: ntristoadd = triangle_clipagainstplane((t_vector3){0.0f, (float)sdl.window_h - 1.0f, 0.0f}, (t_vector3){0.0f, -1.0f, 0.0f}, &test, clipped); break;
+				case 2: ntristoadd = triangle_clipagainstplane((t_vector3){0.0f, 0.0f, 0.0f}, (t_vector3){1.0f, 0.0f, 0.0f}, &test, clipped); break;
+				case 3: ntristoadd = triangle_clipagainstplane((t_vector3){(float)sdl.window_w - 1.0f, 0.0f, 0.0f}, (t_vector3){-1.0f, 0.0f, 0.0f}, &test, clipped); break;
 				}
 				for (int w = 0; w < ntristoadd; w++)
 				{
@@ -238,7 +256,8 @@ static int clippedtriangles(t_triangle tritransformed, t_mat4x4 matview, t_trian
 	triviewed.t[0] = tritransformed.t[0];
 	triviewed.t[1] = tritransformed.t[1];
 	triviewed.t[2] = tritransformed.t[2];
-	return (Triangle_ClipAgainstPlane(
+	triviewed.clr = tritransformed.clr;
+	return (triangle_clipagainstplane(
 	(t_vector3){0.0f, 0.0f, 0.1f},
 	(t_vector3){0.0f, 0.0f, 0.2f},
 	&triviewed, clipped));
@@ -286,6 +305,7 @@ static t_triangle triangle_to_screenspace(t_mat4x4 matproj, t_triangle clipped, 
 	triprojected.p[1].v.y *= 0.5f * (float)sdl.window_h;
 	triprojected.p[2].v.x *= 0.5f * (float)sdl.window_w;
 	triprojected.p[2].v.y *= 0.5f * (float)sdl.window_h;
+	triprojected.clr = clipped.clr;
 
 	return(triprojected);
 }
@@ -319,11 +339,25 @@ static t_texture	vector2_to_texture(t_vector2 v)
 	return(t);
 }
 
+uint32_t shade(uint32_t clr, float norm)
+{
+	float		mul;
+	uint32_t	final;
+
+	//return (clr);
+	mul = ft_clampf(norm, 0.75f, 1.0f);
+	final = (clr & 0xFF) * mul;
+	final += (uint32_t)((clr >> 8 & 0xFF) * mul) << 8;
+	final += (uint32_t)((clr >> 16 & 0xFF) * mul) << 16;
+	return (final);
+}
+
 void render_entity(t_sdlcontext sdl, t_render render, t_entity *entity)
 {
 	int				index;
 	t_object		*obj;
-	t_vector3		temp;
+	t_quaternion	temp;
+	t_vector3		lookd;
 
 	obj = entity->obj;
 	if (obj == NULL)
@@ -331,14 +365,28 @@ void render_entity(t_sdlcontext sdl, t_render render, t_entity *entity)
 	index = 0;
 	while (index < obj->vertice_count)
 	{
-		//TODO: Matrix rotations
-		temp = vector3_mul_vector3(entity->transform.scale, obj->vertices[index]);
-		temp = vector3_add(entity->transform.location, temp);
-		render.q[index] = vector3_to_quaternion(temp);
+		/*temp.v = vector3_mul_vector3(entity->transform.scale, obj->vertices[index]);
+		temp.v = rotate(temp.v, entity->transform.rotation);
+		temp.v = vector3_add(entity->transform.location, temp.v);
+		temp.w = 1.0f;*/
+		temp.v = obj->vertices[index];
+		if (entity->animation.active)
+		{
+			temp.v = vector3_add(entity->obj->o_anim.frames[entity->animation.frame].deltavertices[index].delta, temp.v);
+		}
+		render.q[index] = transformed_vector3(entity->transform, temp.v);
 		render.q[index] = quaternion_mul_matrix(render.matworld, render.q[index]);
 		index++;
 	}
 	index = 0;
+
+	while (index < obj->material_count)
+	{
+		//printf("mat r %i \n", obj->materials[index].kd & 0xFF);
+		index++;
+	}
+	index = 0;
+	//render_object()
 	while (index < obj->face_count)
 	{
 		t_triangle	tritransformed;
@@ -352,23 +400,26 @@ void render_entity(t_sdlcontext sdl, t_render render, t_entity *entity)
 			tritransformed.t[1] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[1] - 1]);
 			tritransformed.t[2] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[2] - 1]);
 		}
+		tritransformed.clr = obj->materials[obj->faces[index].materialindex].kd;
 		normal = normal_calc(tritransformed);
 		vcameraray = vector3_sub(tritransformed.p[0].v, render.position);
-		if (vector3_dot(normal, vcameraray) < 0.0f || 1) //TODO: Currently ignoring normals with || 1
+		/*if (obj->materials[0].img == NULL)
+			tritransformed.clr = shade(tritransformed.clr,
+									1.0f - (vector3_sqr_magnitude(vector3_sub(tritransformed.p[0].v, (render.position))) / 200000.0f));*/
+		tritransformed.clr = shade(tritransformed.clr,
+									1.0f + (vector3_dot(normal, vector3_normalise(vcameraray)) / 2.0f));
+		if (vector3_dot(normal, vcameraray) < 0.0f || 1)
 		{
 			t_triangle clipped[2];
 			int nclippedtriangles = clippedtriangles(tritransformed, render.matview, clipped);
 			for (int n = 0; n < nclippedtriangles; n++)
-			{
 				render.calc_triangles[render.calc_tri_count++] = triangle_to_screenspace(render.matproj, clipped[n], sdl);
-			}
 		}
 		index++;
 	}
+	render.img = NULL;
 	if (obj->material_count != 0)
 		render.img = obj->materials[0].img;
-	if (!render.img)
-		render.img = render.debug_img;
 	clipped(render, sdl);
 	render.calc_tri_count = 0;
 	render.draw_tri_count = 0;

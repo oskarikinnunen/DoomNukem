@@ -12,15 +12,13 @@
 
 #include "doomnukem.h"
 
-static void	join_surfaces_boxed(SDL_Surface *base, SDL_Surface *new, t_point pos)
+// background color could be sent as an argument
+static void	join_surfaces_boxed(SDL_Surface *base, SDL_Surface *new, t_point pos, t_point padding)
 {
 	t_point		i;
 	uint32_t	background;
-	t_point		padding;
 
-	background = 0;
-	padding.x = 3;
-	padding.y = 3;
+	background = 0x222222;
 	i.y = 0 - padding.y;
 	while (i.y < new->h + padding.y)
 	{
@@ -72,14 +70,18 @@ t_rectangle	print_text_boxed(t_sdlcontext *sdl, const char *text, t_point pos)
 {
 	SDL_Surface	*surfacetext;
 	t_rectangle	rect;
+	t_point		padding;
 
 	surfacetext = TTF_RenderText_Blended(sdl->font.font, text, sdl->font.color);
 	if (!surfacetext)
 		error_log(EC_TTF_RENDERTEXTBLENDED);
-	rect.position = pos;
-	rect.size.x = surfacetext->w;
-	rect.size.y = surfacetext->h;
-	join_surfaces_boxed(sdl->surface, surfacetext, pos);
+	padding.x = 3;
+	padding.y = 3;
+	rect.size.x = surfacetext->w + padding.x * 2;
+	rect.size.y = surfacetext->h + padding.y * 2;
+	rect.position.x = pos.x - padding.x;
+	rect.position.y = pos.y - padding.y;
+	join_surfaces_boxed(sdl->surface, surfacetext, pos, padding);
 	SDL_FreeSurface(surfacetext);
 	return (rect);
 }

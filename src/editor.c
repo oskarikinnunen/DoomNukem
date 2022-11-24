@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 23:07:54 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/22 15:46:06 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,22 +66,24 @@ int	editorloop(t_sdlcontext sdl)
 	ed.buttonlist = load_chunk("buttons", "BUTN", sizeof(t_guibutton));
 	initialize_buttons(ed.buttonlist, sdl);
 	ed.world = load_world("world1", sdl);
-	ed.tool = get_wall_tool();
+	
 	ed.gamereturn = game_continue;
 	ed.render = init_render(sdl);
 	//ed.angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
 	ed.angle = (t_vector2){-20.0f, -RAD90 * 0.99f};
 	ed.position = (t_vector3){500.0f, 500.0f, 200.0f};
 	i = 0;
+	ed.tool = get_npc_tool();
 	while (ed.gamereturn == game_continue)
 	{
 		update_deltatime(&ed.clock);
+		update_deltatime(&ed.world.clock);
 		ed.gamereturn = editor_events(&ed);
 		move_editor(&ed);
 		update_render_editor(&ed.render, ed);
 		screen_blank(sdl);
 		render_start(&ed.render);
-		render_world3d(sdl, ed.world, &ed.render);
+		update_world3d(sdl, &ed.world, &ed.render);
 		if (ed.tool != NULL)
 		{
 			ed.tool->draw_update(&ed, sdl); //Instant buttons here can toggle mouse.click unhandled, so draw first
@@ -106,7 +108,8 @@ int	editorloop(t_sdlcontext sdl)
 		sdl.font.color = sdl.font.font_colors.orange;
 		print_text_boxed(&sdl, "guns blazing", (t_point){250, 350});
 		sdl.font.color = temp;
-		
+
+		drawcircle(sdl, point_div(sdl.screensize, 2), 4, CLR_BLUE);
 		free(fps);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);

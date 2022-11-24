@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   inputhelp.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 09:30:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 12:40:15 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/23 18:32:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # define KEYS_CTRLMASK 5
 # define KEYS_SHIFTMASK 6
 # define KEYS_MMASK 7
+# define KEYS_LALTMASK 8
 
 # define CONTROLLER_SENS 0.002f
 # define DEADZONE 0.1f
@@ -41,6 +42,8 @@ typedef struct s_input
 	bool		crouch;
 	bool		jump;
 	bool		run;
+	bool		shoot;
+	bool		aim;
 	t_vector2	turn;
 }	t_input;
 

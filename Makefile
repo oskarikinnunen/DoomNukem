@@ -3,7 +3,7 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
+#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
 #    Updated: 2022/11/24 12:56:06 by raho             ###   ########.fr        #
@@ -37,6 +37,8 @@ SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		editor/tools/entity_tool.c \
 		editor/tools/wall_tool.c \
 		editor/tools/wall_tool_rooms.c \
+		editor/tools/npc_tool.c \
+		editor/tools/room_tool.c \
 		editor/tools/button_tool.c \
 		editor/imagedropdown.c \
 		editor/editor_new_buttons.c \
@@ -44,21 +46,24 @@ SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		editor/editor_movement.c \
 		editor/editor_raycast.c \
 		playmode.c inputhelper.c \
-		walls.c \
+		walls.c file_open.c \
 		moveplayer.c physics.c errors.c \
 		game_3d.c fill_triangle.c perfgraph.c \
 		png.c lua_conf.c list_helper.c \
 		spaceconversions.c \
+		entity/entity_animate.c \
 		obj_parser/obj_parse.c \
 		obj_parser/obj_parse_vertex.c \
 		obj_parser/obj_parse_faces.c \
 		obj_parser/obj_parse_uvs.c \
+		obj_parser/obj_parse_anim.c\
 		font.c text.c \
 		object_init.c \
 		object_primitives.c \
 		world.c \
 		init_render.c \
-		controller.c
+		controller.c \
+		occlusion/occlusion.c occlusion/frustrum_culling.c occlusion/peripheral_culling.c occlusion/occlusion_culling.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \
 		vector2_elementary.c vector2_shorthands.c \
@@ -79,8 +84,20 @@ OBJ= $(SRC:.c=.o)
 #Compilation stuff:
 INCLUDE= -I$(INSTALLED_LIBS_DIR)/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
 CC= gcc
-LIBS= $(LIBFT) -lm `$(INSTALLED_LIBS_DIR)/bin/sdl2-config --cflags --libs` -L$(INSTALLED_LIBS_DIR)/lib -lSDL2_ttf
-CFLAGS= $(INCLUDE) -g -finline-functions -O2
+CFLAGS= $(INCLUDE) -g -finline-functions -O2#-march=native
+
+UNAME= $(shell uname)
+ifeq ($(UNAME), Darwin)
+override CFLAGS += '-D GL_SILENCE_DEPRECATION'
+LIBS= $(LIBFT) -lm -framework OpenGL `$(INSTALLED_LIBS_DIR)/bin/sdl2-config --cflags --libs` -L$(INSTALLED_LIBS_DIR)/lib -lSDL2_ttf
+else ifeq ($(UNAME), Linux)
+LIBS =  $(LIBFT) -lm -lGL `$(INSTALLED_LIBS_DIR)/bin/sdl2-config --cflags --libs` -L$(INSTALLED_LIBS_DIR)/lib -lSDL2_ttf
+else
+warning:
+	@echo "Compilation for platform $(UNAME) not supported."
+	exit 1
+endif
+
 
 all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(LUA) $(LIBFT) $(OBJ)
 	$(CC) $(OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LUA)

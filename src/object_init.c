@@ -3,15 +3,65 @@
 /*                                                        :::      ::::::::   */
 /*   object_init.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 19:50:18 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/03 19:53:14 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/22 11:51:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "objects.h"
+#include "file_io.h"
+
+char	*basename(char *filename)
+{
+	char	**split;
+	char	*result;
+	int		i;
+
+	split = ft_strsplit(filename, '.');
+	i = 1;
+	while (split[i] != NULL)
+	{
+		free(split[i]);
+		i++;
+	}
+	result = split[0];
+	free(split);
+	return (result);
+}
+
+void	parseanim(t_object *object, char *animname)
+{
+	int		i;
+	int		fd;
+	//char	name[256];
+	t_objectanimframe	frame;
+	char	*base;
+
+	fd = 0;
+	i = 0;
+	base = basename(object->name);
+	object->o_anim.framecount = 0;
+	while (fd != -1)
+	{
+		char name[256] = { 0 };
+		sprintf(name, "assets/objects/animations/%s_%s%i.obj", base, animname, i); //TODO: protect
+		fd = open(name, O_RDONLY);
+		printf("%s \n", name);
+		if (fd != -1)
+		{
+			ft_strcpy(object->o_anim.name, animname); //TODO: protect
+			parse_animframe(fd, &frame, object);
+			ptr_add((void **)&object->o_anim.frames, &object->o_anim.framecount, sizeof(t_objectanimframe), &frame);
+			//ptr_add()
+			close(fd);
+		}
+		i++;
+	}
+	free(base);
+}
 
 void	objects_init(t_sdlcontext *sdl)
 {
@@ -29,8 +79,11 @@ void	objects_init(t_sdlcontext *sdl)
 		{
 			if (ft_strcmp(object->materials[m_i].texturename, "") != 0)
 				object->materials[m_i].img = get_image_by_name(*sdl, object->materials[m_i].texturename);
-			//printf("REQUESTED IMAGE NAME %s \n", object->materials[i].texturename);
-			//printf("GOT		IMAGE NAME %s \n", object->materials[i].img->name);
+			else
+			{
+				printf("set null image, kd was %i\n", object->materials[m_i].kd & 0xFF);
+				object->materials[m_i].img = NULL;
+			}
 			m_i++;
 		}
 		i++;

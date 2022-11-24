@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_instant_button.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 18:30:57 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 21:55:15 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/21 17:47:21 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ bool	instant_text_button(t_sdlcontext sdl, t_mouse *m, const char *str, t_point 
 {
 	t_rectangle	rect;
 
-	rect = print_text(&sdl, str, pos);
+	rect = print_text_boxed(&sdl, str, pos);
 	if (pointrectanglecollision(m->pos, rect))
 	{
 		drawrectangle(sdl, rect, CLR_GREEN);

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/07 01:56:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/23 17:00:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,18 @@ float		vector2_dist(t_vector2 first, t_vector2 second);
 
 //returns dot product of vector 'first' and vector 'second'
 float		vector2_dot(t_vector2 first, t_vector2 second);
+
+//returns cross product of vector 'first' and vector 'second'
+float		vector2_cross(t_vector2 first, t_vector2 second);
+
+//returns interpolated vector between 'v1' and 'v2' TODO: explain better lol
+t_vector2	vector2_lerp(t_vector2 v1, t_vector2 v2, float lerp);
+
+//returns absolute vector2
+t_vector2	vector2_abs(t_vector2 vec);
+
+//returns the angle in radians between two vectors
+float vector2_anglebetween(t_vector2 first, t_vector2 second);
 
 //returns true if both vectors are identical
 bool		vector2_cmp(t_vector2 first, t_vector2 second);
@@ -140,8 +152,14 @@ t_vector3	vector3_crossproduct(t_vector3 v1, t_vector3 v2);
 //returns copy of 'vec' but with magnitude clamped to 'max_magnitude'
 t_vector3	vector3_clamp_magnitude(t_vector3 vec, float max_magnitude);
 
+//returs vector 'vec' rotated around vector3_zero() by eulerangles
+t_vector3	vector3_rotate_euler(t_vector3 original, t_vector3 eulers);
+
 //returns signed shortest distance from point to plane, plane normal must be normalised
 float		vector3_fdist_to_plane(t_vector3 p, t_vector3 plane_n, t_vector3 plane_p);
+
+//returns linearly interpolated value between 'v1' and 'v2' using lerp (which should be in range 0.0 - 1.0f)
+t_vector3	vector3_lerp(t_vector3 v1, t_vector3 v2, float lerp);
 
 typedef struct s_point
 {
@@ -215,6 +233,9 @@ typedef struct s_quaternion
 //shorthand for writing (t_quaternion){1.0f, 1.0f, 1.0f, 1.0f}
 t_quaternion	quaternion_identity();
 
+
+t_quaternion	quaternion_rotate_euler(t_vector3 original, t_vector3 eulers);
+
 //returns quaternion multiplication result 'first * second'
 t_quaternion	quaternion_mul(t_quaternion first, t_quaternion second);
 
@@ -267,9 +288,11 @@ t_vector3	lookdirection(t_vector2 angle);
 t_vector3 vector3_mul_matrix(t_mat4x4 m, t_vector3 i);
 
 /* CONVERSIONS */
-
+float	radtodeg(float rad);
 
 t_quaternion	vector3_to_quaternion(t_vector3 v);
+
+t_vector3		vector2_to_vector3(t_vector2 vec);
 
 //Returns t_vector2 'vec' casted to t_point. (Shorthand for '*(t_point *)&vec').
 t_point			vector2_to_point(t_vector2 vec);
