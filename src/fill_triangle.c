@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/09 17:19:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 13:42:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ static void	sort_tris(t_quaternion	*q, t_texture *t)
 
 float flerp(float from, float to, float delta)
 {
-
 	return (from + ((to - from) * delta));
 }
 

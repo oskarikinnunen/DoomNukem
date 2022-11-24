@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/23 17:51:10 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 13:50:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,11 +237,6 @@ typedef struct s_entity
 	t_anim			animation;
 	struct s_object	*obj;
 }	t_entity;
-
-/*
-	
-
-*/
 
 typedef struct s_capsulecollider
 {

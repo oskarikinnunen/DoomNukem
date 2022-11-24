@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/23 18:46:10 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 14:03:29 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "inputhelp.h"
 #include "bresenham.h"
 #include "objects.h"
+#include "libft.h"
 
  // Might need the whole gamecontext but I'm trying to avoid it, (trying to avoid global state)
  // TODO: normalize movement vector
@@ -123,11 +124,6 @@ static t_vector3	player_movementvector(t_input input, t_player player)
 	return (movement);
 }
 
-float	flerp2(float f1, float f2, float lerp)
-{
-	return (f1 - (lerp * (f1 - f2)));
-}
-
 float	fmovetowards(float f1, float f2, float delta)
 {
 	float	result;
@@ -166,17 +162,17 @@ void	updateguntransform(t_game *game, t_player *player)
 		start_anim(&gun->shoot_anim, anim_forwards);
 		gun->readytoshoot = false;
 	}
-	else if (!game->input.shoot)
-	{
+	else if (!game->input.shoot && !gun->shoot_anim.active)
 		gun->readytoshoot = true;
-	}
 	update_anim(&gun->shoot_anim, game->clock.delta);
 	gun->entity.transform.location = vector3_add(gun->entity.transform.location, vector3_mul(vector3_up(), gun->shoot_anim.lerp * -1.0f));
 	gun->entity.transform.location = vector3_add(gun->entity.transform.location, vector3_mul((t_vector3){.x = 1.0f}, gun->shoot_anim.lerp * -0.25f));
-	gun->entity.transform.rotation.y = fmovetowards(gun->entity.transform.rotation.y, ft_degtorad(game->input.move.y * 0.65f), 0.0006f * game->clock.delta);
-	gun->entity.transform.rotation.y += flerp2(0.0f, ft_degtorad(10.0f), gun->shoot_anim.lerp);
-	gun->entity.transform.rotation.y = ft_clampf(gun->entity.transform.rotation.y, 0.0f, ft_degtorad(15.0f));
-	gun->entity.transform.rotation.x = flerp2(0.0f, ft_degtorad(2.0f), gun->shoot_anim.lerp);
+	gun->entity.transform.location.z += vector2_magnitude(game->input.move) * cosf((game->clock.prev_time * 0.007f)) * 0.2f;
+	gun->entity.transform.rotation.z += vector2_magnitude(game->input.move) * cosf((game->clock.prev_time * 0.007f)) * ft_degtorad(0.15f);
+	gun->entity.transform.rotation.y = fmovetowards(gun->entity.transform.rotation.y, ft_degtorad(game->input.move.y * 1.15f), 0.0006f * game->clock.delta);
+	gun->entity.transform.rotation.y += ft_flerp(0.0f, ft_degtorad(10.0f), gun->shoot_anim.lerp);
+	gun->entity.transform.rotation.y = ft_clampf(gun->entity.transform.rotation.y, ft_degtorad(-0.5f), ft_degtorad(15.0f));
+	gun->entity.transform.rotation.x = ft_flerp(0.0f, ft_degtorad(2.0f), gun->shoot_anim.lerp);
 	float	zturn = game->input.move.x * 2.0f;
 	zturn += game->input.turn.x * 5.0f;
 	zturn = ft_clampf(zturn, ft_degtorad(-2.5f), ft_degtorad(2.5f));
