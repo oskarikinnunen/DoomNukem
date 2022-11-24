@@ -3,28 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 14:41:36 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 16:14:22 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef DOOMNUKEM_H
 # define DOOMNUKEM_H
 
-# include "../SDL_built/include/SDL2/SDL.h" //TODO: make this work without relative path?
 # include "libft.h"
 # include "error_log.h"
 # include "limits.h" //TODO: remove mby? just define INT_MAX yourself
 # include <math.h>
 # include <fcntl.h>
-# include "vectors.h"
 # include <stdbool.h>
-# include "shapes.h"
-# include "physics.h"
+# include "physics.h"//DEPRECATED UPDATED TO COLLISION.H
+# include "entity.h"
+# include "objects.h"
 # include "animation.h" //PLAYER USES THIS, MOVE PLAYER TO SEPARATE HEADER
 # include "inputhelp.h"
+# include "room.h"
+# include "npcs.h"
+# include "render.h"
+# include "player.h"
+# include "input.h"
+# include "collision.h"
+# include "debug.h"
 
 # define TILESIZE 32 //EDITOR tilesize
 # define GRIDSIZE 64 //EDITOR gridsize (how many addressable coordinates we have)
@@ -40,15 +46,6 @@
 # define MOUSE_LEFT 1
 # define MOUSE_MDL 2
 # define MOUSE_RIGHT 3
-
-# define CLR_PRPL 14231500
-# define CLR_TURQ 5505010
-# define CLR_BLUE 255
-# define CLR_GRAY 4868682
-# define CLR_DARKGRAY 0x292929
-# define CLR_GREEN 3002977
-# define CLR_RED 0xFF2919
-# define CLEARSCREEN "\e[1;1H\e[2J"
 
 # define DEBUG_ON 1
 
@@ -67,81 +64,6 @@
 # define MOUSESPEED 0.0002f
 
 # define TEXTBACKGROUND_BORDERPADDING 6
-
-typedef struct s_mouse
-{
-	t_point		pos;
-	t_point		delta;
-	bool		relative;
-	int			scroll;
-	int			scroll_delta;
-	bool		click_unhandled;
-	int			click_button;
-	int			held;
-	uint32_t	heldstate;
-}	t_mouse;
-
-typedef enum e_entityID
-{
-	player
-}	t_entityID;
-
-typedef struct s_img
-{
-	t_point		size;
-	char		name[128];
-	uint32_t	*data;
-	uint32_t	length;
-}	t_img;
-
-typedef struct s_font_chars
-{
-	char			id;
-	t_point			pos;
-	t_point			size;
-	t_point			offset;
-	int				xadvance;
-}	t_font_chars;
-
-typedef struct s_font
-{
-	char			*name;
-	char			*file_name;
-	int				size;
-	int				padding;
-	int				spacing;
-	int				line_height;
-	t_point			scale;
-	int				char_count;
-	t_font_chars	*chars;
-	t_img			*bitmap;
-	t_img			*texts[20];
-}	t_font;
-
-typedef enum e_platform
-{
-	os_mac,
-	os_linux,
-	os_unsupported
-}	t_platform;
-
-typedef struct s_sdlcontext
-{
-	SDL_Window				*window;
-	SDL_Surface				*surface;
-	t_platform				platform;
-	float					*zbuffer;
-	SDL_Renderer			*renderer; //TODO: for testing remove.
-	t_img					*images;
-	uint32_t				imagecount;
-	struct s_object			*objects;
-	uint32_t				objectcount;
-	t_font					*font;
-	t_font					*all_fonts;
-	uint32_t				window_w;
-	uint32_t				window_h;
-	t_point					screensize;
-}	t_sdlcontext;
 
 void	screen_blank(t_sdlcontext sdl);
 # define PERFGRAPH_SAMPLES 64
@@ -175,48 +97,6 @@ typedef enum e_gamereturn
 	game_switchmode
 } t_gamereturn;
 
-typedef struct s_texture
-{
-	float	u;
-	float	v;
-	float	w;
-} t_texture;
-
-typedef struct	s_triangle
-{
-	t_quaternion	p[3];
-	t_texture		t[3];
-	uint32_t		clr;
-}	t_triangle;
-
-typedef struct s_transform
-{
-	t_vector3			location;
-	t_vector3			rotation;
-	t_vector3			scale;
-	struct s_transform	*parent;
-}	t_transform;
-
-
-typedef struct s_player
-{
-	t_transform		transform;
-	t_vector3		speed; //read-only player speed used for animations etc
-	t_vector3		lookdir;
-	t_anim			jump;
-	float			height;
-	struct s_gun	*gun;
-	t_vector3		gunholsterpos;
-	t_vector3		gunaimpos;
-}	t_player;
-
-
-typedef struct s_bound
-{
-	float	min;
-	float	max;
-}	t_bound;
-
 
 /*typedef struct s_animframe
 {
@@ -228,69 +108,10 @@ typedef struct s_bound
 	int deltaverticecount;
 }	t_animframe;*/
 
-typedef struct s_entity
-{
-	t_transform		transform;
-	uint32_t		object_index;
-	char			object_name[64];
-	t_bound			z_bound;
-	t_anim			animation;
-	struct s_object	*obj;
-}	t_entity;
-
-typedef struct s_capsulecollider
-{
-	uint32_t	start_vertex;
-	uint32_t	end_vertex;
-}	t_capsulecollider;
-
-typedef struct s_humancolliders
-{
-	t_capsulecollider	head;
-	t_capsulecollider	body;
-	t_capsulecollider	arms[2];
-	t_capsulecollider	legs[2];
-}	t_humancolliders;
-
-typedef struct s_npc
-{
-	t_entity			entity;
-	t_vector3			destination;
-	t_humancolliders	colliders;
-	/*t_capsulecollider	handcolliders[2];
-	t_capsulecollider	bodycollider;*/
-	bool		active;
-}	t_npc;
-
 /*
 	void	spawn_npc(t_world *world, char *objectname, t_vector3 position)
 	void	update_npcs(t_world *world) //moves npcs towards their destination, updates their animations
 */
-
-typedef struct s_item
-{
-	t_entity	entity;
-}	t_item;
-
-typedef struct s_render
-{
-	t_vector3		vtarget;
-	t_mat4x4		matcamera;
-	t_mat4x4		matview;
-	t_mat4x4		matworld;
-	t_mat4x4		matproj;
-	t_vector3		position;
-	t_vector3		lookdir;
-	t_triangle		*draw_triangles;
-	t_triangle		*calc_triangles;
-	uint32_t		draw_tri_count;
-	uint32_t		calc_tri_count;
-	t_img			*img;
-	t_img			*debug_img;
-	t_quaternion	*q;
-	bool			wireframe;
-	uint32_t		gizmocolor;
-}	t_render;
 
 typedef struct s_world
 {
@@ -354,12 +175,11 @@ void			move_editor(t_editor *ed);
 t_point			mousetoworldspace(t_editor *ed);
 t_point			mousetogridspace(t_editor *ed);
 t_point			screentogridspace(t_point point);
-t_quaternion	transformed_vector3(t_transform transform, t_vector3 v);
-void			mouse_event(SDL_Event e, t_mouse *mouse);
+t_quaternion	transformed_vector3(t_transform transform, t_vector3 v);//TODO: vectors.h
+void			mouse_event(SDL_Event e, t_mouse *mouse);//TODO: input.h
 
 /* SPACECONVERSIONS.C */
-t_point	worldto_editorspace(t_editor *ed, t_vector2 worldcrd);
-t_point vector3_to_screenspace(t_render r, t_vector3 vec, t_sdlcontext sdl);
+t_point vector3_to_screenspace(t_render r, t_vector3 vec, t_sdlcontext sdl);//TODO: vectors.h
 
 /* EDITOR_SAVELINE.C */
 void	saveline(t_editor *ed);
@@ -368,31 +188,12 @@ void	saveline(t_editor *ed);
 t_list	*loadmap(char *filename);
 void	savemap(t_editor *ed, char *filename);
 
-/* IMG.C */
-void	alloc_image(t_img *img, int width, int height);
-t_img	*get_image_by_index(t_sdlcontext sdl, int index); //TODO: add comments
-t_img	*get_image_by_name(t_sdlcontext sdl, char *name);
-
 /* DELTATIME.C */
 void	update_deltatime(t_clock *c);
-
-/* INIT_RENDER.C */
-t_render	init_render(t_sdlcontext sdl);
-void		free_render(t_render render);
-void		render_start(t_render *render);
-
-/* DRAW.C */
-void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr);
-void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr);
-void	drawcircle(t_sdlcontext sdl, t_point pos, int size, uint32_t clr);
-void	drawrectangle(t_sdlcontext, t_rectangle rect, uint32_t clr);
 
 /* EDITOR_BUTTONS.C */
 void	draw_editor_buttons(t_sdlcontext sdl, uint8_t tool_selected); //TODO: MOVE TO EDITOR_TOOLS
 void	check_tool_change_click(t_point cursor, t_editor *ed); //TODO: MOVE TO EDITOR_TOOLS
-
-//Draws image 'img' to pixels 'pxls', offset by point 'pos' and scaled to 'scale'
-void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale);
 
 /* PERFGRAPH.C */
 void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
@@ -403,21 +204,6 @@ int		controller_events(SDL_Event e, t_game *game);
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
-void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle, t_img img);
-void	z_fill_tri_solid(t_sdlcontext sdl, t_triangle triangle);
-void	render_entity(t_sdlcontext sdl, t_render render, t_entity *entity);
-void	render_object(t_sdlcontext sdl, t_render render, struct s_object *obj);
-void	render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size);
-void	render_ray(t_sdlcontext sdl, t_render render, t_vector3 from, t_vector3 to);
-int		triangle_clipagainstplane(t_vector3 plane_p, t_vector3 plane_n, t_triangle *in_tri, t_triangle out_tri[2]);
-void	draw_screen_to_worldspace_ray(t_sdlcontext sdl, t_render render, t_point origin, t_vector2 angle);
-
-/* PHYSICS.C */
-bool	pointrectanglecollision(t_point p, t_rectangle rect);
-bool	pointcirclecollision(t_vector2 p, t_vector2 cp, float r);
-//bool	linecirclecollision(t_line line, t_vector2 cp, float r);
-
-
 
 /* MOVEPLAYER.C */
 void	moveplayer(t_game *game);
@@ -459,7 +245,7 @@ t_rectangle	draw_text_boxed(t_sdlcontext *sdl, const char *str, t_point pos, t_p
 
 
 void			entity_start_anim(t_entity *entity, char *animname);
-/* LIST_HELPER.C */
+/* LIST_HELPER.C TODO: MOVE THESE TO LIBFT*/
 t_list	*ptr_to_list(void	*src, uint32_t len, size_t size);
 void	ptr_add(void **ptr, uint32_t *len, size_t size, void *add);
 void	list_push(t_list **head, void *content, size_t content_size);
@@ -469,14 +255,6 @@ void	*list_find(t_list *head, void *match, size_t content_size);
 //TODO: documentation here
 void	list_remove(t_list **head, void *match, size_t content_size);
 
-/*DEBUG FILES*/
-void printf_tri(t_triangle tri);
-void printf_quat(t_quaternion v);
-void printf_vec(t_vector3 v);
-void printf_matrix(t_mat4x4 m);
-void printf_point(t_point p);
-void printf_texture(t_texture t);
-void printf_face(void *face);
-
-
+//
+bool			object_lookedat(t_editor *ed, t_sdlcontext sdl, t_object *obj);
 #endif

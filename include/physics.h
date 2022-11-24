@@ -3,21 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   physics.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/02 14:53:58 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/18 18:30:35 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 16:01:12 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+/* DEPRECATED UPDATED TO COLLISION.H*/
 #ifndef PHYSICS_H
 # define PHYSICS_H
 
-#include "doomnukem.h" //TODO: only needs entity
+#include "entity.h"
+#include "render.h"
 
 typedef struct s_physics
 {
-	struct s_entity	*entities[20]; //points to entities in 'editor->entitylist'
+	t_entity		*entities[20]; //points to entities in 'editor->entitylist'
 	int				cube[100][100][10];
 }	t_physics;
 

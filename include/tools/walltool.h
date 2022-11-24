@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   walltool.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:17:04 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/18 17:20:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 15:43:43 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef WALLTOOL_H
 # define WALLTOOL_H
 
-#include "objects.h"
+#include "room.h"
 
 typedef	enum e_walltoolmode
 {
