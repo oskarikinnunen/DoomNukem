@@ -2,9 +2,9 @@
 *.o
 .personalTODO
 src/*.o
-SDL2-2.0.8
-freetype-2.9
-SDL2_ttf-2.0.15
+libs/SDL2-2.0.8
+libs/freetype-2.9
+libs/SDL2_ttf-2.0.15
 libs/installed_libs
 libft/libft.a
 libft/**.o
