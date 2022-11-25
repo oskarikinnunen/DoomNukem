@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/24 13:42:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 19:10:27 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,36 @@ static t_triangle step_triangle_f(t_triangle triangle, float x_step[2], float w_
 	return (triangle);
 }
 
+typedef	struct s_rgb
+{
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
+	uint8_t a;
+} t_rgb;
+
+typedef struct s_color
+{
+	union cdata_u
+	{
+		t_rgb		rgb;
+		uint32_t	color;
+	} dat;
+}	t_color;
+
+static uint32_t	flip_channels(uint32_t clr)
+{
+	t_color		result;
+	t_color		orig;
+	orig.dat.color = clr;
+	result.dat.rgb.r = orig.dat.rgb.b;
+	result.dat.rgb.g = orig.dat.rgb.g;
+	result.dat.rgb.b = orig.dat.rgb.r;
+	result.dat.rgb.a = orig.dat.rgb.a;
+	return (result.dat.color);
+	//result += ((clr >> 8) & 0xFF) >> 8;
+}
+
 static void step_ab(t_texture *step, t_triangle triangle, float delta)
 {
 	//t_quaternion	*q;
@@ -197,8 +227,17 @@ static void fill_tri_bot(t_sdlcontext sdl, t_triangle triangle, t_img *img)
 				t[0].u += (t_step[2].u * index);
 				t[0].v += (t_step[2].v * index);
 				index = 0;
+				static uint8_t	x8b;
+				static uint8_t	y8b;
+				uint8_t	xsample;
+				uint8_t	ysample;
+
+				x8b = (t[0].u / t[0].w) * 255;
+				xsample = (x8b * (img->size.x - 1)) / 255;
+				y8b = (t[0].v / t[0].w) * 255;
+				ysample = (y8b * (img->size.y - 1)) / 255;
 				((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w]
-					= sample_img(img, t[0]);
+					= flip_channels(img->data[(xsample * img->size.x) + ysample]); //used to use sampleimage
 			}
 			index++;
 			t[0].w += t_step[2].w;
@@ -297,8 +336,16 @@ static void fill_tri_top(t_sdlcontext sdl, t_triangle triangle, t_img *img)
 				t[0].u += (t_step[2].u * index);
 				t[0].v += (t_step[2].v * index);
 				index = 0;
-				((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w] =
-					sample_img(img, t[0]);
+				static uint8_t	x8b;
+				static uint8_t	y8b;
+				uint8_t	xsample;
+				uint8_t	ysample;
+				x8b = (t[0].u / t[0].w) * 255;
+				xsample = (x8b * (img->size.x - 1)) / 255;
+				y8b = (t[0].v / t[0].w) * 255;
+				ysample = (y8b * (img->size.y - 1)) / 255;
+				((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w]
+					= flip_channels(img->data[(xsample * img->size.x) + ysample]);
 			}
 			index++;
 			t[0].w += t_step[2].w;

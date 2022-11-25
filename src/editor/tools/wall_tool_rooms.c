@@ -6,13 +6,13 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/19 18:45:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 17:29:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "editor_tools.h"
-#include "inputhelp.h"
+ 
 #include "tools/walltool.h"
 #include "tools/roomtool.h"
 #include "objects.h"

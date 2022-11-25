@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 10:45:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/25 15:09:06 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,12 @@ void	render_start(t_render *render)
 	render->vtarget = vector3_add(render->position, render->lookdir);
 	render->matcamera = matrix_lookat(render->position, render->vtarget, (t_vector3){0, 0, 1});
 	render->matview = matrix_quickinverse(render->matcamera);
+}
+
+void update_render(t_render *render, t_player *player)
+{
+	render->lookdir = player->lookdir;
+	render->position = player->transform.location;
 }
 
 void	free_render(t_render render)

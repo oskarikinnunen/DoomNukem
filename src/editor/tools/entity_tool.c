@@ -6,14 +6,14 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 17:12:19 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/25 16:02:14 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "editor_tools.h"
 #include "file_io.h"
-#include "inputhelp.h"
+ 
 #include "objects.h"
 /*
 void entity_tool_append_list(t_editor *ed, t_entity ent) //TODO: make 
@@ -205,6 +205,8 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	t_entity	*collide;
 
 	ent = (t_entity *)ed->tool->tooldata;
+	ent->transform.location = raycast(ed);//vector3_movetowards(ent->transform.location, dir, ed->clock.delta * 1.0f);
+	ent->transform.location.z -= ent->z_bound.min * ent->transform.scale.z;
 	ent->object_index = object_selector(ed, sdl, ent->object_index);
 	if (ent->obj != &sdl.objects[ent->object_index])
 	{
@@ -249,22 +251,11 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 		list_push(&ed->world.entitylist, ent, sizeof(t_entity));
 }
 
-void	entity_tool_update(t_editor *ed)
-{
-	t_entity	*ent;
-	t_vector3	dir;
-
-	ent = (t_entity *)ed->tool->tooldata;
-	dir = vector3_sub((t_vector3){ed->position.x, ed->position.y, 20.0f}, ent->transform.location);
-	ent->transform.location = raycast(ed);//vector3_movetowards(ent->transform.location, dir, ed->clock.delta * 1.0f);
-	ent->transform.location.z -= ent->z_bound.min * ent->transform.scale.z;
-}
-
 t_tool	*get_entity_tool()
 {
 	static t_tool	tool
 	= {
-		entity_tool_update, entity_tool_draw 
+		entity_tool_draw 
 	};
 	t_entity		*ent; //TODO: make entity tool use it's own tooldata struct,
 

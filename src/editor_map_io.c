@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 06:10:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/25 15:58:53 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,10 +122,7 @@ t_list *load_chunk(char *filename, char *chunkname, size_t size)
 	return (NULL);
 }
 
-void	save_editordata(t_editor *ed)
+void	save_editordata(t_editor *ed) //TODO: deprecated
 {
-	int	fd;
-	fd = fileopen("buttons", O_RDWR | O_CREAT | O_TRUNC); //Empty the file or create a new one if it doesn't exist
-	close(fd);
-	save_chunk("buttons", "BUTN", ed->buttonlist);
+	
 }

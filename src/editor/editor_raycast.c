@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 18:03:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 16:02:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/25 15:45:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,10 +108,10 @@ t_vector3	raycast(t_editor *ed)
 	int			iter;
 	float		dist;
 
-	result = ed->position;
+	result = ed->player.transform.location;
 	iter = 0;
-	dist = sqrt(powf(ed->position.z, 2.0f) + powf(sin(ft_clampf(ed->angle.y, -RAD90, -0.1f)), 2.0f)); //not correct lol
-	rayforward = ed->forward;
+	dist = sqrt(powf(result.z, 2.0f) + powf(sin(ft_clampf(ed->player.transform.rotation.y, -RAD90, -0.1f)), 2.0f)); //not correct lol
+	rayforward = lookdirection((t_vector2){ed->player.transform.rotation.x, ed->player.transform.rotation.y});
 	rayforward.z = ft_clampf(rayforward.z, -1.0f, -0.001f);
 	while (result.z > 0.0f)
 	{

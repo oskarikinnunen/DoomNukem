@@ -6,13 +6,13 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 17:02:01 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 17:29:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "editor_tools.h"
-#include "inputhelp.h"
+ 
 
 bool	mouse_clicked(t_mouse mouse, int button)
 {

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 17:12:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/25 16:01:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "editor_tools.h"
 #include "doomnukem.h"
 #include "objects.h"
-#include "inputhelp.h"
+ 
 
 static void highlight_object(t_editor *ed, t_sdlcontext sdl, t_entity *entity, uint32_t color)
 {
@@ -421,7 +421,7 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	}
 	if (ed->hid.mouse.scroll_delta != 0)
 		modifywallheights(dat->room, ed->hid.mouse.scroll_delta);
-	if (instantbutton((t_rectangle){20, 300, 80, 40}, &ed->hid.mouse, sdl, "minus.png"))
+	if (instant_text_button(sdl, &ed->hid.mouse, "remove room", (t_point){20, 300}))
 	{
 		list_remove(&ed->world.roomlist, dat->room, sizeof(t_room));
 		dat->wall.line.start = vector2_zero();
@@ -467,7 +467,7 @@ void	room_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	} else if (dat->rtm == rtm_create)
 		createmode(ed, sdl, dat);
 	set_font_size(&sdl, 2);
-	if (instant_text_button(sdl, &ed->hid.mouse, "Add Room", (t_point){20, 200}))
+	if (dat->room == NULL && instant_text_button(sdl, &ed->hid.mouse, "Add Room", (t_point){20, 200}))
 	{
 		dat->room = ft_memalloc(sizeof(t_room));
 		dat->rtm = rtm_create;
@@ -477,26 +477,11 @@ void	room_tool_draw(t_editor *ed, t_sdlcontext sdl)
 		modifymode(ed, sdl, dat);
 }
 
-void	room_tool_update(t_editor *ed)
-{
-	/*t_roomtooldata	*dat;
-	t_wall			*cur;
-
-	dat = (t_roomtooldata *)ed->tool->tooldata;
-	cur = &dat->wall;*/
-
-	
-	/*if (cur->next == NULL && cur->prev == NULL)
-	{
-
-	}*/
-}
-
 t_tool	*get_room_tool()
 {
 	static t_tool	tool
 	= {
-		room_tool_update, room_tool_draw
+		room_tool_draw
 	};
 	t_roomtooldata		*dat;
 

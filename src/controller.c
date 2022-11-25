@@ -6,12 +6,12 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:36:01 by raho              #+#    #+#             */
-/*   Updated: 2022/11/24 16:47:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/25 15:26:29 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
-#include "inputhelp.h"
+ 
 
 // Set the value of the axis to 0 if it doesn't go over the deadzone limit.
 static float	dead_zone(float axis)
@@ -194,6 +194,28 @@ int	controller_events(SDL_Event e, t_hid_info *hid)
 	if (hid->controller[0].back == true)
 		return (game_switchmode);
 	return (game_continue);
+}
+
+void updateinput(t_input *input, int keystate, t_mouse m, t_controller *controller)
+{
+	input->move = vector2_zero();
+	input->move.x -= (keystate >> KEYS_LEFTMASK) & 1;
+	input->move.x += (keystate >> KEYS_RIGHTMASK) & 1;
+	input->move.y += (keystate >> KEYS_DOWNMASK) & 1;
+	input->move.y -= (keystate >> KEYS_UPMASK) & 1;
+	input->crouch = (keystate >> KEYS_CTRLMASK) & 1;
+	input->jump = (keystate >> KEYS_SPACEMASK) & 1;
+	input->run = (keystate >> KEYS_SHIFTMASK) & 1;
+	input->turn = vector2_mul(point_to_vector2(m.delta), MOUSESPEED);
+	input->move.x += controller->leftanalog.x;
+	input->move.y += controller->leftanalog.y;
+	input->crouch += controller->b;
+	input->jump += controller->a;
+	input->turn = vector2_add(input->turn, vector2_mul(controller->rightanalog, CONTROLLER_SENS));
+	input->aim = m.heldstate >> MOUSE_RIGHT & 1;
+	input->aim += controller->lefttrigger;
+	input->shoot = m.heldstate >> MOUSE_LEFT & 1;
+	input->shoot += controller->righttrigger;
 }
 
 void	initialize_controllers(t_hid_info *hid)

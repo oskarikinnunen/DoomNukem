@@ -6,12 +6,12 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/23 13:45:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 18:37:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
-#include "inputhelp.h"
+ 
 #include "bresenham.h"
 #include "objects.h"
 #include "vectors.h"
@@ -30,16 +30,6 @@ static void save_clipped_points(float dist[3], t_triangle *tris[3], int points[4
 	}
 	tris[1 + (dist[1] < 0)]->p[points[0 + ((dist[1] < 0) * 2)]++] = tris[0]->p[1];
 	tris[1 + (dist[1] < 0)]->t[points[1 + ((dist[1] < 0) * 2)]++] = tris[0]->t[1];
-	/*if (dist[1] >= 0)
-	{
-		tris[1]->p[points[0]++] = tris[0]->p[1];
-		tris[1]->t[points[1]++] = tris[0]->t[1];
-	}
-	else
-	{
-		tris[2]->p[points[2]++] = tris[0]->p[1];
-		tris[2]->t[points[3]++] = tris[0]->t[1];
-	}*/
 	if (dist[2] >= 0)
 	{
 		tris[1]->p[points[0]++] = tris[0]->p[2];

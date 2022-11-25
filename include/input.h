@@ -1,20 +1,22 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   inputhelp.h                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/06 09:30:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/23 18:32:56 by okinnune         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#ifndef INPUT_H
+# define INPUT_H
 
-#ifndef INPUTHELP_H
-# define INPUTHELP_H
+typedef struct s_mouse
+{
+	t_point		pos;
+	t_point		delta;
+	bool		relative;
+	int			scroll;
+	int			scroll_delta;
+	bool		click_unhandled;
+	int			click_button;
+	int			held;
+	uint32_t	heldstate;
+}	t_mouse;
 
-# include "../SDL_built/include/SDL2/SDL.h"
-
+# define MOUSE_LEFT 1
+# define MOUSE_MDL 2
+# define MOUSE_RIGHT 3
 # define KEYS_LEFTMASK 0
 # define KEYS_RIGHTMASK 1
 # define KEYS_UPMASK 2
@@ -73,10 +75,17 @@ typedef struct s_controller
 	bool					dpad_right;
 }	t_controller;
 
-struct s_mouse;
+typedef struct s_hid_info
+{
+	t_mouse			mouse;
+	uint32_t		keystate;
+	t_controller	controller[2];
+	t_input			input;
+}	t_hid_info;
 
+void	updateinput(t_input *input, int keystate, t_mouse m, t_controller *controller);
 bool	iskey(SDL_Event e, int keycode);
-bool	mouse_clicked(struct s_mouse mouse, int button);
+bool	mouse_clicked(t_mouse mouse, int button);
 bool	keyismoveleft(SDL_Event e);
 bool	keyismoveright(SDL_Event e);
 bool	keyismoveup(SDL_Event e);

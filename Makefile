@@ -6,7 +6,7 @@
 #    By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/24 17:02:47 by okinnune         ###   ########.fr        #
+#    Updated: 2022/11/25 18:12:20 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,15 +26,12 @@ SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		editor.c editor_mouse.c editor_events.c \
 		editor_map_io.c	\
 		editor/tools/entity_tool.c \
-		editor/tools/wall_tool.c \
 		editor/tools/wall_tool_rooms.c \
 		editor/tools/npc_tool.c \
 		editor/tools/room_tool.c \
-		editor/tools/button_tool.c \
-		editor/imagedropdown.c \
+		editor/tools/gun_tool.c \
 		editor/editor_new_buttons.c \
 		editor/editor_instant_button.c \
-		editor/editor_movement.c \
 		editor/editor_raycast.c \
 		playmode.c inputhelper.c \
 		walls.c file_open.c \
@@ -51,9 +48,10 @@ SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		font.c text.c \
 		object_init.c \
 		object_primitives.c \
-		world.c \
+		world.c player.c \
 		init_render.c \
-		controller.c
+		controller.c \
+		occlusion/occlusion.c occlusion/frustrum_culling.c occlusion/peripheral_culling.c occlusion/occlusion_culling.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \
 		vector2_elementary.c vector2_shorthands.c \
@@ -75,7 +73,7 @@ OBJ= $(SRC:.c=.o)
 INCLUDE= -ISDL_built/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
 CC= gcc
 
-CFLAGS= $(INCLUDE) -g -O2#-march=native
+CFLAGS= $(INCLUDE) -g -Ofast#-march=native
 UNAME= $(shell uname)
 ifeq ($(UNAME), Darwin)
 override CFLAGS += '-D GL_SILENCE_DEPRECATION'

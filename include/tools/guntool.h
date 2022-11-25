@@ -1,24 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   shapes.h                                           :+:      :+:    :+:   */
+/*   guntool.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/17 13:54:56 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 16:02:07 by vlaine           ###   ########.fr       */
+/*   Created: 2022/11/25 16:08:53 by okinnune          #+#    #+#             */
+/*   Updated: 2022/11/25 19:17:14 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SHAPES_H
-# define SHAPES_H
+#ifndef GUNTOOL_H
+# define GUNTOOL_H
 
-#include "vectors.h"
+#include "room.h"
 
-typedef struct s_rectangle
+typedef enum e_guntoolmode
 {
-	t_point	position;
-	t_point	size;
-}	t_rectangle;
+	gtm_model,
+	gtm_offset,
+	gtm_recoil,
+	gtm_stats,
+}	t_guntoolmode;
+
+typedef struct s_guntooldata
+{
+	t_gun			gun;
+	t_guntoolmode	gtm;
+}	t_guntooldata;
 
 # endif

@@ -40,5 +40,8 @@ objects =
 	"cube.obj",
 	"dummy.obj",
 	"cyborg.obj",
-	"Pistol_1.obj"
+	"Pistol_1.obj",
+	"Shotgun.obj",
+	"Smg.obj",
+	"Revolver.obj"
 }

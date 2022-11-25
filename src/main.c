@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 14:14:19 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 18:21:48 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,9 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	if (sdl->window == NULL)
 		error_log(EC_SDL_CREATEWINDOW);
 	sdl->surface = SDL_GetWindowSurface(sdl->window);
-	sdl->surface->format->format = SDL_PIXELFORMAT_ABGR1555;
+	sdl->surface->format->Rmask = 0;
+	sdl->surface->format->Gmask = 0;
+	sdl->surface->format->format = SDL_PIXELFORMAT_ABGR32;
 	if (sdl->surface == NULL)
 		error_log(EC_SDL_GETWINDOW_SURFACE);
 	
@@ -109,3 +111,4 @@ int	main(int argc, char **argv)
 	//shouldn't get here?
 	return (0);
 }
+

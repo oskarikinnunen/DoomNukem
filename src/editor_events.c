@@ -6,12 +6,12 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 17:19:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/25 15:58:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
-#include "inputhelp.h"
+ 
 #include "editor_tools.h"
 
 void		toggle_keystates(t_hid_info *hid, SDL_Event e)
@@ -55,29 +55,6 @@ void	force_mouselock(t_editor *ed)
 	ed->hid.mouse.pos = point_zero();
 }
 
-static void	buttons_click(t_editor *ed)
-{
-	t_list		*l;
-	t_guibutton	button;
-
-	l = ed->buttonlist;
-
-	while (l != NULL)
-	{
-		button = *(t_guibutton *)l->content;
-		if (pointrectanglecollision(ed->hid.mouse.pos, button.rect) && mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
-		{
-			if (button.onclick != NULL)
-			{
-				button.onclick(ed);
-				ed->hid.mouse.click_unhandled = false;
-			}
-		}
-		l = l->next;
-	}
-}
-
-
 t_gamereturn	editor_events(t_editor *ed)
 {
 	static SDL_Event	e;
@@ -111,7 +88,6 @@ t_gamereturn	editor_events(t_editor *ed)
 				return (game_exit);
 		}
 	}
-	buttons_click(ed);
-	//updateinput(&hid->input, hid->keystate, hid->mouse, &hid->controller[0]);
+	updateinput(&ed->hid.input, ed->hid.keystate, ed->hid.mouse, ed->hid.controller);
 	return (game_continue);
 }
