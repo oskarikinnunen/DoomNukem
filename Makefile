@@ -147,13 +147,15 @@ $(SDL2_DIR)/configured: $(SDL2_DIR)/unpacked
 $(FREETYPE_DIR)/configured: $(FREETYPE_DIR)/unpacked
 	cd $(FREETYPE_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR) && touch configured
 
-# On Linux autogen.sh must be executed in SDL2_TTF_DIR before running configure and make install
-# Also on Linux pkg-config overrides prefixes with default path. Maybe --dont-define-prefix or --define-prefix will help?
+# On Linux autogen.sh will be executed in SDL2_TTF_DIR before running configure and make install
+# On Linux pkg-config overrides prefixes with default path so we change the PKG_CONFIG_PATH
 $(SDL2_TTF_DIR)/configured: $(SDL2_TTF_DIR)/unpacked
-	cd $(SDL2_TTF_DIR) && $(AUTOGEN) ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR)	\
-	--with-ft-prefix=$(PWD)/$(INSTALLED_LIBS_DIR)							\
-	--with-sdl-prefix=$(PWD)/$(INSTALLED_LIBS_DIR) && touch configured
-
+	cd $(SDL2_TTF_DIR) && $(AUTOGEN) ./configure	\
+	--prefix=$(PWD)/$(INSTALLED_LIBS_DIR)	\
+	--with-ft-prefix=$(PWD)/$(INSTALLED_LIBS_DIR)	\
+	--with-sdl-prefix=$(PWD)/$(INSTALLED_LIBS_DIR)	\
+	PKG_CONFIG_PATH=$(PWD)/$(INSTALLED_LIBS_DIR)/lib/pkgconfig	\
+	&& touch configured
 
 $(SDL2): $(SDL2_DIR)/configured
 	cd $(SDL2_DIR) && make && make install
