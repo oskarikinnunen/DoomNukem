@@ -6,14 +6,14 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/19 15:32:46 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/25 19:02:45 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "objects.h"
 
-t_render	init_render(t_sdlcontext sdl)
+t_render	init_render(t_sdlcontext sdl, struct s_world *world)
 {
 	t_render	render;
 
@@ -23,20 +23,11 @@ t_render	init_render(t_sdlcontext sdl)
 	render.calc_triangles = malloc(sizeof(t_triangle) * 10000);
 	render.draw_triangles = malloc(sizeof(t_triangle) * 10000);
 	render.q = malloc(sizeof(t_quaternion) * 10000); //TODO: should be multiplied by the largest obj vertex count
-	render.z_occlusion = malloc(sizeof(uint32_t) * sdl.window_w);
-	render.debug_occlusion = malloc(sizeof(uint32_t) * sdl.window_w); //TODO: Remove, for debugging
-	render.y_occlusion = malloc(sizeof(uint32_t) * sdl.window_w);
-	render.t_obj = malloc(sizeof(t_object));
-	render.t_obj->vertices = malloc(sizeof(t_vector3) * 10000);
-	render.tri_occluder = malloc(sizeof(t_triangle) * 10000);
-	render.occluder_normal = malloc(sizeof(t_vector3) * 10000);
-	render.occluder_vector = malloc(sizeof(t_vector3) * 10000);
-	render.occluder = malloc(sizeof(t_occluder) * 10000);
-
 	render.debug_img = get_image_by_name(sdl, "");
 	render.vtarget = vector3_add(render.position, render.lookdir);
 	render.matcamera = matrix_lookat(render.position, render.vtarget, (t_vector3){0, 0, 1});
 	render.matview = matrix_quickinverse(render.matcamera);
+	render.world = world;
 	/*temp testing render loop with .bot .wall .item*/
 	return(render);
 }

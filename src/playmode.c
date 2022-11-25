@@ -32,7 +32,7 @@ static int key_events(SDL_Event e, t_game *game)
 	}
 	else if(e.type == SDL_KEYUP)
 	{
-		game->keystate &= ~(keyismoveleft(e)) << KEYS_LEFTMASK;
+		game->keystate &= ~(keyismoveleft(e) << KEYS_LEFTMASK);
 		game->keystate &= ~(keyismoveright(e) << KEYS_RIGHTMASK);
 		game->keystate &= ~(keyismoveup(e) << KEYS_UPMASK);
 		game->keystate &= ~(keyismovedown(e) << KEYS_DOWNMASK);
@@ -48,11 +48,32 @@ static int key_events(SDL_Event e, t_game *game)
 static void updatemouse(t_mouse *mouse)
 {
 	SDL_GetRelativeMouseState(&mouse->delta.x, &mouse->delta.y);
-	if (mouse->delta.x > 200 || mouse->delta.y > 200)
-		mouse->delta = point_zero();
 }
 
-/*check for keyboard/mouse input*/
+static void updateinput(t_input *input, int keystate, t_mouse m, t_controller *controller)
+{
+	input->move = vector2_zero();
+
+	input->move.x -= (keystate >> KEYS_LEFTMASK) & 1;
+	input->move.x += (keystate >> KEYS_RIGHTMASK) & 1;
+	input->move.y += (keystate >> KEYS_DOWNMASK) & 1;
+	input->move.y -= (keystate >> KEYS_UPMASK) & 1;
+	input->crouch = (keystate >> KEYS_CTRLMASK) & 1;
+	input->jump = (keystate >> KEYS_SPACEMASK) & 1;
+	input->run = (keystate >> KEYS_SHIFTMASK) & 1;
+	input->turn = vector2_mul(point_to_vector2(m.delta), MOUSESPEED);
+	input->move.x += controller->leftanalog.x;
+	input->move.y += controller->leftanalog.y;
+	input->crouch += controller->b;
+	input->jump += controller->a;
+	input->turn = vector2_add(input->turn, vector2_mul(controller->rightanalog, CONTROLLER_SENS));
+	input->aim = m.heldstate >> MOUSE_RIGHT & 1;
+	input->aim += controller->lefttrigger;
+	input->shoot = m.heldstate >> MOUSE_LEFT & 1;
+	input->shoot += controller->righttrigger;
+}
+
+/*check for keyboard/mouse/joystick input*/
 static int handleinput(t_game *game)
 {
 	static SDL_Event	e;
@@ -61,17 +82,41 @@ static int handleinput(t_game *game)
 	updatemouse(&game->mouse);
 	while (SDL_PollEvent(&e))
 	{
+		mouse_event(e, &game->mouse);
 		gr = key_events(e, game);
 		if (gr != game_continue)
 			return (gr);
+		gr = controller_events(e, game);
+		if (gr != game_continue)
+			return (gr);
 	}
+	updateinput(&game->input, game->keystate, game->mouse, &game->controller[0]);
 	return(game_continue);
 }
 
-static void update_render(t_render *render, t_player player)
+static void update_render(t_render *render, t_player *player)
 {
-	render->lookdir = player.lookdir;
-	render->position = player.position;
+	t_vector3	right;
+	render->lookdir = player->lookdir;
+	render->position = player->transform.location;
+	//player->gun->transform.location
+	//render.
+}
+
+static void player_init(t_player *player, t_sdlcontext sdl)
+{
+	player->transform.location = (t_vector3) {500.0f, 500.0f, 500.0f};
+	player->transform.rotation = (t_vector3){-RAD90, -RAD90 * 0.99f, 0.0f};
+	player->jump.framerate = 30;
+	player->jump.lastframe = 15;
+	player->gun = ft_memalloc(sizeof(t_gun));
+	player->gun->entity.obj = get_object_by_name(sdl, "Pistol_1.obj");
+	player->gun->entity.transform.scale = vector3_one();
+	player->gun->entity.transform.parent = &player->transform;
+	player->gun->entity.transform.rotation = (t_vector3){0.0f, 0.0f, 0.0f};
+	player->gun->holsterpos = (t_vector3){15.0f, 18.0f, -18.0f};
+	player->gun->aimpos = (t_vector3){0.0f, 15.0f, -7.0f};
+	player->gun->entity.transform.location = player->gun->holsterpos;
 }
 
 /*main game loop*/
@@ -82,28 +127,28 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 
 	//alloc_image(&pgraph.image, PERFGRAPH_SAMPLES + 1, PERFGRAPH_SAMPLES + 1);
 	gr = game_continue;
-	render = init_render(sdl);
+	render = init_render(sdl, &game.world);
 	game.world = load_world("world1", sdl);
-	game.player.position = (t_vector3) {500.0f, 500.0f, 500.0f};
-	game.player.angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
+	player_init(&game.player, sdl);
+	game.player.transform.location = (t_vector3) {500.0f, 500.0f, 500.0f};
+	game.player.transform.rotation = (t_vector3){-RAD90, -RAD90 * 0.99f, 0.0f}; //TODO: implement transform for player
+	game.player.transform.scale = vector3_one();
+	initialize_controllers(&game);
 	while (gr == game_continue)
 	{
 		update_deltatime(&game.clock);
+		update_deltatime(&game.world.clock);
 		gr = handleinput(&game);
 		moveplayer(&game);
-		//printf_vec(game.player.lookdir);
-		///printf_vec(game.player.position);
-		//game.player.lookdir = (t_vector3){-0.391241, 0.904104, -0.171831};
-		//game.player.position = (t_vector3){869.611389, 73.996613, 50.339905};
-		update_render(&render, game.player);
+		update_render(&render, &game.player);
 		screen_blank(sdl); //Combine with render_start?
 		render_start(&render);
-		render_world3d(sdl, game.world, &render);
+		update_world3d(sdl, &game.world, &render);
 		draw_text_boxed(&sdl, "PLAYMODE", (t_point){5, 5}, (t_point){sdl.window_w, sdl.window_h});
+		/*game.player.gun->transform.location = vector3_add(game.player.position, (t_vector3){.z = -25.5f});
+		game.player.gun->transform.rotation.x = game.player.angle.x + ft_degtorad(100.0f);*/
+		render_entity(sdl, &render, &game.player.gun->entity);
 		//DRAWPERFGRAPH
-		char *fps = ft_itoa(game.clock.delta);
-		draw_text_boxed(&sdl, fps, (t_point){sdl.window_w - 80, 10}, (t_point){sdl.window_w, sdl.window_h});
-		free(fps);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 		//gr = game_switchmode;

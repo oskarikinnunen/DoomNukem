@@ -4,16 +4,51 @@
 
 static t_material	*planemat()
 {
-	static	t_material	mat;
+	t_material	*mat;
 
-	ft_bzero(&mat, sizeof(t_material));
-	ft_strcpy(mat.texturename, "gwall.png");
-	return (&mat);
+	mat = ft_memalloc(sizeof(t_material));
+	if (mat == NULL)
+		error_log(EC_MALLOC);
+	ft_strcpy(mat->texturename, "gwall.png");
+	mat->kd = INT_MAX;
+	return (mat);
 }
 
+t_object	*object_tri(t_sdlcontext *sdl)
+{
+	t_object	*tri;
 
+	tri = ft_memalloc(sizeof(t_object));
+	tri->vertices = ft_memalloc(sizeof(t_vector3) * 3);
+	tri->vertice_count = 3;
+	tri->faces = ft_memalloc(sizeof(t_face) * 1);
+	tri->face_count = 1;
+	if (tri->vertices == NULL || tri->faces == NULL)
+		error_log(EC_MALLOC);
+	tri->vertices[0] = (t_vector3){0.0f, 0.0f, 0.0f};
+	tri->vertices[1] = (t_vector3){10.0f, 0.0f, 0.0f};
+	tri->vertices[2] = (t_vector3){0.0f, 0.0f, 10.0f};
+	 //first tri:
+	tri->faces[0].v_indices[0] = 1;
+	tri->faces[0].v_indices[1] = 2;
+	tri->faces[0].v_indices[2] = 3;
+	tri->faces[0].uv_indices[0] = 1;
+	tri->faces[0].uv_indices[1] = 2;
+	tri->faces[0].uv_indices[2] = 3;
 
-t_object	*object_plane()
+	tri->materials = planemat();
+	tri->faces[0].material = &tri->materials[0];
+	tri->materials->img = get_image_by_name(*sdl, tri->materials->texturename);
+	tri->material_count = 1;
+	tri->uvs = ft_memalloc(sizeof(t_vector2) * 3);
+	tri->uv_count = 3;
+	tri->uvs[0] = (t_vector2){0.0f, 0.0f};
+	tri->uvs[1] = (t_vector2){1.0f, 0.0f};
+	tri->uvs[2] = (t_vector2){0.0f, 1.0f};
+	return (tri);
+}
+
+t_object	*object_plane(t_sdlcontext *sdl)
 {
 	t_object	*plane;
 
@@ -45,6 +80,9 @@ t_object	*object_plane()
 
 	plane->materials = planemat();
 	plane->material_count = 1;
+	plane->faces[0].material = &plane->materials[0];
+	plane->faces[1].material = &plane->materials[0];
+	plane->materials->img = get_image_by_name(*sdl, plane->materials->texturename);
 	plane->uvs = ft_memalloc(sizeof(t_vector2) * 4);
 	plane->uv_count = 4;
 	plane->uvs[0] = (t_vector2){0.0f, 0.0f};

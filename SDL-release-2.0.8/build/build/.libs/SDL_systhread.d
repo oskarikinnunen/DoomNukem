@@ -1,25 +1,21 @@
 build/SDL_systhread.lo: \
- /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/thread/pthread/SDL_systhread.c \
- /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/thread/pthread/../../SDL_internal.h \
- /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/thread/pthread/../../dynapi/SDL_dynapi.h \
- /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/thread/pthread/../../dynapi/SDL_dynapi_overrides.h \
- include/SDL_config.h \
- /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/SDL_platform.h \
- /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/begin_code.h \
- /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/close_code.h \
- /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/SDL_thread.h \
- /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/SDL_stdinc.h \
- /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/SDL_config.h \
- /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/SDL_error.h \
- /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/SDL_atomic.h \
- /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/SDL_platform.h \
- /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/SDL_mutex.h \
- /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/thread/pthread/../SDL_thread_c.h \
- /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/thread/pthread/../../SDL_internal.h \
- /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/thread/pthread/../pthread/SDL_systhread_c.h \
- /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/thread/pthread/../pthread/../../SDL_internal.h \
- /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/thread/pthread/../../SDL_error_c.h \
- /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/thread/pthread/../.././SDL_internal.h \
- /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/thread/pthread/../SDL_systhread.h \
- /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/thread/pthread/../SDL_thread_c.h \
- /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/SDL_assert.h
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/thread/pthread/SDL_systhread.c \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/thread/pthread/../../SDL_internal.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/thread/pthread/../../dynapi/SDL_dynapi.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/thread/pthread/../../dynapi/SDL_dynapi_overrides.h \
+  include/SDL_config.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_platform.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/begin_code.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/close_code.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_thread.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_stdinc.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_config.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_error.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_atomic.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_mutex.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/thread/pthread/../SDL_thread_c.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/thread/pthread/../pthread/SDL_systhread_c.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/thread/pthread/../../SDL_error_c.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/thread/pthread/../.././SDL_internal.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/src/thread/pthread/../SDL_systhread.h \
+  /Users/vlaine/vscode/DoomNukem/SDL-release-2.0.8/include/SDL_assert.h

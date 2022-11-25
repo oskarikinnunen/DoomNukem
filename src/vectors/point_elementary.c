@@ -30,7 +30,7 @@ t_point	point_sub(t_point first, t_point second)
 	return (result);
 }
 
-t_point	point_add_xyz(t_point vec, int add)
+t_point	point_add_xy(t_point vec, int add)
 {
 	t_point	result;
 

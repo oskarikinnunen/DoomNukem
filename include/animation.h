@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   animation.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 00:52:45 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 00:55:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/23 17:06:36 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ typedef enum	e_anim_mode
 typedef struct s_anim
 {
 	bool		active;
+	bool		loop;
 	uint32_t	time;
 	int32_t		frame;
 	int32_t		lastframe;
@@ -35,6 +36,7 @@ typedef struct s_anim
 }	t_anim;
 
 void	update_anim(t_anim *anim, uint32_t delta);
+void	update_anim_dir(t_anim *anim, uint32_t delta, t_anim_mode mode);
 void	start_anim(t_anim *anim, t_anim_mode mode); //TODO: make this return t_anim?
 
 #endif

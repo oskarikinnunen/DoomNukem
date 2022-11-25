@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 06:06:18 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/25 19:01:51 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,22 +65,23 @@ int	editorloop(t_sdlcontext sdl)
 	ed.buttonlist = load_chunk("buttons", "BUTN", sizeof(t_guibutton));
 	initialize_buttons(ed.buttonlist, sdl);
 	ed.world = load_world("world1", sdl);
-	ed.tool = get_wall_tool();
 	ed.gamereturn = game_continue;
-	ed.render = init_render(sdl);
+	ed.render = init_render(sdl, &ed.world);
 	//ed.angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
 	ed.angle = (t_vector2){-20.0f, -RAD90 * 0.99f};
 	ed.position = (t_vector3){500.0f, 500.0f, 200.0f};
+	ed.tool = get_npc_tool();
 	set_font_size(&sdl, 0);
 	while (ed.gamereturn == game_continue)
 	{
 		update_deltatime(&ed.clock);
+		update_deltatime(&ed.world.clock);
 		ed.gamereturn = editor_events(&ed);
 		move_editor(&ed);
 		update_render_editor(&ed.render, ed);
 		screen_blank(sdl);
 		render_start(&ed.render);
-		render_world3d(sdl, ed.world, &ed.render);
+		update_world3d(sdl, &ed.world, &ed.render);
 		if (ed.tool != NULL)
 		{
 			ed.tool->draw_update(&ed, sdl); //Instant buttons here can toggle mouse.click unhandled, so draw first
@@ -95,6 +96,7 @@ int	editorloop(t_sdlcontext sdl)
 		draw_text_boxed(&sdl, "tab to unlock/lock mouse, shift + enter to go to playmode", (t_point){sdl.window_w / 2, 10}, (t_point){sdl.window_w, sdl.window_h});
 		char *fps = ft_itoa(ed.clock.fps);
 		draw_text_boxed(&sdl, fps, (t_point){sdl.window_w - 80, 10}, (t_point){sdl.window_w, sdl.window_h});
+		drawcircle(sdl, point_div(sdl.screensize, 2), 4, CLR_BLUE);
 		free(fps);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);

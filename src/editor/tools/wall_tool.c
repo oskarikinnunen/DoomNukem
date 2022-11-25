@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wall_tool.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:13:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/09 15:01:22 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/15 15:46:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,34 +16,7 @@
 #include "tools/walltool.h"
 #include "objects.h"
 
-static t_point vector3_to_screenspace(t_render r, t_vector3 vec, t_sdlcontext sdl)
-{
-	t_quaternion	proj_q;
-	t_point			result;
-
-	proj_q = vector3_to_quaternion(vec);
-	proj_q = quaternion_mul_matrix(r.matworld, proj_q);
-	proj_q = quaternion_mul_matrix(r.matview, proj_q);
-	proj_q = quaternion_mul_matrix(r.matproj, proj_q);
-
-
-	proj_q.v = vector3_div(proj_q.v, proj_q.w);
-
-	proj_q.v = vector3_negative(proj_q.v);
-
-	t_vector3 voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
-	proj_q.v = vector3_add(proj_q.v, voffsetview);
-
-	proj_q.v.x *= 0.5f * (float)sdl.window_w;
-	proj_q.v.y *= 0.5f * (float)sdl.window_h;
-
-	if (proj_q.w < 0.0f)
-		return ((t_point) {-100, -100});
-	result = (t_point){proj_q.v.x, proj_q.v.y};
-	return(result);
-}
-
-t_quaternion quaternion_to_screenspace(t_render r, t_quaternion q, t_sdlcontext sdl)
+static t_quaternion quaternion_to_screenspace(t_render r, t_quaternion q, t_sdlcontext sdl)
 {
 	t_quaternion	proj_q;
 
@@ -87,7 +60,7 @@ static bool has_selected(t_walltooldata *dat)
 
 t_wall	*wallcollision(t_editor *ed, t_sdlcontext *sdl)
 {
-	t_list	*l;
+	/*t_list	*l;
 	t_wall	*wall;
 
 	l = ed->world.wall_list;
@@ -96,10 +69,10 @@ t_wall	*wallcollision(t_editor *ed, t_sdlcontext *sdl)
 		wall = (t_wall *)l->content;
 		t_triangle tri;
 		t_triangle tri2;
-		t_quaternion q1 = vector3_to_quaternion(wall->entity.obj->vertices[0]);
-		t_quaternion q2 = vector3_to_quaternion(wall->entity.obj->vertices[1]);
-		t_quaternion q3 = vector3_to_quaternion(wall->entity.obj->vertices[2]);
-		t_quaternion q4 = vector3_to_quaternion(wall->entity.obj->vertices[3]);
+		t_quaternion q1 = vector3_to_quaternion(wall->object.vertices[0]);
+		t_quaternion q2 = vector3_to_quaternion(wall->object.vertices[1]);
+		t_quaternion q3 = vector3_to_quaternion(wall->object.vertices[2]);
+		t_quaternion q4 = vector3_to_quaternion(wall->object.vertices[3]);
 		q1 = quaternion_to_screenspace(ed->render, q1, *sdl);
 		q2 = quaternion_to_screenspace(ed->render, q2, *sdl);
 		q3 = quaternion_to_screenspace(ed->render, q3, *sdl);
@@ -120,67 +93,28 @@ t_wall	*wallcollision(t_editor *ed, t_sdlcontext *sdl)
 		}
 		l = l->next;
 	}
-	return (NULL);
-}
-
-static void	draw_snapgrid(t_editor *ed, t_sdlcontext *sdl, t_vector2 wallpos, bool shift, bool hover)
-{
-	t_point		indexer;
-	t_vector3	origin;
-	t_vector3	ws;
-	float		clen;
-
-	indexer = point_zero();
-	origin = (t_vector3){wallpos.x - 40.0f, wallpos.y - 40.0f, 0.0f};
-	clen = 40 + (shift && !hover) * 220;
-	ed->render.gizmocolor = CLR_GRAY;
-	while (indexer.y < 90)
-	{
-		indexer.x = 0;
-		while (indexer.x < 90)
-		{
-			ws = (t_vector3){origin.x + indexer.x, origin.y + indexer.y, 0.0f};
-			if (indexer.x == 40 && indexer.y == 40)
-			{
-				if (hover)
-					ed->render.gizmocolor = CLR_RED;
-				else
-					ed->render.gizmocolor = CLR_PRPL;
-				render_ray(*sdl, ed->render, ws, (t_vector3){ws.x, ws.y, clen});
-				render_ray(*sdl, ed->render, ws, (t_vector3){ws.x + clen, ws.y, 0.0f});
-				render_ray(*sdl, ed->render, ws, (t_vector3){ws.x - clen, ws.y, 0.0f});
-				render_ray(*sdl, ed->render, ws, (t_vector3){ws.x, ws.y + clen, 0.0f});
-				render_ray(*sdl, ed->render, ws, (t_vector3){ws.x, ws.y - clen, 0.0f});
-			}
-			else
-				ed->render.gizmocolor = CLR_GRAY;
-			render_gizmo(*sdl, ed->render, ws, 2);
-			indexer.x += 10;
-		}
-		//render_gizmo(*sdl, ed->render, v.x)
-		indexer.y += 10;
-	}
+	return (NULL);*/
 }
 
 static void draw_selected(t_editor *ed, t_sdlcontext sdl, t_walltooldata *dat)
 {
-	int			i;
+	/*int			i;
 	int			count;
 	char		text[256] = { };
 
 	i = 0;
 	count = 0;
-	ed->render.rendermode = wireframe;
+	ed->render.wireframe = true;
 	ed->render.gizmocolor = CLR_PRPL;
 	while (i < MAXSELECTED)
 	{
 		if (dat->selected[i] != NULL)
 		{
 			sprintf(text, "room: %i wallheight %i", dat->selected[i]->roomindex, dat->selected[i]->height);
-			t_vector3 corner = vector3_add(dat->selected[i]->entity.obj->vertices[0], dat->selected[i]->entity.obj->vertices[3]);
+			t_vector3 corner = vector3_add(dat->selected[i]->object.vertices[0], dat->selected[i]->object.vertices[3]);
 			corner = vector3_div(corner, 2.0f);
-			draw_text_boxed(&sdl, text, vector3_to_screenspace(ed->render, corner, sdl), sdl.screensize);
-			render_entity(sdl, &ed->render, &dat->selected[i]->entity);
+			//draw_text_boxed(&sdl, text, vector3_to_screenspace(ed->render, corner, sdl), sdl.screensize);
+			render_object(sdl, ed->render, &dat->selected[i]->object);
 			count++;
 		}
 		i++;
@@ -191,46 +125,59 @@ static void draw_selected(t_editor *ed, t_sdlcontext sdl, t_walltooldata *dat)
 		sprintf(text, "selected %i walls", count);
 		draw_text_boxed(&sdl, text, (t_point) {20, 120}, sdl.screensize);
 	}
-	ed->render.rendermode = fill;
+	ed->render.wireframe = false;*/
 }
 
 static void	wall_tool_draw(t_editor *ed, t_sdlcontext sdl) //TODO: ROTATE AROUND AXIS, SCREENSPACE
 {
-	t_walltooldata	*dat;
+	/*t_walltooldata	*dat;
 	t_wall			*wall;
+	static			int8_t	tri_i;
+	static			float	rad;
 
 	dat = (t_walltooldata *)ed->tool->tooldata;
 	wall = &dat->wall;
 	dat->hover = wallcollision(ed, &sdl);
-	if (wall->entity.obj->materials[0].img == NULL)
+	if (wall->object.materials[0].img == NULL)
 	{
-		printf("NULL IMAGE IN WALLTOOLDRAW! '%s' \n", wall->entity.obj->materials[0].texturename);
-		wall->entity.obj->materials[0].img =
-			get_image_by_name(sdl, wall->entity.obj->materials[0].texturename);
+		printf("NULL IMAGE IN WALLTOOLDRAW! '%s' \n", wall->object.materials[0].texturename);
+		wall->object.materials[0].img =
+			get_image_by_name(sdl, wall->object.materials[0].texturename);
 	}
 	draw_selected(ed, sdl, dat);
-	draw_snapgrid(ed, &sdl, wall->line.end, (ed->keystate >> KEYS_SHIFTMASK) & 1, dat->hover != NULL);
+	
 	ed->render.gizmocolor = CLR_GREEN;
-	render_entity(sdl, &ed->render, &wall->entity);
+	render_object(sdl, ed->render, &wall->object);
 	if (dat->hover != NULL)
 	{
 		drawcircle(sdl, point_div(sdl.screensize, 2), 2, CLR_RED);
 		//char wallinfo[128];
 		//sprintf(wallinfo, "room: %i height: %i", dat->hover->roomindex, dat->hover->height);
 		//draw_text_boxed(&sdl, wallinfo, (t_point) { 20, 80}, (t_point){sdl.window_w, sdl.window_h});
+		draw_text_boxed(&sdl, vector_string(vector2_to_vector3(dat->hover->line.start)), point_sub(sdl.screensize, (t_point) {200, 100}), sdl.screensize);
+		draw_text_boxed(&sdl, vector_string(vector2_to_vector3(dat->hover->line.end)), point_sub(sdl.screensize, (t_point) {200, 60}), sdl.screensize);
 		ed->render.gizmocolor = CLR_RED;
-		ed->render.rendermode = wireframe;
-		render_entity(sdl, &ed->render, &dat->hover->entity);
-		ed->render.rendermode = fill;
+		ed->render.wireframe = true;
+		render_object(sdl, ed->render, &dat->hover->object);
+		ed->render.wireframe = false;
 	}
-
+	else
+		render_snapgrid(ed, &sdl, wall->line.end, (ed->keystate >> KEYS_SHIFTMASK) & 1, dat->hover != NULL);
 	if (has_selected(dat))
 	{
 		if (instantbutton((t_rectangle){20, 180, 80, 80}, &ed->mouse, sdl, "debug1.png"))
-			dat->fc = generate_floor(dat);
+			printf("lol no floor for you\n");
 	}
 	if (dat->fc.edgecount != 0)
-		floorcalc_debugdraw(ed, &sdl, dat->fc);
+	{
+		tri_i += ed->mouse.scroll_delta;
+		tri_i = ft_clamp(tri_i, 0, dat->fc.facecount - 1);
+		rad += (float)ed->mouse.scroll_delta * 0.005f * ed->clock.delta;
+		char *tristr = ft_itoa(tri_i);
+		draw_text_boxed(&sdl, tristr, point_sub(sdl.screensize, (t_point) {200, 100}), sdl.screensize);
+		free (tristr);
+		floorcalc_debugdraw(ed, &sdl, dat->fc, tri_i, rad);
+	}*/
 }
 
 static void unselect_wall(t_walltooldata *dat)
@@ -251,7 +198,7 @@ static void unselect_wall(t_walltooldata *dat)
 
 static void	raise_selected(t_walltooldata *dat, int mousedelta)
 {
-	int	i;
+	/*int	i;
 
 	i = 0;
 	while (i < MAXSELECTED)
@@ -263,7 +210,7 @@ static void	raise_selected(t_walltooldata *dat, int mousedelta)
 			applywallmesh(dat->selected[i]);
 		}
 		i++;
-	}
+	}*/
 }
 
 bool	has_points_incommon(t_walltooldata *dat, t_wall *check)
@@ -310,7 +257,7 @@ static void	select_wall(t_walltooldata *dat, t_wall *select)
 
 static void	wall_tool_update(t_editor *ed) //This needs to access editors state, so pass editor here??
 {
-	t_walltooldata	*dat;
+	/*t_walltooldata	*dat;
 	t_wall			*wall;
 	t_vector3		rc;
 
@@ -319,7 +266,7 @@ static void	wall_tool_update(t_editor *ed) //This needs to access editors state,
 	rc = raycast(ed);
 	if (has_selected(dat) && dat->mode != place_end)
 	{
-		raise_selected(dat, ed->mouse.scroll_delta);
+		//raise_selected(dat, ed->mouse.scroll_delta);
 		if (mouse_clicked(ed->mouse, MOUSE_RIGHT) && dat->hover == NULL)
 			ft_bzero(dat->selected, sizeof(t_wall *) * MAXSELECTED);
 	}
@@ -338,7 +285,7 @@ static void	wall_tool_update(t_editor *ed) //This needs to access editors state,
 		}
 		wall->line.start = vector2_snap(wall->line.start, 10);
 		wall->line.end = vector2_snap(wall->line.end, 10);
-		applywallmesh(wall);
+		//applywallmesh(wall);
 		if (mouse_clicked(ed->mouse, MOUSE_RIGHT) && dat->mode == place_end)
 			dat->mode = place_start;
 		if (mouse_clicked(ed->mouse, MOUSE_LEFT))
@@ -347,7 +294,7 @@ static void	wall_tool_update(t_editor *ed) //This needs to access editors state,
 			if (dat->mode == place_height)
 			{
 				list_push(&ed->world.wall_list, wall, sizeof(t_wall));
-				walls_init(&ed->world);
+				//walls_init(&ed->world);
 				dat->mode = 0;
 				if ((ed->keystate >> KEYS_SHIFTMASK) & 1)
 				{
@@ -368,7 +315,7 @@ static void	wall_tool_update(t_editor *ed) //This needs to access editors state,
 			list_remove(&ed->world.wall_list, dat->hover, sizeof(t_wall));
 			unselect_wall(dat);
 		}
-	}
+	}*/
 }
 
 t_tool	*get_wall_tool()
@@ -385,9 +332,7 @@ t_tool	*get_wall_tool()
 		if (tool.tooldata == NULL)
 			error_log(EC_MALLOC);
 		wtd = (t_walltooldata *)tool.tooldata;
-		wtd->wall.entity.transform.scale = vector3_one();
-		wtd->wall.entity.transform.location = vector3_zero();
-		wtd->wall.entity.obj = object_plane();
+		//wtd->wall.object = *object_plane();
 		wtd->wall.height = 100.0f;
 		wtd->mode = place_first;
 	}
