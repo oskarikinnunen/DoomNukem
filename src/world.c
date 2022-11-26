@@ -21,7 +21,8 @@ static void render_room(t_sdlcontext sdl, t_render *render, t_room room)
 	i = 0;
 	while (i < room.wallcount)
 	{
-		//if (is_entity_culled(sdl, render, &room.walls[i].entity) == false)
+		//is_entity_culled(sdl, render, &room.walls[i].entity);
+		if (is_entity_culled(sdl, render, &room.walls[i].entity) == false)
 			render_entity(sdl, render, &room.walls[i].entity);
 		i++;
 	}
@@ -75,19 +76,22 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 	t_wall		wall;
 	int			i;
 	
+	bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 	render->rs.render_count = 0;
 	render->rs.triangle_count = 0;
-	update_occlusion(sdl, render, world);
-	l = world->roomlist;
+	render->world = world;
+	update_occlusion(sdl, render);
+	l = render->world->roomlist;
 	while (l != NULL)
 	{
 		render_room(sdl, render, *(t_room *)l->content);
 		l = l->next;
 	}
-	l = world->entitylist;
+	l = render->world->entitylist;
 	while (l != NULL)
 	{
 		ent = (t_entity *)l->content;
+		//is_entity_culled(sdl, render, ent);
 		if (is_entity_culled(sdl, render, ent) == false)
 			render_entity(sdl, render, ent);
 		update_anim(&ent->animation, world->clock.delta);
@@ -96,9 +100,9 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 			printf("ANIMFRAME %i \n", ent->animation.frame);*/
 		l = l->next;
 	}
-	update_npcs(world);
+	//update_npcs(world);
 	i = 0;
-	while (i < 128)
+	while (i < 128 && 0)
 	{
 		if (world->npcpool[i].active)
 		{

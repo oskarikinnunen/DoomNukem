@@ -26,27 +26,6 @@ static void sort_quat_tex_by_dist(float dist[3], t_quaternion q[3], t_texture t[
 	}
 }
 
-static float flerp(float from, float to, float delta)
-{
-	return (from + ((to - from) * delta));
-}
-
-static t_texture lerp_texture(t_texture from_t, t_texture to_t, float delta)
-{
-	from_t.u = flerp(from_t.u, to_t.u, delta);
-	from_t.v = flerp(from_t.v, to_t.v, delta);
-	from_t.w = flerp(from_t.w, to_t.w, delta);
-
-	return(from_t);
-}
-
-static t_quaternion lerp_quaternion(t_quaternion from, t_quaternion to, float delta)
-{
-	from.v = vector3_lerp(from.v, to.v, delta);
-	from.w = ft_flerp(from.w, to.w, delta);
-	return(from);
-}
-
 static int clip_triangle(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle *out_tri)
 {
 	float	t;

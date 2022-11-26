@@ -74,3 +74,4 @@ float	line_intersect_plane(t_vector3 plane_p, t_vector3 plane_n, t_vector3 start
 
 	return(-plane_d - ad) / (bd - ad);
 }
+	

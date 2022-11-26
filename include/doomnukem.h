@@ -253,7 +253,7 @@ void	*list_find(t_list *head, void *match, size_t content_size);
 void	list_remove(t_list **head, void *match, size_t content_size);
 
 /* OCCLUSION.C */
-void update_occlusion(t_sdlcontext sdl, t_render *render, t_world *world);
+void update_occlusion(t_sdlcontext sdl, t_render *render);
 
 //TODO: temp for occlusion
 int32_t		get_id(t_world *world);

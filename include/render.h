@@ -76,13 +76,6 @@ void	alloc_image(t_img *img, int width, int height);
 t_img	*get_image_by_index(t_sdlcontext sdl, int index); //TODO: add comments
 t_img	*get_image_by_name(t_sdlcontext sdl, char *name);
 
-typedef struct s_texture
-{
-	float	u;
-	float	v;
-	float	w;
-} t_texture;
-
 typedef struct	s_triangle
 {
 	t_quaternion	p[3];
@@ -116,6 +109,7 @@ typedef struct s_render
 	uint32_t		gizmocolor;
 	t_render_statistics	rs;
 	struct s_world	*world;
+	t_sdlcontext	*sdl;
 }	t_render;
 
 //Draws image 'img' to pixels 'pxls', offset by point 'pos' and scaled to 'scale'

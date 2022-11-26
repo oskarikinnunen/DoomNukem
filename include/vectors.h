@@ -236,14 +236,26 @@ typedef struct s_quaternion
 //shorthand for writing (t_quaternion){1.0f, 1.0f, 1.0f, 1.0f}
 t_quaternion	quaternion_identity();
 
-
 t_quaternion	quaternion_rotate_euler(t_vector3 original, t_vector3 eulers);
 
 //returns quaternion multiplication result 'first * second'
 t_quaternion	quaternion_mul(t_quaternion first, t_quaternion second);
 
 //returns quaternion, for quaternion line that starts from 'linestart' and ends in 'lineend' and intersects plane vector 'plane_p' and 'plane_n'
-t_quaternion quaternion_intersectplane(t_vector3 plane_p, t_vector3 plane_n, t_quaternion lineStart, t_quaternion lineEnd, float *t);
+t_quaternion	quaternion_intersectplane(t_vector3 plane_p, t_vector3 plane_n, t_quaternion lineStart, t_quaternion lineEnd, float *t);
+
+//returns quaternion lerped from, to by delta
+t_quaternion	lerp_quaternion(t_quaternion from, t_quaternion to, float delta);
+
+typedef struct s_texture
+{
+	float	u;
+	float	v;
+	float	w;
+} t_texture;
+
+//returns texture lerped from, to by delta
+t_texture		lerp_texture(t_texture from, t_texture to, float delta);
 
 typedef struct s_mat4x4
 {

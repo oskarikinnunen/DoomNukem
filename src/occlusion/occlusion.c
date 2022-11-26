@@ -61,25 +61,25 @@ static void update_room_occlusion(t_sdlcontext sdl, t_render *render, t_room *ro
 	}
 }
 
-void update_occlusion(t_sdlcontext sdl, t_render *render, t_world *world)
+void update_occlusion(t_sdlcontext sdl, t_render *render)
 {
 	t_list		*l;
 	t_entity	*ent;
 	t_wall		wall;
 	int			i;
 	
-	l = world->roomlist;
+	l = render->world->roomlist;
 	while (l != NULL)
 	{
 		update_room_occlusion(sdl, render, (t_room *)l->content);
 		l = l->next;
 	}
-	
-	l = world->entitylist;
+	l = render->world->entitylist;
 	while (l != NULL)
 	{
 		ent = (t_entity *)l->content;
 		update_occlusion_culling(sdl, render, ent);
+		
 		l = l->next;
 	}
 	//update_peripheral_culling(sdl, render, entity);//if false

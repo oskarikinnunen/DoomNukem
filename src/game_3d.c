@@ -318,7 +318,7 @@ void render_entity(t_sdlcontext sdl, t_render *render, t_entity *entity)
 	if (obj->material_count != 0)
 		render->img = obj->materials[0].img;
 	clipped(render, sdl);
-	draw_triangles(sdl, render);
+	//draw_triangles(sdl, render);
 	render->rs.render_count++;
 }
 

@@ -38,6 +38,24 @@ t_quaternion	quaternion_mul(t_quaternion a, t_quaternion b)
 	);
 }
 
+t_texture lerp_texture(t_texture from, t_texture to, float delta)
+{
+	from.u = ft_flerp(from.u, to.u, delta);
+	from.v = ft_flerp(from.v, to.v, delta);
+	from.w = ft_flerp(from.w, to.w, delta);
+
+	return(from);
+}
+
+t_quaternion lerp_quaternion(t_quaternion from, t_quaternion to, float delta)
+{
+	from.v.x = ft_flerp(from.v.x, to.v.x, delta);
+	from.v.y = ft_flerp(from.v.y, to.v.y, delta);
+	from.v.z = ft_flerp(from.v.z, to.v.z, delta);
+	from.w = ft_flerp(from.w, to.w, delta);
+	return(from);
+}
+
 //TODO: Check if quaternion linestart and lineend could be replaced with t_vector3
 t_quaternion quaternion_intersectplane(t_vector3 plane_p, t_vector3 plane_n, t_quaternion lineStart, t_quaternion lineEnd, float *t)
 {

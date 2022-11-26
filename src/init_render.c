@@ -28,6 +28,7 @@ t_render	init_render(t_sdlcontext sdl, struct s_world *world)
 	render.matcamera = matrix_lookat(render.position, render.vtarget, (t_vector3){0, 0, 1});
 	render.matview = matrix_quickinverse(render.matcamera);
 	render.world = world;
+	render.sdl = &sdl;
 	/*temp testing render loop with .bot .wall .item*/
 	return(render);
 }

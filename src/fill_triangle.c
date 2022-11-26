@@ -312,7 +312,7 @@ static void fill_tri_top(t_sdlcontext sdl, t_triangle triangle, t_img *img)
 /*
 creates two triangles from the given triangle one flat top and one flat bottom.
 both triangles are then assigned to t_point p[3] array and passed onto fill_tri_bot/top functions.
-p[0] is always the pointy head of the triangle p[1] and p[2] are flat points where, p[1] x is smaller than p[2]
+p[0] is always the pointy head of the triangle p[1] and p[2] are flat points where, p[1] x is less than p[2]
 */
 void	z_fill_tri_solid(t_sdlcontext sdl, t_triangle tri)
 {
