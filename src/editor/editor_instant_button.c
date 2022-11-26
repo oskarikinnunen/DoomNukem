@@ -34,7 +34,7 @@ bool	instant_text_button(t_sdlcontext sdl, t_mouse *m, const char *str, t_point 
 {
 	t_rectangle	rect;
 
-	rect = draw_text_boxed(&sdl, str, pos, (t_point){sdl.window_w, sdl.window_h});
+	rect = print_text_boxed(&sdl, str, pos);
 	if (pointrectanglecollision(m->pos, rect))
 	{
 		drawrectangle(sdl, rect, CLR_GREEN);

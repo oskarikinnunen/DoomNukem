@@ -1,8 +1,9 @@
 
-
 #include "libft.h"
 #include "doomnukem.h"
 #include "objects.h"
+
+# define OBJ_DEBUG
 
 void	printcolor(uint32_t clr)
 {

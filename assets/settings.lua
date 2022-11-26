@@ -13,13 +13,6 @@ images =
 	"play.png",
 	"stop.png",
 	"redball.png",
-	"sans-serif-11.png",
-	"sans-serif-12.png",
-	"sans-serif-14.png",
-	"sans-serif-16.png",
-	"sans-serif-18.png",
-	"sans-serif-20.png",
-	"sans-serif-22.png",
 	"redball.png",	
 	"quake1.png",
 	"quake2.png",
@@ -38,5 +31,7 @@ objects =
 	"car2.obj",
 	"primitive_cube_textured.obj",
 	"cube.obj",
-	"dummy.obj"
+	"dummy.obj",
+	"cyborg.obj",
+	"Pistol_1.obj"
 }

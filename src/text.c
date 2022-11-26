@@ -6,87 +6,98 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 22:00:00 by raho              #+#    #+#             */
-/*   Updated: 2022/11/01 15:31:43 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/21 22:47:04 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-// With this you can test painting all the pixels in the font png to be some exact color apart from say the background
-
-static void	paint_font(t_img *bitmap)
+// background color could be sent as an argument
+static void	join_surfaces_boxed(SDL_Surface *base, SDL_Surface *new, t_point pos, t_point padding)
 {
-	t_point	i;
+	t_point		i;
+	uint32_t	background;
 
-	i.y = 0;
-	while (i.y < bitmap->size.y)
+	background = 0x222222;
+	i.y = 0 - padding.y;
+	while (i.y < new->h + padding.y)
 	{
-		i.x = 0;
-		while (i.x < bitmap->size.x)
+		i.x = 0 - padding.x;
+		while (i.x < new->w + padding.x)
 		{
-			if (bitmap->data[i.x + (i.y * bitmap->size.x)] != 0x000000) // testing black background
-				bitmap->data[i.x + (i.y * bitmap->size.x)] = 0x00FF00;
+			if (i.x + pos.x > 0 && i.x + pos.x < base->w && \
+				i.y + pos.y > 0 && i.y + pos.y < base->h)
+			{
+				if (i.x >= 0 && i.x < new->w && i.y >= 0 && i.y < new->h)
+				{	
+					if (((uint32_t *)new->pixels)[i.x + (i.y * new->w)] >> 24 != 0) // checking alpha
+						((uint32_t *)base->pixels)[(i.x + pos.x) + ((i.y + pos.y) * base->w)] = ((uint32_t *)new->pixels)[i.x + (i.y * new->w)];
+					else
+						((uint32_t *)base->pixels)[(i.x + pos.x) + ((i.y + pos.y) * base->w)] = background;
+				}
+				else
+					((uint32_t *)base->pixels)[(i.x + pos.x) + ((i.y + pos.y) * base->w)] = background;
+			}
 			i.x++;
 		}
 		i.y++;
 	}
 }
 
-// ~ Character is so thin and at the bottom of the picture that I think it takes some colors outside of the image
-
-void	save_text(t_font *font, const char *str)
+static void	join_surfaces(SDL_Surface *base, SDL_Surface *new, t_point pos)
 {
-	t_img		*text;
-	int			i;
-	int			j;
-	t_point		cursor;
-	t_point		counter;
-	int			text_width;
-	static int	text_nbr = 0;
+	t_point	i;
 
-	//paint_font(font->bitmap); // for testing
-
-	text = ft_memalloc(sizeof(t_img));
-	if (!text)
-		error_log(EC_MALLOC);
-
-	// first calculating the amount of space needed by the text and then copying the characters to the image
-	
-	text_width = 0;
-	i = 0;
-	while (str[i] != '\0')
+	i.y = 0;
+	while (i.y < new->h)
 	{
-		j = str[i] - 32;
-		text_width += font->chars[j].xadvance;
-		i++;
-	}
-	alloc_image(text, text_width + 10, font->line_height + 10); // 10 for some padding on every side of the text
-	ft_strcpy(text->name, str);
-	cursor.x = 5;
-	cursor.y = 5;
-	i = 0;
-	while (str[i] != '\0')
-	{
-		j = str[i] - 32;
-		cursor.x += font->chars[j].offset.x;
-		cursor.y += font->chars[j].offset.y;
-		counter.y = 0;
-		while (counter.y < font->chars[j].size.y)
+		i.x = 0;
+		while (i.x < new->w)
 		{
-			counter.x = 0;
-			while (counter.x < font->chars[j].size.x)
+			if (i.x + pos.x > 0 && i.x + pos.x < base->w && \
+				i.y + pos.y > 0 && i.y + pos.y < base->h)
 			{
-				//if (font->bitmap->data[(font->chars[j].pos.x + counter.x) + ((font->chars[j].pos.y + counter.y) * font->bitmap->size.x)] != 0x000000) // testing black background
-				text->data[(cursor.x + counter.x) + ((cursor.y + counter.y) * text->size.x)] = font->bitmap->data[(font->chars[j].pos.x + counter.x) + ((font->chars[j].pos.y + counter.y) * font->bitmap->size.x)];
-				counter.x++;
+				if (((uint32_t *)new->pixels)[i.x + (i.y * new->w)] >> 24 != 0) // checking alpha
+					((uint32_t *)base->pixels)[(i.x + pos.x) + ((i.y + pos.y) * base->w)] = ((uint32_t *)new->pixels)[i.x + (i.y * new->w)];
 			}
-			counter.y++;
+			i.x++;
 		}
-		cursor.x -= font->chars[j].offset.x;
-		cursor.y -= font->chars[j].offset.y;
-		cursor.x += font->chars[j].xadvance;
-		i++;
+		i.y++;
 	}
-	font->texts[text_nbr] = text;
-	text_nbr++;
+}
+
+t_rectangle	print_text_boxed(t_sdlcontext *sdl, const char *text, t_point pos)
+{
+	SDL_Surface	*surfacetext;
+	t_rectangle	rect;
+	t_point		padding;
+
+	surfacetext = TTF_RenderText_Blended(sdl->font.font, text, sdl->font.color);
+	if (!surfacetext)
+		error_log(EC_TTF_RENDERTEXTBLENDED);
+	padding.x = 3;
+	padding.y = 3;
+	rect.size.x = surfacetext->w + padding.x * 2;
+	rect.size.y = surfacetext->h + padding.y * 2;
+	rect.position.x = pos.x - padding.x;
+	rect.position.y = pos.y - padding.y;
+	join_surfaces_boxed(sdl->surface, surfacetext, pos, padding);
+	SDL_FreeSurface(surfacetext);
+	return (rect);
+}
+
+t_rectangle	print_text(t_sdlcontext *sdl, const char *text, t_point pos)
+{
+	SDL_Surface	*surfacetext;
+	t_rectangle	rect;
+
+	surfacetext = TTF_RenderText_Blended(sdl->font.font, text, sdl->font.color);
+	if (!surfacetext)
+		error_log(EC_TTF_RENDERTEXTBLENDED);
+	rect.position = pos;
+	rect.size.x = surfacetext->w;
+	rect.size.y = surfacetext->h;
+	join_surfaces(sdl->surface, surfacetext, pos);
+	SDL_FreeSurface(surfacetext);
+	return (rect);
 }

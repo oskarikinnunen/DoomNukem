@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:21:41 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/21 16:23:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/23 16:58:00 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,15 @@ t_vector3 vector3_rotate_euler(t_vector3 original, t_vector3 eulers)
 	matrotation = matrix_makerotationx(eulers.z);
 	temp = quaternion_mul_matrix(matrotation, temp);
 	return (temp.v);
+}
+
+t_vector3	vector3_lerp(t_vector3 v1, t_vector3 v2, float lerp)
+{
+	t_vector3 result;
+
+	//lerp = lerp * vector2_dist(v1, v2);
+	result.x = v1.x - (lerp * (v1.x - v2.x));
+	result.y = v1.y - (lerp * (v1.y - v2.y));
+	result.z = v1.z - (lerp * (v1.z - v2.z));
+	return (result);
 }

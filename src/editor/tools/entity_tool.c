@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 17:39:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 14:32:53 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,24 +141,25 @@ static t_img	black_image()
 
 static void	draw_transform_info(t_transform t, t_sdlcontext sdl)
 {
+	sdl.font.color = sdl.font.font_colors.white;
 	draw_image(sdl, (t_point){17, 100}, black_image(), (t_point){180, 58});
-	draw_text_boxed(&sdl, "POS  :", (t_point){20, 143}, (t_point){sdl.window_w, sdl.window_h});
-	draw_text_boxed(&sdl, vector_string(t.location), (t_point){65, 143}, (t_point){sdl.window_w, sdl.window_h});
-	draw_text_boxed(&sdl, "SCALE:", (t_point){20, 105}, (t_point){sdl.window_w, sdl.window_h});
-	draw_text_boxed(&sdl, vector_string(t.scale), (t_point){65, 105}, (t_point){sdl.window_w, sdl.window_h});
+	print_text(&sdl, "POS:", (t_point){19, 137});
+	print_text(&sdl, vector_string(t.location), (t_point){65, 137});
+	print_text(&sdl, "SCALE:", (t_point){19, 98});
+	print_text(&sdl, vector_string(t.scale), (t_point){80, 98});
 }
 
 static void	draw_current_operation(t_entity *ent, t_entity *collide, t_sdlcontext sdl)
 {
 	if (collide == NULL)
 	{
-		draw_text_boxed(&sdl, "ADD:", (t_point){sdl.window_w / 2, sdl.window_h - 25}, (t_point){sdl.window_w, sdl.window_h});
-		draw_text_boxed(&sdl, ent->obj->name, (t_point){sdl.window_w / 2 + 60, sdl.window_h - 25}, (t_point){sdl.window_w, sdl.window_h});
+		print_text(&sdl, "ADD:", (t_point){sdl.window_w / 2, sdl.window_h - 25});
+		print_text(&sdl, ent->obj->name, (t_point){sdl.window_w / 2 + 60, sdl.window_h - 25});
 	}
 	else
 	{
-		draw_text_boxed(&sdl, "DEL:", (t_point){sdl.window_w / 2, sdl.window_h - 25}, (t_point){sdl.window_w, sdl.window_h});
-		draw_text_boxed(&sdl, collide->obj->name, (t_point){sdl.window_w / 2 + 60, sdl.window_h - 25}, (t_point){sdl.window_w, sdl.window_h});
+		print_text(&sdl, "DEL:", (t_point){sdl.window_w / 2, sdl.window_h - 25});
+		print_text(&sdl, collide->obj->name, (t_point){sdl.window_w / 2 + 60, sdl.window_h - 25});
 	}
 }
 
@@ -199,17 +200,27 @@ t_entity *selected_entity(t_editor *ed, t_sdlcontext sdl)
 	return (NULL);
 }
 
+int	object_selector(t_editor *ed, t_sdlcontext sdl, int	original)
+{
+	int	i;
+
+	i = 0;
+	while (i < sdl.objectcount)
+	{
+		if (instant_text_button(sdl, &ed->mouse, sdl.objects[i].name, (t_point){20, 200 + (i * 20)}))
+			return (i);
+		i++;
+	}
+	return (original);
+}
+
 void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 {
 	t_entity	*ent;
 	t_entity	*collide;
 
 	ent = (t_entity *)ed->tool->tooldata;
-	if (instantbutton((t_rectangle) {52, 200, 20, 20}, &ed->mouse, sdl, "minus.png"))
-		ent->object_index--;
-	if (instantbutton((t_rectangle) {74, 200, 20, 20}, &ed->mouse, sdl, "plus.png"))
-		ent->object_index++;
-	ent->object_index = ft_clamp(ent->object_index, 0, sdl.objectcount - 1);
+	ent->object_index = object_selector(ed, sdl, ent->object_index);
 	if (ent->obj != &sdl.objects[ent->object_index])
 	{
 		ent->obj = &sdl.objects[ent->object_index];
@@ -218,14 +229,11 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	/* SPLIT HERE */
 	ed->render.wireframe = true;
 	ed->render.gizmocolor = CLR_GREEN;
-	collide = selected_entity(ed, sdl);
 	render_entity(sdl, ed->render, ent);
 	
 	ed->render.wireframe = false;
 	/* END SPLIT */
-	set_font_size(&sdl, 0);
 	draw_transform_info(ent->transform, sdl);
-	draw_current_operation(ent, collide, sdl);
 	if (instantbutton((t_rectangle) {30, 120, 20, 20}, &ed->mouse, sdl, "minus.png"))
 		ent->transform.scale = vector3_add_xyz(ent->transform.scale, -0.25f);
 	if (instantbutton((t_rectangle) {52, 120, 20, 20}, &ed->mouse, sdl, "one.png"))
@@ -240,11 +248,13 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 		ent->transform.rotation.x += ed->mouse.scroll_delta * ft_degtorad(15.0f);
 	if (mouse_clicked(ed->mouse, MOUSE_MDL))
 		ent->transform.rotation = vector3_zero();
+	collide = selected_entity(ed, sdl);
 	if (collide != NULL)
 	{
 		ed->render.gizmocolor = CLR_PRPL;
 		ed->render.wireframe = true;
 		render_entity(sdl, ed->render, collide);
+		entity_start_anim(collide, "walk");
 		ed->render.wireframe = false;
 		if (mouse_clicked(ed->mouse, MOUSE_RIGHT))
 			list_remove(&ed->world.entitylist, collide, sizeof(t_entity));
@@ -258,7 +268,6 @@ void	entity_tool_update(t_editor *ed)
 	t_entity	*ent;
 	t_vector3	dir;
 
-	sizeof(t_sdlcontext);
 	ent = (t_entity *)ed->tool->tooldata;
 	dir = vector3_sub((t_vector3){ed->position.x, ed->position.y, 20.0f}, ent->transform.location);
 	ent->transform.location = raycast(ed);//vector3_movetowards(ent->transform.location, dir, ed->clock.delta * 1.0f);

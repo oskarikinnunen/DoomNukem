@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 15:55:15 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/09 04:44:35 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/21 18:53:01 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,22 +57,50 @@ t_material	*find_materialmatch(char *matname, t_list *materials)
 	return (NULL);
 }
 
+int			find_materialindex(char *matname, t_list *materials)
+{
+	t_material	*mat;
+	t_list		*l;
+	int			i;
+
+	mat = NULL;
+	l = materials;
+	i = 0;
+	while (l != NULL)
+	{
+		mat = (t_material *)l->content;
+		if (ft_strcmp(matname, mat->name) == 0)
+			return (i);
+		l = l->next;
+		i++;
+	}
+	return (0);
+}
+
 t_list	*get_face_list(int fd, t_list *materials)
 {
 	char		*line;
 	t_list		*list;
 	t_face		face;
 	t_material	*mat;
+	int			mat_index;
 
 	list = NULL;
 	while (ft_get_next_line(fd, &line))
 	{
 		if (ft_strnstr(line, "usemtl ", sizeof("usemtl")))
-			mat = find_materialmatch(line + sizeof("usemtl"), materials);
+		{
+			//mat = find_materialmatch(line + sizeof("usemtl"), materials);
+			mat_index = find_materialindex(line + sizeof("usemtl"), materials);
+			//printf("face kd %i \n", mat->kd & 0xFF);
+		}
+			
 		if (ft_strnstr(line, "f ", sizeof("f")))
 		{
 			face = parse_face(line + (sizeof("f")));
-			face.material = mat;
+			//face.material = mat;
+			face.materialindex = mat_index;
+			//printf("	sface kd %i\n", face.material->kd & 0xFF);
 			list_push(&list, &face, sizeof(t_face));
 		}
 		free(line);

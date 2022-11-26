@@ -3,20 +3,29 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
+#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/24 14:01:56 by raho             ###   ########.fr        #
+#    Updated: 2022/11/24 12:56:06 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
 
-NAME= DoomNukem
+NAME = DoomNukem
 #Library dependencies:
-SDLFOLDER= SDL-release-2.0.8
-SDL2= SDL_built/lib/libSDL2.a
-LIBFT= libft/libft.a
+
+LIBS_DIR = libs
+SDL2_DIR = $(LIBS_DIR)/SDL2-2.0.8
+SDL2_TTF_DIR = $(LIBS_DIR)/SDL2_ttf-2.0.15
+FREETYPE_DIR = $(LIBS_DIR)/freetype-2.9
+INSTALLED_LIBS_DIR = $(LIBS_DIR)/installed_libs
+SDL2 = $(INSTALLED_LIBS_DIR)/lib/libSDL2.a
+SDL2_TTF = $(INSTALLED_LIBS_DIR)/lib/libSDL2_ttf.a
+FREETYPE = $(INSTALLED_LIBS_DIR)/lib/libfreetype.a
+LIBFT = libft/libft.a
+
+
 
 LUAFOLDER= lua-5.3.6
 LUA= $(LUAFOLDER)/install/lib/liblua.a #TODO: find out real name!
@@ -28,6 +37,7 @@ SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		editor/tools/entity_tool.c \
 		editor/tools/wall_tool.c \
 		editor/tools/wall_tool_rooms.c \
+		editor/tools/npc_tool.c \
 		editor/tools/room_tool.c \
 		editor/tools/button_tool.c \
 		editor/imagedropdown.c \
@@ -36,21 +46,24 @@ SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		editor/editor_movement.c \
 		editor/editor_raycast.c \
 		playmode.c inputhelper.c \
-		walls.c \
+		walls.c file_open.c \
 		moveplayer.c physics.c errors.c \
 		game_3d.c fill_triangle.c perfgraph.c \
 		png.c lua_conf.c list_helper.c \
 		spaceconversions.c \
+		entity/entity_animate.c \
 		obj_parser/obj_parse.c \
 		obj_parser/obj_parse_vertex.c \
 		obj_parser/obj_parse_faces.c \
 		obj_parser/obj_parse_uvs.c \
+		obj_parser/obj_parse_anim.c\
 		font.c text.c \
 		object_init.c \
 		object_primitives.c \
 		world.c \
 		init_render.c \
-		controller.c
+		controller.c \
+		occlusion/occlusion.c occlusion/frustrum_culling.c occlusion/peripheral_culling.c occlusion/occlusion_culling.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \
 		vector2_elementary.c vector2_shorthands.c \
@@ -69,13 +82,27 @@ SRC+= $(VECTORSRC)
 OBJ= $(SRC:.c=.o)
 
 #Compilation stuff:
-INCLUDE= -ISDL_built/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
+INCLUDE= -I$(INSTALLED_LIBS_DIR)/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
 CC= gcc
-LIBS= $(LIBFT) -lm -framework OpenGL #-lGL on linux instead of -framework OpenGL
 CFLAGS= $(INCLUDE) -g -finline-functions -O2#-march=native
 
-all: $(SDL2) $(LUA) $(LIBFT) $(OBJ)
-	$(CC) $(OBJ) -o $(NAME) `SDL_built/bin/sdl2-config --cflags --libs` $(INCLUDE) $(LIBS) $(LUA)
+UNAME= $(shell uname)
+ifeq ($(UNAME), Darwin)
+override CFLAGS += '-D GL_SILENCE_DEPRECATION'
+LIBS= $(LIBFT) -lm -framework OpenGL `$(INSTALLED_LIBS_DIR)/bin/sdl2-config --cflags --libs` -L$(INSTALLED_LIBS_DIR)/lib -lSDL2_ttf
+AUTOGEN =
+else ifeq ($(UNAME), Linux)
+LIBS =  $(LIBFT) -lm -lGL `$(INSTALLED_LIBS_DIR)/bin/sdl2-config --cflags --libs` -L$(INSTALLED_LIBS_DIR)/lib -lSDL2_ttf
+AUTOGEN = ./autogen.sh &&
+else
+warning:
+	@echo "Compilation for platform $(UNAME) not supported."
+	exit 1
+endif
+
+
+all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(LUA) $(LIBFT) $(OBJ)
+	$(CC) $(OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LUA)
 
 $(OBJ): include/*.h Makefile
 
@@ -87,14 +114,10 @@ re: clean all
 $(LIBFT):
 	make -C libft
 
-clean-sdl:
-	rm -rf $(SDLFOLDER)/build/*
-	touch $(SDLFOLDER)/build/DontRemoveMe
-	rm -rf SDL_built/*
-	touch SDL_built/DontRemoveMe
-	rm -f $(SDL2)
+clean-libs:
+	rm -rf $(INSTALLED_LIBS_DIR)
 
-re-sdl: clean-sdl $(SDL2)
+re-libs: clean-libs $(SDL2) $(FREETYPE) $(SDL2_TTF)
 
 clean-lua:
 	rm -rf $(LUAFOLDER)/install
@@ -104,5 +127,41 @@ re-lua: clean-lua $(LUA)
 $(LUA):
 	cd $(LUAFOLDER) && make generic && make local
 
-$(SDL2):
-	cd $(SDLFOLDER)/build &&../configure --prefix=$(PWD)/SDL_built/ && make install
+$(SDL2_DIR)/unpacked:
+	cd $(LIBS_DIR) && tar -xf SDL2-2.0.8.tar.gz
+	cd $(SDL2_DIR) && touch unpacked
+
+$(FREETYPE_DIR)/unpacked:
+	cd $(LIBS_DIR) && tar -xf freetype-2.9.tar.gz
+	cd $(FREETYPE_DIR) && touch unpacked
+
+$(SDL2_TTF_DIR)/unpacked:
+	cd $(LIBS_DIR) && tar -xf SDL2_ttf-2.0.15.tar.gz
+	cd $(SDL2_TTF_DIR) && touch unpacked
+
+
+$(SDL2_DIR)/configured: $(SDL2_DIR)/unpacked
+	mkdir $(INSTALLED_LIBS_DIR)
+	cd $(SDL2_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR) && touch configured
+
+$(FREETYPE_DIR)/configured: $(FREETYPE_DIR)/unpacked
+	cd $(FREETYPE_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR) && touch configured
+
+# On Linux autogen.sh will be executed in SDL2_TTF_DIR before running configure and make install
+# On Linux pkg-config overrides prefixes with default path so we change the PKG_CONFIG_PATH
+$(SDL2_TTF_DIR)/configured: $(SDL2_TTF_DIR)/unpacked
+	cd $(SDL2_TTF_DIR) && $(AUTOGEN) ./configure	\
+	--prefix=$(PWD)/$(INSTALLED_LIBS_DIR)	\
+	--with-ft-prefix=$(PWD)/$(INSTALLED_LIBS_DIR)	\
+	--with-sdl-prefix=$(PWD)/$(INSTALLED_LIBS_DIR)	\
+	PKG_CONFIG_PATH=$(PWD)/$(INSTALLED_LIBS_DIR)/lib/pkgconfig	\
+	&& touch configured
+
+$(SDL2): $(SDL2_DIR)/configured
+	cd $(SDL2_DIR) && make && make install
+
+$(FREETYPE): $(FREETYPE_DIR)/configured
+	cd $(FREETYPE_DIR) && make && make install
+
+$(SDL2_TTF): $(SDL2_TTF_DIR)/configured
+	cd $(SDL2_TTF_DIR) && make && make install

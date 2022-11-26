@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 13:56:34 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/24 14:51:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ static void render_connect(t_editor *ed, t_sdlcontext sdl, t_roomtooldata dat)
 	}*/
 }
 
-static void ptr_add(void **ptr, uint32_t *len, size_t size, void *add)
+void ptr_add(void **ptr, uint32_t *len, size_t size, void *add)
 {
 	void	*newptr;
 
@@ -80,7 +80,7 @@ static void ptr_add(void **ptr, uint32_t *len, size_t size, void *add)
 		ft_memcpy(newptr, *ptr, *len * size);
 		free (*ptr);
 	}
-	printf("newptr loc %lu catting mem to %lu \n", newptr, newptr + ((*len) * size));
+	//printf("newptr loc %lu catting mem to %lu \n", newptr, newptr + ((*len) * size));
 	ft_memcpy(newptr + ((*len) * size), add, size);
 	*len = *len + 1;
 	*ptr = newptr;
@@ -192,7 +192,10 @@ static void	createmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	rc = raycast(ed);
 	snap = vector2_snap((t_vector2){rc.x, rc.y}, 10);
 	if (dat->room->wallcount == 0)
-		draw_text_boxed(&sdl, "place room starting point", (t_point) {20, 200}, sdl.screensize);
+		print_text_boxed(&sdl, "place room starting point", (t_point) {20, 240});
+	else if (dat->room->wallcount > 1)
+		print_text_boxed(&sdl, "shift + click to finish room", (t_point) {20, 240});
+	
 	cur->line.end = snap;
 	if ((ed->keystate >> KEYS_SHIFTMASK) & 1 && dat->room->wallcount > 0)
 		cur->line.end = dat->room->walls[0].line.start;
@@ -218,14 +221,23 @@ static void	createmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 			return ;
 		}
 	}
-	else if (mouse_clicked(ed->mouse, MOUSE_RIGHT) && dat->room->wallcount >= 1)
+	else if (mouse_clicked(ed->mouse, MOUSE_RIGHT))
 	{
-		printf("wall count was %i \n", dat->room->wallcount);
-		dat->wall.line.start = dat->room->walls[dat->room->wallcount - 1].line.start;
-		dat->room->wallcount--;
+		if (dat->room->wallcount >= 1)
+		{
+			dat->wall.line.start = dat->room->walls[dat->room->wallcount - 1].line.start;
+			dat->room->wallcount--;
+		}
+		else
+		{
+			free(dat->room);
+			dat->room = NULL;
+			ft_bzero(&dat->wall.line, sizeof(t_line));
+			return ;
+		}
 	}
 	applywallmesh(cur);
-	draw_text_boxed(&sdl, vector_string(rc), (t_point){20, sdl.window_h - 40}, sdl.screensize);
+	print_text_boxed(&sdl, vector_string(rc), (t_point){20, sdl.window_h - 80});
 	if (!vector2_cmp(cur->line.start, vector2_zero()))
 		render_entity(sdl, ed->render, &cur->entity);
 	if (illegalwall(cur, dat->room))
@@ -337,11 +349,11 @@ static void walleditmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	char	text[64] = { };
 
 	snprintf(text, 64, "modifying selected wall");
-	draw_text_boxed(&sdl, text, (t_point){sdl.window_w / 2, 40}, sdl.screensize);
+	print_text_boxed(&sdl, text, (t_point){sdl.window_w / 2, 80});
 	//render_entity(sdl, ed->render, &dat->doorwalls[0]);
 	highlight_object(ed, sdl, &dat->ed_wall->entity, CLR_GREEN);
 	snprintf(text, 64, "make door");
-	draw_text_boxed(&sdl, text, (t_point){20, 280}, sdl.screensize);
+	print_text_boxed(&sdl, text, (t_point){20, 280});
 	if (instantbutton((t_rectangle){20, 300, 40, 40}, &ed->mouse, sdl, "stop.png"))
 	{
 		dat->ed_wall->entity.transform.scale = vector3_zero();
@@ -385,7 +397,7 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	}
 	rc = raycast(ed);
 	snprintf(text, 64, "modifying room '%s'", dat->room->name);
-	draw_text_boxed(&sdl, text, (t_point){sdl.window_w / 2, 40}, sdl.screensize);
+	print_text_boxed(&sdl, text, (t_point){sdl.window_w / 2, 80});
 	snap = vector2_snap((t_vector2){rc.x, rc.y}, 10);
 	highlight_room(ed, sdl, *dat->room, CLR_GREEN);
 	look_wall = selectedwall(ed, sdl, dat->room);
@@ -454,10 +466,11 @@ void	room_tool_draw(t_editor *ed, t_sdlcontext sdl)
 		}
 	} else if (dat->rtm == rtm_create)
 		createmode(ed, sdl, dat);
-	if (instantbutton((t_rectangle){20, 200, 80, 40}, &ed->mouse, sdl, "plus.png"))
+	if (instant_text_button(sdl, &ed->mouse, "Add Room", (t_point){20, 200}))
 	{
 		dat->room = ft_memalloc(sizeof(t_room));
 		dat->rtm = rtm_create;
+		force_mouselock(ed);
 	}
 	if (dat->rtm == rtm_modify && dat->room != NULL)
 		modifymode(ed, sdl, dat);

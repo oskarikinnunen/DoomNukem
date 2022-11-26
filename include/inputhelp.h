@@ -6,14 +6,14 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 09:30:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 17:45:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/23 18:32:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef INPUTHELP_H
 # define INPUTHELP_H
 
-# include "../SDL_built/include/SDL2/SDL.h"
+# include "../libs/installed_libs/include/SDL2/SDL.h"
 
 # define KEYS_LEFTMASK 0
 # define KEYS_RIGHTMASK 1
@@ -42,6 +42,8 @@ typedef struct s_input
 	bool		crouch;
 	bool		jump;
 	bool		run;
+	bool		shoot;
+	bool		aim;
 	t_vector2	turn;
 }	t_input;
 

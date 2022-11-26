@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 14:02:20 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/24 14:14:19 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,12 @@
 #include "png.h"
 #include "game_lua.h"
 #include "objects.h"
-#include <OpenGL/gl.h> // <GL/gl.h> on linux
+
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
 
 static void	create_sdl_context(t_sdlcontext *sdl)
 {
@@ -26,7 +31,9 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 		|| SDL_Init(SDL_INIT_EVENTS) < 0 \
 		|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0)
 		error_log(EC_SDL_INIT);
-		
+	if (TTF_Init() < 0)
+		error_log(EC_TTF_INIT);
+
 	platform = SDL_GetPlatform();
 	printf("platform: %s\n", platform);
 	if (ft_strequ(platform, "Mac OS X"))
@@ -38,7 +45,7 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 		sdl->platform = os_unsupported;
 		printf("platform %s not supported\n", platform);
 	}
-	
+
 	sdl->window = SDL_CreateWindow("DoomNukem",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		sdl->window_w, sdl->window_h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
@@ -46,19 +53,16 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	if (sdl->window == NULL)
 		error_log(EC_SDL_CREATEWINDOW);
 	sdl->surface = SDL_GetWindowSurface(sdl->window);
-	//sdl->surface->format = SDL_pixeSDL_PIXELFORMAT_BGR24;
 	sdl->surface->format->format = SDL_PIXELFORMAT_ABGR1555;
-	//SDL_setw
-	//sdl->surface
 	if (sdl->surface == NULL)
 		error_log(EC_SDL_GETWINDOW_SURFACE);
-	
-	load_fonts(sdl);
+
+	load_fonts(&sdl->font);
 	
 	sdl->zbuffer = malloc(sdl->window_w * sdl->window_h * sizeof(float));
 	objects_init(sdl);
-
-
+	t_object *o = get_object_by_name(*sdl, "cyborg");
+	parseanim(o, "walk");
 	/* create context here, call gl clear in render start, glbegin in drawtriangles etc */
 	/*SDL_GLContext glc = SDL_GL_CreateContext(sdl->window);
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

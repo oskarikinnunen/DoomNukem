@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/21 16:25:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/23 13:45:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ static void draw_triangles(t_sdlcontext sdl, t_render render)
 			drawline(sdl, (t_point){render.draw_triangles[index].p[2].v.x, render.draw_triangles[index].p[2].v.y}, (t_point){render.draw_triangles[index].p[1].v.x, render.draw_triangles[index].p[1].v.y}, render.gizmocolor);
 			drawline(sdl, (t_point){render.draw_triangles[index].p[0].v.x, render.draw_triangles[index].p[0].v.y}, (t_point){render.draw_triangles[index].p[2].v.x, render.draw_triangles[index].p[2].v.y}, render.gizmocolor);
 		}
-		else if (render.img == NULL)
+		if (render.img == NULL)
 		{
 			t_img	img;
 
@@ -369,8 +369,20 @@ void render_entity(t_sdlcontext sdl, t_render render, t_entity *entity)
 		temp.v = rotate(temp.v, entity->transform.rotation);
 		temp.v = vector3_add(entity->transform.location, temp.v);
 		temp.w = 1.0f;*/
-		render.q[index] = transformed_vector3(entity->transform, obj->vertices[index]);
+		temp.v = obj->vertices[index];
+		if (entity->animation.active)
+		{
+			temp.v = vector3_add(entity->obj->o_anim.frames[entity->animation.frame].deltavertices[index].delta, temp.v);
+		}
+		render.q[index] = transformed_vector3(entity->transform, temp.v);
 		render.q[index] = quaternion_mul_matrix(render.matworld, render.q[index]);
+		index++;
+	}
+	index = 0;
+
+	while (index < obj->material_count)
+	{
+		//printf("mat r %i \n", obj->materials[index].kd & 0xFF);
 		index++;
 	}
 	index = 0;
@@ -388,17 +400,14 @@ void render_entity(t_sdlcontext sdl, t_render render, t_entity *entity)
 			tritransformed.t[1] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[1] - 1]);
 			tritransformed.t[2] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[2] - 1]);
 		}
-		if (obj->faces[index].material != NULL)
-			tritransformed.clr = obj->faces[index].material->kd;
+		tritransformed.clr = obj->materials[obj->faces[index].materialindex].kd;
 		normal = normal_calc(tritransformed);
 		vcameraray = vector3_sub(tritransformed.p[0].v, render.position);
-		if (obj->materials[0].img == NULL)
+		/*if (obj->materials[0].img == NULL)
 			tritransformed.clr = shade(tritransformed.clr,
-									1.0f - (vector3_sqr_magnitude(vector3_sub(tritransformed.p[0].v, (render.position))) / 200000.0f)); //Just some debugging lighting */
-		/*tritransformed.clr = shade(tritransformed.clr,
+									1.0f - (vector3_sqr_magnitude(vector3_sub(tritransformed.p[0].v, (render.position))) / 200000.0f));*/
+		tritransformed.clr = shade(tritransformed.clr,
 									1.0f + (vector3_dot(normal, vector3_normalise(vcameraray)) / 2.0f));
-		normal = normal_calc(tritransformed);
-		vcameraray = vector3_sub(tritransformed.p[0].v, render.position);*/
 		if (vector3_dot(normal, vcameraray) < 0.0f || 1)
 		{
 			t_triangle clipped[2];
