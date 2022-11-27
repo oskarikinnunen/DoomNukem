@@ -29,10 +29,9 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	if (SDL_Init(SDL_INIT_VIDEO) < 0 \
 		|| SDL_Init(SDL_INIT_AUDIO) < 0 \
 		|| SDL_Init(SDL_INIT_EVENTS) < 0 \
-		|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0)
+		|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0 \
+		|| TTF_Init() < 0)
 		error_log(EC_SDL_INIT);
-	if (TTF_Init() < 0)
-		error_log(EC_TTF_INIT);
 
 	platform = SDL_GetPlatform();
 	printf("platform: %s\n", platform);

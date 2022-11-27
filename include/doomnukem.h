@@ -245,4 +245,9 @@ void	list_remove(t_list **head, void *match, size_t content_size);
 
 //
 bool			object_lookedat(t_editor *ed, t_sdlcontext sdl, t_object *obj);
+
+
+void    play_sound(void);
+
+
 #endif

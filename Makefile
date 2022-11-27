@@ -63,6 +63,7 @@ SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		world.c \
 		init_render.c \
 		controller.c \
+		audio.c \
 		occlusion/occlusion.c occlusion/frustrum_culling.c occlusion/peripheral_culling.c occlusion/occlusion_culling.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \
@@ -84,7 +85,7 @@ OBJ= $(SRC:.c=.o)
 #Compilation stuff:
 INCLUDE= -I$(INSTALLED_LIBS_DIR)/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
 CC= gcc
-CFLAGS= $(INCLUDE) -g -finline-functions -O2#-march=native
+CFLAGS= $(INCLUDE) -g ##-finline-functions -O2#-march=native
 
 UNAME= $(shell uname)
 ifeq ($(UNAME), Darwin)
@@ -141,8 +142,7 @@ $(SDL2_TTF_DIR)/unpacked:
 
 
 $(SDL2_DIR)/configured: $(SDL2_DIR)/unpacked
-	mkdir $(INSTALLED_LIBS_DIR)
-	cd $(SDL2_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR) && touch configured
+	cd $(SDL2_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR) SDL_AUDIODRIVER=pulseaudio && touch configured
 
 $(FREETYPE_DIR)/configured: $(FREETYPE_DIR)/unpacked
 	cd $(FREETYPE_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR) && touch configured

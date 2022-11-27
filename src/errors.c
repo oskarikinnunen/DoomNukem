@@ -34,8 +34,6 @@ static void	sdl_errors(int error_code)
 		fprintf(stderr, "SDL_JoystickInstanceID failed: %s\n", SDL_GetError());
 	if (error_code == EC_SDL_OPENAUDIODEVICE)
 		fprintf(stderr, "SDL_OpenAudioDevice failed: %s\n", SDL_GetError());
-	if (error_code == EC_TTF_INIT)
-		fprintf(stderr, "TTF_Init failed: %s\n", TTF_GetError());
 	if (error_code == EC_TTF_OPENFONT)
 		fprintf(stderr, "TTF_OpenFont failed: %s\n", TTF_GetError());
 	if (error_code == EC_TTF_RENDERTEXTBLENDED)

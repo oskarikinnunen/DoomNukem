@@ -138,6 +138,7 @@ void	fill_audio(void *udata, Uint8 *stream, int len, Uint32 audio_len, Uint8 *au
 void	test_sound(t_sdlcontext *sdl)
 {
 	SDL_AudioSpec	wanted;
+	SDL_AudioSpec	*test;
 	extern void	fill_audio(void *udata, Uint8 *strem, int len, Uint32 audio_len, Uint8 *audio_pos);
 
 	SDL_memset(&wanted, 0, sizeof(wanted)); /* or SDL_zero(wanted) */
@@ -169,7 +170,7 @@ void	test_sound(t_sdlcontext *sdl)
 
 	/* Load the audio data ... */
 
-	wanted = SDL_LoadWAV("assets/audio/cloud-10_gunshot.wav", wanted, audio_chunk, audio_len);
+	test = SDL_LoadWAV("assets/audio/cloud-10_gunshot.wav", &wanted, audio_chunk, audio_len);
 
 	audio_pos = audio_chunk;
 
@@ -197,7 +198,6 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	t_gamereturn	gr;
 	t_render		render;
 
-	test_sound(&sdl);
 	//alloc_image(&pgraph.image, PERFGRAPH_SAMPLES + 1, PERFGRAPH_SAMPLES + 1);
 	gr = game_continue;
 	render = init_render(sdl);
@@ -225,6 +225,10 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 		//gr = game_switchmode;
+
+		if (game.input.shoot)
+			play_sound();
+
 	}
 	free_render(render);
 	if (gr == game_exit)
