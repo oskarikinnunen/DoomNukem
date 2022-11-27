@@ -78,12 +78,10 @@ void update_occlusion(t_sdlcontext sdl, t_render *render)
 	while (l != NULL)
 	{
 		ent = (t_entity *)l->content;
+		printf("update id %d\n", ent->id);
 		update_occlusion_culling(sdl, render, ent);
-		
 		l = l->next;
 	}
-	//update_peripheral_culling(sdl, render, entity);//if false
-	//update_occlusion_culling(sdl, render, entity);
 }
 
 bool is_entity_culled(t_sdlcontext sdl, t_render *render, t_entity *entity)

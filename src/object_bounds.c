@@ -59,4 +59,5 @@ void set_object_boundingbox(t_object *obj)
 	obj->bounds.box.v[5] = (t_vector3){.x = max.x, .y = min.y, max.z};
 	obj->bounds.box.v[6] = (t_vector3){.x = min.x, .y = min.y, max.z};
 	obj->bounds.box.v[7] = (t_vector3){.x = min.x, .y = max.y, max.z};
+	obj->bounds.type = box;
 }

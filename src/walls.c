@@ -71,7 +71,7 @@ static float get_wall_radius(t_bounds bounds)
 	float max_radius;
 
 	min_radius = vector3_dist(bounds.origin, bounds.box.v[0]);
-	max_radius = vector3_dist(bounds.origin, bounds.box.v[3]);
+	max_radius = vector3_dist(bounds.origin, bounds.box.v[6]);
 	if (max_radius > min_radius)
 		return(max_radius);
 	else
@@ -82,16 +82,14 @@ static void set_wall_obj_boundingbox(t_wall *wall)
 {
 	t_object *obj;
 	obj = wall->entity.obj;
-	obj->bounds.box.v[0] = (t_vector3){.x = wall->line.start.x, .y = wall->line.start.y, 0.0f};
-	obj->bounds.box.v[1] = (t_vector3){.x = wall->line.end.x, .y = wall->line.end.y, 0.0f};
-	obj->bounds.box.v[2] = (t_vector3){.x = wall->line.end.x, .y = wall->line.end.y, 0.0f};
-	obj->bounds.box.v[3] = (t_vector3){.x = wall->line.start.x, .y = wall->line.start.y, 0.0f};
-	obj->bounds.box.v[4] = (t_vector3){.x = wall->line.start.x, .y = wall->line.start.y, wall->height};
-	obj->bounds.box.v[5] = (t_vector3){.x = wall->line.end.x, .y = wall->line.end.y, wall->height};
-	obj->bounds.box.v[6] = (t_vector3){.x = wall->line.end.x, .y = wall->line.end.y, wall->height};
-	obj->bounds.box.v[7] = (t_vector3){.x = wall->line.start.x, .y = wall->line.start.y, wall->height};
-	obj->bounds.origin = vector3_lerp(obj->bounds.box.v[0], obj->bounds.box.v[3], 0.5f);
+	obj->bounds.box.v[0] = (t_vector3){wall->line.start.x, wall->line.start.y, 0.0f};
+	obj->bounds.box.v[1] = (t_vector3){wall->line.end.x, wall->line.end.y, 0.0f};
+	obj->bounds.box.v[2] = (t_vector3){wall->line.start.x, wall->line.start.y, wall->height};
+	obj->bounds.box.v[3] = (t_vector3){wall->line.end.x, wall->line.end.y, wall->height};
+	//bzero(&obj->bounds.box.v[4], sizeof(t_vector3) * 4);
+	obj->bounds.origin = vector3_lerp(obj->bounds.box.v[0], obj->bounds.box.v[6], 0.5f);
 	obj->bounds.radius = get_wall_radius(obj->bounds);
+	obj->bounds.type = plane;
 	wall->entity.occlusion.is_backface_cull = false;
 	wall->entity.occlusion.is_occluded = false;
 	wall->entity.occlusion.occlusion_cull = occlude_and_cull;

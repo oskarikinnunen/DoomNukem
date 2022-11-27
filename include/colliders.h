@@ -6,10 +6,17 @@ typedef struct s_box
 	t_vector3		v[8];
 }	t_box;
 
+typedef enum e_bound_type
+{
+	box,
+	plane
+}	t_bound_type;
+
 typedef struct s_bounds
 {
 	t_vector3		origin;
 	t_box			box;
+	t_bound_type	type;
 	float			radius;
 }	t_bounds;
 

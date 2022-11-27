@@ -78,9 +78,9 @@ int	editorloop(t_sdlcontext sdl)
 		update_deltatime(&ed.world.clock);
 		ed.gamereturn = editor_events(&ed);
 		move_editor(&ed);
-		print_vector3(ed.position);
-		print_vector3(ed.forward);
-		ed.position = (t_vector3){396.613922, 449.034363, 131.229309};
+		//print_vector3(ed.position);
+		//print_vector3(ed.forward);
+		//ed.position = (t_vector3){396.613922, 449.034363, 131.229309};
 		//ed.forward = (t_vector3){396.613922, 449.034363, 131.229309};
 		update_render_editor(&ed.render, ed);
 		screen_blank(sdl);
