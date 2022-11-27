@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gun_tool.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:49:59 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/25 19:52:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/27 17:03:59 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,31 @@ t_object	*object_selector2(t_editor *ed, t_sdlcontext sdl, t_object *original)
 	return (original);
 }
 
+void	string_box(char *name, char *str, t_editor *ed, t_sdlcontext sdl, t_point pos)
+{
+	SDL_Event	e;
+	if (instant_text_button(sdl, &ed->hid.mouse, str, pos))
+	{
+		SDL_StartTextInput();
+		while (1)
+		{
+			while (SDL_PollEvent(&e))
+			{
+				if (e.type == SDL_TEXTINPUT)
+				{
+					ft_strncat(str, e.text.text, 32);
+					
+				}
+				draw_text_boxed(&sdl, str, pos, sdl.screensize);
+				SDL_UpdateWindowSurface(sdl.window);
+				if (e.type == SDL_QUIT)
+					break ;
+			}
+			//break ;
+		}
+	}
+}
+
 void	gun_tool_draw(t_editor *ed, t_sdlcontext sdl)
 {
 	t_guntooldata	*dat;
@@ -151,7 +176,8 @@ void	gun_tool_draw(t_editor *ed, t_sdlcontext sdl)
 		bool_toggle("auto", &ed->player.gun->fullauto, ed, sdl, (t_point) {20, (sdl.window_h / 2) + 100});
 		int_slider_name("firedelay", &ed->player.gun->firedelay, 15, ed, sdl, (t_point) {20, (sdl.window_h / 2) + 140});
 	}
-	
+	static char	str[32] = {"Hello"};
+	string_box("", str, ed, sdl, (t_point) {20, 540});
 	ed->player.gun->disabled = false;
 }
 
