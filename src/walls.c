@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/25 19:37:13 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/28 18:49:32 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ static float get_wall_radius(t_bounds bounds)
 	float max_radius;
 
 	min_radius = vector3_dist(bounds.origin, bounds.box.v[0]);
-	max_radius = vector3_dist(bounds.origin, bounds.box.v[6]);
+	max_radius = vector3_dist(bounds.origin, bounds.box.v[3]);
 	if (max_radius > min_radius)
 		return(max_radius);
 	else
@@ -87,7 +87,7 @@ static void set_wall_obj_boundingbox(t_wall *wall)
 	obj->bounds.box.v[2] = (t_vector3){wall->line.start.x, wall->line.start.y, wall->height};
 	obj->bounds.box.v[3] = (t_vector3){wall->line.end.x, wall->line.end.y, wall->height};
 	//bzero(&obj->bounds.box.v[4], sizeof(t_vector3) * 4);
-	obj->bounds.origin = vector3_lerp(obj->bounds.box.v[0], obj->bounds.box.v[6], 0.5f);
+	obj->bounds.origin = vector3_lerp(obj->bounds.box.v[0], obj->bounds.box.v[3], 0.5f);
 	obj->bounds.radius = get_wall_radius(obj->bounds);
 	obj->bounds.type = plane;
 	wall->entity.occlusion.is_backface_cull = false;

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/25 19:01:51 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/28 18:34:57 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ int	editorloop(t_sdlcontext sdl)
 		move_editor(&ed);
 		//print_vector3(ed.position);
 		//print_vector3(ed.forward);
-		//ed.position = (t_vector3){396.613922, 449.034363, 131.229309};
+		//ed.position = (t_vector3){406.759247, 295.962830, 164.399963};
 		//ed.forward = (t_vector3){396.613922, 449.034363, 131.229309};
 		update_render_editor(&ed.render, ed);
 		screen_blank(sdl);

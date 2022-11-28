@@ -5,8 +5,13 @@ static t_box get_entity_box_transformed(t_entity *e)
 	t_vector3	temp;
 	t_box		box;
 	int			i;
+	int			max;
+
+	max = 8;
+	if (e->obj->bounds.type == plane)
+		max = 4;
 	i = 0;
-	while (i < 8)
+	while (i < max)
 	{
 		temp = e->obj->bounds.box.v[i];
 		temp = vector3_mul_vector3(e->transform.scale, temp);
@@ -94,6 +99,16 @@ static t_texture	vector2_to_texture(t_vector2 v)
 	return(t);
 }
 
+bool is_tri_valid(t_triangle t, t_render *render)
+{
+	for (int i = 0; i < 3; i++)
+	{
+		if (t.p[i].v.x < -10.0f || t.p[i].v.x > render->sdl->window_w + 10 || t.p[i].v.y < -10.0f || t.p[i].v.y > render->sdl->window_h + 10)
+			return(false);
+	}
+	return(true);
+}
+
 static void calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity)
 {
 	t_triangle	t;
@@ -140,12 +155,6 @@ static void calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *en
 		}
 	}
 	clipped(render, sdl);
-	
-	i = 0;
-	while (i < render->draw_tri_count && 0)
-	{
-		z_fill_tri(sdl, render->draw_triangles[i++], *render->debug_img);
-	}
 }
 
 typedef struct s_edge
@@ -153,34 +162,49 @@ typedef struct s_edge
 	t_vector3	v[2];
 }	t_edge;
 
-static t_edge	edge_clip_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_edge	edge)
+static int	edge_clip_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_edge *edge)
 {
 	float	delta;
 	float	dist[2];
 
-	dist[0] = vector3_fdist_to_plane(edge.v[0], plane_n, plane_p);
-	dist[1] = vector3_fdist_to_plane(edge.v[1], plane_n, plane_p);
+	dist[0] = vector3_fdist_to_plane(edge->v[0], plane_n, plane_p);
+	dist[1] = vector3_fdist_to_plane(edge->v[1], plane_n, plane_p);
+	if (dist[0] < 0.0f && dist[1] < 0.0f)
+		return(0);
 	if (dist[0] < 0.0f)
 	{
-		delta = line_intersect_plane(plane_p, plane_n, edge.v[0], edge.v[1]);
-		edge.v[0] = vector3_lerp(edge.v[0], edge.v[1], delta);
+		delta = line_intersect_plane(plane_p, plane_n, edge->v[0], edge->v[1]);
+		edge->v[0] = vector3_lerp(edge->v[0], edge->v[1], delta);
 	}
 	else if (dist[1] < 0.0f)
 	{
-		delta = line_intersect_plane(plane_p, plane_n, edge.v[1], edge.v[0]);
-		edge.v[1] = vector3_lerp(edge.v[1], edge.v[0], delta);
+		delta = line_intersect_plane(plane_p, plane_n, edge->v[0], edge->v[1]);
+		edge->v[1] = vector3_lerp(edge->v[0], edge->v[1], delta);
 	}
-	return(edge);
+	return(1);
 }
 
-static void	box_edge_to_screenspace(int *v, t_quaternion q[8], t_render *render, t_edge *edge)
+static void clamp_edge(t_edge *e, t_render *render)
+{
+	e->v[0].x = ft_clampf(e->v[0].x, 0.0f, render->sdl->window_w);
+	e->v[0].y = ft_clampf(e->v[0].y, 0.0f, render->sdl->window_h);
+	e->v[1].x = ft_clampf(e->v[1].x, 0.0f, render->sdl->window_w);
+	e->v[1].y = ft_clampf(e->v[1].y, 0.0f, render->sdl->window_h);
+}
+
+static int	edge_to_screenspace(int *v, t_quaternion q[8], t_render *render, t_edge *edge)
 {
 	t_vector3		plane_n, plane_p;
 	t_quaternion	temp;
+	int				ret;
 
 	plane_n = (t_vector3){.z = 1.0f};
 	plane_p = (t_vector3){.z = 0.1f};
-	*edge = edge_clip_against_plane(plane_p, plane_n, (t_edge){q[v[0]].v, q[v[1]].v});
+	edge->v[0] = q[v[0]].v;
+	edge->v[1] = q[v[1]].v;
+	ret = edge_clip_against_plane(plane_p, plane_n, edge);
+	if (ret == 0)
+		return(0);
 	for (int i = 0; i < 2; i++)
 	{
 		temp = quaternion_mul_matrix(render->matproj, (t_quaternion){edge->v[i], q[v[i]].w});
@@ -194,9 +218,35 @@ static void	box_edge_to_screenspace(int *v, t_quaternion q[8], t_render *render,
 		edge->v[i].x *= 0.5f * render->sdl->window_w;
 		edge->v[i].y *= 0.5f * render->sdl->window_h;
 	}
+	// clip to screen edges
+	ret = edge_clip_against_plane((t_vector3){0.0f, 0.0f, 0.0f}, (t_vector3){0.0f, 1.0f, 0.0f}, edge);
+	if (ret == 0)
+	{
+		clamp_edge(edge, render);
+		return(1);
+	}
+	ret = edge_clip_against_plane((t_vector3){0.0f, (float)render->sdl->window_h - 1.0f, 0.0f}, (t_vector3){0.0f, -1.0f, 0.0f}, edge);
+	if (ret == 0)
+	{
+		clamp_edge(edge, render);
+		return(1);
+	}
+	ret = edge_clip_against_plane((t_vector3){0.0f, 0.0f, 0.0f}, (t_vector3){1.0f, 0.0f, 0.0f}, edge);
+	if (ret == 0)
+	{
+		clamp_edge(edge, render);
+		return(1);
+	}
+	ret = edge_clip_against_plane((t_vector3){(float)render->sdl->window_w - 1.0f, 0.0f, 0.0f}, (t_vector3){-1.0f, 0.0f, 0.0f}, edge);
+	if (ret == 0)
+	{
+		clamp_edge(edge, render);
+		return(1);
+	}
+	return(1);
 }
 
-static void entity_plane_to_screenspace_edges(t_render *render, t_entity *entity, t_edge *edges, t_quaternion q[8])
+static int entity_plane_to_screenspace_edges(t_render *render, t_entity *entity, t_edge *edges, t_quaternion q[8])
 {
 	t_vector3		plane_n, plane_p;
 	t_quaternion	temp;
@@ -205,6 +255,7 @@ static void entity_plane_to_screenspace_edges(t_render *render, t_entity *entity
 	float			delta;
 	float			dist[2];
 	int				index[2];
+	int				count = 0;
 
 	b = get_entity_plane_transformed(entity);
 	i = 0;
@@ -218,24 +269,14 @@ static void entity_plane_to_screenspace_edges(t_render *render, t_entity *entity
 	}
 	plane_n = (t_vector3){.z = 1.0f};
 	plane_p = (t_vector3){.z = 0.1f};
-	index[0] = 0;
-	index[1] = 1;
-	box_edge_to_screenspace(index, q, render, &edges[0]);
-	index[0] = 3;
-	box_edge_to_screenspace(index, q, render, &edges[1]);
-	index[1] = 2; //(int [2]){i + 4, ((i + 1) % 4) + 4}
-	box_edge_to_screenspace(index, q, render, &edges[2]);
-	index[0] = 0;
-	box_edge_to_screenspace(index, q, render, &edges[3]);
-	i = 0;
-	while (i < 4 && 0)
-	{
-		drawline(*render->sdl, (t_point){edges[i].v[0].x, edges[i].v[0].y}, (t_point){edges[i].v[1].x, edges[i].v[1].y}, CLR_RED);
-		i++;
-	}
+	count += edge_to_screenspace((int [2]){0, 1}, q, render, &edges[count]);
+	count += edge_to_screenspace((int [2]){1, 3}, q, render, &edges[count]);
+	count += edge_to_screenspace((int [2]){2, 3}, q, render, &edges[count]);
+	count += edge_to_screenspace((int [2]){0, 2}, q, render, &edges[count]);
+	return(count);
 }
 
-static void entity_box_to_screenspace_edges(t_render *render, t_entity *entity, t_edge *edges, t_quaternion q[8])
+static int entity_box_to_screenspace_edges(t_render *render, t_entity *entity, t_edge *edges, t_quaternion q[8])
 {
 	t_vector3		plane_n, plane_p;
 	t_quaternion	temp;
@@ -244,6 +285,7 @@ static void entity_box_to_screenspace_edges(t_render *render, t_entity *entity, 
 	float			delta;
 	float			dist[2];
 	int				index[2];
+	int				count = 0;
 
 	b = get_entity_box_transformed(entity);
 	i = 0;
@@ -262,157 +304,93 @@ static void entity_box_to_screenspace_edges(t_render *render, t_entity *entity, 
 	{
 		index[0] = i;
 		index[1] = (i + 1) % 4;
-		box_edge_to_screenspace(index, q, render, &edges[i]);
+		count += edge_to_screenspace(index, q, render, &edges[count]);
 		index[1] = i + 4;
-		box_edge_to_screenspace(index, q, render, &edges[i + 4]);
-		index[0] = ((i + 1) % 4) + 4; //(int [2]){i + 4, ((i + 1) % 4) + 4}
-		box_edge_to_screenspace(index, q, render, &edges[i + 8]);
+		count += edge_to_screenspace(index, q, render, &edges[count]);
+		index[0] = ((i + 1) % 4) + 4;
+		count += edge_to_screenspace(index, q, render, &edges[count]);
 		i++;
 	}
-	i = 0;
-	while (i < 12 && 0)
-	{
-		drawline(*render->sdl, (t_point){edges[i].v[0].x, edges[i].v[0].y}, (t_point){edges[i].v[1].x, edges[i].v[1].y}, CLR_RED);
-		i++;
-	}
+	return(count);
 }
 
 void update_occlusion_culling(t_sdlcontext sdl, t_render *render, t_entity *entity)
 {
 	t_occlusion *occlusion;
-	t_box		b;
 	int			i;
 	int			j;
 	int			clipamount;
 	float		test;
+	float		min;
 	float		delta;
 	t_quaternion	q[8];
 	t_edge			edges[12];
+	int				count;
+
+	t_triangle	t;
 
 	occlusion = &entity->occlusion;
 
 	occlusion->occluder_count = 0;
 	render->draw_tri_count = 0;
 	render->calc_tri_count = 0;
+
 	if (entity->obj->bounds.type == plane)
-	{
-		entity_plane_to_screenspace_edges(render, entity, edges, q);
-		i = 0;
-		while (i < 4)
-		{
-			float	dist[2];
-			t_vector3 plane_p;
-			t_vector3 plane_n;
-
-			plane_p = edges[i].v[0];
-			plane_n = vector3_sub(edges[i].v[1], plane_p);
-			plane_n.z = plane_n.x;
-			plane_n.x = -plane_n.y;
-			plane_n.y = plane_n.z;
-			plane_n.z = 0.0f;
-			test = vector2_magnitude((t_vector2){plane_n.x, plane_n.y});
-			plane_n = (t_vector3){.x = plane_n.x/test, .y = plane_n.y/test, .z = 0.0f};
-
-			int neg, pos;
-			neg = 0;
-			pos = 0;
-			j = 0;
-			while (j < 4)
-			{
-				if (j == i)
-				{
-					j++;
-					continue;
-				}
-				dist[0] = roundf(vector2_fdist_to_plane((t_vector2){edges[j].v[0].x, edges[j].v[0].y}, (t_vector2){plane_n.x, plane_n.y}, (t_vector2){plane_p.x, plane_p.y}));
-				dist[1] = roundf(vector2_fdist_to_plane((t_vector2){edges[j].v[1].x, edges[j].v[1].y}, (t_vector2){plane_n.x, plane_n.y}, (t_vector2){plane_p.x, plane_p.y}));
-				if (dist[0] > 0.0f && dist[1] > 0.0f)
-					pos++;
-				if (dist[0] < 0.0f && dist[1] < 0.0f)
-					neg++;
-				j++;
-			}
-			if (pos == 0 || neg == 0)
-			{
-				occlusion->occluder[occlusion->occluder_count].normal[0] = plane_n;
-
-				occlusion->occluder[occlusion->occluder_count].vector[0] = plane_p;
-				occlusion->occluder[occlusion->occluder_count].vector[1] = edges[i].v[1];
-
-				if (pos > 0)
-				{
-					occlusion->occluder[occlusion->occluder_count].normal[0].x = -occlusion->occluder[occlusion->occluder_count].normal[0].x;
-					occlusion->occluder[occlusion->occluder_count].normal[0].y = -occlusion->occluder[occlusion->occluder_count].normal[0].y;
-				}
-				occlusion->occluder_count++;
-			}
-			i++;
-		}
-	}
+		count = entity_plane_to_screenspace_edges(render, entity, edges, q);
 	else
+		count = entity_box_to_screenspace_edges(render, entity, edges, q);
+	i = 0;
+	while (i < count)
 	{
-		entity_box_to_screenspace_edges(render, entity, edges, q);
-		i = 0;
-		while (i < 12 && 0)
-		{
-			drawline(*render->sdl, (t_point){edges[i].v[0].x, edges[i].v[0].y}, (t_point){edges[i].v[1].x, edges[i].v[1].y}, CLR_RED);
-			i++;
-		}
-		i = 0;
-		while (i < 12)
-		{
-			bool distneg = false;
-			bool distpos = false;
-			float	dist[2];
-			t_vector3 plane_p;
-			t_vector3 plane_n;
+		float	dist[2];
+		t_vector3 plane_p;
+		t_vector3 plane_n;
 
-			plane_p = edges[i].v[0];
-			plane_n = vector3_sub(edges[i].v[1], plane_p);
-			plane_n.z = plane_n.x;
-			plane_n.x = -plane_n.y;
-			plane_n.y = plane_n.z;
-			plane_n.z = 0.0f;
-			test = vector2_magnitude((t_vector2){plane_n.x, plane_n.y});
-			plane_n = (t_vector3){.x = plane_n.x/test, .y = plane_n.y/test, .z = 0.0f};
+		plane_p = edges[i].v[0];
+		plane_n = vector3_sub(edges[i].v[1], plane_p);
+		plane_n.z = plane_n.x;
+		plane_n.x = -plane_n.y;
+		plane_n.y = plane_n.z;
+		plane_n.z = 0.0f;
+		test = vector2_magnitude((t_vector2){plane_n.x, plane_n.y});
+		plane_n = (t_vector3){.x = plane_n.x/test, .y = plane_n.y/test, .z = 0.0f};
 
-			int neg, pos;
-			neg = 0;
-			pos = 0;
-			j = 0;
-			while (j < 12)
+		int neg, pos;
+		neg = 0;
+		pos = 0;
+		j = 0;
+		while (j < count)
+		{
+			if (j == i)
 			{
-				if (j == i)
-				{
-					j++;
-					continue;
-				}
-				dist[0] = roundf(vector2_fdist_to_plane((t_vector2){edges[j].v[0].x, edges[j].v[0].y}, (t_vector2){plane_n.x, plane_n.y}, (t_vector2){plane_p.x, plane_p.y}));
-				dist[1] = roundf(vector2_fdist_to_plane((t_vector2){edges[j].v[1].x, edges[j].v[1].y}, (t_vector2){plane_n.x, plane_n.y}, (t_vector2){plane_p.x, plane_p.y}));
-				if (dist[0] > 0.0f && dist[1] > 0.0f)
-					pos++;
-				if (dist[0] < 0.0f && dist[1] < 0.0f)
-					neg++;
 				j++;
+				continue;
 			}
-			if (pos == 0 || neg == 0)
-			{
-				occlusion->occluder[occlusion->occluder_count].normal[0] = plane_n;
-
-				occlusion->occluder[occlusion->occluder_count].vector[0] = plane_p;
-				occlusion->occluder[occlusion->occluder_count].vector[1] = edges[i].v[1];
-
-				if (pos > 0)
-				{
-					occlusion->occluder[occlusion->occluder_count].normal[0].x = -occlusion->occluder[occlusion->occluder_count].normal[0].x;
-					occlusion->occluder[occlusion->occluder_count].normal[0].y = -occlusion->occluder[occlusion->occluder_count].normal[0].y;
-				}
-				occlusion->occluder_count++;
-			}
-			i++;
+			dist[0] = roundf(vector2_fdist_to_plane((t_vector2){edges[j].v[0].x, edges[j].v[0].y}, (t_vector2){plane_n.x, plane_n.y}, (t_vector2){plane_p.x, plane_p.y}));
+			dist[1] = roundf(vector2_fdist_to_plane((t_vector2){edges[j].v[1].x, edges[j].v[1].y}, (t_vector2){plane_n.x, plane_n.y}, (t_vector2){plane_p.x, plane_p.y}));
+			if (dist[0] > 0.0f && dist[1] > 0.0f)
+				pos++;
+			if (dist[0] < 0.0f && dist[1] < 0.0f)
+				neg++;
+			j++;
 		}
+		if (pos == 0 || neg == 0)
+		{
+			occlusion->occluder[occlusion->occluder_count].normal[0] = plane_n;
+
+			occlusion->occluder[occlusion->occluder_count].vector[0] = plane_p;
+			occlusion->occluder[occlusion->occluder_count].vector[1] = edges[i].v[1];
+
+			occlusion->occluder[0].vector[0].z = min;
+			if (pos > 0)
+			{
+				occlusion->occluder[occlusion->occluder_count].normal[0].x = -occlusion->occluder[occlusion->occluder_count].normal[0].x;
+				occlusion->occluder[occlusion->occluder_count].normal[0].y = -occlusion->occluder[occlusion->occluder_count].normal[0].y;
+			}
+			occlusion->occluder_count++;
+		}
+		i++;
 	}
-	printf("occluder count %d\n", occlusion->occluder_count);
 	t_vector3	va,vb,vc;
 	t_vector3	n;
 	i = 0;
@@ -427,7 +405,7 @@ void update_occlusion_culling(t_sdlcontext sdl, t_render *render, t_entity *enti
 				j++;
 				continue;
 			}
-			if (occlusion->occluder[i].vector[0].x == occlusion->occluder[j].vector[1].x && occlusion->occluder[i].vector[0].y == occlusion->occluder[j].vector[1].y && 1)
+			if (occlusion->occluder[i].vector[0].x == occlusion->occluder[j].vector[1].x && occlusion->occluder[i].vector[0].y == occlusion->occluder[j].vector[1].y)
 			{
 				va = occlusion->occluder[i].vector[0];
 				vb = occlusion->occluder[i].vector[1];
@@ -444,7 +422,7 @@ void update_occlusion_culling(t_sdlcontext sdl, t_render *render, t_entity *enti
 
 				occlusion->occluder[i].normal[1] = n;
 			}
-			if (occlusion->occluder[i].vector[0].x == occlusion->occluder[j].vector[0].x && occlusion->occluder[i].vector[0].y == occlusion->occluder[j].vector[0].y && 1)
+			if (occlusion->occluder[i].vector[0].x == occlusion->occluder[j].vector[0].x && occlusion->occluder[i].vector[0].y == occlusion->occluder[j].vector[0].y)
 			{
 				va = occlusion->occluder[i].vector[0];
 				vb = occlusion->occluder[i].vector[1];
@@ -460,7 +438,7 @@ void update_occlusion_culling(t_sdlcontext sdl, t_render *render, t_entity *enti
 				n = (t_vector3){.x = n.x/test, .y = n.y/test};
 				occlusion->occluder[i].normal[1] = n;
 			}
-			if (occlusion->occluder[i].vector[1].x == occlusion->occluder[j].vector[0].x && occlusion->occluder[i].vector[1].y == occlusion->occluder[j].vector[0].y && 1)
+			if (occlusion->occluder[i].vector[1].x == occlusion->occluder[j].vector[0].x && occlusion->occluder[i].vector[1].y == occlusion->occluder[j].vector[0].y)
 			{
 				va = occlusion->occluder[i].vector[1];
 				vb = occlusion->occluder[i].vector[0];
@@ -477,7 +455,7 @@ void update_occlusion_culling(t_sdlcontext sdl, t_render *render, t_entity *enti
 
 				occlusion->occluder[i].normal[2] = n;
 			}
-			if (occlusion->occluder[i].vector[1].x == occlusion->occluder[j].vector[1].x && occlusion->occluder[i].vector[1].y == occlusion->occluder[j].vector[1].y && 1)
+			if (occlusion->occluder[i].vector[1].x == occlusion->occluder[j].vector[1].x && occlusion->occluder[i].vector[1].y == occlusion->occluder[j].vector[1].y)
 			{
 				va = occlusion->occluder[i].vector[1];
 				vb = occlusion->occluder[i].vector[0];
@@ -498,7 +476,7 @@ void update_occlusion_culling(t_sdlcontext sdl, t_render *render, t_entity *enti
 		i++;
 	}
 	i = 0;
-	while (i < occlusion->occluder_count && 1)
+	while (i < occlusion->occluder_count && 0) //debug
 	{
 		t_vector3 debug, v, n;
 		v = occlusion->occluder[i].vector[0];
@@ -524,10 +502,9 @@ static void swap(t_triangle **a, t_triangle **b)
 	temp = *a;
 	*a = *b;
 	*b = temp;
-	printf("swapped\n");
 }
 
-static int	is_culled(t_entity *cull, t_entity *occlude, uint32_t input_count, t_triangle *input, t_triangle *output, t_sdlcontext sdl, t_render *render)
+static int	is_culled(t_entity *cull, t_entity *occlude, uint32_t input_count, t_triangle **input, t_triangle **output, t_sdlcontext sdl, t_render *render)
 {
 	int 		i;
 	int			j;
@@ -536,33 +513,10 @@ static int	is_culled(t_entity *cull, t_entity *occlude, uint32_t input_count, t_
 	uint32_t	uclipamount, vclipamount, wclipamount;
 	t_triangle	uclipped[2], vclipped[2], wclipped[2];
 
-	printf("input count %d\n", input_count);
 	occlusion = &occlude->occlusion;
-	i = 0;
-	while (i < input_count && 0)
-	{
-		z_fill_tri(sdl, input[i++], *render->debug_img);
-	}
-	i = 0;
-	while (i < occlusion->occluder_count && 0)
-	{
-		t_vector3 debug, v, n;
-		v = occlusion->occluder[i].vector[0];
-		n = occlusion->occluder[i].vector[1];
-		drawline(sdl, (t_point){v.x, v.y}, (t_point){n.x, n.y}, CLR_RED);
-		v = occlusion->occluder[i].vector[0];
-		n = occlusion->occluder[i].normal[1];
-		debug = vector3_add(v, vector3_mul(n, 25.0f));
-		drawline(sdl, (t_point){v.x, v.y}, (t_point){debug.x, debug.y}, CLR_TURQ);
-		v = occlusion->occluder[i].vector[1];
-		n = occlusion->occluder[i].normal[2];
-		debug = vector3_add(v, vector3_mul(n, 25.0f));
-		drawline(sdl, (t_point){v.x, v.y}, (t_point){debug.x, debug.y}, CLR_GREEN);
-		i++;
-	}
 	if (cull->id == occlude->id || occlusion->occluder_count == 0)
 	{
-		swap(&input, &output);
+		swap(input, output);
 		return(input_count);
 	}
 	output_count = 0;
@@ -572,20 +526,16 @@ static int	is_culled(t_entity *cull, t_entity *occlude, uint32_t input_count, t_
 		j = 0;
 		while (j < input_count)
 		{
-			uclipamount = clip_triangle_against_plane(occlusion->occluder[i].vector[0], occlusion->occluder[i].normal[0], input[j], uclipped);
+			uclipamount = clip_triangle_against_plane(occlusion->occluder[i].vector[0], occlusion->occluder[i].normal[0], (*input)[j], uclipped);
 			for (int u = 0; u < uclipamount; u++)
 			{
-				//drawline(*render->sdl, (t_point){edges[i].v[0].x, edges[i].v[0].y}, (t_point){edges[i].v[1].x, edges[i].v[1].y}, CLR_RED);
-				//z_fill_tri(*render->sdl, uclipped[u], *render->debug_img);
 				vclipamount = clip_triangle_against_plane(occlusion->occluder[i].vector[0], occlusion->occluder[i].normal[1], uclipped[u], vclipped);
 				for (int v = 0; v < vclipamount; v++)
 				{
-					//z_fill_tri(*render->sdl, vclipped[v], *render->debug_img);
 					wclipamount = clip_triangle_against_plane(occlusion->occluder[i].vector[1], occlusion->occluder[i].normal[2], vclipped[v], wclipped);
 					for (int w = 0; w < wclipamount; w++)
 					{
-						//z_fill_tri(*render->sdl, wclipped[w], *render->debug_img);
-						output[output_count++] = wclipped[w];
+						(*output)[output_count++] = wclipped[w];
 					}
 				}
 			}
@@ -593,7 +543,6 @@ static int	is_culled(t_entity *cull, t_entity *occlude, uint32_t input_count, t_
 		}
 		i++;
 	}
-	printf("output count %d\n", output_count);
 	return(output_count);
 }
 
@@ -617,15 +566,14 @@ bool is_entity_occlusion_culled(t_sdlcontext sdl, t_render *render, t_entity *cu
 	float	cull_dist;
 	float	occl_dist;
 
-
 	render->draw_tri_count = 0;
 	render->calc_tri_count = 0;
 	calculate_triangles(sdl, render, cull);
-	l = render->world->roomlist;
 	ta = render->draw_triangles;
 	tb = render->calc_triangles;
 	count = render->draw_tri_count;
 	cull_dist = vector3_dist(vector3_add(cull->obj->bounds.origin, cull->transform.location), render->position);
+	l = render->world->roomlist;
 	while (l != NULL)
 	{
 		t_room room = *(t_room *)l->content;
@@ -634,10 +582,9 @@ bool is_entity_occlusion_culled(t_sdlcontext sdl, t_render *render, t_entity *cu
 		{
 			ent = &room.walls[i].entity;
 			occl_dist = vector3_dist(vector3_add(ent->obj->bounds.origin, ent->transform.location), render->position);
-			printf("cull id %d\n", ent->id);
-			if (cull_dist > occl_dist)
+			if (occl_dist < cull_dist)
 			{
-				count = is_culled(cull, ent, count, ta, tb, sdl, render);
+				count = is_culled(cull, ent, count, &ta, &tb, sdl, render);
 				if (count == 0)
 					return(true);
 				swap(&ta, &tb);
@@ -656,10 +603,9 @@ bool is_entity_occlusion_culled(t_sdlcontext sdl, t_render *render, t_entity *cu
 	{
 		ent = (t_entity *)l->content;
 		occl_dist = vector3_dist(vector3_add(ent->obj->bounds.origin, ent->transform.location), render->position);
-		printf("cull id %d\n", ent->id);
-		if (cull_dist > occl_dist)
+		if (occl_dist < cull_dist)
 		{
-			count = is_culled(cull, ent, count, ta, tb, sdl, render);
+			count = is_culled(cull, ent, count, &ta, &tb, sdl, render);
 			if (count == 0)
 				return(true);
 			swap(&ta, &tb);
@@ -667,10 +613,10 @@ bool is_entity_occlusion_culled(t_sdlcontext sdl, t_render *render, t_entity *cu
 		l = l->next;
 	}
 	i = 0;
-	while (i < count && 0)
+	while (i < count)
 	{
-		z_fill_tri(sdl, ta[i++], *render->debug_img);
+		z_fill_tri(*render->sdl, ta[i], *render->debug_img);
+		i++;
 	}
-	printf("end %d\n\n", cull->id);
 	return(false);
 }

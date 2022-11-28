@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/25 19:50:36 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/28 20:34:14 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -318,7 +318,7 @@ void render_entity(t_sdlcontext sdl, t_render *render, t_entity *entity)
 	if (obj->material_count != 0)
 		render->img = obj->materials[0].img;
 	clipped(render, sdl);
-	//draw_triangles(sdl, render);
+	draw_triangles(sdl, render);
 	render->rs.render_count++;
 }
 

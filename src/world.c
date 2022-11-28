@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/25 22:04:48 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/28 18:40:55 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,8 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 	render->world = world;
 	update_occlusion(sdl, render);
 	l = render->world->roomlist;
+	//render->wireframe = true;
+	//render->gizmocolor = CLR_RED;
 	while (l != NULL)
 	{
 		render_room(sdl, render, *(t_room *)l->content);
@@ -100,6 +102,7 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 			printf("ANIMFRAME %i \n", ent->animation.frame);*/
 		l = l->next;
 	}
+	//render->wireframe = false;
 	//update_npcs(world);
 	i = 0;
 	while (i < 128 && 0)
