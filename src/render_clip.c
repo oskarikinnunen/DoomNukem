@@ -79,8 +79,8 @@ int clip_triangle_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle
 	i = 0;
 	while (i < 3)
 	{
-		dist[i] = roundf(vector3_fdist_to_plane(in_tri.p[i].v, plane_n, plane_p));
-		if (dist[i] <= 0.0f)
+		dist[i] = vector3_fdist_to_plane(in_tri.p[i].v, plane_n, plane_p);
+		if (dist[i] < 0.0f)
 			outside++;
 		i++;
 	}

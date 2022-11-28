@@ -218,7 +218,7 @@ static int	edge_to_screenspace(int *v, t_quaternion q[8], t_render *render, t_ed
 		edge->v[i].x *= 0.5f * render->sdl->window_w;
 		edge->v[i].y *= 0.5f * render->sdl->window_h;
 	}
-	// clip to screen edges
+	/*// clip to screen edges
 	ret = edge_clip_against_plane((t_vector3){0.0f, 0.0f, 0.0f}, (t_vector3){0.0f, 1.0f, 0.0f}, edge);
 	if (ret == 0)
 	{
@@ -242,7 +242,7 @@ static int	edge_to_screenspace(int *v, t_quaternion q[8], t_render *render, t_ed
 	{
 		clamp_edge(edge, render);
 		return(1);
-	}
+	}*/
 	return(1);
 }
 
@@ -366,31 +366,33 @@ void update_occlusion_culling(t_sdlcontext sdl, t_render *render, t_entity *enti
 				j++;
 				continue;
 			}
-			dist[0] = roundf(vector2_fdist_to_plane((t_vector2){edges[j].v[0].x, edges[j].v[0].y}, (t_vector2){plane_n.x, plane_n.y}, (t_vector2){plane_p.x, plane_p.y}));
-			dist[1] = roundf(vector2_fdist_to_plane((t_vector2){edges[j].v[1].x, edges[j].v[1].y}, (t_vector2){plane_n.x, plane_n.y}, (t_vector2){plane_p.x, plane_p.y}));
-			if (dist[0] > 0.0f && dist[1] > 0.0f)
+			dist[0] = vector2_fdist_to_plane((t_vector2){edges[j].v[0].x, edges[j].v[0].y}, (t_vector2){plane_n.x, plane_n.y}, (t_vector2){plane_p.x, plane_p.y});
+			dist[1] = vector2_fdist_to_plane((t_vector2){edges[j].v[1].x, edges[j].v[1].y}, (t_vector2){plane_n.x, plane_n.y}, (t_vector2){plane_p.x, plane_p.y});
+			if (dist[0] >= 0.0f && dist[1] >= 0.0f && dist[0] + dist[1] > 0.0f)
 				pos++;
-			if (dist[0] < 0.0f && dist[1] < 0.0f)
+			if (dist[0] <= 0.0f && dist[1] <= 0.0f && dist[0] + dist[1] < 0.0f)
 				neg++;
 			j++;
 		}
 		if (pos == 0 || neg == 0)
 		{
-			occlusion->occluder[occlusion->occluder_count].normal[0] = plane_n;
-
 			occlusion->occluder[occlusion->occluder_count].vector[0] = plane_p;
 			occlusion->occluder[occlusion->occluder_count].vector[1] = edges[i].v[1];
-
-			occlusion->occluder[0].vector[0].z = min;
 			if (pos > 0)
 			{
-				occlusion->occluder[occlusion->occluder_count].normal[0].x = -occlusion->occluder[occlusion->occluder_count].normal[0].x;
-				occlusion->occluder[occlusion->occluder_count].normal[0].y = -occlusion->occluder[occlusion->occluder_count].normal[0].y;
+				plane_n.x = -plane_n.x;
+				plane_n.y = -plane_n.y;
 			}
+			//print_vector3(occlusion->occluder[occlusion->occluder_count].vector[0]);
+			//print_vector3(occlusion->occluder[occlusion->occluder_count].vector[1]);
+			occlusion->occluder[occlusion->occluder_count].normal[0] = plane_n;
+			occlusion->occluder[occlusion->occluder_count].normal[1] = plane_n;
+			occlusion->occluder[occlusion->occluder_count].normal[2] = plane_n;
 			occlusion->occluder_count++;
 		}
 		i++;
 	}
+	printf("occluder count %d\n", occlusion->occluder_count);
 	t_vector3	va,vb,vc;
 	t_vector3	n;
 	i = 0;
@@ -399,7 +401,6 @@ void update_occlusion_culling(t_sdlcontext sdl, t_render *render, t_entity *enti
 		j = 0;
 		while (j < occlusion->occluder_count)
 		{
-			t_vector3 debug;
 			if (j == i)
 			{
 				j++;
@@ -506,6 +507,7 @@ static void swap(t_triangle **a, t_triangle **b)
 
 static int	is_culled(t_entity *cull, t_entity *occlude, uint32_t input_count, t_triangle **input, t_triangle **output, t_sdlcontext sdl, t_render *render)
 {
+	//return(1);
 	int 		i;
 	int			j;
 	int			output_count;
@@ -519,6 +521,7 @@ static int	is_culled(t_entity *cull, t_entity *occlude, uint32_t input_count, t_
 		swap(input, output);
 		return(input_count);
 	}
+	printf("inputcount %d, occluder count %d\n", input_count, occlude->occlusion.occluder_count);
 	output_count = 0;
 	i = 0;
 	while (i < occlusion->occluder_count)
@@ -526,15 +529,19 @@ static int	is_culled(t_entity *cull, t_entity *occlude, uint32_t input_count, t_
 		j = 0;
 		while (j < input_count)
 		{
+			//print_tri((*input)[j]);
 			uclipamount = clip_triangle_against_plane(occlusion->occluder[i].vector[0], occlusion->occluder[i].normal[0], (*input)[j], uclipped);
 			for (int u = 0; u < uclipamount; u++)
 			{
+				//print_tri(uclipped[u]);
 				vclipamount = clip_triangle_against_plane(occlusion->occluder[i].vector[0], occlusion->occluder[i].normal[1], uclipped[u], vclipped);
 				for (int v = 0; v < vclipamount; v++)
 				{
+					//print_tri(vclipped[v]);
 					wclipamount = clip_triangle_against_plane(occlusion->occluder[i].vector[1], occlusion->occluder[i].normal[2], vclipped[v], wclipped);
 					for (int w = 0; w < wclipamount; w++)
 					{
+						//print_tri(wclipped[w]);
 						(*output)[output_count++] = wclipped[w];
 					}
 				}
@@ -543,6 +550,7 @@ static int	is_culled(t_entity *cull, t_entity *occlude, uint32_t input_count, t_
 		}
 		i++;
 	}
+	printf("outputcount %d\n", output_count);
 	return(output_count);
 }
 
@@ -574,6 +582,7 @@ bool is_entity_occlusion_culled(t_sdlcontext sdl, t_render *render, t_entity *cu
 	count = render->draw_tri_count;
 	cull_dist = vector3_dist(vector3_add(cull->obj->bounds.origin, cull->transform.location), render->position);
 	l = render->world->roomlist;
+	//printf("\ncull id %d\n", cull->id);
 	while (l != NULL)
 	{
 		t_room room = *(t_room *)l->content;
@@ -582,9 +591,12 @@ bool is_entity_occlusion_culled(t_sdlcontext sdl, t_render *render, t_entity *cu
 		{
 			ent = &room.walls[i].entity;
 			occl_dist = vector3_dist(vector3_add(ent->obj->bounds.origin, ent->transform.location), render->position);
+			//printf("id %d\n", ent->id);
 			if (occl_dist < cull_dist)
 			{
+				//printf("dist less\n");
 				count = is_culled(cull, ent, count, &ta, &tb, sdl, render);
+				//printf("count is %d\n", count);
 				if (count == 0)
 					return(true);
 				swap(&ta, &tb);
@@ -603,6 +615,7 @@ bool is_entity_occlusion_culled(t_sdlcontext sdl, t_render *render, t_entity *cu
 	{
 		ent = (t_entity *)l->content;
 		occl_dist = vector3_dist(vector3_add(ent->obj->bounds.origin, ent->transform.location), render->position);
+	//	printf("1 id %d\n", ent->id);
 		if (occl_dist < cull_dist)
 		{
 			count = is_culled(cull, ent, count, &ta, &tb, sdl, render);
@@ -613,9 +626,21 @@ bool is_entity_occlusion_culled(t_sdlcontext sdl, t_render *render, t_entity *cu
 		l = l->next;
 	}
 	i = 0;
-	while (i < count)
+	while (i < count && cull->id == 3 && 0)
 	{
 		z_fill_tri(*render->sdl, ta[i], *render->debug_img);
+		i++;
+	}
+	i = 0;
+	while (i < cull->occlusion.occluder_count && cull->id == 3 && 0)
+	{
+		printf("occluder count for id 3 is %d \n", cull->occlusion.occluder_count);
+		print_vector3(cull->occlusion.occluder[i].vector[0]);
+		print_vector3(cull->occlusion.occluder[i].vector[1]);
+		print_vector3(cull->occlusion.occluder[i].normal[0]);
+		print_vector3(cull->occlusion.occluder[i].normal[1]);
+		print_vector3(cull->occlusion.occluder[i].normal[2]);
+		//drawline(*render->sdl, (t_point){cull->occlusion.occluder[i].vector[0].x, cull->occlusion.occluder[i].vector[0].y}, (t_point){cull->occlusion.occluder[i].vector[1].x, cull->occlusion.occluder[i].vector[1].y}, CLR_RED);
 		i++;
 	}
 	return(false);
