@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/28 16:10:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/28 20:01:47 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr)
 		|| pos.y < 0 || pos.y >= sdl.window_h - 2)
 		return ;
 	((uint32_t *)sdl.surface->pixels)[pos.x + (pos.y * sdl.window_w)] = clr;
-	if (clr & (0xFF >> 24) != 0)
+	if (clr != 0)
 	{
-		printf("clr has alpha %i \n", clr & (24 > 0xFF));
+		
 	}
 }
 
