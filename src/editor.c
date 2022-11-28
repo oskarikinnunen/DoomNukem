@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/22 15:46:06 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/28 21:14:23 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,13 +101,17 @@ int	editorloop(t_sdlcontext sdl)
 		print_text(&sdl, fps, (t_point){sdl.window_w - 80, 10});
 		
 		// showing functionality of print text boxed:
-		SDL_Color	temp;
-		temp = sdl.font.color;
+		SDL_Color	temp1;
+		uint32_t	temp2;
+		temp1 = sdl.font.color;
+		temp2 = sdl.font.box_color;
 		sdl.font.color = sdl.font.font_colors.green;
+		sdl.font.box_color = sdl.font.background_colors.brown;
 		print_text_boxed(&sdl, "coming in hot", (t_point){200, 300});
 		sdl.font.color = sdl.font.font_colors.orange;
 		print_text_boxed(&sdl, "guns blazing", (t_point){250, 350});
-		sdl.font.color = temp;
+		sdl.font.color = temp1;
+		sdl.font.box_color = temp2;
 
 		drawcircle(sdl, point_div(sdl.screensize, 2), 4, CLR_BLUE);
 		free(fps);

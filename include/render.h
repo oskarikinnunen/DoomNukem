@@ -44,13 +44,24 @@ typedef struct s_fontcolors
 	SDL_Color	skyblue;
 }	t_fontcolors;
 
+typedef struct s_backgroundcolors
+{
+	uint32_t	black;
+	uint32_t	white;
+	uint32_t	dark_grey;
+	uint32_t	light_grey;
+	uint32_t	brown;
+}	t_backgroundcolors;
+
 typedef struct s_font
 {
-	t_fontcolors	font_colors;
-	SDL_Color		color;
-	TTF_Font		*font_sizes[4];
-	TTF_Font		*font;
-	char			*text;
+	t_fontcolors		font_colors;
+	t_backgroundcolors	background_colors;
+	SDL_Color			color;
+	uint32_t			box_color;
+	TTF_Font			*font_sizes[4];
+	TTF_Font			*font;
+	char				*text;
 }	t_font;
 
 typedef struct s_audio

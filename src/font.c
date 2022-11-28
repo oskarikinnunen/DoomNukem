@@ -6,13 +6,13 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 22:00:00 by raho              #+#    #+#             */
-/*   Updated: 2022/11/21 23:04:08 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/28 21:13:05 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-static void	initialize_colors(t_font *font)
+static void	initialize_font_colors(t_font *font)
 {
 	SDL_Color	temp;
 
@@ -44,6 +44,15 @@ static void	initialize_colors(t_font *font)
 	font->font_colors.skyblue = temp;
 }
 
+static void	initialize_background_colors(t_font *font)
+{
+	font->background_colors.black = 0x000000;
+	font->background_colors.white = 0xFFFFFF;
+	font->background_colors.dark_grey = 0x222222;
+	font->background_colors.light_grey = 0x555555;
+	font->background_colors.brown = 0x4C3228;
+}
+
 void	load_fonts(t_font *font)
 {
 	const char	font_file[] = "assets/fonts/SchoonSquare.ttf";
@@ -62,7 +71,9 @@ void	load_fonts(t_font *font)
 	if (!font->font_sizes[3])
 		error_log(EC_TTF_OPENFONT);
 	font->font = font->font_sizes[0]; // initialize the font pointer to the smallest font
-	initialize_colors(font);
-	font->color = font->font_colors.black; // initialize the font's color to crimson
+	initialize_font_colors(font);
+	initialize_background_colors(font);
+	font->color = font->font_colors.black; // initialize the font's color
+	font->box_color = font->background_colors.dark_grey; // initialize the print_text_boxed background color
 	font->text = ft_strcpy(text, "text"); // initialize text if it's used before being set to something specific
 }
