@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:36:01 by raho              #+#    #+#             */
-/*   Updated: 2022/11/25 15:26:29 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/28 18:12:18 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,6 +198,7 @@ int	controller_events(SDL_Event e, t_hid_info *hid)
 
 void updateinput(t_input *input, int keystate, t_mouse m, t_controller *controller)
 {
+	//controller[1].
 	input->move = vector2_zero();
 	input->move.x -= (keystate >> KEYS_LEFTMASK) & 1;
 	input->move.x += (keystate >> KEYS_RIGHTMASK) & 1;

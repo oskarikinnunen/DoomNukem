@@ -32,7 +32,8 @@ typedef struct s_entity
 typedef struct s_gun
 {
 	t_entity	entity;
-	char		assetname[128];
+	char		object_name[128];
+	char		preset_name[32];
 	t_anim		shoot_anim;
 	t_anim		view_anim;
 	t_vector3	holsterpos;

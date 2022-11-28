@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:56:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/23 18:46:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/28 18:23:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void	update_anim(t_anim *anim, uint32_t delta)
 		return ;
 	anim->time += delta;
 	now_second = (float)anim->time / 1000.0f;
+	
 	if (anim->mode == anim_forwards)
 	{
 		if (anim->frame >= anim->lastframe)

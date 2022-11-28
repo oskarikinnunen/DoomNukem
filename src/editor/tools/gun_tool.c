@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gun_tool.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:49:59 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/27 17:03:59 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/28 19:41:53 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ static void float_slider_name(char *name, float *f, float mul, t_editor *ed, t_s
 	free(str);
 }
 
+#include <stdlib.h>
+
 static void float_slider(float *f, float mul, t_editor *ed, t_sdlcontext sdl, t_point pos)
 {
 	char		*str;
@@ -105,45 +107,113 @@ static void bool_toggle(char *name, bool *b, t_editor *ed, t_sdlcontext sdl, t_p
 }
 
 
-t_object	*object_selector2(t_editor *ed, t_sdlcontext sdl, t_object *original)
+t_object	*object_selector2(t_editor *ed, t_sdlcontext sdl, t_entity *original)
 {
-	int	i;
+	int			i;
+	char	str[256] = { };
 
 	i = 0;
 	while (i < sdl.objectcount)
 	{
 		if (instant_text_button(sdl, &ed->hid.mouse, sdl.objects[i].name, (t_point){20, 200 + (i * 20)}))
 		{
+			ft_strcpy(original->object_name, sdl.objects[i].name);
 			return (&sdl.objects[i]);
 		}
 		i++;
 	}
-	return (original);
+	return (original->obj);
 }
 
 void	string_box(char *name, char *str, t_editor *ed, t_sdlcontext sdl, t_point pos)
 {
 	SDL_Event	e;
-	if (instant_text_button(sdl, &ed->hid.mouse, str, pos))
+	bool		done;
+	t_rectangle	rect;
+	t_point		start;
+
+	done = false;
+	rect = draw_text_boxed(&sdl, name, pos, sdl.screensize);
+	start = point_add(rect.position, (t_point){rect.size.x + 10, 2});
+	if (instant_text_button(sdl, &ed->hid.mouse, str, start))
 	{
 		SDL_StartTextInput();
-		while (1)
+		while (!done)
 		{
-			while (SDL_PollEvent(&e))
+			while (SDL_PollEvent(&e) && !done)
 			{
-				if (e.type == SDL_TEXTINPUT)
+				screen_blank(sdl);
+				draw_text_boxed(&sdl, name, pos, sdl.screensize);
+				if (e.type == SDL_TEXTINPUT && ft_strlen(str) < 31)
 				{
 					ft_strncat(str, e.text.text, 32);
 					
 				}
-				draw_text_boxed(&sdl, str, pos, sdl.screensize);
+				if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_BACKSPACE)
+					str[ft_strlen(str) - 1] = '\0';
+				rect = draw_text_boxed(&sdl, str, start, sdl.screensize);
+				drawrectangle(sdl, rect, CLR_GREEN);
 				SDL_UpdateWindowSurface(sdl.window);
-				if (e.type == SDL_QUIT)
-					break ;
+				if (e.type == SDL_KEYDOWN && (e.key.keysym.sym == SDLK_RETURN || e.key.keysym.sym == SDLK_RETURN2)) {
+					done = true;
+				}
+					
 			}
-			//break ;
 		}
 	}
+}
+
+void	list_gun_presets(t_editor *ed, t_sdlcontext sdl, t_point pos)
+{
+	t_list	*l;
+	t_gun	*gun;
+	char	str[256];
+	int		i;
+
+	l = ed->world.guns;
+	draw_text_boxed(&sdl, "Gun presets:", pos, sdl.screensize);
+	i = 1;
+	while (l != NULL)
+	{
+		gun = l->content;
+		ft_bzero(str, sizeof(str));
+		sprintf(str, "%s (model: %s)", gun->preset_name, gun->entity.object_name);
+		if (instant_text_button(sdl, &ed->hid.mouse, str, point_add(pos, (t_point){10, i * 20})))
+		{
+			ed->player.gun = gun;
+			ed->player.gun->entity.transform.parent = &ed->player.transform;
+			ed->player.gun->readytoshoot = true;
+		}
+		if (instant_text_button(sdl, &ed->hid.mouse, "-", point_add(pos, (t_point){0, i * 20})))
+			list_remove(&ed->world.guns, gun, sizeof(t_gun));
+		i++;
+		l = l->next;
+	}
+}
+
+void	save_preset(t_editor *ed, t_sdlcontext sdl)
+{
+	t_list	*l;
+	t_gun	*gun;
+	char	str[256] = { };
+
+	l = ed->world.guns;
+	while (l != NULL)
+	{
+		gun = l->content;
+		printf("cmp '%s' '%s' \n", gun->preset_name, ed->player.gun->preset_name);
+		if (ft_strcmp(gun->preset_name, ed->player.gun->preset_name) == 0)
+		{
+			gun = ed->player.gun;
+			sprintf(str, "Overwrote preset %s", gun->preset_name);
+			debugconsole_addmessage(&ed->world.debugconsole, str);
+			return ;
+		}
+		l = l->next;
+	}
+	list_push(&ed->world.guns, ed->player.gun, sizeof(t_gun));
+	sprintf(str, "Saved new preset %s", ed->player.gun->preset_name);
+	debugconsole_addmessage(&ed->world.debugconsole, str);
 }
 
 void	gun_tool_draw(t_editor *ed, t_sdlcontext sdl)
@@ -151,7 +221,7 @@ void	gun_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	t_guntooldata	*dat;
 
 	dat = (t_guntooldata *)ed->tool->tooldata;
-	//ed->player.gun.
+	ed->player.gun->disabled = false;
 	if (instant_text_button(sdl, &ed->hid.mouse, "Model", (t_point) {20, 140}))
 		dat->gtm = gtm_model;
 	if (instant_text_button(sdl, &ed->hid.mouse, "Offset", (t_point) {80, 140}))
@@ -160,7 +230,7 @@ void	gun_tool_draw(t_editor *ed, t_sdlcontext sdl)
 		dat->gtm = gtm_recoil;
 	if (dat->gtm == gtm_model)
 	{
-		ed->player.gun->entity.obj = object_selector2(ed, sdl, ed->player.gun->entity.obj);
+		ed->player.gun->entity.obj = object_selector2(ed, sdl, &ed->player.gun->entity);
 	}
 	if (dat->gtm == gtm_offset)
 	{
@@ -176,9 +246,10 @@ void	gun_tool_draw(t_editor *ed, t_sdlcontext sdl)
 		bool_toggle("auto", &ed->player.gun->fullauto, ed, sdl, (t_point) {20, (sdl.window_h / 2) + 100});
 		int_slider_name("firedelay", &ed->player.gun->firedelay, 15, ed, sdl, (t_point) {20, (sdl.window_h / 2) + 140});
 	}
-	static char	str[32] = {"Hello"};
-	string_box("", str, ed, sdl, (t_point) {20, 540});
-	ed->player.gun->disabled = false;
+	string_box("Preset name:", ed->player.gun->preset_name, ed, sdl, (t_point) {20, 80});
+	if (instant_text_button(sdl, &ed->hid.mouse, "Save", (t_point){20, 100}))
+		save_preset(ed, sdl);
+	list_gun_presets(ed, sdl, (t_point){20, 540});
 }
 
 void	gun_tool_cleanup(t_editor *ed, t_sdlcontext sdl)

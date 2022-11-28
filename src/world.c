@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/22 16:19:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/28 19:33:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,6 +237,35 @@ void	load_rooms(t_world *world, t_sdlcontext *sdl)
 	}
 }
 
+void	init_guns(t_world *world, t_sdlcontext *sdl)
+{
+	t_list	*l;
+	t_gun	*gun;
+
+	l = world->guns;
+	while (l != NULL)
+	{
+		gun = l->content;
+		gun->entity.obj = get_object_by_name(*sdl, gun->entity.object_name);
+		l = l->next;
+	}
+}
+
+t_debugconsole	init_debugconsole()
+{
+	t_debugconsole	console;
+
+	ft_bzero(&console, sizeof(t_debugconsole));
+	console.messages = ft_memalloc(sizeof(char *) * 1024);
+	console.messagecount = 0;
+	console.show_anim.framerate = 30;
+	console.show_anim.lastframe = 30 * 5;
+	console.hidden = true;
+	start_anim(&console.show_anim, anim_forwards);
+	debugconsole_addmessage(&console, "Initialized debugconsole!");
+	return (console);
+}
+
 t_world	load_world(char *filename, t_sdlcontext sdl)
 {
 	t_world	world;
@@ -245,12 +274,15 @@ t_world	load_world(char *filename, t_sdlcontext sdl)
 	world.entitylist = load_chunk(filename, "ENT_", sizeof(t_entity));
 	world.wall_list = load_chunk(filename, "WALL", sizeof(t_wall));
 	world.roomlist = load_chunk(filename, "RMNM", sizeof(t_room));
+	world.guns = load_chunk(filename, "GUNS", sizeof(t_gun));
+	world.debugconsole = init_debugconsole();
 	load_rooms(&world, &sdl);
 	entity_init(&world, sdl);
+	init_guns(&world, &sdl);
 	load_walltextures(&world, sdl);
 	ft_bzero(&world.skybox, sizeof(t_entity));
 	world.skybox.obj = get_object_by_name(sdl, "cube");
-	world.skybox.obj->materials[0].img = get_image_by_name(sdl, "grid.png");
+	world.skybox.obj->materials[0].img = get_image_by_name(sdl, "grid3.png");
 	//scale_skybox_uvs(world.skybox.obj);
 	world.skybox.transform.scale = vector3_mul(vector3_one(), 1000.0f);
 	world.skybox.transform.location = (t_vector3){500.0f, 500.0f, 499.0f};
@@ -288,6 +320,7 @@ void	save_world(char *filename, t_world world)
 	close(fd);
 	save_chunk(filename, "ENT_", world.entitylist);
 	save_chunk(filename, "WALL", world.wall_list);
+	save_chunk(filename, "GUNS", world.guns);
 	t_list	*r;
 
 	r = world.roomlist;

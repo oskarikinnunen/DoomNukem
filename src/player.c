@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 14:31:10 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/25 19:35:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/28 18:22:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ t_gun	*debug_gun(t_player *player, t_sdlcontext *sdl)
 	gun->view_anim.framerate = 120;
 	gun->view_anim.loop = false;
 	gun->view_anim.lastframe = 4;
+	ft_strcpy(gun->preset_name, "empty_preset");
 	gun->entity.transform.location = gun->holsterpos;
 	return (gun);
 }

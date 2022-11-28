@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/25 19:41:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/28 16:58:51 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@
 # define RAD90		1.57079633f //90 degrees in radian
 
 # define DEBUG_ON 1
+
+#define A_MASK 0xFF >> 24 //DEBUGGING
 
 # define IMGPATH "assets/images/"
 # define OBJPATH "assets/objects/"
@@ -103,15 +105,16 @@ typedef enum e_gamereturn
 
 typedef struct s_world
 {
-	t_clock		clock;
-	t_physics	physics;
-	t_list		*guns;
-	t_npc		npcpool[128];
-	t_list		*entitylist;
-	t_list		*meshlist;
-	t_list		*wall_list;
-	t_list		*roomlist;
-	t_entity	skybox;
+	t_clock			clock;
+	t_debugconsole	debugconsole;
+	t_physics		physics;
+	t_list			*guns;
+	t_npc			npcpool[128];
+	t_list			*entitylist;
+	t_list			*meshlist;
+	t_list			*wall_list;
+	t_list			*roomlist;
+	t_entity		skybox;
 }	t_world;
 
 void	calculate_colliders_for_entities(t_world *world);
