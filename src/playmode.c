@@ -117,86 +117,16 @@ static void player_init(t_player *player, t_sdlcontext sdl)
 	player->gun->holsterpos = (t_vector3){15.0f, 18.0f, -18.0f};
 	player->gun->aimpos = (t_vector3){0.0f, 15.0f, -7.0f};
 	player->gun->entity.transform.location = player->gun->holsterpos;
+	player->gun->shoot_anim.audioevent = ft_memalloc(sizeof(t_audioevent));
+	player->gun->shoot_anim.audioevent->audio = &sdl.audio[1];
 }
-
-void	fill_audio(void *udata, Uint8 *stream, int len, Uint32 audio_len, Uint8 *audio_pos)
-{
-	/* Only play if we have data left */
-	if (audio_len == 0)
-		return ;
-	
-	/* Mix as much data as possible */
-	if (len > audio_len)
-		len = audio_len;
-	else
-		len = len;
-	SDL_MixAudio(stream, audio_pos, len, SDL_MIX_MAXVOLUME);
-	audio_pos += len;
-	audio_len -= len;
-}
-
-void	test_sound(t_sdlcontext *sdl)
-{
-	SDL_AudioSpec	wanted;
-	SDL_AudioSpec	*test;
-	extern void	fill_audio(void *udata, Uint8 *strem, int len, Uint32 audio_len, Uint8 *audio_pos);
-
-	SDL_memset(&wanted, 0, sizeof(wanted)); /* or SDL_zero(wanted) */
-	wanted.freq = 22050;
-	wanted.format = AUDIO_S16;
-	wanted.channels = 2;	// 1 = mono, 2 = stereo 
-	wanted.samples = 1024;	// good low-latency value for callback
-	wanted.callback = fill_audio;
-	
-	//With SDL >= 2.0.4 you can choose to avoid callbacks and use SDL_QueueAudio() instead, if you like. Just open your audio device with a NULL callback.
-	//want.callback = NULL;
-	//SDL_AudioDeviceID dev = SDL_OpenAudioDevice(NULL, 0, &want, &have, SDL_AUDIO_ALLOW_FORMAT_CHANGE);
-	//if (dev == 0)
-	//	error_log(EC_SDL_OPENAUDIODEVICE);
-
-	if (SDL_OpenAudio(&wanted, NULL) < 0)
-		error_log(EC_SDL_OPENAUDIODEVICE);
-
-
-
-	static Uint8 *audio_chunk;
-	static Uint32 audio_len;
-	static Uint8 *audio_pos;
-
-	/* The audio function callback takes the following parameters:
-       stream:  A pointer to the audio buffer to be filled
-       len:     The length (in bytes) of the audio buffer
-    */
-
-	/* Load the audio data ... */
-
-	test = SDL_LoadWAV("assets/audio/cloud-10_gunshot.wav", &wanted, audio_chunk, audio_len);
-
-	audio_pos = audio_chunk;
-
-	/* Let the callback function play the audio chunk */
-    //SDL_PauseAudio(0);
-
-    /* Do some processing */
-
-    ;;;;;
-
-    /* Wait for sound to complete */
-    while ( audio_len > 0 ) {
-        SDL_Delay(100);         /* Sleep 1/10 second */
-    }
-    SDL_CloseAudio();
-
-}
-
-
-
 
 /*main game loop*/
 static int gameloop(t_sdlcontext sdl, t_game game)
 {
 	t_gamereturn	gr;
 	t_render		render;
+	int				index = 128;
 
 	//alloc_image(&pgraph.image, PERFGRAPH_SAMPLES + 1, PERFGRAPH_SAMPLES + 1);
 	gr = game_continue;
@@ -209,6 +139,8 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	initialize_controllers(&game);
 	while (gr == game_continue)
 	{
+		pause_unused_audio(sdl);
+		play_music(sdl.audio[0]);
 		update_deltatime(&game.clock);
 		update_deltatime(&game.world.clock);
 		gr = handleinput(&game);
@@ -225,10 +157,6 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 		//gr = game_switchmode;
-
-		if (game.input.shoot)
-			play_sound();
-
 	}
 	free_render(render);
 	if (gr == game_exit)

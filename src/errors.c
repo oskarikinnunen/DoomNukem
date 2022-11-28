@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 15:53:51 by raho              #+#    #+#             */
-/*   Updated: 2022/11/21 19:47:45 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/28 15:30:30 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,10 @@ static void	sdl_errors(int error_code)
 		fprintf(stderr, "SDL_JoystickInstanceID failed: %s\n", SDL_GetError());
 	if (error_code == EC_SDL_OPENAUDIODEVICE)
 		fprintf(stderr, "SDL_OpenAudioDevice failed: %s\n", SDL_GetError());
+	if (error_code == EC_SDL_QUEUEAUDIO)
+		fprintf(stderr, "SDL_QueueAudio failed: %s\n", SDL_GetError());
+	if (error_code == EC_SDL_LOADWAV)
+		fprintf(stderr, "SDL_LoadWAV failed: %s\n", SDL_GetError());
 	if (error_code == EC_TTF_OPENFONT)
 		fprintf(stderr, "TTF_OpenFont failed: %s\n", TTF_GetError());
 	if (error_code == EC_TTF_RENDERTEXTBLENDED)

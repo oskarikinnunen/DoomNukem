@@ -53,6 +53,15 @@ typedef struct s_font
 	char			*text;
 }	t_font;
 
+typedef struct s_audio
+{
+	char				name[128];
+	SDL_AudioDeviceID	device;
+	SDL_AudioSpec		wav_spec;
+	uint8_t				*wav_start;
+	uint32_t			wav_length;
+}	t_audio;
+
 typedef struct s_sdlcontext
 {
 	SDL_Window				*window;
@@ -65,6 +74,8 @@ typedef struct s_sdlcontext
 	struct s_object			*objects;
 	uint32_t				objectcount;
 	t_font					font;
+	t_audio					*audio;
+	uint32_t				audiocount;
 	uint32_t				window_w;
 	uint32_t				window_h;
 	t_point					screensize;
@@ -132,5 +143,32 @@ void	render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size);
 void	render_ray(t_sdlcontext sdl, t_render render, t_vector3 from, t_vector3 to);
 int		triangle_clipagainstplane(t_vector3 plane_p, t_vector3 plane_n, t_triangle *in_tri, t_triangle out_tri[2]);
 void	draw_screen_to_worldspace_ray(t_sdlcontext sdl, t_render render, t_point origin, t_vector2 angle);
+
+/* AUDIO */
+
+// Mallocs the memory for sdl->audiocount many t_audio structs.
+// Then calls load_wav and open_audiodevice to finish setting up audio.
+void	load_audio(t_sdlcontext *sdl);
+void	load_wav(t_audio *audio, char *file);
+
+// Each sound file needs to be opened to its own t_audio struct.
+void	open_audiodevice(t_audio *audio);
+
+// Plays the audio. In the case there are multiple audio calls using the same device,
+// play_audio waits until the previous audio in the queue is finished and then plays.
+void	play_audio(t_audio audio);
+
+// Clears the audio queue and plays the audio right away
+void	force_play_audio(t_audio audio);
+
+// Pauses a audio device. If you call play_audio, it continues from where it was paused at.
+void	pause_audio(t_audio audio);
+
+// Loops the background music.
+void	play_music(t_audio audio);
+
+// Clears and pauses all unused audio device queues.
+void	pause_unused_audio(t_sdlcontext sdl);
+void	close_audio(t_sdlcontext *sdl);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 20:21:24 by raho              #+#    #+#             */
-/*   Updated: 2022/11/21 19:41:34 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/28 15:30:44 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 # define EC_SDL_GAMECONTROLLEROPEN 6
 # define EC_SDL_JOYSTICKINSTANCEID 7
 # define EC_SDL_OPENAUDIODEVICE -1
+# define EC_SDL_LOADWAV -2
+# define EC_SDL_QUEUEAUDIO -3
 # define EC_TTF_OPENFONT 9
 # define EC_TTF_RENDERTEXTBLENDED 10
 # define EC_OPEN 11

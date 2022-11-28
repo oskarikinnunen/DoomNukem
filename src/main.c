@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 14:14:19 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/28 19:40:02 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,8 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 		error_log(EC_SDL_GETWINDOW_SURFACE);
 
 	load_fonts(&sdl->font);
-	
+	load_audio(sdl);
+
 	sdl->zbuffer = malloc(sdl->window_w * sdl->window_h * sizeof(float));
 	objects_init(sdl);
 	t_object *o = get_object_by_name(*sdl, "cyborg");
@@ -88,6 +89,7 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 
 void	quit_game(t_sdlcontext *sdl)
 {
+	close_audio(sdl);
 	SDL_Quit();
 	exit(0);
 }
