@@ -117,6 +117,8 @@ static void player_init(t_player *player, t_sdlcontext sdl)
 	player->gun->holsterpos = (t_vector3){15.0f, 18.0f, -18.0f};
 	player->gun->aimpos = (t_vector3){0.0f, 15.0f, -7.0f};
 	player->gun->entity.transform.location = player->gun->holsterpos;
+	player->gun->shoot_anim.audioevent = ft_memalloc(sizeof(t_audioevent));
+	player->gun->shoot_anim.audioevent->audio = &sdl.audio[1];
 }
 
 /*main game loop*/
@@ -124,6 +126,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 {
 	t_gamereturn	gr;
 	t_render		render;
+	int				index = 128;
 
 	//alloc_image(&pgraph.image, PERFGRAPH_SAMPLES + 1, PERFGRAPH_SAMPLES + 1);
 	gr = game_continue;
@@ -136,6 +139,8 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	initialize_controllers(&game);
 	while (gr == game_continue)
 	{
+		pause_unused_audio(sdl);
+		play_music(sdl.audio[0]);
 		update_deltatime(&game.clock);
 		update_deltatime(&game.world.clock);
 		gr = handleinput(&game);

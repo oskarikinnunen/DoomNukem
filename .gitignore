@@ -6,6 +6,7 @@ libs/SDL2-2.0.8
 libs/freetype-2.9
 libs/SDL2_ttf-2.0.15
 libs/installed_libs
+!libs/installed_libs/DontRemoveMe
 libft/libft.a
 libft/**.o
 lua-5.3.6/install/

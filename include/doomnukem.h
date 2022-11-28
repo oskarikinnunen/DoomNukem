@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 16:14:22 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/28 18:03:00 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -245,4 +245,5 @@ void	list_remove(t_list **head, void *match, size_t content_size);
 
 //
 bool			object_lookedat(t_editor *ed, t_sdlcontext sdl, t_object *obj);
+
 #endif

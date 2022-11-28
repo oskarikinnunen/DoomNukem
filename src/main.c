@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 14:14:19 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/28 20:23:46 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,12 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	const char	*platform;
 
 	load_lua_conf(sdl);
-	if (SDL_Init(SDL_INIT_VIDEO) < 0
-		|| SDL_Init(SDL_INIT_EVENTS) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO) < 0 \
+		|| SDL_Init(SDL_INIT_AUDIO) < 0 \
+		|| SDL_Init(SDL_INIT_EVENTS) < 0 \
+		|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0 \
+		|| TTF_Init() < 0)
 		error_log(EC_SDL_INIT);
-	if (SDL_Init(SDL_INIT_GAMECONTROLLER) < 0)
-		error_log(EC_SDL_INIT);
-	if (TTF_Init() < 0)
-		error_log(EC_TTF_INIT);
 
 	platform = SDL_GetPlatform();
 	printf("platform: %s\n", platform);
@@ -53,12 +52,12 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	if (sdl->window == NULL)
 		error_log(EC_SDL_CREATEWINDOW);
 	sdl->surface = SDL_GetWindowSurface(sdl->window);
-	sdl->surface->format->format = SDL_PIXELFORMAT_ABGR1555;
 	if (sdl->surface == NULL)
 		error_log(EC_SDL_GETWINDOW_SURFACE);
 
 	load_fonts(&sdl->font);
-	
+	load_audio(sdl);
+
 	sdl->zbuffer = malloc(sdl->window_w * sdl->window_h * sizeof(float));
 	objects_init(sdl);
 	t_object *o = get_object_by_name(*sdl, "cyborg");
@@ -89,6 +88,7 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 
 void	quit_game(t_sdlcontext *sdl)
 {
+	close_audio(sdl);
 	SDL_Quit();
 	exit(0);
 }

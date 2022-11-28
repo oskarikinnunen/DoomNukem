@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
+#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/24 12:56:06 by raho             ###   ########.fr        #
+#    Updated: 2022/11/28 19:19:49 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -63,6 +63,7 @@ SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		world.c \
 		init_render.c \
 		controller.c \
+		audio.c \
 		occlusion/occlusion.c occlusion/frustrum_culling.c occlusion/peripheral_culling.c occlusion/occlusion_culling.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \
@@ -141,8 +142,7 @@ $(SDL2_TTF_DIR)/unpacked:
 
 
 $(SDL2_DIR)/configured: $(SDL2_DIR)/unpacked
-	mkdir $(INSTALLED_LIBS_DIR)
-	cd $(SDL2_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR) && touch configured
+	cd $(SDL2_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR) SDL_AUDIODRIVER=pulseaudio && touch configured
 
 $(FREETYPE_DIR)/configured: $(FREETYPE_DIR)/unpacked
 	cd $(FREETYPE_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR) && touch configured
