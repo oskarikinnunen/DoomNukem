@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 20:21:24 by raho              #+#    #+#             */
-/*   Updated: 2022/11/28 15:30:44 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/29 12:16:44 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # define EC_SDL_INIT 1
 # define EC_SDL_CREATEWINDOW 2
 # define EC_SDL_GETWINDOW_SURFACE 3
+# define EC_SDL_CREATERGBSURFACE -4
 # define EC_SDL_UPDATEWINDOWSURFACE 4
 # define EC_SDL_SETRELATIVEMOUSEMODE 5
 # define EC_SDL_GAMECONTROLLEROPEN 6

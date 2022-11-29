@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 15:53:51 by raho              #+#    #+#             */
-/*   Updated: 2022/11/28 15:30:30 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/29 12:16:18 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ static void	sdl_errors(int error_code)
 		fprintf(stderr, "SDL_CreateWindow failed: %s\n", SDL_GetError());
 	if (error_code == EC_SDL_GETWINDOW_SURFACE)
 		fprintf(stderr, "SDL_GetWindowSurface failed: %s\n", SDL_GetError());
+	if (error_code == EC_SDL_CREATERGBSURFACE)
+		fprintf(stderr, "SDL_CreateRGBSurface failed: %s\n", SDL_GetError());
 	if (error_code == EC_SDL_UPDATEWINDOWSURFACE)
 		fprintf(stderr, "SDL_UpdateWindowSurface failed: %s\n", SDL_GetError());
 	if (error_code == EC_SDL_SETRELATIVEMOUSEMODE)

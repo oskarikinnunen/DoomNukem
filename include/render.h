@@ -76,6 +76,7 @@ typedef struct s_audio
 typedef struct s_sdlcontext
 {
 	SDL_Window				*window;
+	SDL_Surface				*window_surface;
 	SDL_Surface				*surface;
 	t_platform				platform;
 	float					*zbuffer;

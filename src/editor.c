@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/28 21:14:23 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/29 15:28:16 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,8 +113,28 @@ int	editorloop(t_sdlcontext sdl)
 		sdl.font.color = temp1;
 		sdl.font.box_color = temp2;
 
+		sdl.font.font = sdl.font.font_sizes[3];
+		print_text(&sdl, "TRANSPARITY", (t_point){400, 100});
+		sdl.font.font = sdl.font.font_sizes[0];
+
 		drawcircle(sdl, point_div(sdl.screensize, 2), 4, CLR_BLUE);
 		free(fps);
+
+		t_point	i;
+
+		i.y = 0;
+		while (i.y < sdl.window_surface->h)
+		{
+			i.x = 0;
+			while (i.x < sdl.window_surface->w)
+			{
+				//if (((uint32_t *)new->pixels)[i.x + (i.y * new->w)] >> 24 != 0) // checking alpha
+				((uint32_t *)sdl.window_surface->pixels)[i.x + (i.y * sdl.window_surface->w)] = ((uint32_t *)sdl.surface->pixels)[i.x + (i.y * sdl.surface->w)];
+				i.x++;
+			}
+			i.y++;
+		}
+
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 	}
