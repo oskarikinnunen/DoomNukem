@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/28 18:49:32 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/29 16:54:58 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,8 @@ void	init_room_meshes(t_room *room, t_sdlcontext *sdl)
 	{
 		room->floors[i].entity.obj = object_tri(sdl);
 		applytrimesh(room->floors[i], room->floors[i].entity.obj);
+		room->floors[i].entity.obj->bounds.origin = vector3_lerp(vector3_lerp(room->floors[i].entity.obj->vertices[0], room->floors[i].entity.obj->vertices[1], 0.5f), room->floors[i].entity.obj->vertices[2], 0.5f);
+		room->floors[i].entity.id = -2;
 		/*room->walls[i].entity.transform.location = vector3_zero();
 		room->walls[i].entity.transform.scale = vector3_one();
 		room->walls[i].entity.obj = object_plane(sdl);

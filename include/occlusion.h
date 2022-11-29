@@ -26,7 +26,7 @@ typedef enum e_occlusion_cull
 typedef struct s_occlusion
 {
 	t_occlusion_cull	occlusion_cull;
-	t_occluder			occluder[100];
+	t_occluder			occluder[12];
 	uint32_t			occluder_count;
 	bool				is_backface_cull;
 	bool				is_occluded;

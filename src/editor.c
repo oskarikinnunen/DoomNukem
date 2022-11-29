@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/28 18:34:57 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/29 15:47:05 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,9 @@ int	editorloop(t_sdlcontext sdl)
 		//print_vector3(ed.forward);
 		//ed.forward = (t_vector3){396.613922, 449.034363, 131.229309};
 		update_render_editor(&ed.render, ed);
-		//print_vector3(ed.render.lookdir);
-		//ed.position = (t_vector3){500.000000, 500.000000, 200.000000};
-		//ed.render.lookdir = (t_vector3){-0.164430, -0.424379, -0.890430};
+	//	print_vector3(ed.render.lookdir);
+	//	ed.position = (t_vector3){-31.484835, 95.676018, 46.539551};
+	//	ed.render.lookdir = (t_vector3){0.367030, 0.919879, -0.138244};
 		screen_blank(sdl);
 		render_start(&ed.render);
 		update_world3d(sdl, &ed.world, &ed.render);

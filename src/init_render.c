@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/25 19:02:45 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/29 16:58:41 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ t_render	init_render(t_sdlcontext sdl, struct s_world *world)
 	render.matview = matrix_quickinverse(render.matcamera);
 	render.world = world;
 	render.sdl = &sdl;
+	render.occlusion = true;
 	/*temp testing render loop with .bot .wall .item*/
 	return(render);
 }

@@ -1,6 +1,5 @@
 #ifndef DEBUG_H
 # define DEBUG_H
-
 /*DEBUG FILES*/
 void print_matrix(t_mat4x4 m);
 void print_point(t_point p);

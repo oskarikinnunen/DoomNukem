@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 14:40:03 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/28 16:19:39 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/29 16:44:06 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,9 @@ void update_occlusion(t_sdlcontext sdl, t_render *render)
 	t_entity	*ent;
 	t_wall		wall;
 	int			i;
-	
+
+	if (render->occlusion == false)
+		return;	
 	l = render->world->roomlist;
 	while (l != NULL)
 	{
@@ -78,7 +80,6 @@ void update_occlusion(t_sdlcontext sdl, t_render *render)
 	while (l != NULL)
 	{
 		ent = (t_entity *)l->content;
-	//	printf("update id %d\n", ent->id);
 		update_occlusion_culling(sdl, render, ent);
 		l = l->next;
 	}
@@ -86,6 +87,8 @@ void update_occlusion(t_sdlcontext sdl, t_render *render)
 
 bool is_entity_culled(t_sdlcontext sdl, t_render *render, t_entity *entity)
 {
+	if (render->occlusion == false)
+		return(false);
 	if (is_entity_frustrum_culled(sdl, render, entity) == false)
 	{
 		if (is_entity_peripheral_culled(sdl, render, entity) == false)

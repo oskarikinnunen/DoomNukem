@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/28 18:40:55 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/29 17:00:49 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,9 @@ static void render_room(t_sdlcontext sdl, t_render *render, t_room room)
 	i = 0;
 	while (i < room.floorcount)
 	{
-		render_entity(sdl, render, &room.floors[i].entity);
+		room.floors[i].entity.occlusion.is_occluded = false;
+		if (is_entity_culled(sdl, render, &room.floors[i].entity) == false)
+			render_entity(sdl, render, &room.floors[i].entity);
 		i++;
 	}
 
@@ -82,8 +84,8 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 	render->world = world;
 	update_occlusion(sdl, render);
 	l = render->world->roomlist;
-	//render->wireframe = true;
-	//render->gizmocolor = CLR_RED;
+	render->wireframe = true;
+	render->gizmocolor = CLR_RED;
 	while (l != NULL)
 	{
 		render_room(sdl, render, *(t_room *)l->content);
@@ -93,7 +95,6 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 	while (l != NULL)
 	{
 		ent = (t_entity *)l->content;
-		//is_entity_culled(sdl, render, ent);
 		if (is_entity_culled(sdl, render, ent) == false)
 			render_entity(sdl, render, ent);
 		update_anim(&ent->animation, world->clock.delta);
@@ -102,7 +103,7 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 			printf("ANIMFRAME %i \n", ent->animation.frame);*/
 		l = l->next;
 	}
-	//render->wireframe = false;
+	render->wireframe = false;
 	//update_npcs(world);
 	i = 0;
 	while (i < 128 && 0)
@@ -117,7 +118,7 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 			
 		i++;
 	}
-	//render_entity(sdl, *render, &world->skybox);
+	//render_entity(sdl, render, &world->skybox);
 	print_render_statistics(render->rs);
 }
 

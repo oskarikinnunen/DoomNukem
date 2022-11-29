@@ -110,6 +110,7 @@ typedef struct s_render
 	t_render_statistics	rs;
 	struct s_world	*world;
 	t_sdlcontext	*sdl;
+	bool			occlusion;
 }	t_render;
 
 //Draws image 'img' to pixels 'pxls', offset by point 'pos' and scaled to 'scale'
@@ -135,4 +136,5 @@ int		clip_triangle_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangl
 void	draw_screen_to_worldspace_ray(t_sdlcontext sdl, t_render render, t_point origin, t_vector2 angle);
 void	clipped(t_render *render, t_sdlcontext sdl);
 
+int vector2_clip_triangle_against_plane(t_vector2 plane_p, t_vector2 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
 #endif
