@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/29 13:14:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/29 15:42:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ t_vector3			raycast(t_editor *ed);
 bool				entity_lookedat(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
 bool				triangle_lookedat(t_render r, t_triangle tri, t_sdlcontext sdl);
 int32_t				entity_lookedat_triangle_index(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
+t_vector3			*entity_lookedat_vertex(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
 t_entity			*selected_entity(t_editor *ed, t_sdlcontext sdl);
 
 #endif

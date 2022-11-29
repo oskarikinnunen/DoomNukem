@@ -3,8 +3,9 @@
 
 typedef struct s_capsulecollider
 {
-	uint32_t	start_vertex;
-	uint32_t	end_vertex;
+	t_entity	entity;
+	t_vector3	*start_vertex;
+	t_vector3	*end_vertex;
 }	t_capsulecollider;
 
 typedef struct s_humancolliders

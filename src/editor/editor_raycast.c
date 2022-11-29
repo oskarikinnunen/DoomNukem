@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 18:03:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/29 14:23:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/29 15:42:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,28 @@ bool	entity_lookedat(t_editor *ed, t_sdlcontext sdl, t_entity *entity)
 		i++;
 	}
 	return (false);
+}
+
+t_vector3	*entity_lookedat_vertex(t_editor *ed, t_sdlcontext sdl, t_entity *entity)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (i < entity->obj->face_count)
+	{
+		t_triangle	t;
+		t.p[0] = vector3_to_quaternion(entity->obj->vertices[entity->obj->faces[i].v_indices[0] - 1]); //TODO:
+		t.p[1] = vector3_to_quaternion(entity->obj->vertices[entity->obj->faces[i].v_indices[1] - 1]);
+		t.p[2] = vector3_to_quaternion(entity->obj->vertices[entity->obj->faces[i].v_indices[2] - 1]);
+		t.p[0] = transformed_vector3(entity->transform, t.p[0].v);
+		t.p[1] = transformed_vector3(entity->transform, t.p[1].v);
+		t.p[2] = transformed_vector3(entity->transform, t.p[2].v);
+		if (triangle_lookedat(ed->render, t, sdl))
+			return (&entity->obj->vertices[entity->obj->faces[i].v_indices[0] - 1]);
+		i++;
+	}
+	return (NULL);
 }
 
 int32_t	entity_lookedat_triangle_index(t_editor *ed, t_sdlcontext sdl, t_entity *entity)
