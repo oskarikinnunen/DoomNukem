@@ -82,9 +82,9 @@ int	editorloop(t_sdlcontext sdl)
 		//print_vector3(ed.forward);
 		//ed.forward = (t_vector3){396.613922, 449.034363, 131.229309};
 		update_render_editor(&ed.render, ed);
-	//	print_vector3(ed.render.lookdir);
-	//	ed.position = (t_vector3){-31.484835, 95.676018, 46.539551};
-	//	ed.render.lookdir = (t_vector3){0.367030, 0.919879, -0.138244};
+		//print_vector3(ed.render.lookdir);
+		//ed.position = (t_vector3){349.090668, 351.391449, 76.356644};
+		//ed.render.lookdir = (t_vector3){0.451299, -0.254961, -0.855175};
 		screen_blank(sdl);
 		render_start(&ed.render);
 		update_world3d(sdl, &ed.world, &ed.render);

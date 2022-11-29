@@ -72,7 +72,7 @@ float	line_intersect_plane(t_vector3 plane_p, t_vector3 plane_n, t_vector3 start
 	ad = vector3_dot(start, plane_n);
 	bd = vector3_dot(end, plane_n);
 
-//	printf("plane_d %f, ad %f, bd %f, ad %f\n", plane_d, ad, bd, ad);
+	//printf("plane_d %f, ad %f, bd %f, ad %f\n", plane_d, ad, bd, ad);
 	if (bd - ad == 0.0f)
 		return(1.0f);
 	return(-plane_d - ad) / (bd - ad);

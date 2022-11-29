@@ -1,22 +1,24 @@
 build/SDL_syshaptic.lo: \
-  /Users/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/haptic/darwin/SDL_syshaptic.c \
-  /Users/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/haptic/darwin/../../SDL_internal.h \
-  /Users/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/haptic/darwin/../../dynapi/SDL_dynapi.h \
-  /Users/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/haptic/darwin/../../dynapi/SDL_dynapi_overrides.h \
-  include/SDL_config.h \
-  /Users/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/SDL_platform.h \
-  /Users/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/begin_code.h \
-  /Users/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/close_code.h \
-  /Users/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/SDL_assert.h \
-  /Users/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/SDL_config.h \
-  /Users/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/SDL_stdinc.h \
-  /Users/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/SDL_haptic.h \
-  /Users/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/SDL_error.h \
-  /Users/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/SDL_joystick.h \
-  /Users/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/haptic/darwin/../SDL_syshaptic.h \
-  /Users/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/haptic/darwin/../../joystick/SDL_sysjoystick.h \
-  /Users/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/haptic/darwin/../../joystick/../SDL_internal.h \
-  /Users/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/haptic/darwin/../../joystick/SDL_joystick_c.h \
-  /Users/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/haptic/darwin/../../joystick/darwin/SDL_sysjoystick_c.h \
-  /Users/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/haptic/darwin/../../joystick/darwin/../../SDL_internal.h \
-  /Users/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/haptic/darwin/SDL_syshaptic_c.h
+ /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/haptic/linux/SDL_syshaptic.c \
+ /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/haptic/linux/../../SDL_internal.h \
+ /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/haptic/linux/../../dynapi/SDL_dynapi.h \
+ /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/haptic/linux/../../dynapi/SDL_dynapi_overrides.h \
+ include/SDL_config.h \
+ /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/SDL_platform.h \
+ /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/begin_code.h \
+ /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/close_code.h \
+ /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/SDL_assert.h \
+ /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/SDL_config.h \
+ /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/SDL_haptic.h \
+ /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/SDL_stdinc.h \
+ /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/SDL_error.h \
+ /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/SDL_joystick.h \
+ /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/haptic/linux/../SDL_syshaptic.h \
+ /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/haptic/linux/../../SDL_internal.h \
+ /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/include/SDL_joystick.h \
+ /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/haptic/linux/../../joystick/SDL_sysjoystick.h \
+ /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/haptic/linux/../../joystick/../SDL_internal.h \
+ /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/haptic/linux/../../joystick/SDL_joystick_c.h \
+ /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/haptic/linux/../../joystick/linux/SDL_sysjoystick_c.h \
+ /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/haptic/linux/../../core/linux/SDL_udev.h \
+ /home/vlaine/vscode/DoomNukem-vlaine/SDL-release-2.0.8/src/haptic/linux/../../core/linux/../../SDL_internal.h

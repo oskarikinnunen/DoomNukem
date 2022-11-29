@@ -85,7 +85,7 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 	update_occlusion(sdl, render);
 	l = render->world->roomlist;
 	render->wireframe = true;
-	render->gizmocolor = CLR_RED;
+	render->gizmocolor = CLR_BLUE;
 	while (l != NULL)
 	{
 		render_room(sdl, render, *(t_room *)l->content);

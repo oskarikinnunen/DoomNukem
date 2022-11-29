@@ -485,7 +485,7 @@ void update_occlusion_culling(t_sdlcontext sdl, t_render *render, t_entity *enti
 	else
 		occlusion->is_occluded = true;
 	i = 0;
-	while (i < occlusion->occluder_count && 0) //debug
+	while (i < occlusion->occluder_count && 1) //debug
 	{
 		t_vector3 debug, v, n;
 		v = occlusion->occluder[i].vector[0];
@@ -534,6 +534,7 @@ static int	is_culled(t_entity *occlude, uint32_t input_count, t_triangle **input
 	occlusion = &occlude->occlusion;
 	output_count = 0;
 	i = 0;
+	printf("inputcount %d\n", input_count);
 	while (i < occlusion->occluder_count)
 	{
 		j = 0;
@@ -556,6 +557,7 @@ static int	is_culled(t_entity *occlude, uint32_t input_count, t_triangle **input
 		}
 		i++;
 	}
+	printf("output_count %d\n", output_count);
 	return(output_count);
 }
 
@@ -649,6 +651,17 @@ bool is_valid_occlude_check(int32_t id, t_entity *occlude, t_render *render, t_s
 	return(false);
 }
 
+struct s_cull_mask
+{
+	t_vector2	min;
+	t_vector2	max;
+	uint32_t	matrix;
+};
+
+/*check if occl overlaps with mask,
+if it does check all the points it overlaps
+
+*/
 bool is_entity_occlusion_culled(t_sdlcontext sdl, t_render *render, t_entity *cull)
 {
 	t_occlusion *occlusion;
