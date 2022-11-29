@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/14 20:46:01 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/21 17:44:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <stdbool.h>
 # include "shapes.h"
 # include "physics.h"
+# include "animation.h" //PLAYER USES THIS, MOVE PLAYER TO SEPARATE HEADER
 # include "inputhelp.h"
 
 # define TILESIZE 32 //EDITOR tilesize
@@ -42,6 +43,7 @@
 
 # define CLR_PRPL 14231500
 # define CLR_TURQ 5505010
+# define CLR_BLUE 255
 # define CLR_GRAY 4868682
 # define CLR_DARKGRAY 0x292929
 # define CLR_GREEN 3002977
@@ -59,7 +61,7 @@
 # define COLLISION_ON //Comment/uncomment to toggle experimental collision
 
 # define EDITOR_MOVESPEED 0.2f
-# define MOVESPEED 0.5f
+# define MOVESPEED 0.2f
 # define MAXMOVEMENTSPEED 0.08f
 # define ROTATESPEED 0.002f
 # define MOUSESPEED 0.0002f
@@ -163,6 +165,8 @@ typedef struct s_player
 	t_vector3	position; //TODO: might be changed to int[2], don't know yet
 	t_vector2	angle;
 	t_vector3	lookdir;
+	t_anim		jump;
+	float		height;
 }	t_player;
 
 typedef enum	e_cam_mode
@@ -206,10 +210,22 @@ typedef struct s_bound
 	float	max;
 }	t_bound;
 
+
+/*typedef struct s_animframe
+{
+	struct deltamove = 
+	{
+		int			index;
+		t_vector3	delta;
+	};
+	int deltaverticecount;
+}	t_animframe;*/
+
 typedef struct s_entity
 {
 	t_transform		transform;
 	uint32_t		object_index;
+	char			object_name[64];
 	t_bound			z_bound;
 	struct s_object	*obj;
 }	t_entity;
@@ -223,7 +239,6 @@ typedef struct s_item
 {
 	t_entity	entity;
 }	t_item;
-
 
 typedef struct s_render
 {
@@ -249,7 +264,9 @@ typedef struct s_world
 {
 	t_physics	physics;
 	t_list		*entitylist;
+	t_list		*meshlist;
 	t_list		*wall_list;
+	t_list		*roomlist;
 	t_entity	skybox;
 }	t_world;
 
@@ -289,29 +306,25 @@ typedef struct s_game
 	t_cam_mode		cam_mode; //Unused but will be reimplemented?
 } t_game;
 
-typedef struct s_zbuff
-{
-	int	w;
-	int	*zbuff;
-}	t_zbuff;
-
 /* EDITOR.C */
 int		editorloop(t_sdlcontext sdl);
 
 /* EDITOR_EVENTS.C */
 t_gamereturn	editor_events(t_editor *ed);
 bool			iskey(SDL_Event e, int keycode);
-
+void			force_mouseunlock(t_editor *ed);
 void			move_editor(t_editor *ed);
 
 /* EDITOR_MOUSE.C */
-t_point	mousetoworldspace(t_editor *ed);
-t_point	mousetogridspace(t_editor *ed);
-t_point	screentogridspace(t_point point);
-void	mouse_event(SDL_Event e, t_editor *ed);
+t_point			mousetoworldspace(t_editor *ed);
+t_point			mousetogridspace(t_editor *ed);
+t_point			screentogridspace(t_point point);
+t_quaternion	transformed_vector3(t_transform transform, t_vector3 v);
+void			mouse_event(SDL_Event e, t_editor *ed);
 
 /* SPACECONVERSIONS.C */
-t_point	worldtoeditorspace(t_editor *ed, t_vector2 worldcrd);
+t_point	worldto_editorspace(t_editor *ed, t_vector2 worldcrd);
+t_point vector3_to_screenspace(t_render r, t_vector3 vec, t_sdlcontext sdl);
 
 /* EDITOR_SAVELINE.C */
 void	saveline(t_editor *ed);
@@ -356,10 +369,12 @@ int		controller_events(SDL_Event e, t_game *game);
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
 void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle, t_img img);
+void	z_fill_tri_solid(t_sdlcontext sdl, t_triangle triangle);
 void	render_entity(t_sdlcontext sdl, t_render render, t_entity *entity);
 void	render_object(t_sdlcontext sdl, t_render render, struct s_object *obj);
 void	render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size);
 void	render_ray(t_sdlcontext sdl, t_render render, t_vector3 from, t_vector3 to);
+int		triangle_clipagainstplane(t_vector3 plane_p, t_vector3 plane_n, t_triangle *in_tri, t_triangle out_tri[2]);
 void	draw_screen_to_worldspace_ray(t_sdlcontext sdl, t_render render, t_point origin, t_vector2 angle);
 
 /* PHYSICS.C */
@@ -406,6 +421,7 @@ void	draw_text(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundari
 t_rectangle	draw_text_boxed(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundaries);
 
 /* LIST_HELPER.C */
+t_list	*ptr_to_list(void	*src, uint32_t len, size_t size);
 void	list_push(t_list **head, void *content, size_t content_size);
 void	*list_findlast(t_list *head);
 void	*list_to_ptr(t_list *source, uint32_t *set_length);

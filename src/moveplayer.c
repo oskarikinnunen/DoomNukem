@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/11 14:56:55 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/21 17:46:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static t_vector3	player_movementvector(int32_t keystate, t_vector3 lookdir)
 
 	movement = vector3_zero();
 	//forward.z = 0;
-	forward = vector3_mul_vector3(lookdir, (t_vector3){1.0f, 1.0f, 0.0f});
+	forward = vector3_mul_vector3(player->lookdir, (t_vector3){1.0f, 1.0f, 0.0f});
 	forward = vector3_normalise(forward);
 	if ((keystate >> KEYS_UPMASK) & 1) 
 		movement = vector3_add(movement, forward);
@@ -80,9 +80,21 @@ static t_vector3	player_movementvector(int32_t keystate, t_vector3 lookdir)
 		movement = vector3_add(movement,
 			vector3_crossproduct(forward, vector3_up()));
 	speed = 1.0f + (float)((keystate >> KEYS_SHIFTMASK) & 1);
-	movement.z += 1.5f * ((keystate >> KEYS_SPACEMASK) & 1);
-	movement.z -= 1.5f * ((keystate >> KEYS_CTRLMASK) & 1);
-	movement = vector3_mul(movement, speed);
+	if ((keystate >> KEYS_CTRLMASK) & 1)
+	{
+		speed *= 0.5f;
+		player->height = 30.0f;
+	}
+	else
+		player->height = 60.0f;
+		
+	if (player->jump.active)
+		movement.z += cos(player->jump.lerp * 4.5f) * 1.8f;
+	else if (player->position.z > player->height && movement.z >= 0.0f)
+		movement.z -= 4.0f;
+	else if ((keystate >> KEYS_SPACEMASK) & 1 && !player->jump.active)
+		start_anim(&player->jump, anim_forwards);
+	movement = vector3_mul_vector3(movement, (t_vector3){speed, speed, 1.0f});
 	movement = vector3_clamp_magnitude(movement, speed);
 	return (movement);
 }
@@ -131,4 +143,5 @@ void	moveplayer(t_game *game)
 	move_vector = player_movementvector(game->input, game->player.lookdir);
 	move_vector = vector3_mul(move_vector, game->clock.delta * MOVESPEED);
 	game->player.position = vector3_add(game->player.position, move_vector);
+	game->player.position.z = ft_clampf(game->player.position.z, game->player.height, 1000.0f);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_instant_button.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 18:30:57 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/14 16:41:23 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/21 17:47:21 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

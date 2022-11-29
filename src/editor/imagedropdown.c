@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   imagedropdown.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/30 16:21:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/30 17:33:00 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/09 14:11:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

@@ -1,5 +1,5 @@
-resolution_width = 1080
-resolution_height = 720
+resolution_width = 1024
+resolution_height = 640
 images =
 {
 	"entitytool.png",
@@ -37,5 +37,6 @@ objects =
 {
 	"car2.obj",
 	"primitive_cube_textured.obj",
-	"cube.obj"
+	"cube.obj",
+	"dummy.obj"
 }

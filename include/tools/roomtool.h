@@ -1,39 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_min_max.c                                       :+:      :+:    :+:   */
+/*   roomtool.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/23 02:41:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/11 09:07:07 by okinnune         ###   ########.fr       */
+/*   Created: 2022/11/11 11:42:04 by okinnune          #+#    #+#             */
+/*   Updated: 2022/11/19 16:26:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-float	ft_minf(float f1, float f2)
-{
-	if (f1 < f2)
-		return (f1);
-	return (f2);
-}
+#ifndef ROOMTOOL_H
+# define ROOMTOOL_H
 
-float	ft_maxf(float f1, float f2)
-{
-	if (f1 > f2)
-		return (f1);
-	return (f2);
-}
+#include "walltool.h"
 
-int	ft_min(int i1, int i2)
+//defines the current state of roomtool
+typedef enum e_roomtoolmode
 {
-	if (i1 < i2)
-		return (i1);
-	return (i2);
-}
+	/* rtm_select ?*/
+	rtm_create,
+	rtm_modify
+} t_roomtoolmode;
 
-int	ft_max(int i1, int i2)
+typedef struct s_roomtooldata
 {
-	if (i1 > i2)
-		return (i1);
-	return (i2);
-}
+	t_roomtoolmode	rtm;
+	t_room			*room;
+	t_wall			wall;
+	t_wall			*ed_wall;
+	t_wall			doorwalls[3];
+	t_floorcalc		fc;
+}	t_roomtooldata;
+
+# endif

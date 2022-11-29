@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 12:41:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 05:37:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/19 18:50:48 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,13 @@
 # define OBJECTS_H
 
 #include <inttypes.h>
+#include "doomnukem.h"
 #include "vectors.h"
 
 typedef struct s_material
 {
 	char			texturename[256];
+	char			name[256];
 	uint32_t		kd;
 	struct s_img	*img;
 }	t_material;
@@ -27,6 +29,7 @@ typedef struct s_face //Indexer for constructing faces (triangles)
 {
 	uint32_t	v_indices[3];
 	uint32_t	uv_indices[3];
+	t_material	*material;
 }	t_face;
 
 typedef struct s_object
@@ -42,6 +45,15 @@ typedef struct s_object
 	uint32_t			face_count;
 }	t_object;
 
+typedef struct s_meshtri
+{
+	t_entity	entity;
+	t_face		face;
+	t_vector3	v[3];
+	t_vector2	uv[3];
+	char		texname[256];
+}	t_meshtri;
+
 typedef struct s_line
 {
 	t_vector2	start;
@@ -50,23 +62,40 @@ typedef struct s_line
 
 typedef struct s_wall
 {
-	t_object	object;
+	t_entity	entity;
 	t_line		line;
 	uint32_t	height;
-	uint8_t		roomindex;
+	bool		disabled; //TODO: implement
 	char		texname[256];
 }	t_wall;
 
+typedef struct s_room
+{
+	char		name[32];
+	t_wall		*walls;
+	t_meshtri	*floors;
+	t_meshtri	*ceilings;
+	uint32_t	wallcount;
+	uint32_t	floorcount;
+	uint32_t	ceilingcount;
+}	t_room;
+
 struct s_world;
+struct s_sdlcontext;
 
 t_object		objparse(char *filename);
 struct s_list	*get_uv_list(int fd);
 struct s_list	*get_vertex_list(int fd);
-struct s_list	*get_face_list(int fd);
+t_list			*get_face_list(int fd, t_list *materials);
 void			objects_init(struct s_sdlcontext *sdl);
+void			init_roomwalls(t_room *room, t_sdlcontext *sdl);
 t_object		*get_object_by_name(struct s_sdlcontext sdl, char *name);
-t_object		*object_plane();
+t_object		*object_plane(struct s_sdlcontext *sdl);
+t_object		*object_tri(struct s_sdlcontext *sdl);
 void			applywallmesh(t_wall *wall);
-void			walls_init(struct s_world *world);
+void			applytrimesh(t_meshtri tri, t_object *obj);
+void			init_room_meshes(t_room *room, t_sdlcontext *sdl);
+bool			object_lookedat(t_editor *ed, t_sdlcontext sdl, t_object *obj);
+void			walls_init(struct s_world *world, struct s_sdlcontext *sdl);
 
 #endif

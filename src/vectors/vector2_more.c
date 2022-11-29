@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/07 01:54:00 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/07 01:55:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/19 18:33:48 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,4 +24,15 @@ t_vector2	vector2_snap(t_vector2 vec, int interval)
 	result.x += (remains.x > interval / 2) * interval;
 	result.y += (remains.y > interval / 2) * interval;
 	return (result);
+}
+
+float vector2_anglebetween(t_vector2 first, t_vector2 second)
+{
+	t_vector2 temp = vector2_sub(second, first);
+	return (atan2f(temp.y, temp.x));
+}
+
+t_vector2 vector2_abs(t_vector2 vec)
+{
+	return ((t_vector2){ft_absf(vec.x), ft_absf(vec.y)});
 }

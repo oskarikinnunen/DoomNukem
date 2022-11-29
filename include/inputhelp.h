@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   inputhelp.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 09:30:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/14 21:17:41 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/21 17:45:12 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # define KEYS_CTRLMASK 5
 # define KEYS_SHIFTMASK 6
 # define KEYS_MMASK 7
+# define KEYS_LALTMASK 8
 
 # define CONTROLLER_SENS 0.002f
 # define DEADZONE 0.1f

@@ -80,6 +80,7 @@ static int handleinput(t_game *game)
 	updatemouse(&game->mouse);
 	while (SDL_PollEvent(&e))
 	{
+		
 		gr = key_events(e, game);
 		if (gr != game_continue)
 			return (gr);
@@ -95,6 +96,15 @@ static void update_render(t_render *render, t_player player)
 {
 	render->lookdir = player.lookdir;
 	render->position = player.position;
+	//render.
+}
+
+static void player_init(t_player *player)
+{
+	player->position = (t_vector3) {500.0f, 500.0f, 500.0f};
+	player->angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
+	player->jump.framerate = 30;
+	player->jump.lastframe = 15;
 }
 
 /*main game loop*/
@@ -107,6 +117,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	gr = game_continue;
 	render = init_render(sdl);
 	game.world = load_world("world1", sdl);
+	player_init(&game.player);
 	game.player.position = (t_vector3) {500.0f, 500.0f, 500.0f};
 	game.player.angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
 	initialize_controllers(&game);

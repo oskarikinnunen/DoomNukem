@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   obj_parse_faces.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 15:55:15 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 14:47:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/09 04:44:35 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,18 +40,39 @@ t_face	parse_face(char *line)
 	return (result);
 }
 
-t_list	*get_face_list(int fd)
+t_material	*find_materialmatch(char *matname, t_list *materials)
+{
+	t_material	*mat;
+	t_list		*l;
+
+	mat = NULL;
+	l = materials;
+	while (l != NULL)
+	{
+		mat = (t_material *)l->content;
+		if (ft_strcmp(matname, mat->name) == 0)
+			return (mat);
+		l = l->next;
+	}
+	return (NULL);
+}
+
+t_list	*get_face_list(int fd, t_list *materials)
 {
 	char		*line;
 	t_list		*list;
 	t_face		face;
+	t_material	*mat;
 
 	list = NULL;
 	while (ft_get_next_line(fd, &line))
 	{
+		if (ft_strnstr(line, "usemtl ", sizeof("usemtl")))
+			mat = find_materialmatch(line + sizeof("usemtl"), materials);
 		if (ft_strnstr(line, "f ", sizeof("f")))
 		{
 			face = parse_face(line + (sizeof("f")));
+			face.material = mat;
 			list_push(&list, &face, sizeof(t_face));
 		}
 		free(line);

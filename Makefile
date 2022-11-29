@@ -6,7 +6,7 @@
 #    By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/15 12:02:43 by kfum             ###   ########.fr        #
+#    Updated: 2022/11/23 15:12:56 by kfum             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -80,8 +80,17 @@ VEC_OBJ = $(patsubst %.c, $(OBJ_PATH)%.o, $(VECTORSRC))
 #Compilation stuff:
 INCLUDE= -ISDL_built/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
 CC= gcc
-LIBS= $(LIBFT) -lm
-CFLAGS= $(INCLUDE) -g -finline-functions -O2
+LIBS= $(LIBFT) -lm -framework OpenGL
+CFLAGS= $(INCLUDE) -g -finline-functions -O2#-march=native
+
+all: $(SDL2) $(LUA) $(LIBFT) $(OBJ_PATH) $(OBJ) $(VEC_OBJ)
+	$(CC) $(OBJ) $(VEC_OBJ) -o $(NAME) `SDL_built/bin/sdl2-config --cflags --libs` $(INCLUDE) $(LIBS) $(LUA)
+
+$(OBJ_PATH):
+	@mkdir -p $(OBJ_PATH)/editor/tools
+	@mkdir -p $(OBJ_PATH)/entity
+	@mkdir -p $(OBJ_PATH)/obj_parser
+	@mkdir -p $(OBJ_PATH)/vectors
 
 all: $(SDL2) $(LUA) $(LIBFT) $(OBJ_PATH) $(OBJ) $(VEC_OBJ)
 	$(CC) $(OBJ) $(VEC_OBJ) -o $(NAME) `SDL_built/bin/sdl2-config --cflags --libs` $(INCLUDE) $(LIBS) $(LUA)

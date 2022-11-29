@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/07 00:49:32 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/23 15:00:21 by kfum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,8 @@ char	*floatstr(float f)
 	return (final);
 }
 
-static t_img	black_image()
+/**/
+t_img	black_image()
 {
 	static t_img	black;
 
@@ -138,6 +139,7 @@ static t_img	black_image()
 	black.size = point_one();
 	return (black);
 }
+/**/
 
 static void	draw_transform_info(t_transform t, t_sdlcontext sdl)
 {
@@ -183,33 +185,45 @@ static void findbounds(t_entity *ent)
 	ent->z_bound = zbound;
 }
 
+t_entity *selected_entity(t_editor *ed, t_sdlcontext sdl)
+{
+	t_list		*l;
+	t_entity	*cur;
+	
+	l = ed->world.entitylist;
+	while (l != NULL)
+	{
+		cur = l->content;
+		if (entity_lookedat(ed, sdl, cur))
+			return (cur);
+		l = l->next;
+	}
+	return (NULL);
+}
+
 void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 {
 	t_entity	*ent;
 	t_entity	*collide;
 
 	ent = (t_entity *)ed->tool->tooldata;
+	if (instantbutton((t_rectangle) {52, 200, 20, 20}, &ed->mouse, sdl, "minus.png"))
+		ent->object_index--;
+	if (instantbutton((t_rectangle) {74, 200, 20, 20}, &ed->mouse, sdl, "plus.png"))
+		ent->object_index++;
 	ent->object_index = ft_clamp(ent->object_index, 0, sdl.objectcount - 1);
 	if (ent->obj != &sdl.objects[ent->object_index])
 	{
 		ent->obj = &sdl.objects[ent->object_index];
 		findbounds(ent);
 	}
-	if (ent->obj == NULL)
-		ent->obj = object_plane();
 	/* SPLIT HERE */
 	ed->render.wireframe = true;
 	ed->render.gizmocolor = CLR_GREEN;
-	collide = entity_collides(ed->world.physics, *ent);
-	if (collide != NULL)
-	{
-		ed->render.gizmocolor = CLR_PRPL;
-		render_entity(sdl, ed->render, collide);
-	}
+	collide = selected_entity(ed, sdl);
 	render_entity(sdl, ed->render, ent);
 	
 	ed->render.wireframe = false;
-	draw_colliders(ed->world.physics, sdl, ed->render);
 	/* END SPLIT */
 	set_font_size(&sdl, 0);
 	draw_transform_info(ent->transform, sdl);
@@ -220,6 +234,25 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 		ent->transform.scale = vector3_one();
 	if (instantbutton((t_rectangle) {74, 120, 20, 20}, &ed->mouse, sdl, "plus.png"))
 		ent->transform.scale = vector3_add_xyz(ent->transform.scale, 0.25f);
+	if ((ed->keystate >> KEYS_SHIFTMASK) & 1)
+		ent->transform.rotation.y += ed->mouse.scroll_delta * ft_degtorad(15.0f);
+	else if ((ed->keystate >> KEYS_LALTMASK) & 1)
+		ent->transform.rotation.z += ed->mouse.scroll_delta * ft_degtorad(15.0f);
+	else
+		ent->transform.rotation.x += ed->mouse.scroll_delta * ft_degtorad(15.0f);
+	if (mouse_clicked(ed->mouse, MOUSE_MDL))
+		ent->transform.rotation = vector3_zero();
+	if (collide != NULL)
+	{
+		ed->render.gizmocolor = CLR_PRPL;
+		ed->render.wireframe = true;
+		render_entity(sdl, ed->render, collide);
+		ed->render.wireframe = false;
+		if (mouse_clicked(ed->mouse, MOUSE_RIGHT))
+			list_remove(&ed->world.entitylist, collide, sizeof(t_entity));
+	}
+	if (mouse_clicked(ed->mouse, MOUSE_LEFT) && collide == NULL) //and selected is null, move to drawupdate
+		list_push(&ed->world.entitylist, ent, sizeof(t_entity));
 }
 
 void	entity_tool_update(t_editor *ed)
@@ -232,27 +265,6 @@ void	entity_tool_update(t_editor *ed)
 	dir = vector3_sub((t_vector3){ed->position.x, ed->position.y, 20.0f}, ent->transform.location);
 	ent->transform.location = raycast(ed);//vector3_movetowards(ent->transform.location, dir, ed->clock.delta * 1.0f);
 	ent->transform.location.z -= ent->z_bound.min * ent->transform.scale.z;
-	if ((ed->keystate >> KEYS_SHIFTMASK) & 1)
-		ent->object_index += ed->mouse.scroll_delta;
-
-	if (mouse_clicked(ed->mouse, MOUSE_LEFT))
-	{
-		t_entity *collision_ent = entity_collides(ed->world.physics, *ent);
-		if (collision_ent == NULL)
-		{
-			list_push(&ed->world.entitylist, ent, sizeof(t_entity));
-			calculate_colliders_for_entities(&ed->world);
-		}
-	}
-	if (mouse_clicked(ed->mouse, MOUSE_RIGHT))
-	{
-		t_entity *collision_ent = entity_collides(ed->world.physics, *ent);
-		if (collision_ent != NULL)
-		{
-			list_remove(&ed->world.entitylist, collision_ent, sizeof(t_entity));
-			calculate_colliders_for_entities(&ed->world);
-		}
-	}
 }
 
 t_tool	*get_entity_tool()
