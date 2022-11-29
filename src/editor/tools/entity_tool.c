@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/25 16:02:14 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/29 13:01:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ static void	draw_transform_info(t_transform t, t_sdlcontext sdl)
 {
 	draw_image(sdl, (t_point){17, 100}, black_image(), (t_point){180, 58});
 	draw_text_boxed(&sdl, "POS  :", (t_point){20, 143}, (t_point){sdl.window_w, sdl.window_h});
-	draw_text_boxed(&sdl, vector_string(t.location), (t_point){65, 143}, (t_point){sdl.window_w, sdl.window_h});
+	draw_text_boxed(&sdl, vector_string(t.position), (t_point){65, 143}, (t_point){sdl.window_w, sdl.window_h});
 	draw_text_boxed(&sdl, "SCALE:", (t_point){20, 105}, (t_point){sdl.window_w, sdl.window_h});
 	draw_text_boxed(&sdl, vector_string(t.scale), (t_point){65, 105}, (t_point){sdl.window_w, sdl.window_h});
 }
@@ -205,8 +205,8 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	t_entity	*collide;
 
 	ent = (t_entity *)ed->tool->tooldata;
-	ent->transform.location = raycast(ed);//vector3_movetowards(ent->transform.location, dir, ed->clock.delta * 1.0f);
-	ent->transform.location.z -= ent->z_bound.min * ent->transform.scale.z;
+	ent->transform.position = raycast(ed);//vector3_movetowards(ent->transform.location, dir, ed->clock.delta * 1.0f);
+	ent->transform.position.z -= ent->z_bound.min * ent->transform.scale.z;
 	ent->object_index = object_selector(ed, sdl, ent->object_index);
 	if (ent->obj != &sdl.objects[ent->object_index])
 	{

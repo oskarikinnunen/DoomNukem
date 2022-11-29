@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 17:29:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/29 13:01:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -569,7 +569,7 @@ void	makefloor_room(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 		mtri->uv[1] = vector2_div(mtri->uv[1], 50.0f);
 		mtri->uv[2] = vector2_div(mtri->uv[2], 50.0f);
 		applytrimesh(*mtri, mtri->entity.obj);
-		mtri->entity.transform.location = vector3_zero();
+		mtri->entity.transform.position = vector3_zero();
 		mtri->entity.transform.scale = vector3_one();
 		i++;
 	}

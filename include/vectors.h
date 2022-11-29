@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/23 17:00:49 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/29 12:07:19 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,6 +283,9 @@ t_quaternion quaternion_mul_matrix(t_mat4x4 m, t_quaternion i);
 
 //returns vector3 lookdirection, from vector2 angle
 t_vector3	lookdirection(t_vector2 angle);
+
+//returns vector3 lookdirection, from vector3 angle (only uses x and y for now)
+t_vector3	lookdirection_3(t_vector3 angle);
 
 //returns vector3 'i' multiplied by matrix 'm'
 t_vector3 vector3_mul_matrix(t_mat4x4 m, t_vector3 i);

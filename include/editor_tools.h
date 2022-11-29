@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/25 16:53:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/29 13:14:27 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ struct	s_editor;
 
 void				point_tool_delete(struct s_editor *ed, t_point crd);
 //TODO: rename and write documentation
-void				draw_buttons(t_editor *ed, t_sdlcontext *sdl); //TODO: move somewhere else so game can use it aswell?
+void				update_editor_buttons(t_editor *ed, t_sdlcontext *sdl); //TODO: move somewhere else so game can use it aswell?
 bool				instantbutton(struct s_rectangle rect, struct s_mouse *m, struct s_sdlcontext sdl, char *imgname);
 int					object_selector(t_editor *ed, struct s_sdlcontext sdl, int	original);
 // Combines draw_text_boxed and instantbutton to make a button out of the text
@@ -50,6 +50,8 @@ t_tool				*get_entity_tool(void);
 t_tool				*get_npc_tool(void);
 t_vector3			raycast(t_editor *ed);
 bool				entity_lookedat(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
+bool				triangle_lookedat(t_render r, t_triangle tri, t_sdlcontext sdl);
+int32_t				entity_lookedat_triangle_index(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
 t_entity			*selected_entity(t_editor *ed, t_sdlcontext sdl);
 
 #endif

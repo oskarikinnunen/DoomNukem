@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/25 15:09:06 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/29 13:01:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	render_start(t_render *render)
 void update_render(t_render *render, t_player *player)
 {
 	render->lookdir = player->lookdir;
-	render->position = player->transform.location;
+	render->position = player->transform.position;
 }
 
 void	free_render(t_render render)

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:49:59 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/28 19:41:53 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/29 12:18:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,7 +201,6 @@ void	save_preset(t_editor *ed, t_sdlcontext sdl)
 	while (l != NULL)
 	{
 		gun = l->content;
-		printf("cmp '%s' '%s' \n", gun->preset_name, ed->player.gun->preset_name);
 		if (ft_strcmp(gun->preset_name, ed->player.gun->preset_name) == 0)
 		{
 			gun = ed->player.gun;

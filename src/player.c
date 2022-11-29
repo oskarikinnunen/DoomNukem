@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 14:31:10 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/28 18:22:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/29 13:01:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,13 @@ t_gun	*debug_gun(t_player *player, t_sdlcontext *sdl)
 	gun->view_anim.loop = false;
 	gun->view_anim.lastframe = 4;
 	ft_strcpy(gun->preset_name, "empty_preset");
-	gun->entity.transform.location = gun->holsterpos;
+	gun->entity.transform.position = gun->holsterpos;
 	return (gun);
 }
 
 void	player_init(t_player *player, t_sdlcontext *sdl)
 {
-	player->transform.location = (t_vector3) {500.0f, 500.0f, 500.0f};
+	player->transform.position = (t_vector3) {500.0f, 500.0f, 500.0f};
 	player->transform.rotation = (t_vector3){-RAD90, -RAD90 * 0.99f, 0.0f}; //TODO: implement transform for player
 	player->transform.scale = vector3_one();
 	player->transform.rotation = (t_vector3){-RAD90, -RAD90 * 0.99f, 0.0f};

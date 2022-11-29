@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/24 18:37:49 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/29 14:05:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ static void draw_triangles(t_sdlcontext sdl, t_render render)
 			drawline(sdl, (t_point){render.draw_triangles[index].p[2].v.x, render.draw_triangles[index].p[2].v.y}, (t_point){render.draw_triangles[index].p[1].v.x, render.draw_triangles[index].p[1].v.y}, render.gizmocolor);
 			drawline(sdl, (t_point){render.draw_triangles[index].p[0].v.x, render.draw_triangles[index].p[0].v.y}, (t_point){render.draw_triangles[index].p[2].v.x, render.draw_triangles[index].p[2].v.y}, render.gizmocolor);
 		}
-		if (render.img == NULL)
+		if (!render.wireframe && render.img == NULL)
 		{
 			t_img	img;
 
@@ -549,7 +549,7 @@ void	draw_screen_to_worldspace_ray(t_sdlcontext sdl, t_render render, t_point or
 	while (curstep.z > 0.0f && debug_iter < 400)
 	{
 		curstep = vector3_movetowards(curstep, dir, 0.01f);
-		ent.transform.location = curstep;
+		ent.transform.position = curstep;
 		ent.transform.scale = vector3_one();
 		//render_gizmo(sdl, render, &ent);
 		debug_iter++;

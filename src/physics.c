@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 13:52:50 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/18 18:33:40 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/29 13:01:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ t_entity *entity_collides(t_physics p, t_entity ent)
 	while (v_i < ent.obj->vertice_count)
 	{
 		vertex_ws = vector3_mul_vector3(ent.obj->vertices[v_i], ent.transform.scale);
-		vertex_ws = vector3_add(vertex_ws, ent.transform.location);
+		vertex_ws = vector3_add(vertex_ws, ent.transform.position);
 		vertex_ws = vector3_mul(vertex_ws, 0.1f);
 		vertex_ws.x = ft_clampf(vertex_ws.x, 0.0f, 99.0f);
 		vertex_ws.y = ft_clampf(vertex_ws.y, 0.0f, 99.0f);
@@ -107,7 +107,7 @@ void calculate_colliders(t_physics *p)
 		while (v_i < ent.obj->vertice_count)
 		{
 			vertex_ws = vector3_mul_vector3(ent.obj->vertices[v_i], ent.transform.scale);
-			vertex_ws = vector3_add(vertex_ws, ent.transform.location);
+			vertex_ws = vector3_add(vertex_ws, ent.transform.position);
 			vertex_ws = vector3_mul(vertex_ws, 0.1f);
 			if (vertex_ws.z > 0.0f)
 				p->cube[(int)vertex_ws.x][(int)vertex_ws.y][(int)vertex_ws.z] = e_i + 1;

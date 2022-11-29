@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/19 18:52:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/29 13:01:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	init_roomwalls(t_room *room, t_sdlcontext *sdl)
 	i = 0;
 	while (i < room->wallcount)
 	{
-		room->walls[i].entity.transform.location = vector3_zero();
+		room->walls[i].entity.transform.position = vector3_zero();
 		if (!room->walls[i].disabled)
 			room->walls[i].entity.transform.scale = vector3_one();
 		else

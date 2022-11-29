@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/28 17:47:35 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/29 13:28:13 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,7 @@ void	updateguntransform(t_input *input, t_clock *clock, t_player *player)
 		lerp -= 0.02f * clock->delta;
 	lerp = ft_clampf(lerp, 0.0f, 1.0f);
 	neutralpos = vector3_lerp(gun->holsterpos, gun->aimpos, lerp);
-	gun->entity.transform.location = neutralpos;
+	gun->entity.transform.position = neutralpos;
 	//neutralpos = gun->entity.transform.location;
 	if (input->shoot && gun->readytoshoot)
 	{
@@ -184,12 +184,12 @@ void	updateguntransform(t_input *input, t_clock *clock, t_player *player)
 	update_anim(&gun->shoot_anim, clock->delta);
 	update_anim(&gun->view_anim, clock->delta);
 	//recoil.y
-	gun->entity.transform.location = vector3_add(gun->entity.transform.location, vector3_mul(vector3_up(), gun->shoot_anim.lerp * gun->recoiljump.y));
+	gun->entity.transform.position = vector3_add(gun->entity.transform.position, vector3_mul(vector3_up(), gun->shoot_anim.lerp * gun->recoiljump.y));
 	//gun->entity.transform.location = vector3_movetowards
 	//gun->entity.transform.location.z = fmovetowards(neutralpos.z)
 	//gun->entity.transform.location = vector3_add(gun->entity.transform.location, vector3_mul((t_vector3){.x = 1.0f}, gun->shoot_anim.lerp * -0.25f));
 	//bobbing:
-	gun->entity.transform.location.z += vector2_magnitude(input->move) * cosf((clock->prev_time * 0.007f)) * 0.2f;
+	gun->entity.transform.position.z += vector2_magnitude(input->move) * cosf((clock->prev_time * 0.007f)) * 0.2f;
 	gun->entity.transform.rotation.z += vector2_magnitude(input->move) * cosf((clock->prev_time * 0.007f)) * ft_degtorad(0.15f);
 	//recoilrecovery
 	gun->entity.transform.rotation.y = fmovetowards(gun->entity.transform.rotation.y, ft_degtorad(input->move.y * 1.15f), gun->anglerecovery * clock->delta);
@@ -208,7 +208,7 @@ void	moveplayer(t_player *player, t_input *input, t_clock clock)
 {
 	t_vector3	move_vector;
 	t_vector3	potential_pos; //Unused right now, will be used when collision is reimplemented
-	float	angle;
+	float		angle;
 
 	updateguntransform(input, &clock, player);
 	move_vector = vector3_zero();
@@ -219,6 +219,6 @@ void	moveplayer(t_player *player, t_input *input, t_clock clock)
 	move_vector = player_movementvector(*input, *player);
 	move_vector = vector3_mul(move_vector, clock.delta * MOVESPEED);
 	player->speed = move_vector;
-	player->transform.location = vector3_add(player->transform.location, move_vector);
-	player->transform.location.z = ft_clampf(player->transform.location.z, player->height, 1000.0f);
+	player->transform.position = vector3_add(player->transform.position, move_vector);
+	player->transform.position.z = ft_clampf(player->transform.position.z, player->height, 1000.0f);
 }

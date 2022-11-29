@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/28 20:04:41 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/29 13:01:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,11 @@ void	update_npcs(t_world *world)
 			//if (world.npcpool->entity.animation.active)
 			t_npc *cur;
 			cur = &world->npcpool[i];
-			t_vector3 dir = vector3_sub(cur->destination, cur->entity.transform.location);
-			cur->entity.transform.location = vector3_movetowards(cur->entity.transform.location, dir, world->clock.delta * MOVESPEED * 0.25f);
-			cur->entity.transform.rotation.x = vector2_anglebetween((t_vector2){cur->entity.transform.location.x, cur->entity.transform.location.y},
+			t_vector3 dir = vector3_sub(cur->destination, cur->entity.transform.position);
+			cur->entity.transform.position = vector3_movetowards(cur->entity.transform.position, dir, world->clock.delta * MOVESPEED * 0.25f);
+			cur->entity.transform.rotation.x = vector2_anglebetween((t_vector2){cur->entity.transform.position.x, cur->entity.transform.position.y},
 														(t_vector2){cur->destination.x, cur->destination.y});
-			if (vector3_cmp(cur->destination, cur->entity.transform.location))
+			if (vector3_cmp(cur->destination, cur->entity.transform.position))
 			{
 				if (cur->destination.x == 200.0f)
 					cur->destination = (t_vector3) {500.0f, 500.0f, 0.0f};
@@ -98,8 +98,8 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 		if (world->npcpool[i].active)
 		{
 			t_npc npc = world->npcpool[i];
-			t_vector3 dir = vector3_sub(world->npcpool[i].entity.transform.location, world->npcpool[i].destination);
-			render_ray(sdl, *render, npc.entity.transform.location, npc.destination);
+			t_vector3 dir = vector3_sub(world->npcpool[i].entity.transform.position, world->npcpool[i].destination);
+			render_ray(sdl, *render, npc.entity.transform.position, npc.destination);
 			render_entity(sdl, *render, &world->npcpool[i].entity);
 		}
 			
@@ -194,7 +194,7 @@ void	spawn_npc(t_world *world, char *objectname, t_vector3 position, t_sdlcontex
 		{
 			world->npcpool[i].active = true;
 			world->npcpool[i].entity.obj = get_object_by_name(*sdl, objectname);
-			world->npcpool[i].entity.transform.location = position;
+			world->npcpool[i].entity.transform.position = position;
 			entity_start_anim(&world->npcpool[i].entity, "walk");
 			world->npcpool[i].entity.transform.scale = vector3_one();
 			return ;
@@ -285,7 +285,7 @@ t_world	load_world(char *filename, t_sdlcontext sdl)
 	world.skybox.obj->materials[0].img = get_image_by_name(sdl, "grid3.png");
 	//scale_skybox_uvs(world.skybox.obj);
 	world.skybox.transform.scale = vector3_mul(vector3_one(), 1000.0f);
-	world.skybox.transform.location = (t_vector3){500.0f, 500.0f, 499.0f};
+	world.skybox.transform.position = (t_vector3){500.0f, 500.0f, 499.0f};
 
 	spawn_npc(&world, "cyborg", (t_vector3){500.0f, 500.0f, 0.0f}, &sdl);
 	world.npcpool[0].destination = (t_vector3){200.0f, 200.0f, 0.0f};

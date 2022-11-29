@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/25 16:01:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/29 13:01:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -492,14 +492,14 @@ t_tool	*get_room_tool()
 		//ft_bzero(&dat->wall, sizeof(t_wall));
 		dat->wall.entity.obj = NULL;
 		dat->wall.entity.transform.scale = vector3_one();
-		dat->wall.entity.transform.location = vector3_zero();
+		dat->wall.entity.transform.position = vector3_zero();
 		dat->wall.height = 100.0f;
 		dat->doorwalls[0].entity.transform.scale = vector3_one();
-		dat->doorwalls[0].entity.transform.location = vector3_zero();
+		dat->doorwalls[0].entity.transform.position = vector3_zero();
 		dat->doorwalls[1].entity.transform.scale = vector3_one();
-		dat->doorwalls[1].entity.transform.location = vector3_zero();
+		dat->doorwalls[1].entity.transform.position = vector3_zero();
 		dat->doorwalls[2].entity.transform.scale = vector3_one();
-		dat->doorwalls[2].entity.transform.location = vector3_zero();
+		dat->doorwalls[2].entity.transform.position = vector3_zero();
 	}
 	ft_strcpy(tool.icon_name, "linetool.png");
 	return (&tool);

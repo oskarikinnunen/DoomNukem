@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 18:03:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/25 15:45:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/29 14:23:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,15 @@ static t_point v3topoint(t_vector3 vec)
 	return (t_point) {(int)vec.x, (int)vec.y};
 }
 
-static bool	tri_lookedat(t_render r, t_triangle tri, t_sdlcontext sdl)
+t_triangle	triangle_to_screenspace(t_render r, t_triangle tri, t_sdlcontext sdl)
+{
+	
+}
+
+bool	triangle_lookedat(t_render r, t_triangle tri, t_sdlcontext sdl)
 {
 	t_triangle	clipped[2];
 	int			clipamount;
-	t_triangle	final[3];
 	int			i;
 	int			p_i;
 
@@ -75,11 +79,33 @@ bool	entity_lookedat(t_editor *ed, t_sdlcontext sdl, t_entity *entity)
 		t.p[0] = transformed_vector3(entity->transform, t.p[0].v);
 		t.p[1] = transformed_vector3(entity->transform, t.p[1].v);
 		t.p[2] = transformed_vector3(entity->transform, t.p[2].v);
-		if (tri_lookedat(ed->render, t, sdl))
+		if (triangle_lookedat(ed->render, t, sdl))
 			return (true);
 		i++;
 	}
 	return (false);
+}
+
+int32_t	entity_lookedat_triangle_index(t_editor *ed, t_sdlcontext sdl, t_entity *entity)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (i < entity->obj->face_count)
+	{
+		t_triangle	t;
+		t.p[0] = vector3_to_quaternion(entity->obj->vertices[entity->obj->faces[i].v_indices[0] - 1]); //TODO:
+		t.p[1] = vector3_to_quaternion(entity->obj->vertices[entity->obj->faces[i].v_indices[1] - 1]);
+		t.p[2] = vector3_to_quaternion(entity->obj->vertices[entity->obj->faces[i].v_indices[2] - 1]);
+		t.p[0] = transformed_vector3(entity->transform, t.p[0].v);
+		t.p[1] = transformed_vector3(entity->transform, t.p[1].v);
+		t.p[2] = transformed_vector3(entity->transform, t.p[2].v);
+		if (triangle_lookedat(ed->render, t, sdl))
+			return (i);
+		i++;
+	}
+	return (-1);
 }
 
 bool	object_lookedat(t_editor *ed, t_sdlcontext sdl, t_object *obj)
@@ -94,7 +120,7 @@ bool	object_lookedat(t_editor *ed, t_sdlcontext sdl, t_object *obj)
 		t.p[0] = vector3_to_quaternion(obj->vertices[obj->faces[i].v_indices[0] - 1]);
 		t.p[1] = vector3_to_quaternion(obj->vertices[obj->faces[i].v_indices[1] - 1]);
 		t.p[2] = vector3_to_quaternion(obj->vertices[obj->faces[i].v_indices[2] - 1]);
-		if (tri_lookedat(ed->render, t, sdl))
+		if (triangle_lookedat(ed->render, t, sdl))
 			return (true);
 		i++;
 	}
@@ -108,7 +134,7 @@ t_vector3	raycast(t_editor *ed)
 	int			iter;
 	float		dist;
 
-	result = ed->player.transform.location;
+	result = ed->player.transform.position;
 	iter = 0;
 	dist = sqrt(powf(result.z, 2.0f) + powf(sin(ft_clampf(ed->player.transform.rotation.y, -RAD90, -0.1f)), 2.0f)); //not correct lol
 	rayforward = lookdirection((t_vector2){ed->player.transform.rotation.x, ed->player.transform.rotation.y});

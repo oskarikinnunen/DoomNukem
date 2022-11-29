@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 13:31:43 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/23 15:06:22 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/29 13:01:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,15 +40,15 @@ t_quaternion	transformed_vector3(t_transform transform, t_vector3 v)
 		forward = vector3_normalise(forward);
 		right = vector3_normalise(right);
 		up = vector3_normalise(up);
-		result.v = vector3_add(result.v, vector3_mul(forward, transform.location.y));
-		result.v = vector3_add(result.v, vector3_mul(right, transform.location.x));
-		result.v = vector3_add(result.v, vector3_mul(up, transform.location.z));
-		result.v = vector3_add(transform.parent->location, result.v);
+		result.v = vector3_add(result.v, vector3_mul(forward, transform.position.y));
+		result.v = vector3_add(result.v, vector3_mul(right, transform.position.x));
+		result.v = vector3_add(result.v, vector3_mul(up, transform.position.z));
+		result.v = vector3_add(transform.parent->position, result.v);
 		
 	}
 	else
 	{
-		result.v = vector3_add(transform.location, result.v);
+		result.v = vector3_add(transform.position, result.v);
 	}
 		
 	/*
