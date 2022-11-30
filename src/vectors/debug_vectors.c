@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 13:13:28 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/25 19:35:59 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/30 17:12:28 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,5 +95,5 @@ void print_render_statistics(t_render_statistics rs)
 {
 	if (DEBUG_ON == 0)
 		return;
-	printf("render count %d\ntriangle count %d\n", rs.render_count, rs.triangle_count);
+	printf("\nrender count %d\ntriangle count %d\nocclusion culled %d\noccluder amount %d\n", rs.render_count, rs.triangle_count, rs.occlusion_cull_amount, rs.occluder_count);
 }

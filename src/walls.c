@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/29 16:54:58 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/30 17:22:02 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,10 +89,10 @@ static void set_wall_obj_boundingbox(t_wall *wall)
 	//bzero(&obj->bounds.box.v[4], sizeof(t_vector3) * 4);
 	obj->bounds.origin = vector3_lerp(obj->bounds.box.v[0], obj->bounds.box.v[3], 0.5f);
 	obj->bounds.radius = get_wall_radius(obj->bounds);
-	obj->bounds.type = plane;
+	obj->bounds.type = bt_plane;
 	wall->entity.occlusion.is_backface_cull = false;
 	wall->entity.occlusion.is_occluded = false;
-	wall->entity.occlusion.occlusion_cull = occlude_and_cull;
+	wall->entity.occlusion.type = oc_occlude_and_cull;
 }
 
 void	init_roomwalls(t_room *room, t_sdlcontext *sdl)
@@ -134,7 +134,12 @@ void	init_room_meshes(t_room *room, t_sdlcontext *sdl)
 		room->floors[i].entity.obj = object_tri(sdl);
 		applytrimesh(room->floors[i], room->floors[i].entity.obj);
 		room->floors[i].entity.obj->bounds.origin = vector3_lerp(vector3_lerp(room->floors[i].entity.obj->vertices[0], room->floors[i].entity.obj->vertices[1], 0.5f), room->floors[i].entity.obj->vertices[2], 0.5f);
+		room->floors[i].entity.obj->bounds.type = bt_ignore;
 		room->floors[i].entity.id = -2;
+		room->floors[i].entity.occlusion.type = oc_cull;
+		room->floors[i].entity.occlusion.is_backface_cull = false;
+		room->floors[i].entity.occlusion.is_occluded = false;
+		
 		/*room->walls[i].entity.transform.location = vector3_zero();
 		room->walls[i].entity.transform.scale = vector3_one();
 		room->walls[i].entity.obj = object_plane(sdl);

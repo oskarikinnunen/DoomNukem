@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/29 17:00:49 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/30 17:45:24 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,8 @@ static void render_room(t_sdlcontext sdl, t_render *render, t_room room)
 	i = 0;
 	while (i < room.wallcount)
 	{
-		//is_entity_culled(sdl, render, &room.walls[i].entity);
 		if (is_entity_culled(sdl, render, &room.walls[i].entity) == false)
-			render_entity(sdl, render, &room.walls[i].entity);
+				render_entity(sdl, render, &room.walls[i].entity);
 		i++;
 	}
 	i = 0;
@@ -31,7 +30,7 @@ static void render_room(t_sdlcontext sdl, t_render *render, t_room room)
 	{
 		room.floors[i].entity.occlusion.is_occluded = false;
 		if (is_entity_culled(sdl, render, &room.floors[i].entity) == false)
-			render_entity(sdl, render, &room.floors[i].entity);
+				render_entity(sdl, render, &room.floors[i].entity);
 		i++;
 	}
 
@@ -79,13 +78,10 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 	int			i;
 	
 	bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
-	render->rs.render_count = 0;
-	render->rs.triangle_count = 0;
+	bzero(&render->rs, sizeof(t_render_statistics));
 	render->world = world;
 	update_occlusion(sdl, render);
 	l = render->world->roomlist;
-	render->wireframe = true;
-	render->gizmocolor = CLR_BLUE;
 	while (l != NULL)
 	{
 		render_room(sdl, render, *(t_room *)l->content);
@@ -103,8 +99,7 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 			printf("ANIMFRAME %i \n", ent->animation.frame);*/
 		l = l->next;
 	}
-	render->wireframe = false;
-	//update_npcs(world);
+	update_npcs(world);
 	i = 0;
 	while (i < 128 && 0)
 	{
@@ -118,8 +113,8 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 			
 		i++;
 	}
-	//render_entity(sdl, render, &world->skybox);
-	print_render_statistics(render->rs);
+	render_entity(sdl, render, &world->skybox);
+	//print_render_statistics(render->rs);
 }
 
 
@@ -157,7 +152,7 @@ static void	entity_init(t_world *world, t_sdlcontext sdl)
 		ent->animation.active = false;
 		ent->occlusion.is_backface_cull = true;
 		ent->occlusion.is_occluded = false;
-		ent->occlusion.occlusion_cull = cull;
+		ent->occlusion.type = oc_cull;
 		l = l->next;
 	}
 }
@@ -316,3 +311,4 @@ void	save_world(char *filename, t_world world)
 	}
 	//unscale_skybox_uvs(world.skybox.obj);
 }
+

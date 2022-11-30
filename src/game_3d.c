@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/29 16:22:07 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/30 17:44:21 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static void draw_triangles(t_sdlcontext sdl, t_render *render)
 			drawline(sdl, (t_point){render->draw_triangles[index].p[2].v.x, render->draw_triangles[index].p[2].v.y}, (t_point){render->draw_triangles[index].p[1].v.x, render->draw_triangles[index].p[1].v.y}, render->draw_triangles[index].clr);
 			drawline(sdl, (t_point){render->draw_triangles[index].p[0].v.x, render->draw_triangles[index].p[0].v.y}, (t_point){render->draw_triangles[index].p[2].v.x, render->draw_triangles[index].p[2].v.y}, render->draw_triangles[index].clr);*/
 		}
-		//render->
+		render->rs.triangle_count++;
 		index++;
 	}
 }
@@ -252,7 +252,6 @@ void render_entity(t_sdlcontext sdl, t_render *render, t_entity *entity)
 	int				index;
 	t_object		*obj;
 	t_quaternion	temp;
-	t_vector3		lookd;
 
 	obj = entity->obj;
 	render->calc_tri_count = 0;
@@ -262,10 +261,6 @@ void render_entity(t_sdlcontext sdl, t_render *render, t_entity *entity)
 	index = 0;
 	while (index < obj->vertice_count)
 	{
-		/*temp.v = vector3_mul_vector3(entity->transform.scale, obj->vertices[index]);
-		temp.v = rotate(temp.v, entity->transform.rotation);
-		temp.v = vector3_add(entity->transform.location, temp.v);
-		temp.w = 1.0f;*/
 		temp.v = obj->vertices[index];
 		if (entity->animation.active)
 		{
@@ -276,14 +271,6 @@ void render_entity(t_sdlcontext sdl, t_render *render, t_entity *entity)
 		index++;
 	}
 	index = 0;
-
-	while (index < obj->material_count)
-	{
-		//printf("mat r %i \n", obj->materials[index].kd & 0xFF);
-		index++;
-	}
-	index = 0;
-	//render_object()
 	while (index < obj->face_count)
 	{
 		t_triangle	tritransformed;
@@ -300,9 +287,6 @@ void render_entity(t_sdlcontext sdl, t_render *render, t_entity *entity)
 		tritransformed.clr = obj->materials[obj->faces[index].materialindex].kd;
 		normal = normal_calc(tritransformed);
 		vcameraray = vector3_sub(tritransformed.p[0].v, render->position);
-		/*if (obj->materials[0].img == NULL)
-			tritransformed.clr = shade(tritransformed.clr,
-									1.0f - (vector3_sqr_magnitude(vector3_sub(tritransformed.p[0].v, (render->position))) / 200000.0f));*/
 		tritransformed.clr = shade(tritransformed.clr,
 									1.0f + (vector3_dot(normal, vector3_normalise(vcameraray)) / 2.0f));
 		if (vector3_dot(normal, vcameraray) < 0.0f || 1)

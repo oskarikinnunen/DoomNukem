@@ -8,8 +8,9 @@ typedef struct s_box
 
 typedef enum e_bound_type
 {
-	box,
-	plane
+	bt_ignore,
+	bt_box,
+	bt_plane
 }	t_bound_type;
 
 typedef struct s_bounds

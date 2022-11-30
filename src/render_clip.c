@@ -141,6 +141,38 @@ int vector2_clip_triangle_against_plane(t_vector2 plane_p, t_vector2 plane_n, t_
 	return(0);
 }
 
+int clip_triangle_against_occluder_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2])
+{
+	float		dist[3];
+	int			i;
+	int			outside = 0;
+	bool		inside;
+	float		t;
+
+	plane_n = vector3_normalise(plane_n);
+	i = 0;
+	while (i < 3)
+	{
+		dist[i] = vector3_fdist_to_plane(in_tri.p[i].v, plane_n, plane_p);
+		if (dist[i] < 1.0f)
+			outside++;
+		i++;
+	}
+	if (outside == 3)
+		return(0);
+	if (outside == 0)
+	{
+		out_tri[0] = in_tri;
+		return(1);
+	}
+	sort_quat_tex_by_dist(dist, in_tri.p, in_tri.t);
+	if (outside == 1)
+		return (clip_quad_to_triangles(plane_p, plane_n, in_tri, out_tri));
+	if (outside == 2)
+		return (clip_triangle(plane_p, plane_n, in_tri, out_tri));
+	return(0);
+}
+
 int clip_triangle_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2])
 {
 	float		dist[3];

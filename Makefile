@@ -6,7 +6,7 @@
 #    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/29 16:03:48 by vlaine           ###   ########.fr        #
+#    Updated: 2022/11/30 15:01:20 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -58,6 +58,7 @@ SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		occlusion/frustrum_culling.c \
 		occlusion/peripheral_culling.c \
 		occlusion/occlusion_culling.c \
+		occlusion/culling_debug.c \
 		render_clip.c \
 		object_bounds.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
