@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 14:51:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/30 18:17:00 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void highlight_object(t_editor *ed, t_sdlcontext sdl, t_entity *entity, u
 {
 	ed->render.wireframe = true;
 	ed->render.gizmocolor = color;
-	render_entity(sdl, ed->render, entity);
+	render_entity(sdl, &ed->render, entity);
 	ed->render.wireframe = false;
 }
 
@@ -34,13 +34,13 @@ static void highlight_room(t_editor *ed, t_sdlcontext sdl, t_room room, uint32_t
 	ed->render.gizmocolor = color;
 	while (i < room.wallcount)
 	{
-		render_entity(sdl, ed->render, &room.walls[i].entity);
+		render_entity(sdl, &ed->render, &room.walls[i].entity);
 		i++;
 	}
 	i = 0;
 	while (i < room.floorcount)
 	{
-		render_entity(sdl, ed->render, &room.floors[i].entity);
+		render_entity(sdl, &ed->render, &room.floors[i].entity);
 		i++;
 	}
 	ed->render.wireframe = false;
@@ -99,7 +99,7 @@ static void renderroom(t_editor *ed, t_sdlcontext sdl, t_room room)
 	i = 0;
 	while (i < room.wallcount)
 	{
-		render_entity(sdl, ed->render, &room.walls[i].entity);
+		render_entity(sdl, &ed->render, &room.walls[i].entity);
 		i++;
 	}
 }
@@ -182,6 +182,16 @@ static bool illegalwall_move(t_wall *wall, t_room *room)
 	return (false);
 }
 
+//temporary id  setup
+static void set_room_walls_id(t_room *room, t_world *world)
+{
+	int32_t id = get_id(world);
+	for (int i = 0; i < room->wallcount; i++)
+	{
+		room->walls[i].entity.id = id++;
+	}
+}
+
 static void	createmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 {
 	t_wall			*cur;
@@ -213,6 +223,7 @@ static void	createmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		if ((ed->keystate >> KEYS_SHIFTMASK) & 1)
 		{
 			dat->rtm = rtm_modify;
+			set_room_walls_id(dat->room, &ed->world);
 			list_push(&ed->world.roomlist, dat->room, sizeof(t_room));
 			free(dat->room);
 			dat->room = list_findlast(ed->world.roomlist);
@@ -239,12 +250,12 @@ static void	createmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	applywallmesh(cur);
 	print_text_boxed(&sdl, vector_string(rc), (t_point){20, sdl.window_h - 80});
 	if (!vector2_cmp(cur->line.start, vector2_zero()))
-		render_entity(sdl, ed->render, &cur->entity);
+		render_entity(sdl, &ed->render, &cur->entity);
 	if (illegalwall(cur, dat->room))
 	{
 		ed->render.wireframe = true;
 		ed->render.gizmocolor = CLR_RED;
-		render_entity(sdl, ed->render, &cur->entity);
+		render_entity(sdl, &ed->render, &cur->entity);
 		ed->render.wireframe = false;
 	}
 	renderroom(ed, sdl, *dat->room);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fill_triangle.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/24 13:42:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/30 18:08:01 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,7 +261,6 @@ static void fill_tri_top_solid(t_sdlcontext sdl, t_triangle triangle)
 				((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w] =
 					triangle.clr;
 			}
-			q[0].w += w_step[2];
 			i++;
 		}
 		triangle = step_triangle_f(triangle, x_step, w_step);

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/14 17:34:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/27 18:32:35 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/30 18:19:36 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,24 @@ t_quaternion	quaternion_mul(t_quaternion a, t_quaternion b)
 		a.w * b.v.z + a.v.x * b.v.y - a.v.y * b.v.x + a.v.z * b.w
 	}
 	);
+}
+
+t_texture lerp_texture(t_texture from, t_texture to, float delta)
+{
+	from.u = ft_flerp(from.u, to.u, delta);
+	from.v = ft_flerp(from.v, to.v, delta);
+	from.w = ft_flerp(from.w, to.w, delta);
+
+	return(from);
+}
+
+t_quaternion lerp_quaternion(t_quaternion from, t_quaternion to, float delta)
+{
+	from.v.x = ft_flerp(from.v.x, to.v.x, delta);
+	from.v.y = ft_flerp(from.v.y, to.v.y, delta);
+	from.v.z = ft_flerp(from.v.z, to.v.z, delta);
+	from.w = ft_flerp(from.w, to.w, delta);
+	return(from);
 }
 
 //TODO: Check if quaternion linestart and lineend could be replaced with t_vector3

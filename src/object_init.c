@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   object_init.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 19:50:18 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/22 11:51:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/30 18:10:27 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ void	objects_init(t_sdlcontext *sdl)
 			}
 			m_i++;
 		}
+		set_object_boundingbox(object);
 		i++;
 	}
 }

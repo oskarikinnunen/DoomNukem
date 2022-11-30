@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   walls.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/19 18:52:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/30 18:12:19 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,36 @@ void	applywallmesh(t_wall *wall)
 	wall->entity.obj->uvs[3] = (t_vector2){dist / 100.0f, wall->height / 100.0f};
 }
 
+static float get_wall_radius(t_bounds bounds)
+{
+	float min_radius;
+	float max_radius;
+
+	min_radius = vector3_dist(bounds.origin, bounds.box.v[0]);
+	max_radius = vector3_dist(bounds.origin, bounds.box.v[3]);
+	if (max_radius > min_radius)
+		return(max_radius);
+	else
+		return(min_radius);
+}
+
+static void set_wall_obj_boundingbox(t_wall *wall)
+{
+	t_object *obj;
+	obj = wall->entity.obj;
+	obj->bounds.box.v[0] = (t_vector3){wall->line.start.x, wall->line.start.y, 0.0f};
+	obj->bounds.box.v[1] = (t_vector3){wall->line.end.x, wall->line.end.y, 0.0f};
+	obj->bounds.box.v[2] = (t_vector3){wall->line.start.x, wall->line.start.y, wall->height};
+	obj->bounds.box.v[3] = (t_vector3){wall->line.end.x, wall->line.end.y, wall->height};
+	//bzero(&obj->bounds.box.v[4], sizeof(t_vector3) * 4);
+	obj->bounds.origin = vector3_lerp(obj->bounds.box.v[0], obj->bounds.box.v[3], 0.5f);
+	obj->bounds.radius = get_wall_radius(obj->bounds);
+	obj->bounds.type = bt_plane;
+	wall->entity.occlusion.is_backface_cull = false;
+	wall->entity.occlusion.is_occluded = false;
+	wall->entity.occlusion.type = oc_occlude_and_cull;
+}
+
 void	init_roomwalls(t_room *room, t_sdlcontext *sdl)
 {
 	int	i;
@@ -79,6 +109,7 @@ void	init_roomwalls(t_room *room, t_sdlcontext *sdl)
 			room->walls[i].entity.transform.scale = vector3_zero();
 		room->walls[i].entity.obj = object_plane(sdl);
 		applywallmesh(&room->walls[i]);
+		set_wall_obj_boundingbox(&room->walls[i]);
 		i++;
 	}
 }
@@ -102,6 +133,13 @@ void	init_room_meshes(t_room *room, t_sdlcontext *sdl)
 	{
 		room->floors[i].entity.obj = object_tri(sdl);
 		applytrimesh(room->floors[i], room->floors[i].entity.obj);
+		room->floors[i].entity.obj->bounds.origin = vector3_lerp(vector3_lerp(room->floors[i].entity.obj->vertices[0], room->floors[i].entity.obj->vertices[1], 0.5f), room->floors[i].entity.obj->vertices[2], 0.5f);
+		room->floors[i].entity.obj->bounds.type = bt_ignore;
+		room->floors[i].entity.id = -2;
+		room->floors[i].entity.occlusion.type = oc_cull;
+		room->floors[i].entity.occlusion.is_backface_cull = false;
+		room->floors[i].entity.occlusion.is_occluded = false;
+		
 		/*room->walls[i].entity.transform.location = vector3_zero();
 		room->walls[i].entity.transform.scale = vector3_one();
 		room->walls[i].entity.obj = object_plane(sdl);

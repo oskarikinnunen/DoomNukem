@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/28 18:03:00 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/30 17:56:29 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,12 @@
 # include <fcntl.h>
 # include <stdbool.h>
 # include "physics.h"//DEPRECATED UPDATED TO COLLISION.H
-# include "entity.h"
-# include "objects.h"
 # include "animation.h" //PLAYER USES THIS, MOVE PLAYER TO SEPARATE HEADER
 # include "inputhelp.h"
 # include "room.h"
 # include "npcs.h"
-# include "render.h"
 # include "player.h"
 # include "input.h"
-# include "collision.h"
 # include "debug.h"
 
 # define TILESIZE 32 //EDITOR tilesize
@@ -79,7 +75,7 @@ typedef struct s_clock
 	Uint32	prev_time;
 	Uint32	delta;
 	Uint32	fps;
-}	t_clock;
+} t_clock;
 
 /* Playmode */
 
@@ -123,6 +119,7 @@ typedef struct s_world
 	t_list		*wall_list;
 	t_list		*roomlist;
 	t_entity	skybox;
+	int32_t		entity_count; //not important
 }	t_world;
 
 void	calculate_colliders_for_entities(t_world *world);
@@ -243,7 +240,12 @@ void	*list_find(t_list *head, void *match, size_t content_size);
 //TODO: documentation here
 void	list_remove(t_list **head, void *match, size_t content_size);
 
+/* OCCLUSION.C */
+void update_occlusion(t_sdlcontext sdl, t_render *render);
+
+//TODO: temp for occlusion
+int32_t		get_id(t_world *world);
+
 //
 bool			object_lookedat(t_editor *ed, t_sdlcontext sdl, t_object *obj);
-
 #endif

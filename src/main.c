@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/28 20:23:46 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/30 18:09:57 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 		sdl->platform = os_unsupported;
 		printf("platform %s not supported\n", platform);
 	}
-
 	sdl->window = SDL_CreateWindow("DoomNukem",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		sdl->window_w, sdl->window_h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
@@ -52,6 +51,7 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	if (sdl->window == NULL)
 		error_log(EC_SDL_CREATEWINDOW);
 	sdl->surface = SDL_GetWindowSurface(sdl->window);
+	sdl->surface->format->format = SDL_PIXELFORMAT_ABGR1555;
 	if (sdl->surface == NULL)
 		error_log(EC_SDL_GETWINDOW_SURFACE);
 

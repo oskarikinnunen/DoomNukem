@@ -126,11 +126,10 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 {
 	t_gamereturn	gr;
 	t_render		render;
-	int				index = 128;
 
 	//alloc_image(&pgraph.image, PERFGRAPH_SAMPLES + 1, PERFGRAPH_SAMPLES + 1);
 	gr = game_continue;
-	render = init_render(sdl);
+	render = init_render(sdl, &game.world);
 	game.world = load_world("world1", sdl);
 	player_init(&game.player, sdl);
 	game.player.transform.location = (t_vector3) {500.0f, 500.0f, 500.0f};
@@ -152,7 +151,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 		print_text(&sdl, "PLAYMODE", (t_point){5, 5});
 		/*game.player.gun->transform.location = vector3_add(game.player.position, (t_vector3){.z = -25.5f});
 		game.player.gun->transform.rotation.x = game.player.angle.x + ft_degtorad(100.0f);*/
-		render_entity(sdl, render, &game.player.gun->entity);
+		render_entity(sdl, &render, &game.player.gun->entity);
 		//DRAWPERFGRAPH
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);

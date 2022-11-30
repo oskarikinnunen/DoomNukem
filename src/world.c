@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/22 16:19:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/30 18:13:20 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,23 @@
 #include "file_io.h"
 #include "objects.h"
 
-void render_room(t_sdlcontext sdl, t_render render, t_room room)
+static void render_room(t_sdlcontext sdl, t_render *render, t_room room)
 {
 	int	i;
 
 	i = 0;
 	while (i < room.wallcount)
 	{
-		render_entity(sdl, render, &room.walls[i].entity);
+		if (is_entity_culled(sdl, render, &room.walls[i].entity) == false)
+				render_entity(sdl, render, &room.walls[i].entity);
 		i++;
 	}
 	i = 0;
 	while (i < room.floorcount)
 	{
-		render_entity(sdl, render, &room.floors[i].entity);
+		room.floors[i].entity.occlusion.is_occluded = false;
+		if (is_entity_culled(sdl, render, &room.floors[i].entity) == false)
+				render_entity(sdl, render, &room.floors[i].entity);
 		i++;
 	}
 
@@ -74,17 +77,22 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 	t_wall		wall;
 	int			i;
 	
-	l = world->roomlist;
+	bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
+	bzero(&render->rs, sizeof(t_render_statistics));
+	render->world = world;
+	update_occlusion(sdl, render);
+	l = render->world->roomlist;
 	while (l != NULL)
 	{
-		render_room(sdl, *render, *(t_room *)l->content);
+		render_room(sdl, render, *(t_room *)l->content);
 		l = l->next;
 	}
-	l = world->entitylist;
+	l = render->world->entitylist;
 	while (l != NULL)
 	{
 		ent = (t_entity *)l->content;
-		render_entity(sdl, *render, ent);
+		if (is_entity_culled(sdl, render, ent) == false)
+			render_entity(sdl, render, ent);
 		update_anim(&ent->animation, world->clock.delta);
 		//printf("world clock delta %i \n", world.clock.delta);
 		/*if (ent->animation.frame != 0)
@@ -100,12 +108,13 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 			t_npc npc = world->npcpool[i];
 			t_vector3 dir = vector3_sub(world->npcpool[i].entity.transform.location, world->npcpool[i].destination);
 			render_ray(sdl, *render, npc.entity.transform.location, npc.destination);
-			render_entity(sdl, *render, &world->npcpool[i].entity);
+			render_entity(sdl, render, &world->npcpool[i].entity);
 		}
 			
 		i++;
 	}
-	render_entity(sdl, *render, &world->skybox);
+	render_entity(sdl, render, &world->skybox);
+	//print_render_statistics(render->rs);
 }
 
 
@@ -141,6 +150,9 @@ static void	entity_init(t_world *world, t_sdlcontext sdl)
 			ent->obj = &sdl.objects[0];
 		ent->animation.frame = 0;
 		ent->animation.active = false;
+		ent->occlusion.is_backface_cull = true;
+		ent->occlusion.is_occluded = false;
+		ent->occlusion.type = oc_cull;
 		l = l->next;
 	}
 }
