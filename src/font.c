@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 22:00:00 by raho              #+#    #+#             */
-/*   Updated: 2022/11/29 15:39:18 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/30 22:08:39 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,13 +67,13 @@ void	load_fonts(t_font *font)
 	font->font_sizes[2] = TTF_OpenFont(font_file, 35);
 	if (!font->font_sizes[2])
 		error_log(EC_TTF_OPENFONT);
-	font->font_sizes[3] = TTF_OpenFont(font_file, 40);
+	font->font_sizes[3] = TTF_OpenFont(font_file, 100);
 	if (!font->font_sizes[3])
 		error_log(EC_TTF_OPENFONT);
 	font->font = font->font_sizes[0]; // initialize the font pointer to the smallest font
 	initialize_font_colors(font);
 	initialize_background_colors(font);
 	font->color = font->font_colors.black; // initialize the font's color
-	font->box_color = font->background_colors.dark_grey; // initialize the print_text_boxed background color
+	font->box_color = font->background_colors.white; // initialize the print_text_boxed background color
 	font->text = ft_strcpy(text, "text"); // initialize text if it's used before being set to something specific
 }

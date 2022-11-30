@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/29 15:28:16 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/30 21:51:51 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ int	editorloop(t_sdlcontext sdl)
 		sdl.font.box_color = temp2;
 
 		sdl.font.font = sdl.font.font_sizes[3];
-		print_text(&sdl, "TRANSPARITY", (t_point){400, 100});
+		print_text(&sdl, "TRANSPARENCY", (t_point){300, 100});
 		sdl.font.font = sdl.font.font_sizes[0];
 
 		drawcircle(sdl, point_div(sdl.screensize, 2), 4, CLR_BLUE);
