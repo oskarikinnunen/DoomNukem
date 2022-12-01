@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   objects.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 12:41:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 15:45:36 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/30 16:32:26 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include <inttypes.h>
 #include "vectors.h"
+//#include "colliders.h"
 
 typedef struct s_material
 {
@@ -51,7 +52,6 @@ typedef struct s_objectanim
 	char				name[128];
 } t_objectanim;
 
-
 typedef struct s_object
 {
 	char				name[256];
@@ -64,6 +64,7 @@ typedef struct s_object
 	uint32_t			uv_count;
 	uint32_t			face_count;
 	t_objectanim		o_anim;
+	struct s_colliders	*col;
 }	t_object;
 
 struct s_world;

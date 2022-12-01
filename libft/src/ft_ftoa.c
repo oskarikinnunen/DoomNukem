@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_ftoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 11:53:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/02/22 03:49:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/01 11:55:00 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ char	*ft_ftoa(float f, int dec)
 	if (neg)
 		ft_strcat(final, "-");
 	ft_strcat(final, strinteger);
-	ft_strcat(final, ",");
+	ft_strcat(final, ".");
 	ft_strcat(final, strdecimal);
 	free(strinteger);
 	free(strdecimal);

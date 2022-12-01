@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/29 11:57:14 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/01 13:49:19 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,7 @@ typedef struct s_world
 	t_debugconsole	debugconsole;
 	t_physics		physics;
 	t_list			*guns;
+	t_list			*objectmetadatalist;
 	t_npc			npcpool[128];
 	t_list			*entitylist;
 	t_list			*meshlist;
@@ -148,8 +149,8 @@ int		editorloop(t_sdlcontext sdl);
 /* EDITOR_EVENTS.C */
 t_gamereturn	editor_events(t_editor *ed);
 bool			iskey(SDL_Event e, int keycode);
-void			force_mouseunlock(t_editor *ed);
-void			force_mouselock(t_editor *ed);
+void			force_mouseunlock(t_hid_info *hid);
+void			force_mouselock(t_hid_info *hid);
 void			move_editor(t_editor *ed);
 
 /* EDITOR_MOUSE.C */
@@ -227,6 +228,7 @@ void	draw_text(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundari
 // Fonts: 0 = 11, 1 = 12, 2 = 14, 3 = 16, 4 = 18, 5 = 20, 6 = 22
 // Returns the rectangle of the drawed textbox
 t_rectangle	draw_text_boxed(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundaries);
+t_rectangle	draw_text_black(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundaries);
 
 
 void			entity_start_anim(t_entity *entity, char *animname);

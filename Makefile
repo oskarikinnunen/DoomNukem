@@ -6,7 +6,7 @@
 #    By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/28 17:26:45 by okinnune         ###   ########.fr        #
+#    Updated: 2022/11/30 16:24:22 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,6 +30,8 @@ SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		editor/tools/npc_tool.c \
 		editor/tools/room_tool.c \
 		editor/tools/gun_tool.c \
+		editor/tools/tool_common_functions.c \
+		editor/tools/autogui.c \
 		editor/editor_new_buttons.c \
 		editor/editor_instant_button.c \
 		editor/editor_raycast.c \

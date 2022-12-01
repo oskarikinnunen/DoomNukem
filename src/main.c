@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/28 20:10:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/01 15:19:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,8 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	t_object *o = get_object_by_name(*sdl, "cyborg");
 	parseanim(o, "walk");
 	/* create context here, call gl clear in render start, glbegin in drawtriangles etc */
-	/*SDL_GLContext glc = SDL_GL_CreateContext(sdl->window);
-	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	SDL_GLContext glc = SDL_GL_CreateContext(sdl->window);
+	/*glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 	glEnable(GL_DEPTH_TEST);
 
@@ -79,8 +79,8 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	glVertex3f( 0.1f, 0.3f, -2.0f);
 	//glVertex2f( -0.5f, 0.5f );
 	glEnd();
-	SDL_GL_SwapWindow(sdl->window);*/
-	SDL_GLContext glc = SDL_GL_CreateContext(sdl->window);
+	SDL_GL_SwapWindow(sdl->window);
+	SDL_Delay(10000);*/
 	printf("OPENGL RENDERER: '%s' \n", glGetString(GL_RENDERER));
 }
 

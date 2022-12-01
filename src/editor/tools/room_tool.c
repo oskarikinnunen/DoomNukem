@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/29 13:01:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/01 13:49:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -409,7 +409,7 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		highlight_object(ed, sdl, &look_wall->entity, CLR_BLUE);
 	if (!looking_atcorner(ed, sdl, snap, dat->room) && mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 	{
-		force_mouseunlock(ed);
+		force_mouseunlock(&ed->hid);
 		dat->ed_wall = look_wall;
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
@@ -471,7 +471,7 @@ void	room_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	{
 		dat->room = ft_memalloc(sizeof(t_room));
 		dat->rtm = rtm_create;
-		force_mouselock(ed);
+		force_mouselock(&ed->hid);
 	}
 	if (dat->rtm == rtm_modify && dat->room != NULL)
 		modifymode(ed, sdl, dat);

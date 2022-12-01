@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/28 17:22:27 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/28 19:37:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/30 18:04:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,9 @@ void	update_debugconsole(t_debugconsole *console, t_sdlcontext *sdl, uint32_t de
 
 	if (console->hidden && !console->show_anim.active)
 		return ;
-	
 		
 	origin = point_sub(sdl->screensize, size);
-	draw_black_background(sdl, origin, size);
+	draw_rectangle_filled(*sdl, (t_rectangle){origin.x, origin.y, size.x, size.y}, CLR_DARKGRAY);
 	draw_text_boxed(sdl, "DEBUGCONSOLE", point_add(origin, (t_point){5, 5}), sdl->screensize);
 	if (console->show_anim.active)
 	{

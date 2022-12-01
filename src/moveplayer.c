@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/29 13:28:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/01 14:12:35 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,6 +211,8 @@ void	moveplayer(t_player *player, t_input *input, t_clock clock)
 	float		angle;
 
 	updateguntransform(input, &clock, player);
+	if (player->locked)
+		return ;
 	move_vector = vector3_zero();
 	t_vector2 delta_angle = vector2_mul(input->turn, clock.delta);
 	player->transform.rotation = vector3_sub(player->transform.rotation, (t_vector3){delta_angle.x, delta_angle.y, 0.0f}); //TODO: this

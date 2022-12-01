@@ -5,6 +5,7 @@ typedef struct s_mouse
 {
 	t_point		pos;
 	t_point		delta;
+	bool		safe_delta;
 	bool		relative;
 	int			scroll;
 	int			scroll_delta;

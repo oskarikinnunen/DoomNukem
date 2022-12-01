@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 13:31:43 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/29 13:01:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/30 15:18:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,24 +44,22 @@ t_quaternion	transformed_vector3(t_transform transform, t_vector3 v)
 		result.v = vector3_add(result.v, vector3_mul(right, transform.position.x));
 		result.v = vector3_add(result.v, vector3_mul(up, transform.position.z));
 		result.v = vector3_add(transform.parent->position, result.v);
-		
 	}
 	else
 	{
 		result.v = vector3_add(transform.position, result.v);
 	}
-		
-	/*
-		if transform.parent != NULL
-			move y towards parents forward,
-			x towards parent right
-			z towars parent up
-			rotate object with parents eulers
-			rotate object with own eulers
-
-	*/
-	//result.w = 1.0f;
 	return (result);
+}
+
+t_vector3	anim_transformed_vector3(t_entity *entity, t_vector3 v)
+{
+	t_vector3	result;
+
+	/*if (entity->animation.active)
+	{
+		result = vector3_add(entity->obj->o_anim.frames[entity->animation.frame].deltavertices[index].delta, temp.v);
+	}*/
 }
 
 t_point vector3_to_screenspace(t_render r, t_vector3 vec, t_sdlcontext sdl)

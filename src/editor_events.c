@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/28 18:09:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/01 14:26:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,19 +40,19 @@ void		toggle_keystates(t_hid_info *hid, SDL_Event e)
 	}
 }
 
-void	force_mouseunlock(t_editor *ed)
+void	force_mouseunlock(t_hid_info *hid)
 {
-	ed->hid.mouse.relative = false;
-	SDL_SetRelativeMouseMode(ed->hid.mouse.relative);
-	ed->hid.mouse.delta = point_zero();
+	hid->mouse.relative = false;
+	SDL_SetRelativeMouseMode(hid->mouse.relative);
+	hid->mouse.delta = point_zero();
 }
 
-void	force_mouselock(t_editor *ed)
+void	force_mouselock(t_hid_info *hid)
 {
-	ed->hid.mouse.relative = true;
-	SDL_SetRelativeMouseMode(ed->hid.mouse.relative);
-	ed->hid.mouse.delta = point_zero();
-	ed->hid.mouse.pos = point_zero();
+	hid->mouse.relative = true;
+	SDL_SetRelativeMouseMode(hid->mouse.relative);
+	hid->mouse.delta = point_zero();
+	hid->mouse.pos = point_zero();
 }
 
 t_gamereturn	editor_events(t_editor *ed)
@@ -61,7 +61,12 @@ t_gamereturn	editor_events(t_editor *ed)
 	
 	ed->hid.mouse.scroll_delta = 0; //Needs to be reset
 	if (ed->hid.mouse.relative)
+	{
 		SDL_GetRelativeMouseState(&ed->hid.mouse.delta.x, &ed->hid.mouse.delta.y);
+		if (ed->hid.mouse.safe_delta && ((ed->hid.mouse.delta.x) > 30 || ft_abs(ed->hid.mouse.delta.y) > 30))
+			ed->hid.mouse.delta = point_zero();
+	}
+		
 	while (SDL_PollEvent(&e))
 	{
 		toggle_keystates(&ed->hid, e);
@@ -74,6 +79,7 @@ t_gamereturn	editor_events(t_editor *ed)
 			{
 				ed->hid.mouse.relative = !ed->hid.mouse.relative;
 				SDL_SetRelativeMouseMode(ed->hid.mouse.relative);
+				ed->player.locked = !ed->hid.mouse.relative;
 				ed->hid.mouse.delta = point_zero();
 			}
 			else if (((ed->hid.keystate >> KEYS_SHIFTMASK) & 1)
