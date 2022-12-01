@@ -6,60 +6,65 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 19:49:59 by raho              #+#    #+#             */
-/*   Updated: 2022/12/01 21:00:48 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/01 22:12:46 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "colors.h"
 
-uint32_t	blend_colors_alpha(uint32_t bg, uint32_t fg, SDL_PixelFormat *fmt, uint8_t alpha)
+uint32_t	blend_colors_alpha(uint32_t bg, uint32_t fg, uint8_t alpha)
 {
 	uint32_t	result;
+	
+	float		new_alpha;
+	float		new_red;
+	float		new_green;
+	float		new_blue;
+
 	t_color		color_bg;
 	t_color		color_fg;
-	float		new_alpha;
-	float		abg;
-	float		afg;
-	float		red;
-	float		green;
-	float		blue;
-	float		redbg;
-	float		greenbg;
-	float		bluebg;
-	float		redfg;
-	float		greenfg;
-	float		bluefg;
-
-	color_bg.hexadecimal = bg;
-	color_fg.hexadecimal = fg;
-
-	color_bg.uargb.alpha = (uint8_t)255;
-	color_fg.uargb.alpha = alpha;
-
-	abg = ((float)color_bg.uargb.alpha / 255.0f);
-	afg = ((float)color_fg.uargb.alpha / 255.0f);
 	
-	redbg = (float)color_bg.uargb.red / 255.0f;
-	greenbg = (float)color_bg.uargb.green / 255.0f;
-	bluebg = (float)color_bg.uargb.blue / 255.0f;
+	float		alpha_bg;
+	float		red_bg;
+	float		green_bg;
+	float		blue_bg;
 	
-	redfg = (float)color_fg.uargb.red / 255.0f;
-	greenfg = (float)color_fg.uargb.green / 255.0f;
-	bluefg = (float)color_fg.uargb.blue / 255.0f;
+	float		alpha_fg;
+	float		red_fg;
+	float		green_fg;
+	float		blue_fg;
+
+
+	color_bg.color = bg;
+	color_fg.color = fg;
+
+	color_bg.argb.alpha = (uint8_t)255;
+	color_fg.argb.alpha = alpha;
+
+	alpha_bg = ((float)color_bg.argb.alpha / 255.0f);
+	alpha_fg = ((float)color_fg.argb.alpha / 255.0f);
+	
+	red_bg = (float)color_bg.argb.red / 255.0f;
+	green_bg = (float)color_bg.argb.green / 255.0f;
+	blue_bg = (float)color_bg.argb.blue / 255.0f;
+	
+	red_fg = (float)color_fg.argb.red / 255.0f;
+	green_fg = (float)color_fg.argb.green / 255.0f;
+	blue_fg = (float)color_fg.argb.blue / 255.0f;
 
 	// OpenGL - transparency (alpha blending) Youtube
-	new_alpha = afg + abg * (1.0f - afg);
-	red = ((redfg * afg) + (redbg * abg * (1.0f - afg))) / new_alpha;
-	green = ((greenfg * afg) + (greenbg * abg * (1.0f - afg))) / new_alpha;
-	blue = ((bluefg * afg) + (bluebg * abg * (1.0f - afg))) / new_alpha;
+	new_alpha = alpha_fg + alpha_bg * (1.0f - alpha_fg);
+	new_red = ((red_fg * alpha_fg) + (red_bg * alpha_bg * (1.0f - alpha_fg))) / new_alpha;
+	new_green = ((green_fg * alpha_fg) + (green_bg * alpha_bg * (1.0f - alpha_fg))) / new_alpha;
+	new_blue = ((blue_fg * alpha_fg) + (blue_bg * alpha_bg * (1.0f - alpha_fg))) / new_alpha;
 
 	new_alpha *= 255.0f;
-	red *= 255.0f;
-	green *= 255.0f;
-	blue *= 255.0f;
+	new_red *= 255.0f;
+	new_green *= 255.0f;
+	new_blue *= 255.0f;
 
-	result = ((uint32_t)new_alpha << 24) | ((uint32_t)red << 16) | ((uint32_t)green << 8) | (uint32_t)blue;
+	result = ((uint32_t)new_alpha << 24) | ((uint32_t)new_red << 16) | ((uint32_t)new_green << 8) | (uint32_t)new_blue;
 
 	return (result);
 }

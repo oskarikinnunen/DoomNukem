@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 20:09:00 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/01 21:41:02 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ int	editorloop(t_sdlcontext sdl)
 		drawcircle(sdl, point_div(sdl.screensize, 2), 4, CLR_BLUE);
 		free(fps);
 
-		join_surface_to_wsurface(sdl.surface, sdl.window_surface);
+		join_surfaces(sdl.window_surface, sdl.surface);
 
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);

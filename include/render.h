@@ -150,6 +150,7 @@ void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale);
 
 /* DRAW.C */
 void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr);
+void	draw_alpha(t_sdlcontext sdl, t_point pos, uint32_t clr);
 void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr);
 void	drawcircle(t_sdlcontext sdl, t_point pos, int size, uint32_t clr);
 void	drawrectangle(t_sdlcontext, t_rectangle rect, uint32_t clr);
@@ -202,9 +203,9 @@ int vector2_clip_triangle_against_plane(t_vector2 plane_p, t_vector2 plane_n, t_
 
 /* SURFACE TOOLS */
 
-void	join_surface_to_wsurface(SDL_Surface *src, SDL_Surface *dest);
-void	join_text_to_surface(SDL_Surface *base, SDL_Surface *new, t_point pos, uint8_t alpha);
-void	join_text_boxed_to_surface(t_sdlcontext *sdl, SDL_Surface *new, t_point pos, t_point padding);
+void	join_surfaces(SDL_Surface *dest, SDL_Surface *src);
+void	join_text_to_surface(SDL_Surface *dest, SDL_Surface *src, t_point pos, uint8_t alpha);
+void	join_text_boxed_to_surface(t_sdlcontext *sdl, SDL_Surface *src, t_point pos, t_point padding);
 
 /*occlusion*/
 void get_min_max_from_triangles(t_vector2 *min, t_vector2 *max, t_triangle *t, int count);

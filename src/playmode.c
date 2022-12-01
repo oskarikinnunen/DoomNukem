@@ -153,7 +153,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 		game.player.gun->transform.rotation.x = game.player.angle.x + ft_degtorad(100.0f);*/
 		render_entity(sdl, &render, &game.player.gun->entity);
 		//DRAWPERFGRAPH
-		join_surface_to_wsurface(sdl.surface, sdl.window_surface);
+		join_surfaces(sdl.window_surface, sdl.surface);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 		//gr = game_switchmode;
