@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 19:37:04 by raho              #+#    #+#             */
-/*   Updated: 2022/12/01 19:57:18 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/01 21:17:58 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,19 +90,8 @@ void	join_surface_to_wsurface(SDL_Surface *src, SDL_Surface *dest)
 		i.x = 0;
 		while (i.x < dest->w)
 		{
-			if (((uint32_t *)src->pixels)[i.x + (i.y * src->w)] >> 24 == 0) // checking alpha
-			{
-				((uint32_t *)dest->pixels)[i.x + (i.y * dest->w)] = \
-						blend_colors_alpha(((uint32_t *)dest->pixels)[i.x + (i.y * dest->w)], \
-						((uint32_t *)src->pixels)[i.x + (i.y * src->w)], src->format, 255);
-			}
-			else
-			{
-				((uint32_t *)dest->pixels)[i.x + (i.y * dest->w)] = \
-						blend_colors_alpha(((uint32_t *)dest->pixels)[i.x + (i.y * dest->w)], \
-						((uint32_t *)src->pixels)[i.x + (i.y * src->w)], src->format, \
-						((uint32_t *)src->pixels)[i.x + (i.y * src->w)] >> 24);
-			}
+			if (i.x < src->w && i.y < src->h)
+				((uint32_t *)dest->pixels)[i.x + (i.y * dest->w)] = ((uint32_t *)src->pixels)[i.x + (i.y * src->w)];
 			i.x++;
 		}
 		i.y++;
