@@ -22,14 +22,6 @@ typedef enum e_platform
 	os_unsupported
 }	t_platform;
 
-typedef struct s_argb
-{
-	uint8_t alpha;
-	uint8_t	red;
-	uint8_t	green;
-	uint8_t	blue;
-}	t_argb;
-
 typedef struct s_img
 {
 	t_point		size;
