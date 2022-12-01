@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_raycast.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 18:03:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 16:02:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/30 18:13:46 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static bool	tri_lookedat(t_render r, t_triangle tri, t_sdlcontext sdl)
 	tri.p[0] = quaternion_mul_matrix(r.matview, tri.p[0]);
 	tri.p[1] = quaternion_mul_matrix(r.matview, tri.p[1]);
 	tri.p[2] = quaternion_mul_matrix(r.matview, tri.p[2]);
-	clipamount = triangle_clipagainstplane((t_vector3){0.0f, 0.0f, 0.1f}, vector3_up(), &tri, clipped);
+	clipamount = clip_triangle_against_plane((t_vector3){.z = 0.1f}, vector3_up(), tri, clipped);
 	if (clipamount == 0)
 		return (false);
 	i = 0;

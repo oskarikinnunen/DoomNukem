@@ -5,7 +5,6 @@
 # include "../libs/installed_libs/include/SDL2/SDL_ttf.h"
 # include "vectors.h"
 # include "shapes.h"
-# include "entity.h"
 
 # define CLR_PRPL 14231500
 # define CLR_TURQ 5505010
@@ -98,13 +97,6 @@ void	alloc_image(t_img *img, int width, int height);
 t_img	*get_image_by_index(t_sdlcontext sdl, int index); //TODO: add comments
 t_img	*get_image_by_name(t_sdlcontext sdl, char *name);
 
-typedef struct s_texture
-{
-	float	u;
-	float	v;
-	float	w;
-} t_texture;
-
 typedef struct	s_triangle
 {
 	t_quaternion	p[3];
@@ -112,24 +104,45 @@ typedef struct	s_triangle
 	uint32_t		clr;
 }	t_triangle;
 
+typedef struct s_render_statistics
+{
+	bool		statistics; // turns on, off
+	uint32_t	triangle_count;	// triangle draw count per frame
+	uint32_t	render_count; // render_entity called count per frame
+	uint32_t	frustrum_cull_amount; // amount of objects culled per frame
+	uint32_t	peripheral_cull_amount; // amount of objects culled per frame
+	uint32_t	occlusion_cull_amount; // amount of objects culled per frame
+	uint32_t	occluder_count; // amount of occluders per frame
+}	t_render_statistics;
+
+typedef struct s_debug_occlusion
+{
+	bool		occlusion; // turns on, off
+	bool		occluder_box; // turns on occluder boxes blue;
+	bool		cull_box;	// turns on cull boxes green not occluded, red occluded;
+}	t_debug_occlusion;
+
 typedef struct s_render
 {
-	t_vector3		vtarget;
-	t_mat4x4		matcamera;
-	t_mat4x4		matview;
-	t_mat4x4		matworld;
-	t_mat4x4		matproj;
-	t_vector3		position;
-	t_vector3		lookdir;
-	t_triangle		*draw_triangles;
-	t_triangle		*calc_triangles;
-	uint32_t		draw_tri_count;
-	uint32_t		calc_tri_count;
-	t_img			*img;
-	t_img			*debug_img;
-	t_quaternion	*q;
-	bool			wireframe;
-	uint32_t		gizmocolor;
+	t_vector3			vtarget;
+	t_mat4x4			matcamera;
+	t_mat4x4			matview;
+	t_mat4x4			matworld;
+	t_mat4x4			matproj;
+	t_vector3			position;
+	t_vector3			lookdir;
+	t_triangle			*draw_triangles;
+	t_triangle			*calc_triangles;
+	uint32_t			draw_tri_count;
+	uint32_t			calc_tri_count;
+	t_img				*img;
+	t_img				*debug_img;
+	t_quaternion		*q;
+	bool				wireframe;
+	uint32_t			gizmocolor;
+	t_render_statistics	rs;
+	struct s_world		*world;
+	t_debug_occlusion	occlusion;
 }	t_render;
 
 //Draws image 'img' to pixels 'pxls', offset by point 'pos' and scaled to 'scale'
@@ -142,15 +155,13 @@ void	drawcircle(t_sdlcontext sdl, t_point pos, int size, uint32_t clr);
 void	drawrectangle(t_sdlcontext, t_rectangle rect, uint32_t clr);
 
 /* INIT_RENDER.C */
-t_render	init_render(t_sdlcontext sdl);
+t_render	init_render(t_sdlcontext sdl, struct s_world *world);
 void		free_render(t_render render);
 void		render_start(t_render *render);
 
 /* RENDER */
 void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle, t_img img);
 void	z_fill_tri_solid(t_sdlcontext sdl, t_triangle triangle);
-void	render_entity(t_sdlcontext sdl, t_render render, t_entity *entity);
-void	render_object(t_sdlcontext sdl, t_render render, struct s_object *obj);
 void	render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size);
 void	render_ray(t_sdlcontext sdl, t_render render, t_vector3 from, t_vector3 to);
 int		triangle_clipagainstplane(t_vector3 plane_p, t_vector3 plane_n, t_triangle *in_tri, t_triangle out_tri[2]);
@@ -183,4 +194,12 @@ void	play_music(t_audio audio);
 void	pause_unused_audio(t_sdlcontext sdl);
 void	close_audio(t_sdlcontext *sdl);
 
+int		clip_triangle_against_occluder_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
+int		clip_triangle_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
+void	clipped(t_render *render, t_sdlcontext sdl);
+
+int vector2_clip_triangle_against_plane(t_vector2 plane_p, t_vector2 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
+
+/*occlusion*/
+void get_min_max_from_triangles(t_vector2 *min, t_vector2 *max, t_triangle *t, int count);
 #endif

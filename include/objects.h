@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 12:41:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 15:45:36 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/30 18:38:07 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include <inttypes.h>
 #include "vectors.h"
+#include "colliders.h"
 
 typedef struct s_material
 {
@@ -64,6 +65,7 @@ typedef struct s_object
 	uint32_t			uv_count;
 	uint32_t			face_count;
 	t_objectanim		o_anim;
+	t_bounds			bounds;
 }	t_object;
 
 struct s_world;
@@ -79,5 +81,6 @@ void			parse_animframe(int fd, t_objectanimframe *frame, t_object *object);
 t_object		*get_object_by_name(struct s_sdlcontext sdl, char *name);
 t_object		*object_plane(struct s_sdlcontext *sdl);
 t_object		*object_tri(struct s_sdlcontext *sdl);
+void			set_object_boundingbox(t_object *obj);
 
 #endif

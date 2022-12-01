@@ -3,43 +3,20 @@
 
 #include "vectors.h"
 
-typedef struct s_boundingbox //will be deprecated
+typedef struct s_occluder
 {
-	t_vector3		boundingbox[8];
-	float			height;
-	bool			is_wall;
-}	t_boundingbox;
-
-typedef enum e_bound_type
-{
-	box,
-	plane,
-	sphere
-}	t_bound_type;
-
-typedef struct s_bounds
-{
-	t_vector3		box[8];
-	t_vector3		plane[4];
-	float			sphere;
-	t_bound_type	bound_type;
-}	t_bounds;
-
-typedef enum e_occlusion_cull
-{
-	ignore,
-	occlude,
-	cull,
-	occlude_and_cull,
-}	t_occlusion_cull;
+	t_vector3		vector[2]; // position vector matches normal len
+	t_vector3		normal[3]; // which way the occluder plane points to in 2d screenspace in theory should be able to do this in 3d space, saving time
+}	t_occluder;
 
 typedef struct s_occlusion
 {
-	t_bounds			bounds;
-	t_occlusion_cull	occlusion_cull;
-	bool				backface_cull;
+	t_occluder			occluder[12];
+	uint32_t			occluder_count;
+	bool				occlude;
+	bool				cull;
+	bool				is_backface_cull;
 	bool				is_occluded;
-	int32_t				id;
 }	t_occlusion;
 
 #endif

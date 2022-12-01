@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 18:02:11 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/01 18:42:14 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int	editorloop(t_sdlcontext sdl)
 	ed.world = load_world("world1", sdl);
 	
 	ed.gamereturn = game_continue;
-	ed.render = init_render(sdl);
+	ed.render = init_render(sdl, &ed.world);
 	//ed.angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
 	ed.angle = (t_vector2){-20.0f, -RAD90 * 0.99f};
 	ed.position = (t_vector3){500.0f, 500.0f, 200.0f};

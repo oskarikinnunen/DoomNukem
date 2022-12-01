@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 14:32:53 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/01 13:01:57 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,7 +229,7 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	/* SPLIT HERE */
 	ed->render.wireframe = true;
 	ed->render.gizmocolor = CLR_GREEN;
-	render_entity(sdl, ed->render, ent);
+	render_entity(sdl, &ed->render, ent);
 	
 	ed->render.wireframe = false;
 	/* END SPLIT */
@@ -253,14 +253,18 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	{
 		ed->render.gizmocolor = CLR_PRPL;
 		ed->render.wireframe = true;
-		render_entity(sdl, ed->render, collide);
+		render_entity(sdl, &ed->render, collide);
 		entity_start_anim(collide, "walk");
 		ed->render.wireframe = false;
 		if (mouse_clicked(ed->mouse, MOUSE_RIGHT))
 			list_remove(&ed->world.entitylist, collide, sizeof(t_entity));
 	}
 	if (mouse_clicked(ed->mouse, MOUSE_LEFT) && collide == NULL) //and selected is null, move to drawupdate
+	{
+		default_entity_occlusion_settings(ent, &ed->world);
+		update_entity_bounds(ent);
 		list_push(&ed->world.entitylist, ent, sizeof(t_entity));
+	}
 }
 
 void	entity_tool_update(t_editor *ed)

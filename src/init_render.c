@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   init_render.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 10:45:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/01 13:21:10 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "objects.h"
 
-t_render	init_render(t_sdlcontext sdl)
+t_render	init_render(t_sdlcontext sdl, struct s_world *world)
 {
 	t_render	render;
 
@@ -27,6 +27,10 @@ t_render	init_render(t_sdlcontext sdl)
 	render.vtarget = vector3_add(render.position, render.lookdir);
 	render.matcamera = matrix_lookat(render.position, render.vtarget, (t_vector3){0, 0, 1});
 	render.matview = matrix_quickinverse(render.matcamera);
+	render.world = world;
+	render.occlusion.occlusion = true;
+	render.occlusion.cull_box = false;
+	render.occlusion.occluder_box = false;
 	/*temp testing render loop with .bot .wall .item*/
 	return(render);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw0.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/09 07:13:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/30 18:04:58 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr)
 		|| pos.y < 0 || pos.y >= sdl.window_h - 2)
 		return ;
 	((uint32_t *)sdl.surface->pixels)[pos.x + (pos.y * sdl.window_w)] = clr;
+	sdl.zbuffer[pos.x + (pos.y * sdl.window_w)] = 2.0f;
 }
 
 void	screen_blank(t_sdlcontext sdl)
@@ -109,6 +110,8 @@ void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr)
 {
 	static t_bresenham	b;
 
+	if ((from.x == to.x && from.y == to.y)|| from.x < 0 || to.x < 0 || from.x > sdl.window_w - 1 || to.x > sdl.window_w - 1 || from.y < 0 || to.y < 0 || from.y > sdl.window_h - 1 || to.y > sdl.window_h - 1)
+		return;
 	populate_bresenham(&b, from, to);
 	draw(sdl, b.local, clr);
 	while (step_bresenham(&b) != 1)

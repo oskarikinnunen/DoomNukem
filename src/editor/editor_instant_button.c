@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_instant_button.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 18:30:57 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 17:47:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/30 18:13:32 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

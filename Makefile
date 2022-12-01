@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
+#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/28 19:19:49 by raho             ###   ########.fr        #
+#    Updated: 2022/12/01 13:00:18 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,8 +30,11 @@ LIBFT = libft/libft.a
 LUAFOLDER= lua-5.3.6
 LUA= $(LUAFOLDER)/install/lib/liblua.a #TODO: find out real name!
 
+LUAFOLDER= lua-5.3.6
+LUA= $(LUAFOLDER)/install/lib/liblua.a #TODO: find out real name!
+
 #Source files:
-SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
+SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		editor.c editor_mouse.c editor_events.c \
 		editor_map_io.c	\
 		editor/tools/entity_tool.c \
@@ -64,7 +67,12 @@ SRCFILES= main.c draw0.c draw1.c img.c deltatime.c anim.c \
 		init_render.c \
 		controller.c \
 		audio.c \
-		occlusion/occlusion.c occlusion/frustrum_culling.c occlusion/peripheral_culling.c occlusion/occlusion_culling.c
+		occlusion/occlusion.c \
+		occlusion/frustrum_culling.c \
+		occlusion/peripheral_culling.c \
+		occlusion/occlusion_culling.c \
+		occlusion/culling_debug.c \
+		render_clip.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \
 		vector2_elementary.c vector2_shorthands.c \

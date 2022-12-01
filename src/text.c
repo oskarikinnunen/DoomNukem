@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 22:00:00 by raho              #+#    #+#             */
-/*   Updated: 2022/12/01 18:38:45 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/01 18:44:53 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ typedef struct s_rgba
 	uint8_t	blue;
 }	t_rgba;
 
-typedef union u_color
+/* typedef union u_color
 {
 	uint32_t	hexadecimal;
 	
@@ -32,7 +32,7 @@ typedef union u_color
 		uint8_t	blue;
 	};
 	
-}	t_color;
+}	t_color; */
 
 t_rgba	extract_color_components(uint32_t surface_pixel, SDL_PixelFormat *fmt)
 {
@@ -70,7 +70,6 @@ t_rgba	extract_color_components(uint32_t surface_pixel, SDL_PixelFormat *fmt)
 
 	return (color);
 }
-
 
 uint32_t	blend_colors_alpha(uint32_t bg, uint32_t fg, SDL_PixelFormat *fmt, uint8_t alpha)
 {

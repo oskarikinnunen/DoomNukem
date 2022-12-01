@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 17:11:14 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/01 18:43:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 		sdl->platform = os_unsupported;
 		printf("platform %s not supported\n", platform);
 	}
-
 	sdl->window = SDL_CreateWindow("DoomNukem",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		sdl->window_w, sdl->window_h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);

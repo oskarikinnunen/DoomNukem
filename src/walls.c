@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   walls.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/19 18:52:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/01 13:19:40 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ void	init_roomwalls(t_room *room, t_sdlcontext *sdl)
 			room->walls[i].entity.transform.scale = vector3_zero();
 		room->walls[i].entity.obj = object_plane(sdl);
 		applywallmesh(&room->walls[i]);
+		update_wall_bounds(&room->walls[i]);
 		i++;
 	}
 }
@@ -102,6 +103,13 @@ void	init_room_meshes(t_room *room, t_sdlcontext *sdl)
 	{
 		room->floors[i].entity.obj = object_tri(sdl);
 		applytrimesh(room->floors[i], room->floors[i].entity.obj);
+		update_floor_bounds(&room->floors[i]);
+		room->floors[i].entity.id = -2;
+		room->floors[i].entity.occlusion.occlude = false;
+		room->floors[i].entity.occlusion.cull = true;
+		room->floors[i].entity.occlusion.is_backface_cull = false;
+		room->floors[i].entity.occlusion.is_occluded = false;
+		
 		/*room->walls[i].entity.transform.location = vector3_zero();
 		room->walls[i].entity.transform.scale = vector3_one();
 		room->walls[i].entity.obj = object_plane(sdl);
