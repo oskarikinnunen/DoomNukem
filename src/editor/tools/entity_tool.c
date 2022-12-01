@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/25 19:42:28 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/01 13:01:57 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,11 +141,26 @@ static t_img	black_image()
 
 static void	draw_transform_info(t_transform t, t_sdlcontext sdl)
 {
+	sdl.font.color = sdl.font.font_colors.white;
 	draw_image(sdl, (t_point){17, 100}, black_image(), (t_point){180, 58});
-	draw_text_boxed(&sdl, "POS  :", (t_point){20, 143}, (t_point){sdl.window_w, sdl.window_h});
-	draw_text_boxed(&sdl, vector_string(t.location), (t_point){65, 143}, (t_point){sdl.window_w, sdl.window_h});
-	draw_text_boxed(&sdl, "SCALE:", (t_point){20, 105}, (t_point){sdl.window_w, sdl.window_h});
-	draw_text_boxed(&sdl, vector_string(t.scale), (t_point){65, 105}, (t_point){sdl.window_w, sdl.window_h});
+	print_text(&sdl, "POS:", (t_point){19, 137});
+	print_text(&sdl, vector_string(t.location), (t_point){65, 137});
+	print_text(&sdl, "SCALE:", (t_point){19, 98});
+	print_text(&sdl, vector_string(t.scale), (t_point){80, 98});
+}
+
+static void	draw_current_operation(t_entity *ent, t_entity *collide, t_sdlcontext sdl)
+{
+	if (collide == NULL)
+	{
+		print_text(&sdl, "ADD:", (t_point){sdl.window_w / 2, sdl.window_h - 25});
+		print_text(&sdl, ent->obj->name, (t_point){sdl.window_w / 2 + 60, sdl.window_h - 25});
+	}
+	else
+	{
+		print_text(&sdl, "DEL:", (t_point){sdl.window_w / 2, sdl.window_h - 25});
+		print_text(&sdl, collide->obj->name, (t_point){sdl.window_w / 2 + 60, sdl.window_h - 25});
+	}
 }
 
 static void findbounds(t_entity *ent)
@@ -218,7 +233,6 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	
 	ed->render.wireframe = false;
 	/* END SPLIT */
-	set_font_size(&sdl, 0);
 	draw_transform_info(ent->transform, sdl);
 	if (instantbutton((t_rectangle) {30, 120, 20, 20}, &ed->mouse, sdl, "minus.png"))
 		ent->transform.scale = vector3_add_xyz(ent->transform.scale, -0.25f);
@@ -247,7 +261,8 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	}
 	if (mouse_clicked(ed->mouse, MOUSE_LEFT) && collide == NULL) //and selected is null, move to drawupdate
 	{
-		ent->id = get_id(&ed->world);
+		default_entity_occlusion_settings(ent, &ed->world);
+		update_entity_bounds(ent);
 		list_push(&ed->world.entitylist, ent, sizeof(t_entity));
 	}
 }

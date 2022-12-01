@@ -33,6 +33,7 @@ typedef struct s_entity
 	int32_t			id;
 }	t_entity;
 
+/* OCCLUSION FOLDER */
 void update_peripheral_culling(t_sdlcontext sdl, t_render *render, t_entity *entity);
 void update_occlusion_culling(t_sdlcontext sdl, t_render *render, t_entity *entity);
 
@@ -40,6 +41,13 @@ bool is_entity_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
 bool is_entity_frustrum_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
 bool is_entity_peripheral_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
 bool is_entity_occlusion_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
+
+void	calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity);
+int		calculate_tris_from_square(t_square s, t_entity *ent, t_render *render);
+
+/* RENDERING */
 void	render_entity(t_sdlcontext sdl, t_render *render, t_entity *entity);
+void	draw_wireframe(t_sdlcontext sdl, t_render *render, t_entity *e, uint32_t clr);
+void	draw_edges(t_sdlcontext sdl, t_render *render, t_entity *e, uint32_t clr);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wall_tool_rooms.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/19 18:45:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/30 18:17:42 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,13 +166,13 @@ static	bool correctangle(t_vector2 vs[3]) //TODO: takes 'fc', 'valid' array and 
 static void indexesdebug(t_sdlcontext *sdl, t_floorcalc fc, int i)
 {
 	char	*str= ft_itoa(fc.faces[i].v_indices[0]);
-	draw_text_boxed(sdl, str, (t_point) {300, 240}, sdl->screensize);
+	print_text_boxed(sdl, str, (t_point) {300, 240});
 	free(str);
 	str= ft_itoa(fc.faces[i].v_indices[1]);
-	draw_text_boxed(sdl, str, (t_point) {350, 240}, sdl->screensize);
+	print_text_boxed(sdl, str, (t_point) {350, 240});
 	free(str);
 	str= ft_itoa(fc.faces[i].v_indices[2]);
-	draw_text_boxed(sdl, str, (t_point) {400, 240}, sdl->screensize);
+	print_text_boxed(sdl, str, (t_point) {400, 240});
 	free(str);
 }
 
@@ -186,13 +186,13 @@ void	floorcalc_debugdraw(t_editor *ed, t_sdlcontext *sdl, t_floorcalc fc, int tr
 
 	i = 0;
 	/*sprintf(str, "edges: %i", fc.edgecount);
-	draw_text_boxed(sdl, str, (t_point) {30, 400}, sdl->screensize);*/
+	print_text_boxed(sdl, str, (t_point) {30, 400});*/
 	while (i < fc.edgecount)
 	{
 		ws = (t_vector3){fc.edges[i].x, fc.edges[i].y, 0.0f};
 		ss = vector3_to_screenspace(ed->render, ws, *sdl);
 		str = ft_itoa(i);
-		draw_text_boxed(sdl, str, ss, sdl->screensize);
+		print_text_boxed(sdl, str, ss);
 		free (str);
 		ed->render.gizmocolor = CLR_RED;
 		render_gizmo(*sdl, ed->render, ws, 10);
@@ -223,16 +223,16 @@ void	floorcalc_debugdraw(t_editor *ed, t_sdlcontext *sdl, t_floorcalc fc, int tr
 	float angleworld = vector2_anglebetween(vector2_sub(first, first), vector2_sub(second, first)); //'better' one
 	//float angleworld = anglebetween(vector2_sub(first, second), vector2_sub(first, center)); //demo one
 	stra = ft_itoa(radtodeg(a1)); //DIV with m_pi to get internal triangle angles
-	draw_text_boxed(sdl, stra, (t_point) {300, 200}, sdl->screensize);
+	print_text_boxed(sdl, stra, (t_point) {300, 200});
 	free(stra);
 	stra = ft_itoa(radtodeg(a2)); //Internal angle M_PI - ((a1 / M_PI) + (a3 / M_PI)))
-	draw_text_boxed(sdl, stra, (t_point) {350, 200}, sdl->screensize);
+	print_text_boxed(sdl, stra, (t_point) {350, 200});
 	free(stra);
 	stra = ft_itoa(radtodeg(a3));
-	draw_text_boxed(sdl, stra, (t_point) {400, 200}, sdl->screensize);
+	print_text_boxed(sdl, stra, (t_point) {400, 200});
 	free(stra);
 	stra = ft_itoa(radtodeg(angleworld));
-	draw_text_boxed(sdl, stra, (t_point) {400, 300}, sdl->screensize);
+	print_text_boxed(sdl, stra, (t_point) {400, 300});
 	free(stra);
 
 	//printf("M_PI MINUS %f, in deg %f\n", 0.0f, radtodeg(M_PI + a3));

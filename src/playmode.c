@@ -117,6 +117,8 @@ static void player_init(t_player *player, t_sdlcontext sdl)
 	player->gun->holsterpos = (t_vector3){15.0f, 18.0f, -18.0f};
 	player->gun->aimpos = (t_vector3){0.0f, 15.0f, -7.0f};
 	player->gun->entity.transform.location = player->gun->holsterpos;
+	player->gun->shoot_anim.audioevent = ft_memalloc(sizeof(t_audioevent));
+	player->gun->shoot_anim.audioevent->audio = &sdl.audio[1];
 }
 
 /*main game loop*/
@@ -136,6 +138,8 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	initialize_controllers(&game);
 	while (gr == game_continue)
 	{
+		pause_unused_audio(sdl);
+		play_music(sdl.audio[0]);
 		update_deltatime(&game.clock);
 		update_deltatime(&game.world.clock);
 		gr = handleinput(&game);
@@ -144,7 +148,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 		screen_blank(sdl); //Combine with render_start?
 		render_start(&render);
 		update_world3d(sdl, &game.world, &render);
-		draw_text_boxed(&sdl, "PLAYMODE", (t_point){5, 5}, (t_point){sdl.window_w, sdl.window_h});
+		print_text(&sdl, "PLAYMODE", (t_point){5, 5});
 		/*game.player.gun->transform.location = vector3_add(game.player.position, (t_vector3){.z = -25.5f});
 		game.player.gun->transform.rotation.x = game.player.angle.x + ft_degtorad(100.0f);*/
 		render_entity(sdl, &render, &game.player.gun->entity);

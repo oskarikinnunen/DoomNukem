@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:21:41 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/29 13:52:06 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/30 18:20:12 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ float	line_intersect_plane(t_vector3 plane_p, t_vector3 plane_n, t_vector3 start
 	ad = vector3_dot(start, plane_n);
 	bd = vector3_dot(end, plane_n);
 
-	//printf("plane_d %f, ad %f, bd %f, ad %f\n", plane_d, ad, bd, ad);
+//	printf("plane_d %f, ad %f, bd %f, ad %f\n", plane_d, ad, bd, ad);
 	if (bd - ad == 0.0f)
 		return(1.0f);
 	return(-plane_d - ad) / (bd - ad);

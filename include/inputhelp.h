@@ -13,7 +13,7 @@
 #ifndef INPUTHELP_H
 # define INPUTHELP_H
 
-# include "../SDL_built/include/SDL2/SDL.h"
+# include "../libs/installed_libs/include/SDL2/SDL.h"
 
 # define KEYS_LEFTMASK 0
 # define KEYS_RIGHTMASK 1

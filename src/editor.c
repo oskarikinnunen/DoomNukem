@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/29 15:47:05 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/01 14:56:35 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,18 +60,20 @@ static void	update_render_editor(t_render *render, t_editor ed) //TODO: move gam
 int	editorloop(t_sdlcontext sdl)
 {
 	t_editor		ed;
+	int				i;
 
 	bzero(&ed, sizeof(t_editor));
 	ed.buttonlist = load_chunk("buttons", "BUTN", sizeof(t_guibutton));
 	initialize_buttons(ed.buttonlist, sdl);
 	ed.world = load_world("world1", sdl);
+	
 	ed.gamereturn = game_continue;
 	ed.render = init_render(sdl, &ed.world);
 	//ed.angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
 	ed.angle = (t_vector2){-20.0f, -RAD90 * 0.99f};
 	ed.position = (t_vector3){500.0f, 500.0f, 200.0f};
+	i = 0;
 	ed.tool = get_npc_tool();
-	set_font_size(&sdl, 0);
 	while (ed.gamereturn == game_continue)
 	{
 		update_deltatime(&ed.clock);
@@ -80,11 +82,9 @@ int	editorloop(t_sdlcontext sdl)
 		move_editor(&ed);
 		//print_vector3(ed.position);
 		//print_vector3(ed.forward);
-		//ed.forward = (t_vector3){396.613922, 449.034363, 131.229309};
+		ed.position = (t_vector3){531.647034, 143.462372, 200.000000};
+		ed.forward = (t_vector3){0.008514, -0.928807, 0.370467};
 		update_render_editor(&ed.render, ed);
-		//print_vector3(ed.render.lookdir);
-		//ed.position = (t_vector3){349.090668, 351.391449, 76.356644};
-		//ed.render.lookdir = (t_vector3){0.451299, -0.254961, -0.855175};
 		screen_blank(sdl);
 		render_start(&ed.render);
 		update_world3d(sdl, &ed.world, &ed.render);
@@ -99,9 +99,20 @@ int	editorloop(t_sdlcontext sdl)
 		}
 		draw_buttons(ed, sdl);
 		ed.mouse.click_unhandled = false;
-		draw_text_boxed(&sdl, "tab to unlock/lock mouse, shift + enter to go to playmode", (t_point){sdl.window_w / 2, 10}, (t_point){sdl.window_w, sdl.window_h});
+		print_text(&sdl, "tab to unlock/lock mouse", (t_point){sdl.window_w / 2, 10});
+		print_text(&sdl, "shift + enter to go to playmode", (t_point){sdl.window_w / 2, 45});
 		char *fps = ft_itoa(ed.clock.fps);
-		draw_text_boxed(&sdl, fps, (t_point){sdl.window_w - 80, 10}, (t_point){sdl.window_w, sdl.window_h});
+		print_text(&sdl, fps, (t_point){sdl.window_w - 80, 10});
+		
+		// showing functionality of print text boxed:
+		SDL_Color	temp;
+		temp = sdl.font.color;
+		sdl.font.color = sdl.font.font_colors.green;
+		print_text_boxed(&sdl, "coming in hot", (t_point){200, 300});
+		sdl.font.color = sdl.font.font_colors.orange;
+		print_text_boxed(&sdl, "guns blazing", (t_point){250, 350});
+		sdl.font.color = temp;
+
 		drawcircle(sdl, point_div(sdl.screensize, 2), 4, CLR_BLUE);
 		free(fps);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)

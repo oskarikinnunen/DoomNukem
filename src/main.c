@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 14:14:19 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/30 18:09:57 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,13 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	const char	*platform;
 
 	load_lua_conf(sdl);
-	if (SDL_Init(SDL_INIT_VIDEO) < 0
-		|| SDL_Init(SDL_INIT_EVENTS) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO) < 0 \
+		|| SDL_Init(SDL_INIT_AUDIO) < 0 \
+		|| SDL_Init(SDL_INIT_EVENTS) < 0 \
+		|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0 \
+		|| TTF_Init() < 0)
 		error_log(EC_SDL_INIT);
-	if (SDL_Init(SDL_INIT_GAMECONTROLLER) < 0)
-		error_log(EC_SDL_INIT);
-		
+
 	platform = SDL_GetPlatform();
 	printf("platform: %s\n", platform);
 	if (ft_strequ(platform, "Mac OS X"))
@@ -43,7 +44,6 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 		sdl->platform = os_unsupported;
 		printf("platform %s not supported\n", platform);
 	}
-	
 	sdl->window = SDL_CreateWindow("DoomNukem",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		sdl->window_w, sdl->window_h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
@@ -54,9 +54,10 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	sdl->surface->format->format = SDL_PIXELFORMAT_ABGR1555;
 	if (sdl->surface == NULL)
 		error_log(EC_SDL_GETWINDOW_SURFACE);
-	
-	load_fonts(sdl);
-	
+
+	load_fonts(&sdl->font);
+	load_audio(sdl);
+
 	sdl->zbuffer = malloc(sdl->window_w * sdl->window_h * sizeof(float));
 	objects_init(sdl);
 	t_object *o = get_object_by_name(*sdl, "cyborg");
@@ -87,6 +88,7 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 
 void	quit_game(t_sdlcontext *sdl)
 {
+	close_audio(sdl);
 	SDL_Quit();
 	exit(0);
 }

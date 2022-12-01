@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 19:50:18 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/25 16:13:51 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/01 13:06:33 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,6 @@ void	objects_init(t_sdlcontext *sdl)
 			}
 			m_i++;
 		}
-		set_object_boundingbox(object);
 		i++;
 	}
 }

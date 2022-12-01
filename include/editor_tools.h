@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 16:55:56 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/30 17:56:49 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ t_guibutton			*hovered(t_list *buttonlist, t_point mousepos);
 void				draw_buttons(t_editor ed, t_sdlcontext sdl); //TODO: move somewhere else so game can use it aswell?
 bool				instantbutton(struct s_rectangle rect, struct s_mouse *m, struct s_sdlcontext sdl, char *imgname);
 int					object_selector(t_editor *ed, struct s_sdlcontext sdl, int	original);
-// Combines draw_text_boxed and instantbutton to make a button out of the text
+// Combines print_text_boxed and instantbutton to make a button out of the text
 bool				instant_text_button(t_sdlcontext sdl, t_mouse *m, const char *str, t_point pos);
 void				empty_click_func(t_editor *ed);
 t_tool				*get_wall_tool(void);

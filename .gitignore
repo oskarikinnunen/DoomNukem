@@ -1,10 +1,12 @@
+.DS_Store
 *.o
 .personalTODO
 src/*.o
-SDL_built/*
-SDL_built/**
-SDL-release-2.0.8/build/*
-!SDL-release-2.0.8/build/DontRemoveMe
+libs/SDL2-2.0.8
+libs/freetype-2.9
+libs/SDL2_ttf-2.0.15
+libs/installed_libs
+!libs/installed_libs/DontRemoveMe
 libft/libft.a
 libft/**.o
 lua-5.3.6/install/
@@ -12,6 +14,5 @@ lua-5.3.6/src/liblua.a
 lua-5.3.6/src/lua
 lua-5.3.6/src/luac
 mapfile1
-!SDL_built/DontRemoveMe
 callgrind.out*
 DoomNukem

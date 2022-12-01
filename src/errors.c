@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   errors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 15:53:51 by raho              #+#    #+#             */
-/*   Updated: 2022/11/14 22:24:19 by raho             ###   ########.fr       */
+/*   Updated: 2022/11/30 18:06:55 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,16 @@ static void	sdl_errors(int error_code)
 		fprintf(stderr, "SDL_GameControllerOpen failed: %s\n", SDL_GetError());
 	if (error_code == EC_SDL_JOYSTICKINSTANCEID)
 		fprintf(stderr, "SDL_JoystickInstanceID failed: %s\n", SDL_GetError());
+	if (error_code == EC_SDL_OPENAUDIODEVICE)
+		fprintf(stderr, "SDL_OpenAudioDevice failed: %s\n", SDL_GetError());
+	if (error_code == EC_SDL_QUEUEAUDIO)
+		fprintf(stderr, "SDL_QueueAudio failed: %s\n", SDL_GetError());
+	if (error_code == EC_SDL_LOADWAV)
+		fprintf(stderr, "SDL_LoadWAV failed: %s\n", SDL_GetError());
+	if (error_code == EC_TTF_OPENFONT)
+		fprintf(stderr, "TTF_OpenFont failed: %s\n", TTF_GetError());
+	if (error_code == EC_TTF_RENDERTEXTBLENDED)
+		fprintf(stderr, "TTF_RenderText_Blended failed: %s\n", TTF_GetError());
 	exit (1);
 }
 

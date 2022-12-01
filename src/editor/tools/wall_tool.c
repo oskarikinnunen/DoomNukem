@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wall_tool.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:13:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/15 15:46:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/30 18:18:37 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ static void draw_selected(t_editor *ed, t_sdlcontext sdl, t_walltooldata *dat)
 			sprintf(text, "room: %i wallheight %i", dat->selected[i]->roomindex, dat->selected[i]->height);
 			t_vector3 corner = vector3_add(dat->selected[i]->object.vertices[0], dat->selected[i]->object.vertices[3]);
 			corner = vector3_div(corner, 2.0f);
-			//draw_text_boxed(&sdl, text, vector3_to_screenspace(ed->render, corner, sdl), sdl.screensize);
+			print_text(&sdl, text, vector3_to_screenspace(ed->render, corner, sdl));
 			render_object(sdl, ed->render, &dat->selected[i]->object);
 			count++;
 		}
@@ -123,7 +123,7 @@ static void draw_selected(t_editor *ed, t_sdlcontext sdl, t_walltooldata *dat)
 	{
 		ft_bzero(text, 256);
 		sprintf(text, "selected %i walls", count);
-		draw_text_boxed(&sdl, text, (t_point) {20, 120}, sdl.screensize);
+		print_text(&sdl, text, (t_point) {20, 120});
 	}
 	ed->render.wireframe = false;*/
 }
@@ -153,9 +153,9 @@ static void	wall_tool_draw(t_editor *ed, t_sdlcontext sdl) //TODO: ROTATE AROUND
 		drawcircle(sdl, point_div(sdl.screensize, 2), 2, CLR_RED);
 		//char wallinfo[128];
 		//sprintf(wallinfo, "room: %i height: %i", dat->hover->roomindex, dat->hover->height);
-		//draw_text_boxed(&sdl, wallinfo, (t_point) { 20, 80}, (t_point){sdl.window_w, sdl.window_h});
-		draw_text_boxed(&sdl, vector_string(vector2_to_vector3(dat->hover->line.start)), point_sub(sdl.screensize, (t_point) {200, 100}), sdl.screensize);
-		draw_text_boxed(&sdl, vector_string(vector2_to_vector3(dat->hover->line.end)), point_sub(sdl.screensize, (t_point) {200, 60}), sdl.screensize);
+		//print_text_boxed(&sdl, wallinfo, (t_point) { 20, 80});
+		print_text_boxed(&sdl, vector_string(vector2_to_vector3(dat->hover->line.start)), point_sub(sdl.screensize);
+		print_text_boxed(&sdl, vector_string(vector2_to_vector3(dat->hover->line.end)), point_sub(sdl.screensize);
 		ed->render.gizmocolor = CLR_RED;
 		ed->render.wireframe = true;
 		render_object(sdl, ed->render, &dat->hover->object);
