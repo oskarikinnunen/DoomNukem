@@ -494,7 +494,7 @@ bool is_valid_occlude_check(int32_t id, t_entity *occlude, t_render *render, t_s
 	t_square	occl_square;
 	float		occl_dist;
 
-	if (occlude->id != id && (occlude->occlusion.type == oc_occlude || occlude->occlusion.type == oc_occlude_and_cull))
+	if (occlude->id != id && occlude->occlusion.occlude == true && occlude->occlusion.occluder_count > 0)
 	{
 		get_min_max_from_edges(&occl_square.min, &occl_square.max, occlude->occlusion.occluder, occlude->occlusion.occluder_count);
 		if (square_overlap(cull_square, occl_square) == true)
@@ -562,7 +562,7 @@ bool is_entity_occlusion_culled(t_sdlcontext sdl, t_render *render, t_entity *cu
 		{
 			count = is_culled(ent, count, &ta, &tb);
 			if (count > 10)
-					return(false);
+				return(false);
 			if (count == 0)
 				return(true);
 			swap(&ta, &tb);

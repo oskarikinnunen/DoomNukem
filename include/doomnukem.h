@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/30 17:56:29 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/01 13:03:33 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -241,11 +241,22 @@ void	*list_find(t_list *head, void *match, size_t content_size);
 void	list_remove(t_list **head, void *match, size_t content_size);
 
 /* OCCLUSION.C */
-void update_occlusion(t_sdlcontext sdl, t_render *render);
+void	update_occlusion(t_sdlcontext sdl, t_render *render);
+
+//settings
+void	default_entity_occlusion_settings(t_entity *e, t_world *world);
+void	default_floor_occlusion_settings(t_meshtri *f, t_world *world);
+void	default_wall_occlusion_settings(t_wall *w, t_world *world);
+
+void	update_entity_bounds(t_entity *e);
+void	update_floor_bounds(t_meshtri *f);
+void	update_wall_bounds(t_wall *w);
+
 
 //TODO: temp for occlusion
 int32_t		get_id(t_world *world);
 
 //
 bool			object_lookedat(t_editor *ed, t_sdlcontext sdl, t_object *obj);
+
 #endif

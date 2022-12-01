@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/30 18:43:49 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/01 12:21:45 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,6 @@ void clipped(t_render *render, t_sdlcontext sdl)
 		end = 0;
 		i++;
 	}
-	draw_triangles(sdl, render);
 }
 
 static t_triangle transform_calc(t_mat4x4 matworld, t_triangle triangles)

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/30 18:13:20 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/01 13:21:27 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ void	update_npcs(t_world *world)
 					cur->destination = (t_vector3) {200.0f, 200.0f, 0.0f};
 			}
 			update_anim(&(cur->entity.animation), world->clock.delta);
+			update_entity_bounds(&cur->entity);
 		}
 		i++;
 	}
@@ -108,7 +109,8 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 			t_npc npc = world->npcpool[i];
 			t_vector3 dir = vector3_sub(world->npcpool[i].entity.transform.location, world->npcpool[i].destination);
 			render_ray(sdl, *render, npc.entity.transform.location, npc.destination);
-			render_entity(sdl, render, &world->npcpool[i].entity);
+			if (is_entity_culled(sdl, render, &world->npcpool[i].entity) == false)
+				render_entity(sdl, render, &world->npcpool[i].entity);
 		}
 			
 		i++;
@@ -150,9 +152,7 @@ static void	entity_init(t_world *world, t_sdlcontext sdl)
 			ent->obj = &sdl.objects[0];
 		ent->animation.frame = 0;
 		ent->animation.active = false;
-		ent->occlusion.is_backface_cull = true;
-		ent->occlusion.is_occluded = false;
-		ent->occlusion.type = oc_cull;
+		update_entity_bounds(ent);
 		l = l->next;
 	}
 }
@@ -209,6 +209,8 @@ void	spawn_npc(t_world *world, char *objectname, t_vector3 position, t_sdlcontex
 			world->npcpool[i].entity.transform.location = position;
 			entity_start_anim(&world->npcpool[i].entity, "walk");
 			world->npcpool[i].entity.transform.scale = vector3_one();
+			update_entity_bounds(&world->npcpool[i].entity);
+			default_entity_occlusion_settings(&world->npcpool[i], world);
 			return ;
 		}
 		i++;

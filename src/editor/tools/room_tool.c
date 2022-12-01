@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/30 18:17:00 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/01 13:09:18 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,10 +185,14 @@ static bool illegalwall_move(t_wall *wall, t_room *room)
 //temporary id  setup
 static void set_room_walls_id(t_room *room, t_world *world)
 {
+	t_wall *wall;
+	t_object *obj;
 	int32_t id = get_id(world);
 	for (int i = 0; i < room->wallcount; i++)
 	{
 		room->walls[i].entity.id = id++;
+		default_wall_occlusion_settings(&room->walls[i], world);
+		update_wall_bounds(&room->walls[i]);
 	}
 }
 

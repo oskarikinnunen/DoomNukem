@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/30 18:36:42 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/01 13:01:57 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,7 +261,8 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	}
 	if (mouse_clicked(ed->mouse, MOUSE_LEFT) && collide == NULL) //and selected is null, move to drawupdate
 	{
-		ent->id = get_id(&ed->world);
+		default_entity_occlusion_settings(ent, &ed->world);
+		update_entity_bounds(ent);
 		list_push(&ed->world.entitylist, ent, sizeof(t_entity));
 	}
 }
