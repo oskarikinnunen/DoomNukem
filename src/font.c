@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 22:00:00 by raho              #+#    #+#             */
-/*   Updated: 2022/11/30 22:08:39 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/01 18:38:57 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static void	initialize_font_colors(t_font *font)
 {
 	SDL_Color	temp;
 
-	temp.a = 255;
+	temp.a = 180;
 	temp.r = 0;
 	temp.g = 0;
 	temp.b = 0;
@@ -73,7 +73,7 @@ void	load_fonts(t_font *font)
 	font->font = font->font_sizes[0]; // initialize the font pointer to the smallest font
 	initialize_font_colors(font);
 	initialize_background_colors(font);
-	font->color = font->font_colors.black; // initialize the font's color
-	font->box_color = font->background_colors.white; // initialize the print_text_boxed background color
+	font->color = font->font_colors.white; // initialize the font's color
+	font->box_color = font->background_colors.black; // initialize the print_text_boxed background color
 	font->text = ft_strcpy(text, "text"); // initialize text if it's used before being set to something specific
 }

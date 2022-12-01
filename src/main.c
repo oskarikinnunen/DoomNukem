@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/29 13:17:21 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/01 17:11:14 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	}
 
 	void *pixels;
-	
+	//SDL_CreateRGBSurfaceWithFormat(0, 0, 0, 0, SDL_PIXELFORMAT_ARGB8888)
 	sdl->surface = SDL_CreateRGBSurface(SDL_SWSURFACE, sdl->window_w, sdl->window_h, 32, rmask, gmask, bmask, amask);
 	if (sdl->surface == NULL)
 		error_log(EC_SDL_CREATERGBSURFACE);

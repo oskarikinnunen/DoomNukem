@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 22:00:00 by raho              #+#    #+#             */
-/*   Updated: 2022/11/30 22:08:06 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/01 18:38:45 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,25 @@
 
 typedef struct s_rgba
 {
+	uint8_t alpha;
 	uint8_t	red;
 	uint8_t	green;
 	uint8_t	blue;
-	uint8_t alpha;
 }	t_rgba;
 
-unsigned int	blend_alpha(unsigned int src, unsigned int dest, uint8_t alpha)
+typedef union u_color
 {
-	int	aalpha;
-
-	aalpha = 256 - alpha;
-	return (
-		((aalpha * (src >> 16 & 0xFF) + alpha * (dest >> 16 & 0xFF)) / 256)
-		<< 16
-		| ((aalpha * (src >> 8 & 0xFF) + alpha * (dest >> 8 & 0xFF)) / 256)
-		<< 8
-		| ((aalpha * (src & 0xFF) + alpha * (dest & 0xFF)) / 256));
-}
+	uint32_t	hexadecimal;
+	
+	struct s_urgba
+	{
+		uint8_t alpha;
+		uint8_t	red;
+		uint8_t	green;
+		uint8_t	blue;
+	};
+	
+}	t_color;
 
 t_rgba	extract_color_components(uint32_t surface_pixel, SDL_PixelFormat *fmt)
 {
@@ -39,9 +40,9 @@ t_rgba	extract_color_components(uint32_t surface_pixel, SDL_PixelFormat *fmt)
 	uint32_t	pixel;
 	t_rgba		color;
 	
+	// Do this with union and simply access every color
+
 	pixel = surface_pixel;
-	
-	//printf("pixel: %0x\n", pixel);
 	
 	/* Get Red component */
 	temp = pixel & fmt->Rmask;  /* Isolate red component */
@@ -71,17 +72,17 @@ t_rgba	extract_color_components(uint32_t surface_pixel, SDL_PixelFormat *fmt)
 }
 
 
-uint32_t	blend_colors(uint32_t bg, uint32_t fg, SDL_PixelFormat *fmt)
+uint32_t	blend_colors_alpha(uint32_t bg, uint32_t fg, SDL_PixelFormat *fmt, uint8_t alpha)
 {
 	uint32_t	result; 
 	t_rgba		color_bg;
 	t_rgba		color_fg;
-	int			alpha;
+	float		new_alpha;
 	float		abg;
 	float		afg;
-	int			red;
-	int			green;
-	int			blue;
+	float		red;
+	float		green;
+	float		blue;
 	float		redbg;
 	float		greenbg;
 	float		bluebg;
@@ -92,8 +93,8 @@ uint32_t	blend_colors(uint32_t bg, uint32_t fg, SDL_PixelFormat *fmt)
 	color_bg = extract_color_components(bg, fmt);
 	color_fg = extract_color_components(fg, fmt);
 	
-	if (color_bg.alpha == 0)
-		color_bg.alpha = 255;
+	color_bg.alpha = 255;
+	color_fg.alpha = alpha;
 
 	abg = ((float)color_bg.alpha / 255.0f);
 	afg = ((float)color_fg.alpha / 255.0f);
@@ -106,52 +107,18 @@ uint32_t	blend_colors(uint32_t bg, uint32_t fg, SDL_PixelFormat *fmt)
 	greenfg = (float)color_fg.green / 255.0f;
 	bluefg = (float)color_fg.blue / 255.0f;
 
-	/* printf("color_bg.alpha: %hhu\n", color_bg.alpha);
-	printf("color_bg.red: %hhu\n", color_bg.red);
-	printf("color_bg.green: %hhu\n", color_bg.green);
-	printf("color_bg.blue: %hhu\n\n", color_bg.blue);
-
-	printf("abg: %f\n", abg);
-	printf("redbg: %f\n", redbg);
-	printf("greenbg: %f\n", greenbg);
-	printf("bluebg: %f\n\n", bluebg);
-
-	printf("color_fg.alpha: %hhu\n", color_fg.alpha);
-	printf("color_fg.red: %hhu\n", color_fg.red);
-	printf("color_fg.green: %hhu\n", color_fg.green);
-	printf("color_fg.blue: %hhu\n\n", color_fg.blue);
-
-	printf("afg: %f\n", afg);
-	printf("redfg: %f\n", redfg);
-	printf("greenfg: %f\n", greenfg);
-	printf("bluefg: %f\n\n", bluefg); */
-
-/* 	// 1st
-	alpha = 1.0f - (1.0f - abg) * (1.0f - afg);
-	red = (redfg / 1.0f) * afg / alpha + (redbg / 1.0f) * abg * (1.0f - afg) / alpha;
-	green = (greenfg / 1.0f) * afg / alpha + (greenbg / 1.0f) * abg * (1.0f - afg) / alpha;
-	blue = (bluefg / 1.0f) * afg / alpha + (bluebg / 1.0f) * abg * (1.0f - afg) / alpha;
- */
-
 	// OpenGL - transparency (alpha blending) Youtube
-	alpha = afg + abg * (1.0f - afg);
-	red = redfg * afg + redbg * abg * (1.0f - afg) / alpha;
-	green = greenfg * afg + greenbg * abg * (1.0f - afg) / alpha;
-	blue = bluefg * afg + bluebg * abg * (1.0f - afg) / alpha;
+	new_alpha = afg + abg * (1.0f - afg);
+	red = ((redfg * afg) + (redbg * abg * (1.0f - afg))) / new_alpha;
+	green = ((greenfg * afg) + (greenbg * abg * (1.0f - afg))) / new_alpha;
+	blue = ((bluefg * afg) + (bluebg * abg * (1.0f - afg))) / new_alpha;
 
-	alpha *= 255;
-	red *= 255;
-	green *= 255;
-	blue *= 255;
+	new_alpha *= 255.0f;
+	red *= 255.0f;
+	green *= 255.0f;
+	blue *= 255.0f;
 
-	/* printf("alpha: %d\n", alpha);
-	printf("red: %d\n", red);
-	printf("green: %d\n", green);
-	printf("blue: %d\n\n", blue); */
-
-	result = (alpha << 24) | (red << 16) | (green << 8) | blue;
-	
-	/* printf("result: %0x\n\n", result); */
+	result = ((int)new_alpha << 24) | ((int)red << 16) | ((int)green << 8) | (int)blue;
 
 	return (result);
 }
@@ -172,16 +139,24 @@ static void	join_surfaces_boxed(t_sdlcontext *sdl, SDL_Surface *new, t_point pos
 				if (i.x >= 0 && i.x < new->w && i.y >= 0 && i.y < new->h)
 				{	
 					if (((uint32_t *)new->pixels)[i.x + (i.y * new->w)] >> 24 > 0) // checking alpha
-						((uint32_t *)sdl->surface->pixels)[(i.x + pos.x) + ((i.y + pos.y) * sdl->surface->w)] = ((uint32_t *)new->pixels)[i.x + (i.y * new->w)];
-					else
+					{
 						((uint32_t *)sdl->surface->pixels)[(i.x + pos.x) + ((i.y + pos.y) * sdl->surface->w)] = \
-								blend_colors(((uint32_t *)sdl->surface->pixels)[(i.x + pos.x) + ((i.y + pos.y) * sdl->surface->w)], \
-								sdl->font.box_color, sdl->surface->format);
+								blend_colors_alpha(((uint32_t *)sdl->surface->pixels)[(i.x + pos.x) + ((i.y + pos.y) * sdl->surface->w)], \
+								((uint32_t *)new->pixels)[i.x + (i.y * new->w)], sdl->surface->format, sdl->font.color.a);
+					}
+					else
+					{
+						((uint32_t *)sdl->surface->pixels)[(i.x + pos.x) + ((i.y + pos.y) * sdl->surface->w)] = \
+								blend_colors_alpha(((uint32_t *)sdl->surface->pixels)[(i.x + pos.x) + ((i.y + pos.y) * sdl->surface->w)], \
+								sdl->font.box_color, sdl->surface->format, sdl->font.color.a);
+					}
 				}
 				else
+				{
 					((uint32_t *)sdl->surface->pixels)[(i.x + pos.x) + ((i.y + pos.y) * sdl->surface->w)] = \
-								blend_colors(((uint32_t *)sdl->surface->pixels)[(i.x + pos.x) + ((i.y + pos.y) * sdl->surface->w)], \
-								sdl->font.box_color, sdl->surface->format);
+							blend_colors_alpha(((uint32_t *)sdl->surface->pixels)[(i.x + pos.x) + ((i.y + pos.y) * sdl->surface->w)], \
+							sdl->font.box_color, sdl->surface->format, sdl->font.color.a);
+				}
 			}
 			i.x++;
 		}
@@ -189,15 +164,9 @@ static void	join_surfaces_boxed(t_sdlcontext *sdl, SDL_Surface *new, t_point pos
 	}
 }
 
-static void	join_surfaces(SDL_Surface *base, SDL_Surface *new, t_point pos)
+static void	join_surfaces(SDL_Surface *base, SDL_Surface *new, t_point pos, uint8_t alpha)
 {
 	t_point	i;
-	SDL_PixelFormat *fmtbase, *fmtnew;
-	uint32_t	temp, pixelbase, pixelnew, pixel;
-	uint8_t		alphabase, alphanew;
-
-	fmtbase = base->format;
-	fmtnew = new->format;
 
 	i.y = 0;
 	while (i.y < new->h)
@@ -208,42 +177,12 @@ static void	join_surfaces(SDL_Surface *base, SDL_Surface *new, t_point pos)
 			if (i.x + pos.x > 0 && i.x + pos.x < base->w && \
 				i.y + pos.y > 0 && i.y + pos.y < base->h)
 			{
-				/* pixelbase = ((uint32_t *)base->pixels)[(i.x + pos.x) + ((i.y + pos.y) * base->w)];
-				pixelnew = ((uint32_t *)new->pixels)[i.x + (i.y * new->w)];
-				
-				temp = pixelbase & fmtbase->Amask;
-				temp = temp >> fmtbase->Ashift;
-				temp = temp << fmtbase->Aloss;
-				alphabase = (uint8_t)temp;
-				
-				temp = pixelnew & fmtnew->Amask;
-				temp = temp >> fmtnew->Ashift;
-				temp = temp << fmtnew->Aloss;
-				alphanew = (uint8_t)temp;
-
-				printf("Base surface alpha: %d			TTF surface alpha: %d\n", alphabase, alphanew); */
-
-				/* if ((((uint32_t *)new->pixels)[i.x + (i.y * new->w)] >> 24) != 0) // checking alpha
-					((uint32_t *)base->pixels)[(i.x + pos.x) + ((i.y + pos.y) * base->w)] = ((uint32_t *)new->pixels)[i.x + (i.y * new->w)]; */
-
-				/* if ((((uint32_t *)new->pixels)[i.x + (i.y * new->w)] >> 24) > 0) // checking alpha
+				if ((((uint32_t *)new->pixels)[i.x + (i.y * new->w)] >> 24) > 0) // checking alpha
+				{
 					((uint32_t *)base->pixels)[(i.x + pos.x) + ((i.y + pos.y) * base->w)] = \
-					blend_colors(((uint32_t *)base->pixels)[(i.x + pos.x) + ((i.y + pos.y) * base->w)], \
-								((uint32_t *)new->pixels)[i.x + (i.y * new->w)], base->format); */
-
-				pixel = ((uint32_t *)new->pixels)[i.x + (i.y * new->w)];
-				((uint32_t *)base->pixels)[(i.x + pos.x) + ((i.y + pos.y) * base->w)] = \
-					blend_alpha(((uint32_t *)base->pixels)[(i.x + pos.x) + ((i.y + pos.y) * base->w)], pixel, \
-								(uint8_t)(((pixel & base->format->Amask) >> base->format->Ashift) << base->format->Aloss));
-				
-				/* pixelbase = ((uint32_t *)base->pixels)[(i.x + pos.x) + ((i.y + pos.y) * base->w)];
-				
-				temp = pixelbase & fmtbase->Amask;
-				temp = temp >> fmtbase->Ashift;
-				temp = temp << fmtbase->Aloss;
-				alphabase = (uint8_t)temp;
-				
-				printf("Base surface alpha: %d\n", alphabase); */
+							blend_colors_alpha(((uint32_t *)base->pixels)[(i.x + pos.x) + ((i.y + pos.y) * base->w)], \
+							((uint32_t *)new->pixels)[i.x + (i.y * new->w)], base->format, alpha);
+				}
 			}
 			i.x++;
 		}
@@ -282,7 +221,7 @@ t_rectangle	print_text(t_sdlcontext *sdl, const char *text, t_point pos)
 	rect.position = pos;
 	rect.size.x = surfacetext->w;
 	rect.size.y = surfacetext->h;
-	join_surfaces(sdl->surface, surfacetext, pos);
+	join_surfaces(sdl->surface, surfacetext, pos, sdl->font.color.a);
 	SDL_FreeSurface(surfacetext);
 	return (rect);
 }
