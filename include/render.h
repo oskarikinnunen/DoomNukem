@@ -22,6 +22,14 @@ typedef enum e_platform
 	os_unsupported
 }	t_platform;
 
+typedef struct s_argb
+{
+	uint8_t alpha;
+	uint8_t	red;
+	uint8_t	green;
+	uint8_t	blue;
+}	t_argb;
+
 typedef struct s_img
 {
 	t_point		size;
@@ -199,6 +207,12 @@ int		clip_triangle_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangl
 void	clipped(t_render *render, t_sdlcontext sdl);
 
 int vector2_clip_triangle_against_plane(t_vector2 plane_p, t_vector2 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
+
+/* SURFACE TOOLS */
+
+void	join_surface_to_wsurface(SDL_Surface *src, SDL_Surface *dest);
+void	join_text_to_surface(SDL_Surface *base, SDL_Surface *new, t_point pos, uint8_t alpha);
+void	join_text_boxed_to_surface(t_sdlcontext *sdl, SDL_Surface *new, t_point pos, t_point padding);
 
 /*occlusion*/
 void get_min_max_from_triangles(t_vector2 *min, t_vector2 *max, t_triangle *t, int count);

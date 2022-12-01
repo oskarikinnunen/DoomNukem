@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 18:42:14 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/01 20:09:00 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ static void	update_render_editor(t_render *render, t_editor ed) //TODO: move gam
 int	editorloop(t_sdlcontext sdl)
 {
 	t_editor		ed;
-	int				i;
 
 	bzero(&ed, sizeof(t_editor));
 	ed.buttonlist = load_chunk("buttons", "BUTN", sizeof(t_guibutton));
@@ -72,7 +71,6 @@ int	editorloop(t_sdlcontext sdl)
 	//ed.angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
 	ed.angle = (t_vector2){-20.0f, -RAD90 * 0.99f};
 	ed.position = (t_vector3){500.0f, 500.0f, 200.0f};
-	i = 0;
 	ed.tool = get_npc_tool();
 	while (ed.gamereturn == game_continue)
 	{
@@ -99,41 +97,11 @@ int	editorloop(t_sdlcontext sdl)
 		print_text(&sdl, "shift + enter to go to playmode", (t_point){sdl.window_w / 2, 45});
 		char *fps = ft_itoa(ed.clock.fps);
 		print_text(&sdl, fps, (t_point){sdl.window_w - 80, 10});
-		
-		// showing functionality of print text boxed:
-		SDL_Color	temp1;
-		uint32_t	temp2;
-		temp1 = sdl.font.color;
-		temp2 = sdl.font.box_color;
-		sdl.font.color = sdl.font.font_colors.green;
-		sdl.font.box_color = sdl.font.background_colors.brown;
-		print_text_boxed(&sdl, "coming in hot", (t_point){200, 300});
-		sdl.font.color = sdl.font.font_colors.orange;
-		print_text_boxed(&sdl, "guns blazing", (t_point){250, 350});
-		sdl.font.color = temp1;
-		sdl.font.box_color = temp2;
 
 		drawcircle(sdl, point_div(sdl.screensize, 2), 4, CLR_BLUE);
-		//free(fps);
+		free(fps);
 
-		sdl.font.font = sdl.font.font_sizes[3];
-		print_text(&sdl, "TRANSPARENCY", (t_point){300, 100});
-		sdl.font.font = sdl.font.font_sizes[0];
-
-		t_point	i;
-
-		i.y = 0;
-		while (i.y < sdl.window_surface->h)
-		{
-			i.x = 0;
-			while (i.x < sdl.window_surface->w)
-			{
-				//if (((uint32_t *)new->pixels)[i.x + (i.y * new->w)] >> 24 != 0) // checking alpha
-				((uint32_t *)sdl.window_surface->pixels)[i.x + (i.y * sdl.window_surface->w)] = ((uint32_t *)sdl.surface->pixels)[i.x + (i.y * sdl.surface->w)];
-				i.x++;
-			}
-			i.y++;
-		}
+		join_surface_to_wsurface(sdl.surface, sdl.window_surface);
 
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);

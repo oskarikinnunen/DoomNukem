@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 18:43:49 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/01 20:09:12 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,38 +50,18 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	//SDL_CreateWindowAndRenderer(0, 0, )
 	if (sdl->window == NULL)
 		error_log(EC_SDL_CREATEWINDOW);
+
+	/* sdl->surface = SDL_GetWindowSurface(sdl->window);
+	if (sdl->surface == NULL)
+		error_log(EC_SDL_GETWINDOW_SURFACE); */
+
 	sdl->window_surface = SDL_GetWindowSurface(sdl->window);
 	if (sdl->window_surface == NULL)
 		error_log(EC_SDL_GETWINDOW_SURFACE);
-	
-	
-	uint32_t rmask = 0, gmask = 0, bmask = 0, amask = 0;
 
-	if (SDL_BYTEORDER == SDL_LIL_ENDIAN)
-	{
-		rmask = 0x000000ff;
-		gmask = 0x0000ff00;
-		bmask = 0x00ff0000;
-		amask = 0xff000000;
-	}
-	else
-	{
-		rmask = 0xff000000;
-		gmask = 0x00ff0000;
-		bmask = 0x0000ff00;
-		amask = 0x000000ff;
-	}
-
-	void *pixels;
-	//SDL_CreateRGBSurfaceWithFormat(0, 0, 0, 0, SDL_PIXELFORMAT_ARGB8888)
-	sdl->surface = SDL_CreateRGBSurface(SDL_SWSURFACE, sdl->window_w, sdl->window_h, 32, rmask, gmask, bmask, amask);
+	sdl->surface = SDL_CreateRGBSurfaceWithFormat(SDL_SWSURFACE, sdl->window_w, sdl->window_h, 32, SDL_PIXELFORMAT_ARGB8888);
 	if (sdl->surface == NULL)
 		error_log(EC_SDL_CREATERGBSURFACE);
-
-	printf("sdl->surface: %s\nsdl->window_surface: %s\n", SDL_GetPixelFormatName(sdl->surface->format->format), SDL_GetPixelFormatName(sdl->window_surface->format->format));
-	printf("color key? - %d\n", SDL_GetColorKey(sdl->surface, sdl->surface->pixels)); // result was that the surface doesnt have color key enabled
-	if (SDL_ISPIXELFORMAT_ALPHA(sdl->surface->format->format))
-		printf("SDL_ISPIXELFORMAT_ALPHA returned true\n");
 
 	load_fonts(&sdl->font);
 	load_audio(sdl);

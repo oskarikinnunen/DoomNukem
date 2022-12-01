@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 22:00:00 by raho              #+#    #+#             */
-/*   Updated: 2022/12/01 18:43:09 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/01 20:05:47 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static void	initialize_font_colors(t_font *font)
 {
 	SDL_Color	temp;
 
-	temp.a = 180;
+	temp.a = 255;
 	temp.r = 0;
 	temp.g = 0;
 	temp.b = 0;
@@ -46,11 +46,11 @@ static void	initialize_font_colors(t_font *font)
 
 static void	initialize_background_colors(t_font *font)
 {
-	font->background_colors.black = 0x000000;
-	font->background_colors.white = 0xFFFFFF;
-	font->background_colors.dark_grey = 0x222222;
-	font->background_colors.light_grey = 0x555555;
-	font->background_colors.brown = 0x4C3228;
+	font->background_colors.black = 0xFF000000;
+	font->background_colors.white = 0xFFFFFFFF;
+	font->background_colors.dark_grey = 0xFF222222;
+	font->background_colors.light_grey = 0xFF555555;
+	font->background_colors.brown = 0xFF4C3228;
 }
 
 void	load_fonts(t_font *font)
@@ -73,7 +73,7 @@ void	load_fonts(t_font *font)
 	font->font = font->font_sizes[0]; // initialize the font pointer to the smallest font
 	initialize_font_colors(font);
 	initialize_background_colors(font);
-	font->color = font->font_colors.white; // initialize the font's color
-	font->box_color = font->background_colors.black; // initialize the print_text_boxed background color
+	font->color = font->font_colors.black; // initialize the font's color
+	font->box_color = font->background_colors.dark_grey; // initialize the print_text_boxed background color
 	font->text = ft_strcpy(text, "text"); // initialize text if it's used before being set to something specific
 }
