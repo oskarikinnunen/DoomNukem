@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/02 21:22:20 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/02 21:30:52 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ static void	update_render_editor(t_render *render, t_editor ed) //TODO: move gam
 int	editorloop(t_sdlcontext sdl)
 {
 	t_editor		ed;
-	int				i;
 
 	bzero(&ed, sizeof(t_editor));
 	ed.buttonlist = load_chunk("buttons", "BUTN", sizeof(t_guibutton));
@@ -72,7 +71,6 @@ int	editorloop(t_sdlcontext sdl)
 	//ed.angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
 	ed.angle = (t_vector2){-20.0f, -RAD90 * 0.99f};
 	ed.position = (t_vector3){500.0f, 500.0f, 200.0f};
-	i = 0;
 	ed.tool = get_npc_tool();
 	while (ed.gamereturn == game_continue)
 	{
@@ -99,18 +97,12 @@ int	editorloop(t_sdlcontext sdl)
 		print_text(&sdl, "shift + enter to go to playmode", (t_point){sdl.window_w / 2, 45});
 		char *fps = ft_itoa(ed.clock.fps);
 		print_text(&sdl, fps, (t_point){sdl.window_w - 80, 10});
-		
-		// showing functionality of print text boxed:
-		SDL_Color	temp;
-		temp = sdl.font.color;
-		sdl.font.color = sdl.font.font_colors.green;
-		print_text_boxed(&sdl, "coming in hot", (t_point){200, 300});
-		sdl.font.color = sdl.font.font_colors.orange;
-		print_text_boxed(&sdl, "guns blazing", (t_point){250, 350});
-		sdl.font.color = temp;
 
 		drawcircle(sdl, point_div(sdl.screensize, 2), 4, CLR_BLUE);
 		free(fps);
+
+		join_surfaces(sdl.window_surface, sdl.surface);
+
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 	}
