@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 19:37:04 by raho              #+#    #+#             */
-/*   Updated: 2022/12/01 21:44:38 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/02 16:56:40 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,8 @@ void	join_text_boxed_to_surface(t_sdlcontext *sdl, SDL_Surface *src, t_point pos
 
 void	join_text_to_surface(SDL_Surface *dest, SDL_Surface *src, t_point pos, uint8_t alpha)
 {
-	t_point	i;
+	t_point		i;
+	uint32_t	pixel;
 
 	i.y = 0;
 	while (i.y < src->h)
@@ -67,7 +68,8 @@ void	join_text_to_surface(SDL_Surface *dest, SDL_Surface *src, t_point pos, uint
 			if (i.x + pos.x > 0 && i.x + pos.x < dest->w && \
 				i.y + pos.y > 0 && i.y + pos.y < dest->h)
 			{
-				if ((((uint32_t *)src->pixels)[i.x + (i.y * src->w)] >> 24) > 0) // checking alpha
+				pixel = ((uint32_t *)src->pixels)[i.x + (i.y * src->w)];
+				if ((pixel >> 24) > 0) // checking alpha
 				{
 					((uint32_t *)dest->pixels)[(i.x + pos.x) + ((i.y + pos.y) * dest->w)] = \
 							blend_colors_alpha(((uint32_t *)dest->pixels)[(i.x + pos.x) + ((i.y + pos.y) * dest->w)], \

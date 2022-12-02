@@ -150,7 +150,6 @@ void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale);
 
 /* DRAW.C */
 void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr);
-void	draw_alpha(t_sdlcontext sdl, t_point pos, uint32_t clr);
 void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr);
 void	drawcircle(t_sdlcontext sdl, t_point pos, int size, uint32_t clr);
 void	drawrectangle(t_sdlcontext, t_rectangle rect, uint32_t clr);

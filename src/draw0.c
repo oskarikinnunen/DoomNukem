@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 21:51:49 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/02 16:49:52 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,14 @@ void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr)
 	if (pos.x < 0 || pos.x >= sdl.window_w - 2
 		|| pos.y < 0 || pos.y >= sdl.window_h - 2)
 		return ;
-	((uint32_t *)sdl.surface->pixels)[pos.x + (pos.y * sdl.window_w)] = clr;
-	sdl.zbuffer[pos.x + (pos.y * sdl.window_w)] = 2.0f;
-}
-
-void	draw_alpha(t_sdlcontext sdl, t_point pos, uint32_t clr)
-{
-	if (pos.x < 0 || pos.x >= sdl.window_w - 2
-		|| pos.y < 0 || pos.y >= sdl.window_h - 2)
-		return ;
-	((uint32_t *)sdl.surface->pixels)[pos.x + (pos.y * sdl.window_w)] = \
-			blend_colors_alpha(((uint32_t *)sdl.surface->pixels)[pos.x + (pos.y * sdl.window_w)], clr, (clr >> 24));
+	if ((clr >> 24) > 0)
+	{
+		((uint32_t *)sdl.surface->pixels)[pos.x + (pos.y * sdl.window_w)] = \
+		blend_colors_alpha(((uint32_t *)sdl.surface->pixels) \
+		[pos.x + (pos.y * sdl.window_w)], clr, (clr >> 24));
+	}
+	else
+		((uint32_t *)sdl.surface->pixels)[pos.x + (pos.y * sdl.window_w)] = clr;
 	sdl.zbuffer[pos.x + (pos.y * sdl.window_w)] = 2.0f;
 }
 

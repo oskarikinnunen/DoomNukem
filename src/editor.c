@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 21:41:02 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/02 16:46:17 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,12 @@ int	editorloop(t_sdlcontext sdl)
 
 		drawcircle(sdl, point_div(sdl.screensize, 2), 4, CLR_BLUE);
 		free(fps);
+
+		sdl.font.color.a = 100;
+		sdl.font.color.r = 255;
+		print_text(&sdl, "TRANSPARENCY", (t_point){400, 200});
+		sdl.font.color.a = 255;
+		sdl.font.color.r = 0;
 
 		join_surfaces(sdl.window_surface, sdl.surface);
 
