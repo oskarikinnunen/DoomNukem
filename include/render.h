@@ -92,6 +92,18 @@ typedef struct	s_triangle
 	uint32_t		clr;
 }	t_triangle;
 
+typedef struct s_point_triangle
+{
+	t_point			p[3];
+	t_texture		t[3];
+	uint32_t		clr;
+}	t_point_triangle;
+
+typedef struct s_triangle_polygon
+{
+	t_point p[3];
+}	t_triangle_polygon;
+
 typedef struct s_render_statistics
 {
 	bool		statistics; // turns on, off
@@ -121,6 +133,10 @@ typedef struct s_render
 	t_vector3			lookdir;
 	t_triangle			*draw_triangles;
 	t_triangle			*calc_triangles;
+	t_point_triangle	*temp1;
+	t_point_triangle	*temp2;
+	uint32_t			temp1_count;
+	uint32_t			temp2_count;
 	uint32_t			draw_tri_count;
 	uint32_t			calc_tri_count;
 	t_img				*img;
@@ -148,8 +164,7 @@ void		free_render(t_render render);
 void		render_start(t_render *render);
 
 /* RENDER */
-void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle, t_img img);
-void	z_fill_tri_solid(t_sdlcontext sdl, t_triangle triangle);
+void	render_triangle(t_sdlcontext *sdl, t_point_triangle triangle, t_img *img);
 void	render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size);
 void	render_ray(t_sdlcontext sdl, t_render render, t_vector3 from, t_vector3 to);
 int		triangle_clipagainstplane(t_vector3 plane_p, t_vector3 plane_n, t_triangle *in_tri, t_triangle out_tri[2]);
@@ -186,7 +201,7 @@ int		clip_triangle_against_occluder_plane(t_vector3 plane_p, t_vector3 plane_n, 
 int		clip_triangle_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
 void	clipped(t_render *render, t_sdlcontext sdl);
 
-int vector2_clip_triangle_against_plane(t_vector2 plane_p, t_vector2 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
+int		point_clip_triangle_against_plane(t_vector2 plane_p, t_vector2 plane_n, t_point_triangle in_tri, t_point_triangle out_tri[2]);
 
 /*occlusion*/
 void get_min_max_from_triangles(t_vector2 *min, t_vector2 *max, t_triangle *t, int count);

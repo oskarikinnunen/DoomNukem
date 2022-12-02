@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 13:21:10 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/02 21:22:50 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ t_render	init_render(t_sdlcontext sdl, struct s_world *world)
 	render.matproj = matrix_makeprojection(90.0f, (float)sdl.window_h / (float)sdl.window_w, 2.0f, 1000.0f);
 	render.calc_triangles = malloc(sizeof(t_triangle) * 10000);
 	render.draw_triangles = malloc(sizeof(t_triangle) * 10000);
+	render.temp1 = malloc(sizeof(t_point_triangle) * 10000);
+	render.temp2 = malloc(sizeof(t_point_triangle) * 10000);
 	render.q = malloc(sizeof(t_quaternion) * 10000); //TODO: should be multiplied by the largest obj vertex count
 	render.debug_img = get_image_by_name(sdl, "");
 	render.vtarget = vector3_add(render.position, render.lookdir);

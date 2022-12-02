@@ -26,6 +26,33 @@ static void sort_quat_tex_by_dist(float dist[3], t_quaternion q[3], t_texture t[
 	}
 }
 
+static void sort_point_and_tex_by_dist(float dist[3], t_point p[3], t_texture t[3])
+{
+	int 			i;
+	int				j;
+	float			key;
+	t_point			temp_p;
+	t_texture		temp_t;
+
+	for (i = 1; i < 3; i++)
+	{
+		key = dist[i];
+		temp_p = p[i];
+		temp_t = t[i];
+		j = i - 1;
+		while (j >= 0 && dist[j] > key)
+		{
+			dist[j + 1] = dist[j];
+			p[j + 1] = p[j];
+			t[j + 1] = t[j];
+			j = j - 1;
+		}
+		dist[j + 1] = key;
+		p[j + 1] = temp_p;
+		t[j + 1] = temp_t;
+	}
+}
+
 static int clip_triangle(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle *out_tri)
 {
 	float	t;
@@ -67,16 +94,16 @@ static int clip_quad_to_triangles(t_vector3 plane_p, t_vector3 plane_n, t_triang
 	return(2);
 }
 
-static int vector2_clip_triangle(t_vector2 plane_p, t_vector2 plane_n, t_triangle in_tri, t_triangle *out_tri)
+static int point_clip_triangle(t_vector2 plane_p, t_vector2 plane_n, t_point_triangle in_tri, t_point_triangle *out_tri)
 {
 	float	t;
 
 	out_tri->clr = in_tri.clr;
-	t = vector2_line_intersect_plane(plane_p, plane_n, (t_vector2){in_tri.p[0].v.x, in_tri.p[0].v.y}, (t_vector2){in_tri.p[2].v.x, in_tri.p[2].v.y});
-	out_tri->p[0] = lerp_quaternion(in_tri.p[0], in_tri.p[2], t);
+	t = vector2_line_intersect_plane(plane_p, plane_n, (t_vector2){in_tri.p[0].x, in_tri.p[0].y}, (t_vector2){in_tri.p[2].x, in_tri.p[2].y});
+	out_tri->p[0] = lerp_point(in_tri.p[0], in_tri.p[2], t);
 	out_tri->t[0] = lerp_texture(in_tri.t[0], in_tri.t[2], t);
-	t = vector2_line_intersect_plane(plane_p, plane_n, (t_vector2){in_tri.p[1].v.x, in_tri.p[1].v.y}, (t_vector2){in_tri.p[2].v.x, in_tri.p[2].v.y});
-	out_tri->p[1] = lerp_quaternion(in_tri.p[1], in_tri.p[2], t);
+	t = vector2_line_intersect_plane(plane_p, plane_n, (t_vector2){in_tri.p[1].x, in_tri.p[1].y}, (t_vector2){in_tri.p[2].x, in_tri.p[2].y});
+	out_tri->p[1] = lerp_point(in_tri.p[1], in_tri.p[2], t);
 	out_tri->t[1] = lerp_texture(in_tri.t[1], in_tri.t[2], t);
 	out_tri->p[2] = in_tri.p[2];
 	out_tri->t[2] = in_tri.t[2];
@@ -84,21 +111,21 @@ static int vector2_clip_triangle(t_vector2 plane_p, t_vector2 plane_n, t_triangl
 	return(1);
 }
 
-static int vector2_clip_quad_to_triangles(t_vector2 plane_p, t_vector2 plane_n, t_triangle in_tri, t_triangle *out_tri)
+static int point_clip_quad_to_triangles(t_vector2 plane_p, t_vector2 plane_n, t_point_triangle in_tri, t_point_triangle *out_tri)
 {
 	float	t;
 
 	out_tri[0].clr = in_tri.clr;
 	out_tri[1].clr = in_tri.clr;
-	t = vector2_line_intersect_plane(plane_p, plane_n, (t_vector2){in_tri.p[0].v.x, in_tri.p[0].v.y}, (t_vector2){in_tri.p[1].v.x, in_tri.p[1].v.y});
-	out_tri[0].p[0] = lerp_quaternion(in_tri.p[0], in_tri.p[1], t);
+	t = vector2_line_intersect_plane(plane_p, plane_n, (t_vector2){in_tri.p[0].x, in_tri.p[0].y}, (t_vector2){in_tri.p[1].x, in_tri.p[1].y});
+	out_tri[0].p[0] = lerp_point(in_tri.p[0], in_tri.p[1], t);
 	out_tri[0].t[0] = lerp_texture(in_tri.t[0], in_tri.t[1], t);
-	t = vector2_line_intersect_plane(plane_p, plane_n, (t_vector2){in_tri.p[0].v.x, in_tri.p[0].v.y}, (t_vector2){in_tri.p[2].v.x, in_tri.p[2].v.y});
-	out_tri[0].p[1] = lerp_quaternion(in_tri.p[0], in_tri.p[2], t);
+	t = vector2_line_intersect_plane(plane_p, plane_n, (t_vector2){in_tri.p[0].x, in_tri.p[0].y}, (t_vector2){in_tri.p[2].x, in_tri.p[2].y});
+	out_tri[0].p[1] = lerp_point(in_tri.p[0], in_tri.p[2], t);
 	out_tri[0].t[1] = lerp_texture(in_tri.t[0], in_tri.t[2], t);
 	out_tri[0].p[2] = in_tri.p[1];
 	out_tri[0].t[2] = in_tri.t[1];
-	out_tri[1].p[0] = lerp_quaternion(in_tri.p[0], in_tri.p[2], t);
+	out_tri[1].p[0] = lerp_point(in_tri.p[0], in_tri.p[2], t);
 	out_tri[1].t[0] = lerp_texture(in_tri.t[0], in_tri.t[2], t);
 	out_tri[1].p[1] = in_tri.p[1];
 	out_tri[1].t[1] = in_tri.t[1];
@@ -108,7 +135,7 @@ static int vector2_clip_quad_to_triangles(t_vector2 plane_p, t_vector2 plane_n, 
 	return(2);
 }
 
-int vector2_clip_triangle_against_plane(t_vector2 plane_p, t_vector2 plane_n, t_triangle in_tri, t_triangle out_tri[2])
+int point_clip_triangle_against_plane(t_vector2 plane_p, t_vector2 plane_n, t_point_triangle in_tri, t_point_triangle out_tri[2])
 {
 	float		dist[3];
 	int			i;
@@ -120,12 +147,11 @@ int vector2_clip_triangle_against_plane(t_vector2 plane_p, t_vector2 plane_n, t_
 	i = 0;
 	while (i < 3)
 	{
-		dist[i] = vector2_fdist_to_plane((t_vector2){in_tri.p[i].v.x, in_tri.p[i].v.y}, plane_n, plane_p);
+		dist[i] = vector2_fdist_to_plane((t_vector2){in_tri.p[i].x, in_tri.p[i].y}, plane_n, plane_p);
 		if (dist[i] < 0.0f)
 			outside++;
 		i++;
 	}
-	//printf("outside count%d\n", outside);
 	if (outside == 3)
 		return(0);
 	if (outside == 0)
@@ -133,11 +159,11 @@ int vector2_clip_triangle_against_plane(t_vector2 plane_p, t_vector2 plane_n, t_
 		out_tri[0] = in_tri;
 		return(1);
 	}
-	sort_quat_tex_by_dist(dist, in_tri.p, in_tri.t);
+	sort_point_and_tex_by_dist(dist, in_tri.p, in_tri.t);
 	if (outside == 1)
-		return (vector2_clip_quad_to_triangles(plane_p, plane_n, in_tri, out_tri));
+		return (point_clip_quad_to_triangles(plane_p, plane_n, in_tri, out_tri));
 	if (outside == 2)
-		return (vector2_clip_triangle(plane_p, plane_n, in_tri, out_tri));
+		return (point_clip_triangle(plane_p, plane_n, in_tri, out_tri));
 	return(0);
 }
 

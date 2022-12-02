@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 13:21:27 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/01 14:30:43 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,9 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 	render->world = world;
 	update_occlusion(sdl, render);
 	l = render->world->roomlist;
-	while (l != NULL)
+	//render->wireframe = true;
+	//render->gizmocolor = CLR_RED;
+	while (l != NULL)//
 	{
 		render_room(sdl, render, *(t_room *)l->content);
 		l = l->next;
@@ -210,7 +212,7 @@ void	spawn_npc(t_world *world, char *objectname, t_vector3 position, t_sdlcontex
 			entity_start_anim(&world->npcpool[i].entity, "walk");
 			world->npcpool[i].entity.transform.scale = vector3_one();
 			update_entity_bounds(&world->npcpool[i].entity);
-			default_entity_occlusion_settings(&world->npcpool[i], world);
+			default_entity_occlusion_settings(&world->npcpool[i].entity, world);
 			return ;
 		}
 		i++;
