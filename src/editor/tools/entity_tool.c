@@ -6,101 +6,13 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/29 13:01:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/02 15:58:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
-#include "editor_tools.h"
-#include "file_io.h"
- 
+#include "tools/entitytool.h" 
 #include "objects.h"
-/*
-void entity_tool_append_list(t_editor *ed, t_entity ent) //TODO: make 
-{
-	list_push(&ed->entitylist, &ent, sizeof(t_entity));
-}
-
-static t_entity	*find_closest(t_editor *ed) //TODO: pointer
-{
-	t_list		*l;
-	t_entity	*cur_ent;
-	t_point		entity_pos;
-
-	l = ed->entitylist;
-	while (l != NULL)
-	{
-		cur_ent = (t_entity *)l->content;
-		entity_pos = vector2_to_point(cur_ent->position);
-		if (point_sqr_magnitude(point_sub(mousetoworldspace(ed), entity_pos)) < 400)
-		{
-			return (cur_ent);
-		}
-		l = l->next;
-	}
-	return (NULL);
-}
-
-static void entity_tool_place(t_editor *ed)
-{
-	t_entity		*ent;
-
-	ent = (t_entity *)ed->tool->tooldata;
-	ent->position = point_to_vector2(mousetoworldspace(ed));
-	entity_tool_append_list(ed, *ent);
-	ed->mouse.click_unhandled = false;
-}
-
-static void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
-{
-	static t_img	*entity_img;
-	t_entity		*ent;
-	t_list			*l;
-
-	if (entity_img == NULL)
-		entity_img = get_image_by_name(sdl, "entitytool.png");
-	l = ed->entitylist;
-	while (l != NULL)
-	{
-		ent = (t_entity *)l->content;
-		draw_image(sdl, worldtoeditorspace(ed, ent->position), *entity_img, entity_img->size);
-		l = l->next;
-	}
-	draw_image(sdl, ed->mouse.pos, *entity_img, entity_img->size);
-	ent = find_closest(ed);
-	if (ent != NULL)
-		drawcircle(sdl, worldtoeditorspace(ed, ent->position), 20, CLR_GREEN);
-	return ;
-}
-
-static void	entity_tool_update(t_editor *ed) //This needs to access editors state, so pass editor here??
-{
-	t_entity *hover;
-
-	hover = find_closest(ed);
-	if (ed->mouse.held == MOUSE_LEFT && hover != NULL)
-		hover->position = point_to_vector2(mousetoworldspace(ed));
-	if (ed->mouse.click_unhandled)
-	{
-		if (hover == NULL && ed->mouse.click_button == MOUSE_LEFT)
-			entity_tool_place(ed);
-		else if (ed->mouse.click_button == MOUSE_RIGHT)
-			list_remove(&ed->entitylist, hover, sizeof(t_entity));
-		ed->mouse.click_unhandled = false;
-	}
-		
-}
-
-static void	entity_tool_cleanup(t_editor *ed)
-{
-	SDL_ShowCursor(SDL_ENABLE);
-}
-*/
-
-/*void	entity_tool_update(t_editor *ed)
-{
-
-}*/
 
 char	*floatstr(float f)
 {
@@ -199,28 +111,40 @@ int	object_selector(t_editor *ed, t_sdlcontext sdl, int	original)
 	return (original);
 }
 
+static void	entity_tool_lazyinit(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
+{
+	if (dat->objectgui.gui.sdl == NULL)
+	{
+		dat->objectgui.gui = init_gui(sdl, &ed->hid, &ed->player, (t_point) {20, 40}, "Object selector");
+		dat->objectgui.autoclose = false;
+	}
+}
+
 void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 {
-	t_entity	*ent;
-	t_entity	*collide;
+	t_entitytooldata	*dat;
+	t_entity			*ent;
+	t_entity			*collide;
 
-	ent = (t_entity *)ed->tool->tooldata;
+	dat = (t_entitytooldata *)ed->tool->tooldata;
+	ent = dat->ent;
+	entity_tool_lazyinit(ed, &sdl, dat);
+	objectgui_update(&dat->objectgui, ent);
+	
 	ent->transform.position = raycast(ed);//vector3_movetowards(ent->transform.location, dir, ed->clock.delta * 1.0f);
 	ent->transform.position.z -= ent->z_bound.min * ent->transform.scale.z;
-	ent->object_index = object_selector(ed, sdl, ent->object_index);
+	/*ent->object_index = object_selector(ed, sdl, ent->object_index);
 	if (ent->obj != &sdl.objects[ent->object_index])
 	{
 		ent->obj = &sdl.objects[ent->object_index];
 		findbounds(ent);
-	}
-	/* SPLIT HERE */
+	}*/
 	ed->render.wireframe = true;
 	ed->render.gizmocolor = CLR_GREEN;
 	render_entity(sdl, ed->render, ent);
-	
 	ed->render.wireframe = false;
 	/* END SPLIT */
-	set_font_size(&sdl, 0);
+	/*set_font_size(&sdl, 0);
 	draw_transform_info(ent->transform, sdl);
 	if (instantbutton((t_rectangle) {30, 120, 20, 20}, &ed->hid.mouse, sdl, "minus.png"))
 		ent->transform.scale = vector3_add_xyz(ent->transform.scale, -0.25f);
@@ -248,7 +172,7 @@ void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
 			list_remove(&ed->world.entitylist, collide, sizeof(t_entity));
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT) && collide == NULL) //and selected is null, move to drawupdate
-		list_push(&ed->world.entitylist, ent, sizeof(t_entity));
+		list_push(&ed->world.entitylist, ent, sizeof(t_entity));*/
 }
 
 t_tool	*get_entity_tool()
@@ -257,16 +181,17 @@ t_tool	*get_entity_tool()
 	= {
 		entity_tool_draw 
 	};
-	t_entity		*ent; //TODO: make entity tool use it's own tooldata struct,
+	t_entitytooldata	*dat; //TODO: make entity tool use it's own tooldata struct,
 
 	if (tool.tooldata == NULL)
 	{
-		tool.tooldata = ft_memalloc(sizeof(t_entity));
+		tool.tooldata = ft_memalloc(sizeof(t_entitytooldata));
 		if (tool.tooldata == NULL)
 			error_log(EC_MALLOC);
-		ent = (t_entity *)tool.tooldata;
-		ent->transform.scale = vector3_one();
-		ent->object_index = 1;
+		dat = (t_entitytooldata *)tool.tooldata;
+		dat->ent = ft_memalloc(sizeof(t_entity));
+		dat->ent->transform.scale = vector3_one();
+		dat->ent->object_index = 1;
 	}
 	ft_strcpy(tool.icon_name, "entitytool.png");
 	return (&tool);

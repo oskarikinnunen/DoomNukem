@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 16:58:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/02 15:58:02 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,10 +66,18 @@ typedef struct s_autogui
 	bool				drag_held;
 }	t_autogui;
 
+typedef struct s_objectgui
+{
+	t_autogui	gui;
+	bool		indicate_current;
+	bool		autoclose;
+}	t_objectgui;
+
 struct	s_sdlcontext;
 struct	s_mouse;
 struct	s_editor;
 
+void				objectgui_update(t_objectgui *ogui, t_entity *ent);
 void				gui_start(t_autogui *gui);
 void				gui_starthorizontal(t_autogui *gui);
 void				gui_endhorizontal(t_autogui *gui);

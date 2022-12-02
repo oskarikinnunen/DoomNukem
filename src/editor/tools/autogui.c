@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 17:21:19 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/02 15:58:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,27 @@ static bool	clicked_rectangle(t_mouse m, t_rectangle rect)
 	return (mouse_clicked(m, MOUSE_LEFT) && pointrectanglecollision(m.pos, rect));
 }
 
+static void update_hidecross(t_autogui *gui)
+{
+	t_rectangle	hidecross;
+	t_point		p1;
+	t_point		p2;
+	hidecross.size = (t_point){32, 32};
+	hidecross.position = point_add(gui->rect.position, (t_point){.x = gui->rect.size.x});
+	hidecross.position.x -= hidecross.size.x;
+	draw_rectangle_filled(*gui->sdl, hidecross, INT_MAX);
+	drawrectangle(*gui->sdl, hidecross, CLR_BLUE);
+	p1 = hidecross.position;
+	p2 = point_add(hidecross.position, hidecross.size);
+	drawline(*gui->sdl, p1, p2, CLR_RED);
+	p1 = point_add(hidecross.position, (t_point){.x = hidecross.size.x});
+	p2 = point_add(hidecross.position, (t_point){.y = hidecross.size.y});
+	drawline(*gui->sdl, p1, p2, CLR_RED);
+	drawline(*gui->sdl, hidecross.position, point_add(hidecross.position, hidecross.size), CLR_RED);
+	if (clicked_rectangle(gui->hid->mouse, hidecross))
+		gui->hidden = true;
+}
+
 void	gui_update(t_autogui *gui)
 {
 	t_rectangle	dragcorner;
@@ -138,17 +159,7 @@ void	gui_update(t_autogui *gui)
 	}
 	if (gui->allow_user_hide)
 	{
-		t_rectangle	hidecross;
-		hidecross.size = (t_point){32, 32};
-		hidecross.position = point_add(gui->rect.position, (t_point){.x = gui->rect.size.x});
-		hidecross.position.x -= hidecross.size.x;
-		drawrectangle(*gui->sdl, hidecross, CLR_RED);
-		draw_rectangle_filled(*gui->sdl, hidecross, CLR_GRAY);
-		if (clicked_rectangle(gui->hid->mouse, hidecross))
-		{
-			gui->hidden = true;
-			return ;
-		}
+		update_hidecross(gui);
 	}
 	dragcorner.size = (t_point) {16,16};
 	dragcorner.position = point_sub(point_add(gui->rect.position, gui->rect.size), dragcorner.size);
@@ -193,6 +204,29 @@ void	gui_update(t_autogui *gui)
 	set_font_size(gui->sdl, 2);
 	draw_text_boxed(gui->sdl, gui->title, gui->rect.position, gui->sdl->screensize);
 	set_font_size(gui->sdl, 0);
+}
+
+void	objectgui_update(t_objectgui *ogui, t_entity *ent)
+{
+	t_object	*obj;
+	t_autogui	*gui;
+	int			i;
+
+	gui = &ogui->gui;
+	gui_start(gui);
+	i = 0;
+	while (i < gui->sdl->objectcount)
+	{
+		obj = &gui->sdl->objects[i];
+		if (gui_button(obj->name, gui))
+		{
+			ent->obj = obj;
+			if (ogui->autoclose)
+				gui->hidden = true;
+		}
+		i++;
+	}
+	gui_update(gui);
 }
 
 static t_point gui_currentpos(t_autogui *gui)
