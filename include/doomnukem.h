@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 13:49:19 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/02 21:18:38 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,20 +108,24 @@ typedef struct s_world
 	t_clock			clock;
 	t_debugconsole	debugconsole;
 	t_physics		physics;
+	t_sdlcontext	*sdl;
 	t_list			*guns;
-	t_list			*objectmetadatalist;
+	t_list			*objectmetadatalist; //Move to sdl, this is only used when objects are initialized
 	t_npc			npcpool[128];
 	t_list			*entitylist;
 	t_list			*meshlist;
 	t_list			*wall_list;
 	t_list			*roomlist;
+	t_entitycache	entitycache;
 	t_entity		skybox;
 }	t_world;
 
-void	calculate_colliders_for_entities(t_world *world);
-void	update_world3d(t_sdlcontext sdl, t_world *world, t_render *render);
-t_world	load_world(char *filename, t_sdlcontext sdl);
-void	save_world(char *filename, t_world world);
+void		calculate_colliders_for_entities(t_world *world);
+void		update_world3d(t_sdlcontext sdl, t_world *world, t_render *render);
+t_world		load_world(char *filename, t_sdlcontext *sdl);
+t_entity	*raise_entity(t_world	*world);
+t_entity	*raise_basic_entity(t_world *world, char *objectname, t_vector3 position);
+void		save_world(char *filename, t_world world);
 
 typedef struct s_editor
 {

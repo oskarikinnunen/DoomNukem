@@ -6,11 +6,15 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/02 15:58:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/03 07:24:22 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor_tools.h"
+
+#define AMBER_0 0x551501
+#define AMBER_1 0x832d01
+#define AMBER_2 0xff9b05
 
 t_autogui	init_gui(t_sdlcontext *sdl, t_hid_info *hid, t_player *player, t_point origin, char *title)
 {
@@ -23,6 +27,8 @@ t_autogui	init_gui(t_sdlcontext *sdl, t_hid_info *hid, t_player *player, t_point
 	gui.rect.position = origin;
 	gui.rect.size = (t_point){240, 400};
 	gui.title = title;
+	gui.minimum_size.x = 240;
+	gui.minimum_size.y = 128;
 	return (gui);
 }
 
@@ -38,8 +44,8 @@ static t_rectangle	empty_rect()
 
 static void gui_limitrect(t_autogui *gui)
 {
-	gui->rect.size.x = ft_clamp(gui->rect.size.x, 240, 600);
-	gui->rect.size.y = ft_clamp(gui->rect.size.y, 128, gui->sdl->screensize.y);
+	gui->rect.size.x = ft_clamp(gui->rect.size.x, gui->minimum_size.x, 600);
+	gui->rect.size.y = ft_clamp(gui->rect.size.y, gui->minimum_size.y, gui->sdl->screensize.y);
 	gui->rect.position.x = ft_clamp(gui->rect.position.x, 6, gui->sdl->window_w - 6 - gui->rect.size.x);
 	gui->rect.position.y = ft_clamp(gui->rect.position.y, 6, gui->sdl->window_h - 6 - gui->rect.size.y);
 }
@@ -48,8 +54,9 @@ void	gui_start(t_autogui *gui)
 {
 	if (!gui->hidden)
 	{
-		draw_rectangle_filled(*gui->sdl, gui->rect, CLR_DARKGRAY);
-		drawrectangle(*gui->sdl, gui->rect, CLR_DARKGRAY);
+		//draw_rectangle_filled(*gui->sdl, gui->rect, CLR_DARKGRAY);
+		draw_rectangle_filled(*gui->sdl, gui->rect, 0);
+		drawrectangle(*gui->sdl, gui->rect, AMBER_0);
 	}
 	//gui->scrollable = false;
 	gui->overdraw = 0;
@@ -206,7 +213,7 @@ void	gui_update(t_autogui *gui)
 	set_font_size(gui->sdl, 0);
 }
 
-void	objectgui_update(t_objectgui *ogui, t_entity *ent)
+void	objectgui_update(t_objectgui *ogui, t_entity **ent)
 {
 	t_object	*obj;
 	t_autogui	*gui;
@@ -220,7 +227,13 @@ void	objectgui_update(t_objectgui *ogui, t_entity *ent)
 		obj = &gui->sdl->objects[i];
 		if (gui_button(obj->name, gui))
 		{
-			ent->obj = obj;
+			if (*ent == NULL)
+			{
+				printf("null entity in objectgui\n");
+				(*ent) = ft_memalloc(sizeof(t_entity));
+				(*ent)->transform.scale = vector3_one();
+			}
+			(*ent)->obj = obj;
 			if (ogui->autoclose)
 				gui->hidden = true;
 		}
@@ -279,6 +292,15 @@ static	void	gui_layout(t_autogui *gui, t_rectangle rect)
 	}
 	else
 		gui->offset.x += x;
+}
+
+void	gui_emptyvertical(int y, t_autogui *gui)
+{
+	t_rectangle	rect;
+
+	rect.size.x = 0;
+	rect.size.y = y;
+	gui_layout(gui, rect);
 }
 
 void	gui_labeled_float_slider(char *str, float *f, float mul, t_autogui *gui)
@@ -378,11 +400,11 @@ static t_buttonreturn	autogui_internal_button(char *str, t_autogui *gui)
 	t_buttonreturn	br;
 
 	br.rect = draw_text_boxed(gui->sdl, str, gui_currentpos(gui), gui->sdl->screensize);
-	drawrectangle(*gui->sdl, br.rect, CLR_BLUE);
+	drawrectangle(*gui->sdl, br.rect, AMBER_0);
 	br.clicked = false;
 	if (pointrectanglecollision(gui->hid->mouse.pos, br.rect))
 	{
-		drawrectangle(*gui->sdl, br.rect, CLR_GREEN);
+		drawrectangle(*gui->sdl, br.rect, AMBER_1);
 		if (mouse_clicked(gui->hid->mouse, MOUSE_LEFT))
 		{
 			br.clicked = true;

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/02 15:58:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/02 17:41:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ typedef struct s_buttonreturn
 typedef struct s_autogui
 {
 	t_rectangle			rect;
+	t_point				minimum_size;
 	t_point				offset;
 	t_point				scroll;
 	t_hid_info			*hid;
@@ -69,6 +70,7 @@ typedef struct s_autogui
 typedef struct s_objectgui
 {
 	t_autogui	gui;
+	//bool		allocate_on_select;
 	bool		indicate_current;
 	bool		autoclose;
 }	t_objectgui;
@@ -77,8 +79,9 @@ struct	s_sdlcontext;
 struct	s_mouse;
 struct	s_editor;
 
-void				objectgui_update(t_objectgui *ogui, t_entity *ent);
+void				objectgui_update(t_objectgui *ogui, t_entity **ent);
 void				gui_start(t_autogui *gui);
+void				gui_emptyvertical(int y, t_autogui *gui);
 void				gui_starthorizontal(t_autogui *gui);
 void				gui_endhorizontal(t_autogui *gui);
 void				gui_update(t_autogui *gui);

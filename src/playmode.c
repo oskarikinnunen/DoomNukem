@@ -80,7 +80,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	//alloc_image(&pgraph.image, PERFGRAPH_SAMPLES + 1, PERFGRAPH_SAMPLES + 1);
 	gr = game_continue;
 	render = init_render(sdl);
-	game.world = load_world("world1", sdl);
+	game.world = load_world("world1", &sdl);
 	player_init(&game.player, &sdl);
 	initialize_controllers(&game.hid);
 	while (gr == game_continue)

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 14:26:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/02 18:03:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void		toggle_keystates(t_hid_info *hid, SDL_Event e)
 		hid->keystate |= iskey(e, SDLK_SPACE) << KEYS_SPACEMASK;
 		hid->keystate |= iskey(e, SDLK_LSHIFT) << KEYS_SHIFTMASK;
 		hid->keystate |= iskey(e, SDLK_LALT) << KEYS_LALTMASK;
+		hid->keystate |= iskey(e, SDLK_DELETE) << KEYS_DELETEMASK;
 	}
 	if (e.type == SDL_KEYUP)
 	{
@@ -37,6 +38,7 @@ void		toggle_keystates(t_hid_info *hid, SDL_Event e)
 		hid->keystate &= ~(iskey(e, SDLK_SPACE) << KEYS_SPACEMASK);
 		hid->keystate &= ~(iskey(e, SDLK_LSHIFT) << KEYS_SHIFTMASK);
 		hid->keystate &= ~(iskey(e, SDLK_LALT) << KEYS_LALTMASK);
+		hid->keystate &= ~(iskey(e, SDLK_DELETE) << KEYS_DELETEMASK);
 	}
 }
 

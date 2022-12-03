@@ -59,6 +59,7 @@ typedef struct s_sdlcontext
 	SDL_Window				*window;
 	SDL_Surface				*surface;
 	SDL_Surface				*testsurf;
+	//t_render				*render;
 	t_platform				platform;
 	float					*zbuffer;
 	SDL_Renderer			*renderer; //TODO: for testing remove.

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/29 12:55:18 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/02 21:14:40 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,12 @@ int	editorloop(t_sdlcontext sdl)
 	t_editor		ed;
 
 	bzero(&ed, sizeof(t_editor));
-	ed.world = load_world("world1", sdl);
+	ed.world = load_world("world1", &sdl);
 	
 	ed.gamereturn = game_continue;
 	ed.render = init_render(sdl);
 	player_init(&ed.player, &sdl);
+	ed.player.transform.position = vector3_zero();
 	ed.player.gun->disabled = true;
 	/*ed.angle = (t_vector2){-20.0f, -RAD90 * 0.99f};
 	ed.position = (t_vector3){500.0f, 500.0f, 200.0f};*/

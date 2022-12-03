@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/29 16:55:00 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/02 21:48:06 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,25 @@ void	update_npcs(t_world *world)
 	}
 }
 
+void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
+{
+	int	i;
+	int	found;
+
+	i = 0;
+	found = 0;
+	while (found < world->entitycache.active_entitycount)
+	{
+		if (world->entitycache.entities[i].status != es_free)
+		{
+			if (world->entitycache.entities[i].status == es_active)
+				render_entity(*sdl, *render, &world->entitycache.entities[i]);
+			found++;
+		}
+		i++;
+	}
+}
+
 void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 {
 	t_list		*l;
@@ -102,9 +121,9 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 			render_ray(sdl, *render, npc.entity.transform.position, npc.destination);
 			render_entity(sdl, *render, &world->npcpool[i].entity);
 		}
-			
 		i++;
 	}
+	update_entitycache(&sdl, world, render);
 	render_entity(sdl, *render, &world->skybox);
 }
 
@@ -266,30 +285,114 @@ t_debugconsole	init_debugconsole()
 	return (console);
 }
 
-t_world	load_world(char *filename, t_sdlcontext sdl)
+t_entitycache	init_entitycache(uint32_t cachesize)
+{
+	t_entitycache	cache;
+	int				i;
+
+	ft_bzero(&cache, sizeof(t_entitycache));
+	cache.alloc_count = cachesize;
+	cache.entities = ft_memalloc(cache.alloc_count * sizeof(t_entity));
+	cache.active_entitycount = 0;
+	i = 0;
+	while (i < cache.alloc_count)
+	{
+		cache.entities[i].id = i;
+		i++;
+	}
+	return (cache);
+}
+
+void		erase_entity(t_entitycache *entitycache, uint16_t entity_id)
+{
+	entitycache->entities[entity_id].status = es_free;
+	entitycache->active_entitycount--;
+}
+
+t_entity	*raise_entity(t_world	*world)
+{
+	int	i;
+	t_entitycache	*cache;
+
+	cache = &world->entitycache;
+	i = 0;
+	while (i < cache->alloc_count)
+	{
+		if (cache->entities[i].status == es_free)
+		{
+			cache->entities[i].status = es_active;
+			cache->entities[i].transform.scale = vector3_one();
+			//cache->entities[i].transform.scale = vector3_zero();
+			cache->active_entitycount++;
+			return (&cache->entities[i]);
+		}
+		i++;
+	}
+	printf("ENTITYCACHE TOO SMALL, ABORT!");
+	error_log(EC_MALLOC);
+	return (NULL); //never gets here
+}
+
+t_entity	*raise_basic_entity(t_world *world, char *objectname, t_vector3 position)
+{
+	t_entity	*ent;
+
+	ent = raise_entity(world);
+	ent->obj = get_object_by_name(*world->sdl, objectname);
+	ent->transform.position = position;
+	ent->transform.scale = vector3_one();
+	return (ent);
+}
+
+void	for_all_entities(t_world	*world) //TODO: add function pointer parameter
+{
+	int				i;
+	int				found;
+	t_entitycache	*cache;
+
+	i = 0;
+	found = 0;
+	cache = &world->entitycache;
+	while (found < cache->active_entitycount)
+	{
+		if (cache->entities[i].status != es_free)
+		{
+			if (cache->entities[i].status == es_active)
+			{
+				
+			}
+			found++;
+		}
+		i++;
+	}
+}
+
+t_world	load_world(char *filename, t_sdlcontext *sdl)
 {
 	t_world	world;
 
 	ft_bzero(&world, sizeof(t_world));
+	world.sdl = sdl;
 	world.entitylist = load_chunk(filename, "ENT_", sizeof(t_entity));
 	world.wall_list = load_chunk(filename, "WALL", sizeof(t_wall));
 	world.roomlist = load_chunk(filename, "RMNM", sizeof(t_room));
 	world.guns = load_chunk(filename, "GUNS", sizeof(t_gun));
 	world.debugconsole = init_debugconsole();
-	load_rooms(&world, &sdl);
-	entity_init(&world, sdl);
-	init_guns(&world, &sdl);
-	load_walltextures(&world, sdl);
+	world.entitycache = init_entitycache(1024);
+	t_entity	*ent = raise_basic_entity(&world, "cyborg.obj", vector3_zero());
+	t_entity	*ent2 = raise_entity(&world);
+	load_rooms(&world, sdl);
+	entity_init(&world, *sdl);
+	init_guns(&world, sdl);
+	load_walltextures(&world, *sdl);
 	ft_bzero(&world.skybox, sizeof(t_entity));
-	world.skybox.obj = get_object_by_name(sdl, "cube");
-	world.skybox.obj->materials[0].img = get_image_by_name(sdl, "grid3.png");
+	world.skybox.obj = get_object_by_name(*sdl, "cube");
+	world.skybox.obj->materials[0].img = get_image_by_name(*sdl, "grid3.png");
 	//scale_skybox_uvs(world.skybox.obj);
-	world.skybox.transform.scale = vector3_mul(vector3_one(), 1000.0f);
-	world.skybox.transform.position = (t_vector3){500.0f, 500.0f, 499.0f};
-
-	spawn_npc(&world, "cyborg", (t_vector3){500.0f, 500.0f, 0.0f}, &sdl);
-	world.npcpool[0].destination = (t_vector3){200.0f, 200.0f, 0.0f};
-	//calculate_colliders_for_entities(&world);
+	world.skybox.transform.scale = vector3_mul(vector3_one(), 3000.0f);
+	world.skybox.transform.position = (t_vector3){1500.0f, 1500.0f, 1499.0f};
+	//spawn_npc(&world, "cyborg", (t_vector3){500.0f, 500.0f, 0.0f}, &sdl);
+	//world.npcpool[0].destination = (t_vector3){200.0f, 200.0f, 0.0f};
 	return (world);
 }
 

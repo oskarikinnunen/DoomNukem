@@ -19,11 +19,20 @@ typedef struct s_transform
 	struct s_transform	*parent;
 }	t_transform;
 
+typedef enum s_entitystatus
+{
+	es_free,
+	es_inactive,
+	es_active
+}	t_entitystatus;
+
 typedef struct s_entity
 {
 	t_transform		transform;
 	uint32_t		object_index;
 	char			object_name[64];
+	t_entitystatus	status;
+	uint16_t		id;
 	t_bound			z_bound;
 	t_anim			animation;
 	t_object		*obj;
@@ -48,5 +57,12 @@ typedef struct s_gun
 	bool		fullauto;
 	uint32_t	firedelay;
 }	t_gun;
+
+typedef struct s_entitycache
+{
+	t_entity	*entities;
+	uint32_t	active_entitycount;
+	uint32_t	alloc_count;
+}	t_entitycache;
 
 #endif
