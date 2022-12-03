@@ -6,15 +6,11 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/03 07:24:22 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/03 08:00:25 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor_tools.h"
-
-#define AMBER_0 0x551501
-#define AMBER_1 0x832d01
-#define AMBER_2 0xff9b05
 
 t_autogui	init_gui(t_sdlcontext *sdl, t_hid_info *hid, t_player *player, t_point origin, char *title)
 {
@@ -55,8 +51,16 @@ void	gui_start(t_autogui *gui)
 	if (!gui->hidden)
 	{
 		//draw_rectangle_filled(*gui->sdl, gui->rect, CLR_DARKGRAY);
-		draw_rectangle_filled(*gui->sdl, gui->rect, 0);
+		//draw_rectangle_filled(*gui->sdl, gui->rect, 0);
+		draw_rectangle_raster(*gui->sdl, gui->rect, 0);
 		drawrectangle(*gui->sdl, gui->rect, AMBER_0);
+		t_rectangle	temp;
+		temp.position = point_sub(gui->rect.position, point_one());
+		temp.size = point_add(gui->rect.size, (t_point){2,2});
+		drawrectangle(*gui->sdl, temp, AMBER_1);
+		temp.position = point_sub(temp.position, point_one());
+		temp.size = point_add(temp.size, (t_point){2,2});
+		drawrectangle(*gui->sdl, temp, AMBER_2);
 	}
 	//gui->scrollable = false;
 	gui->overdraw = 0;
@@ -82,11 +86,11 @@ static void update_scrollbar(t_autogui *gui)
 		lerp = (float)-gui->scroll.y / (float)gui->overdraw;
 	scrollrect.position.y += (float)max_y * lerp;
 	draw_rectangle_filled(*gui->sdl, scrollrect, INT_MAX);
-	drawrectangle(*gui->sdl, scrollrect, CLR_BLUE);
+	drawrectangle(*gui->sdl, scrollrect, AMBER_0);
 	if (gui->hid->mouse.held == MOUSE_LEFT && pointrectanglecollision(gui->hid->mouse.pos, scrollrect))
 		gui->scroll_held = true;
 	if (pointrectanglecollision(gui->hid->mouse.pos, scrollrect))
-		drawrectangle(*gui->sdl, scrollrect, CLR_GREEN);
+		drawrectangle(*gui->sdl, scrollrect, AMBER_1);
 	if (gui->scroll_held)
 		gui->scroll.y += (scrollrect.position.y + (scrollrect.size.y / 2)) - gui->hid->mouse.pos.y;
 }
@@ -105,7 +109,7 @@ static void draw_rect_tri(t_sdlcontext *sdl, t_rectangle rect, uint32_t clr)
 		while (p.x > 0)
 		{
 			if (p.x % 2 == 0 || p.y % 2 == 0)
-				draw(*sdl, point_add(rect.position, (t_point){-p.x + rect.size.x, p.y}), INT_MAX);
+				draw(*sdl, point_add(rect.position, (t_point){-p.x + rect.size.x, p.y}), clr);
 			p.x--;
 		}
 		linelen++;
@@ -126,15 +130,15 @@ static void update_hidecross(t_autogui *gui)
 	hidecross.size = (t_point){32, 32};
 	hidecross.position = point_add(gui->rect.position, (t_point){.x = gui->rect.size.x});
 	hidecross.position.x -= hidecross.size.x;
-	draw_rectangle_filled(*gui->sdl, hidecross, INT_MAX);
-	drawrectangle(*gui->sdl, hidecross, CLR_BLUE);
+	draw_rectangle_filled(*gui->sdl, hidecross, AMBER_1);
+	drawrectangle(*gui->sdl, hidecross, AMBER_0);
 	p1 = hidecross.position;
 	p2 = point_add(hidecross.position, hidecross.size);
-	drawline(*gui->sdl, p1, p2, CLR_RED);
+	drawline(*gui->sdl, p1, p2, AMBER_3);
 	p1 = point_add(hidecross.position, (t_point){.x = hidecross.size.x});
 	p2 = point_add(hidecross.position, (t_point){.y = hidecross.size.y});
-	drawline(*gui->sdl, p1, p2, CLR_RED);
-	drawline(*gui->sdl, hidecross.position, point_add(hidecross.position, hidecross.size), CLR_RED);
+	drawline(*gui->sdl, p1, p2, AMBER_3);
+	drawline(*gui->sdl, hidecross.position, point_add(hidecross.position, hidecross.size), AMBER_3);
 	if (clicked_rectangle(gui->hid->mouse, hidecross))
 		gui->hidden = true;
 }
@@ -148,7 +152,7 @@ void	gui_update(t_autogui *gui)
 		return ;
 	dragbar = gui->rect;
 	dragbar.size.y = 32;
-	draw_rectangle_filled(*gui->sdl, dragbar, INT_MAX);
+	draw_rectangle_filled(*gui->sdl, dragbar, 0);
 	if (gui->dock != NULL)
 	{
 		gui->rect.position = point_add(gui->dock->rect.position, (t_point){.x = gui->dock->rect.size.x + 2});
@@ -156,9 +160,9 @@ void	gui_update(t_autogui *gui)
 	}
 	else
 	{
-		drawrectangle(*gui->sdl, dragbar, CLR_BLUE);
+		drawrectangle(*gui->sdl, dragbar, AMBER_0);
 		if (pointrectanglecollision(gui->hid->mouse.pos, dragbar) || gui->move_held)
-			drawrectangle(*gui->sdl, dragbar, CLR_GREEN);
+			drawrectangle(*gui->sdl, dragbar, AMBER_1);
 		if (gui->hid->mouse.held == MOUSE_LEFT && pointrectanglecollision(gui->hid->mouse.pos, dragbar))
 			gui->move_held = true;
 		if (gui->move_held)
@@ -171,10 +175,10 @@ void	gui_update(t_autogui *gui)
 	dragcorner.size = (t_point) {16,16};
 	dragcorner.position = point_sub(point_add(gui->rect.position, gui->rect.size), dragcorner.size);
 	//draw_rectangle_filled(*gui->sdl, dragcorner, INT_MAX);
-	//drawrectangle(*gui->sdl, dragcorner, CLR_BLUE);
-	draw_rect_tri(gui->sdl, dragcorner, CLR_BLUE);
+	//drawrectangle(*gui->sdl, dragcorner, AMBER_0);
+	draw_rect_tri(gui->sdl, dragcorner, AMBER_0);
 	if (pointrectanglecollision(gui->hid->mouse.pos, dragcorner) || gui->drag_held)
-		draw_rect_tri(gui->sdl, dragcorner, CLR_GREEN);
+		draw_rect_tri(gui->sdl, dragcorner, AMBER_1);
 		
 	if (gui->hid->mouse.held == MOUSE_LEFT && pointrectanglecollision(gui->hid->mouse.pos, dragcorner))
 		gui->drag_held = true;
@@ -336,11 +340,11 @@ void	gui_float_slider(float	*f, float mul, t_autogui *gui)
 	{
 		str = ft_ftoa(*f, 4);
 		rect = draw_text_boxed(gui->sdl, str, gui_currentpos(gui), gui->rect.size);
-		drawrectangle(*gui->sdl, rect, CLR_BLUE);
+		drawrectangle(*gui->sdl, rect, AMBER_0);
 		if (pointrectanglecollision(gui->hid->mouse.pos, rect))
 		{
 			draw_text_boxed(gui->sdl, "Drag to affect value", point_add(gui->hid->mouse.pos, (t_point){40, -10}), gui->sdl->screensize);
-			drawrectangle(*gui->sdl, rect, CLR_GREEN);
+			drawrectangle(*gui->sdl, rect, AMBER_1);
 			if (mouse_clicked(gui->hid->mouse, MOUSE_LEFT))
 			{
 				mousepos = gui->hid->mouse.pos;
@@ -404,7 +408,7 @@ static t_buttonreturn	autogui_internal_button(char *str, t_autogui *gui)
 	br.clicked = false;
 	if (pointrectanglecollision(gui->hid->mouse.pos, br.rect))
 	{
-		drawrectangle(*gui->sdl, br.rect, AMBER_1);
+		drawrectangle(*gui->sdl, br.rect, AMBER_2);
 		if (mouse_clicked(gui->hid->mouse, MOUSE_LEFT))
 		{
 			br.clicked = true;
@@ -446,9 +450,9 @@ void gui_int_slider(int *i, int mul, t_autogui *gui)
 		if (pointrectanglecollision(gui->hid->mouse.pos, rect))
 		{
 			draw_text_boxed(gui->sdl, "scroll to affect value", point_add(gui->hid->mouse.pos, (t_point){40, -10}), gui->sdl->screensize);
-			drawrectangle(*gui->sdl, rect, CLR_BLUE);
+			drawrectangle(*gui->sdl, rect, AMBER_0);
 			if (moveamount != 0)
-				drawrectangle(*gui->sdl, rect, CLR_GREEN);
+				drawrectangle(*gui->sdl, rect, AMBER_1);
 			*i = *i + moveamount;
 		}
 		free(str);

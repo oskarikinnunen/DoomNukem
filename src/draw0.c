@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/03 07:18:00 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/03 08:27:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,28 @@ void	drawrectangle(t_sdlcontext sdl, t_rectangle rect, uint32_t clr)
 	drawline(sdl, from, to, clr);
 	to = point_add(from, (t_point){-rect.size.x, 0});
 	drawline(sdl, from, to, clr);
+}
+
+void	draw_rectangle_raster(t_sdlcontext sdl, t_rectangle rect, uint32_t clr)
+{
+	t_point	p;
+	int		i;
+
+	p = rect.position;
+	i = 0;
+	while (p.x < rect.position.x + rect.size.x)
+	{
+		p.y = rect.position.y;
+		while (p.y < rect.position.y + rect.size.y)
+		{
+			if (!(p.x % 2 == 0 && p.y % 2 == 0))
+				draw(sdl, p, clr);
+			p.y++;
+			i++;
+		}
+		p.x++;
+		i++;
+	}
 }
 
 void	draw_rectangle_filled(t_sdlcontext sdl, t_rectangle rect, uint32_t clr)

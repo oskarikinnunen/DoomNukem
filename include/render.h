@@ -13,6 +13,10 @@
 # define CLR_DARKGRAY 0x292929
 # define CLR_GREEN 3002977
 # define CLR_RED 0xFF2919
+# define AMBER_0 0x551501
+# define AMBER_1 0x832d01
+# define AMBER_2 0x831f00
+# define AMBER_3 0xff9b05
 # define CLEARSCREEN "\e[1;1H\e[2J"
 
 typedef enum e_platform
@@ -122,6 +126,7 @@ void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr);
 void	drawcircle(t_sdlcontext sdl, t_point pos, int size, uint32_t clr);
 void	drawrectangle(t_sdlcontext, t_rectangle rect, uint32_t clr);
 void	draw_rectangle_filled(t_sdlcontext sdl, t_rectangle rect, uint32_t clr);
+void	draw_rectangle_raster(t_sdlcontext sdl, t_rectangle rect, uint32_t clr);
 void	draw_triangle(t_sdlcontext *sdl, t_point p1, t_point p2, t_point p3, uint32_t clr);
 
 /* INIT_RENDER.C */

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/02 21:38:32 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/03 07:52:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@ void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 		dat->ent->transform.position.z -= dat->ent->z_bound.min * dat->ent->transform.scale.z;
 		dat->ent->transform.rotation.x += ed->hid.mouse.scroll_delta * 0.1f;
 		ed->render.wireframe = true;
-		ed->render.gizmocolor = CLR_GREEN;
+		ed->render.gizmocolor = AMBER_3;
 		render_entity(*sdl, ed->render, dat->ent);
 		ed->render.wireframe = false;
 	}
@@ -183,7 +183,7 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 	if (hover != NULL)
 	{
 		ed->render.wireframe = true;
-		ed->render.gizmocolor = CLR_BLUE;
+		ed->render.gizmocolor = AMBER_1;
 		render_entity(*sdl, ed->render, hover);
 		ed->render.wireframe = false;
 		if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
@@ -194,7 +194,7 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 		gui = &dat->entitygui;
 		ent = dat->sel_ent;
 		ed->render.wireframe = true;
-		ed->render.gizmocolor = CLR_GREEN;
+		ed->render.gizmocolor = AMBER_3;
 		render_entity(*sdl, ed->render, ent);
 		ed->render.wireframe = false;
 		gui_start(gui);
