@@ -3,68 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   text.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 22:00:00 by raho              #+#    #+#             */
-/*   Updated: 2022/11/30 18:11:49 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/01 20:23:13 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
-
-// background color could be sent as an argument
-static void	join_surfaces_boxed(SDL_Surface *base, SDL_Surface *new, t_point pos, t_point padding)
-{
-	t_point		i;
-	uint32_t	background;
-
-	background = 0x222222;
-	i.y = 0 - padding.y;
-	while (i.y < new->h + padding.y)
-	{
-		i.x = 0 - padding.x;
-		while (i.x < new->w + padding.x)
-		{
-			if (i.x + pos.x > 0 && i.x + pos.x < base->w && \
-				i.y + pos.y > 0 && i.y + pos.y < base->h)
-			{
-				if (i.x >= 0 && i.x < new->w && i.y >= 0 && i.y < new->h)
-				{	
-					if (((uint32_t *)new->pixels)[i.x + (i.y * new->w)] >> 24 != 0) // checking alpha
-						((uint32_t *)base->pixels)[(i.x + pos.x) + ((i.y + pos.y) * base->w)] = ((uint32_t *)new->pixels)[i.x + (i.y * new->w)];
-					else
-						((uint32_t *)base->pixels)[(i.x + pos.x) + ((i.y + pos.y) * base->w)] = background;
-				}
-				else
-					((uint32_t *)base->pixels)[(i.x + pos.x) + ((i.y + pos.y) * base->w)] = background;
-			}
-			i.x++;
-		}
-		i.y++;
-	}
-}
-
-static void	join_surfaces(SDL_Surface *base, SDL_Surface *new, t_point pos)
-{
-	t_point	i;
-
-	i.y = 0;
-	while (i.y < new->h)
-	{
-		i.x = 0;
-		while (i.x < new->w)
-		{
-			if (i.x + pos.x > 0 && i.x + pos.x < base->w && \
-				i.y + pos.y > 0 && i.y + pos.y < base->h)
-			{
-				if (((uint32_t *)new->pixels)[i.x + (i.y * new->w)] >> 24 != 0) // checking alpha
-					((uint32_t *)base->pixels)[(i.x + pos.x) + ((i.y + pos.y) * base->w)] = ((uint32_t *)new->pixels)[i.x + (i.y * new->w)];
-			}
-			i.x++;
-		}
-		i.y++;
-	}
-}
+#include "render.h"
 
 t_rectangle	print_text_boxed(t_sdlcontext *sdl, const char *text, t_point pos)
 {
@@ -81,7 +28,7 @@ t_rectangle	print_text_boxed(t_sdlcontext *sdl, const char *text, t_point pos)
 	rect.size.y = surfacetext->h + padding.y * 2;
 	rect.position.x = pos.x - padding.x;
 	rect.position.y = pos.y - padding.y;
-	join_surfaces_boxed(sdl->surface, surfacetext, pos, padding);
+	join_text_boxed_to_surface(sdl, surfacetext, pos, padding);
 	SDL_FreeSurface(surfacetext);
 	return (rect);
 }
@@ -97,7 +44,7 @@ t_rectangle	print_text(t_sdlcontext *sdl, const char *text, t_point pos)
 	rect.position = pos;
 	rect.size.x = surfacetext->w;
 	rect.size.y = surfacetext->h;
-	join_surfaces(sdl->surface, surfacetext, pos);
+	join_text_to_surface(sdl->surface, surfacetext, pos, sdl->font.color.a);
 	SDL_FreeSurface(surfacetext);
 	return (rect);
 }

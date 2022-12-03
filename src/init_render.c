@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 15:39:37 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/02 21:22:50 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,15 @@ t_render	init_render(t_sdlcontext sdl, struct s_world *world)
 	render.temp1 = malloc(sizeof(t_point_triangle) * 10000);
 	render.temp2 = malloc(sizeof(t_point_triangle) * 10000);
 	render.q = malloc(sizeof(t_quaternion) * 10000); //TODO: should be multiplied by the largest obj vertex count
+	render.bitmask = malloc(sizeof(uint32_t) * ((sdl.window_h * sdl.window_w) / 32));
 	render.debug_img = get_image_by_name(sdl, "");
 	render.vtarget = vector3_add(render.position, render.lookdir);
 	render.matcamera = matrix_lookat(render.position, render.vtarget, (t_vector3){0, 0, 1});
 	render.matview = matrix_quickinverse(render.matcamera);
 	render.world = world;
-	render.occlusion.occlusion = false;
-	render.occlusion.cull_box = true;
-	render.occlusion.occluder_box = true;
+	render.occlusion.occlusion = true;
+	render.occlusion.cull_box = false;
+	render.occlusion.occluder_box = false;
 	/*temp testing render loop with .bot .wall .item*/
 	return(render);
 }

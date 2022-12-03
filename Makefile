@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
+#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/12/01 13:00:18 by vlaine           ###   ########.fr        #
+#    Updated: 2022/12/01 20:00:50 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -71,8 +71,11 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		occlusion/frustrum_culling.c \
 		occlusion/peripheral_culling.c \
 		occlusion/occlusion_culling.c \
+		occlusion/bitmask_culling.c \
 		occlusion/culling_debug.c \
-		render_clip.c
+		render_clip.c \
+		surface_tools.c \
+		colors.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \
 		vector2_elementary.c vector2_shorthands.c \

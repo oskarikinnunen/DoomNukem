@@ -509,6 +509,7 @@ bool is_valid_occlude_check(int32_t id, t_entity *occlude, t_render *render, t_s
 
 bool is_entity_occlusion_culled(t_sdlcontext sdl, t_render *render, t_entity *cull)
 {
+	//return;
 	int			i;
 	t_list		*l;
 	t_entity	*ent;

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 14:30:43 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/02 21:31:15 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,33 @@ void	update_npcs(t_world *world)
 	}
 }
 
+static void bitmask_to_pixels(t_sdlcontext *sdl, t_render *render)
+{
+	uint32_t	clr;
+
+
+	t_point max;
+	max.x = sdl->window_w/8;
+	max.y = sdl->window_h/4;
+	render->bitmask[5050] = 1;
+	for (int y = 0; y < sdl->window_h; y++)
+	{
+		for (int x = 0; x < sdl->window_w; x++)
+		{
+			clr = INT_MAX;
+			//printf("x %d, y %d\n", x, y);
+			//printf("bitmask chunk %d\n", (y / 4) * (sdl->window_w / 8) + (x / 8));
+			/*y = (y/4) * (1024/8);
+			x = (x/8);
+			y = (y % 4) * 8;
+			x = x % 8;*/
+			if ((render->bitmask[(y / 4) * (sdl->window_w / 8) + (x / 8)] >> ((y % 4) * 8) + (x % 8) & 1))
+				clr = 0;
+			((uint32_t *)sdl->surface->pixels)[sdl->window_w * y + x] = clr;
+		}
+	}
+}
+
 void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 {
 	t_list		*l;
@@ -80,6 +107,7 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 	
 	bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 	bzero(&render->rs, sizeof(t_render_statistics));
+	bzero(render->bitmask, sizeof(float) * ((sdl.window_h * sdl.window_w)/32));
 	render->world = world;
 	update_occlusion(sdl, render);
 	l = render->world->roomlist;
@@ -118,6 +146,7 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 		i++;
 	}
 	render_entity(sdl, render, &world->skybox);
+	bitmask_to_pixels(&sdl, render);
 	//print_render_statistics(render->rs);
 }
 

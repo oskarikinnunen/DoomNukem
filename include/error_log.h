@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error_log.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 20:21:24 by raho              #+#    #+#             */
-/*   Updated: 2022/11/30 17:58:04 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/01 18:41:21 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # define EC_SDL_INIT 1
 # define EC_SDL_CREATEWINDOW 2
 # define EC_SDL_GETWINDOW_SURFACE 3
+# define EC_SDL_CREATERGBSURFACE -4
 # define EC_SDL_UPDATEWINDOWSURFACE 4
 # define EC_SDL_SETRELATIVEMOUSEMODE 5
 # define EC_SDL_GAMECONTROLLEROPEN 6

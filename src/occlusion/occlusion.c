@@ -187,7 +187,10 @@ static void update_room_occlusion(t_sdlcontext sdl, t_render *render, t_room *ro
 		if (render->occlusion.occluder_box == true)
 			draw_edges(sdl, render, &room->walls[i].entity, CLR_BLUE);
 		if (room->walls[i].entity.occlusion.occlude == true)
+		{
 			update_occlusion_culling(sdl, render, &room->walls[i].entity);
+			update_bitmask_culling(sdl, render, &room->walls[i].entity);
+		}
 		i++;
 	}
 }
@@ -226,25 +229,28 @@ bool is_entity_culled(t_sdlcontext sdl, t_render *render, t_entity *entity)
 	{
 		if (is_entity_peripheral_culled(sdl, render, entity) == false)
 		{
-			if (entity->occlusion.cull == true)
+			if (is_entity_bitmask_culled(sdl, render, entity) == false)
 			{
-				if (is_entity_occlusion_culled(sdl, render, entity) == false)
+				if (entity->occlusion.cull == true)
 				{
-					if (render->occlusion.cull_box == true)
-						draw_wireframe(sdl, render, entity, CLR_GREEN);
-					return(false);
+					if (is_entity_occlusion_culled(sdl, render, entity) == false)
+					{
+						if (render->occlusion.cull_box == true)
+							draw_wireframe(sdl, render, entity, CLR_GREEN);
+						return(false);
+					}
+					else
+					{
+						if (render->occlusion.cull_box == true)
+							draw_wireframe(sdl, render, entity, CLR_RED);
+						render->rs.occlusion_cull_amount++;
+						return(true);
+					}
 				}
 				else
 				{
-					if (render->occlusion.cull_box == true)
-						draw_wireframe(sdl, render, entity, CLR_RED);
-					render->rs.occlusion_cull_amount++;
-					return(true);
+					return(false);
 				}
-			}
-			else
-			{
-				return(false);
 			}
 		}
 	}

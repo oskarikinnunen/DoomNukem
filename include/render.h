@@ -3,6 +3,7 @@
 
 # include "../libs/installed_libs/include/SDL2/SDL.h" //TODO: make this work without relative path?
 # include "../libs/installed_libs/include/SDL2/SDL_ttf.h"
+//# include "/usr/local/lib"
 # include "vectors.h"
 # include "shapes.h"
 
@@ -43,13 +44,24 @@ typedef struct s_fontcolors
 	SDL_Color	skyblue;
 }	t_fontcolors;
 
+typedef struct s_backgroundcolors
+{
+	uint32_t	black;
+	uint32_t	white;
+	uint32_t	dark_grey;
+	uint32_t	light_grey;
+	uint32_t	brown;
+}	t_backgroundcolors;
+
 typedef struct s_font
 {
-	t_fontcolors	font_colors;
-	SDL_Color		color;
-	TTF_Font		*font_sizes[4];
-	TTF_Font		*font;
-	char			*text;
+	t_fontcolors		font_colors;
+	t_backgroundcolors	background_colors;
+	SDL_Color			color;
+	uint32_t			box_color;
+	TTF_Font			*font_sizes[4];
+	TTF_Font			*font;
+	char				*text;
 }	t_font;
 
 typedef struct s_audio
@@ -64,6 +76,7 @@ typedef struct s_audio
 typedef struct s_sdlcontext
 {
 	SDL_Window				*window;
+	SDL_Surface				*window_surface;
 	SDL_Surface				*surface;
 	t_platform				platform;
 	float					*zbuffer;
@@ -147,6 +160,7 @@ typedef struct s_render
 	t_render_statistics	rs;
 	struct s_world		*world;
 	t_debug_occlusion	occlusion;
+	uint32_t			*bitmask;
 }	t_render;
 
 //Draws image 'img' to pixels 'pxls', offset by point 'pos' and scaled to 'scale'
@@ -154,6 +168,7 @@ void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale);
 
 /* DRAW.C */
 void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr);
+void	draw_alpha(t_sdlcontext sdl, t_point pos, uint32_t clr);
 void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr);
 void	drawcircle(t_sdlcontext sdl, t_point pos, int size, uint32_t clr);
 void	drawrectangle(t_sdlcontext, t_rectangle rect, uint32_t clr);
@@ -164,8 +179,7 @@ void		free_render(t_render render);
 void		render_start(t_render *render);
 
 /* RENDER */
-void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle, t_img img);
-void	z_fill_tri_solid(t_sdlcontext sdl, t_triangle triangle);
+void	render_triangle(t_sdlcontext *sdl, t_point_triangle triangle, t_img *img);
 void	render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size);
 void	render_ray(t_sdlcontext sdl, t_render render, t_vector3 from, t_vector3 to);
 int		triangle_clipagainstplane(t_vector3 plane_p, t_vector3 plane_n, t_triangle *in_tri, t_triangle out_tri[2]);
@@ -201,8 +215,17 @@ void	close_audio(t_sdlcontext *sdl);
 int		clip_triangle_against_occluder_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
 int		clip_triangle_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
 void	clipped(t_render *render, t_sdlcontext sdl);
+void	clipped_point_triangle(t_render *render, t_sdlcontext sdl);
+t_point_triangle	triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_triangle clipped, t_sdlcontext sdl);
+int clippedtriangles(t_triangle tritransformed, t_mat4x4 matview, t_triangle *clipped);
 
 int		point_clip_triangle_against_plane(t_vector2 plane_p, t_vector2 plane_n, t_point_triangle in_tri, t_point_triangle out_tri[2]);
+
+/* SURFACE TOOLS */
+
+void	join_surfaces(SDL_Surface *dest, SDL_Surface *src);
+void	join_text_to_surface(SDL_Surface *dest, SDL_Surface *src, t_point pos, uint8_t alpha);
+void	join_text_boxed_to_surface(t_sdlcontext *sdl, SDL_Surface *src, t_point pos, t_point padding);
 
 /*occlusion*/
 void get_min_max_from_triangles(t_vector2 *min, t_vector2 *max, t_triangle *t, int count);

@@ -36,11 +36,13 @@ typedef struct s_entity
 /* OCCLUSION FOLDER */
 void update_peripheral_culling(t_sdlcontext sdl, t_render *render, t_entity *entity);
 void update_occlusion_culling(t_sdlcontext sdl, t_render *render, t_entity *entity);
+void update_bitmask_culling(t_sdlcontext sdl, t_render *render, t_entity *entity);
 
 bool is_entity_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
 bool is_entity_frustrum_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
 bool is_entity_peripheral_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
 bool is_entity_occlusion_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
+bool is_entity_bitmask_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
 
 void	calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity);
 int		calculate_tris_from_square(t_square s, t_entity *ent, t_render *render);
