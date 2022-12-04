@@ -217,6 +217,7 @@ void update_occlusion(t_sdlcontext sdl, t_render *render)
 		if (render->occlusion.occluder_box == true)
 			draw_edges(sdl, render, ent, CLR_BLUE);
 		update_occlusion_culling(sdl, render, ent);
+		update_bitmask_culling(sdl, render, ent);
 		l = l->next;
 	}
 }

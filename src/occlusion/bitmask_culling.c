@@ -52,12 +52,57 @@ static void  calc_points_step(float x_step[2], t_point *p, float delta)
 	x_step[1] = (p[0].x - p[2].x) * delta;
 }
 
+float	point_crossproduct(t_point first, t_point second)
+{
+	return ((first.x * second.y) + (first.y * second.x));// -
+}
+
+float sign1(t_point p1, t_point p2, t_point p3)
+{
+    return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+}
+
+bool PointInTriangle (t_point pt, t_point v1, t_point v2, t_point v3)
+{
+	return(true);
+    float d1, d2, d3;
+    bool has_neg, has_pos;
+
+    d1 = sign1(pt, v1, v2);
+    d2 = sign1(pt, v2, v3);
+    d3 = sign1(pt, v3, v1);
+	//return(true);
+    has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+    has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+    return !(has_neg && has_pos);
+}
+
+static void fill_point_tri_top1(t_sdlcontext *sdl, t_point_triangle triangle, t_render *render)
+{
+	t_point			*p;
+	t_point			pt;
+
+	p = triangle.p;
+	pt.y = p[1].y;
+	while (pt.y <= p[0].y)
+	{
+		pt.x = p[1].x;
+		while(pt.x <= p[2].x)
+		{
+			if(PointInTriangle(pt, p[0], p[1], p[2]))
+				render->bitmask[(pt.y / 4) * (sdl->window_w / 8) + (pt.x / 8)] |= 1UL << ((pt.y % 4) * 8) + (pt.x % 8);
+			pt.x++;
+		}
+		pt.y++;
+	}
+}
+
 static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_render *render)
 {
 	t_point			*p;
 	t_texture		*t;
 	float			step[2];
-	t_texture		t_step[3];
 	int				x;
 	int				y;
 	float			delta;
@@ -68,8 +113,9 @@ static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 	y = p[1].y;
 	while (y >= p[0].y)
 	{
-		x = p[1].x + (step[0] * (float)(p[1].y - y));
-		int ax =  p[2].x + (step[1] * (float)(p[1].y - y));
+		delta = (float)(p[1].y - y);
+		x = p[1].x + (step[0] * delta);
+		int ax =  p[2].x + (step[1] * delta);
 		while(x <= ax)
 		{
 			//(render->bitmask[(y / 4) * (sdl->window_w / 8) + (x / 8)] >> ((y % 4) * 8) + (x % 8)
@@ -95,8 +141,9 @@ static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 	y = p[1].y;
 	while (y <= p[0].y)
 	{
-		x = p[1].x + (step[0] * (float)(y - p[1].y));
-		int ax =  p[2].x + (step[1] * (float)(y - p[1].y));
+		delta = (float)(y - p[1].y);
+		x = p[1].x + (step[0] * delta);
+		int ax =  p[2].x + (step[1] * delta);
 		while(x <= ax)
 		{
 			//printf("x is %d, y is %d\n", x, y);
@@ -190,6 +237,8 @@ static void draw_tris(t_entity *entity, t_render *render, t_sdlcontext sdl)
 
 void update_bitmask_culling(t_sdlcontext sdl, t_render *render, t_entity *entity)
 {
+	draw_tris(entity, render, sdl);
+	return;
     int			i;
 	t_list		*l;
 	t_entity	*ent;
