@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/02 21:31:15 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/05 19:51:36 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,8 +143,16 @@ static void	entity_init(t_world *world, t_sdlcontext sdl)
 {
 	t_list		*l;
 	t_entity	*ent;
+	t_render	render = init_render(sdl, world);
 
+	render.position = (t_vector3){627.246216, 633.589478, 53.904354};
+	render.lookdir = (t_vector3){-0.960093, -0.074030, -0.269707};
+	render.vtarget = vector3_add(render.position, render.lookdir);
+	render.matcamera = matrix_lookat(render.position, render.vtarget, (t_vector3){0, 0, 1});
+	render.matview = matrix_quickinverse(render.matcamera);
+	bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 	l = world->entitylist;
+	int i = 0;
 	while (l != NULL)
 	{
 		ent = (t_entity *)l->content;
@@ -155,6 +163,14 @@ static void	entity_init(t_world *world, t_sdlcontext sdl)
 		ent->animation.frame = 0;
 		ent->animation.active = false;
 		update_entity_bounds(ent);
+		render_entity_to_zbuffer(sdl, &render, ent);
+		l = l->next;
+	}
+	l = world->entitylist;
+	while (l != NULL)
+	{
+		ent = (t_entity *)l->content;
+		update_entity_lighting(sdl, &render, ent);
 		l = l->next;
 	}
 }
@@ -273,6 +289,7 @@ t_world	load_world(char *filename, t_sdlcontext sdl)
 
 	spawn_npc(&world, "cyborg", (t_vector3){500.0f, 500.0f, 0.0f}, &sdl);
 	world.npcpool[0].destination = (t_vector3){200.0f, 200.0f, 0.0f};
+	t_object *o = get_object_by_name(sdl, "cube.obj");
 	//calculate_colliders_for_entities(&world);
 	return (world);
 }

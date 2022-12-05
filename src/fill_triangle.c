@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/02 21:21:47 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/05 18:56:35 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,21 +131,38 @@ static t_texture calc_step_texture(t_texture *t, float delta)
 	return(step);
 }
 
-static uint32_t sample_img(t_img *img, t_texture t)
+static uint32_t sample_img(t_img *img, t_texture t, t_lightmap *lightmap)
 {
+	uint32_t	clr;
 	static uint8_t	x8b;
 	static uint8_t	y8b;
 	uint8_t	xsample;
 	uint8_t	ysample;
+	float	light;
 
+	x8b = (t.u / t.w) * 255;
+	xsample = (x8b * (lightmap->size.x - 1)) / 255;
+	y8b = (t.v / t.w) * 255;
+	ysample = (y8b * (lightmap->size.y - 1)) / 255;
+	light = lightmap->data[(xsample * lightmap->size.x) + ysample] / 255.0f;
 	x8b = (t.u / t.w) * 255;
 	xsample = (x8b * (img->size.x - 1)) / 255;
 	y8b = (t.v / t.w) * 255;
 	ysample = (y8b * (img->size.y - 1)) / 255;
-	return (img->data[(xsample * img->size.x) + ysample]);
+	clr = img->data[(xsample * img->size.x) + ysample];
+	uint8_t blue = ((clr >> 16) & 0xFF) * light;
+	uint8_t green = ((clr >> 8) & 0xFF) * light;
+	uint8_t red = (clr & 0xFF) * light;
+
+//do math
+
+//new_RGB = (blue << 16) | (green << 8) | red;
+	//clr = ((blue << 16))
+	//clr = (uint8_t)(((clr >> 16) & 0xFF) * light) |  (uint8_t)(((clr >> 16) & 0xFF) * light) | (uint8_t)(((clr >> 8) & 0xFF) * light);
+	return ((blue << 16) | (green << 8) | red);
 }
 
-static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_img *img)
+static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_img *img, t_lightmap *lightmap)
 {
 	t_point			*p;
 	t_texture		*t;
@@ -173,7 +190,7 @@ static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_i
 			{
 				sdl->zbuffer[x + y * sdl->window_w] = t[0].w;
 				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] =
-					sample_img(img, t[0]);
+					sample_img(img, t[0], lightmap);
 			}
 			t[0].u += t_step[2].u;
 			t[0].v += t_step[2].v;
@@ -192,7 +209,7 @@ static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_i
 }
 
 
-static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle, t_img *img)
+static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle, t_img *img, t_lightmap *lightmap)
 {
 	t_point			*p;
 	t_texture		*t;
@@ -220,7 +237,7 @@ static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle, t_i
 			{
 				sdl->zbuffer[x + y * sdl->window_w] = t[0].w;
 				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] =
-					sample_img(img, t[0]);
+					sample_img(img, t[0], lightmap);
 			}
 			t[0].u += t_step[2].u;
 			t[0].v += t_step[2].v;
@@ -243,7 +260,7 @@ creates two triangles from the given triangle one flat top and one flat bottom.
 both triangles are then assigned to t_point p[3] array and passed onto fill_tri_bot/top functions.
 p[0] is always the pointy head of the triangle p[1] and p[2] are flat points where, p[1] x is smaller than p[2]
 */
-void	render_triangle(t_sdlcontext *sdl, t_point_triangle triangle, t_img *img)
+void	render_triangle(t_sdlcontext *sdl, t_point_triangle triangle, t_img *img, t_lightmap *lightmap)
 {
 	t_point			p_split;
 	t_texture		t_split;
@@ -271,9 +288,9 @@ void	render_triangle(t_sdlcontext *sdl, t_point_triangle triangle, t_img *img)
 	p[2] = p_split;
 	triangle.t[2] = t_split;
 	if (p[0].y != p[1].y)
-		fill_point_tri_top(sdl, triangle, img);
+		fill_point_tri_top(sdl, triangle, img, lightmap);
 	p[0] = p_temp;
 	triangle.t[0] = t_temp;
 	if (p[0].y != p[1].y)
-		fill_point_tri_bot(sdl, triangle, img);
+		fill_point_tri_bot(sdl, triangle, img, lightmap);
 }

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/02 21:13:37 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/05 18:28:16 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,14 @@
 #include "objects.h"
 #include "vectors.h"
 
-static void draw_triangles(t_sdlcontext *sdl, t_render *render)
+static void draw_triangles(t_sdlcontext *sdl, t_render *render, t_lightmap *lightmap)
 {
 	int index = 0;
 	while (index < render->temp2_count)
 	{
 		if (!render->wireframe && render->img != NULL)
 		{
-			render_triangle(sdl, render->temp2[index], render->img);
+			render_triangle(sdl, render->temp2[index], render->img, lightmap);
 		}
 		if (render->wireframe)
 		{
@@ -40,7 +40,7 @@ static void draw_triangles(t_sdlcontext *sdl, t_render *render)
 			img.size.y = 1;
 			img.length = 1;
 			render->img = &img;
-			render_triangle(sdl, render->temp2[index], render->img);
+			render_triangle(sdl, render->temp2[index], render->img, lightmap);
 			render->img = NULL;
 		}
 		render->rs.triangle_count++;
@@ -103,7 +103,7 @@ static void sort_triangles(t_triangle *triangles, int high)
 	}
 }
 
-static void clipped_point_triangle(t_render *render, t_sdlcontext sdl)
+void clipped_point_triangle(t_render *render, t_sdlcontext sdl)
 {
 	int i = 0;
 	int start = 0;
@@ -218,7 +218,7 @@ static t_vector3 normal_calc(t_triangle tritransformed)
 	return (normal);
 }
 
-static int clippedtriangles(t_triangle tritransformed, t_mat4x4 matview, t_triangle *clipped)
+int clippedtriangles(t_triangle tritransformed, t_mat4x4 matview, t_triangle *clipped)
 {
 	t_triangle triviewed;
 
@@ -282,7 +282,7 @@ static t_triangle triangle_to_screenspace(t_mat4x4 matproj, t_triangle clipped, 
 	return(triprojected);
 }
 
-static t_point_triangle triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_triangle clipped, t_sdlcontext sdl)
+t_point_triangle triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_triangle clipped, t_sdlcontext sdl)
 {
 	t_triangle			triprojected;
 	t_point_triangle	tri;
@@ -390,7 +390,7 @@ void render_entity(t_sdlcontext sdl, t_render *render, t_entity *entity)
 	render->draw_tri_count = 0;
 	render->temp1_count = 0;
 	render->temp2_count = 0;
-	if (obj == NULL)
+	if (obj == NULL || entity->lightmap == NULL)
 		return;
 	index = 0;
 	while (index < obj->vertice_count)
@@ -437,7 +437,7 @@ void render_entity(t_sdlcontext sdl, t_render *render, t_entity *entity)
 		{
 			render->img = obj->materials[obj->faces[index].materialindex].img;
 			clipped_point_triangle(render, sdl);
-			draw_triangles(&sdl, render);
+			draw_triangles(&sdl, render, &entity->lightmap[obj->faces[index].materialindex]);
 			render->img = NULL;
 			render->temp1_count = 0;
 			render->temp2_count = 0;

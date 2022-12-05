@@ -31,7 +31,11 @@ typedef struct s_entity
 	t_object		*obj;
 	t_occlusion		occlusion;
 	int32_t			id;
+	t_lightmap		*lightmap;
 }	t_entity;
+
+void				update_entity_lighting(t_sdlcontext sdl, t_render *render, t_entity *entity);
+void				render_entity_to_zbuffer(t_sdlcontext sdl, t_render *render, t_entity *entity);
 
 /* OCCLUSION FOLDER */
 void update_peripheral_culling(t_sdlcontext sdl, t_render *render, t_entity *entity);

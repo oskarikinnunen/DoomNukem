@@ -22,6 +22,12 @@ typedef enum e_platform
 	os_unsupported
 }	t_platform;
 
+typedef struct s_lightmap
+{
+	t_point		size;
+	uint8_t		*data;
+}	t_lightmap;
+
 typedef struct s_img
 {
 	t_point		size;
@@ -161,6 +167,10 @@ typedef struct s_render
 	t_debug_occlusion	occlusion;
 }	t_render;
 
+void				clipped_point_triangle(t_render *render, t_sdlcontext sdl);
+int					clippedtriangles(t_triangle tritransformed, t_mat4x4 matview, t_triangle *clipped);
+t_point_triangle	triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_triangle clipped, t_sdlcontext sdl);
+
 //Draws image 'img' to pixels 'pxls', offset by point 'pos' and scaled to 'scale'
 void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale);
 
@@ -177,7 +187,7 @@ void		free_render(t_render render);
 void		render_start(t_render *render);
 
 /* RENDER */
-void	render_triangle(t_sdlcontext *sdl, t_point_triangle triangle, t_img *img);
+void	render_triangle(t_sdlcontext *sdl, t_point_triangle triangle, t_img *img, t_lightmap *lightmap);
 void	render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size);
 void	render_ray(t_sdlcontext sdl, t_render render, t_vector3 from, t_vector3 to);
 int		triangle_clipagainstplane(t_vector3 plane_p, t_vector3 plane_n, t_triangle *in_tri, t_triangle out_tri[2]);
