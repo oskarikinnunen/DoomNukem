@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 15:18:07 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/02 15:43:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/05 18:40:19 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -313,7 +313,7 @@ void	maingui(t_editor *ed, t_sdlcontext *sdl, t_npctooldata *dat)
 		dat->collider_gui.hidden = false;
 		dat->ent->obj->col = &dat->metadata.col;
 	}
-	gui_update(gui);
+	gui_end(gui);
 }
 
 void	objectgui(t_editor *ed, t_sdlcontext *sdl, t_npctooldata *dat)
@@ -335,7 +335,7 @@ void	objectgui(t_editor *ed, t_sdlcontext *sdl, t_npctooldata *dat)
 		}
 		i++;
 	}
-	gui_update(gui);
+	gui_end(gui);
 }
 
 void	collidergui(t_editor *ed, t_sdlcontext *sdl, t_npctooldata *dat)
@@ -349,23 +349,23 @@ void	collidergui(t_editor *ed, t_sdlcontext *sdl, t_npctooldata *dat)
 	gui_labeled_float_slider("Rotate character preview:", &dat->ent->transform.rotation.x, 0.02f, gui);
 	gui_labeled_vector3_slider("Offset:", &bc->offset, 0.5f, gui);
 	gui_labeled_vector3_slider("Size:", &bc->size, 0.5f, gui);
-	gui_update(gui);
+	gui_end(gui);
 	render_box_colliders(dat->ent, ed, *sdl);
 }
 
-void	npc_tool_update(t_editor *ed, t_sdlcontext sdl)
+void	npc_tool_update(t_editor *ed, t_sdlcontext *sdl)
 {
 	t_npctooldata	*dat;
 	t_boxcollider	*bc;
 
 	dat = ed->tool->tooldata;
-	npc_tool_lazy_init(ed, &sdl, dat);
+	npc_tool_lazy_init(ed, sdl, dat);
 	//autoguitest(ed, sdl);
 	//ed->render.wireframe = true;
-	render_entity(sdl, ed->render, dat->ent);
-	maingui(ed, &sdl, dat);
-	objectgui(ed, &sdl, dat);
-	collidergui(ed, &sdl, dat);
+	render_entity(*sdl, ed->render, dat->ent);
+	maingui(ed, sdl, dat);
+	objectgui(ed, sdl, dat);
+	collidergui(ed, sdl, dat);
 	/*
 	if (instant_text_button(sdl, &ed->hid.mouse, "Select Object", (t_point) {20, 80}))
 		dat->ntm = ntm_select;
@@ -400,11 +400,11 @@ void	npc_tool_update(t_editor *ed, t_sdlcontext sdl)
 		dat->i_col = --dat->metadata.col.boxcol_count;
 	if (instant_text_button(sdl, &ed->hid.mouse, "rotate", (t_point){400, 100}))
 		dat->ent->transform.rotation.x += ft_degtorad(15.0f); */
-	render_collider(ed, sdl, dat);
-	clamp_player(ed, sdl, dat);
+	render_collider(ed, *sdl, dat);
+	clamp_player(ed, *sdl, dat);
 }
 
-void	npc_tool_cleanup(t_editor *ed, t_sdlcontext sdl)
+void	npc_tool_cleanup(t_editor *ed, t_sdlcontext *sdl)
 {
 	t_npctooldata	*dat;
 
@@ -416,7 +416,7 @@ t_tool	*get_npc_tool()
 {
 	static t_tool	tool
 	= {
-		npc_tool_update, npc_tool_cleanup
+		.update = npc_tool_update, .cleanup = npc_tool_cleanup
 	};
 	t_npctooldata	*dat;
 	t_entity		*ent;

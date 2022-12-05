@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 14:34:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/29 12:45:28 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/05 17:19:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,10 @@
 static void changetool(t_editor *ed, t_sdlcontext *sdl, t_tool *newtool)
 {
 	if (ed->tool->cleanup != NULL)
-		ed->tool->cleanup(ed, *sdl);
+		ed->tool->cleanup(ed, sdl);
 	ed->tool = newtool;
+	if (ed->tool->init != NULL)
+		ed->tool->init(ed, sdl);
 }
 
 void update_editor_buttons(t_editor *ed, t_sdlcontext *sdl)

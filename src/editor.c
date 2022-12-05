@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/02 21:14:40 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/05 17:14:47 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,11 @@ int	editorloop(t_sdlcontext sdl)
 		update_editor_buttons(&ed, &sdl);
 		if (ed.tool != NULL)
 		{
-			ed.tool->draw_update(&ed, sdl); //Instant buttons here can toggle mouse.click unhandled, so draw first
-			if (ed.tool->icon != NULL) //Indicates which tool is selected
+			ed.tool->update(&ed, &sdl); //Instant buttons here can toggle mouse.click unhandled, so draw first
+			/*if (ed.tool->icon != NULL) //Indicates which tool is selected
 				draw_image(sdl, (t_point){ 8, sdl.window_h - 40 }, *ed.tool->icon, (t_point){32, 32});
 			else if (ed.tool->icon_name[0] != '\0')
-				ed.tool->icon = get_image_by_name(sdl, ed.tool->icon_name);
+				ed.tool->icon = get_image_by_name(sdl, ed.tool->icon_name);*/
 		}
 		ed.hid.mouse.click_unhandled = false;
 		draw_text_boxed(&sdl, "tab to unlock/lock mouse, shift + enter to go to playmode", (t_point){sdl.window_w / 2, 10}, (t_point){sdl.window_w, sdl.window_h});

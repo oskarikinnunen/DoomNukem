@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/02 21:48:06 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/05 19:31:22 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,29 +14,6 @@
 #include "file_io.h"
 #include "objects.h"
 
-void render_room(t_sdlcontext sdl, t_render render, t_room room)
-{
-	int	i;
-
-	i = 0;
-	while (i < room.wallcount)
-	{
-		render_entity(sdl, render, &room.walls[i].entity);
-		i++;
-	}
-	i = 0;
-	while (i < room.floorcount)
-	{
-		render_entity(sdl, render, &room.floors[i].entity);
-		i++;
-	}
-
-}
-
-/*static void	updateanim(t_entity *entity)
-{
-
-}*/
 
 void	update_npcs(t_world *world)
 {
@@ -74,7 +51,7 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 
 	i = 0;
 	found = 0;
-	while (found < world->entitycache.active_entitycount)
+	while (found < world->entitycache.existing_entitycount)
 	{
 		if (world->entitycache.entities[i].status != es_free)
 		{
@@ -93,23 +70,7 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 	t_wall		wall;
 	int			i;
 	
-	l = world->roomlist;
-	while (l != NULL)
-	{
-		render_room(sdl, *render, *(t_room *)l->content);
-		l = l->next;
-	}
-	l = world->entitylist;
-	while (l != NULL)
-	{
-		ent = (t_entity *)l->content;
-		render_entity(sdl, *render, ent);
-		update_anim(&ent->animation, world->clock.delta);
-		//printf("world clock delta %i \n", world.clock.delta);
-		/*if (ent->animation.frame != 0)
-			printf("ANIMFRAME %i \n", ent->animation.frame);*/
-		l = l->next;
-	}
+	//
 	update_npcs(world);
 	i = 0;
 	while (i < 128)
@@ -127,27 +88,9 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 	render_entity(sdl, *render, &world->skybox);
 }
 
-
-void	calculate_colliders_for_entities(t_world *world)
-{
-	t_list *l;
-	int		i;
-
-	l = world->entitylist;
-	i = 0;
-	while (l != NULL)
-	{
-		world->physics.entities[i] = (t_entity *)l->content;
-		l = l->next;
-		i++;
-	}
-	world->physics.entities[i] = NULL;
-	calculate_colliders(&world->physics);
-}
-
 static void	entity_init(t_world *world, t_sdlcontext sdl)
 {
-	t_list		*l;
+	/*t_list		*l;
 	t_entity	*ent;
 
 	l = world->entitylist;
@@ -161,7 +104,7 @@ static void	entity_init(t_world *world, t_sdlcontext sdl)
 		ent->animation.frame = 0;
 		ent->animation.active = false;
 		l = l->next;
-	}
+	}*/
 }
 
 void	scale_skybox_uvs(t_object *obj)
@@ -293,7 +236,7 @@ t_entitycache	init_entitycache(uint32_t cachesize)
 	ft_bzero(&cache, sizeof(t_entitycache));
 	cache.alloc_count = cachesize;
 	cache.entities = ft_memalloc(cache.alloc_count * sizeof(t_entity));
-	cache.active_entitycount = 0;
+	cache.existing_entitycount = 0;
 	i = 0;
 	while (i < cache.alloc_count)
 	{
@@ -303,11 +246,25 @@ t_entitycache	init_entitycache(uint32_t cachesize)
 	return (cache);
 }
 
-void		erase_entity(t_entitycache *entitycache, uint16_t entity_id)
+void		erase_entity(t_world *world, t_entity *ent)
 {
-	entitycache->entities[entity_id].status = es_free;
-	entitycache->active_entitycount--;
+	t_entitycache	*cache;
+
+	cache = &world->entitycache;
+	//protect id here? if greater than alloccount
+	cache->entities[ent->id].status = es_free;
+	if (cache->existing_entitycount == 0)
+		error_log(EC_MALLOC);
+	cache->existing_entitycount--;
 }
+
+/*void		erase_entity(t_entitycache *cache, uint16_t entity_id)
+{
+	cache->entities[entity_id].status = es_free;
+	if (cache->existing_entitycount == 0)
+		error_log(EC_MALLOC);
+	cache->existing_entitycount--;
+}*/
 
 t_entity	*raise_entity(t_world	*world)
 {
@@ -322,8 +279,11 @@ t_entity	*raise_entity(t_world	*world)
 		{
 			cache->entities[i].status = es_active;
 			cache->entities[i].transform.scale = vector3_one();
+			cache->entities[i].id = i;
 			//cache->entities[i].transform.scale = vector3_zero();
-			cache->active_entitycount++;
+			cache->existing_entitycount++;
+			if (cache->existing_entitycount >= cache->alloc_count)
+				error_log(EC_MALLOC);
 			return (&cache->entities[i]);
 		}
 		i++;
@@ -344,7 +304,7 @@ t_entity	*raise_basic_entity(t_world *world, char *objectname, t_vector3 positio
 	return (ent);
 }
 
-void	for_all_entities(t_world	*world) //TODO: add function pointer parameter
+void	for_all_active_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *world))
 {
 	int				i;
 	int				found;
@@ -353,13 +313,13 @@ void	for_all_entities(t_world	*world) //TODO: add function pointer parameter
 	i = 0;
 	found = 0;
 	cache = &world->entitycache;
-	while (found < cache->active_entitycount)
+	while (found < cache->existing_entitycount)
 	{
 		if (cache->entities[i].status != es_free)
 		{
 			if (cache->entities[i].status == es_active)
 			{
-				
+				func(&cache->entities[i], world);
 			}
 			found++;
 		}
@@ -373,7 +333,7 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 
 	ft_bzero(&world, sizeof(t_world));
 	world.sdl = sdl;
-	world.entitylist = load_chunk(filename, "ENT_", sizeof(t_entity));
+	//world.entitylist = load_chunk(filename, "ENT_", sizeof(t_entity));
 	world.wall_list = load_chunk(filename, "WALL", sizeof(t_wall));
 	world.roomlist = load_chunk(filename, "RMNM", sizeof(t_room));
 	world.guns = load_chunk(filename, "GUNS", sizeof(t_gun));
@@ -387,7 +347,7 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 	load_walltextures(&world, *sdl);
 	ft_bzero(&world.skybox, sizeof(t_entity));
 	world.skybox.obj = get_object_by_name(*sdl, "cube");
-	world.skybox.obj->materials[0].img = get_image_by_name(*sdl, "grid3.png");
+	world.skybox.obj->materials[0].img = get_image_by_name(*sdl, "grid_d.png");
 	//scale_skybox_uvs(world.skybox.obj);
 	world.skybox.transform.scale = vector3_mul(vector3_one(), 3000.0f);
 	world.skybox.transform.position = (t_vector3){1500.0f, 1500.0f, 1499.0f};
@@ -421,7 +381,7 @@ void	save_world(char *filename, t_world world)
 
 	fd = fileopen(filename, O_RDWR | O_CREAT | O_TRUNC); //Empty the file or create a new one if it doesn't exist
 	close(fd);
-	save_chunk(filename, "ENT_", world.entitylist);
+	//save_chunk(filename, "ENT_", world.entitylist);
 	save_chunk(filename, "WALL", world.wall_list);
 	save_chunk(filename, "GUNS", world.guns);
 	t_list	*r;

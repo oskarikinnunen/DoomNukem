@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/02 17:41:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/05 18:59:21 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,9 @@
 
 typedef struct s_tool
 {
-	void		(*draw_update)(t_editor *ed, t_sdlcontext sdl);
-	void		(*cleanup)(t_editor *ed, t_sdlcontext sdl);
+	void		(*init)(t_editor *ed, t_sdlcontext *sdl);
+	void		(*update)(t_editor *ed, t_sdlcontext *sdl);
+	void		(*cleanup)(t_editor *ed, t_sdlcontext *sdl);
 	void		*tooldata;
 	char		icon_name[256];
 	t_img		*icon;
@@ -54,6 +55,7 @@ typedef struct s_autogui
 	char				*title;
 	int					min_x;
 	int					overdraw;
+	int					x_maxdrawn;
 	t_sdlcontext		*sdl;
 	t_player			*player;
 	t_autoguilayout		agl;
@@ -80,16 +82,19 @@ struct	s_mouse;
 struct	s_editor;
 
 void				objectgui_update(t_objectgui *ogui, t_entity **ent);
+void				gui_preset_transform(t_transform *t, t_autogui *gui);
+void				gui_preset_scale_and_rotate(t_transform *t, t_autogui *gui);
+void				gui_autosize(t_autogui *gui);
 void				gui_start(t_autogui *gui);
 void				gui_emptyvertical(int y, t_autogui *gui);
 void				gui_starthorizontal(t_autogui *gui);
 void				gui_endhorizontal(t_autogui *gui);
-void				gui_update(t_autogui *gui);
+void				gui_end(t_autogui *gui);
 void				gui_int_slider(int *i, int mul, t_autogui *gui);
-void				gui_float_slider(float	*f, float mul, t_autogui *gui);
+bool				gui_float_slider(float	*f, float mul, t_autogui *gui);
 void				gui_labeled_vector3_slider(char *str, t_vector3 *vec, float mul, t_autogui *gui);
 void				gui_vector3_slider(t_vector3 *vec, float mul, t_autogui *gui);
-void				gui_labeled_float_slider(char *str, float *f, float mul, t_autogui *gui);
+bool				gui_labeled_float_slider(char *str, float *f, float mul, t_autogui *gui);
 void				gui_label(char *str, t_autogui *gui);
 bool				gui_button(char *str, t_autogui *gui);
 t_autogui			init_gui(t_sdlcontext *sdl, t_hid_info *hid, t_player *player, t_point origin, char *title);

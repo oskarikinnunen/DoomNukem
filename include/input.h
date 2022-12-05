@@ -27,7 +27,7 @@ typedef struct s_mouse
 # define KEYS_SHIFTMASK 6
 # define KEYS_MMASK 7
 # define KEYS_LALTMASK 8
-# define KEYS_DELETEMASK 8
+# define KEYS_DELETEMASK 9
 
 # define CONTROLLER_SENS 0.002f
 # define DEADZONE 0.1f

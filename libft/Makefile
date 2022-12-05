@@ -6,7 +6,7 @@
 #    By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/11 17:57:56 by okinnune          #+#    #+#              #
-#    Updated: 2022/11/24 13:43:06 by okinnune         ###   ########.fr        #
+#    Updated: 2022/12/05 18:01:05 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ FILES= ft_abs.c ft_atoi.c ft_bzero.c ft_digitcount.c ft_isalnum.c ft_isalpha.c\
 	ft_get_next_line.c ft_strscrape.c ft_strreplace.c ft_degtorad.c \
 	ft_absf.c ft_listlen.c ft_strcdup.c get_next_line.c ft_flerp.c
 V_FILES= v3_basics.c bresenham.c
-CFLAGS= -Wall -Wextra -Werror -O2 -finline-functions -c -I.
+CFLAGS= -Wall -Wextra -O2 -finline-functions -c -I.
 CC= gcc
 
 V_SRCS= $(addprefix v3_src/, $(V_FILES))

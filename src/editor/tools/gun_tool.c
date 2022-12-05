@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:49:59 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/30 13:55:18 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/05 17:13:13 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,23 +67,23 @@ void	save_preset(t_editor *ed, t_sdlcontext sdl)
 	debugconsole_addmessage(&ed->world.debugconsole, str);
 }
 
-void	gun_tool_draw(t_editor *ed, t_sdlcontext sdl)
+void	gun_tool_update(t_editor *ed, t_sdlcontext *sdl)
 {
 	t_guntooldata	*dat;
 
 	dat = (t_guntooldata *)ed->tool->tooldata;
 	ed->player.gun->disabled = false;
-	if (instant_text_button(sdl, &ed->hid.mouse, "Model", (t_point) {20, 140}))
+	if (instant_text_button(*sdl, &ed->hid.mouse, "Model", (t_point) {20, 140}))
 		dat->gtm = gtm_model;
-	if (instant_text_button(sdl, &ed->hid.mouse, "Offset", (t_point) {80, 140}))
+	if (instant_text_button(*sdl, &ed->hid.mouse, "Offset", (t_point) {80, 140}))
 		dat->gtm = gtm_offset;
-	if (instant_text_button(sdl, &ed->hid.mouse, "Recoil", (t_point) {140, 140}))
+	if (instant_text_button(*sdl, &ed->hid.mouse, "Recoil", (t_point) {140, 140}))
 		dat->gtm = gtm_recoil;
-	if (dat->gtm == gtm_model)
+	/*if (dat->gtm == gtm_model)
 	{
 		ed->player.gun->entity.obj = object_selector2(ed, sdl, &ed->player.gun->entity);
-	}
-	if (dat->gtm == gtm_offset)
+	}*/
+	/*if (dat->gtm == gtm_offset)
 	{
 		vector3_slider("aiming  position", &ed->player.gun->aimpos, ed, sdl, (t_point) {20, sdl.window_h / 2 });
 		vector3_slider("holster position", &ed->player.gun->holsterpos, ed, sdl, (t_point) {20, (sdl.window_h / 2) + 60});
@@ -100,10 +100,10 @@ void	gun_tool_draw(t_editor *ed, t_sdlcontext sdl)
 	string_box("Preset name:", ed->player.gun->preset_name, ed, sdl, (t_point) {20, 80});
 	if (instant_text_button(sdl, &ed->hid.mouse, "Save", (t_point){20, 100}))
 		save_preset(ed, sdl);
-	list_gun_presets(ed, sdl, (t_point){20, 540});
+	list_gun_presets(ed, sdl, (t_point){20, 540});*/
 }
 
-void	gun_tool_cleanup(t_editor *ed, t_sdlcontext sdl)
+void	gun_tool_cleanup(t_editor *ed, t_sdlcontext *sdl)
 {
 	ed->player.gun->disabled = true;
 }
@@ -112,7 +112,7 @@ t_tool	*get_gun_tool()
 {
 	static t_tool	tool
 	= {
-		gun_tool_draw, gun_tool_cleanup
+		.update = gun_tool_update, .cleanup = gun_tool_cleanup
 	};
 	t_guntooldata	*dat;
 

@@ -9,9 +9,18 @@ static t_material	*planemat()
 	mat = ft_memalloc(sizeof(t_material));
 	if (mat == NULL)
 		error_log(EC_MALLOC);
-	ft_strcpy(mat->texturename, "gwall.png");
+	ft_strcpy(mat->texturename, "wall_concrete.png");
 	mat->kd = INT_MAX;
 	return (mat);
+}
+
+t_vector2 flipped_uv(t_vector2 og)
+{
+	t_vector2	uv;
+
+	uv.x = -og.y;
+	uv.y = og.x;
+	return (uv);
 }
 
 t_object	*object_tri(t_sdlcontext *sdl)
@@ -84,11 +93,15 @@ t_object	*object_plane(t_sdlcontext *sdl)
 	plane->faces[1].material = &plane->materials[0];
 	plane->materials->img = get_image_by_name(*sdl, plane->materials->texturename);
 	plane->uvs = ft_memalloc(sizeof(t_vector2) * 4);
-	plane->uv_count = 4;
+	plane->uv_count = 2;
 	plane->uvs[0] = (t_vector2){0.0f, 0.0f};
 	plane->uvs[1] = (t_vector2){1.0f, 0.0f};
 	plane->uvs[2] = (t_vector2){0.0f, 1.0f};
 	plane->uvs[3] = (t_vector2){1.0f, 1.0f};
+	plane->uvs[0] = flipped_uv(plane->uvs[0]);
+	plane->uvs[1] = flipped_uv(plane->uvs[1]);
+	plane->uvs[2] = flipped_uv(plane->uvs[2]);
+	plane->uvs[3] = flipped_uv(plane->uvs[3]);
 
 	/*sizeof(t_wall);
 	sizeof(t_object);*/

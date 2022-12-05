@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 18:03:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/02 18:28:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/05 14:45:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,10 @@ bool	triangle_lookedat(t_render r, t_triangle tri, t_sdlcontext sdl)
 bool	entity_lookedat(t_editor *ed, t_sdlcontext sdl, t_entity *entity)
 {
 	int	i;
-	int	j;
 
 	i = 0;
+	if (entity->obj == NULL)
+		return (false);
 	while (i < entity->obj->face_count)
 	{
 		t_triangle	t;

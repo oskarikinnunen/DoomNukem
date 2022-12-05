@@ -61,7 +61,7 @@ typedef struct s_gun
 typedef struct s_entitycache
 {
 	t_entity	*entities;
-	uint32_t	active_entitycount;
+	uint32_t	existing_entitycount;
 	uint32_t	alloc_count;
 }	t_entitycache;
 

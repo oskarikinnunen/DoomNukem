@@ -21,7 +21,7 @@ typedef struct s_line
 
 typedef struct s_wall
 {
-	t_entity	entity;
+	t_entity	*entity;
 	t_line		line;
 	uint32_t	height;
 	bool		disabled; //TODO: implement

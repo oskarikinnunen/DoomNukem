@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/02 21:13:19 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/05 00:13:20 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,12 +232,12 @@ static void fill_tri_bot(t_sdlcontext sdl, t_triangle triangle, t_img *img)
 			if (t[0].w > sdl.zbuffer[(int)(i) + (int)q[1].v.y * sdl.window_w])
 			{
 				sdl.zbuffer[(int)(i) + (int)q[1].v.y * sdl.window_w] = t[0].w;
-				if (i < sdl.screensize.x - 4 && q[1].v.y < sdl.screensize.y - 4)
+				/*if (i < sdl.screensize.x - 4 && q[1].v.y < sdl.screensize.y - 4)
 				{
 					sdl.zbuffer[(int)(i + 1) + (int)(q[1].v.y + 1) * sdl.window_w] = t[0].w;
 					sdl.zbuffer[(int)(i) + (int)(q[1].v.y + 1) * sdl.window_w] = t[0].w;
 					sdl.zbuffer[(int)(i + 1) + (int)(q[1].v.y) * sdl.window_w] = t[0].w;
-				}
+				}*/
 				t[0].u += (t_step[2].u * index);
 				t[0].v += (t_step[2].v * index);
 				index = 0;
@@ -252,7 +252,7 @@ static void fill_tri_bot(t_sdlcontext sdl, t_triangle triangle, t_img *img)
 				ysample = (y8b * (img->size.y - 1)) / 255;
 				((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w]
 					= flip_channels(img->data[(xsample * img->size.x) + ysample]); //used to use sampleimage
-				if (i < sdl.screensize.x - 10 && q[1].v.y < sdl.screensize.y - 10)
+				/*if (i < sdl.screensize.x - 10 && q[1].v.y < sdl.screensize.y - 10)
 				{
 					((uint32_t *)sdl.surface->pixels)[(int)(i + 1) + ((int)q[1].v.y + 1) * sdl.window_w]
 						= flip_channels(img->data[(xsample * img->size.x) + ysample]); //used to use sampleimage
@@ -260,18 +260,18 @@ static void fill_tri_bot(t_sdlcontext sdl, t_triangle triangle, t_img *img)
 						= flip_channels(img->data[(xsample * img->size.x) + ysample]); //used to use sampleimage
 					((uint32_t *)sdl.surface->pixels)[(int)(i + 1) + ((int)q[1].v.y) * sdl.window_w]
 						= flip_channels(img->data[(xsample * img->size.x) + ysample]); //used to use sampleimage
-				}
+				}*/
 			}
 			index++;
-			index++;
+			//index++;
 			t[0].w += t_step[2].w;
-			t[0].w += t_step[2].w;
+			//t[0].w += t_step[2].w;
 			i++;
-			i++;
+			//i++;
 		}
 		triangle = step_triangle(triangle, x_step, t_step);
-		triangle = step_triangle(triangle, x_step, t_step);
-		q[1].v.y--;
+		//triangle = step_triangle(triangle, x_step, t_step);
+		//q[1].v.y--;
 		q[1].v.y--;
 	}
 }
@@ -303,12 +303,12 @@ static void fill_tri_top(t_sdlcontext sdl, t_triangle triangle, t_img *img)
 			if (t[0].w > sdl.zbuffer[(int)(i) + (int)q[1].v.y * sdl.window_w])
 			{
 				sdl.zbuffer[(int)(i) + (int)q[1].v.y * sdl.window_w] = t[0].w;
-				if (i < sdl.screensize.x - 4 && q[1].v.y < sdl.screensize.y - 4)
+				/*if (i < sdl.screensize.x - 4 && q[1].v.y < sdl.screensize.y - 4)
 				{
 					sdl.zbuffer[(int)(i + 1) + (int)(q[1].v.y + 1) * sdl.window_w] = t[0].w;
 					sdl.zbuffer[(int)(i) + (int)(q[1].v.y + 1) * sdl.window_w] = t[0].w;
 					sdl.zbuffer[(int)(i + 1) + (int)(q[1].v.y) * sdl.window_w] = t[0].w;
-				}
+				}*/
 				t[0].u += (t_step[2].u * index);
 				t[0].v += (t_step[2].v * index);
 				index = 0;
@@ -323,8 +323,7 @@ static void fill_tri_top(t_sdlcontext sdl, t_triangle triangle, t_img *img)
 				//int fnl = ps1(i) + ps1(q[1].v.y) * sdl.window_w;
 				((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w]
 					= flip_channels(img->data[(xsample * img->size.x) + ysample]);
-				((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w]
-					= flip_channels(img->data[(xsample * img->size.x) + ysample]); //used to use sampleimage
+				/*
 				if (i < sdl.screensize.x - 4 && q[1].v.y < sdl.screensize.y - 4)
 				{
 					((uint32_t *)sdl.surface->pixels)[(int)(i + 1) + ((int)q[1].v.y + 1) * sdl.window_w]
@@ -333,18 +332,18 @@ static void fill_tri_top(t_sdlcontext sdl, t_triangle triangle, t_img *img)
 						= flip_channels(img->data[(xsample * img->size.x) + ysample]); //used to use sampleimage
 					((uint32_t *)sdl.surface->pixels)[(int)(i + 1) + ((int)q[1].v.y) * sdl.window_w]
 						= flip_channels(img->data[(xsample * img->size.x) + ysample]); //used to use sampleimage
-				}
+				}*/
 			}
 			index++;
-			index++;
+			//index++;
+			//t[0].w += t_step[2].w;
 			t[0].w += t_step[2].w;
-			t[0].w += t_step[2].w;
-			i++;
+			//i++;
 			i++;
 		}
 		triangle = step_triangle(triangle, x_step, t_step);
-		triangle = step_triangle(triangle, x_step, t_step);
-		q[1].v.y++;
+		//triangle = step_triangle(triangle, x_step, t_step);
+		//q[1].v.y++;
 		q[1].v.y++;
 	}
 }

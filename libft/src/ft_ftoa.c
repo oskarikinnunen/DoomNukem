@@ -6,15 +6,22 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 11:53:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 11:55:00 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/05 18:06:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+#include <stdio.h>
+
 
 char	*ft_ftoa(float f, int dec)
 {
-	char	*final;
+	char	*str;
+
+	str = ft_strnew(32);
+	snprintf(str, 32, "%.2f", f);
+	return (str);
+	/*char	*final;
 	char	*strinteger;
 	char	*strdecimal;
 	int		neg;
@@ -34,5 +41,5 @@ char	*ft_ftoa(float f, int dec)
 	ft_strcat(final, strdecimal);
 	free(strinteger);
 	free(strdecimal);
-	return (final);
+	return (final);*/
 }

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/03 08:00:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/05 19:03:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ void	gui_start(t_autogui *gui)
 	gui->overdraw = 0;
 	gui->offset.y = 32 + 5; //TODO: autogui_start
 	gui->offset.x = 5;
+	gui->x_maxdrawn = 0;
 	gui_limitrect(gui);
 }
 
@@ -143,7 +144,16 @@ static void update_hidecross(t_autogui *gui)
 		gui->hidden = true;
 }
 
-void	gui_update(t_autogui *gui)
+void	gui_autosize(t_autogui *gui)
+{
+	t_rectangle	titlerect;
+
+	titlerect = draw_text_boxed(gui->sdl, gui->title, gui->rect.position, gui->sdl->screensize);
+	gui->minimum_size.x = titlerect.size.x + 32;
+	gui->rect.size.x = titlerect.size.x + 32;
+}
+
+void	gui_end(t_autogui *gui)
 {
 	t_rectangle	dragcorner;
 	t_rectangle	dragbar;
@@ -187,7 +197,8 @@ void	gui_update(t_autogui *gui)
 		gui->scroll.y = 0;
 		gui->rect.size = point_sub(point_add(gui->hid->mouse.pos, point_div(dragcorner.size, 2)), gui->rect.position);
 	}
-	gui_limitrect(gui);
+	
+		
 	if (gui->hid->mouse.held == 0)
 	{
 		gui->move_held = false;
@@ -205,6 +216,8 @@ void	gui_update(t_autogui *gui)
 	{
 		gui->scroll.y = 0;
 		gui->scrollable = false;
+		gui->minimum_size.y = gui->offset.y + 32;
+		gui->rect.size.y = gui->offset.y + 32;
 	}
 	if (gui->scrollable)
 	{
@@ -243,7 +256,7 @@ void	objectgui_update(t_objectgui *ogui, t_entity **ent)
 		}
 		i++;
 	}
-	gui_update(gui);
+	gui_end(gui);
 }
 
 static t_point gui_currentpos(t_autogui *gui)
@@ -296,6 +309,8 @@ static	void	gui_layout(t_autogui *gui, t_rectangle rect)
 	}
 	else
 		gui->offset.x += x;
+	if (gui->offset.x > gui->x_maxdrawn)
+		gui->x_maxdrawn = gui->offset.x;
 }
 
 void	gui_emptyvertical(int y, t_autogui *gui)
@@ -307,12 +322,16 @@ void	gui_emptyvertical(int y, t_autogui *gui)
 	gui_layout(gui, rect);
 }
 
-void	gui_labeled_float_slider(char *str, float *f, float mul, t_autogui *gui)
+bool	gui_labeled_float_slider(char *str, float *f, float mul, t_autogui *gui)
 {
+	bool	modified;
+
+	modified = false;
 	gui_starthorizontal(gui);
 	gui_label(str, gui);
-	gui_float_slider(f, mul, gui);
+	modified = gui_float_slider(f, mul, gui);
 	gui_endhorizontal(gui);
+	return (modified);
 }
 
 void	gui_label(char *str, t_autogui *gui)
@@ -327,15 +346,46 @@ void	gui_label(char *str, t_autogui *gui)
 	gui_layout(gui, rect);
 }
 
-void	gui_float_slider(float	*f, float mul, t_autogui *gui)
+void	gui_preset_scale_and_rotate(t_transform *t, t_autogui *gui)
+{
+	bool	modified;
+
+	gui_labeled_vector3_slider("Rotation:", &t->rotation, 0.1f, gui);
+	gui_labeled_vector3_slider("Scale:", &t->scale, 0.1f, gui);
+	modified = gui_labeled_float_slider("Scale (Locked xyz):", &t->scale.z, 0.1f, gui);
+	if (modified)
+	{
+		t->scale.x = t->scale.z;
+		t->scale.y = t->scale.z;
+	}
+}
+
+void	gui_preset_transform(t_transform *t, t_autogui *gui)
+{
+	bool	modified;
+
+	gui_labeled_vector3_slider("Position:", &t->position, 1.0f, gui);
+	gui_labeled_vector3_slider("Rotation:", &t->rotation, 0.1f, gui);
+	gui_labeled_vector3_slider("Scale:", &t->scale, 0.1f, gui);
+	modified = gui_labeled_float_slider("Scale (Locked xyz):", &t->scale.z, 0.1f, gui);
+	if (modified)
+	{
+		t->scale.x = t->scale.z;
+		t->scale.y = t->scale.z;
+	}
+}
+
+bool	gui_float_slider(float	*f, float mul, t_autogui *gui)
 {
 	t_rectangle	rect;
 	char		*str;
 	t_point		mousepos;
 	float		add;
+	bool		modified;
 
 	rect = empty_rect();
 	add = 0.0f;
+	modified = false;
 	if (gui_shoulddraw(gui)) 
 	{
 		str = ft_ftoa(*f, 4);
@@ -357,6 +407,8 @@ void	gui_float_slider(float	*f, float mul, t_autogui *gui)
 			if (gui->hid->mouse.relative && gui->locking_player)
 			{
 				add += (float)gui->hid->mouse.delta.x * mul;
+				if (add != 0.0f)
+					modified = true;
 			}
 			if ((gui->hid->keystate >> KEYS_SHIFTMASK) & 1)
 				add *= 2.0f;
@@ -367,6 +419,7 @@ void	gui_float_slider(float	*f, float mul, t_autogui *gui)
 		free(str);
 	}
 	gui_layout(gui, rect);
+	return (modified);
 }
 
 void	gui_labeled_vector3_slider(char *str, t_vector3 *vec, float mul, t_autogui *gui)

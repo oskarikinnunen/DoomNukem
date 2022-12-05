@@ -1,5 +1,5 @@
-resolution_width = 1024
-resolution_height = 640
+﻿resolution_width = 1024
+resolution_height = 768
 images =
 {
 	"entitytool.png",
@@ -31,12 +31,14 @@ images =
 	"view.png",
 	"grid.png",
 	"grid3.png",
-	"gwall.png"
+	"gwall.png",
+	"grid_d.png",
+	"wall_concrete.png"
 }
 objects =
 {
 	"car2.obj",
-	"primitive_cube_textured.obj",
+	"cube_tex.obj",
 	"cube.obj",
 	"dummy.obj",
 	"cyborg.obj",
