@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/05 19:03:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/05 20:31:28 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -484,6 +484,29 @@ bool	gui_button(char *str, t_autogui *gui)
 	}
 	gui_layout(gui, br.rect);
 	return (br.clicked);
+}
+
+void gui_int(int i, t_autogui *gui)
+{
+	char		*str;
+	t_rectangle	rect;
+
+	rect = empty_rect();
+	if (gui_shoulddraw(gui))
+	{
+		str = ft_itoa(i);
+		rect = draw_text_boxed(gui->sdl, str, gui_currentpos(gui), gui->sdl->screensize);
+		free(str);
+	}
+	gui_layout(gui, rect);
+}
+
+void gui_labeled_int(char *str, int i, t_autogui *gui)
+{
+	gui_starthorizontal(gui);
+	gui_label(str, gui);
+	gui_int(i, gui);
+	gui_endhorizontal(gui);
 }
 
 void gui_int_slider(int *i, int mul, t_autogui *gui)

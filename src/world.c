@@ -6,14 +6,14 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/05 19:31:22 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/05 20:52:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "file_io.h"
 #include "objects.h"
-
+#include "editor_tools.h"
 
 void	update_npcs(t_world *world)
 {
@@ -86,6 +86,9 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 	}
 	update_entitycache(&sdl, world, render);
 	render_entity(sdl, *render, &world->skybox);
+	gui_start(world->debug_gui);
+	gui_labeled_int("Entity count:", world->entitycache.existing_entitycount, world->debug_gui);
+	gui_end(world->debug_gui);
 }
 
 static void	entity_init(t_world *world, t_sdlcontext sdl)
@@ -185,6 +188,7 @@ t_room	load_room(char *filename)
 
 void	load_rooms(t_world *world, t_sdlcontext *sdl)
 {
+	return ;
 	t_list	*l;
 	t_room	*r;
 
@@ -193,8 +197,8 @@ void	load_rooms(t_world *world, t_sdlcontext *sdl)
 	{
 		r = (t_room *)l->content;
 		*r = load_room(r->name);
-		init_roomwalls(r, sdl);
-		init_room_meshes(r, sdl);
+		init_roomwalls(world, r);
+		//init_room_meshes(r, sdl);
 		l = l->next;
 	}
 }
@@ -278,6 +282,7 @@ t_entity	*raise_entity(t_world	*world)
 		if (cache->entities[i].status == es_free)
 		{
 			cache->entities[i].status = es_active;
+			cache->entities[i].transform.position = vector3_zero();
 			cache->entities[i].transform.scale = vector3_one();
 			cache->entities[i].id = i;
 			//cache->entities[i].transform.scale = vector3_zero();
@@ -327,6 +332,8 @@ void	for_all_active_entities(t_world	*world, void	(*func)(t_entity *ent, t_world
 	}
 }
 
+#include "editor_tools.h"
+
 t_world	load_world(char *filename, t_sdlcontext *sdl)
 {
 	t_world	world;
@@ -339,6 +346,7 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 	world.guns = load_chunk(filename, "GUNS", sizeof(t_gun));
 	world.debugconsole = init_debugconsole();
 	world.entitycache = init_entitycache(1024);
+	world.debug_gui = ft_memalloc(sizeof(t_autogui));
 	t_entity	*ent = raise_basic_entity(&world, "cyborg.obj", vector3_zero());
 	t_entity	*ent2 = raise_entity(&world);
 	load_rooms(&world, sdl);

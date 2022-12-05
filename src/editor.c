@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/05 17:14:47 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/05 20:32:00 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	editorloop(t_sdlcontext sdl)
 
 	bzero(&ed, sizeof(t_editor));
 	ed.world = load_world("world1", &sdl);
-	
+	*(ed.world.debug_gui) = init_gui(&sdl, &ed.hid, &ed.player, (t_point){20, 60}, "DEBUG GUI");
 	ed.gamereturn = game_continue;
 	ed.render = init_render(sdl);
 	player_init(&ed.player, &sdl);

@@ -39,7 +39,6 @@ typedef struct s_room
 	uint32_t	ceilingcount;
 }	t_room;
 
-void			init_roomwalls(t_room *room, t_sdlcontext *sdl);
 void			applywallmesh(t_wall *wall);
 void			applytrimesh(t_meshtri tri, t_object *obj);
 void			init_room_meshes(t_room *room, t_sdlcontext *sdl);

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/02 18:03:08 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/05 20:24:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,8 @@ t_gamereturn	editor_events(t_editor *ed)
 			else if (((ed->hid.keystate >> KEYS_SHIFTMASK) & 1)
 				&& iskey(e, SDLK_RETURN))
 				return(game_switchmode);
+			if (iskey(e, SDLK_F2))
+				ed->world.debug_gui->hidden = !ed->world.debug_gui->hidden;
 		}
 		if (e.type == SDL_CONTROLLERBUTTONDOWN)
 		{

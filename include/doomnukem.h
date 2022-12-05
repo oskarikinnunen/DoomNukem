@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/05 18:31:58 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/05 20:47:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,18 +103,21 @@ typedef enum e_gamereturn
 	void	update_npcs(t_world *world) //moves npcs towards their destination, updates their animations
 */
 
+struct s_autogui;
+
 typedef struct s_world
 {
-	t_clock			clock;
-	t_debugconsole	debugconsole;
-	t_sdlcontext	*sdl;
-	t_list			*guns;
-	t_list			*objectmetadatalist; //Move to sdl, this is only used when objects are initialized
-	t_npc			npcpool[128];
-	t_list			*wall_list;
-	t_list			*roomlist;
-	t_entitycache	entitycache;
-	t_entity		skybox;
+	t_clock				clock;
+	t_debugconsole		debugconsole;
+	struct s_autogui	*debug_gui;
+	t_sdlcontext		*sdl;
+	t_list				*guns;
+	t_list				*objectmetadatalist; //Move to sdl, this is only used when objects are initialized
+	t_npc				npcpool[128];
+	t_list				*wall_list;
+	t_list				*roomlist;
+	t_entitycache		entitycache;
+	t_entity			skybox;
 }	t_world;
 
 t_vector2	flipped_uv(t_vector2 og);
@@ -125,7 +128,7 @@ void		erase_entity(t_world *world, t_entity *ent);
 t_entity	*raise_entity(t_world	*world);
 t_entity	*raise_basic_entity(t_world *world, char *objectname, t_vector3 position);
 void		save_world(char *filename, t_world world);
-
+void		init_roomwalls(t_world *world, t_room *room);
 typedef struct s_editor
 {
 	t_world			world;

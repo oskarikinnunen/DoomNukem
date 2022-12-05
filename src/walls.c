@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/05 19:09:14 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/05 20:48:32 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,19 +68,18 @@ void	applywallmesh(t_wall *wall)
 	wall->entity->obj->uvs[3] = flipped_uv(wall->entity->obj->uvs[3]);
 }
 
-void	init_roomwalls(t_room *room, t_sdlcontext *sdl)
+void	init_roomwalls(t_world *world, t_room *room)
 {
-	int	i;
+	int			i;
+	t_entity	*ent;
 
 	i = 0;
 	while (i < room->wallcount)
 	{
+		//room->walls[i].entity = raise_entity(world); //Copy saved entitys important values
 		room->walls[i].entity->transform.position = vector3_zero();
-		//if (!room->walls[i].disabled)
 		room->walls[i].entity->transform.scale = vector3_one();
-		/*else
-			room->walls[i].entity->transform.scale = vector3_zero();*/
-		room->walls[i].entity->obj = object_plane(sdl);
+		room->walls[i].entity->obj = object_plane(world->sdl);
 		applywallmesh(&room->walls[i]);
 		i++;
 	}

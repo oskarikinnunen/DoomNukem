@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/05 19:38:55 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/05 20:50:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,30 @@ static void highlight_object(t_editor *ed, t_sdlcontext sdl, t_entity *entity, u
 
 static void add_room_to_world(t_world *world, t_room *room)
 {
-	
+	int		i;
+	t_room	*worldroom;
+	t_wall	*w_wall;
+	t_wall	*wall;
+
+	worldroom = ft_memalloc(sizeof(t_room));
+	worldroom->wallcount = room->wallcount;
+	worldroom->walls = ft_memalloc(sizeof(t_wall) * worldroom->wallcount);
+	i = 0;
+	while (i < room->wallcount)
+	{
+		w_wall = &worldroom->walls[i];
+		wall = &room->walls[i];
+		ft_memcpy(w_wall, wall, sizeof(t_wall));
+		w_wall->entity = raise_entity(world);
+		free(wall->entity);
+		i++;
+	}
+	list_push(&world->roomlist, worldroom, sizeof(t_room));
+	free(worldroom);
+	worldroom = list_findlast(world->roomlist);
+	init_roomwalls(world, worldroom);
+	free(room->walls);
+	free(room);
 }
 
 static void highlight_room(t_editor *ed, t_sdlcontext sdl, t_room room, uint32_t color)
@@ -226,16 +249,12 @@ static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 		dat->room->walls[dat->room->wallcount].entity = ft_memalloc(sizeof(t_entity));
 		ft_memcpy(dat->room->walls[dat->room->wallcount].entity, cur->entity, sizeof(t_entity));
 		dat->room->wallcount++;
-		init_roomwalls(dat->room, sdl);
+		init_roomwalls(&ed->world, dat->room);
 		cur->line.start = snap;
 		if ((ed->hid.keystate >> KEYS_SHIFTMASK) & 1)
 		{
 			dat->rtm = rtm_modify;
-			//list_push(&ed->world.roomlist, dat->room, sizeof(t_room));
-			free(dat->room);
-			//dat->room = list_findlast(ed->world.roomlist);
-			//snprintf(dat->room->name, 32, "room%i", ft_listlen(ed->world.roomlist));
-			//printf("room name: %s \n", dat->room->name);
+			add_room_to_world(&ed->world, dat->room);
 			return ;
 		}
 	}
@@ -388,14 +407,14 @@ static void walleditmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		applywallmesh(&dat->doorwalls[1]);
 		applywallmesh(&dat->doorwalls[2]);
 		insertwall(*dat->ed_wall, dat->room, dat->doorwalls);
-		init_roomwalls(dat->room, &sdl);
+		//init_roomwalls(dat->room, &sdl);
 		dat->ed_wall = NULL;
 		return ;
 	}
 	if (instantbutton((t_rectangle){20, 345, 40, 40}, &ed->hid.mouse, sdl, "one.png"))
 	{
 		dat->ed_wall->disabled = !dat->ed_wall->disabled;
-		init_roomwalls(dat->room, &sdl);
+		//init_roomwalls(dat->room, &sdl);
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
 		dat->ed_wall = NULL;
