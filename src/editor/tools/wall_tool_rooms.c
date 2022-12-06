@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/29 13:01:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 13:12:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -513,16 +513,20 @@ void	free_object(t_object *object)
 		free(object->vertices);
 }
 
-void	free_floor(t_room *room)
+#include "doomnukem.h"
+
+void	free_floor(t_world *world, t_room *room)
 {
 	int	i;
 
 	i = 0;
 	while (i < room->floorcount)
 	{
-		free_object(room->floors[i].entity.obj);
+		free_object(room->floors[i].entity->obj);
+		erase_entity(world, room->floors[i].entity);
 		i++;
 	}
+	room->floorcount = 0;
 }
 
 void	makefloor_room(t_editor *ed, t_sdlcontext *sdl, t_room *room)
@@ -536,7 +540,7 @@ void	makefloor_room(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 	ft_bzero(&fc, sizeof(fc));
 	circum_angle = 0.0f;
 	i = 0;
-	free_floor(room);
+	free_floor(&ed->world, room);
 	while (i < room->wallcount)
 	{
 		// Check if vector between previous edge and current one is the same as current one to next one, if it is then ignore current edge
@@ -558,7 +562,8 @@ void	makefloor_room(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 	{
 		mtri = &room->floors[i];
 		ft_bzero(&mtri->entity, sizeof(t_entity));
-		mtri->entity.obj = object_tri(sdl);
+		mtri->entity = raise_entity(&ed->world);
+		mtri->entity->obj = object_tri(sdl);
 		mtri->v[0] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[0]]);
 		mtri->v[1] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[1]]);
 		mtri->v[2] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[2]]);
@@ -568,9 +573,9 @@ void	makefloor_room(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 		mtri->uv[0] = vector2_div(mtri->uv[0], 50.0f);
 		mtri->uv[1] = vector2_div(mtri->uv[1], 50.0f);
 		mtri->uv[2] = vector2_div(mtri->uv[2], 50.0f);
-		applytrimesh(*mtri, mtri->entity.obj);
-		mtri->entity.transform.position = vector3_zero();
-		mtri->entity.transform.scale = vector3_one();
+		applytrimesh(*mtri, mtri->entity->obj);
+		/*mtri->entity->transform.position = vector3_zero();
+		mtri->entity->transform.scale = vector3_one();*/
 		i++;
 	}
 }

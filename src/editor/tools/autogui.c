@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/05 20:31:28 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 16:21:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,41 +168,48 @@ void	gui_end(t_autogui *gui)
 		gui->rect.position = point_add(gui->dock->rect.position, (t_point){.x = gui->dock->rect.size.x + 2});
 		drawrectangle(*gui->sdl, dragbar, CLR_DARKGRAY);
 	}
-	else
+	else if (!gui->locked)
 	{
 		drawrectangle(*gui->sdl, dragbar, AMBER_0);
 		if (pointrectanglecollision(gui->hid->mouse.pos, dragbar) || gui->move_held)
 			drawrectangle(*gui->sdl, dragbar, AMBER_1);
-		if (gui->hid->mouse.held == MOUSE_LEFT && pointrectanglecollision(gui->hid->mouse.pos, dragbar))
+		if (gui->hid->mouse.held == MOUSE_LEFT && pointrectanglecollision(gui->hid->mouse.pos, dragbar) && !gui->hid->mouse.dragging_ui)
+		{
+			gui->hid->mouse.dragging_ui = true;
 			gui->move_held = true;
-		if (gui->move_held)
+		}
+			
+		if (gui->move_held && !gui->locked)
 			gui->rect.position = point_sub(gui->hid->mouse.pos, point_div(dragbar.size, 2));
 	}
 	if (gui->allow_user_hide)
 	{
 		update_hidecross(gui);
 	}
-	dragcorner.size = (t_point) {16,16};
-	dragcorner.position = point_sub(point_add(gui->rect.position, gui->rect.size), dragcorner.size);
-	//draw_rectangle_filled(*gui->sdl, dragcorner, INT_MAX);
-	//drawrectangle(*gui->sdl, dragcorner, AMBER_0);
-	draw_rect_tri(gui->sdl, dragcorner, AMBER_0);
-	if (pointrectanglecollision(gui->hid->mouse.pos, dragcorner) || gui->drag_held)
-		draw_rect_tri(gui->sdl, dragcorner, AMBER_1);
-		
-	if (gui->hid->mouse.held == MOUSE_LEFT && pointrectanglecollision(gui->hid->mouse.pos, dragcorner))
-		gui->drag_held = true;
-	if (gui->drag_held)
+	if (!gui->locked)
 	{
-		gui->scroll.y = 0;
-		gui->rect.size = point_sub(point_add(gui->hid->mouse.pos, point_div(dragcorner.size, 2)), gui->rect.position);
+		dragcorner.size = (t_point) {16,16};
+		dragcorner.position = point_sub(point_add(gui->rect.position, gui->rect.size), dragcorner.size);
+		draw_rect_tri(gui->sdl, dragcorner, AMBER_0);
+		if (pointrectanglecollision(gui->hid->mouse.pos, dragcorner) || gui->drag_held)
+			draw_rect_tri(gui->sdl, dragcorner, AMBER_1);
+		if (gui->hid->mouse.held == MOUSE_LEFT && pointrectanglecollision(gui->hid->mouse.pos, dragcorner) && !gui->hid->mouse.dragging_ui)
+		{
+			gui->hid->mouse.dragging_ui = true;
+			gui->drag_held = true;
+		}
+		if (gui->drag_held)
+		{
+			gui->scroll.y = 0;
+			gui->rect.size = point_sub(point_add(gui->hid->mouse.pos, point_div(dragcorner.size, 2)), gui->rect.position);
+		}
 	}
 	
-		
 	if (gui->hid->mouse.held == 0)
 	{
 		gui->move_held = false;
 		gui->drag_held = false;
+		gui->hid->mouse.dragging_ui = false;
 		gui->scroll_held = false;
 		if (gui->locking_player)
 		{
@@ -239,6 +246,12 @@ void	objectgui_update(t_objectgui *ogui, t_entity **ent)
 	gui = &ogui->gui;
 	gui_start(gui);
 	i = 0;
+	gui_label("Selected:", gui);
+	if (*ent != NULL && ft_strlen((*ent)->object_name) > 0)
+		gui_label((*ent)->object_name, gui);
+	else
+		gui_emptyvertical(20, gui);
+	gui_emptyvertical(20, gui);
 	while (i < gui->sdl->objectcount)
 	{
 		obj = &gui->sdl->objects[i];
@@ -251,6 +264,7 @@ void	objectgui_update(t_objectgui *ogui, t_entity **ent)
 				(*ent)->transform.scale = vector3_one();
 			}
 			(*ent)->obj = obj;
+			ft_strcpy((*ent)->object_name, obj->name);
 			if (ogui->autoclose)
 				gui->hidden = true;
 		}

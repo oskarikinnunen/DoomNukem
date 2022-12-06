@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/05 20:47:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 16:07:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,16 +129,7 @@ t_entity	*raise_entity(t_world	*world);
 t_entity	*raise_basic_entity(t_world *world, char *objectname, t_vector3 position);
 void		save_world(char *filename, t_world world);
 void		init_roomwalls(t_world *world, t_room *room);
-typedef struct s_editor
-{
-	t_world			world;
-	t_clock			clock;
-	t_hid_info		hid;
-	t_player		player;
-	t_gamereturn	gamereturn;
-	t_render		render;
-	struct s_tool	*tool;
-}	t_editor;
+void		free_floor(t_world *world, t_room *room);
 
 typedef struct s_game
 {
@@ -153,15 +144,12 @@ typedef struct s_game
 int		editorloop(t_sdlcontext sdl);
 
 /* EDITOR_EVENTS.C */
-t_gamereturn	editor_events(t_editor *ed);
 bool			iskey(SDL_Event e, int keycode);
 void			force_mouseunlock(t_hid_info *hid);
 void			force_mouselock(t_hid_info *hid);
-void			move_editor(t_editor *ed);
+
 
 /* EDITOR_MOUSE.C */
-t_point			mousetoworldspace(t_editor *ed);
-t_point			mousetogridspace(t_editor *ed);
 t_point			screentogridspace(t_point point);
 t_quaternion	transformed_vector3(t_transform transform, t_vector3 v);//TODO: vectors.h
 void			mouse_event(SDL_Event e, t_mouse *mouse);//TODO: input.h
@@ -169,19 +157,14 @@ void			mouse_event(SDL_Event e, t_mouse *mouse);//TODO: input.h
 /* SPACECONVERSIONS.C */
 t_point vector3_to_screenspace(t_render r, t_vector3 vec, t_sdlcontext sdl);//TODO: vectors.h
 
-/* EDITOR_SAVELINE.C */
-void	saveline(t_editor *ed);
-
 /* EDITOR_MAP_IO.C */
 t_list	*loadmap(char *filename);
-void	savemap(t_editor *ed, char *filename);
 
 /* DELTATIME.C */
 void	update_deltatime(t_clock *c);
 
 /* EDITOR_BUTTONS.C */
 void	draw_editor_buttons(t_sdlcontext sdl, uint8_t tool_selected); //TODO: MOVE TO EDITOR_TOOLS
-void	check_tool_change_click(t_point cursor, t_editor *ed); //TODO: MOVE TO EDITOR_TOOLS
 
 /* PERFGRAPH.C */
 void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
@@ -249,5 +232,5 @@ void	*list_find(t_list *head, void *match, size_t content_size);
 void	list_remove(t_list **head, void *match, size_t content_size);
 
 //
-bool			object_lookedat(t_editor *ed, t_sdlcontext sdl, t_object *obj);
+
 #endif

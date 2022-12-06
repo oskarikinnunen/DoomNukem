@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/05 20:30:38 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 16:25:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,8 @@
 # define EDITOR_TOOLS_H
 
 # include "shapes.h"
+# include "render.h"
 # include "doomnukem.h"
-
-typedef struct s_tool
-{
-	void		(*init)(t_editor *ed, t_sdlcontext *sdl);
-	void		(*update)(t_editor *ed, t_sdlcontext *sdl);
-	void		(*cleanup)(t_editor *ed, t_sdlcontext *sdl);
-	void		*tooldata;
-	char		icon_name[256];
-	t_img		*icon;
-}	t_tool;
 
 
 typedef enum e_point_tool_state
@@ -62,12 +53,36 @@ typedef struct s_autogui
 	struct	s_autogui	*dock;
 	bool				allow_user_hide;
 	bool				hidden;
+	bool				locked;
 	bool				scrollable;
 	bool				locking_player;
 	bool				scroll_held;
 	bool				move_held;
 	bool				drag_held;
 }	t_autogui;
+
+
+typedef struct s_editor
+{
+	t_world				world;
+	t_autogui			toolbar_gui;
+	t_clock				clock;
+	t_hid_info			hid;
+	t_player			player;
+	t_gamereturn		gamereturn;
+	t_render			render;
+	struct s_tool		*tool;
+}	t_editor;
+
+typedef struct s_tool
+{
+	void		(*init)(t_editor *ed, t_sdlcontext *sdl);
+	void		(*update)(t_editor *ed, t_sdlcontext *sdl);
+	void		(*cleanup)(t_editor *ed, t_sdlcontext *sdl);
+	void		*tooldata;
+	char		icon_name[256];
+	t_img		*icon;
+}	t_tool;
 
 typedef struct s_objectgui
 {
@@ -77,10 +92,15 @@ typedef struct s_objectgui
 	bool		autoclose;
 }	t_objectgui;
 
-struct	s_sdlcontext;
+//struct	s_sdlcontext;
 struct	s_mouse;
-struct	s_editor;
+//struct	s_editor;
 
+void				update_editor_toolbar(t_editor *ed, t_autogui *toolbar);
+t_gamereturn		editor_events(t_editor *ed);
+void				move_editor(t_editor *ed);
+void				savemap(t_editor *ed, char *filename);
+bool				object_lookedat(t_editor *ed, t_sdlcontext sdl, t_object *obj);
 void				objectgui_update(t_objectgui *ogui, t_entity **ent);
 void				gui_preset_transform(t_transform *t, t_autogui *gui);
 void				gui_preset_scale_and_rotate(t_transform *t, t_autogui *gui);

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:42:04 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/05 18:42:19 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 15:52:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ typedef struct s_roomtooldata
 {
 	t_roomtoolmode	rtm;
 	t_autogui		maingui;
+	t_autogui		modroom_gui;
 	t_autogui		newroom_gui;
 	t_room			*room;
 	t_wall			wall;

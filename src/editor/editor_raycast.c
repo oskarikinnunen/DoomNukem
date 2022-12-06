@@ -6,13 +6,14 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 18:03:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/05 14:45:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 16:08:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vectors.h"
 #include "objects.h"
 #include "doomnukem.h"
+#include "editor_tools.h"
 
 static t_point v3topoint(t_vector3 vec)
 {

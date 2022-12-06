@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/05 20:50:08 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 16:50:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,23 @@
 #include "doomnukem.h"
 #include "objects.h"
  
+static void	init_roomwalls_shallow(t_world *world, t_room *room)
+{
+	int			i;
+	t_entity	*ent;
+
+	i = 0;
+	while (i < room->wallcount)
+	{
+		//room->walls[i].entity = raise_entity(world); //Copy saved entitys important values
+		room->walls[i].entity->transform.position = vector3_zero();
+		room->walls[i].entity->transform.scale = vector3_one();
+		room->walls[i].entity->obj = object_plane(world->sdl);
+		applywallmesh(&room->walls[i]);
+		i++;
+	}
+}
+
 
 static void highlight_object(t_editor *ed, t_sdlcontext sdl, t_entity *entity, uint32_t color)
 {
@@ -25,7 +42,21 @@ static void highlight_object(t_editor *ed, t_sdlcontext sdl, t_entity *entity, u
 	ed->render.wireframe = false;
 }
 
-static void add_room_to_world(t_world *world, t_room *room)
+void remove_room(t_world *world, t_room *room)
+{
+	int	i;
+
+	i = 0;
+	while (i < room->wallcount)
+	{
+		free_object(room->walls[i].entity->obj);
+		erase_entity(world, room->walls[i].entity);
+		i++;
+	}
+	list_remove(&world->roomlist, room, sizeof(t_room));
+}
+
+void add_room_to_world(t_world *world, t_room *room)
 {
 	int		i;
 	t_room	*worldroom;
@@ -35,6 +66,7 @@ static void add_room_to_world(t_world *world, t_room *room)
 	worldroom = ft_memalloc(sizeof(t_room));
 	worldroom->wallcount = room->wallcount;
 	worldroom->walls = ft_memalloc(sizeof(t_wall) * worldroom->wallcount);
+	//TODO: memcpy from room to worldroom and overwrite?
 	i = 0;
 	while (i < room->wallcount)
 	{
@@ -42,9 +74,11 @@ static void add_room_to_world(t_world *world, t_room *room)
 		wall = &room->walls[i];
 		ft_memcpy(w_wall, wall, sizeof(t_wall));
 		w_wall->entity = raise_entity(world);
+		w_wall->entity->uneditable = true;
 		free(wall->entity);
 		i++;
 	}
+	ft_strcpy(worldroom->name, room->name);
 	list_push(&world->roomlist, worldroom, sizeof(t_room));
 	free(worldroom);
 	worldroom = list_findlast(world->roomlist);
@@ -68,7 +102,7 @@ static void highlight_room(t_editor *ed, t_sdlcontext sdl, t_room room, uint32_t
 	i = 0;
 	while (i < room.floorcount)
 	{
-		render_entity(sdl, ed->render, &room.floors[i].entity);
+		render_entity(sdl, ed->render, room.floors[i].entity);
 		i++;
 	}
 	ed->render.wireframe = false;
@@ -143,7 +177,7 @@ t_meshtri	*selectedfloor(t_editor *ed, t_sdlcontext sdl, t_room *room)
 	i = 0;
 	while (i < room->floorcount)
 	{
-		if (object_lookedat(ed, sdl, room->floors[i].entity.obj))
+		if (entity_lookedat(ed, sdl, room->floors[i].entity))
 			return (&room->floors[i]);
 		i++;
 	}
@@ -157,7 +191,7 @@ t_wall	*selectedwall(t_editor *ed, t_sdlcontext sdl, t_room *room)
 	i = 0;
 	while (i < room->wallcount)
 	{
-		if (object_lookedat(ed, sdl, room->walls[i].entity->obj))
+		if (entity_lookedat(ed, sdl, room->walls[i].entity))
 			return (&room->walls[i]);
 		i++;
 	}
@@ -175,8 +209,8 @@ static t_room *selectedroom(t_editor *ed, t_sdlcontext sdl)
 		r = (t_room *)l->content;
 		if (selectedwall(ed, sdl, r) != NULL)
 			return (r);
-		if (selectedfloor(ed, sdl, r) != NULL)
-			return (r);
+		/*if (selectedfloor(ed, sdl, r) != NULL)
+			return (r);*/
 		l = l->next;
 	}
 	return (NULL);
@@ -233,7 +267,6 @@ static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	else
 		gui_emptyvertical(20, gui);
 	gui_end(gui);
-	
 	cur->line.end = snap;
 	if ((ed->hid.keystate >> KEYS_SHIFTMASK) & 1 && dat->room->wallcount > 0)
 		cur->line.end = dat->room->walls[0].line.start;
@@ -249,12 +282,14 @@ static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 		dat->room->walls[dat->room->wallcount].entity = ft_memalloc(sizeof(t_entity));
 		ft_memcpy(dat->room->walls[dat->room->wallcount].entity, cur->entity, sizeof(t_entity));
 		dat->room->wallcount++;
-		init_roomwalls(&ed->world, dat->room);
+		init_roomwalls_shallow(&ed->world, dat->room);
 		cur->line.start = snap;
 		if ((ed->hid.keystate >> KEYS_SHIFTMASK) & 1)
 		{
 			dat->rtm = rtm_modify;
 			add_room_to_world(&ed->world, dat->room);
+			dat->room = NULL;
+			//printf room null
 			return ;
 		}
 	}
@@ -302,7 +337,7 @@ static void modifywallheights(t_room *room, int scrolldelta)
 	}
 }
 
-void	applydrag(t_vector2 snap, t_room *room)
+void	applydrag(t_vector2 snap, t_room *room, t_world *world)
 {
 	int			i;
 	t_wall	*prev;
@@ -327,7 +362,7 @@ void	applydrag(t_vector2 snap, t_room *room)
 				room->walls[i].line.start = snap;
 				applywallmesh(prev);
 				applywallmesh(&room->walls[i]);
-				room->floorcount = 0;
+				free_floor(world, room);
 			}
 			break ;
 		}
@@ -425,23 +460,40 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	t_vector3		rc;
 	t_wall			*look_wall;
 	t_vector2		snap;
+	t_autogui		*gui;
 	char			text[64] = { };
 
+	gui = &dat->modroom_gui;
 	if (dat->ed_wall != NULL)
 	{
 		walleditmode(ed, sdl, dat);
 		return ;
 	}
 	rc = raycast(ed);
-	snprintf(text, 64, "modifying room '%s'", dat->room->name);
+	gui_start(gui);
+	gui_starthorizontal(gui);
+	gui_label("Modifying: ", gui);
+	gui_label(dat->room->name, gui);
+	gui_endhorizontal(gui);
+	if (gui_button("Delete", gui))
+	{
+		remove_room(&ed->world, dat->room);
+		//list_remove(&ed->world.roomlist, dat->room, sizeof(t_room));
+		dat->wall.line.start = vector2_zero();
+		dat->wall.line.end = vector2_zero();
+		dat->room = NULL;
+		gui_end(gui);
+		return ;
+	}
+	gui_end(gui);
 	draw_text_boxed(&sdl, text, (t_point){sdl.window_w / 2, 40}, sdl.screensize);
 	snap = vector2_snap((t_vector2){rc.x, rc.y}, 10);
 	highlight_room(ed, sdl, *dat->room, CLR_GREEN);
 	look_wall = selectedwall(ed, sdl, dat->room);
 	if (looking_atcorner(ed, sdl, snap, dat->room) && ed->hid.mouse.held == MOUSE_LEFT)
-		applydrag(snap, dat->room);
-	else if (dat->room->floorcount == 0)
-		makefloor_room(ed, &sdl, dat->room);
+		applydrag(snap, dat->room, &ed->world);
+	/*else if (dat->room->floorcount == 0)
+		makefloor_room(ed, &sdl, dat->room);*/
 	if (!looking_atcorner(ed, sdl, snap, dat->room) && mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 	{
 		force_mouseunlock(&ed->hid);
@@ -456,13 +508,13 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	}
 	if (ed->hid.mouse.scroll_delta != 0)
 		modifywallheights(dat->room, ed->hid.mouse.scroll_delta);
-	if (instant_text_button(sdl, &ed->hid.mouse, "remove room", (t_point){20, 300}))
+	/*if (instant_text_button(sdl, &ed->hid.mouse, "remove room", (t_point){20, 300}))
 	{
 		list_remove(&ed->world.roomlist, dat->room, sizeof(t_room));
 		dat->wall.line.start = vector2_zero();
 		dat->wall.line.end = vector2_zero();
 		dat->room = NULL;
-	}
+	}*/
 }
 
 void	room_tool_init(t_editor *ed, t_sdlcontext *sdl)
@@ -484,17 +536,27 @@ void	room_tool_init(t_editor *ed, t_sdlcontext *sdl)
 		dat->newroom_gui.dock = &dat->maingui;
 		gui_autosize(&dat->newroom_gui);
 	}
+	if (dat->modroom_gui.sdl == NULL)
+	{
+		dat->modroom_gui = init_gui(sdl, &ed->hid, &ed->player, (t_point){20, sdl->screensize.y / 2}, "Edit room");
+		dat->modroom_gui.minimum_size.x = 130;
+		dat->modroom_gui.rect.size.x = 130;
+	}
 }
 
 void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 {
 	t_autogui	*gui;
+	char		roomname[64];
 
 	gui = &dat->maingui;
 	gui_start(gui);
 	if (gui_button("Add room", gui))
 	{
 		dat->room = ft_memalloc(sizeof(t_room));
+		ft_bzero(roomname, 64);
+		snprintf(roomname, 64, "room(%i)", ft_listlen(ed->world.roomlist));
+		ft_strcpy(dat->room->name, roomname);
 		dat->room->walls = ft_memalloc(sizeof(t_wall) * 32);
 		dat->rtm = rtm_create;
 		force_mouselock(&ed->hid);
@@ -509,7 +571,6 @@ void	room_tool_update(t_editor *ed, t_sdlcontext *sdl)
 	dat = (t_roomtooldata *)ed->tool->tooldata;
 	if (dat->room == NULL)
 	{
-		/*drawcircle(*sdl, point_div(sdl->screensize, 2), 2, CLR_BLUE);
 		t_room	*hover;
 		hover = selectedroom(ed, *sdl);
 		if (hover != NULL)
@@ -521,22 +582,15 @@ void	room_tool_update(t_editor *ed, t_sdlcontext *sdl)
 				dat->rtm = rtm_modify;
 				ed->hid.mouse.click_unhandled = false;
 			}
-		}*/
+		}
 	}
 	else if (dat->rtm == rtm_create)
 	{
 		createmode(ed, sdl, dat);
 	}
 	update_maingui(ed, sdl, dat);
-	/*set_font_size(sdl, 2);
-	if (dat->room == NULL && instant_text_button(*sdl, &ed->hid.mouse, "Add Room", (t_point){20, 200}))
-	{
-		dat->room = ft_memalloc(sizeof(t_room));
-		dat->rtm = rtm_create;
-		force_mouselock(&ed->hid);
-	}
 	if (dat->rtm == rtm_modify && dat->room != NULL)
-		modifymode(ed, *sdl, dat);*/
+		modifymode(ed, *sdl, dat);
 }
 
 

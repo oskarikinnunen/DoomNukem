@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/05 18:40:19 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 16:52:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,8 +97,7 @@ t_entity *selected_entity(t_editor *ed, t_sdlcontext sdl)
 		entity = &cache->entities[i];
 		if (entity->status != es_free)
 		{
-			//if (cache->entities[i].stat)
-			if (entity_lookedat(ed, sdl, entity))
+			if (!entity->uneditable && entity_lookedat(ed, sdl, entity))
 			{
 				return (entity);
 			}
@@ -108,20 +107,6 @@ t_entity *selected_entity(t_editor *ed, t_sdlcontext sdl)
 	}
 	//TODO: error log if found < existing_entitycount
 	return (NULL);
-}
-
-int	object_selector(t_editor *ed, t_sdlcontext sdl, int	original)
-{
-	int	i;
-
-	i = 0;
-	while (i < sdl.objectcount)
-	{
-		if (instant_text_button(sdl, &ed->hid.mouse, sdl.objects[i].name, (t_point){20, 200 + (i * 20)}))
-			return (i);
-		i++;
-	}
-	return (original);
 }
 
 static void	entity_tool_lazyinit(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
@@ -179,6 +164,7 @@ void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 	{
 		t_entity *went = raise_entity(&ed->world);
 		went->obj = dat->ent->obj;
+		ft_strcpy(went->object_name, dat->ent->object_name);
 		went->transform = dat->ent->transform;
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT) && dat->ent != NULL)
@@ -227,6 +213,13 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 		{
 			ent->transform.position.z = 0;
 			ent->transform.position.z -= ent->z_bound.min * ent->transform.scale.z;
+		}
+		if (gui_button("Delete", gui))
+		{
+			erase_entity(&ed->world, ent);
+			dat->sel_ent = NULL;
+			gui_end(gui);
+			return ;
 		}
 		gui_end(gui);
 		if (ent == hover && ed->hid.mouse.held == MOUSE_LEFT && ed->hid.mouse.relative)

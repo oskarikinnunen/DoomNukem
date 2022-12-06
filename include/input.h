@@ -12,6 +12,7 @@ typedef struct s_mouse
 	bool		click_unhandled;
 	int			click_button;
 	int			held;
+	bool		dragging_ui;
 	uint32_t	heldstate;
 }	t_mouse;
 

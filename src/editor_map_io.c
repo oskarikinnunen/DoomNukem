@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/25 15:58:53 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 15:01:41 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ void	save_chunk(char *filename, char *chunkname, t_list *content)
 
 	l = content;
 	fd = fileopen(filename, O_RDWR | O_APPEND);
+	printf("here \n");
 	written = 0;
 	write(fd, chunkname, CHUNKSIZE);
 	while (l != NULL)
@@ -91,7 +92,6 @@ void	save_chunk(char *filename, char *chunkname, t_list *content)
 		write(fd, "PADD", CHUNKSIZE - (written % CHUNKSIZE));
 	}
 	write(fd, "CEND", CHUNKSIZE);
-	close(fd);
 }
 
 t_list *load_chunk(char *filename, char *chunkname, size_t size)

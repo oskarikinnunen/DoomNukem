@@ -6,12 +6,13 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/05 20:48:32 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 16:10:30 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "objects.h"
 #include "doomnukem.h"
+#include "editor_tools.h"
 
 void	render_snapgrid(t_editor *ed, t_sdlcontext *sdl, t_vector2 wallpos, bool shift, bool hover)
 {
@@ -95,15 +96,16 @@ void	applytrimesh(t_meshtri tri, t_object *obj)
 	obj->uvs[2] = tri.uv[2];
 }
 
-void	init_room_meshes(t_room *room, t_sdlcontext *sdl)
+void	init_room_meshes(t_room *room, t_sdlcontext *sdl, t_world *world)
 {
 	int	i;
 
 	i = 0;
 	while (i < room->floorcount)
 	{
-		room->floors[i].entity.obj = object_tri(sdl);
-		applytrimesh(room->floors[i], room->floors[i].entity.obj);
+		room->floors[i].entity = raise_entity(world);
+		room->floors[i].entity->obj = object_tri(sdl);
+		applytrimesh(room->floors[i], room->floors[i].entity->obj);
 		/*room->walls[i].entity->transform.location = vector3_zero();
 		room->walls[i].entity->transform.scale = vector3_one();
 		room->walls[i].entity->obj = object_plane(sdl);

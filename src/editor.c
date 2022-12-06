@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/05 20:32:00 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 16:37:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,13 @@ int	editorloop(t_sdlcontext sdl)
 
 	bzero(&ed, sizeof(t_editor));
 	ed.world = load_world("world1", &sdl);
-	*(ed.world.debug_gui) = init_gui(&sdl, &ed.hid, &ed.player, (t_point){20, 60}, "DEBUG GUI");
+	
+	*(ed.world.debug_gui) = init_gui(&sdl, &ed.hid, &ed.player, sdl.screensize, "Debugging menu (F2)");
+	ed.world.debug_gui->rect.size.y = 120;
+	ed.toolbar_gui = init_gui(&sdl, &ed.hid, &ed.player, (t_point){5, 5}, "Toolbar");
+	ed.toolbar_gui.minimum_size = (t_point){140, 20};
+	ed.toolbar_gui.locked = true;
+
 	ed.gamereturn = game_continue;
 	ed.render = init_render(sdl);
 	player_init(&ed.player, &sdl);
@@ -41,16 +47,13 @@ int	editorloop(t_sdlcontext sdl)
 		moveplayer(&ed.player, &ed.hid.input, ed.clock);
 		update_render(&ed.render, &ed.player);
 		screen_blank(sdl);
+		
 		render_start(&ed.render);
 		update_world3d(sdl, &ed.world, &ed.render);
-		update_editor_buttons(&ed, &sdl);
+		update_editor_toolbar(&ed, &ed.toolbar_gui);
 		if (ed.tool != NULL)
 		{
-			ed.tool->update(&ed, &sdl); //Instant buttons here can toggle mouse.click unhandled, so draw first
-			/*if (ed.tool->icon != NULL) //Indicates which tool is selected
-				draw_image(sdl, (t_point){ 8, sdl.window_h - 40 }, *ed.tool->icon, (t_point){32, 32});
-			else if (ed.tool->icon_name[0] != '\0')
-				ed.tool->icon = get_image_by_name(sdl, ed.tool->icon_name);*/
+			ed.tool->update(&ed, &sdl);
 		}
 		ed.hid.mouse.click_unhandled = false;
 		draw_text_boxed(&sdl, "tab to unlock/lock mouse, shift + enter to go to playmode", (t_point){sdl.window_w / 2, 10}, (t_point){sdl.window_w, sdl.window_h});
@@ -61,7 +64,7 @@ int	editorloop(t_sdlcontext sdl)
 		free(fps);
 		if (!ed.player.gun->disabled)
 			render_entity(sdl, ed.render, &ed.player.gun->entity);
-		update_debugconsole(&ed.world.debugconsole, &sdl, ed.clock.delta);
+		//update_debugconsole(&ed.world.debugconsole, &sdl, ed.clock.delta);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 	}

@@ -6,21 +6,12 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 13:31:43 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/30 15:18:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 16:09:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "vectors.h"
-
-t_point worldtoeditorspace(t_editor *ed, t_vector2 worldcrd)
-{
-	t_point	result;
-
-	result = vector2_to_point(worldcrd);
-	//result = point_add(result, ed->offset);
-	return (result);
-}
 
 t_quaternion	transformed_vector3(t_transform transform, t_vector3 v)
 {

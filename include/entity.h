@@ -26,9 +26,17 @@ typedef enum s_entitystatus
 	es_active
 }	t_entitystatus;
 
+/*typedef struct s_entityroot
+{
+	t_entity	*entity;
+	uint16_t	entity_id;
+	uint16_t	root_id;
+}	t_entityroot;*/
+
 typedef struct s_entity
 {
 	t_transform		transform;
+	bool			uneditable;
 	uint32_t		object_index;
 	char			object_name[64];
 	t_entitystatus	status;
@@ -36,6 +44,7 @@ typedef struct s_entity
 	t_bound			z_bound;
 	t_anim			animation;
 	t_object		*obj;
+	//uint16_t		root_id;
 }	t_entity;
 
 typedef struct s_gun
