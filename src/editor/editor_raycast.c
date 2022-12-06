@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 18:03:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 16:08:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 20:03:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ bool	triangle_lookedat(t_render r, t_triangle tri, t_sdlcontext sdl)
 	tri.p[0] = quaternion_mul_matrix(r.matview, tri.p[0]);
 	tri.p[1] = quaternion_mul_matrix(r.matview, tri.p[1]);
 	tri.p[2] = quaternion_mul_matrix(r.matview, tri.p[2]);
-	clipamount = triangle_clipagainstplane((t_vector3){0.0f, 0.0f, 0.1f}, vector3_up(), &tri, clipped);
+	clipamount = clip_triangle_against_plane((t_vector3){.z = 0.1f}, vector3_up(), tri, clipped);
 	if (clipamount == 0)
 		return (false);
 	i = 0;
@@ -168,8 +168,8 @@ t_vector3	raycast(t_editor *ed)
 		result = vector3_movetowards(result, rayforward, dist);
 		iter++;
 	}
-	result.x = ft_clampf(result.x, 0.0f, 1000.0f);
-	result.y = ft_clampf(result.y, 0.0f, 1000.0f);
+	result.x = ft_clampf(result.x, 0.0f, 2500.0f);
+	result.y = ft_clampf(result.y, 0.0f, 2500.0f);
 	result.z = 0.0f;
 	return (result);
 }

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 13:54:56 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 16:02:07 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/11/30 18:02:16 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,5 +20,16 @@ typedef struct s_rectangle
 	t_point	position;
 	t_point	size;
 }	t_rectangle;
+
+typedef struct s_square
+{
+	t_vector2 min;
+	t_vector2 max;
+}	t_square;
+
+typedef struct s_edge
+{
+	t_vector3	v[2];
+}	t_edge;
 
 # endif

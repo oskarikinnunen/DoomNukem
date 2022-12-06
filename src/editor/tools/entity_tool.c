@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 16:52:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 20:06:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,15 +49,6 @@ static t_img	black_image()
 	black.length = 1;
 	black.size = point_one();
 	return (black);
-}
-
-static void	draw_transform_info(t_transform t, t_sdlcontext sdl)
-{
-	draw_image(sdl, (t_point){17, 100}, black_image(), (t_point){180, 58});
-	draw_text_boxed(&sdl, "POS  :", (t_point){20, 143}, (t_point){sdl.window_w, sdl.window_h});
-	draw_text_boxed(&sdl, vector_string(t.position), (t_point){65, 143}, (t_point){sdl.window_w, sdl.window_h});
-	draw_text_boxed(&sdl, "SCALE:", (t_point){20, 105}, (t_point){sdl.window_w, sdl.window_h});
-	draw_text_boxed(&sdl, vector_string(t.scale), (t_point){65, 105}, (t_point){sdl.window_w, sdl.window_h});
 }
 
 static void findbounds(t_entity *ent)
@@ -152,12 +143,12 @@ void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 		gui_preset_scale_and_rotate(&dat->ent->transform, &dat->entitygui);
 		gui_end(&dat->entitygui);
 		findbounds(dat->ent);
-		dat->ent->transform.position = raycast(ed);//vector3_movetowards(ent->transform.location, dir, ed->clock.delta * 1.0f);
+		dat->ent->transform.position = raycast(ed);//vector3_movetowards(ent->transform.position, dir, ed->clock.delta * 1.0f);
 		dat->ent->transform.position.z -= dat->ent->z_bound.min * dat->ent->transform.scale.z;
 		dat->ent->transform.rotation.x += ed->hid.mouse.scroll_delta * 0.25f;
 		ed->render.wireframe = true;
 		ed->render.gizmocolor = AMBER_3;
-		render_entity(*sdl, ed->render, dat->ent);
+		render_entity(*sdl, &ed->render, dat->ent);
 		ed->render.wireframe = false;
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT) && dat->ent != NULL)
@@ -188,7 +179,7 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 	{
 		ed->render.wireframe = true;
 		ed->render.gizmocolor = AMBER_1;
-		render_entity(*sdl, ed->render, hover);
+		render_entity(*sdl, &ed->render, hover);
 		ed->render.wireframe = false;
 		if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 			dat->sel_ent = hover;
@@ -199,7 +190,7 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 		ent = dat->sel_ent;
 		ed->render.wireframe = true;
 		ed->render.gizmocolor = AMBER_3;
-		render_entity(*sdl, ed->render, ent);
+		render_entity(*sdl, &ed->render, ent);
 		ed->render.wireframe = false;
 
 		gui_start(gui);
@@ -271,6 +262,7 @@ void	entity_tool_init(t_editor *ed, t_sdlcontext *sdl)
 	{
 		dat->entitygui = init_gui(sdl, &ed->hid, &ed->player, (t_point) {20, 40}, "Edit entity");
 		dat->entitygui.minimum_size.x = 300;
+		dat->entitygui.rect.size.y = 220;
 	}
 }
 

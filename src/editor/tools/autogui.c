@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 16:21:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 19:08:48 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,8 +147,10 @@ static void update_hidecross(t_autogui *gui)
 void	gui_autosize(t_autogui *gui)
 {
 	t_rectangle	titlerect;
+	t_point		pos;
 
-	titlerect = draw_text_boxed(gui->sdl, gui->title, gui->rect.position, gui->sdl->screensize);
+	pos = point_add(gui->rect.position, (t_point){5, 5});
+	titlerect = print_text_boxed(gui->sdl, gui->title, pos);
 	gui->minimum_size.x = titlerect.size.x + 32;
 	gui->rect.size.x = titlerect.size.x + 32;
 }
@@ -232,9 +234,9 @@ void	gui_end(t_autogui *gui)
 		update_scrollbar(gui);
 		gui->scroll.y = ft_clamp(gui->scroll.y, -gui->overdraw, 0);
 	}
-	set_font_size(gui->sdl, 2);
-	draw_text_boxed(gui->sdl, gui->title, gui->rect.position, gui->sdl->screensize);
-	set_font_size(gui->sdl, 0);
+	//set_font_size(gui->sdl, 2);
+	print_text_colored(gui->sdl, gui->title, point_add(gui->rect.position, (t_point){5, 5}), AMBER_3);
+	//set_font_size(gui->sdl, 0);
 }
 
 void	objectgui_update(t_objectgui *ogui, t_entity **ent)
@@ -275,7 +277,11 @@ void	objectgui_update(t_objectgui *ogui, t_entity **ent)
 
 static t_point gui_currentpos(t_autogui *gui)
 {
-	return (point_add(gui->rect.position, point_add(gui->scroll, gui->offset)));
+	t_point	pos;
+
+	pos = point_add(gui->rect.position, point_add(gui->scroll, gui->offset));
+	pos = point_add(pos, (t_point){5,0});
+	return (pos);
 }
 
 static bool gui_shoulddraw(t_autogui *gui)
@@ -312,7 +318,7 @@ static	void	gui_layout(t_autogui *gui, t_rectangle rect)
 {
 	int	x;
 
-	x = ft_max(rect.size.x + 5, gui->min_x);
+	x = ft_max(rect.size.x + 10, gui->min_x);
 	if (gui->agl == agl_vertical)
 	{
 		if (!gui_shoulddraw(gui))
@@ -355,7 +361,7 @@ void	gui_label(char *str, t_autogui *gui)
 	rect = empty_rect();
 	if (gui_shoulddraw(gui)) 
 	{
-		rect = draw_text_boxed(gui->sdl, str, gui_currentpos(gui), gui->rect.size);
+		rect = print_text_colored(gui->sdl, str, gui_currentpos(gui), AMBER_3);
 	}
 	gui_layout(gui, rect);
 }
@@ -403,11 +409,11 @@ bool	gui_float_slider(float	*f, float mul, t_autogui *gui)
 	if (gui_shoulddraw(gui)) 
 	{
 		str = ft_ftoa(*f, 4);
-		rect = draw_text_boxed(gui->sdl, str, gui_currentpos(gui), gui->rect.size);
+		rect = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
 		drawrectangle(*gui->sdl, rect, AMBER_0);
 		if (pointrectanglecollision(gui->hid->mouse.pos, rect))
 		{
-			draw_text_boxed(gui->sdl, "Drag to affect value", point_add(gui->hid->mouse.pos, (t_point){40, -10}), gui->sdl->screensize);
+			print_text_boxed(gui->sdl, "Drag to affect value", point_add(gui->hid->mouse.pos, (t_point){40, -10}));
 			drawrectangle(*gui->sdl, rect, AMBER_1);
 			if (mouse_clicked(gui->hid->mouse, MOUSE_LEFT))
 			{
@@ -470,7 +476,7 @@ static t_buttonreturn	autogui_internal_button(char *str, t_autogui *gui)
 {
 	t_buttonreturn	br;
 
-	br.rect = draw_text_boxed(gui->sdl, str, gui_currentpos(gui), gui->sdl->screensize);
+	br.rect = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
 	drawrectangle(*gui->sdl, br.rect, AMBER_0);
 	br.clicked = false;
 	if (pointrectanglecollision(gui->hid->mouse.pos, br.rect))
@@ -509,7 +515,7 @@ void gui_int(int i, t_autogui *gui)
 	if (gui_shoulddraw(gui))
 	{
 		str = ft_itoa(i);
-		rect = draw_text_boxed(gui->sdl, str, gui_currentpos(gui), gui->sdl->screensize);
+		rect = print_text_colored(gui->sdl, str, gui_currentpos(gui), AMBER_3);
 		free(str);
 	}
 	gui_layout(gui, rect);
@@ -539,7 +545,7 @@ void gui_int_slider(int *i, int mul, t_autogui *gui)
 		str = ft_itoa(*i);
 		if (pointrectanglecollision(gui->hid->mouse.pos, rect))
 		{
-			draw_text_boxed(gui->sdl, "scroll to affect value", point_add(gui->hid->mouse.pos, (t_point){40, -10}), gui->sdl->screensize);
+			print_text(gui->sdl, "scroll to affect value", point_add(gui->hid->mouse.pos, (t_point){40, -10}));
 			drawrectangle(*gui->sdl, rect, AMBER_0);
 			if (moveamount != 0)
 				drawrectangle(*gui->sdl, rect, AMBER_1);

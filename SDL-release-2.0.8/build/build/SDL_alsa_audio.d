@@ -1,0 +1,30 @@
+build/SDL_alsa_audio.lo: \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/src/audio/alsa/SDL_alsa_audio.c \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/src/audio/alsa/../../SDL_internal.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/src/audio/alsa/../../dynapi/SDL_dynapi.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/src/audio/alsa/../../dynapi/SDL_dynapi_overrides.h \
+ include/SDL_config.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/include/SDL_platform.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/include/begin_code.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/include/close_code.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/include/SDL_assert.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/include/SDL_config.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/include/SDL_timer.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/include/SDL_stdinc.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/include/SDL_error.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/include/SDL_audio.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/include/SDL_endian.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/include/SDL_mutex.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/include/SDL_thread.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/include/SDL_atomic.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/include/SDL_platform.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/include/SDL_rwops.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/src/audio/alsa/../SDL_audio_c.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/src/audio/alsa/../../SDL_internal.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/src/audio/alsa/SDL_alsa_audio.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/src/audio/alsa/../SDL_sysaudio.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/include/SDL_mutex.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/include/SDL_thread.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/src/audio/alsa/../../SDL_dataqueue.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/src/audio/alsa/.././SDL_audio_c.h \
+ /home/oskari/projects/DoomNukem/SDL-release-2.0.8/include/SDL_loadso.h

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 15:19:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 17:17:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,13 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	const char	*platform;
 
 	load_lua_conf(sdl);
-	if (SDL_Init(SDL_INIT_VIDEO) < 0
-		|| SDL_Init(SDL_INIT_EVENTS) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO) < 0 \
+		|| SDL_Init(SDL_INIT_AUDIO) < 0 \
+		|| SDL_Init(SDL_INIT_EVENTS) < 0 \
+		|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0 \
+		|| TTF_Init() < 0)
 		error_log(EC_SDL_INIT);
-	if (SDL_Init(SDL_INIT_GAMECONTROLLER) < 0)
-		error_log(EC_SDL_INIT);
-		
+
 	platform = SDL_GetPlatform();
 	printf("platform: %s\n", platform);
 	if (ft_strequ(platform, "Mac OS X"))
@@ -43,19 +44,23 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 		sdl->platform = os_unsupported;
 		printf("platform %s not supported\n", platform);
 	}
-	
 	sdl->window = SDL_CreateWindow("DoomNukem",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		sdl->window_w, sdl->window_h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	if (sdl->window == NULL)
 		error_log(EC_SDL_CREATEWINDOW);
-	sdl->surface = SDL_GetWindowSurface(sdl->window);
-	//printf("PIXELFORMAT %s \n ", SDL_GetPixelFormatName(sdl->surface->format));
-	if (sdl->surface == NULL)
+
+	sdl->window_surface = SDL_GetWindowSurface(sdl->window);
+	if (sdl->window_surface == NULL)
 		error_log(EC_SDL_GETWINDOW_SURFACE);
-	
-	load_fonts(sdl);
-	
+
+	sdl->surface = SDL_CreateRGBSurfaceWithFormat(SDL_SWSURFACE, sdl->window_w, sdl->window_h, 32, SDL_PIXELFORMAT_ARGB8888);
+	if (sdl->surface == NULL)
+		error_log(EC_SDL_CREATERGBSURFACE);
+
+	load_fonts(&sdl->font);
+	load_audio(sdl);
+
 	sdl->zbuffer = malloc(sdl->window_w * sdl->window_h * sizeof(float));
 	objects_init(sdl);
 	t_object *o = get_object_by_name(*sdl, "cyborg");
@@ -86,6 +91,7 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 
 void	quit_game(t_sdlcontext *sdl)
 {
+	close_audio(sdl);
 	SDL_Quit();
 	exit(0);
 }

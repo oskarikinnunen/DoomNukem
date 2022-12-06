@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 14:12:35 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 18:52:12 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,49 +16,6 @@
 #include "objects.h"
 #include "entity.h"
 #include "libft.h"
-
- // Might need the whole gamecontext but I'm trying to avoid it, (trying to avoid global state)
- // TODO: normalize movement vector
-/*
-static t_vector3	movementvector(int32_t keystate, float angle)
-{
-	t_vector3	movement;
-
-	movement = vector3_zero();
-	if ((keystate >> KEYS_UPMASK) & 1) 
-	{
-		movement.x += sin(angle);
-		movement.y += cos(angle);
-	}
-	if ((keystate >> KEYS_DOWNMASK) & 1)
-	{
-		movement.x -= sin(angle);
-		movement.y -= cos(angle);
-	}
-	// strafe
-	if ((keystate >> KEYS_LEFTMASK) & 1)
-	{
-		movement.x += sin(angle + RAD90);
-		movement.y += cos(angle + RAD90);
-	}
-	if ((keystate >> KEYS_RIGHTMASK) & 1)
-	{
-		movement.x += -sin(angle + RAD90);
-		movement.y += -cos(angle + RAD90);
-	}
-	//flying
-	if ((keystate >> KEYS_SPACEMASK) & 1)
-	{
-		movement.z += 0.25f;
-	}
-	if ((keystate >> KEYS_CTRLMASK) & 1)
-	{
-		movement.z -= 0.25f;
-	}
-	movement = vector3_clamp_magnitude(movement, MAXMOVEMENTSPEED);
-	return (movement);
-}
-*/
 
 /* Previous working version before implementing updateinput */
 /*

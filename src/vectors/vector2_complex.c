@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector2_complex.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 11:43:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/19 15:54:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/11/30 18:19:43 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,10 @@ t_vector2 vector2_crossproduct(t_vector2 v1, t_vector2 v2)
 bool	vector2_cmp(t_vector2 first, t_vector2 second)
 {
 	return ((first.x == second.x) && (first.y == second.y));
+}
+
+float vector2_fdist_to_plane(t_vector2 p, t_vector2 plane_n, t_vector2 plane_p)
+{
+	t_vector2 n = vector2_normalise(p);
+	return (plane_n.x * p.x + plane_n.y * p.y - vector2_dot(plane_n, plane_p));
 }

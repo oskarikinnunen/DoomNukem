@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 16:07:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 19:10:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,11 @@
 # include <fcntl.h>
 # include <stdbool.h>
 # include "physics.h"//DEPRECATED UPDATED TO COLLISION.H
-# include "entity.h"
-# include "objects.h"
 # include "animation.h" //PLAYER USES THIS, MOVE PLAYER TO SEPARATE HEADER
 # include "room.h"
 # include "npcs.h"
-# include "render.h"
 # include "player.h"
 # include "input.h"
-# include "collision.h"
 # include "debug.h"
 
 # define PI	3.14159265359
@@ -191,33 +187,24 @@ void	quit_game(t_sdlcontext *sdl);
 
 /* FONT.C */
 
-void	load_fonts(t_sdlcontext *sdl);
+void	load_fonts(t_font *font);
 
 void	draw_black_background(t_sdlcontext *sdl, t_point pos, t_point size);
 
-// Fonts: 0 = 11, 1 = 12, 2 = 14, 3 = 16, 4 = 18, 5 = 20, 6 = 22
-void	set_font_size(t_sdlcontext *sdl, int font_size);
-
 /* TEXT.C */
 
-// Saves the text to font->texts[i] in sequential order.
-// Can be drawn with draw_saved_text()
-void	save_text(t_font *font, const char *str);
+// Prints text and returns the rectangle of the printed text
+// Font size and color can be set using:
+// sdl->font->font = sdll->font->font_sizes[x] where x can be 0-3
+// sdl->font->color = sdl->font->font_colors.x where x is the color
+SDL_Color	color32_to_sdlcolor(uint32_t color);
 
-// Draws a text that has been saved to font->texts[i] with save_text()
-void	draw_saved_text(t_sdlcontext *sdl, t_img *text, t_point pos);
+t_rectangle	print_text(t_sdlcontext *sdl, const char *text, t_point pos);
 
-// Draws text without saving it anywhere
-// Uses a pre-set font size that can be changed by calling set_font_size()
-// Fonts: 0 = 11, 1 = 12, 2 = 14, 3 = 16, 4 = 18, 5 = 20, 6 = 22
-void	draw_text(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundaries);
+// Does the same as print_ftext but also fills in the background for the text
+t_rectangle	print_text_boxed(t_sdlcontext *sdl, const char *text, t_point pos);
 
-// Draws text, with a black box in the background, without saving it anywhere
-// Uses a pre-set font size that can be changed by calling set_font_size()
-// Fonts: 0 = 11, 1 = 12, 2 = 14, 3 = 16, 4 = 18, 5 = 20, 6 = 22
-// Returns the rectangle of the drawed textbox
-t_rectangle	draw_text_boxed(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundaries);
-t_rectangle	draw_text_black(t_sdlcontext *sdl, const char *str, t_point pos, t_point boundaries);
+t_rectangle	print_text_colored(t_sdlcontext *sdl, const char *text, t_point pos, uint32_t color);
 
 
 void			entity_start_anim(t_entity *entity, char *animname);
@@ -230,6 +217,22 @@ void	*list_to_ptr(t_list *source, uint32_t *set_length);
 void	*list_find(t_list *head, void *match, size_t content_size);
 //TODO: documentation here
 void	list_remove(t_list **head, void *match, size_t content_size);
+
+/* OCCLUSION.C */
+void	update_occlusion(t_sdlcontext sdl, t_render *render);
+
+//settings
+void	default_entity_occlusion_settings(t_entity *e, t_world *world);
+void	default_floor_occlusion_settings(t_meshtri *f, t_world *world);
+void	default_wall_occlusion_settings(t_wall *w, t_world *world);
+
+void	update_entity_bounds(t_entity *e);
+void	update_floor_bounds(t_meshtri *f);
+void	update_wall_bounds(t_wall *w);
+
+
+//TODO: temp for occlusion
+int32_t		get_id(t_world *world);
 
 //
 

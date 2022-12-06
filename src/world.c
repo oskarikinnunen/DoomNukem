@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 16:35:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 20:10:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	update_npcs(t_world *world)
 	int	i;
 
 	i = 0;
+	//is_entity_occlusion_culled()
 	while (i < 128)
 	{
 		if (world->npcpool[i].active)
@@ -39,6 +40,7 @@ void	update_npcs(t_world *world)
 					cur->destination = (t_vector3) {200.0f, 200.0f, 0.0f};
 			}
 			update_anim(&(cur->entity.animation), world->clock.delta);
+			update_entity_bounds(&cur->entity);
 		}
 		i++;
 	}
@@ -58,7 +60,7 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 		if (ent->status != es_free)
 		{
 			if (ent->status == es_active)
-				render_entity(*sdl, *render, ent);
+				render_entity(*sdl, render, ent);
 			found++;
 		}
 		i++;
@@ -73,6 +75,7 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 	int			i;
 	
 	//
+	ft_bzero(&render->rs, sizeof(t_render_statistics));
 	update_npcs(world);
 	i = 0;
 	while (i < 128)
@@ -82,13 +85,15 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 			t_npc npc = world->npcpool[i];
 			t_vector3 dir = vector3_sub(world->npcpool[i].entity.transform.position, world->npcpool[i].destination);
 			render_ray(sdl, *render, npc.entity.transform.position, npc.destination);
-			render_entity(sdl, *render, &world->npcpool[i].entity);
+			render_entity(sdl, render, &world->npcpool[i].entity);
 		}
 		i++;
 	}
 	update_entitycache(&sdl, world, render);
-	render_entity(sdl, *render, &world->skybox);
+	render_entity(sdl, render, &world->skybox);
 	gui_start(world->debug_gui);
+	gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);
+	gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);
 	gui_labeled_int("Entity count:", world->entitycache.existing_entitycount, world->debug_gui);
 	gui_end(world->debug_gui);
 }
@@ -150,6 +155,8 @@ void	spawn_npc(t_world *world, char *objectname, t_vector3 position, t_sdlcontex
 			world->npcpool[i].entity.transform.position = position;
 			entity_start_anim(&world->npcpool[i].entity, "walk");
 			world->npcpool[i].entity.transform.scale = vector3_one();
+			update_entity_bounds(&world->npcpool[i].entity);
+			default_entity_occlusion_settings(&world->npcpool[i].entity, world);
 			return ;
 		}
 		i++;

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 15:18:07 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/05 18:40:19 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 18:04:00 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,7 @@ void	render_collider(t_editor *ed, t_sdlcontext sdl, t_npctooldata *dat)
 	{
 		ed->render.wireframe = true;
 		ed->render.gizmocolor = CLR_GREEN;
-		render_entity(sdl, ed->render, &dat->col.entity);
+		render_entity(sdl, &ed->render, &dat->col.entity);
 		ed->render.wireframe = false;
 	}*/
 }
@@ -227,7 +227,7 @@ void	render_box_colliders(t_entity *ent, t_editor *ed, t_sdlcontext sdl)
 		box.transform.scale = bc.size;
 		ed->render.wireframe = true;
 		ed->render.gizmocolor = CLR_GREEN;
-		render_entity(sdl, ed->render, &box);
+		render_entity(sdl, &ed->render, &box);
 		ed->render.wireframe = false;
 		i++;
 	}
@@ -362,7 +362,7 @@ void	npc_tool_update(t_editor *ed, t_sdlcontext *sdl)
 	npc_tool_lazy_init(ed, sdl, dat);
 	//autoguitest(ed, sdl);
 	//ed->render.wireframe = true;
-	render_entity(*sdl, ed->render, dat->ent);
+	render_entity(*sdl, &ed->render, dat->ent);
 	maingui(ed, sdl, dat);
 	objectgui(ed, sdl, dat);
 	collidergui(ed, sdl, dat);
@@ -427,7 +427,7 @@ t_tool	*get_npc_tool()
 		if (tool.tooldata == NULL)
 			error_log(EC_MALLOC);
 		dat = (t_npctooldata *)tool.tooldata;
-		/*dat->ent->transform.location = vector3_zero();
+		/*dat->ent->transform.position = vector3_zero();
 		dat->ent->transform.scale = vector3_one();*/
 	}
 	ft_strcpy(tool.icon_name, "entitytool.png");

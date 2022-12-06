@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:21:41 by vlaine            #+#    #+#             */
-/*   Updated: 2022/11/25 17:59:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 17:31:55 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,4 +59,38 @@ t_vector3	vector3_lerp(t_vector3 v1, t_vector3 v2, float lerp)
 	result.y = v1.y - (lerp * (v1.y - v2.y));
 	result.z = v1.z - (lerp * (v1.z - v2.z));
 	return (result);
+}
+
+float	line_intersect_plane(t_vector3 plane_p, t_vector3 plane_n, t_vector3 start, t_vector3 end)
+{
+	float plane_d;
+	float ad;
+	float bd;
+
+	plane_n = vector3_normalise(plane_n);//TODO: Just in case caller forgots to pass normalized vector
+	plane_d = -vector3_dot(plane_n, plane_p);
+	ad = vector3_dot(start, plane_n);
+	bd = vector3_dot(end, plane_n);
+
+//	printf("plane_d %f, ad %f, bd %f, ad %f\n", plane_d, ad, bd, ad);
+	if (bd - ad == 0.0f)
+		return(1.0f);
+	return(-plane_d - ad) / (bd - ad);
+}
+
+float	vector2_line_intersect_plane(t_vector2 plane_p, t_vector2 plane_n, t_vector2 start, t_vector2 end)
+{
+	float plane_d;
+	float ad;
+	float bd;
+
+	plane_n = vector2_normalise(plane_n);//TODO: Just in case caller forgots to pass normalized vector
+	plane_d = -vector2_dot(plane_n, plane_p);
+	ad = vector2_dot(start, plane_n);
+	bd = vector2_dot(end, plane_n);
+
+//	printf("plane_d %f, ad %f, bd %f, ad %f\n", plane_d, ad, bd, ad);
+	if (bd - ad == 0.0f)
+		return(1.0f);
+	return(-plane_d - ad) / (bd - ad);
 }

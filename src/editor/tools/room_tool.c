@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 16:50:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 19:25:27 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static void highlight_object(t_editor *ed, t_sdlcontext sdl, t_entity *entity, u
 {
 	ed->render.wireframe = true;
 	ed->render.gizmocolor = color;
-	render_entity(sdl, ed->render, entity);
+	render_entity(sdl, &ed->render, entity);
 	ed->render.wireframe = false;
 }
 
@@ -96,15 +96,16 @@ static void highlight_room(t_editor *ed, t_sdlcontext sdl, t_room room, uint32_t
 	ed->render.gizmocolor = color;
 	while (i < room.wallcount)
 	{
-		render_entity(sdl, ed->render, room.walls[i].entity);
+		printf("HIGHLIGHTING ROOM \n");
+		render_entity(sdl, &ed->render, room.walls[i].entity);
 		i++;
 	}
-	i = 0;
+	/*i = 0;
 	while (i < room.floorcount)
 	{
-		render_entity(sdl, ed->render, room.floors[i].entity);
+		render_entity(sdl, &ed->render, room.floors[i].entity);
 		i++;
-	}
+	}*/
 	ed->render.wireframe = false;
 }
 
@@ -161,13 +162,12 @@ static void renderroom(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 	i = 0;
 	while (i < room->wallcount)
 	{
-		ed->render.wireframe = true;
-		ed->render.gizmocolor = CLR_GREEN;
-		render_entity(*sdl, ed->render, room->walls[i].entity);
-		ed->render.wireframe = false;
+		/*ed->render.wireframe = true;
+		ed->render.gizmocolor = CLR_GREEN;*/
+		render_entity(*sdl, &ed->render, room->walls[i].entity);
+		//ed->render.wireframe = false;
 		i++;
 	}
-	printf("rendered %i room walls\n", i);
 }
 
 t_meshtri	*selectedfloor(t_editor *ed, t_sdlcontext sdl, t_room *room)
@@ -247,6 +247,7 @@ static bool illegalwall_move(t_wall *wall, t_room *room)
 	}
 	return (false);
 }
+ //TODO: call default_wall_occlusion_settings(&room->walls[i], world);
 
 static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 {
@@ -309,15 +310,15 @@ static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 		}
 	}
 	applywallmesh(cur);
-	//draw_text_boxed(&sdl, vector_string(rc), (t_point){20, sdl.window_h - 80}, sdl.screensize);
+	//print_text_boxed(&sdl, vector_string(rc), (t_point){20, sdl.window_h - 80}, sdl.screensize);
 	if (!vector2_cmp(cur->line.start, vector2_zero()))
-		render_entity(*sdl, ed->render, cur->entity);
+		render_entity(*sdl, &ed->render, cur->entity);
 	if (illegalwall(cur, dat->room))
 	{
-		ed->render.wireframe = true;
-		ed->render.gizmocolor = CLR_RED;
-		render_entity(*sdl, ed->render, cur->entity);
-		ed->render.wireframe = false;
+		/*ed->render.wireframe = true;
+		ed->render.gizmocolor = CLR_RED;*/
+		render_entity(*sdl, &ed->render, cur->entity);
+		//ed->render.wireframe = false;
 	}
 	renderroom(ed, sdl, dat->room);
 	render_snapgrid(ed, sdl, snap, false, false);
@@ -420,12 +421,12 @@ static void walleditmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 {
 	char	text[64] = { };
 
-	snprintf(text, 64, "modifying selected wall");
-	draw_text_boxed(&sdl, text, (t_point){sdl.window_w / 2, 40}, sdl.screensize);
-	//render_entity(sdl, ed->render, &dat->doorwalls[0]);
+	//snprintf(text, 64, "modifying selected wall");
+	//print_text_boxed(&sdl, text, (t_point){sdl.window_w / 2, 80});
+	//render_entity(sdl, &ed->render, &dat->doorwalls[0]);
 	highlight_object(ed, sdl, dat->ed_wall->entity, CLR_GREEN);
-	snprintf(text, 64, "make door");
-	draw_text_boxed(&sdl, text, (t_point){20, 280}, sdl.screensize);
+	/*snprintf(text, 64, "make door");
+	print_text_boxed(&sdl, text, (t_point){20, 280}, sdl.screensize);*/
 	if (instantbutton((t_rectangle){20, 300, 40, 40}, &ed->hid.mouse, sdl, "stop.png"))
 	{
 		//dat->ed_wall->entity.transform.scale = vector3_zero();
@@ -486,7 +487,7 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		return ;
 	}
 	gui_end(gui);
-	draw_text_boxed(&sdl, text, (t_point){sdl.window_w / 2, 40}, sdl.screensize);
+	//print_text_boxed(&sdl, text, (t_point){sdl.window_w / 2, 40}, sdl.screensize);
 	snap = vector2_snap((t_vector2){rc.x, rc.y}, 10);
 	highlight_room(ed, sdl, *dat->room, CLR_GREEN);
 	look_wall = selectedwall(ed, sdl, dat->room);

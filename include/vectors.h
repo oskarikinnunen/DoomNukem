@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/29 12:07:19 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 17:12:10 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,12 @@ bool		vector2_cmp(t_vector2 first, t_vector2 second);
 //returns copy of 'vec' but with magnitude clamped to 'max_magnitude'
 t_vector2	vector2_clamp_magnitude(t_vector2 vec, float max_magnitude);
 
+//returns float distance, to plane_p position and direction vector plane_n
+float vector2_fdist_to_plane(t_vector2 p, t_vector2 plane_n, t_vector2 plane_p);
+
+//returns float from 0 to 1 depending on where the line intersected plane. Pass t_vector3 plane_p location and t_vector3 plane_n normalised, currently function does normalise plane_n just in case, but it will be changed later.
+float	vector2_line_intersect_plane(t_vector2 plane_p, t_vector2 plane_n, t_vector2 start, t_vector2 end);
+
 /* t_vector3 functions */
 typedef struct s_vector3
 {
@@ -158,6 +164,9 @@ t_vector3	vector3_rotate_euler(t_vector3 original, t_vector3 eulers);
 //returns signed shortest distance from point to plane, plane normal must be normalised
 float		vector3_fdist_to_plane(t_vector3 p, t_vector3 plane_n, t_vector3 plane_p);
 
+//returns float from 0 to 1 depending on where the line intersected plane. Pass t_vector3 plane_p location and t_vector3 plane_n normalised, currently function does normalise plane_n just in case, but it will be changed later.
+float	line_intersect_plane(t_vector3 plane_p, t_vector3 plane_n, t_vector3 start, t_vector3 end);
+
 //returns linearly interpolated value between 'v1' and 'v2' using lerp (which should be in range 0.0 - 1.0f)
 t_vector3	vector3_lerp(t_vector3 v1, t_vector3 v2, float lerp);
 
@@ -224,6 +233,9 @@ int			point_dot(t_point first, t_point second);
 //returns true if both points are identical
 bool		point_cmp(t_point first, t_point second);
 
+//returns point lerped;
+t_point lerp_point(t_point from, t_point to, float delta);
+
 typedef struct s_quaternion
 {
 	t_vector3	v;
@@ -233,14 +245,26 @@ typedef struct s_quaternion
 //shorthand for writing (t_quaternion){1.0f, 1.0f, 1.0f, 1.0f}
 t_quaternion	quaternion_identity();
 
-
 t_quaternion	quaternion_rotate_euler(t_vector3 original, t_vector3 eulers);
 
 //returns quaternion multiplication result 'first * second'
 t_quaternion	quaternion_mul(t_quaternion first, t_quaternion second);
 
 //returns quaternion, for quaternion line that starts from 'linestart' and ends in 'lineend' and intersects plane vector 'plane_p' and 'plane_n'
-t_quaternion quaternion_intersectplane(t_vector3 plane_p, t_vector3 plane_n, t_quaternion lineStart, t_quaternion lineEnd, float *t);
+t_quaternion	quaternion_intersectplane(t_vector3 plane_p, t_vector3 plane_n, t_quaternion lineStart, t_quaternion lineEnd, float *t);
+
+//returns quaternion lerped from, to by delta
+t_quaternion	lerp_quaternion(t_quaternion from, t_quaternion to, float delta);
+
+typedef struct s_texture
+{
+	float	u;
+	float	v;
+	float	w;
+} t_texture;
+
+//returns texture lerped from, to by delta
+t_texture		lerp_texture(t_texture from, t_texture to, float delta);
 
 typedef struct s_mat4x4
 {

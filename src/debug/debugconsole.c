@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/28 17:22:27 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/05 14:34:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 17:57:59 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,19 +31,19 @@ void	update_debugconsole(t_debugconsole *console, t_sdlcontext *sdl, uint32_t de
 		
 	origin = point_sub(sdl->screensize, size);
 	draw_rectangle_raster(*sdl, (t_rectangle){origin.x, origin.y, size.x, size.y}, CLR_DARKGRAY);
-	draw_text_boxed(sdl, "DEBUGCONSOLE", point_add(origin, (t_point){5, 5}), sdl->screensize);
+	print_text_boxed(sdl, "DEBUGCONSOLE", point_add(origin, (t_point){5, 5}));
 	if (console->show_anim.active)
 	{
 		int	sec = console->show_anim.lastframe / console->show_anim.framerate;
 		str = ft_itoa(sec - ((console->show_anim.frame) / console->show_anim.framerate));
-		draw_text_boxed(sdl, str, point_add(origin, (t_point){size.x - 20, 5}), sdl->screensize);
+		print_text_boxed(sdl, str, point_add(origin, (t_point){size.x - 20, 5}));
 		free(str);
 		update_anim(&console->show_anim, delta);
 	}
 	i = 0;
 	while (i < console->messagecount)
 	{
-		draw_text_boxed(sdl, console->messages[i], point_add(origin, (t_point){5, ((i + 1) * 16) + 5}), sdl->screensize);
+		print_text_boxed(sdl, console->messages[i], point_add(origin, (t_point){5, ((i + 1) * 16) + 5}));
 		//drawline(*sdl, point_add(origin, (t_point){0, i * 16}), point_add(origin, (t_point){size.x, i * 16}), CLR_DARKGRAY);
 		i++;
 	}

@@ -6,22 +6,12 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/05 00:13:20 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 18:56:36 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "bresenham.h"
-
-//not currently used
-static void	z_draw(t_sdlcontext sdl, t_point pos, uint32_t clr, float z)
-{
-	if (z > sdl.zbuffer[pos.x + pos.y * sdl.window_w])
-	{
-		sdl.zbuffer[pos.x + pos.y * sdl.window_w] = z;
-		((uint32_t *)sdl.surface->pixels)[pos.x + pos.y * sdl.window_w] = clr;
-	}
-}
 
 static void ft_swap(void * a, void * b, size_t len)
 {
@@ -72,6 +62,36 @@ static void	sort_tris(t_quaternion	*q, t_texture *t)
 	}
 }
 
+static void	sort_point_tris(t_point *p, t_texture *t)
+{
+	int	s_x;
+	int	s_j;
+	t_point			temp_p;
+	t_texture 		temp_t;
+
+	s_x = 0;
+	s_j = 0;
+	while (s_x < 2)
+	{
+		while (s_j < 2 - s_x)
+		{
+			if (p[s_j].y < p[s_j + 1].y)
+			{
+				temp_p = p[s_j];
+				p[s_j] = p[s_j + 1];
+				p[s_j + 1] = temp_p;
+
+				temp_t = t[s_j];
+				t[s_j] = t[s_j + 1];
+				t[s_j + 1] = temp_t;
+			}
+			s_j++;
+		}
+		s_j = 0;
+		s_x++;
+	}
+}
+
 float flerp(float from, float to, float delta)
 {
 	return (from + ((to - from) * delta));
@@ -88,15 +108,10 @@ static void  calc_step_f(float x_step[2], float w_step[2], t_triangle triangle, 
 	w_step[1] = (q[0].w - q[2].w) * delta;
 }
 
-static void  calc_step(float x_step[2], t_texture t_step[2], t_triangle triangle, float delta)
+static void  calc_points_step(float x_step[2], t_texture t_step[2], t_point *p, t_texture *t, float delta)
 {
-	t_quaternion	*q;
-	t_texture		*t;
-
-	q = triangle.p;
-	t = triangle.t;
-	x_step[0] = (q[0].v.x - q[1].v.x) * delta;
-	x_step[1] = (q[0].v.x - q[2].v.x) * delta;
+	x_step[0] = (p[0].x - p[1].x) * delta;
+	x_step[1] = (p[0].x - p[2].x) * delta;
 
 	t_step[0].u = (t[0].u - t[1].u) * delta;
 	t_step[0].v = (t[0].v - t[1].v) * delta;
@@ -107,39 +122,13 @@ static void  calc_step(float x_step[2], t_texture t_step[2], t_triangle triangle
 	t_step[1].w = (t[0].w - t[2].w) * delta;
 }
 
-static t_triangle step_triangle(t_triangle triangle, float x_step[2], t_texture t_step[2])
-{
-	t_quaternion	*q;
-	t_texture		*t;
-
-	q = triangle.p;
-	t = triangle.t;
-
-	q[1].v.x += x_step[0];
-	q[2].v.x += x_step[1];
-
-	t[1].u += t_step[0].u;
-	t[1].v += t_step[0].v;
-	t[1].w += t_step[0].w;
-
-	t[2].u += t_step[1].u;
-	t[2].v += t_step[1].v;
-	t[2].w += t_step[1].w;
-
-	return (triangle);
-}
-
-static t_triangle step_triangle_f(t_triangle triangle, float x_step[2], float w_step[2])
-{
-	t_quaternion	*q;
-
-	q = triangle.p;
-
-	q[1].v.x += x_step[0];
-	q[2].v.x += x_step[1];
-	q[1].w += w_step[0];
-	q[2].w += w_step[1];
-	return (triangle);
+static t_texture calc_step_texture(t_texture *t, float delta)
+{	
+	t_texture step;
+	step.u = (t[2].u - t[1].u) * delta;
+	step.v = (t[2].v - t[1].v) * delta;
+	step.w = (t[2].w - t[1].w) * delta;
+	return(step);
 }
 
 typedef	struct s_rgb
@@ -169,20 +158,6 @@ static uint32_t	flip_channels(uint32_t clr)
 	result.dat.rgb.b = orig.dat.rgb.r;
 	result.dat.rgb.a = orig.dat.rgb.a;
 	return (result.dat.color);
-	//result += ((clr >> 8) & 0xFF) >> 8;
-}
-
-static void step_ab(t_texture *step, t_triangle triangle, float delta)
-{
-	//t_quaternion	*q;
-	t_texture		*t;
-
-	//q = triangle.p;
-	t = triangle.t;
-	
-	step->u = (t[2].u - t[1].u) * delta;
-	step->v = (t[2].v - t[1].v) * delta;
-	step->w = (t[2].w - t[1].w) * delta;
 }
 
 static uint32_t sample_img(t_img *img, t_texture t)
@@ -196,214 +171,138 @@ static uint32_t sample_img(t_img *img, t_texture t)
 	xsample = (x8b * (img->size.x - 1)) / 255;
 	y8b = (t.v / t.w) * 255;
 	ysample = (y8b * (img->size.y - 1)) / 255;
-	return (img->data[(xsample * img->size.x) + ysample]);
+	return (flip_channels(img->data[(xsample * img->size.x) + ysample]));
 }
 
-
-int	ps1(int	x)
+static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_img *img)
 {
-	x = x / 4;
-	x = x * 4;
-	return (x);
-}
-
-static void fill_tri_bot(t_sdlcontext sdl, t_triangle triangle, t_img *img)
-{
-	t_quaternion	*q;
+	t_point			*p;
 	t_texture		*t;
-	float			x_step[2];
+	float			step[2];
 	t_texture		t_step[3];
-	int				index;
-	int				i;
+	int				x;
+	int				y;
+	float			delta;
 
-	q = triangle.p;
+	p = triangle.p;
 	t = triangle.t;
-	calc_step(x_step, t_step, triangle, 1.0f / (q[1].v.y - q[0].v.y));
-	while (q[0].v.y <= q[1].v.y)
+	calc_points_step(step, t_step, p, t, 1.0f / ((float)(p[1].y - p[0].y)));
+	y = p[1].y;
+	while (y >= p[0].y)
 	{
-		step_ab(&t_step[2], triangle, 1.0f / (q[2].v.x - q[1].v.x));
+		x = p[1].x + (step[0] * (float)(p[1].y - y));
+		int ax =  p[2].x + (step[1] * (float)(p[1].y - y));
+		t_step[2] = calc_step_texture(t, 1.0f / (float)(ax - x));
 		t[0].u = t[1].u;
 		t[0].v = t[1].v;
 		t[0].w = t[1].w;
-		index = 0;
-		i = q[1].v.x;
-		while(i < q[2].v.x)
+		while(x <= ax)
 		{
-			if (t[0].w > sdl.zbuffer[(int)(i) + (int)q[1].v.y * sdl.window_w])
+			if (t[0].w > sdl->zbuffer[x + y * sdl->window_w])
 			{
-				sdl.zbuffer[(int)(i) + (int)q[1].v.y * sdl.window_w] = t[0].w;
-				/*if (i < sdl.screensize.x - 4 && q[1].v.y < sdl.screensize.y - 4)
-				{
-					sdl.zbuffer[(int)(i + 1) + (int)(q[1].v.y + 1) * sdl.window_w] = t[0].w;
-					sdl.zbuffer[(int)(i) + (int)(q[1].v.y + 1) * sdl.window_w] = t[0].w;
-					sdl.zbuffer[(int)(i + 1) + (int)(q[1].v.y) * sdl.window_w] = t[0].w;
-				}*/
-				t[0].u += (t_step[2].u * index);
-				t[0].v += (t_step[2].v * index);
-				index = 0;
-				static uint8_t	x8b;
-				static uint8_t	y8b;
-				uint8_t	xsample;
-				uint8_t	ysample;
-
-				x8b = (t[0].u / t[0].w) * 255;
-				xsample = (x8b * (img->size.x - 1)) / 255;
-				y8b = (t[0].v / t[0].w) * 255;
-				ysample = (y8b * (img->size.y - 1)) / 255;
-				((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w]
-					= flip_channels(img->data[(xsample * img->size.x) + ysample]); //used to use sampleimage
-				/*if (i < sdl.screensize.x - 10 && q[1].v.y < sdl.screensize.y - 10)
-				{
-					((uint32_t *)sdl.surface->pixels)[(int)(i + 1) + ((int)q[1].v.y + 1) * sdl.window_w]
-						= flip_channels(img->data[(xsample * img->size.x) + ysample]); //used to use sampleimage
-					((uint32_t *)sdl.surface->pixels)[(int)(i) + ((int)q[1].v.y + 1) * sdl.window_w]
-						= flip_channels(img->data[(xsample * img->size.x) + ysample]); //used to use sampleimage
-					((uint32_t *)sdl.surface->pixels)[(int)(i + 1) + ((int)q[1].v.y) * sdl.window_w]
-						= flip_channels(img->data[(xsample * img->size.x) + ysample]); //used to use sampleimage
-				}*/
+				sdl->zbuffer[x + y * sdl->window_w] = t[0].w;
+				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] =
+					sample_img(img, t[0]);
 			}
-			index++;
-			//index++;
+			t[0].u += t_step[2].u;
+			t[0].v += t_step[2].v;
 			t[0].w += t_step[2].w;
-			//t[0].w += t_step[2].w;
-			i++;
-			//i++;
+			x++;
 		}
-		triangle = step_triangle(triangle, x_step, t_step);
-		//triangle = step_triangle(triangle, x_step, t_step);
-		//q[1].v.y--;
-		q[1].v.y--;
+		t[1].u += t_step[0].u;
+		t[1].v += t_step[0].v;
+		t[1].w += t_step[0].w;
+
+		t[2].u += t_step[1].u;
+		t[2].v += t_step[1].v;
+		t[2].w += t_step[1].w;
+		y--;
 	}
 }
 
 
-
-static void fill_tri_top(t_sdlcontext sdl, t_triangle triangle, t_img *img)
+static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle, t_img *img)
 {
-	t_quaternion	*q;
+	t_point			*p;
 	t_texture		*t;
-	float			x_step[2];
+	float			step[2];
 	t_texture		t_step[3];
-	int				index;
-	int				i;
+	int				x;
+	int				y;
+	float			delta;
 
-	q = triangle.p;
+	p = triangle.p;
 	t = triangle.t;
-	calc_step(x_step, t_step, triangle, 1.0f / (q[0].v.y - q[1].v.y));
-	while (q[1].v.y <= q[0].v.y)
+	calc_points_step(step, t_step, p, t, 1.0f/((float)(p[0].y - p[1].y)));
+	y = p[1].y;
+	while (y <= p[0].y)
 	{
-		step_ab(&t_step[2], triangle, 1.0f / (q[2].v.x - q[1].v.x));
+		x = p[1].x + (step[0] * (float)(y - p[1].y));
+		int ax =  p[2].x + (step[1] * (float)(y - p[1].y));
+		t_step[2] = calc_step_texture(t, 1.0f / (float)(ax - x));
 		t[0].u = t[1].u;
 		t[0].v = t[1].v;
 		t[0].w = t[1].w;
-		index = 0;
-		i = q[1].v.x;
-		while(i < q[2].v.x)
+		while(x <= ax)
 		{
-			if (t[0].w > sdl.zbuffer[(int)(i) + (int)q[1].v.y * sdl.window_w])
+			if (t[0].w > sdl->zbuffer[x + y * sdl->window_w])
 			{
-				sdl.zbuffer[(int)(i) + (int)q[1].v.y * sdl.window_w] = t[0].w;
-				/*if (i < sdl.screensize.x - 4 && q[1].v.y < sdl.screensize.y - 4)
-				{
-					sdl.zbuffer[(int)(i + 1) + (int)(q[1].v.y + 1) * sdl.window_w] = t[0].w;
-					sdl.zbuffer[(int)(i) + (int)(q[1].v.y + 1) * sdl.window_w] = t[0].w;
-					sdl.zbuffer[(int)(i + 1) + (int)(q[1].v.y) * sdl.window_w] = t[0].w;
-				}*/
-				t[0].u += (t_step[2].u * index);
-				t[0].v += (t_step[2].v * index);
-				index = 0;
-				static uint8_t	x8b;
-				static uint8_t	y8b;
-				uint8_t	xsample;
-				uint8_t	ysample;
-				x8b = (t[0].u / t[0].w) * 255;
-				xsample = (x8b * (img->size.x - 1)) / 255;
-				y8b = (t[0].v / t[0].w) * 255;
-				ysample = (y8b * (img->size.y - 1)) / 255;
-				//int fnl = ps1(i) + ps1(q[1].v.y) * sdl.window_w;
-				((uint32_t *)sdl.surface->pixels)[(int)(i) + (int)q[1].v.y * sdl.window_w]
-					= flip_channels(img->data[(xsample * img->size.x) + ysample]);
-				/*
-				if (i < sdl.screensize.x - 4 && q[1].v.y < sdl.screensize.y - 4)
-				{
-					((uint32_t *)sdl.surface->pixels)[(int)(i + 1) + ((int)q[1].v.y + 1) * sdl.window_w]
-						= flip_channels(img->data[(xsample * img->size.x) + ysample]); //used to use sampleimage
-					((uint32_t *)sdl.surface->pixels)[(int)(i) + ((int)q[1].v.y + 1) * sdl.window_w]
-						= flip_channels(img->data[(xsample * img->size.x) + ysample]); //used to use sampleimage
-					((uint32_t *)sdl.surface->pixels)[(int)(i + 1) + ((int)q[1].v.y) * sdl.window_w]
-						= flip_channels(img->data[(xsample * img->size.x) + ysample]); //used to use sampleimage
-				}*/
+				sdl->zbuffer[x + y * sdl->window_w] = t[0].w;
+				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] =
+					sample_img(img, t[0]);
 			}
-			index++;
-			//index++;
-			//t[0].w += t_step[2].w;
+			t[0].u += t_step[2].u;
+			t[0].v += t_step[2].v;
 			t[0].w += t_step[2].w;
-			//i++;
-			i++;
+			x++;
 		}
-		triangle = step_triangle(triangle, x_step, t_step);
-		//triangle = step_triangle(triangle, x_step, t_step);
-		//q[1].v.y++;
-		q[1].v.y++;
+		t[1].u += t_step[0].u;
+		t[1].v += t_step[0].v;
+		t[1].w += t_step[0].w;
+
+		t[2].u += t_step[1].u;
+		t[2].v += t_step[1].v;
+		t[2].w += t_step[1].w;
+		y++;
 	}
 }
-
 
 /*
 creates two triangles from the given triangle one flat top and one flat bottom.
 both triangles are then assigned to t_point p[3] array and passed onto fill_tri_bot/top functions.
 p[0] is always the pointy head of the triangle p[1] and p[2] are flat points where, p[1] x is smaller than p[2]
 */
-
-t_triangle	triangle_ps1(t_triangle tri)
+void	render_triangle(t_sdlcontext *sdl, t_point_triangle triangle, t_img *img)
 {
-	int	i;
-
-	i = 0;
-	while (i < 3)
-	{
-		tri.p[i].v.x = ps1(tri.p[i].v.x);
-		tri.p[i].v.y = ps1(tri.p[i].v.y);
-		//tri.p[i].v.z = ps1(tri.p[i].v.x);
-		i++;
-	}
-	return (tri);
-}
-
-
-void	z_fill_tri(t_sdlcontext sdl, t_triangle triangle, t_img img)
-{
-	t_quaternion	q_split;
+	t_point			p_split;
 	t_texture		t_split;
 	t_texture		t_temp;
-	t_quaternion	q_temp;
-	t_quaternion	*q;
-	t_point			p[3];
+	t_point			p_temp;
+	t_point			*p;
 	float			lerp;
 
-	q = triangle.p;
-	sort_tris(triangle.p, triangle.t);
-	lerp = (float)(q[1].v.y - q[2].v.y) / (float)(q[0].v.y - q[2].v.y);
-	q_split.v.x = q[2].v.x + (lerp * (q[0].v.x - q[2].v.x));
-	q_split.v.y = q[1].v.y;
-	//q_split.v.z = q[1].w;
-
+	p = triangle.p;
+	sort_point_tris(triangle.p, triangle.t);
+	lerp = ((float)p[1].y - (float)p[2].y) / ((float)p[0].y - (float)p[2].y);
+	p_split.x = p[2].x + (lerp * ((float)p[0].x - (float)p[2].x));
+	p_split.y = p[1].y;
 	t_split.u = flerp(triangle.t[2].u, triangle.t[0].u, lerp);
 	t_split.v = flerp(triangle.t[2].v, triangle.t[0].v, lerp);
 	t_split.w = flerp(triangle.t[2].w, triangle.t[0].w, lerp);
 
-	if (q_split.v.x < q[1].v.x)
+	if (p_split.x < p[1].x)
 	{
-		ft_swap(&q[1], &q_split, sizeof(t_quaternion));
+		ft_swap(&p[1], &p_split, sizeof(t_point));
 		ft_swap(&triangle.t[1], &t_split, sizeof(t_texture));
 	}
-	q_temp = q[2];
+	p_temp = p[2];
 	t_temp = triangle.t[2];
-	q[2] = q_split;
+	p[2] = p_split;
 	triangle.t[2] = t_split;
-	//triangle = triangle_ps1(triangle);
-	fill_tri_top(sdl, triangle, &img);
-	q[0] = q_temp;
+	if (p[0].y != p[1].y)
+		fill_point_tri_top(sdl, triangle, img);
+	p[0] = p_temp;
 	triangle.t[0] = t_temp;
-	fill_tri_bot(sdl, triangle, &img);
+	if (p[0].y != p[1].y)
+		fill_point_tri_bot(sdl, triangle, img);
 }

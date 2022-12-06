@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 15:53:51 by raho              #+#    #+#             */
-/*   Updated: 2022/12/06 12:55:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 17:14:55 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ static void	sdl_errors(int error_code)
 		fprintf(stderr, "SDL_CreateWindow failed: %s\n", SDL_GetError());
 	if (error_code == EC_SDL_GETWINDOW_SURFACE)
 		fprintf(stderr, "SDL_GetWindowSurface failed: %s\n", SDL_GetError());
+	if (error_code == EC_SDL_CREATERGBSURFACE)
+		fprintf(stderr, "SDL_CreateRGBSurface failed: %s\n", SDL_GetError());
 	if (error_code == EC_SDL_UPDATEWINDOWSURFACE)
 		fprintf(stderr, "SDL_UpdateWindowSurface failed: %s\n", SDL_GetError());
 	if (error_code == EC_SDL_SETRELATIVEMOUSEMODE)
@@ -32,6 +34,16 @@ static void	sdl_errors(int error_code)
 		fprintf(stderr, "SDL_GameControllerOpen failed: %s\n", SDL_GetError());
 	if (error_code == EC_SDL_JOYSTICKINSTANCEID)
 		fprintf(stderr, "SDL_JoystickInstanceID failed: %s\n", SDL_GetError());
+	if (error_code == EC_SDL_OPENAUDIODEVICE)
+		fprintf(stderr, "SDL_OpenAudioDevice failed: %s\n", SDL_GetError());
+	if (error_code == EC_SDL_QUEUEAUDIO)
+		fprintf(stderr, "SDL_QueueAudio failed: %s\n", SDL_GetError());
+	if (error_code == EC_SDL_LOADWAV)
+		fprintf(stderr, "SDL_LoadWAV failed: %s\n", SDL_GetError());
+	if (error_code == EC_TTF_OPENFONT)
+		fprintf(stderr, "TTF_OpenFont failed: %s\n", TTF_GetError());
+	if (error_code == EC_TTF_RENDERTEXTBLENDED)
+		fprintf(stderr, "TTF_RenderText_Blended failed: %s\n", TTF_GetError());
 	exit (1);
 }
 

@@ -79,12 +79,16 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 
 	//alloc_image(&pgraph.image, PERFGRAPH_SAMPLES + 1, PERFGRAPH_SAMPLES + 1);
 	gr = game_continue;
-	render = init_render(sdl);
+	render = init_render(sdl, &game.world);
 	game.world = load_world("world1", &sdl);
+	*(game.world.debug_gui) = init_gui(&sdl, &game.hid, &game.player, sdl.screensize, "Debugging menu (F2)");
+	game.world.debug_gui->rect.size.y = 120;
 	player_init(&game.player, &sdl);
 	initialize_controllers(&game.hid);
 	while (gr == game_continue)
 	{
+		pause_unused_audio(sdl);
+		play_music(sdl.audio[0]);
 		update_deltatime(&game.clock);
 		update_deltatime(&game.world.clock);
 		gr = handleinput(&game.hid);
@@ -93,8 +97,12 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 		screen_blank(sdl); //Combine with render_start?
 		render_start(&render);
 		update_world3d(sdl, &game.world, &render);
-		draw_text_boxed(&sdl, "PLAYMODE", (t_point){5, 5}, (t_point){sdl.window_w, sdl.window_h});
-		render_entity(sdl, render, &game.player.gun->entity);
+		print_text(&sdl, "PLAYMODE", (t_point){5, 5});
+		/*game.player.gun->transform.position = vector3_add(game.player.position, (t_vector3){.z = -25.5f});
+		game.player.gun->transform.rotation.x = game.player.angle.x + ft_degtorad(100.0f);*/
+		render_entity(sdl, &render, &game.player.gun->entity);
+		//DRAWPERFGRAPH
+		join_surfaces(sdl.window_surface, sdl.surface);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 	}

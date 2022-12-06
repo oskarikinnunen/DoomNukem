@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 18:30:57 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/03 07:52:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 17:25:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ bool	instant_text_button(t_sdlcontext sdl, t_mouse *m, const char *str, t_point 
 {
 	t_rectangle	rect;
 
-	rect = draw_text_boxed(&sdl, str, pos, (t_point){sdl.window_w, sdl.window_h});
+	rect = print_text_boxed(&sdl, str, pos);
 	drawrectangle(sdl, rect, AMBER_1);
 	if (pointrectanglecollision(m->pos, rect))
 	{

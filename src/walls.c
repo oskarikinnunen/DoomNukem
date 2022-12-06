@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 16:10:30 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 18:04:00 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ void	init_roomwalls(t_world *world, t_room *room)
 		room->walls[i].entity->transform.scale = vector3_one();
 		room->walls[i].entity->obj = object_plane(world->sdl);
 		applywallmesh(&room->walls[i]);
+		update_wall_bounds(&room->walls[i]);
 		i++;
 	}
 }
@@ -106,7 +107,7 @@ void	init_room_meshes(t_room *room, t_sdlcontext *sdl, t_world *world)
 		room->floors[i].entity = raise_entity(world);
 		room->floors[i].entity->obj = object_tri(sdl);
 		applytrimesh(room->floors[i], room->floors[i].entity->obj);
-		/*room->walls[i].entity->transform.location = vector3_zero();
+		/*room->walls[i].entity->transform.position = vector3_zero();
 		room->walls[i].entity->transform.scale = vector3_one();
 		room->walls[i].entity->obj = object_plane(sdl);
 		applywallmesh(&room->walls[i]);*/

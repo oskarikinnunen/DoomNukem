@@ -3,90 +3,83 @@
 /*                                                        :::      ::::::::   */
 /*   text.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 22:00:00 by raho              #+#    #+#             */
-/*   Updated: 2022/11/01 15:31:43 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/06 19:10:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
+#include "render.h"
 
-// With this you can test painting all the pixels in the font png to be some exact color apart from say the background
-
-static void	paint_font(t_img *bitmap)
+t_rectangle	print_text_boxed(t_sdlcontext *sdl, const char *text, t_point pos)
 {
-	t_point	i;
+	SDL_Surface	*surfacetext;
+	t_rectangle	rect;
+	t_point		padding;
 
-	i.y = 0;
-	while (i.y < bitmap->size.y)
-	{
-		i.x = 0;
-		while (i.x < bitmap->size.x)
-		{
-			if (bitmap->data[i.x + (i.y * bitmap->size.x)] != 0x000000) // testing black background
-				bitmap->data[i.x + (i.y * bitmap->size.x)] = 0x00FF00;
-			i.x++;
-		}
-		i.y++;
-	}
+	surfacetext = TTF_RenderText_Blended(sdl->font.font, text, sdl->font.color);
+	if (!surfacetext)
+		error_log(EC_TTF_RENDERTEXTBLENDED);
+	padding.x = 3;
+	padding.y = 3;
+	rect.size.x = surfacetext->w + padding.x * 2;
+	rect.size.y = surfacetext->h + padding.y * 2;
+	rect.position.x = pos.x - padding.x;
+	rect.position.y = pos.y - padding.y;
+	join_text_boxed_to_surface(sdl, surfacetext, pos, padding);
+	SDL_FreeSurface(surfacetext);
+	return (rect);
 }
 
-// ~ Character is so thin and at the bottom of the picture that I think it takes some colors outside of the image
-
-void	save_text(t_font *font, const char *str)
+SDL_Color color32_to_sdlcolor(uint32_t color)
 {
-	t_img		*text;
-	int			i;
-	int			j;
-	t_point		cursor;
-	t_point		counter;
-	int			text_width;
-	static int	text_nbr = 0;
+	SDL_Color	sdl_color;
+	uint8_t		r;
+	uint8_t		g;
+	uint8_t		b;
 
-	//paint_font(font->bitmap); // for testing
+	b = color & 0xFF;
+	g = (color >> 8) & 0xFF;
+	r = (color >> 16) & 0xFF;
+	sdl_color = (SDL_Color){.r = r, .g = g, .b = b, .a = 255};
+	return (sdl_color);
+}
 
-	text = ft_memalloc(sizeof(t_img));
-	if (!text)
-		error_log(EC_MALLOC);
+t_rectangle	print_text(t_sdlcontext *sdl, const char *text, t_point pos)
+{
+	SDL_Surface	*surfacetext;
+	t_rectangle	rect;
 
-	// first calculating the amount of space needed by the text and then copying the characters to the image
+	surfacetext = TTF_RenderText_Blended(sdl->font.font, text, sdl->font.color);
+	if (!surfacetext)
+		error_log(EC_TTF_RENDERTEXTBLENDED);
+	rect.position = pos;
+	rect.size.x = surfacetext->w;
+	rect.size.y = surfacetext->h;
+	join_text_to_surface(sdl->surface, surfacetext, pos, sdl->font.color.a);
+	SDL_FreeSurface(surfacetext);
+	return (rect);
+}
+
+t_rectangle	print_text_colored(t_sdlcontext *sdl, const char *text, t_point pos, uint32_t color)
+{
+	t_rectangle	rect;
+	SDL_Color	c;
+	SDL_Color	prev;
+	uint8_t		r;
+	uint8_t		g;
+	uint8_t		b;
+
 	
-	text_width = 0;
-	i = 0;
-	while (str[i] != '\0')
-	{
-		j = str[i] - 32;
-		text_width += font->chars[j].xadvance;
-		i++;
-	}
-	alloc_image(text, text_width + 10, font->line_height + 10); // 10 for some padding on every side of the text
-	ft_strcpy(text->name, str);
-	cursor.x = 5;
-	cursor.y = 5;
-	i = 0;
-	while (str[i] != '\0')
-	{
-		j = str[i] - 32;
-		cursor.x += font->chars[j].offset.x;
-		cursor.y += font->chars[j].offset.y;
-		counter.y = 0;
-		while (counter.y < font->chars[j].size.y)
-		{
-			counter.x = 0;
-			while (counter.x < font->chars[j].size.x)
-			{
-				//if (font->bitmap->data[(font->chars[j].pos.x + counter.x) + ((font->chars[j].pos.y + counter.y) * font->bitmap->size.x)] != 0x000000) // testing black background
-				text->data[(cursor.x + counter.x) + ((cursor.y + counter.y) * text->size.x)] = font->bitmap->data[(font->chars[j].pos.x + counter.x) + ((font->chars[j].pos.y + counter.y) * font->bitmap->size.x)];
-				counter.x++;
-			}
-			counter.y++;
-		}
-		cursor.x -= font->chars[j].offset.x;
-		cursor.y -= font->chars[j].offset.y;
-		cursor.x += font->chars[j].xadvance;
-		i++;
-	}
-	font->texts[text_nbr] = text;
-	text_nbr++;
+	b = color & 0xFF;
+	g = (color >> 8) & 0xFF;
+	r = (color >> 16) & 0xFF;
+	c = (SDL_Color){.r = r, .g = g, .b = b, .a = 255};
+	prev = sdl->font.color;
+	sdl->font.color = c;
+	rect = print_text(sdl, text, pos);
+	sdl->font.color = prev;
+	return (rect);
 }

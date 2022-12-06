@@ -6,12 +6,13 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:56:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/28 18:23:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 17:13:04 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "animation.h"
 #include "libft.h"
+#include "render.h"
 #include <stdio.h>
 
 void	update_anim(t_anim *anim, uint32_t delta)
@@ -39,6 +40,10 @@ void	update_anim(t_anim *anim, uint32_t delta)
 		{
 			anim->frame = (int)(anim->framerate * now_second);
 			anim->frame = ft_clampf(anim->frame, 0, anim->lastframe);
+		}
+		if (anim->audioevent != NULL && anim->frame == anim->audioevent->frame)
+		{
+			force_play_audio(*anim->audioevent->audio);
 		}
 	}
 	if (anim->mode == anim_backwards)

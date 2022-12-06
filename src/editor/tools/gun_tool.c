@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:49:59 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/05 17:13:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/06 17:53:15 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	list_gun_presets(t_editor *ed, t_sdlcontext sdl, t_point pos)
 	int		i;
 
 	l = ed->world.guns;
-	draw_text_boxed(&sdl, "Gun presets:", pos, sdl.screensize);
+	//print_text_boxed(&sdl, "Gun presets:", pos, sdl.screensize);
 	i = 1;
 	while (l != NULL)
 	{
