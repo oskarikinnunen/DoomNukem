@@ -31,12 +31,12 @@ int	point_magnitude(t_point point)
 	return (sqrt((point.x * point.x) + (point.y * point.y)));
 }
 
-int	point_dist(t_point first, t_point second)
+float	point_dist(t_point first, t_point second)
 {
 	return (
-		sqrt
+		sqrt(
 		(first.x - second.x) * (first.x - second.x)
-		+ (first.y - second.y) * (first.y - second.y));
+		+ (first.y - second.y) * (first.y - second.y)));
 }
 
 int	point_dot(t_point first, t_point second)

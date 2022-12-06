@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 16:21:35 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/06 16:22:48 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,7 +225,7 @@ int			point_magnitude(t_point point);
 int			point_sqr_magnitude(t_point point);
 
 //returns distance between first and second point
-int			point_dist(t_point first, t_point second);
+float		point_dist(t_point first, t_point second);
 
 //returns dot product of point 'first' and point 'second'
 int			point_dot(t_point first, t_point second);
