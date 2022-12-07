@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 07:58:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 12:16:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,9 +119,9 @@ t_vector2	flipped_uv(t_vector2 og);
 void		for_all_active_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *world));
 void		update_world3d(t_world *world, t_render *render);
 t_world		load_world(char *filename, t_sdlcontext *sdl);
-void		erase_entity(t_world *world, t_entity *ent);
-t_entity	*raise_entity(t_world	*world);
-t_entity	*raise_basic_entity(t_world *world, char *objectname, t_vector3 position);
+void		destroy_entity(t_world *world, t_entity *ent);
+t_entity	*spawn_entity(t_world	*world);
+t_entity	*spawn_basic_entity(t_world *world, char *objectname, t_vector3 position);
 void		save_world(char *filename, t_world world);
 void		init_roomwalls(t_world *world, t_room *room);
 void		free_floor(t_world *world, t_room *room);

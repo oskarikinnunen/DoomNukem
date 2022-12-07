@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 07:47:34 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 12:13:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,27 +102,55 @@ void				move_editor(t_editor *ed);
 void				savemap(t_editor *ed, char *filename);
 bool				object_lookedat(t_editor *ed, t_sdlcontext sdl, t_object *obj);
 void				objectgui_update(t_objectgui *ogui, t_entity **ent);
-void				gui_preset_transform(t_transform *t, t_autogui *gui);
-void				gui_preset_scale_and_rotate(t_transform *t, t_autogui *gui);
-void				gui_autosize(t_autogui *gui);
-void				gui_start(t_autogui *gui);
-void				gui_emptyvertical(int y, t_autogui *gui);
-void				gui_starthorizontal(t_autogui *gui);
-void				gui_endhorizontal(t_autogui *gui);
-void				gui_end(t_autogui *gui);
-void				gui_int(int i, t_autogui *gui);
-void				gui_labeled_int(char *str, int i, t_autogui *gui);
-void				gui_point(t_point point, t_autogui *gui);
-void				gui_labeled_point(char *str, t_point point, t_autogui *gui);
-bool				gui_int_slider(int *i, float mul, t_autogui *gui);
-bool				gui_labeled_int_slider(char *str, int *i, float mul, t_autogui *gui);
-bool				gui_float_slider(float	*f, float mul, t_autogui *gui);
-void				gui_labeled_vector3_slider(char *str, t_vector3 *vec, float mul, t_autogui *gui);
-void				gui_vector3_slider(t_vector3 *vec, float mul, t_autogui *gui);
-bool				gui_labeled_float_slider(char *str, float *f, float mul, t_autogui *gui);
-void				gui_label(char *str, t_autogui *gui);
-bool				gui_button(char *str, t_autogui *gui);
+
+//Call this only once, returns a gui with correctly initialized values
 t_autogui			init_gui(t_sdlcontext *sdl, t_hid_info *hid, t_player *player, t_point origin, char *title);
+//Tells the gui to start, you can call gui drawing functions after this
+void				gui_start(t_autogui *gui);
+//Tells the gui to end, do not call any gui drawing functions after calling gui_end
+void				gui_end(t_autogui *gui);
+
+//Tells the gui to start laying out future blocks horizontally
+void				gui_starthorizontal(t_autogui *gui);
+//Tells the gui to end laying out blocks horizontally
+void				gui_endhorizontal(t_autogui *gui);
+
+//Gui preset for modifying a transform
+void				gui_preset_transform(t_transform *t, t_autogui *gui);
+//Gui preset for modifying a transforms scale and rotation
+void				gui_preset_scale_and_rotate(t_transform *t, t_autogui *gui);
+
+//Draws an empty vertical block on the gui
+void				gui_emptyvertical(int y, t_autogui *gui);
+//Draws a label on the gui
+void				gui_label(char *str, t_autogui *gui);
+//Draws an integer on the gui
+void				gui_int(int i, t_autogui *gui);
+//Draws a t_point on the gui
+void				gui_point(t_point point, t_autogui *gui);
+//Draws a button with text 'str' on the gui, and returns true if the button was pressed
+bool				gui_button(char *str, t_autogui *gui);
+
+//Draws an integer slider which allows modifying the integers value, returns true if the integer changed
+bool				gui_int_slider(int *i, float mul, t_autogui *gui);
+//Draws a float slider which allows modifying the floats value, returns true if the float changed
+bool				gui_float_slider(float	*f, float mul, t_autogui *gui);
+//Draws a vector3 slider which allows modifying the vectors value, returns true if the vector changed
+void				gui_vector3_slider(t_vector3 *vec, float mul, t_autogui *gui);
+
+//Draws a label and an integer next to eachother
+void				gui_labeled_int(char *str, int i, t_autogui *gui);
+//Draws a label and a point next to eachother
+void				gui_labeled_point(char *str, t_point point, t_autogui *gui);
+//Draws a label and a modifiable float slider next to eachother
+bool				gui_labeled_float_slider(char *str, float *f, float mul, t_autogui *gui);
+//Draws a label and a modifiable int slider next to eachother
+bool				gui_labeled_int_slider(char *str, int *i, float mul, t_autogui *gui);
+//Draws a label and a modifiable vector slider next to eachother
+void				gui_labeled_vector3_slider(char *str, t_vector3 *vec, float mul, t_autogui *gui);
+
+void				gui_autosize(t_autogui *gui);
+
 void				point_tool_delete(struct s_editor *ed, t_point crd);
 //TODO: rename and write documentation
 void				update_editor_buttons(t_editor *ed, t_sdlcontext *sdl); //TODO: move somewhere else so game can use it aswell?

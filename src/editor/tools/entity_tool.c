@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 20:06:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 11:54:12 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,7 @@ void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT) && dat->ent != NULL)
 	{
-		t_entity *went = raise_entity(&ed->world);
+		t_entity *went = spawn_entity(&ed->world);
 		went->obj = dat->ent->obj;
 		ft_strcpy(went->object_name, dat->ent->object_name);
 		went->transform = dat->ent->transform;
@@ -207,7 +207,7 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 		}
 		if (gui_button("Delete", gui))
 		{
-			erase_entity(&ed->world, ent);
+			destroy_entity(&ed->world, ent);
 			dat->sel_ent = NULL;
 			gui_end(gui);
 			return ;
@@ -225,7 +225,7 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 		}
 		if ((ed->hid.keystate >> KEYS_DELETEMASK) & 1)
 		{
-			erase_entity(&ed->world, ent);
+			destroy_entity(&ed->world, ent);
 			dat->sel_ent = NULL;
 		}
 		if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))

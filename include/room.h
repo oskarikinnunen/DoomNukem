@@ -24,7 +24,6 @@ typedef struct s_wall
 {
 	t_entity	*entity;
 	uint16_t	saved_entityid;
-	uint16_t	id;
 	t_line		line;
 	uint32_t	height;
 	bool		disabled; //TODO: implement
@@ -41,7 +40,6 @@ typedef struct s_room
 	uint32_t	floorcount;
 	uint32_t	ceilingcount;
 }	t_room;
-
 
 struct s_world;
 
