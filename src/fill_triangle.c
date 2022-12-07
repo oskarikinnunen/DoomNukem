@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/06 18:56:36 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 08:14:40 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,6 +174,8 @@ static uint32_t sample_img(t_img *img, t_texture t)
 	return (flip_channels(img->data[(xsample * img->size.x) + ysample]));
 }
 
+#define FOG 0.0025f
+
 static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_img *img)
 {
 	t_point			*p;
@@ -198,7 +200,12 @@ static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_i
 		t[0].w = t[1].w;
 		while(x <= ax)
 		{
-			if (t[0].w > sdl->zbuffer[x + y * sdl->window_w])
+			/*if (t[0].w < FOG && t[0].w > sdl->zbuffer[x + y * sdl->window_w])
+			{
+				sdl->zbuffer[x + y * sdl->window_w] = t[0].w;
+				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] = 1;
+			}
+			else */if (t[0].w > sdl->zbuffer[x + y * sdl->window_w])
 			{
 				sdl->zbuffer[x + y * sdl->window_w] = t[0].w;
 				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] =
@@ -245,7 +252,12 @@ static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle, t_i
 		t[0].w = t[1].w;
 		while(x <= ax)
 		{
-			if (t[0].w > sdl->zbuffer[x + y * sdl->window_w])
+			/*if (t[0].w < FOG && t[0].w > sdl->zbuffer[x + y * sdl->window_w])
+			{
+				sdl->zbuffer[x + y * sdl->window_w] = t[0].w;
+				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] = 1;
+			}
+			else */if (t[0].w > sdl->zbuffer[x + y * sdl->window_w])
 			{
 				sdl->zbuffer[x + y * sdl->window_w] = t[0].w;
 				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] =
@@ -272,6 +284,22 @@ creates two triangles from the given triangle one flat top and one flat bottom.
 both triangles are then assigned to t_point p[3] array and passed onto fill_tri_bot/top functions.
 p[0] is always the pointy head of the triangle p[1] and p[2] are flat points where, p[1] x is smaller than p[2]
 */
+t_point_triangle	ps1(t_point_triangle in, int div)
+{
+	t_point_triangle	res;
+
+	res = in;
+	res.p[0] = point_div(res.p[0], div);
+	res.p[1] = point_div(res.p[1], div);
+	res.p[2] = point_div(res.p[2], div);
+
+	res.p[0] = point_mul(res.p[0], div);
+	res.p[1] = point_mul(res.p[1], div);
+	res.p[2] = point_mul(res.p[2], div);
+
+	return (res);
+}
+
 void	render_triangle(t_sdlcontext *sdl, t_point_triangle triangle, t_img *img)
 {
 	t_point			p_split;
@@ -281,6 +309,8 @@ void	render_triangle(t_sdlcontext *sdl, t_point_triangle triangle, t_img *img)
 	t_point			*p;
 	float			lerp;
 
+	if (sdl->ps1_tri_div > 1)
+		triangle = ps1(triangle, sdl->ps1_tri_div);
 	p = triangle.p;
 	sort_point_tris(triangle.p, triangle.t);
 	lerp = ((float)p[1].y - (float)p[2].y) / ((float)p[0].y - (float)p[2].y);

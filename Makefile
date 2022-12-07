@@ -6,7 +6,7 @@
 #    By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/12/06 17:04:33 by okinnune         ###   ########.fr        #
+#    Updated: 2022/12/07 07:01:20 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -66,6 +66,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		object_primitives.c \
 		world.c player.c \
 		init_render.c \
+		resolution_scaling.c \
 		controller.c \
 		audio.c \
 		occlusion/occlusion.c \

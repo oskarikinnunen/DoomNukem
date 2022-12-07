@@ -77,33 +77,6 @@ typedef struct s_audio
 	uint32_t			wav_length;
 }	t_audio;
 
-typedef struct s_sdlcontext
-{
-	SDL_Window				*window;
-	SDL_Surface				*window_surface;
-	SDL_Surface				*surface;
-	SDL_Surface				*testsurf;
-	//t_render				*render;
-	t_platform				platform;
-	float					*zbuffer;
-	SDL_Renderer			*renderer; //TODO: for testing remove.
-	t_img					*images;
-	uint32_t				imagecount;
-	struct s_object			*objects;
-	uint32_t				objectcount;
-	t_font					font;
-	t_audio					*audio;
-	uint32_t				audiocount;
-	uint32_t				window_w;
-	uint32_t				window_h;
-	t_point					screensize;
-}	t_sdlcontext;
-
-
-void	alloc_image(t_img *img, int width, int height);
-t_img	*get_image_by_index(t_sdlcontext sdl, int index); //TODO: add comments
-t_img	*get_image_by_name(t_sdlcontext sdl, char *name);
-
 typedef struct	s_triangle
 {
 	t_quaternion	p[3];
@@ -167,6 +140,40 @@ typedef struct s_render
 	//struct s_world		*world;
 	t_debug_occlusion	occlusion;
 }	t_render;
+
+
+typedef struct s_sdlcontext
+{
+	SDL_Window				*window;
+	SDL_Surface				*window_surface;
+	SDL_Surface				*surface;
+	SDL_Surface				*ui_surface;
+	SDL_Surface				*testsurf;
+	t_render				render;
+	t_platform				platform;
+	float					*zbuffer;
+	float					resolution_scaling;
+	SDL_Renderer			*renderer; //TODO: for testing remove.
+	t_img					*images;
+	uint32_t				imagecount;
+	struct s_object			*objects;
+	int						ps1_tri_div;
+	uint32_t				objectcount;
+	t_font					font;
+	t_audio					*audio;
+	uint32_t				audiocount;
+	uint32_t				window_w;
+	uint32_t				window_h;
+	t_point					screensize;
+}	t_sdlcontext;
+
+
+void	alloc_image(t_img *img, int width, int height);
+t_img	*get_image_by_index(t_sdlcontext sdl, int index); //TODO: add comments
+t_img	*get_image_by_name(t_sdlcontext sdl, char *name);
+
+void	rescale_surface(t_sdlcontext *sdl);
+
 
 //Draws image 'img' to pixels 'pxls', offset by point 'pos' and scaled to 'scale'
 void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale);

@@ -96,7 +96,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 		update_render(&render, &game.player);
 		screen_blank(sdl); //Combine with render_start?
 		render_start(&render);
-		update_world3d(sdl, &game.world, &render);
+		update_world3d(&game.world, &render);
 		print_text(&sdl, "PLAYMODE", (t_point){5, 5});
 		/*game.player.gun->transform.position = vector3_add(game.player.position, (t_vector3){.z = -25.5f});
 		game.player.gun->transform.rotation.x = game.player.angle.x + ft_degtorad(100.0f);*/

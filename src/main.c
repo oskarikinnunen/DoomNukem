@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 17:17:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 07:24:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,18 +21,34 @@
 #include <GL/gl.h>
 #endif
 
-static void	create_sdl_context(t_sdlcontext *sdl)
+typedef enum e_screenmode
+{
+	screenmode_windowed,
+	screenmode_borderless,
+	screenmode_fullscreen
+}	t_screenmode;
+
+
+static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 {
 	const char	*platform;
 
 	load_lua_conf(sdl);
+	SDL_DisplayMode	mode;
+	sdl->resolution_scaling = 1.0f;
 	if (SDL_Init(SDL_INIT_VIDEO) < 0 \
 		|| SDL_Init(SDL_INIT_AUDIO) < 0 \
 		|| SDL_Init(SDL_INIT_EVENTS) < 0 \
 		|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0 \
 		|| TTF_Init() < 0)
 		error_log(EC_SDL_INIT);
-
+	if (screenmode == screenmode_borderless && SDL_GetCurrentDisplayMode(0, &mode) == 0)
+	{
+		sdl->window_w = mode.w;
+		sdl->window_h = mode.h;
+		sdl->screensize = (t_point) {sdl->window_w, sdl->window_h};
+		sdl->resolution_scaling = 0.5f;
+	}
 	platform = SDL_GetPlatform();
 	printf("platform: %s\n", platform);
 	if (ft_strequ(platform, "Mac OS X"))
@@ -49,7 +65,12 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 		sdl->window_w, sdl->window_h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	if (sdl->window == NULL)
 		error_log(EC_SDL_CREATEWINDOW);
-
+	if (screenmode == screenmode_borderless)
+	{
+		SDL_SetWindowBordered(sdl->window, SDL_FALSE);
+		SDL_SetWindowPosition(sdl->window, 0, 0);
+	}
+		
 	sdl->window_surface = SDL_GetWindowSurface(sdl->window);
 	if (sdl->window_surface == NULL)
 		error_log(EC_SDL_GETWINDOW_SURFACE);
@@ -57,7 +78,9 @@ static void	create_sdl_context(t_sdlcontext *sdl)
 	sdl->surface = SDL_CreateRGBSurfaceWithFormat(SDL_SWSURFACE, sdl->window_w, sdl->window_h, 32, SDL_PIXELFORMAT_ARGB8888);
 	if (sdl->surface == NULL)
 		error_log(EC_SDL_CREATERGBSURFACE);
-
+	sdl->ui_surface = SDL_CreateRGBSurfaceWithFormat(SDL_SWSURFACE, sdl->window_w, sdl->window_h, 32, SDL_PIXELFORMAT_ARGB8888);
+	if (sdl->ui_surface == NULL)
+		error_log(EC_SDL_CREATERGBSURFACE);
 	load_fonts(&sdl->font);
 	load_audio(sdl);
 
@@ -100,8 +123,15 @@ int	main(int argc, char **argv)
 {
 	t_sdlcontext	sdl;
 	t_gamereturn	gr;
+	t_screenmode	screenmode; //TODO: make a struct for this that also contains other data, such as screen index
 
-	create_sdl_context(&sdl);
+	screenmode = screenmode_windowed;
+	printf("args %i \n", argc);
+	if (argc > 1 && ft_strcmp(argv[1], "-borderless") == 0)
+	{
+		screenmode = screenmode_borderless;
+	}
+	create_sdl_context(&sdl, screenmode);
 	gr = game_switchmode;
 	while (gr == game_switchmode)
 	{

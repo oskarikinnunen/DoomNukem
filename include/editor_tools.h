@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 17:08:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 07:47:34 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,10 @@ void				gui_endhorizontal(t_autogui *gui);
 void				gui_end(t_autogui *gui);
 void				gui_int(int i, t_autogui *gui);
 void				gui_labeled_int(char *str, int i, t_autogui *gui);
-void				gui_int_slider(int *i, int mul, t_autogui *gui);
+void				gui_point(t_point point, t_autogui *gui);
+void				gui_labeled_point(char *str, t_point point, t_autogui *gui);
+bool				gui_int_slider(int *i, float mul, t_autogui *gui);
+bool				gui_labeled_int_slider(char *str, int *i, float mul, t_autogui *gui);
 bool				gui_float_slider(float	*f, float mul, t_autogui *gui);
 void				gui_labeled_vector3_slider(char *str, t_vector3 *vec, float mul, t_autogui *gui);
 void				gui_vector3_slider(t_vector3 *vec, float mul, t_autogui *gui);
