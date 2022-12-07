@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/07 06:45:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 08:28:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,18 @@
 #include "objects.h"
 #include "vectors.h"
 
+
+t_point_triangle	wf_tri(t_point_triangle in, float scaling)
+{
+	t_point_triangle	res;
+
+	res = in;
+	res.p[0] = point_fdiv(in.p[0], scaling);
+	res.p[1] = point_fdiv(in.p[1], scaling);
+	res.p[2] = point_fdiv(in.p[2], scaling);
+
+	return (res);
+}
 
 static void draw_triangles(t_sdlcontext *sdl, t_render *render)
 {
@@ -28,9 +40,10 @@ static void draw_triangles(t_sdlcontext *sdl, t_render *render)
 		}
 		if (render->wireframe)
 		{
-			drawline(*sdl, render->screenspace_ptris[index].p[0], render->screenspace_ptris[index].p[1], render->gizmocolor);
-			drawline(*sdl, render->screenspace_ptris[index].p[1], render->screenspace_ptris[index].p[2], render->gizmocolor);
-			drawline(*sdl, render->screenspace_ptris[index].p[2], render->screenspace_ptris[index].p[0], render->gizmocolor);
+			t_point_triangle t1 = wf_tri(render->screenspace_ptris[index], sdl->resolution_scaling);
+			drawline(*sdl, t1.p[0], t1.p[1], render->gizmocolor);
+			drawline(*sdl, t1.p[1], t1.p[2], render->gizmocolor);
+			drawline(*sdl, t1.p[2], t1.p[0], render->gizmocolor);
 		}
 		if (render->img == NULL)
 		{
