@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 19:08:48 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 07:55:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	gui_start(t_autogui *gui)
 	{
 		//draw_rectangle_filled(*gui->sdl, gui->rect, CLR_DARKGRAY);
 		//draw_rectangle_filled(*gui->sdl, gui->rect, 0);
-		draw_rectangle_raster(*gui->sdl, gui->rect, 0);
+		draw_rectangle_raster(*gui->sdl, gui->rect, 1);
 		drawrectangle(*gui->sdl, gui->rect, AMBER_0);
 		t_rectangle	temp;
 		temp.position = point_sub(gui->rect.position, point_one());
@@ -164,7 +164,7 @@ void	gui_end(t_autogui *gui)
 		return ;
 	dragbar = gui->rect;
 	dragbar.size.y = 32;
-	draw_rectangle_filled(*gui->sdl, dragbar, 0);
+	draw_rectangle_filled(*gui->sdl, dragbar, 1);
 	if (gui->dock != NULL)
 	{
 		gui->rect.position = point_add(gui->dock->rect.position, (t_point){.x = gui->dock->rect.size.x + 2});
@@ -521,6 +521,23 @@ void gui_int(int i, t_autogui *gui)
 	gui_layout(gui, rect);
 }
 
+void gui_point(t_point point, t_autogui *gui)
+{
+	gui_starthorizontal(gui);
+	gui_int(point.x, gui);
+	gui_int(point.y, gui);
+	gui_endhorizontal(gui);
+}
+
+void gui_labeled_point(char *str, t_point point, t_autogui *gui)
+{
+	gui_starthorizontal(gui);
+	gui_label(str, gui);
+	gui_int(point.x, gui);
+	gui_int(point.y, gui);
+	gui_endhorizontal(gui);
+}
+
 void gui_labeled_int(char *str, int i, t_autogui *gui)
 {
 	gui_starthorizontal(gui);
@@ -529,7 +546,66 @@ void gui_labeled_int(char *str, int i, t_autogui *gui)
 	gui_endhorizontal(gui);
 }
 
-void gui_int_slider(int *i, int mul, t_autogui *gui)
+bool	gui_int_slider(int *i, float mul, t_autogui *gui)
+{
+	t_rectangle	rect;
+	char		*str;
+	t_point		mousepos;
+	int			add;
+	bool		modified;
+
+	rect = empty_rect();
+	add = 0;
+	modified = false;
+	if (gui_shoulddraw(gui)) 
+	{
+		str = ft_itoa(*i);
+		rect = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
+		drawrectangle(*gui->sdl, rect, AMBER_0);
+		if (pointrectanglecollision(gui->hid->mouse.pos, rect))
+		{
+			print_text_boxed(gui->sdl, "Drag to affect value", point_add(gui->hid->mouse.pos, (t_point){40, -10}));
+			drawrectangle(*gui->sdl, rect, AMBER_1);
+			if (mouse_clicked(gui->hid->mouse, MOUSE_LEFT))
+			{
+				mousepos = gui->hid->mouse.pos;
+				force_mouselock(gui->hid);
+				gui->hid->mouse.pos = mousepos;
+				gui->hid->mouse.safe_delta = true;
+				gui->player->locked = true;
+				gui->locking_player = true;
+			}
+			if (gui->hid->mouse.relative && gui->locking_player)
+			{
+				//add += gui->hid->mouse.delta.x;
+				if (gui->hid->mouse.delta.x > 0)
+					add = 1;
+				if (gui->hid->mouse.delta.x < 0)
+					add = -1;
+				if (add != 0)
+					modified = true;
+			}
+			/*if ((gui->hid->keystate >> KEYS_SHIFTMASK) & 1)
+				add *= 2.0f;
+			if ((gui->hid->keystate >> KEYS_LALTMASK) & 1)
+				add *= 0.5f;*/
+			*i = *i + add;
+		}
+		free(str);
+	}
+	gui_layout(gui, rect);
+	return (modified);
+}
+
+bool	gui_labeled_int_slider(char *str, int *i, float mul, t_autogui *gui)
+{
+	gui_starthorizontal(gui);
+	gui_label(str, gui);
+	gui_int_slider(i, mul, gui);
+	printf("modified gui value %i \n", *i);
+	gui_endhorizontal(gui);
+}
+/*void gui_int_slider(int *i, int mul, t_autogui *gui)
 {
 	char		*str;
 	t_rectangle	rect;
@@ -554,4 +630,4 @@ void gui_int_slider(int *i, int mul, t_autogui *gui)
 		free(str);
 	}
 	gui_layout(gui, rect);
-}
+}*/

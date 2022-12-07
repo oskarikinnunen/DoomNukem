@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 19:15:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 07:58:21 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ int	editorloop(t_sdlcontext sdl)
 	ed.world = load_world("world1", &sdl);
 	
 	*(ed.world.debug_gui) = init_gui(&sdl, &ed.hid, &ed.player, sdl.screensize, "Debugging menu (F2)");
-	ed.world.debug_gui->rect.size.y = 120;
+	ed.world.debug_gui->minimum_size.y = 135;
+	ed.world.debug_gui->rect.position = sdl.screensize;
 	ed.toolbar_gui = init_gui(&sdl, &ed.hid, &ed.player, (t_point){5, 5}, "Toolbar");
 	ed.toolbar_gui.minimum_size = (t_point){165, 20};
 	ed.toolbar_gui.locked = true;
@@ -32,7 +33,7 @@ int	editorloop(t_sdlcontext sdl)
 	ed.gamereturn = game_continue;
 	ed.render = init_render(sdl, &ed.world);
 	player_init(&ed.player, &sdl);
-	ed.player.transform.position = vector3_zero();
+	ed.player.transform.position = (t_vector3){1000, 1000, 250};
 	ed.player.gun->disabled = true;
 	/*ed.angle = (t_vector2){-20.0f, -RAD90 * 0.99f};
 	ed.position = (t_vector3){500.0f, 500.0f, 200.0f};*/
@@ -49,7 +50,7 @@ int	editorloop(t_sdlcontext sdl)
 		screen_blank(sdl);
 		
 		render_start(&ed.render);
-		update_world3d(sdl, &ed.world, &ed.render);
+		update_world3d(&ed.world, &ed.render);
 		update_editor_toolbar(&ed, &ed.toolbar_gui);
 		if (ed.tool != NULL)
 		{
@@ -66,9 +67,10 @@ int	editorloop(t_sdlcontext sdl)
 		if (!ed.player.gun->disabled)
 			render_entity(sdl, &ed.render, &ed.player.gun->entity);
 		//update_debugconsole(&ed.world.debugconsole, &sdl, ed.clock.delta);
-
+		
+		rescale_surface(&sdl);
 		join_surfaces(sdl.window_surface, sdl.surface);
-
+		join_surfaces(sdl.window_surface, sdl.ui_surface);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 	}

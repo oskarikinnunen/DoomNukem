@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/06 19:39:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 06:45:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "bresenham.h"
 #include "objects.h"
 #include "vectors.h"
+
 
 static void draw_triangles(t_sdlcontext *sdl, t_render *render)
 {
@@ -126,9 +127,9 @@ static void clipped_point_triangle(t_render *render, t_sdlcontext sdl)
 				switch (p)
 				{
 				case 0: ntristoadd = point_clip_triangle_against_plane((t_vector2){0.0f, 0.0f}, (t_vector2){0.0f, 1.0f}, test, clipped); break;
-				case 1: ntristoadd = point_clip_triangle_against_plane((t_vector2){0.0f, (float)sdl.window_h - 1.0f}, (t_vector2){0.0f, -1.0f}, test, clipped); break;
+				case 1: ntristoadd = point_clip_triangle_against_plane((t_vector2){0.0f, (float)(sdl.window_h * sdl.resolution_scaling) - 1.0f}, (t_vector2){0.0f, -1.0f}, test, clipped); break;
 				case 2: ntristoadd = point_clip_triangle_against_plane((t_vector2){0.0f, 0.0f}, (t_vector2){1.0f, 0.0f}, test, clipped); break;
-				case 3: ntristoadd = point_clip_triangle_against_plane((t_vector2){(float)sdl.window_w - 1.0f, 0.0f}, (t_vector2){-1.0f, 0.0f}, test, clipped); break;
+				case 3: ntristoadd = point_clip_triangle_against_plane((t_vector2){(float)(sdl.window_w * sdl.resolution_scaling) - 1.0f, 0.0f}, (t_vector2){-1.0f, 0.0f}, test, clipped); break;
 				}
 				for (int w = 0; w < ntristoadd; w++)
 				{
@@ -170,9 +171,9 @@ void clipped(t_render *render, t_sdlcontext sdl)
 				switch (p)
 				{
 				case 0: ntristoadd = clip_triangle_against_plane((t_vector3){0.0f, 0.0f, 0.0f}, (t_vector3){0.0f, 1.0f, 0.0f}, test, clipped); break;
-				case 1: ntristoadd = clip_triangle_against_plane((t_vector3){0.0f, (float)sdl.window_h - 1.0f, 0.0f}, (t_vector3){0.0f, -1.0f, 0.0f}, test, clipped); break;
+				case 1: ntristoadd = clip_triangle_against_plane((t_vector3){0.0f, (float)(sdl.window_h * sdl.resolution_scaling) - 1.0f, 0.0f}, (t_vector3){0.0f, -1.0f, 0.0f}, test, clipped); break;
 				case 2: ntristoadd = clip_triangle_against_plane((t_vector3){0.0f, 0.0f, 0.0f}, (t_vector3){1.0f, 0.0f, 0.0f}, test, clipped); break;
-				case 3: ntristoadd = clip_triangle_against_plane((t_vector3){(float)sdl.window_w - 1.0f, 0.0f, 0.0f}, (t_vector3){-1.0f, 0.0f, 0.0f}, test, clipped); break;
+				case 3: ntristoadd = clip_triangle_against_plane((t_vector3){(float)(sdl.window_w * sdl.resolution_scaling) *  - 1.0f, 0.0f, 0.0f}, (t_vector3){-1.0f, 0.0f, 0.0f}, test, clipped); break;
 				}
 				for (int w = 0; w < ntristoadd; w++)
 				{
@@ -271,12 +272,12 @@ static t_triangle triangle_to_screenspace(t_mat4x4 matproj, t_triangle clipped, 
 	triprojected.p[1].v = vector3_add(triprojected.p[1].v, voffsetview);
 	triprojected.p[2].v = vector3_add(triprojected.p[2].v, voffsetview);
 
-	triprojected.p[0].v.x *= 0.5f * (float)sdl.window_w;
-	triprojected.p[0].v.y *= 0.5f * (float)sdl.window_h;
-	triprojected.p[1].v.x *= 0.5f * (float)sdl.window_w;
-	triprojected.p[1].v.y *= 0.5f * (float)sdl.window_h;
-	triprojected.p[2].v.x *= 0.5f * (float)sdl.window_w;
-	triprojected.p[2].v.y *= 0.5f * (float)sdl.window_h;
+	triprojected.p[0].v.x *= 0.5f * ((float)sdl.window_w * sdl.resolution_scaling);
+	triprojected.p[0].v.y *= 0.5f * ((float)sdl.window_h * sdl.resolution_scaling);
+	triprojected.p[1].v.x *= 0.5f * ((float)sdl.window_w * sdl.resolution_scaling);
+	triprojected.p[1].v.y *= 0.5f * ((float)sdl.window_h * sdl.resolution_scaling);
+	triprojected.p[2].v.x *= 0.5f * ((float)sdl.window_w * sdl.resolution_scaling);
+	triprojected.p[2].v.y *= 0.5f * ((float)sdl.window_h * sdl.resolution_scaling);
 	triprojected.clr = clipped.clr;
 
 	return(triprojected);
@@ -319,12 +320,12 @@ static t_point_triangle triangle_to_screenspace_point_triangle(t_mat4x4 matproj,
 	triprojected.p[1].v = vector3_add(triprojected.p[1].v, voffsetview);
 	triprojected.p[2].v = vector3_add(triprojected.p[2].v, voffsetview);
 
-	triprojected.p[0].v.x *= 0.5f * (float)sdl.window_w;
-	triprojected.p[0].v.y *= 0.5f * (float)sdl.window_h;
-	triprojected.p[1].v.x *= 0.5f * (float)sdl.window_w;
-	triprojected.p[1].v.y *= 0.5f * (float)sdl.window_h;
-	triprojected.p[2].v.x *= 0.5f * (float)sdl.window_w;
-	triprojected.p[2].v.y *= 0.5f * (float)sdl.window_h;
+	triprojected.p[0].v.x *= 0.5f * (float)(sdl.window_w * sdl.resolution_scaling);
+	triprojected.p[0].v.y *= 0.5f * (float)(sdl.window_h * sdl.resolution_scaling);
+	triprojected.p[1].v.x *= 0.5f * (float)(sdl.window_w * sdl.resolution_scaling);
+	triprojected.p[1].v.y *= 0.5f * (float)(sdl.window_h * sdl.resolution_scaling);
+	triprojected.p[2].v.x *= 0.5f * (float)(sdl.window_w * sdl.resolution_scaling);
+	triprojected.p[2].v.y *= 0.5f * (float)(sdl.window_h * sdl.resolution_scaling);
 
 	tri.p[0].x = triprojected.p[0].v.x;
 	tri.p[0].y = triprojected.p[0].v.y;

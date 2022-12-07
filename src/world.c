@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 20:10:49 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 08:02:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,14 +67,15 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 	}
 }
 
-void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
+void update_world3d(t_world *world, t_render *render)
 {
-	t_list		*l;
-	t_entity	*ent;
-	t_wall		wall;
-	int			i;
+	t_list			*l;
+	t_entity		*ent;
+	t_wall			wall;
+	t_sdlcontext	*sdl;
+	int				i;
 	
-	//
+	sdl = world->sdl;
 	ft_bzero(&render->rs, sizeof(t_render_statistics));
 	update_npcs(world);
 	i = 0;
@@ -84,17 +85,26 @@ void update_world3d(t_sdlcontext sdl, t_world *world, t_render *render)
 		{
 			t_npc npc = world->npcpool[i];
 			t_vector3 dir = vector3_sub(world->npcpool[i].entity.transform.position, world->npcpool[i].destination);
-			render_ray(sdl, *render, npc.entity.transform.position, npc.destination);
-			render_entity(sdl, render, &world->npcpool[i].entity);
+			render_ray(*sdl, *render, npc.entity.transform.position, npc.destination);
+			render_entity(*sdl, render, &world->npcpool[i].entity);
 		}
 		i++;
 	}
-	update_entitycache(&sdl, world, render);
-	render_entity(sdl, render, &world->skybox);
+	update_entitycache(sdl, world, render);
+	render_entity(*sdl, render, &world->skybox);
 	gui_start(world->debug_gui);
 	gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);
 	gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);
 	gui_labeled_int("Entity count:", world->entitycache.existing_entitycount, world->debug_gui);
+	gui_labeled_float_slider("Resolution scale:", &world->sdl->resolution_scaling, 0.01f, world->debug_gui);
+	world->sdl->resolution_scaling = ft_clampf(world->sdl->resolution_scaling, 0.25f, 1.0f);
+	t_point	res;
+	res = point_fmul(sdl->screensize, sdl->resolution_scaling);
+	gui_labeled_point("3D Resolution:", res, world->debug_gui);
+	gui_labeled_int_slider("PS1 tri div:", &sdl->ps1_tri_div, 2.0f, world->debug_gui);
+	if (sdl->ps1_tri_div != 0)
+		printf("ps1 tri div after gui %i \n", sdl->ps1_tri_div);
+	sdl->ps1_tri_div = ft_clamp(sdl->ps1_tri_div, 1, 4);
 	gui_end(world->debug_gui);
 }
 
