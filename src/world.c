@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 08:02:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 09:00:06 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,19 +28,19 @@ void	update_npcs(t_world *world)
 			//if (world.npcpool->entity.animation.active)
 			t_npc *cur;
 			cur = &world->npcpool[i];
-			t_vector3 dir = vector3_sub(cur->destination, cur->entity.transform.position);
-			cur->entity.transform.position = vector3_movetowards(cur->entity.transform.position, dir, world->clock.delta * MOVESPEED * 0.25f);
-			cur->entity.transform.rotation.x = vector2_anglebetween((t_vector2){cur->entity.transform.position.x, cur->entity.transform.position.y},
+			t_vector3 dir = vector3_sub(cur->destination, cur->entity->transform.position);
+			cur->entity->transform.position = vector3_movetowards(cur->entity->transform.position, dir, world->clock.delta * MOVESPEED * 0.25f);
+			cur->entity->transform.rotation.x = vector2_anglebetween((t_vector2){cur->entity->transform.position.x, cur->entity->transform.position.y},
 														(t_vector2){cur->destination.x, cur->destination.y});
-			if (vector3_cmp(cur->destination, cur->entity.transform.position))
+			if (vector3_cmp(cur->destination, cur->entity->transform.position))
 			{
 				if (cur->destination.x == 200.0f)
 					cur->destination = (t_vector3) {500.0f, 500.0f, 0.0f};
 				else
 					cur->destination = (t_vector3) {200.0f, 200.0f, 0.0f};
 			}
-			update_anim(&(cur->entity.animation), world->clock.delta);
-			update_entity_bounds(&cur->entity);
+			update_anim(&(cur->entity->animation), world->clock.delta);
+			update_entity_bounds(cur->entity);
 		}
 		i++;
 	}
@@ -77,21 +77,22 @@ void update_world3d(t_world *world, t_render *render)
 	
 	sdl = world->sdl;
 	ft_bzero(&render->rs, sizeof(t_render_statistics));
-	update_npcs(world);
+	/*update_npcs(world);
 	i = 0;
 	while (i < 128)
 	{
 		if (world->npcpool[i].active)
 		{
 			t_npc npc = world->npcpool[i];
-			t_vector3 dir = vector3_sub(world->npcpool[i].entity.transform.position, world->npcpool[i].destination);
-			render_ray(*sdl, *render, npc.entity.transform.position, npc.destination);
+			t_vector3 dir = vector3_sub(world->npcpool[i].entity->transform.position, world->npcpool[i].destination);
+			render_ray(*sdl, *render, npc.entity->transform.position, npc.destination);
 			render_entity(*sdl, render, &world->npcpool[i].entity);
 		}
 		i++;
-	}
+	}*/
 	update_entitycache(sdl, world, render);
 	render_entity(*sdl, render, &world->skybox);
+
 	gui_start(world->debug_gui);
 	gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);
 	gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);
@@ -102,8 +103,6 @@ void update_world3d(t_world *world, t_render *render)
 	res = point_fmul(sdl->screensize, sdl->resolution_scaling);
 	gui_labeled_point("3D Resolution:", res, world->debug_gui);
 	gui_labeled_int_slider("PS1 tri div:", &sdl->ps1_tri_div, 2.0f, world->debug_gui);
-	if (sdl->ps1_tri_div != 0)
-		printf("ps1 tri div after gui %i \n", sdl->ps1_tri_div);
 	sdl->ps1_tri_div = ft_clamp(sdl->ps1_tri_div, 1, 4);
 	gui_end(world->debug_gui);
 }
@@ -153,7 +152,7 @@ static void load_walltextures(t_world *world, t_sdlcontext sdl) //TODO: Deprecat
 
 void	spawn_npc(t_world *world, char *objectname, t_vector3 position, t_sdlcontext *sdl)
 {
-	int	i;
+	/*int	i;
 
 	i = 0;
 	while (i < 128)
@@ -161,16 +160,16 @@ void	spawn_npc(t_world *world, char *objectname, t_vector3 position, t_sdlcontex
 		if (!world->npcpool[i].active)
 		{
 			world->npcpool[i].active = true;
-			world->npcpool[i].entity.obj = get_object_by_name(*sdl, objectname);
-			world->npcpool[i].entity.transform.position = position;
-			entity_start_anim(&world->npcpool[i].entity, "walk");
-			world->npcpool[i].entity.transform.scale = vector3_one();
-			update_entity_bounds(&world->npcpool[i].entity);
-			default_entity_occlusion_settings(&world->npcpool[i].entity, world);
+			world->npcpool[i].entity->obj = get_object_by_name(*sdl, objectname);
+			world->npcpool[i].entity->transform.position = position;
+			entity_start_anim(world->npcpool[i].entity, "walk");
+			world->npcpool[i].entity->transform.scale = vector3_one();
+			update_entity_bounds(world->npcpool[i].entity);
+			default_entity_occlusion_settings(world->npcpool[i].entity, world);
 			return ;
 		}
 		i++;
-	}
+	}*/
 }
 
 t_room	load_room(char *filename)
@@ -203,7 +202,6 @@ static void	startup_init_roomwalls(t_world *world, t_room *r)
 		w->entity = &world->entitycache.entities[w->saved_entityid]; //TODO: make function "get_entity_from_cache_by_id" (with a shorter name, lol)
 		w->entity->obj = object_plane(world->sdl);
 		applywallmesh(w);
-		printf("applied wall mesh %i \n", i);
 		i++;
 	}
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   object_init.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 19:50:18 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 13:06:33 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/07 09:03:29 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,9 @@ void	parseanim(t_object *object, char *animname)
 	while (fd != -1)
 	{
 		char name[256] = { 0 };
-		sprintf(name, "assets/objects/animations/%s_%s%i.obj", base, animname, i); //TODO: protect
+		//sprintf(name, "assets/objects/animations/%s_%s%i.obj", base, animname, i); //TODO: protect
 		fd = open(name, O_RDONLY);
-		printf("%s \n", name);
+		//printf("%s \n", name);
 		if (fd != -1)
 		{
 			ft_strcpy(object->o_anim.name, animname); //TODO: protect
