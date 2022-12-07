@@ -6,7 +6,7 @@
 #    By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/12/07 07:01:20 by okinnune         ###   ########.fr        #
+#    Updated: 2022/12/07 08:34:40 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -97,7 +97,7 @@ OBJ= $(SRC:.c=.o)
 #Compilation stuff:
 INCLUDE= -I$(INSTALLED_LIBS_DIR)/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
 CC= gcc
-CFLAGS= $(INCLUDE) -g -finline-functions -O2#-march=native
+CFLAGS= $(INCLUDE) -g -finline-functions -O2 #-march=native
 
 UNAME= $(shell uname)
 ifeq ($(UNAME), Darwin)

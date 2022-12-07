@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 06:55:31 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 07:28:08 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 08:22:29 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	rescale_surface(t_sdlcontext *sdl)
 	t_point			p;
 	t_point			sample;
 
-	if (sdl->resolution_scaling == 1.0f)
+	if (sdl->resolution_scaling >= 1.0f || sdl->resolution_scaling < 0.25f)
 		return ;
 	if (temp == NULL)
 		temp = ft_memalloc(sdl->window_w * sdl->window_h * sizeof(uint32_t));
