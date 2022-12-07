@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 19:25:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 09:49:06 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ static void highlight_room(t_editor *ed, t_sdlcontext sdl, t_room room, uint32_t
 	ed->render.gizmocolor = color;
 	while (i < room.wallcount)
 	{
-		printf("HIGHLIGHTING ROOM \n");
+		//printf("HIGHLIGHTING ROOM \n");
 		render_entity(sdl, &ed->render, room.walls[i].entity);
 		i++;
 	}
@@ -493,8 +493,8 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	look_wall = selectedwall(ed, sdl, dat->room);
 	if (looking_atcorner(ed, sdl, snap, dat->room) && ed->hid.mouse.held == MOUSE_LEFT)
 		applydrag(snap, dat->room, &ed->world);
-	/*else if (dat->room->floorcount == 0)
-		makefloor_room(ed, &sdl, dat->room);*/
+	else if (dat->room->floorcount == 0)
+		makefloor_room(ed, &sdl, dat->room);
 	if (!looking_atcorner(ed, sdl, snap, dat->room) && mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 	{
 		force_mouseunlock(&ed->hid);

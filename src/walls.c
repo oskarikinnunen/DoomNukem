@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 08:59:01 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 09:06:04 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ void	init_room_meshes(t_room *room, t_sdlcontext *sdl, t_world *world)
 	i = 0;
 	while (i < room->floorcount)
 	{
-		room->floors[i].entity = raise_entity(world);
+		//room->floors[i].entity = raise_entity(world);
 		room->floors[i].entity->obj = object_tri(sdl);
 		applytrimesh(room->floors[i], room->floors[i].entity->obj);
 		/*room->walls[i].entity->transform.position = vector3_zero();
