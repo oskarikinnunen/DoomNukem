@@ -1,5 +1,0 @@
-
-in walltoolrooms change list push to push into mesh list instead of entity
-add savechunk and loadchunk calls for world meshlist
-write initialization for t_meshes, (add primitive_tri.obj to assets, might not be needed tho, the generated triangle way of doing it is fine too)
-make world.c render t_mesh objects
