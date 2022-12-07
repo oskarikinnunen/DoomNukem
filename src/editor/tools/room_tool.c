@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 09:49:06 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 11:54:12 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void remove_room(t_world *world, t_room *room)
 	while (i < room->wallcount)
 	{
 		free_object(room->walls[i].entity->obj);
-		erase_entity(world, room->walls[i].entity);
+		destroy_entity(world, room->walls[i].entity);
 		i++;
 	}
 	list_remove(&world->roomlist, room, sizeof(t_room));
@@ -73,7 +73,7 @@ void add_room_to_world(t_world *world, t_room *room)
 		w_wall = &worldroom->walls[i];
 		wall = &room->walls[i];
 		ft_memcpy(w_wall, wall, sizeof(t_wall));
-		w_wall->entity = raise_entity(world);
+		w_wall->entity = spawn_entity(world);
 		w_wall->entity->uneditable = true;
 		free(wall->entity);
 		i++;

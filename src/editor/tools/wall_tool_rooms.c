@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 09:55:08 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 11:54:12 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -523,7 +523,7 @@ void	free_floor(t_world *world, t_room *room)
 	while (i < room->floorcount)
 	{
 		free_object(room->floors[i].entity->obj);
-		erase_entity(world, room->floors[i].entity);
+		destroy_entity(world, room->floors[i].entity);
 		i++;
 	}
 	room->floorcount = 0;
@@ -562,7 +562,7 @@ void	makefloor_room(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 	{
 		mtri = &room->floors[i];
 		//ft_bzero(&mtri->entity, sizeof(t_entity));
-		mtri->entity = raise_entity(&ed->world);
+		mtri->entity = spawn_entity(&ed->world);
 		mtri->entity->uneditable = true;
 		mtri->entity->obj = object_tri(sdl);
 		mtri->v[0] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[0]]);

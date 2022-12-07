@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 09:45:49 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 12:17:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,6 @@ void update_world3d(t_world *world, t_render *render)
 	}*/
 	update_entitycache(sdl, world, render);
 	render_entity(*sdl, render, &world->skybox);
-
 	gui_start(world->debug_gui);
 	gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);
 	gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);
@@ -278,7 +277,7 @@ t_entitycache	init_entitycache(uint32_t cachesize)
 	return (cache);
 }
 
-void		erase_entity(t_world *world, t_entity *ent)
+void		destroy_entity(t_world *world, t_entity *ent)
 {
 	t_entitycache	*cache;
 
@@ -298,7 +297,7 @@ void		erase_entity(t_world *world, t_entity *ent)
 	cache->existing_entitycount--;
 }*/
 
-t_entity	*raise_entity(t_world	*world)
+t_entity	*spawn_entity(t_world	*world)
 {
 	int	i;
 	t_entitycache	*cache;
@@ -326,11 +325,11 @@ t_entity	*raise_entity(t_world	*world)
 	return (NULL); //never gets here
 }
 
-t_entity	*raise_basic_entity(t_world *world, char *objectname, t_vector3 position)
+t_entity	*spawn_basic_entity(t_world *world, char *objectname, t_vector3 position)
 {
 	t_entity	*ent;
 
-	ent = raise_entity(world);
+	ent = spawn_entity(world);
 	ent->obj = get_object_by_name(*world->sdl, objectname);
 	ent->transform.position = position;
 	ent->transform.scale = vector3_one();
@@ -390,7 +389,7 @@ void	load_cache_from_list(t_world *world, t_list *l)
 	while (l != NULL)
 	{
 		list_entity = l->content;
-		world_entity = raise_entity(world);
+		world_entity = spawn_entity(world);
 		ft_memcpy(world_entity, list_entity, sizeof(t_entity));
 		l = l->next;
 	}
