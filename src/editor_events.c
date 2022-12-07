@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/05 20:24:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 10:41:37 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,11 @@ void		toggle_keystates(t_hid_info *hid, SDL_Event e)
 		hid->keystate |= iskey(e, SDLK_LSHIFT) << KEYS_SHIFTMASK;
 		hid->keystate |= iskey(e, SDLK_LALT) << KEYS_LALTMASK;
 		hid->keystate |= iskey(e, SDLK_DELETE) << KEYS_DELETEMASK;
+
+		hid->keystate |= iskey(e, SDLK_1) << KEYS_1MASK;
+		hid->keystate |= iskey(e, SDLK_2) << KEYS_2MASK;
+		hid->keystate |= iskey(e, SDLK_3) << KEYS_3MASK;
+		hid->keystate |= iskey(e, SDLK_4) << KEYS_4MASK;
 	}
 	if (e.type == SDL_KEYUP)
 	{
@@ -39,6 +44,10 @@ void		toggle_keystates(t_hid_info *hid, SDL_Event e)
 		hid->keystate &= ~(iskey(e, SDLK_LSHIFT) << KEYS_SHIFTMASK);
 		hid->keystate &= ~(iskey(e, SDLK_LALT) << KEYS_LALTMASK);
 		hid->keystate &= ~(iskey(e, SDLK_DELETE) << KEYS_DELETEMASK);
+		hid->keystate &= ~(iskey(e, SDLK_1) << KEYS_1MASK);
+		hid->keystate &= ~(iskey(e, SDLK_2) << KEYS_2MASK);
+		hid->keystate &= ~(iskey(e, SDLK_3) << KEYS_3MASK);
+		hid->keystate &= ~(iskey(e, SDLK_4) << KEYS_4MASK);
 	}
 }
 

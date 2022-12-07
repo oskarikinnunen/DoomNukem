@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 08:56:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 10:45:28 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ static void gui_limitrect(t_autogui *gui)
 {
 	gui->rect.size.x = ft_clamp(gui->rect.size.x, gui->minimum_size.x, 600);
 	gui->rect.size.y = ft_clamp(gui->rect.size.y, gui->minimum_size.y, gui->sdl->screensize.y);
+	gui->rect.size.x = ft_max(gui->rect.size.x, gui->x_maxdrawn);
 	gui->rect.position.x = ft_clamp(gui->rect.position.x, 6, gui->sdl->window_w - 6 - gui->rect.size.x);
 	gui->rect.position.y = ft_clamp(gui->rect.position.y, 6, gui->sdl->window_h - 6 - gui->rect.size.y);
 }
@@ -66,8 +67,8 @@ void	gui_start(t_autogui *gui)
 	gui->overdraw = 0;
 	gui->offset.y = 32 + 5; //TODO: autogui_start
 	gui->offset.x = 5;
-	gui->x_maxdrawn = 0;
 	gui_limitrect(gui);
+	gui->x_maxdrawn = 0;
 }
 
 static void update_scrollbar(t_autogui *gui)
@@ -604,29 +605,3 @@ bool	gui_labeled_int_slider(char *str, int *i, float mul, t_autogui *gui)
 	gui_int_slider(i, mul, gui);
 	gui_endhorizontal(gui);
 }
-/*void gui_int_slider(int *i, int mul, t_autogui *gui)
-{
-	char		*str;
-	t_rectangle	rect;
-	float		moveamount;
-	t_point	potential_pos;
-
-	rect = empty_rect();
-	if (gui_shoulddraw(gui))
-	{
-		moveamount = gui->hid->mouse.scroll_delta * mul;
-		if ((gui->hid->keystate >> KEYS_SHIFTMASK) & 1)
-			moveamount *= 2;
-		str = ft_itoa(*i);
-		if (pointrectanglecollision(gui->hid->mouse.pos, rect))
-		{
-			print_text(gui->sdl, "scroll to affect value", point_add(gui->hid->mouse.pos, (t_point){40, -10}));
-			drawrectangle(*gui->sdl, rect, AMBER_0);
-			if (moveamount != 0)
-				drawrectangle(*gui->sdl, rect, AMBER_1);
-			*i = *i + moveamount;
-		}
-		free(str);
-	}
-	gui_layout(gui, rect);
-}*/

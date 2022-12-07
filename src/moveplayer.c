@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 18:52:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 10:10:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,6 +157,8 @@ void	updateguntransform(t_input *input, t_clock *clock, t_player *player)
 	float	zturn = input->move.x * 2.0f;
 	zturn += input->turn.x * 5.0f;
 	zturn = ft_clampf(zturn, ft_degtorad(-2.5f), ft_degtorad(2.5f));
+	if (player->locked)
+		return ;
 	gun->entity.transform.rotation.z = fmovetowards(gun->entity.transform.rotation.z, zturn, 0.0004f * clock->delta);
 	player->transform.rotation.y += gun->view_anim.lerp * clock->delta * gun->viewrecoil.y; //Separate view jump animation that is longer than gun jump animation?
 }

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 17:29:47 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 09:55:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -561,8 +561,9 @@ void	makefloor_room(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 	while (i < fc.facecount)
 	{
 		mtri = &room->floors[i];
-		ft_bzero(&mtri->entity, sizeof(t_entity));
+		//ft_bzero(&mtri->entity, sizeof(t_entity));
 		mtri->entity = raise_entity(&ed->world);
+		mtri->entity->uneditable = true;
 		mtri->entity->obj = object_tri(sdl);
 		mtri->v[0] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[0]]);
 		mtri->v[1] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[1]]);
@@ -570,9 +571,9 @@ void	makefloor_room(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 		mtri->uv[0] = fc.edges[fc.faces[i].v_indices[0]];
 		mtri->uv[1] = fc.edges[fc.faces[i].v_indices[1]];
 		mtri->uv[2] = fc.edges[fc.faces[i].v_indices[2]];
-		mtri->uv[0] = vector2_div(mtri->uv[0], 50.0f);
-		mtri->uv[1] = vector2_div(mtri->uv[1], 50.0f);
-		mtri->uv[2] = vector2_div(mtri->uv[2], 50.0f);
+		mtri->uv[0] = vector2_div(mtri->uv[0], 100.0f);
+		mtri->uv[1] = vector2_div(mtri->uv[1], 100.0f);
+		mtri->uv[2] = vector2_div(mtri->uv[2], 100.0f);
 		applytrimesh(*mtri, mtri->entity->obj);
 		/*mtri->entity->transform.position = vector3_zero();
 		mtri->entity->transform.scale = vector3_one();*/

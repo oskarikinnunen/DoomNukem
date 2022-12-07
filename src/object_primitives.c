@@ -9,7 +9,19 @@ static t_material	*planemat()
 	mat = ft_memalloc(sizeof(t_material));
 	if (mat == NULL)
 		error_log(EC_MALLOC);
-	ft_strcpy(mat->texturename, "wall_concrete.png");
+	ft_strcpy(mat->texturename, "metal04.png");
+	mat->kd = INT_MAX;
+	return (mat);
+}
+
+static t_material	*trimat()
+{
+	t_material	*mat;
+
+	mat = ft_memalloc(sizeof(t_material));
+	if (mat == NULL)
+		error_log(EC_MALLOC);
+	ft_strcpy(mat->texturename, "metal03.png");
 	mat->kd = INT_MAX;
 	return (mat);
 }
@@ -45,7 +57,7 @@ t_object	*object_tri(t_sdlcontext *sdl)
 	tri->faces[0].uv_indices[1] = 2;
 	tri->faces[0].uv_indices[2] = 3;
 
-	tri->materials = planemat();
+	tri->materials = trimat();
 	tri->faces[0].material = &tri->materials[0];
 	tri->materials->img = get_image_by_name(*sdl, tri->materials->texturename);
 	tri->material_count = 1;

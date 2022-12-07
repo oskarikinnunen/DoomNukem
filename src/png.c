@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:10:14 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 19:47:53 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 09:48:13 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ void	sample_ouroboros(t_img *orig) //samples the image into itself
 
 	newdata = ft_memalloc((orig->length) * sizeof(uint32_t));
 	sample = point_zero();
+	//orig->size.y -= 1;
 	while (sample.y < orig->size.y)
 	{
 		sample.x = 0;

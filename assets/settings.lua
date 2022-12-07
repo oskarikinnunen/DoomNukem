@@ -14,7 +14,13 @@ images =
 	"grid3.png",
 	"gwall.png",
 	"grid_d.png",
-	"wall_concrete.png"
+	"wall_concrete.png",
+	"metal03.png",
+	"metal04.png",
+	"stone02.png",
+	"stone11.png",
+	"concrete02.png",
+	"wood02.png"
 }
 objects =
 {

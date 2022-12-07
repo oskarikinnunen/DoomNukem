@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 09:00:06 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 09:45:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,10 +190,11 @@ t_room	load_room(char *filename)
 	return (result);
 }
 
-static void	startup_init_roomwalls(t_world *world, t_room *r)
+static void	startup_init_room(t_world *world, t_room *r)
 {
-	int		i;
-	t_wall	*w;
+	int			i;
+	t_wall		*w;
+	t_meshtri	*f;
 
 	i = 0;
 	while (i < r->wallcount)
@@ -202,6 +203,15 @@ static void	startup_init_roomwalls(t_world *world, t_room *r)
 		w->entity = &world->entitycache.entities[w->saved_entityid]; //TODO: make function "get_entity_from_cache_by_id" (with a shorter name, lol)
 		w->entity->obj = object_plane(world->sdl);
 		applywallmesh(w);
+		i++;
+	}
+	i = 0;
+	while (i < r->floorcount)
+	{
+		f = &r->floors[i];
+		f->entity = &world->entitycache.entities[f->saved_entityid]; //TODO: make function "get_entity_from_cache_by_id" (with a shorter name, lol)
+		f->entity->obj = object_tri(world->sdl);
+		applytrimesh(*f, f->entity->obj);
 		i++;
 	}
 }
@@ -216,8 +226,7 @@ void	load_rooms(t_world *world, t_sdlcontext *sdl)
 	{
 		r = (t_room *)l->content;
 		*r = load_room(r->name);
-		startup_init_roomwalls(world, r);
-		//init_room_meshes(r, sdl);
+		startup_init_room(world, r);
 		l = l->next;
 	}
 }
@@ -414,7 +423,7 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 	world.skybox.obj->materials[0].img = get_image_by_name(*sdl, "grid_d.png");
 	//scale_skybox_uvs(world.skybox.obj);
 	world.skybox.transform.scale = vector3_mul(vector3_one(), 3000.0f);
-	world.skybox.transform.position = (t_vector3){1500.0f, 1500.0f, 1499.0f};
+	world.skybox.transform.position = (t_vector3){1500.0f, 1500.0f, 1495.0f};
 	//spawn_npc(&world, "cyborg", (t_vector3){500.0f, 500.0f, 0.0f}, &sdl);
 	//world.npcpool[0].destination = (t_vector3){200.0f, 200.0f, 0.0f};
 	return (world);
@@ -432,7 +441,7 @@ and loads them into world->roomlist from the files
 	*id = entity.id
 }*/
 
-void	prepare_wall_saving(t_room *room)
+void	prepare_saving(t_room *room)
 {
 	int	i;
 
@@ -440,6 +449,12 @@ void	prepare_wall_saving(t_room *room)
 	while (i < room->wallcount)
 	{
 		room->walls[i].saved_entityid = room->walls[i].entity->id;
+		i++;
+	}
+	i = 0;
+	while (i < room->floorcount)
+	{
+		room->floors[i].saved_entityid = room->floors[i].entity->id;
 		i++;
 	}
 }
@@ -450,11 +465,11 @@ void	save_room(t_room room)
 
 	printf("saving room '%s' \n", room.name);
 	fd = fileopen(room.name, O_RDWR | O_CREAT | O_TRUNC); //Empty the file or create a new one if it doesn't exist
-	prepare_wall_saving(&room);
+	prepare_saving(&room);
 	t_list *walls_list = ptr_to_list(room.walls, room.wallcount, sizeof(t_wall));
 	save_chunk(room.name, "WALL", walls_list);
-	/*t_list *floorlist = ptr_to_list(room.floors, room.floorcount, sizeof(t_meshtri));
-	save_chunk(room.name, "FLOR", floorlist);*/
+	t_list *floorlist = ptr_to_list(room.floors, room.floorcount, sizeof(t_meshtri));
+	save_chunk(room.name, "FLOR", floorlist);
 	close(fd);
 }
 

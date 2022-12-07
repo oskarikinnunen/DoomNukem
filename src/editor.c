@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 07:58:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 10:48:15 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ int	editorloop(t_sdlcontext sdl)
 		update_deltatime(&ed.clock);
 		update_deltatime(&ed.world.clock);
 		ed.gamereturn = editor_events(&ed);
-		//move_editor(&ed);
-		moveplayer(&ed.player, &ed.hid.input, ed.clock);
+		if (!ed.player.locked)
+			moveplayer(&ed.player, &ed.hid.input, ed.clock);
 		update_render(&ed.render, &ed.player);
 		screen_blank(sdl);
 		
@@ -56,6 +56,7 @@ int	editorloop(t_sdlcontext sdl)
 		{
 			ed.tool->update(&ed, &sdl);
 		}
+		
 		ed.hid.mouse.click_unhandled = false;
 		//print_text_boxed(&sdl, "tab to unlock/lock mouse, shift + enter to go to playmode", (t_point){sdl.window_w / 2, 10}, (t_point){sdl.window_w, sdl.window_h});
 		

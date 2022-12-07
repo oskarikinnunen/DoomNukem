@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:49:59 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 17:53:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 10:56:24 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,15 +70,51 @@ void	save_preset(t_editor *ed, t_sdlcontext sdl)
 void	gun_tool_update(t_editor *ed, t_sdlcontext *sdl)
 {
 	t_guntooldata	*dat;
+	t_autogui		*gui;
 
 	dat = (t_guntooldata *)ed->tool->tooldata;
-	ed->player.gun->disabled = false;
-	if (instant_text_button(*sdl, &ed->hid.mouse, "Model", (t_point) {20, 140}))
+
+	gui = &dat->maingui;
+	gui_start(gui);
+	gui_label("Preset:", gui);
+	gui_label(ed->player.gun->preset_name, gui);
+	if (gui_button("Offset\xF1", gui))
+	{
+		dat->offsetgui.hidden = false;
+	}
+	/*if (gui_button("Recoil\xF1", gui))
+		dat->gtm = gtm_recoil;*/
+	gui_end(gui);
+
+	if (!dat->offsetgui.hidden)
+	{
+		gui = &dat->offsetgui;
+		gui_start(gui);
+
+		print_text_boxed(sdl, "\xD1Player locked\xD1", point_add(point_div(sdl->screensize, 2), (t_point){.x = 20}));
+		t_vector3	prev;
+
+		prev = ed->player.gun->holsterpos;
+		gui_labeled_vector3_slider("Hip:", &ed->player.gun->holsterpos, 0.1f, gui);
+		if (vector3_cmp(ed->player.gun->holsterpos, prev) == false)
+			dat->gun_aim = false;
+
+		prev = ed->player.gun->aimpos;
+		gui_labeled_vector3_slider("Aim:", &ed->player.gun->aimpos, 0.1f, gui);
+		if (vector3_cmp(ed->player.gun->aimpos, prev) == false)
+			dat->gun_aim = true;
+		ed->hid.input.shoot = false;
+		ed->hid.input.aim = dat->gun_aim;
+		gui_end(gui);
+		ed->player.locked = true;
+		moveplayer(&ed->player, &ed->hid.input, ed->clock);
+	}
+	/*if (instant_text_button(*sdl, &ed->hid.mouse, "Model", (t_point) {20, 140}))
 		dat->gtm = gtm_model;
 	if (instant_text_button(*sdl, &ed->hid.mouse, "Offset", (t_point) {80, 140}))
 		dat->gtm = gtm_offset;
 	if (instant_text_button(*sdl, &ed->hid.mouse, "Recoil", (t_point) {140, 140}))
-		dat->gtm = gtm_recoil;
+		dat->gtm = gtm_recoil;*/
 	/*if (dat->gtm == gtm_model)
 	{
 		ed->player.gun->entity.obj = object_selector2(ed, sdl, &ed->player.gun->entity);
@@ -103,6 +139,34 @@ void	gun_tool_update(t_editor *ed, t_sdlcontext *sdl)
 	list_gun_presets(ed, sdl, (t_point){20, 540});*/
 }
 
+void	gun_tool_init(t_editor *ed, t_sdlcontext *sdl)
+{
+	t_guntooldata	*dat;
+
+	dat = ed->tool->tooldata;
+	if (dat->maingui.sdl == NULL)
+	{
+		dat->maingui = init_gui(sdl, &ed->hid, &ed->player, (t_point){20, 20}, "Gun tool");
+		gui_autosize(&dat->maingui);
+	}
+	if (dat->offsetgui.sdl == NULL)
+	{
+		dat->offsetgui = init_gui(sdl, &ed->hid, &ed->player, (t_point){20, 20}, "Offset");
+		dat->offsetgui.dock = &dat->maingui;
+		dat->offsetgui.allow_user_hide = true;
+		gui_autosize(&dat->offsetgui);
+	}
+	if (dat->recoilgui.sdl == NULL)
+	{
+		dat->recoilgui = init_gui(sdl, &ed->hid, &ed->player, (t_point){20, 20}, "Recoil");
+		dat->recoilgui.dock = &dat->maingui;
+		dat->recoilgui.allow_user_hide = true;
+		gui_autosize(&dat->recoilgui);
+	}
+	ed->player.gun->disabled = false;
+	ed->player.locked = true;
+}
+
 void	gun_tool_cleanup(t_editor *ed, t_sdlcontext *sdl)
 {
 	ed->player.gun->disabled = true;
@@ -112,7 +176,7 @@ t_tool	*get_gun_tool()
 {
 	static t_tool	tool
 	= {
-		.update = gun_tool_update, .cleanup = gun_tool_cleanup
+		.init = gun_tool_init, .update = gun_tool_update, .cleanup = gun_tool_cleanup
 	};
 	t_guntooldata	*dat;
 
