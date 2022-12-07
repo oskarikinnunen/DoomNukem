@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 07:55:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 08:56:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -602,7 +602,6 @@ bool	gui_labeled_int_slider(char *str, int *i, float mul, t_autogui *gui)
 	gui_starthorizontal(gui);
 	gui_label(str, gui);
 	gui_int_slider(i, mul, gui);
-	printf("modified gui value %i \n", *i);
 	gui_endhorizontal(gui);
 }
 /*void gui_int_slider(int *i, int mul, t_autogui *gui)

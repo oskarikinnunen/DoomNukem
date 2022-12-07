@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   npcs.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 13:49:27 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 15:19:43 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/07 08:52:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@
 
 typedef struct s_npc
 {
-	t_entity			entity;
+	t_entity			*entity;
+	uint16_t			saved_entityid;
 	t_vector3			destination;
 	t_humancolliders	colliders;
 	/*t_capsulecollider	handcolliders[2];
