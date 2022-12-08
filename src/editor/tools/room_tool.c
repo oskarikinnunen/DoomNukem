@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/08 12:47:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/08 12:52:47 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -477,7 +477,7 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	gui_label("Modifying: ", gui);
 	gui_label(dat->room->name, gui);
 	gui_endhorizontal(gui);
-	if (gui_button("Delete", gui))
+	if (gui_shortcut_button("[Delete]", KEYS_DELETEMASK, gui))
 	{
 		remove_room(&ed->world, dat->room);
 		//list_remove(&ed->world.roomlist, dat->room, sizeof(t_room));

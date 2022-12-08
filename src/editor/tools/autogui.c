@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/08 12:47:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/08 12:50:53 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -536,19 +536,19 @@ bool	gui_shortcut_button(char *str, int alpha_or_keymask, t_autogui *gui)
 	br.clicked = false;
 	if (ft_isalpha(alpha_or_keymask))
 	{
-		str_s = ft_strnew(ft_strlen(str) + 3);
-		snprintf(str_s, ft_strlen(str_s), "[%c]%s", alpha_or_keymask, str);
+		str_s = ft_strnew(ft_strlen(str) + 4);
+		snprintf(str_s, ft_strlen(str) + 4, "[%c]%s", alpha_or_keymask, str);
 	} else
 		str_s = ft_strdup(str);
 	if (gui_shoulddraw(gui))
 	{
-		br = autogui_internal_button(str, gui);
+		br = autogui_internal_button(str_s, gui);
 	}
 	free(str_s);
 	gui_layout(gui, br.rect);
 	if (alpha_or_keymask < 32 && (gui->hid->keystate >> alpha_or_keymask) & 1) //Assumed keymask
 		br.clicked = true;
-	if (ft_isalpha(alpha_or_keymask) && (gui->hid->alphakeystate >> alpha_or_keymask) & 1)
+	if (ft_isalpha(alpha_or_keymask) && check_alpha_key(gui->hid->alphakeystate, alpha_or_keymask))
 		br.clicked = true;
 	return (br.clicked);
 }
