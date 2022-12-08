@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 07:24:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 17:35:12 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 		|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0 \
 		|| TTF_Init() < 0)
 		error_log(EC_SDL_INIT);
-	if (screenmode == screenmode_borderless && SDL_GetCurrentDisplayMode(0, &mode) == 0)
+	if (screenmode == screenmode_borderless && SDL_GetCurrentDisplayMode(1, &mode) == 0)
 	{
 		sdl->window_w = mode.w;
 		sdl->window_h = mode.h;

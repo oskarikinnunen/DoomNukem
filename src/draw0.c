@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 06:55:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 16:31:51 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,8 @@ void	draw_rectangle_filled(t_sdlcontext sdl, t_rectangle rect, uint32_t clr)
 	p = rect.position;
 
 	i = 0;
+	if (point_cmp(rect.size, point_zero()))
+		return ;
 	while (p.x < rect.position.x + rect.size.x)
 	{
 		p.y = rect.position.y;

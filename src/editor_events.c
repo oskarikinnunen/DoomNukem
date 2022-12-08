@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 10:41:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/08 12:38:19 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,17 @@
  
 #include "editor_tools.h"
 
+bool		check_alpha_key(uint32_t alphakeystate, char c)
+{
+	c = ft_tolower(c);
+	if (!ft_isalpha(c))
+		return (false); //And log something?
+	return ((alphakeystate >> (c - 'a')) & 1);
+}
+
 void		toggle_keystates(t_hid_info *hid, SDL_Event e)
 {
+	char	c;
 	if (e.type == SDL_KEYDOWN)
 	{
 		hid->keystate |= keyismoveleft(e) << KEYS_LEFTMASK;
@@ -27,11 +36,17 @@ void		toggle_keystates(t_hid_info *hid, SDL_Event e)
 		hid->keystate |= iskey(e, SDLK_LSHIFT) << KEYS_SHIFTMASK;
 		hid->keystate |= iskey(e, SDLK_LALT) << KEYS_LALTMASK;
 		hid->keystate |= iskey(e, SDLK_DELETE) << KEYS_DELETEMASK;
-
 		hid->keystate |= iskey(e, SDLK_1) << KEYS_1MASK;
 		hid->keystate |= iskey(e, SDLK_2) << KEYS_2MASK;
 		hid->keystate |= iskey(e, SDLK_3) << KEYS_3MASK;
 		hid->keystate |= iskey(e, SDLK_4) << KEYS_4MASK;
+		hid->keystate |= iskey(e, SDLK_v) << KEYS_VMASK;
+		c = 'a';
+		while (c <= 'z')
+		{
+			hid->alphakeystate |= iskey(e, c) << (c - 'a');
+			c++; //Not the language
+		}
 	}
 	if (e.type == SDL_KEYUP)
 	{
@@ -48,6 +63,13 @@ void		toggle_keystates(t_hid_info *hid, SDL_Event e)
 		hid->keystate &= ~(iskey(e, SDLK_2) << KEYS_2MASK);
 		hid->keystate &= ~(iskey(e, SDLK_3) << KEYS_3MASK);
 		hid->keystate &= ~(iskey(e, SDLK_4) << KEYS_4MASK);
+		hid->keystate &= ~(iskey(e, SDLK_v) << KEYS_VMASK);
+		c = 'a';
+		while (c <= 'z')
+		{
+			hid->alphakeystate &= ~(iskey(e, c) << (c - 'a'));
+			c++; //Not the language
+		}
 	}
 }
 

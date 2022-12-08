@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 12:13:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/08 12:47:24 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,13 @@ void				gui_int(int i, t_autogui *gui);
 void				gui_point(t_point point, t_autogui *gui);
 //Draws a button with text 'str' on the gui, and returns true if the button was pressed
 bool				gui_button(char *str, t_autogui *gui);
+bool	gui_shortcut_button(char *str, int alpha_or_keymask, t_autogui *gui);
+bool	gui_highlighted_button(char *str, t_autogui *gui);
 
+//TODO: document
+void				gui_string_edit(char *str, t_autogui	*gui);
+//TODO: document
+bool				gui_bool_edit(bool *b, t_autogui *gui);
 //Draws an integer slider which allows modifying the integers value, returns true if the integer changed
 bool				gui_int_slider(int *i, float mul, t_autogui *gui);
 //Draws a float slider which allows modifying the floats value, returns true if the float changed
@@ -138,6 +144,8 @@ bool				gui_float_slider(float	*f, float mul, t_autogui *gui);
 //Draws a vector3 slider which allows modifying the vectors value, returns true if the vector changed
 void				gui_vector3_slider(t_vector3 *vec, float mul, t_autogui *gui);
 
+//TODO: document
+bool				gui_labeled_bool_edit(char *str, bool *b, t_autogui *gui);
 //Draws a label and an integer next to eachother
 void				gui_labeled_int(char *str, int i, t_autogui *gui);
 //Draws a label and a point next to eachother

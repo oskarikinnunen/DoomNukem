@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 10:45:28 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/08 12:47:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -473,6 +473,25 @@ void	gui_vector3_slider(t_vector3 *vec, float mul, t_autogui *gui)
 	gui->min_x = temp_min_x;
 }
 
+static t_buttonreturn	autogui_internal_colored_button(char *str, t_autogui *gui, uint32_t color)
+{
+	t_buttonreturn	br;
+
+	br.rect = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
+	drawrectangle(*gui->sdl, br.rect, AMBER_2);
+	br.clicked = false;
+	if (pointrectanglecollision(gui->hid->mouse.pos, br.rect))
+	{
+		drawrectangle(*gui->sdl, br.rect, color);
+		if (mouse_clicked(gui->hid->mouse, MOUSE_LEFT))
+		{
+			br.clicked = true;
+			gui->hid->mouse.click_unhandled = false;
+		}
+	}
+	return (br);
+}
+
 static t_buttonreturn	autogui_internal_button(char *str, t_autogui *gui)
 {
 	t_buttonreturn	br;
@@ -492,6 +511,48 @@ static t_buttonreturn	autogui_internal_button(char *str, t_autogui *gui)
 	return (br);
 }
 
+bool	gui_colored_button(char *str, t_autogui *gui, uint32_t color)
+{
+	t_rectangle		rect;
+	t_buttonreturn	br;
+
+	br.rect = empty_rect();
+	br.clicked = false;
+	if (gui_shoulddraw(gui))
+	{
+		br = autogui_internal_colored_button(str, gui, color);
+	}
+	gui_layout(gui, br.rect);
+	return (br.clicked);
+}
+
+bool	gui_shortcut_button(char *str, int alpha_or_keymask, t_autogui *gui)
+{
+	t_rectangle		rect;
+	t_buttonreturn	br;
+	char			*str_s;
+
+	br.rect = empty_rect();
+	br.clicked = false;
+	if (ft_isalpha(alpha_or_keymask))
+	{
+		str_s = ft_strnew(ft_strlen(str) + 3);
+		snprintf(str_s, ft_strlen(str_s), "[%c]%s", alpha_or_keymask, str);
+	} else
+		str_s = ft_strdup(str);
+	if (gui_shoulddraw(gui))
+	{
+		br = autogui_internal_button(str, gui);
+	}
+	free(str_s);
+	gui_layout(gui, br.rect);
+	if (alpha_or_keymask < 32 && (gui->hid->keystate >> alpha_or_keymask) & 1) //Assumed keymask
+		br.clicked = true;
+	if (ft_isalpha(alpha_or_keymask) && (gui->hid->alphakeystate >> alpha_or_keymask) & 1)
+		br.clicked = true;
+	return (br.clicked);
+}
+
 bool	gui_button(char *str, t_autogui *gui)
 {
 	t_rectangle		rect;
@@ -505,6 +566,122 @@ bool	gui_button(char *str, t_autogui *gui)
 	}
 	gui_layout(gui, br.rect);
 	return (br.clicked);
+}
+
+void	gui_string_edit(char *str, t_autogui	*gui)
+{
+	static bool	blink;
+	static int 	blinkframecounter;
+	SDL_Event	e;
+	bool		done;
+	t_rectangle	rect;
+	t_rectangle	orig;
+	t_point		start;
+	char		bstr[40] = {};
+
+	blinkframecounter++;
+	if (blinkframecounter % 25 == 0)
+		blink = !blink;
+	if (blink)
+		sprintf(bstr, "\xE6 %s ", str);
+	else
+		sprintf(bstr, "\xE6 %s\xE4", str);
+	done = false;
+	/*if (blink_status == 0)
+		sprintf(bstr, "\xE6 %s\x5C", str);
+	if (blink_status == 1)
+		sprintf(bstr, "\xE6 %s\x7C", str);
+	if (blink_status == 2)
+		sprintf(bstr, "\xE6 %s\x2F", str);
+	if (blink_status == 3)
+		sprintf(bstr, "\xE6 %s-", str);*/
+	orig = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
+	rect = empty_rect();
+	if (gui_colored_button(bstr, gui, AMBER_4))
+	{
+		SDL_StartTextInput();
+		while (!done)
+		{
+			while (SDL_PollEvent(&e) && !done)
+			{
+				draw_rectangle_filled(*gui->sdl, rect, 1);
+				if (e.type == SDL_TEXTINPUT && ft_strlen(str) < 31)
+				{
+					ft_strncat(str, e.text.text, 32);
+				}
+				if (e.type == SDL_KEYDOWN && iskey(e, SDLK_BACKSPACE))
+					str[ft_strlen(str) - 1] = '\0';
+				rect = empty_rect();
+				ft_bzero(bstr, 40);
+				sprintf(bstr, "\xE6 %s ", str);
+				rect = print_text_boxed(gui->sdl, bstr, orig.position);
+				join_surfaces(gui->sdl->window_surface, gui->sdl->ui_surface);
+				SDL_UpdateWindowSurface(gui->sdl->window);
+				if (e.type == SDL_MOUSEBUTTONDOWN
+					|| (e.type == SDL_KEYDOWN && (e.key.keysym.sym == SDLK_RETURN ||
+											e.key.keysym.sym == SDLK_RETURN2 ||
+											e.key.keysym.sym == SDLK_ESCAPE)))
+				{
+					done = true;
+					break ;
+				}
+			}
+		}
+	}
+	SDL_StopTextInput();
+}
+
+bool	gui_highlighted_button(char *str, t_autogui *gui) //TODO, DRAWRECTANGLE AMBER3
+{
+	t_rectangle		rect;
+	t_buttonreturn	br;
+
+	br.rect = empty_rect();
+	br.clicked = false;
+	if (gui_shoulddraw(gui))
+	{
+		br = autogui_internal_button(str, gui);
+	}
+	drawrectangle(*gui->sdl, br.rect, AMBER_3);
+	gui_layout(gui, br.rect);
+	return (br.clicked);
+}
+
+bool	gui_labeled_bool_edit(char *str, bool *b, t_autogui *gui)
+{
+	gui_starthorizontal(gui);
+	gui_label(str, gui);
+	if (*b)
+	{
+		gui_highlighted_button("True", gui);
+		if (gui_button("False", gui))
+			*b = false;
+	}
+	else
+	{
+		if (gui_button("True", gui))
+			*b = true;
+		gui_highlighted_button("False", gui);
+	}
+	gui_endhorizontal(gui);
+}
+
+bool	gui_bool_edit(bool *b, t_autogui *gui)
+{
+	gui_starthorizontal(gui);
+	if (*b)
+	{
+		gui_highlighted_button("True", gui);
+		if (gui_button("False", gui))
+			*b = false;
+	}
+	else
+	{
+		if (gui_button("True", gui))
+			*b = true;
+		gui_highlighted_button("False", gui);
+	}
+	gui_endhorizontal(gui);
 }
 
 void gui_int(int i, t_autogui *gui)

@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 11:53:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/05 18:06:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 12:36:58 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,10 @@ char	*ft_ftoa(float f, int dec)
 	char	*str;
 
 	str = ft_strnew(32);
-	snprintf(str, 32, "%.2f", f);
+	if (f >= 0.01f)
+		snprintf(str, 32, "%.2f", f);
+	else
+		snprintf(str, 32, "%.6f", f);
 	return (str);
 	/*char	*final;
 	char	*strinteger;

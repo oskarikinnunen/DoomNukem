@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 11:54:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/08 12:47:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ void remove_room(t_world *world, t_room *room)
 		destroy_entity(world, room->walls[i].entity);
 		i++;
 	}
+	free_floor(world, room);
 	list_remove(&world->roomlist, room, sizeof(t_room));
 }
 
@@ -552,7 +553,7 @@ void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 
 	gui = &dat->maingui;
 	gui_start(gui);
-	if (gui_button("Add room", gui))
+	if (gui_shortcut_button("New room", 'N', gui))
 	{
 		dat->room = ft_memalloc(sizeof(t_room));
 		ft_bzero(roomname, 64);
