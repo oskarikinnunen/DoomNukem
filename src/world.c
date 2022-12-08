@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 12:17:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/08 13:44:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -480,11 +480,15 @@ t_list	*entitycache_to_list(t_entitycache *cache)
 
 	i = 0;
 	found = 0;
+	entitylist = NULL;
+	//printf("cache has %i existing entities\n", cache->existing_entitycount);
 	while (found < cache->existing_entitycount)
 	{
 		if (cache->entities[i].status != es_free)
 		{
+			//printf("found %i \n", found);
 			cache->entities[i].id = found;
+			//printf("entitylist null status before push %i \n", entitylist == NULL);
 			list_push(&entitylist, &cache->entities[i], sizeof(t_entity));
 			found++;
 		}
@@ -499,16 +503,17 @@ void	save_world(char *filename, t_world world)
 
 	fd = fileopen(filename, O_RDWR | O_CREAT | O_TRUNC); //Empty the file or create a new one if it doesn't exist
 	close(fd);
+	printf("Saving world\n");
 	t_list	*entitylist = entitycache_to_list(&world.entitycache);
+	printf("Entitycache converted to list\n");
 	save_chunk(filename, "ENT_", entitylist);
 	//TODO: free the dumb list
 
-	
+	printf("Saving rooms\n");
 	t_list	*r;
 	r = world.roomlist;
 	//TODO: 
 	save_chunk(filename, "RMNM", world.roomlist);
-	
 	while (r != NULL)
 	{
 		save_room(*(t_room *)r->content);
