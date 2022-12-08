@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   list_helper.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 12:32:25 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 18:45:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/08 13:43:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,16 @@ void	list_push(t_list **head, void *content, size_t content_size)
 	if (node == NULL)
 		error_log(EC_MALLOC);
 	if (*head == NULL)
+	{
+		//printf("List was null, making the node the head \n");
 		*head = node;
-	else
+	}
+	else {
+		//printf("List wasnt null, appending normally \n");
 		ft_lstapp(head, node);
+		
+	}
+		
 }
 
 void	*list_findlast(t_list *head)
