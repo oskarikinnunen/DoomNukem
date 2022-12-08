@@ -159,6 +159,7 @@ typedef struct s_sdlcontext
 	uint32_t				imagecount;
 	struct s_object			*objects;
 	int						ps1_tri_div;
+	bool					global_wireframe;
 	uint32_t				objectcount;
 	t_font					font;
 	t_audio					*audio;

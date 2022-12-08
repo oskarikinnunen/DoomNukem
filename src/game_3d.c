@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game_3d.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/07 08:28:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/08 15:38:01 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,10 @@ static void draw_triangles(t_sdlcontext *sdl, t_render *render)
 		{
 			render_triangle(sdl, render->screenspace_ptris[index], render->img);
 		}
-		if (render->wireframe)
+		if (render->wireframe || sdl->global_wireframe)
 		{
+			if (sdl->global_wireframe)
+				render->gizmocolor = AMBER_4;
 			t_point_triangle t1 = wf_tri(render->screenspace_ptris[index], sdl->resolution_scaling);
 			drawline(*sdl, t1.p[0], t1.p[1], render->gizmocolor);
 			drawline(*sdl, t1.p[1], t1.p[2], render->gizmocolor);

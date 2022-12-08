@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/08 12:52:47 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/08 18:56:51 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,7 +242,8 @@ static bool illegalwall_move(t_wall *wall, t_room *room)
 		return (true);
 	while (i < room->wallcount)
 	{
-		if (linelineintersect(wall->line, room->walls[i].line))
+		if (ft_memcmp(&wall->line, &room->walls[i].line, sizeof(t_line)) &&
+			linelineintersect(line_shorten(wall->line), line_shorten(room->walls[i].line)))
 			return (true);
 		i++;
 	}
@@ -358,7 +359,7 @@ void	applydrag(t_vector2 snap, t_room *room, t_world *world)
 			test[0].line.end = snap;
 			test[1] = room->walls[i];
 			test[1].line.start = snap;
-			if (!illegalwall_move(&test[0], room) || !illegalwall_move(&test[1], room))
+			if (!illegalwall_move(&test[0], room) && !illegalwall_move(&test[1], room))
 			{
 				prev->line.end = snap;
 				room->walls[i].line.start = snap;
@@ -457,6 +458,8 @@ static void walleditmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		dat->ed_wall = NULL;
 }
 
+
+
 void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 {
 	t_vector3		rc;
@@ -477,6 +480,23 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	gui_label("Modifying: ", gui);
 	gui_label(dat->room->name, gui);
 	gui_endhorizontal(gui);
+
+	int i = 0;
+	char *ind_str;
+	while (i < dat->room->wallcount)
+	{
+		t_vector3	ws;
+		t_vector2	start;
+
+		start = dat->room->walls[i].line.start;
+		ws = (t_vector3){start.x, start.y, 0.0f};
+		t_point ss = vector3_to_screenspace(ed->render, ws, sdl);
+		ind_str = ft_itoa(i);
+		print_text_boxed(&sdl, ind_str, point_add(ss, (t_point){20, 20}));
+		free (ind_str);
+		i++;
+	}
+	
 	if (gui_shortcut_button("[Delete]", KEYS_DELETEMASK, gui))
 	{
 		remove_room(&ed->world, dat->room);
@@ -487,6 +507,9 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		gui_end(gui);
 		return ;
 	}
+	int	prev = dat->floor_debugvalue;
+	gui_labeled_int_slider("FLOORDEBUG:", &dat->floor_debugvalue, 1, gui);
+	dat->floor_debugvalue = ft_clamp(dat->floor_debugvalue, 2, 5);
 	gui_end(gui);
 	//print_text_boxed(&sdl, text, (t_point){sdl.window_w / 2, 40}, sdl.screensize);
 	snap = vector2_snap((t_vector2){rc.x, rc.y}, 10);
@@ -494,11 +517,11 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	look_wall = selectedwall(ed, sdl, dat->room);
 	if (looking_atcorner(ed, sdl, snap, dat->room) && ed->hid.mouse.held == MOUSE_LEFT)
 		applydrag(snap, dat->room, &ed->world);
-	else if (dat->room->floorcount == 0)
-		makefloor_room(ed, &sdl, dat->room);
+	else if (dat->room->floorcount == 0 || dat->floor_debugvalue != prev)
+		makefloor_room(ed, &sdl, dat->room, dat->floor_debugvalue);
 	if (!looking_atcorner(ed, sdl, snap, dat->room) && mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 	{
-		force_mouseunlock(&ed->hid);
+		//force_mouseunlock(&ed->hid);
 		dat->ed_wall = look_wall;
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
@@ -550,9 +573,17 @@ void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 {
 	t_autogui	*gui;
 	char		roomname[64];
+	t_vector3	look;
+
+	look = raycast(ed);
+	t_point	p;
+
+	p.x = look.x;
+	p.y = look.y;
 
 	gui = &dat->maingui;
 	gui_start(gui);
+	gui_labeled_point("DEBUG:", p, gui);
 	if (gui_shortcut_button("New room", 'N', gui))
 	{
 		dat->room = ft_memalloc(sizeof(t_room));
@@ -566,10 +597,27 @@ void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	gui_end(gui);
 }
 
+void	draw_t_line(t_sdlcontext *sdl, t_line line, uint32_t color)
+{
+	t_point p1;
+	t_point p2;
+
+	p1 = vector2_to_point(line.start);
+	p2 = vector2_to_point(line.end);
+	drawline(*sdl, p1, p2, color);
+}
+
 void	room_tool_update(t_editor *ed, t_sdlcontext *sdl)
 {
 	t_roomtooldata	*dat;
+	t_line			line;
 
+	line.start = (t_vector2){33, 130};
+	line.end = (t_vector2){100, 120};
+
+	draw_t_line(sdl, line, CLR_RED);
+	line = line_shorten(line);
+	draw_t_line(sdl, line, CLR_BLUE);
 	dat = (t_roomtooldata *)ed->tool->tooldata;
 	if (dat->room == NULL)
 	{

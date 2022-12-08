@@ -89,7 +89,8 @@ void update_world3d(t_world *world, t_render *render)
 		i++;
 	}*/
 	update_entitycache(sdl, world, render);
-	render_entity(*sdl, render, &world->skybox);
+	if (!sdl->global_wireframe)
+		render_entity(*sdl, render, &world->skybox);
 	gui_start(world->debug_gui);
 	gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);
 	gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);
@@ -99,6 +100,7 @@ void update_world3d(t_world *world, t_render *render)
 	t_point	res;
 	res = point_fmul(sdl->screensize, sdl->resolution_scaling);
 	gui_labeled_point("3D Resolution:", res, world->debug_gui);
+	gui_labeled_bool_edit("Wireframe:", &world->sdl->global_wireframe, world->debug_gui);
 	gui_labeled_int_slider("PS1 tri div:", &sdl->ps1_tri_div, 2.0f, world->debug_gui);
 	sdl->ps1_tri_div = ft_clamp(sdl->ps1_tri_div, 1, 4);
 	gui_end(world->debug_gui);
