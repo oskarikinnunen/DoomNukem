@@ -6,12 +6,13 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 13:19:40 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/09 14:26:04 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "objects.h"
 #include "doomnukem.h"
+#include "editor_tools.h"
 
 void	render_snapgrid(t_editor *ed, t_sdlcontext *sdl, t_vector2 wallpos, bool shift, bool hover)
 {
@@ -53,31 +54,33 @@ void	render_snapgrid(t_editor *ed, t_sdlcontext *sdl, t_vector2 wallpos, bool sh
 
 void	applywallmesh(t_wall *wall)
 {
-	wall->entity.obj->vertices[0] = (t_vector3){wall->line.start.x, wall->line.start.y, 0.0f};
-	wall->entity.obj->vertices[1] = (t_vector3){wall->line.end.x, wall->line.end.y, 0.0f};
+	wall->entity->obj->vertices[0] = (t_vector3){wall->line.start.x, wall->line.start.y, 0.0f};
+	wall->entity->obj->vertices[1] = (t_vector3){wall->line.end.x, wall->line.end.y, 0.0f};
 	
-	wall->entity.obj->vertices[2] = (t_vector3){wall->line.start.x, wall->line.start.y, wall->height};
-	wall->entity.obj->vertices[3] = (t_vector3){wall->line.end.x, wall->line.end.y, wall->height};
+	wall->entity->obj->vertices[2] = (t_vector3){wall->line.start.x, wall->line.start.y, wall->height};
+	wall->entity->obj->vertices[3] = (t_vector3){wall->line.end.x, wall->line.end.y, wall->height};
 
 	float dist = vector2_dist(wall->line.start, wall->line.end) + 2.0f;
-	wall->entity.obj->uvs[1] = (t_vector2){dist / 100.0f, 0.0f};
-	wall->entity.obj->uvs[2] = (t_vector2){0.0f, wall->height / 100.0f};
-	wall->entity.obj->uvs[3] = (t_vector2){dist / 100.0f, wall->height / 100.0f};
+	wall->entity->obj->uvs[1] = (t_vector2){dist / 100.0f, 0.0f};
+	wall->entity->obj->uvs[2] = (t_vector2){0.0f, wall->height / 100.0f};
+	wall->entity->obj->uvs[3] = (t_vector2){dist / 100.0f, wall->height / 100.0f};
+	//wall->entity->obj->uvs[1] = flipped_uv(wall->entity->obj->uvs[1]);
+	//wall->entity->obj->uvs[2] = flipped_uv(wall->entity->obj->uvs[2]);
+	//wall->entity->obj->uvs[3] = flipped_uv(wall->entity->obj->uvs[3]);
 }
 
-void	init_roomwalls(t_room *room, t_sdlcontext *sdl)
+void	init_roomwalls(t_world *world, t_room *room)
 {
-	int	i;
+	int			i;
+	t_entity	*ent;
 
 	i = 0;
 	while (i < room->wallcount)
 	{
-		room->walls[i].entity.transform.location = vector3_zero();
-		if (!room->walls[i].disabled)
-			room->walls[i].entity.transform.scale = vector3_one();
-		else
-			room->walls[i].entity.transform.scale = vector3_zero();
-		room->walls[i].entity.obj = object_plane(sdl);
+		//room->walls[i].entity = raise_entity(world); //Copy saved entitys important values
+		room->walls[i].entity->transform.position = vector3_zero();
+		room->walls[i].entity->transform.scale = vector3_one();
+		room->walls[i].entity->obj = object_plane(world->sdl);
 		applywallmesh(&room->walls[i]);
 		update_wall_bounds(&room->walls[i]);
 		i++;
@@ -94,25 +97,19 @@ void	applytrimesh(t_meshtri tri, t_object *obj)
 	obj->uvs[2] = tri.uv[2];
 }
 
-void	init_room_meshes(t_room *room, t_sdlcontext *sdl)
+void	init_room_meshes(t_room *room, t_sdlcontext *sdl, t_world *world)
 {
 	int	i;
 
 	i = 0;
 	while (i < room->floorcount)
 	{
-		room->floors[i].entity.obj = object_tri(sdl);
-		applytrimesh(room->floors[i], room->floors[i].entity.obj);
-		update_floor_bounds(&room->floors[i]);
-		room->floors[i].entity.id = -2;
-		room->floors[i].entity.occlusion.occlude = false;
-		room->floors[i].entity.occlusion.cull = true;
-		room->floors[i].entity.occlusion.is_backface_cull = false;
-		room->floors[i].entity.occlusion.is_occluded = false;
-		
-		/*room->walls[i].entity.transform.location = vector3_zero();
-		room->walls[i].entity.transform.scale = vector3_one();
-		room->walls[i].entity.obj = object_plane(sdl);
+		//room->floors[i].entity = raise_entity(world);
+		room->floors[i].entity->obj = object_tri(sdl);
+		applytrimesh(room->floors[i], room->floors[i].entity->obj);
+		/*room->walls[i].entity->transform.position = vector3_zero();
+		room->walls[i].entity->transform.scale = vector3_one();
+		room->walls[i].entity->obj = object_plane(sdl);
 		applywallmesh(&room->walls[i]);*/
 		i++;
 	}

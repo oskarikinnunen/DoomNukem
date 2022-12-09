@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   anim.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:56:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/30 18:04:35 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/06 17:13:04 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	update_anim(t_anim *anim, uint32_t delta)
 		return ;
 	anim->time += delta;
 	now_second = (float)anim->time / 1000.0f;
+	
 	if (anim->mode == anim_forwards)
 	{
 		if (anim->frame >= anim->lastframe)

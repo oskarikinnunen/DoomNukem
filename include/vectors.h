@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 16:21:35 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/08 18:21:08 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,6 +233,15 @@ int			point_dot(t_point first, t_point second);
 //returns true if both points are identical
 bool		point_cmp(t_point first, t_point second);
 
+//returns the squared magnitude of the point 'point'
+float		point_sqr_fmagnitude(t_point point);
+
+//returns distance between first and second point
+float		point_fdist(t_point first, t_point second);
+
+//returns dot product of point 'first' and point 'second'
+float		point_fdot(t_point first, t_point second);
+
 //returns point lerped;
 t_point lerp_point(t_point from, t_point to, float delta);
 
@@ -308,6 +317,9 @@ t_quaternion quaternion_mul_matrix(t_mat4x4 m, t_quaternion i);
 //returns vector3 lookdirection, from vector2 angle
 t_vector3	lookdirection(t_vector2 angle);
 
+//returns vector3 lookdirection, from vector3 angle (only uses x and y for now)
+t_vector3	lookdirection_3(t_vector3 angle);
+
 //returns vector3 'i' multiplied by matrix 'm'
 t_vector3 vector3_mul_matrix(t_mat4x4 m, t_vector3 i);
 
@@ -326,5 +338,7 @@ t_vector2		point_to_vector2(t_point point);
 
 //Returns static str for given vector3
 char			*vector_string(t_vector3 vec);
+
+t_texture		vector2_to_texture(t_vector2 v);
 
 #endif

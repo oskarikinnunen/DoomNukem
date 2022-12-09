@@ -6,7 +6,8 @@
 
 typedef struct s_meshtri
 {
-	t_entity	entity;
+	t_entity	*entity;
+	uint16_t	saved_entityid;
 	t_face		face;
 	t_vector3	v[3];
 	t_vector2	uv[3];
@@ -21,7 +22,8 @@ typedef struct s_line
 
 typedef struct s_wall
 {
-	t_entity	entity;
+	t_entity	*entity;
+	uint16_t	saved_entityid;
 	t_line		line;
 	uint32_t	height;
 	bool		disabled; //TODO: implement
@@ -39,23 +41,12 @@ typedef struct s_room
 	uint32_t	ceilingcount;
 }	t_room;
 
-typedef struct s_gun
-{
-	t_entity	entity;
-	t_anim		shoot_anim;
-	t_vector3	holsterpos;
-	t_vector3	aimpos;
-	bool		readytoshoot;
-	float		firerate;
-	t_vector2	recoil;
-	t_vector2	recoilspread;
-	bool		semiauto;
-}	t_gun;
+struct s_world;
 
-void			init_roomwalls(t_room *room, t_sdlcontext *sdl);
+void			add_room_to_world(struct s_world *world, t_room *room);
 void			applywallmesh(t_wall *wall);
 void			applytrimesh(t_meshtri tri, t_object *obj);
-void			init_room_meshes(t_room *room, t_sdlcontext *sdl);
+void			init_room_meshes(t_room *room, t_sdlcontext *sdl, struct s_world *world);
 void			walls_init(struct s_world *world, struct s_sdlcontext *sdl);
 
 #endif

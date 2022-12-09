@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   conversions.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 17:23:31 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/14 12:55:55 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/08 16:26:26 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,4 +82,14 @@ char	*vector_string(t_vector3 vec)
 	ft_strcat(str, " z:");
 	ft_strcat(str, floatstr(vec.z));
 	return (str);
+}
+
+t_texture	vector2_to_texture(t_vector2 v)
+{
+	t_texture	t;
+
+	t.u = v.x;
+	t.v = v.y;
+	t.w = 1.0f;
+	return(t);
 }

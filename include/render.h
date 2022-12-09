@@ -3,9 +3,9 @@
 
 # include "../libs/installed_libs/include/SDL2/SDL.h" //TODO: make this work without relative path?
 # include "../libs/installed_libs/include/SDL2/SDL_ttf.h"
-//# include "/usr/local/lib"
 # include "vectors.h"
 # include "shapes.h"
+# include "objects.h" // only one function is using currently can be moved to doomnukem.h if needed
 
 # define CLR_PRPL 14231500
 # define CLR_TURQ 5505010
@@ -14,6 +14,11 @@
 # define CLR_DARKGRAY 0x292929
 # define CLR_GREEN 3002977
 # define CLR_RED 0xFF2919
+# define AMBER_0 0x551501
+# define AMBER_1 0x832d01
+//# define AMBER_2 0x831f00
+# define AMBER_2 0xbf7702
+# define AMBER_3 0xff9b05
 # define CLEARSCREEN "\e[1;1H\e[2J"
 
 typedef enum e_platform
@@ -73,31 +78,6 @@ typedef struct s_audio
 	uint32_t			wav_length;
 }	t_audio;
 
-typedef struct s_sdlcontext
-{
-	SDL_Window				*window;
-	SDL_Surface				*window_surface;
-	SDL_Surface				*surface;
-	t_platform				platform;
-	float					*zbuffer;
-	SDL_Renderer			*renderer; //TODO: for testing remove.
-	t_img					*images;
-	uint32_t				imagecount;
-	struct s_object			*objects;
-	uint32_t				objectcount;
-	t_font					font;
-	t_audio					*audio;
-	uint32_t				audiocount;
-	uint32_t				window_w;
-	uint32_t				window_h;
-	t_point					screensize;
-}	t_sdlcontext;
-
-
-void	alloc_image(t_img *img, int width, int height);
-t_img	*get_image_by_index(t_sdlcontext sdl, int index); //TODO: add comments
-t_img	*get_image_by_name(t_sdlcontext sdl, char *name);
-
 typedef struct	s_triangle
 {
 	t_quaternion	p[3];
@@ -135,7 +115,13 @@ typedef struct s_debug_occlusion
 	bool		cull_box;	// turns on cull boxes green not occluded, red occluded;
 }	t_debug_occlusion;
 
-typedef struct s_render
+typedef struct s_lightmap
+{
+	t_point		size;
+	uint8_t		*data;
+}	t_lightmap;
+
+typedef struct s_camera
 {
 	t_vector3			vtarget;
 	t_mat4x4			matcamera;
@@ -144,24 +130,63 @@ typedef struct s_render
 	t_mat4x4			matproj;
 	t_vector3			position;
 	t_vector3			lookdir;
-	t_triangle			*draw_triangles;
-	t_triangle			*calc_triangles;
-	t_point_triangle	*temp1;
-	t_point_triangle	*temp2;
-	uint32_t			temp1_count;
-	uint32_t			temp2_count;
-	uint32_t			draw_tri_count;
-	uint32_t			calc_tri_count;
+}	t_camera;
+
+typedef struct s_render
+{
+	t_camera			camera;
+	t_triangle			*occ_draw_tris;
+	t_triangle			*occ_calc_tris;
+	t_point_triangle	*worldspace_ptris;
+	t_point_triangle	*screenspace_ptris;
+	uint32_t			worldspace_ptri_count;
+	uint32_t			screenspace_ptri_count;
+	uint32_t			occ_tri_count;
+	uint32_t			occ_calc_tri_count;
 	t_img				*img;
 	t_img				*debug_img;
 	t_quaternion		*q;
 	bool				wireframe;
 	uint32_t			gizmocolor;
 	t_render_statistics	rs;
-	struct s_world		*world;
+	//struct s_world		*world;
 	t_debug_occlusion	occlusion;
-	uint32_t			*bitmask;
+	t_lightmap			*lightmap;
 }	t_render;
+
+
+typedef struct s_sdlcontext
+{
+	SDL_Window				*window;
+	SDL_Surface				*window_surface;
+	SDL_Surface				*surface;
+	SDL_Surface				*ui_surface;
+	SDL_Surface				*testsurf;
+	t_render				render;
+	t_platform				platform;
+	float					*zbuffer;
+	float					resolution_scaling;
+	SDL_Renderer			*renderer; //TODO: for testing remove.
+	t_img					*images;
+	uint32_t				imagecount;
+	struct s_object			*objects;
+	int						ps1_tri_div;
+	uint32_t				objectcount;
+	t_font					font;
+	t_audio					*audio;
+	uint32_t				audiocount;
+	uint32_t				window_w;
+	uint32_t				window_h;
+	t_point					screensize;
+}	t_sdlcontext;
+
+
+void	alloc_image(t_img *img, int width, int height);
+t_img	*get_image_by_index(t_sdlcontext sdl, int index); //TODO: add comments
+t_img	*get_image_by_name(t_sdlcontext sdl, char *name);
+
+void	rescale_surface(t_sdlcontext *sdl);
+
 
 //Draws image 'img' to pixels 'pxls', offset by point 'pos' and scaled to 'scale'
 void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale);
@@ -172,6 +197,9 @@ void	draw_alpha(t_sdlcontext sdl, t_point pos, uint32_t clr);
 void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr);
 void	drawcircle(t_sdlcontext sdl, t_point pos, int size, uint32_t clr);
 void	drawrectangle(t_sdlcontext, t_rectangle rect, uint32_t clr);
+void	draw_rectangle_filled(t_sdlcontext sdl, t_rectangle rect, uint32_t clr);
+void	draw_rectangle_raster(t_sdlcontext sdl, t_rectangle rect, uint32_t clr);
+void	draw_triangle(t_sdlcontext *sdl, t_point p1, t_point p2, t_point p3, uint32_t clr);
 
 /* INIT_RENDER.C */
 t_render	init_render(t_sdlcontext sdl, struct s_world *world);
@@ -179,12 +207,15 @@ void		free_render(t_render render);
 void		render_start(t_render *render);
 
 /* RENDER */
-void	render_triangle(t_sdlcontext *sdl, t_point_triangle triangle, t_img *img);
-void	render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size);
-void	render_ray(t_sdlcontext sdl, t_render render, t_vector3 from, t_vector3 to);
-int		triangle_clipagainstplane(t_vector3 plane_p, t_vector3 plane_n, t_triangle *in_tri, t_triangle out_tri[2]);
-void	draw_screen_to_worldspace_ray(t_sdlcontext sdl, t_render render, t_point origin, t_vector2 angle);
-
+void				render_triangle(t_sdlcontext *sdl, t_render *render, int index);
+void				render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size);
+void				render_ray(t_sdlcontext sdl, t_render render, t_vector3 from, t_vector3 to);
+int					triangle_clipagainstplane(t_vector3 plane_p, t_vector3 plane_n, t_triangle *in_tri, t_triangle out_tri[2]);
+void				draw_screen_to_worldspace_ray(t_sdlcontext sdl, t_render render, t_point origin, t_vector2 angle);
+void				clipped_point_triangle(t_render *render, t_sdlcontext sdl);
+void				render_buffer(t_sdlcontext *sdl, t_render *render);
+t_triangle			triangle_to_viewspace(t_triangle tritransformed, t_mat4x4 matview);
+t_point_triangle	triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_triangle clipped, t_sdlcontext sdl);
 /* AUDIO */
 
 // Mallocs the memory for sdl->audiocount many t_audio structs.
@@ -215,9 +246,6 @@ void	close_audio(t_sdlcontext *sdl);
 int		clip_triangle_against_occluder_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
 int		clip_triangle_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
 void	clipped(t_render *render, t_sdlcontext sdl);
-void	clipped_point_triangle(t_render *render, t_sdlcontext sdl);
-t_point_triangle	triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_triangle clipped, t_sdlcontext sdl);
-int clippedtriangles(t_triangle tritransformed, t_mat4x4 matview, t_triangle *clipped);
 
 int		point_clip_triangle_against_plane(t_vector2 plane_p, t_vector2 plane_n, t_point_triangle in_tri, t_point_triangle out_tri[2]);
 

@@ -3,24 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   spaceconversions.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 13:31:43 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/23 15:06:22 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/08 17:48:26 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "vectors.h"
-
-t_point worldtoeditorspace(t_editor *ed, t_vector2 worldcrd)
-{
-	t_point	result;
-
-	result = vector2_to_point(worldcrd);
-	//result = point_add(result, ed->offset);
-	return (result);
-}
 
 t_quaternion	transformed_vector3(t_transform transform, t_vector3 v)
 {
@@ -40,40 +31,40 @@ t_quaternion	transformed_vector3(t_transform transform, t_vector3 v)
 		forward = vector3_normalise(forward);
 		right = vector3_normalise(right);
 		up = vector3_normalise(up);
-		result.v = vector3_add(result.v, vector3_mul(forward, transform.location.y));
-		result.v = vector3_add(result.v, vector3_mul(right, transform.location.x));
-		result.v = vector3_add(result.v, vector3_mul(up, transform.location.z));
-		result.v = vector3_add(transform.parent->location, result.v);
-		
+		result.v = vector3_add(result.v, vector3_mul(forward, transform.position.y));
+		result.v = vector3_add(result.v, vector3_mul(right, transform.position.x));
+		result.v = vector3_add(result.v, vector3_mul(up, transform.position.z));
+		result.v = vector3_add(transform.parent->position, result.v);
 	}
 	else
 	{
-		result.v = vector3_add(transform.location, result.v);
+		result.v = vector3_add(transform.position, result.v);
 	}
-		
-	/*
-		if transform.parent != NULL
-			move y towards parents forward,
-			x towards parent right
-			z towars parent up
-			rotate object with parents eulers
-			rotate object with own eulers
-
-	*/
-	//result.w = 1.0f;
 	return (result);
+}
+
+t_vector3	anim_transformed_vector3(t_entity *entity, t_vector3 v)
+{
+	t_vector3	result;
+
+	/*if (entity->animation.active)
+	{
+		result = vector3_add(entity->obj->o_anim.frames[entity->animation.frame].deltavertices[index].delta, temp.v);
+	}*/
 }
 
 t_point vector3_to_screenspace(t_render r, t_vector3 vec, t_sdlcontext sdl)
 {
+	t_camera		c;
 	t_quaternion	proj_q;
 	t_point			result;
 
+	c = r.camera;
 	proj_q = vector3_to_quaternion(vec);
-	proj_q = quaternion_mul_matrix(r.matworld, proj_q);
-	proj_q = quaternion_mul_matrix(r.matview, proj_q);
+	proj_q = quaternion_mul_matrix(c.matworld, proj_q);
+	proj_q = quaternion_mul_matrix(c.matview, proj_q);
 	//clip
-	proj_q = quaternion_mul_matrix(r.matproj, proj_q);
+	proj_q = quaternion_mul_matrix(c.matproj, proj_q);
 	proj_q.v = vector3_div(proj_q.v, proj_q.w);
 	proj_q.v = vector3_negative(proj_q.v);
 

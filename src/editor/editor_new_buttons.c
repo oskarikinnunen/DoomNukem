@@ -6,142 +6,51 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 14:34:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/22 15:16:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 10:43:47 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "editor_tools.h"
 
-typedef void	(*t_button_click_fptr)(t_editor *ed);
-
-void	empty_click_func(t_editor *ed)
+static void changetool(t_editor *ed, t_sdlcontext *sdl, t_tool *newtool)
 {
-	ed->mouse.click_unhandled = false;
+	if (ed->tool != NULL && ed->tool->cleanup != NULL)
+		ed->tool->cleanup(ed, sdl);
+	ed->tool = newtool;
+	if (ed->tool->init != NULL)
+		ed->tool->init(ed, sdl);
 }
 
-void	set_tool_button(t_editor *ed)
+int		get_tool_index(t_editor *ed)
 {
-	ed->tool = get_button_editor_tool();
-	ed->mouse.click_unhandled = false;
+	if (ed->tool == get_room_tool())
+		return (1);
+	if (ed->tool == get_entity_tool())
+		return (2);
+	if (ed->tool == get_gun_tool())
+		return (3);
+	if (ed->tool == get_npc_tool())
+		return (4);
+	return (0);
 }
 
-void	set_tool_wall(t_editor *ed)
+void	update_editor_toolbar(t_editor *ed, t_autogui *toolbar)
 {
-	ed->tool = get_wall_tool();
-	ed->mouse.click_unhandled = false;
+	SDL_Event	e;
+	toolbar->rect.size.y = 60;
+	toolbar->rect.size.x = 324;
+	gui_start(toolbar);
+	gui_starthorizontal(toolbar);
+	if (gui_button("[1]Rooms", toolbar) || ed->hid.keystate >> KEYS_1MASK & 1)
+		changetool(ed, toolbar->sdl, get_room_tool());
+	if (gui_button("[2]Entities", toolbar) || ed->hid.keystate >> KEYS_2MASK & 1)
+		changetool(ed, toolbar->sdl, get_entity_tool());
+	if (gui_button("[3]Guns", toolbar) || ed->hid.keystate >> KEYS_3MASK & 1)
+		changetool(ed, toolbar->sdl, get_gun_tool());
+	if (gui_button("[4]NPCs", toolbar) || ed->hid.keystate >> KEYS_4MASK & 1)
+		changetool(ed, toolbar->sdl, get_npc_tool());
+	gui_endhorizontal(toolbar);
+	gui_end(toolbar);
 }
 
-void	set_tool_room(t_editor *ed)
-{
-	ed->tool = get_room_tool();
-	ed->mouse.click_unhandled = false;
-}
-
-void	set_tool_entity(t_editor *ed)
-{
-	ed->tool = get_entity_tool();
-	ed->mouse.click_unhandled = false;
-}
-
-void	editor_angle_y_sub(t_editor *ed)
-{
-	if (ed->angle.y == -RAD90 * 0.99f)
-	{
-		ed->angle.y += ft_degtorad(45.0f);
-		ed->forward_offset.y = -2.0f;
-	}
-	else
-	{
-		ed->angle.y = -RAD90 * 0.99f;
-		ed->forward_offset.y = 0.0f;
-	}
-}
-
-void	editor_goto_playmode(t_editor *ed)
-{
-	ed->gamereturn = game_switchmode;
-}
-
-#include "assert.h"
-
-t_click_func_def	get_button_func(int	index)
-{
-	static	t_click_func_def functions[256] = //add new button click functions here
-	{
-		{"empty_click", empty_click_func},
-		{"set_tool_button", set_tool_button},
-		{"set_tool_room", set_tool_room},
-		{"set_tool_entity", set_tool_entity},
-		{"set_tool_wall", set_tool_wall},
-		{"currently unused", empty_click_func},
-		{"currently unused", empty_click_func},
-		{"editor_angle_toggle", editor_angle_y_sub},
-		{"currently unused", empty_click_func}
-	};
-	int	i;
-
-	i = 0;
-	while (i < 256)
-	{
-		if (functions[i].onclick == NULL)
-			break ;
-		if (i == index)
-			return (functions[i]);
-		i++;
-	}
-	return (functions[0]);
-}
-
-t_guibutton *hovered(t_list *buttonlist, t_point mousepos)
-{
-	t_list		*l;
-	t_guibutton	*button;
-
-	l = buttonlist;
-	while (l != NULL)
-	{
-		button = (t_guibutton *)l->content;
-		if (pointrectanglecollision(mousepos, button->rect))
-			return (button);
-		l = l->next;
-	}
-	return (NULL);
-}
-
-void draw_buttons(t_editor ed, t_sdlcontext sdl)
-{
-	t_list		*l;
-	t_guibutton	button;
-	
-	l = ed.buttonlist;
-	while (l != NULL)
-	{
-		button = *(t_guibutton *)l->content;
-		if (button.img != NULL)
-			draw_image(sdl, button.rect.position, *button.img, button.rect.size);
-		if (pointrectanglecollision(ed.mouse.pos, button.rect))
-		{
-			drawrectangle(sdl, button.rect, CLR_GREEN);
-		}
-			
-		l = l->next;
-	}
-}
-
-void	initialize_buttons(t_list *buttonlist, t_sdlcontext sdl)
-{
-	t_list		*l;
-	t_guibutton	*button;
-
-	l = buttonlist;
-	while (l != NULL)
-	{
-		button = (t_guibutton *)l->content;
-		button->img = get_image_by_index(sdl, button->imageindex);
-		button->onclick = get_button_func(button->func_index).onclick;
-		button->rect.size.x = ft_clamp(button->rect.size.x, 8, 1024);
-		button->rect.size.y = ft_clamp(button->rect.size.y, 8, 1024);
-		l = l->next;
-	}
-}

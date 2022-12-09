@@ -15,7 +15,7 @@ static t_box get_entity_box_transformed(t_entity *e)
 	{
 		temp = e->obj->bounds.box.v[i];
 		temp = vector3_mul_vector3(e->transform.scale, temp);
-		temp = vector3_add(e->transform.location, temp);
+		temp = vector3_add(e->transform.position, temp);
 		box.v[i] = temp;
 		i++;
 	}
@@ -32,8 +32,8 @@ static void triangle_to_projection(t_sdlcontext sdl, t_render *render, t_triangl
 	index = 0;
 	while(index < 3)
 	{
-		t.p[index] = quaternion_mul_matrix(render->matworld, t.p[index]);
-		t.p[index] = quaternion_mul_matrix(render->matview, t.p[index]);
+		t.p[index] = quaternion_mul_matrix(render->camera.matworld, t.p[index]);
+		t.p[index] = quaternion_mul_matrix(render->camera.matview, t.p[index]);
 		index++;
 	}
 	clipamount = clip_triangle_against_plane((t_vector3){.z = 0.1f}, (t_vector3){.z = 1.0f}, t, buff);
@@ -43,7 +43,7 @@ static void triangle_to_projection(t_sdlcontext sdl, t_render *render, t_triangl
 		index = 0;
 		while(index < 3)
 		{
-			buff[i].p[index] = quaternion_mul_matrix(render->matproj, buff[i].p[index]);
+			buff[i].p[index] = quaternion_mul_matrix(render->camera.matproj, buff[i].p[index]);
 			buff[i].t[index] = buff[i].t[index];
 
 			buff[i].t[index].u = buff[i].t[index].u / buff[i].p[index].w;
@@ -62,18 +62,9 @@ static void triangle_to_projection(t_sdlcontext sdl, t_render *render, t_triangl
 			buff[i].p[index].v.y *= 0.5f * (float)sdl.window_h;
 			index++;
 		}
-		render->calc_triangles[render->calc_tri_count++] = buff[i];
+		render->occ_calc_tris[render->occ_calc_tri_count++] = buff[i];
 		i++;
 	}
-}
-
-static t_texture	vector2_to_texture(t_vector2 v)
-{
-	t_texture t;
-	t.u = v.x;
-	t.v = v.y;
-	t.w = 1.0f;
-	return(t);
 }
 
 void calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity)
@@ -188,7 +179,7 @@ static int	edge_to_screenspace(t_sdlcontext sdl, int *v, t_quaternion q[8], t_re
 		return(0);
 	for (int i = 0; i < 2; i++)
 	{
-		temp = quaternion_mul_matrix(render->matproj, (t_quaternion){edge->v[i], q[v[i]].w});
+		temp = quaternion_mul_matrix(render->camera.matproj, (t_quaternion){edge->v[i], q[v[i]].w});
 		edge->v[i] = vector3_div(temp.v, temp.w);
 		edge->v[i].x = -edge->v[i].x;
 		edge->v[i].y = -edge->v[i].y;
@@ -218,8 +209,8 @@ static int entity_plane_to_screenspace_edges(t_sdlcontext sdl, t_render *render,
 	while (i < 4)
 	{
 		temp = vector3_to_quaternion(b.v[i]);
-		temp = quaternion_mul_matrix(render->matworld, temp);
-		temp = quaternion_mul_matrix(render->matview, temp);
+		temp = quaternion_mul_matrix(render->camera.matworld, temp);
+		temp = quaternion_mul_matrix(render->camera.matview, temp);
 		q[i] = temp;
 		i++;
 	}
@@ -248,8 +239,8 @@ static int entity_box_to_screenspace_edges(t_sdlcontext sdl, t_render *render, t
 	while (i < 8)
 	{
 		temp = vector3_to_quaternion(b.v[i]);
-		temp = quaternion_mul_matrix(render->matworld, temp);
-		temp = quaternion_mul_matrix(render->matview, temp);
+		temp = quaternion_mul_matrix(render->camera.matworld, temp);
+		temp = quaternion_mul_matrix(render->camera.matview, temp);
 		q[i] = temp;
 		i++;
 	}
@@ -303,8 +294,8 @@ void update_occlusion_culling(t_sdlcontext sdl, t_render *render, t_entity *enti
 	occlusion = &entity->occlusion;
 
 	occlusion->occluder_count = 0;
-	render->draw_tri_count = 0;
-	render->calc_tri_count = 0;
+	render->occ_tri_count = 0;
+	render->occ_calc_tri_count = 0;
 	if (entity->obj->bounds.type == bt_plane)
 		count = entity_plane_to_screenspace_edges(sdl, render, entity, edges, q);
 	else
@@ -499,7 +490,7 @@ bool is_valid_occlude_check(int32_t id, t_entity *occlude, t_render *render, t_s
 		get_min_max_from_edges(&occl_square.min, &occl_square.max, occlude->occlusion.occluder, occlude->occlusion.occluder_count);
 		if (square_overlap(cull_square, occl_square) == true)
 		{
-			occl_dist = vector3_dist(vector3_add(occlude->obj->bounds.origin, occlude->transform.location), render->position);
+			occl_dist = vector3_dist(vector3_add(occlude->obj->bounds.origin, occlude->transform.position), render->camera.position);
 			if (occl_dist < cull_dist)
 				return(true);
 		}
@@ -509,7 +500,6 @@ bool is_valid_occlude_check(int32_t id, t_entity *occlude, t_render *render, t_s
 
 bool is_entity_occlusion_culled(t_sdlcontext sdl, t_render *render, t_entity *cull)
 {
-	//return;
 	int			i;
 	t_list		*l;
 	t_entity	*ent;
@@ -519,24 +509,24 @@ bool is_entity_occlusion_culled(t_sdlcontext sdl, t_render *render, t_entity *cu
 	int			count;
 	float		cull_dist;
 
-	render->draw_tri_count = 0;
-	render->calc_tri_count = 0;
+	render->occ_tri_count = 0;
+	render->occ_calc_tri_count = 0;
 	if (cull->occlusion.is_occluded == true)
 		return(true);
 	calculate_triangles(sdl, render, cull);
-	ta = render->draw_triangles;
-	tb = render->calc_triangles;
-	cull_dist = vector3_dist(vector3_add(cull->obj->bounds.origin, cull->transform.location), render->position);
-	get_min_max_from_triangles(&cull_square.min, &cull_square.max, render->draw_triangles, render->draw_tri_count);
+	ta = render->occ_draw_tris;
+	tb = render->occ_calc_tris;
+	cull_dist = vector3_dist(vector3_add(cull->obj->bounds.origin, cull->transform.position), render->camera.position);
+	get_min_max_from_triangles(&cull_square.min, &cull_square.max, render->occ_draw_tris, render->occ_tri_count);
 	count = calculate_tris_from_square(cull_square, cull, render);
-	l = render->world->roomlist;
+	/*l = render->world->roomlist;
 	while (l != NULL)
 	{
 		t_room room = *(t_room *)l->content;
 		i = 0;
 		while (i < room.wallcount)
 		{
-			ent = &room.walls[i].entity;
+			ent = room.walls[i].entity;
 			if (is_valid_occlude_check(cull->id, ent, render, cull_square, cull_dist))
 			{
 				count = is_culled(ent, count, &ta, &tb);
@@ -569,8 +559,8 @@ bool is_entity_occlusion_culled(t_sdlcontext sdl, t_render *render, t_entity *cu
 			swap(&ta, &tb);
 		}
 		l = l->next;
-	}
-	render->draw_tri_count = 0;
-	render->calc_tri_count = 0;
+	}*/
+	render->occ_tri_count = 0;
+	render->occ_calc_tri_count = 0;
 	return(false);
 }

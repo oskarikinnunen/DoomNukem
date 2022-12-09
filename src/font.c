@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   font.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 22:00:00 by raho              #+#    #+#             */
-/*   Updated: 2022/12/01 21:03:24 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/06 19:12:15 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,10 @@ static void	initialize_background_colors(t_font *font)
 
 void	load_fonts(t_font *font)
 {
-	const char	font_file[] = "assets/fonts/SchoonSquare.ttf";
+	const char	font_file[] = "assets/fonts/Apple2.ttf";
 	char		text[5];
 
-	font->font_sizes[0] = TTF_OpenFont(font_file, 25); // last argument is font size
+	font->font_sizes[0] = TTF_OpenFont(font_file, 8); // last argument is font size
 	if (!font->font_sizes[0])
 		error_log(EC_TTF_OPENFONT);
 	font->font_sizes[1] = TTF_OpenFont(font_file, 30);
@@ -73,7 +73,7 @@ void	load_fonts(t_font *font)
 	font->font = font->font_sizes[0]; // initialize the font pointer to the smallest font
 	initialize_font_colors(font);
 	initialize_background_colors(font);
-	font->color = font->font_colors.black; // initialize the font's color
-	font->box_color = font->background_colors.dark_grey; // initialize the print_text_boxed background color
+	font->color = color32_to_sdlcolor(AMBER_2); // initialize the font's color
+	font->box_color = font->background_colors.black; // initialize the print_text_boxed background color
 	font->text = ft_strcpy(text, "text"); // initialize text if it's used before being set to something specific
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector3_complex.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 11:43:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/30 18:19:55 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/06 17:30:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ float	vector3_magnitude(t_vector3 vec)
 float	vector3_dist(t_vector3 first, t_vector3 second)
 {
 	return (
-		sqrt(
-		(first.x - second.x) * (first.x - second.x)
+		sqrt
+		((first.x - second.x) * (first.x - second.x)
 		+ (first.y - second.y) * (first.y - second.y)
 		+ (first.z - second.z) * (first.z - second.z)));
 }

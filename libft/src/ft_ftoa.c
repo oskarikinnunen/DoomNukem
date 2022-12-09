@@ -3,18 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   ft_ftoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 11:53:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/02/22 03:49:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/05 18:06:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+#include <stdio.h>
+
 
 char	*ft_ftoa(float f, int dec)
 {
-	char	*final;
+	char	*str;
+
+	str = ft_strnew(32);
+	snprintf(str, 32, "%.2f", f);
+	return (str);
+	/*char	*final;
 	char	*strinteger;
 	char	*strdecimal;
 	int		neg;
@@ -30,9 +37,9 @@ char	*ft_ftoa(float f, int dec)
 	if (neg)
 		ft_strcat(final, "-");
 	ft_strcat(final, strinteger);
-	ft_strcat(final, ",");
+	ft_strcat(final, ".");
 	ft_strcat(final, strdecimal);
 	free(strinteger);
 	free(strdecimal);
-	return (final);
+	return (final);*/
 }

@@ -6,107 +6,77 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/02 21:30:52 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/09 20:02:27 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "editor_tools.h"
 #include "file_io.h"
-#include "inputhelp.h"
+#include "render.h"
 #include "objects.h"
-
-static void	drawsquare(t_sdlcontext sdl, t_point crd, int clr)
-{
-	int	i;
-
-	i = 0;
-	while (i < TILESIZE)
-	{
-		draw(sdl, point_add(crd, (t_point){i, 0}), clr);
-		draw(sdl, point_add(crd, (t_point){0, i}), clr);
-		draw(sdl, point_add(crd, (t_point){TILESIZE, i}), clr);
-		draw(sdl, point_add(crd, (t_point){TILESIZE, i}), clr);
-		i++;
-	}
-}
-
-static void	drawgrid(t_sdlcontext sdl, t_point origin)
-{
-	t_point	crd;
-
-	crd.y = origin.y;
-	while (crd.y < (TILESIZE * GRIDSIZE) + origin.y)
-	{
-		crd.x = origin.x;
-		while (crd.x < (TILESIZE * GRIDSIZE) + origin.x)
-		{
-			drawsquare(sdl, crd, CLR_GRAY);
-			crd.x += TILESIZE;
-		}
-		crd.y += TILESIZE;
-	}
-}
-
-
-static void	update_render_editor(t_render *render, t_editor ed) //TODO: move game3d matrix stuff 
-{
-	render->position = ed.position;
-	render->lookdir = ed.forward;
-	//render->matcamera = matrix_lookat(render->position, render->vtarget, (t_vector3){0, 0, 1});
-	//render->matview = matrix_quickinverse(render->matcamera);
-}
 
 int	editorloop(t_sdlcontext sdl)
 {
 	t_editor		ed;
 
 	bzero(&ed, sizeof(t_editor));
-	ed.buttonlist = load_chunk("buttons", "BUTN", sizeof(t_guibutton));
-	initialize_buttons(ed.buttonlist, sdl);
-	ed.world = load_world("world1", sdl);
+	ed.world = load_world("world1", &sdl);
 	
+	*(ed.world.debug_gui) = init_gui(&sdl, &ed.hid, &ed.player, sdl.screensize, "Debugging menu (F2)");
+	ed.world.debug_gui->minimum_size.y = 135;
+	ed.world.debug_gui->rect.position = sdl.screensize;
+	ed.toolbar_gui = init_gui(&sdl, &ed.hid, &ed.player, (t_point){5, 5}, "Toolbar");
+	ed.toolbar_gui.minimum_size = (t_point){165, 20};
+	ed.toolbar_gui.locked = true;
+
 	ed.gamereturn = game_continue;
 	ed.render = init_render(sdl, &ed.world);
-	//ed.angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
-	ed.angle = (t_vector2){-20.0f, -RAD90 * 0.99f};
-	ed.position = (t_vector3){500.0f, 500.0f, 200.0f};
-	ed.tool = get_npc_tool();
+	player_init(&ed.player, &sdl);
+	ed.player.transform.position = (t_vector3){1000, 1000, 250};
+	ed.player.gun->disabled = true;
+	/*ed.angle = (t_vector2){-20.0f, -RAD90 * 0.99f};
+	ed.position = (t_vector3){500.0f, 500.0f, 200.0f};*/
+	ed.tool = NULL;
+	//set_font_size(&sdl, 0);
 	while (ed.gamereturn == game_continue)
 	{
+		//bzero((uint32_t *)sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
+		//bzero((uint32_t *)sdl.ui_surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 		update_deltatime(&ed.clock);
 		update_deltatime(&ed.world.clock);
 		ed.gamereturn = editor_events(&ed);
-		move_editor(&ed);
-		//print_vector3(ed.position);
-		//print_vector3(ed.forward);
-		ed.position = (t_vector3){249.803513, 943.332031, 298.474457};
-		ed.forward = (t_vector3){0.550118, -0.574685, -0.605894};
-		update_render_editor(&ed.render, ed);
+		if (!ed.player.locked)
+			moveplayer(&ed.player, &ed.hid.input, ed.clock);
+		update_render(&ed.render, &ed.player);
+		//print_vector3(ed.render.camera.lookdir);
+	//print_vector3(ed.render.camera.position);
+//		ed.render.camera.lookdir = (t_vector3){-0.630105, 0.650868, -0.423484};
+//		ed.render.camera.position = (t_vector3){1208.355713, 912.929382, 154.534698};
 		screen_blank(sdl);
 		render_start(&ed.render);
-		update_world3d(sdl, &ed.world, &ed.render);
+		update_world3d(&ed.world, &ed.render);
+		update_editor_toolbar(&ed, &ed.toolbar_gui);
 		if (ed.tool != NULL)
 		{
-			ed.tool->draw_update(&ed, sdl); //Instant buttons here can toggle mouse.click unhandled, so draw first
-			ed.tool->update(&ed);
-			if (ed.tool->icon != NULL) //Indicates which tool is selected
-				draw_image(sdl, (t_point){ 8, sdl.window_h - 40 }, *ed.tool->icon, (t_point){32, 32});
-			else if (ed.tool->icon_name[0] != '\0')
-				ed.tool->icon = get_image_by_name(sdl, ed.tool->icon_name);
+			ed.tool->update(&ed, &sdl);
 		}
-		draw_buttons(ed, sdl);
-		ed.mouse.click_unhandled = false;
-		print_text(&sdl, "tab to unlock/lock mouse", (t_point){sdl.window_w / 2, 10});
-		print_text(&sdl, "shift + enter to go to playmode", (t_point){sdl.window_w / 2, 45});
+		
+		ed.hid.mouse.click_unhandled = false;
+		//print_text_boxed(&sdl, "tab to unlock/lock mouse, shift + enter to go to playmode", (t_point){sdl.window_w / 2, 10}, (t_point){sdl.window_w, sdl.window_h});
+		
 		char *fps = ft_itoa(ed.clock.fps);
 		print_text(&sdl, fps, (t_point){sdl.window_w - 80, 10});
 
 		drawcircle(sdl, point_div(sdl.screensize, 2), 4, CLR_BLUE);
 		free(fps);
-
+		if (!ed.player.gun->disabled)
+			render_entity(&sdl, &ed.render, &ed.player.gun->entity);
+		//update_debugconsole(&ed.world.debugconsole, &sdl, ed.clock.delta);
+		
+		rescale_surface(&sdl);
 		join_surfaces(sdl.window_surface, sdl.surface);
-
+		join_surfaces(sdl.window_surface, sdl.ui_surface);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 	}

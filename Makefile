@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
+#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/12/01 20:00:50 by raho             ###   ########.fr        #
+#    Updated: 2022/12/08 17:54:57 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,20 +38,21 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		editor.c editor_mouse.c editor_events.c \
 		editor_map_io.c	\
 		editor/tools/entity_tool.c \
-		editor/tools/wall_tool.c \
 		editor/tools/wall_tool_rooms.c \
 		editor/tools/npc_tool.c \
 		editor/tools/room_tool.c \
-		editor/tools/button_tool.c \
-		editor/imagedropdown.c \
+		editor/tools/gun_tool.c \
+		editor/tools/tool_common_functions.c \
+		editor/tools/autogui.c \
 		editor/editor_new_buttons.c \
 		editor/editor_instant_button.c \
-		editor/editor_movement.c \
 		editor/editor_raycast.c \
+		debug/debugconsole.c \
 		playmode.c inputhelper.c \
 		walls.c file_open.c \
-		moveplayer.c physics.c errors.c \
-		game_3d.c fill_triangle.c perfgraph.c \
+		moveplayer.c errors.c \
+		physics.c \
+		perfgraph.c \
 		png.c lua_conf.c list_helper.c \
 		spaceconversions.c \
 		entity/entity_animate.c \
@@ -63,19 +64,24 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		font.c text.c \
 		object_init.c \
 		object_primitives.c \
-		world.c \
-		init_render.c \
+		world.c player.c \
+		resolution_scaling.c \
 		controller.c \
 		audio.c \
 		occlusion/occlusion.c \
 		occlusion/frustrum_culling.c \
 		occlusion/peripheral_culling.c \
 		occlusion/occlusion_culling.c \
-		occlusion/bitmask_culling.c \
 		occlusion/culling_debug.c \
-		render_clip.c \
 		surface_tools.c \
-		colors.c
+		colors.c \
+		render/render_entity.c \
+		render/render_clip.c \
+		render/render_triangle.c \
+		render/init_render.c \
+		render/render_space.c \
+		lighting/bake_lighting.c \
+		lighting/area_light.c 
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \
 		vector2_elementary.c vector2_shorthands.c \
@@ -96,7 +102,7 @@ OBJ= $(SRC:.c=.o)
 #Compilation stuff:
 INCLUDE= -I$(INSTALLED_LIBS_DIR)/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
 CC= gcc
-CFLAGS= $(INCLUDE) -g -finline-functions -O2#-march=native
+CFLAGS= $(INCLUDE) -g -finline-functions -O2 #-march=native
 
 UNAME= $(shell uname)
 ifeq ($(UNAME), Darwin)

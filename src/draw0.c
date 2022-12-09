@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw0.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 21:51:49 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/09 16:35:07 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr)
 	if (pos.x < 0 || pos.x >= sdl.window_w - 2
 		|| pos.y < 0 || pos.y >= sdl.window_h - 2)
 		return ;
-	((uint32_t *)sdl.surface->pixels)[pos.x + (pos.y * sdl.window_w)] = clr;
+	((uint32_t *)sdl.ui_surface->pixels)[pos.x + (pos.y * sdl.window_w)] = clr;
 	sdl.zbuffer[pos.x + (pos.y * sdl.window_w)] = 2.0f;
 }
 
@@ -37,6 +37,7 @@ void	draw_alpha(t_sdlcontext sdl, t_point pos, uint32_t clr)
 void	screen_blank(t_sdlcontext sdl)
 {
 	bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
+	bzero(sdl.ui_surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 	bzero(sdl.zbuffer, sizeof(float) * sdl.window_h * sdl.window_w);
 }
 
@@ -78,6 +79,66 @@ void	drawrectangle(t_sdlcontext sdl, t_rectangle rect, uint32_t clr)
 	to = point_add(from, (t_point){-rect.size.x, 0});
 	drawline(sdl, from, to, clr);
 }
+
+void	draw_rectangle_raster(t_sdlcontext sdl, t_rectangle rect, uint32_t clr)
+{
+	t_point	p;
+	int		i;
+
+	p = rect.position;
+	i = 0;
+	while (p.x < rect.position.x + rect.size.x)
+	{
+		p.y = rect.position.y;
+		while (p.y < rect.position.y + rect.size.y)
+		{
+			if (!(p.x % 2 == 0 && p.y % 2 == 0))
+				draw(sdl, p, clr);
+			p.y++;
+			i++;
+		}
+		p.x++;
+		i++;
+	}
+}
+
+void	draw_rectangle_filled(t_sdlcontext sdl, t_rectangle rect, uint32_t clr)
+{
+	t_point	p;
+	int		i;
+
+	p = rect.position;
+
+	i = 0;
+	while (p.x < rect.position.x + rect.size.x)
+	{
+		p.y = rect.position.y;
+		while (p.y < rect.position.y + rect.size.y)
+		{
+			//if (p.x % 2 == 0 && p.y % 2 == 0)
+			draw(sdl, p, clr);
+			p.y++;
+			i++;
+		}
+		p.x++;
+		i++;
+	}
+}
+
+void	draw_triangle(t_sdlcontext *sdl, t_point p1, t_point p2, t_point p3, uint32_t clr)
+{
+	drawline(*sdl, p1, p2, clr);
+	drawline(*sdl, p2, p3, clr);
+	drawline(*sdl, p3, p1, clr);
+}
+
+
+/*void	draw_triangle_filled(t_sdlcontext *sdl, t_point p1, t_point p2, t_point p3, uint32_t clr)
+{
+	drawline(*sdl, p1, p2, clr);
+	drawline(*sdl, p2, p3, clr);
+	drawline(*sdl, p3, p1, clr);
+}*/
 
 void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale)
 {
@@ -122,7 +183,9 @@ void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr)
 	static t_bresenham	b;
 
 	if ((from.x == to.x && from.y == to.y)|| from.x < 0 || to.x < 0 || from.x > sdl.window_w - 1 || to.x > sdl.window_w - 1 || from.y < 0 || to.y < 0 || from.y > sdl.window_h - 1 || to.y > sdl.window_h - 1)
-		return;
+	{
+		return ;
+	}
 	populate_bresenham(&b, from, to);
 	draw(sdl, b.local, clr);
 	while (step_bresenham(&b) != 1)

@@ -3,61 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   moveplayer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/30 18:10:17 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/07 10:10:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
-#include "inputhelp.h"
+ 
 #include "bresenham.h"
 #include "objects.h"
+#include "entity.h"
 #include "libft.h"
-
- // Might need the whole gamecontext but I'm trying to avoid it, (trying to avoid global state)
- // TODO: normalize movement vector
-/*
-static t_vector3	movementvector(int32_t keystate, float angle)
-{
-	t_vector3	movement;
-
-	movement = vector3_zero();
-	if ((keystate >> KEYS_UPMASK) & 1) 
-	{
-		movement.x += sin(angle);
-		movement.y += cos(angle);
-	}
-	if ((keystate >> KEYS_DOWNMASK) & 1)
-	{
-		movement.x -= sin(angle);
-		movement.y -= cos(angle);
-	}
-	// strafe
-	if ((keystate >> KEYS_LEFTMASK) & 1)
-	{
-		movement.x += sin(angle + RAD90);
-		movement.y += cos(angle + RAD90);
-	}
-	if ((keystate >> KEYS_RIGHTMASK) & 1)
-	{
-		movement.x += -sin(angle + RAD90);
-		movement.y += -cos(angle + RAD90);
-	}
-	//flying
-	if ((keystate >> KEYS_SPACEMASK) & 1)
-	{
-		movement.z += 0.25f;
-	}
-	if ((keystate >> KEYS_CTRLMASK) & 1)
-	{
-		movement.z -= 0.25f;
-	}
-	movement = vector3_clamp_magnitude(movement, MAXMOVEMENTSPEED);
-	return (movement);
-}
-*/
 
 /* Previous working version before implementing updateinput */
 /*
@@ -142,59 +100,86 @@ float	fmovetowards(float f1, float f2, float delta)
 	return (result);
 }
 
-void	updateguntransform(t_game *game, t_player *player)
+t_vector3	vector3_movetowards2(t_vector3 vec, t_vector3 to, float delta)
+{
+	t_vector3	result;
+
+	result.x = fmovetowards(vec.x, to.x, delta);
+	result.y = fmovetowards(vec.y, to.y, delta);
+	result.z = fmovetowards(vec.z, to.z, delta);
+	return (result);
+}
+
+void	updateguntransform(t_input *input, t_clock *clock, t_player *player)
 {
 	static float	lerp;
 	t_gun			*gun;
+	t_vector3		neutralpos;
 
+	if (player->gun->disabled)
+		return ;
 	gun = player->gun;
-	if (game->input.aim)
-		lerp += 0.02f * game->clock.delta;
+	if (input->aim)
+		lerp += 0.02f * clock->delta;
 	else
-		lerp -= 0.02f * game->clock.delta;
+		lerp -= 0.02f * clock->delta;
 	lerp = ft_clampf(lerp, 0.0f, 1.0f);
-	gun->entity.transform.location = vector3_lerp(gun->holsterpos, gun->aimpos, lerp);
-	if (game->input.shoot && gun->readytoshoot)
+	neutralpos = vector3_lerp(gun->holsterpos, gun->aimpos, lerp);
+	gun->entity.transform.position = neutralpos;
+	//neutralpos = gun->entity.transform.location;
+	if (input->shoot && gun->readytoshoot)
 	{
-		gun->shoot_anim.framerate = 120;
-		gun->shoot_anim.loop = false;
-		gun->shoot_anim.lastframe = 2;
 		start_anim(&gun->shoot_anim, anim_forwards);
+		start_anim(&gun->view_anim, anim_forwards);
 		gun->readytoshoot = false;
+		gun->lastshottime = clock->prev_time;
 	}
-	else if (!game->input.shoot && !gun->shoot_anim.active)
+	else if (!input->shoot && !gun->shoot_anim.active && clock->prev_time > gun->lastshottime + gun->firedelay)
 		gun->readytoshoot = true;
-	update_anim(&gun->shoot_anim, game->clock.delta);
-	gun->entity.transform.location = vector3_add(gun->entity.transform.location, vector3_mul(vector3_up(), gun->shoot_anim.lerp * -1.0f));
-	gun->entity.transform.location = vector3_add(gun->entity.transform.location, vector3_mul((t_vector3){.x = 1.0f}, gun->shoot_anim.lerp * -0.25f));
-	gun->entity.transform.location.z += vector2_magnitude(game->input.move) * cosf((game->clock.prev_time * 0.007f)) * 0.2f;
-	gun->entity.transform.rotation.z += vector2_magnitude(game->input.move) * cosf((game->clock.prev_time * 0.007f)) * ft_degtorad(0.15f);
-	gun->entity.transform.rotation.y = fmovetowards(gun->entity.transform.rotation.y, ft_degtorad(game->input.move.y * 1.15f), 0.0006f * game->clock.delta);
-	gun->entity.transform.rotation.y += ft_flerp(0.0f, ft_degtorad(10.0f), gun->shoot_anim.lerp);
+	if (gun->fullauto && clock->prev_time > gun->lastshottime + gun->firedelay)
+		gun->readytoshoot = true;
+	update_anim(&gun->shoot_anim, clock->delta);
+	update_anim(&gun->view_anim, clock->delta);
+	//recoil.y
+	gun->entity.transform.position = vector3_add(gun->entity.transform.position, vector3_mul(vector3_up(), gun->shoot_anim.lerp * gun->recoiljump.y));
+	//gun->entity.transform.location = vector3_movetowards
+	//gun->entity.transform.location.z = fmovetowards(neutralpos.z)
+	//gun->entity.transform.location = vector3_add(gun->entity.transform.location, vector3_mul((t_vector3){.x = 1.0f}, gun->shoot_anim.lerp * -0.25f));
+	//bobbing:
+	gun->entity.transform.position.z += vector2_magnitude(input->move) * cosf((clock->prev_time * 0.007f)) * 0.2f;
+	gun->entity.transform.rotation.z += vector2_magnitude(input->move) * cosf((clock->prev_time * 0.007f)) * ft_degtorad(0.15f);
+	//recoilrecovery
+	gun->entity.transform.rotation.y = fmovetowards(gun->entity.transform.rotation.y, ft_degtorad(input->move.y * 1.15f), gun->anglerecovery * clock->delta);
+	//recoil.y
+	gun->entity.transform.rotation.y += ft_flerp(0.0f, ft_degtorad(gun->recoilangle.y), gun->shoot_anim.lerp);
 	gun->entity.transform.rotation.y = ft_clampf(gun->entity.transform.rotation.y, ft_degtorad(-0.5f), ft_degtorad(15.0f));
 	gun->entity.transform.rotation.x = ft_flerp(0.0f, ft_degtorad(2.0f), gun->shoot_anim.lerp);
-	float	zturn = game->input.move.x * 2.0f;
-	zturn += game->input.turn.x * 5.0f;
+	float	zturn = input->move.x * 2.0f;
+	zturn += input->turn.x * 5.0f;
 	zturn = ft_clampf(zturn, ft_degtorad(-2.5f), ft_degtorad(2.5f));
-	gun->entity.transform.rotation.z = fmovetowards(gun->entity.transform.rotation.z, zturn, 0.0004f * game->clock.delta);
-	player->transform.rotation.y += gun->shoot_anim.lerp * game->clock.delta * 0.001f;
+	if (player->locked)
+		return ;
+	gun->entity.transform.rotation.z = fmovetowards(gun->entity.transform.rotation.z, zturn, 0.0004f * clock->delta);
+	player->transform.rotation.y += gun->view_anim.lerp * clock->delta * gun->viewrecoil.y; //Separate view jump animation that is longer than gun jump animation?
 }
 
-void	moveplayer(t_game *game)
+void	moveplayer(t_player *player, t_input *input, t_clock clock)
 {
 	t_vector3	move_vector;
 	t_vector3	potential_pos; //Unused right now, will be used when collision is reimplemented
-	float	angle;
+	float		angle;
 
-	updateguntransform(game, &game->player);
+	updateguntransform(input, &clock, player);
+	if (player->locked)
+		return ;
 	move_vector = vector3_zero();
-	t_vector2 delta_angle = vector2_mul(game->input.turn, game->clock.delta);
-	game->player.transform.rotation = vector3_sub(game->player.transform.rotation, (t_vector3){delta_angle.x, delta_angle.y, 0.0f}); //TODO: this
-	game->player.transform.rotation.y = ft_clampf(game->player.transform.rotation.y, -RAD90 * 0.99f, RAD90 * 0.99f);
-	game->player.lookdir = lookdirection((t_vector2){game->player.transform.rotation.x, game->player.transform.rotation.y});
-	move_vector = player_movementvector(game->input, game->player);
-	move_vector = vector3_mul(move_vector, game->clock.delta * MOVESPEED);
-	game->player.speed = move_vector;
-	game->player.transform.location = vector3_add(game->player.transform.location, move_vector);
-	game->player.transform.location.z = ft_clampf(game->player.transform.location.z, game->player.height, 1000.0f);
+	t_vector2 delta_angle = vector2_mul(input->turn, clock.delta);
+	player->transform.rotation = vector3_sub(player->transform.rotation, (t_vector3){delta_angle.x, delta_angle.y, 0.0f}); //TODO: this
+	player->transform.rotation.y = ft_clampf(player->transform.rotation.y, -RAD90 * 0.99f, RAD90 * 0.99f);
+	player->lookdir = lookdirection((t_vector2){player->transform.rotation.x, player->transform.rotation.y});
+	move_vector = player_movementvector(*input, *player);
+	move_vector = vector3_mul(move_vector, clock.delta * MOVESPEED);
+	player->speed = move_vector;
+	player->transform.position = vector3_add(player->transform.position, move_vector);
+	player->transform.position.z = ft_clampf(player->transform.position.z, player->height, 1000.0f);
 }
