@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/08 13:44:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/09 20:04:39 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,10 @@ void update_world3d(t_world *world, t_render *render)
 	gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);
 	gui_labeled_int("Entity count:", world->entitycache.existing_entitycount, world->debug_gui);
 	gui_labeled_float_slider("Resolution scale:", &world->sdl->resolution_scaling, 0.01f, world->debug_gui);
+	gui_labeled_float_slider("Audio max:", &world->sdl->audio.max_volume, 0.01f, world->debug_gui);
+	if (gui_button("Test audio", world->debug_gui))
+		;
+	world->sdl->audio.max_volume = ft_clampf(world->sdl->audio.max_volume, 0.25f, 1.0f);
 	world->sdl->resolution_scaling = ft_clampf(world->sdl->resolution_scaling, 0.25f, 1.0f);
 	t_point	res;
 	res = point_fmul(sdl->screensize, sdl->resolution_scaling);

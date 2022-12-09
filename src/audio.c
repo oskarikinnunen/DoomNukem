@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/28 15:14:01 by raho              #+#    #+#             */
-/*   Updated: 2022/12/09 19:41:20 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/09 19:44:37 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,6 @@ void	load_audio(t_audio *audio)
 	
 	load_sounds(audio);
 	
-	set_max_volume(audio, 0.5);
+	set_max_volume(audio, 1.0f);
 	
 }

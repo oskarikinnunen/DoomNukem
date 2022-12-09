@@ -85,18 +85,22 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	game.world = load_world("world1", &sdl);
 	*(game.world.debug_gui) = init_gui(&sdl, &game.hid, &game.player, sdl.screensize, "Debugging menu (F2)");
 	game.world.debug_gui->rect.size.y = 120;
+	game.world.debug_gui->hidden = false;
+	game.world.debug_gui->rect.position.y = sdl.window_h / 2;
+	game.world.debug_gui->rect.size.y = sdl.window_h / 2;
 	player_init(&game.player, &sdl);
 	initialize_controllers(&game.hid);
 	while (gr == game_continue)
 	{
 		update_deltatime(&game.clock);
 		update_deltatime(&game.world.clock);
-		gr = handleinput(&game.hid);
+		//gr = handleinput(&game.hid);
+		gr = editor(&game.hid);
 
 		if (sound)
 		{
 			sound = false;
-			play_sound(&sdl.audio, "rock-music.wav");
+			play_sound(&sdl.audio, "pistol1.wav");
 		}
 
 
@@ -110,7 +114,9 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 		game.player.gun->transform.rotation.x = game.player.angle.x + ft_degtorad(100.0f);*/
 		render_entity(sdl, &render, &game.player.gun->entity);
 		//DRAWPERFGRAPH
+		rescale_surface(&sdl);
 		join_surfaces(sdl.window_surface, sdl.surface);
+		join_surfaces(sdl.window_surface, sdl.ui_surface);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 		
