@@ -76,6 +76,8 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 {
 	t_gamereturn	gr;
 	t_render		render;
+	bool			sound = 1;
+	int				volume = 0;
 
 	//alloc_image(&pgraph.image, PERFGRAPH_SAMPLES + 1, PERFGRAPH_SAMPLES + 1);
 	gr = game_continue;
@@ -87,11 +89,17 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	initialize_controllers(&game.hid);
 	while (gr == game_continue)
 	{
-		pause_unused_audio(sdl);
-		play_music(sdl.audio[0]);
 		update_deltatime(&game.clock);
 		update_deltatime(&game.world.clock);
 		gr = handleinput(&game.hid);
+
+		if (sound)
+		{
+			sound = false;
+			play_sound(&sdl.audio, "rock-music.wav");
+		}
+
+
 		moveplayer(&game.player, &game.hid.input, game.clock);
 		update_render(&render, &game.player);
 		screen_blank(sdl); //Combine with render_start?
@@ -105,6 +113,8 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 		join_surfaces(sdl.window_surface, sdl.surface);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
+		
+		
 	}
 	free_render(render);
 	if (gr == game_exit)

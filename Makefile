@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/12/09 12:55:47 by raho             ###   ########.fr        #
+#    Updated: 2022/12/09 16:24:58 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,16 +16,17 @@ NAME = DoomNukem
 #Library dependencies:
 
 LIBS_DIR = libs
+INSTALLED_LIBS_DIR = $(LIBS_DIR)/installed_libs
+
 SDL2_DIR = $(LIBS_DIR)/SDL2-2.0.8
 SDL2_TTF_DIR = $(LIBS_DIR)/SDL2_ttf-2.0.15
 FREETYPE_DIR = $(LIBS_DIR)/freetype-2.9
-INSTALLED_LIBS_DIR = $(LIBS_DIR)/installed_libs
+
 SDL2 = $(INSTALLED_LIBS_DIR)/lib/libSDL2.a
 SDL2_TTF = $(INSTALLED_LIBS_DIR)/lib/libSDL2_ttf.a
 FREETYPE = $(INSTALLED_LIBS_DIR)/lib/libfreetype.a
+
 LIBFT = libft/libft.a
-
-
 
 LUAFOLDER= lua-5.3.6
 LUA= $(LUAFOLDER)/install/lib/liblua.a #TODO: find out real name!
@@ -95,17 +96,20 @@ SRC+= $(VECTORSRC)
 OBJ= $(SRC:.c=.o)
 
 #Compilation stuff:
-INCLUDE= -I$(INSTALLED_LIBS_DIR)/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
+INCLUDE= -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include \
+			-I$(INSTALLED_LIBS_DIR)/include/SDL2/ \
+			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
 CC= gcc
 CFLAGS= $(INCLUDE) -g -finline-functions -O2 #-march=native
+LDFLAGS = -Wl,-rpath=$(INSTALLED_LIBS_DIR)/lib/FMOD
 
 UNAME= $(shell uname)
 ifeq ($(UNAME), Darwin)
 override CFLAGS += '-D GL_SILENCE_DEPRECATION'
-LIBS= $(LIBFT) -lm -framework OpenGL `$(INSTALLED_LIBS_DIR)/bin/sdl2-config --cflags --libs` -L$(INSTALLED_LIBS_DIR)/lib -lSDL2_ttf
+LIBS= $(LIBFT) -lm -framework OpenGL -L$(INSTALLED_LIBS_DIR)/lib -lSDL2 -lSDL2_ttf -L$(INSTALLED_LIBS_DIR)/lib/FMOD -lfmod -lfmodL -rpath $(INSTALLED_LIBS_DIR)/lib/FMOD
 AUTOGEN =
 else ifeq ($(UNAME), Linux)
-LIBS =  $(LIBFT) -lm -lGL `$(INSTALLED_LIBS_DIR)/bin/sdl2-config --cflags --libs` -L$(INSTALLED_LIBS_DIR)/lib -lSDL2_ttf
+LIBS =  $(LIBFT) -lm -lGL -L$(INSTALLED_LIBS_DIR)/lib -lSDL2 -lSDL2_ttf -L$(INSTALLED_LIBS_DIR)/lib/FMOD -lfmod -lfmodL
 AUTOGEN = ./autogen.sh &&
 else
 warning:
@@ -128,7 +132,11 @@ $(LIBFT):
 	make -C libft
 
 clean-libs:
-	rm -rf $(INSTALLED_LIBS_DIR)
+	rm -rf $(SDL2_DIR) $(FREETYPE_DIR) $(SDL2_TTF_DIR) \
+		$(INSTALLED_LIBS_DIR)/bin $(INSTALLED_LIBS_DIR)/include/freetype2 \
+		$(INSTALLED_LIBS_DIR)/include/SDL2 $(INSTALLED_LIBS_DIR)/lib/cmake \
+		$(INSTALLED_LIBS_DIR)/lib/pkgconfig $(INSTALLED_LIBS_DIR)/lib/lib* \
+		$(INSTALLED_LIBS_DIR)/share
 
 re-libs: clean-libs $(SDL2) $(FREETYPE) $(SDL2_TTF)
 

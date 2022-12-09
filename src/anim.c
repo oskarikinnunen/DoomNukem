@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   anim.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:56:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 17:13:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/09 18:20:29 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,10 @@ void	update_anim(t_anim *anim, uint32_t delta)
 			anim->frame = (int)(anim->framerate * now_second);
 			anim->frame = ft_clampf(anim->frame, 0, anim->lastframe);
 		}
-		if (anim->audioevent != NULL && anim->frame == anim->audioevent->frame)
+		/* if (anim->audioevent != NULL && anim->frame == anim->audioevent->frame)
 		{
 			force_play_audio(*anim->audioevent->audio);
-		}
+		} */
 	}
 	if (anim->mode == anim_backwards)
 	{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 07:24:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/09 17:53:55 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 	SDL_DisplayMode	mode;
 	sdl->resolution_scaling = 1.0f;
 	if (SDL_Init(SDL_INIT_VIDEO) < 0 \
-		|| SDL_Init(SDL_INIT_AUDIO) < 0 \
 		|| SDL_Init(SDL_INIT_EVENTS) < 0 \
 		|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0 \
 		|| TTF_Init() < 0)
@@ -82,7 +81,7 @@ static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 	if (sdl->ui_surface == NULL)
 		error_log(EC_SDL_CREATERGBSURFACE);
 	load_fonts(&sdl->font);
-	load_audio(sdl);
+	load_audio(&sdl->audio);
 
 	sdl->zbuffer = malloc(sdl->window_w * sdl->window_h * sizeof(float));
 	objects_init(sdl);
@@ -114,7 +113,7 @@ static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 
 void	quit_game(t_sdlcontext *sdl)
 {
-	close_audio(sdl);
+	close_audio(&sdl->audio);
 	SDL_Quit();
 	exit(0);
 }

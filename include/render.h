@@ -6,6 +6,8 @@
 # include "vectors.h"
 # include "shapes.h"
 
+# include "fmod.h"
+
 # define CLR_PRPL 14231500
 # define CLR_TURQ 5505010
 # define CLR_BLUE 255
@@ -68,13 +70,19 @@ typedef struct s_font
 	char				*text;
 }	t_font;
 
+typedef struct s_audiosample
+{
+	char			name[64];
+	FMOD_SOUND		*sound;
+	FMOD_CHANNEL	*channel;
+}	t_audiosample;
+
 typedef struct s_audio
 {
-	char				name[128];
-	SDL_AudioDeviceID	device;
-	SDL_AudioSpec		wav_spec;
-	uint8_t				*wav_start;
-	uint32_t			wav_length;
+	FMOD_SYSTEM			*system;
+	float				max_volume;
+	uint32_t			samplecount;
+	t_audiosample		sample[10];
 }	t_audio;
 
 typedef struct	s_triangle
@@ -160,8 +168,7 @@ typedef struct s_sdlcontext
 	int						ps1_tri_div;
 	uint32_t				objectcount;
 	t_font					font;
-	t_audio					*audio;
-	uint32_t				audiocount;
+	t_audio					audio;
 	uint32_t				window_w;
 	uint32_t				window_h;
 	t_point					screensize;
@@ -202,30 +209,15 @@ void	draw_screen_to_worldspace_ray(t_sdlcontext sdl, t_render render, t_point or
 
 /* AUDIO */
 
-// Mallocs the memory for sdl->audiocount many t_audio structs.
-// Then calls load_wav and open_audiodevice to finish setting up audio.
-void	load_audio(t_sdlcontext *sdl);
-void	load_wav(t_audio *audio, char *file);
+void	load_audio(t_audio *sudio);
 
-// Each sound file needs to be opened to its own t_audio struct.
-void	open_audiodevice(t_audio *audio);
+void	play_sound(t_audio *audio, const char *name);
 
-// Plays the audio. In the case there are multiple audio calls using the same device,
-// play_audio waits until the previous audio in the queue is finished and then plays.
-void	play_audio(t_audio audio);
+void	pause_audio(t_audio *audio);
 
-// Clears the audio queue and plays the audio right away
-void	force_play_audio(t_audio audio);
+void	play_music(t_audio *audio);
 
-// Pauses a audio device. If you call play_audio, it continues from where it was paused at.
-void	pause_audio(t_audio audio);
-
-// Loops the background music.
-void	play_music(t_audio audio);
-
-// Clears and pauses all unused audio device queues.
-void	pause_unused_audio(t_sdlcontext sdl);
-void	close_audio(t_sdlcontext *sdl);
+void	close_audio(t_audio *audio);
 
 int		clip_triangle_against_occluder_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
 int		clip_triangle_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
