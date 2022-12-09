@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+         #
+#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/12/07 08:34:40 by okinnune         ###   ########.fr        #
+#    Updated: 2022/12/09 12:55:47 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -153,27 +153,27 @@ $(SDL2_TTF_DIR)/unpacked:
 	cd $(SDL2_TTF_DIR) && touch unpacked
 
 
-$(SDL2_DIR)/configured: $(SDL2_DIR)/unpacked
-	cd $(SDL2_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR) SDL_AUDIODRIVER=pulseaudio && touch configured
+$(SDL2_DIR)/ready_to_build: $(SDL2_DIR)/unpacked
+	cd $(SDL2_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR) SDL_AUDIODRIVER=pulseaudio && touch ready_to_build
 
-$(FREETYPE_DIR)/configured: $(FREETYPE_DIR)/unpacked
-	cd $(FREETYPE_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR) && touch configured
+$(FREETYPE_DIR)/ready_to_build: $(FREETYPE_DIR)/unpacked
+	cd $(FREETYPE_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR) && touch ready_to_build
 
 # On Linux autogen.sh will be executed in SDL2_TTF_DIR before running configure and make install
 # On Linux pkg-config overrides prefixes with default path so we change the PKG_CONFIG_PATH
-$(SDL2_TTF_DIR)/configured: $(SDL2_TTF_DIR)/unpacked
+$(SDL2_TTF_DIR)/ready_to_build: $(SDL2_TTF_DIR)/unpacked
 	cd $(SDL2_TTF_DIR) && $(AUTOGEN) ./configure	\
 	--prefix=$(PWD)/$(INSTALLED_LIBS_DIR)	\
 	--with-ft-prefix=$(PWD)/$(INSTALLED_LIBS_DIR)	\
 	--with-sdl-prefix=$(PWD)/$(INSTALLED_LIBS_DIR)	\
 	PKG_CONFIG_PATH=$(PWD)/$(INSTALLED_LIBS_DIR)/lib/pkgconfig	\
-	&& touch configured
+	&& touch ready_to_build
 
-$(SDL2): $(SDL2_DIR)/configured
+$(SDL2): $(SDL2_DIR)/ready_to_build
 	cd $(SDL2_DIR) && make && make install
 
-$(FREETYPE): $(FREETYPE_DIR)/configured
+$(FREETYPE): $(FREETYPE_DIR)/ready_to_build
 	cd $(FREETYPE_DIR) && make && make install
 
-$(SDL2_TTF): $(SDL2_TTF_DIR)/configured
+$(SDL2_TTF): $(SDL2_TTF_DIR)/ready_to_build
 	cd $(SDL2_TTF_DIR) && make && make install
