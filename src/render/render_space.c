@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 15:36:10 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/09 19:58:27 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/10 19:06:51 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,35 @@ static void clip_and_render_triangles(t_sdlcontext *sdl, t_render *render)
 	render->lightmap = NULL;
 }
 
+typedef	struct s_rgb
+{
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
+	uint8_t a;
+} t_rgb;
+
+typedef struct s_color
+{
+	union cdata_u
+	{
+		t_rgb		rgb;
+		uint32_t	color;
+	} dat;
+}	t_color;
+
+static uint32_t	flip_channels(uint32_t clr)
+{
+	t_color		result;
+	t_color		orig;
+	orig.dat.color = clr;
+	result.dat.rgb.r = orig.dat.rgb.b;
+	result.dat.rgb.g = orig.dat.rgb.g;
+	result.dat.rgb.b = orig.dat.rgb.r;
+	result.dat.rgb.a = orig.dat.rgb.a;
+	return (result.dat.color);
+}
+
 void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 {
 	t_object		*obj;
@@ -169,11 +198,10 @@ void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 		}
 		if (index + 1 == obj->face_count || obj->faces[index].materialindex != obj->faces[index + 1].materialindex)
 		{
-			render->img = obj->materials[obj->faces[index].materialindex].img;
-			if (entity->lightmap == NULL)
-				render->lightmap = NULL;
+			if (entity->map)
+				render->img = &entity->map[obj->faces[index].materialindex].img;
 			else
-				render->lightmap = &(entity->lightmap[obj->faces[index].materialindex]);
+				render->img = obj->materials[obj->faces[index].materialindex].img;
 			clip_and_render_triangles(sdl, render);
 		}
 		index++;

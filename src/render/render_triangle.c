@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/09 20:26:08 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/10 19:23:15 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,39 +149,17 @@ static uint32_t	flip_channels(uint32_t clr)
 	return (result.dat.color);
 }
 
-static uint32_t sample_img(t_render *render, t_texture t)
+inline uint32_t sample_img(const t_render *render, const t_texture t)
 {
 	t_img		*img;
-	t_lightmap	*lightmap;
-	uint32_t		clr;
-	static uint8_t	x8b;
-	static uint8_t	y8b;
-	uint8_t			xsample;
-	uint8_t			ysample;
-	float			light;
+	uint32_t	xsample;
+	uint32_t	ysample;
 
-	lightmap = render->lightmap;
 	img = render->img;
-	if (lightmap == NULL)
-		light = 1.0f;
-	else
-	{
-		int x = (img->size.x - 1) * (t.u / t.w);
-		int y = (img->size.y - 1) * (t.v / t.w);
-		light = lightmap->data[y * lightmap->size.x + x] / 255.0f;
-	}
-
-	x8b = (t.u / t.w) * 255;
-	xsample = (x8b * (img->size.x - 1)) / 255;
-	y8b = (t.v / t.w) * 255;
-	ysample = (y8b * (img->size.y - 1)) / 255;
-
-	clr = img->data[xsample + img->size.x * ysample];
-
-	uint8_t blue = ((clr >> 16) & 0xFF) * light;
-	uint8_t green = ((clr >> 8) & 0xFF) * light;
-	uint8_t red = (clr & 0xFF) * light;
-	return (flip_channels((blue << 16) | (green << 8) | red));
+	
+	xsample = (t.u / t.w) * (img->size.x - 1);
+	ysample = (t.v / t.w) * (img->size.y - 1);
+	return(render->img->data[xsample + img->size.x * ysample]);
 }
 
 #define FOG 0.0025f
@@ -190,6 +168,7 @@ static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 {
 	t_point			*p;
 	t_texture		*t;
+	//t_point		t[3];
 	float			step[2];
 	t_texture		t_step[3];
 	int				x;

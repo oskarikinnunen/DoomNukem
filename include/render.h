@@ -36,6 +36,12 @@ typedef struct s_img
 	uint32_t	length;
 }	t_img;
 
+typedef struct s_map
+{
+	t_img		img;
+	t_point		size;
+}	t_map;
+
 typedef struct s_fontcolors
 {
 	SDL_Color	black;

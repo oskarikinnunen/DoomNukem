@@ -6,12 +6,41 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/09 19:56:47 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/10 18:45:47 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "objects.h"
+
+typedef	struct s_rgb
+{
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
+	uint8_t a;
+} t_rgb;
+
+typedef struct s_color
+{
+	union cdata_u
+	{
+		t_rgb		rgb;
+		uint32_t	color;
+	} dat;
+}	t_color;
+
+static uint32_t	flip_channels(uint32_t clr)
+{
+	t_color		result;
+	t_color		orig;
+	orig.dat.color = clr;
+	result.dat.rgb.r = orig.dat.rgb.b;
+	result.dat.rgb.g = orig.dat.rgb.g;
+	result.dat.rgb.b = orig.dat.rgb.r;
+	result.dat.rgb.a = orig.dat.rgb.a;
+	return (result.dat.color);
+}
 
 t_render	init_render(t_sdlcontext sdl, struct s_world *world)
 {
@@ -34,10 +63,7 @@ t_render	init_render(t_sdlcontext sdl, struct s_world *world)
 	render.occlusion.occlusion = false;
 	render.occlusion.cull_box = false;
 	render.occlusion.occluder_box = false;
-	//temp call for light
 	bake_lighting(&render, world);
-	//printf("count %d\n", world->entitycache.existing_entitycount);
-	/*temp testing render loop with .bot .wall .item*/
 	return(render);
 }
 

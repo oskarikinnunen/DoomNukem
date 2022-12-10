@@ -430,7 +430,7 @@ static void visible_fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle trian
 				da = da + t[0].w;
 				if (da >= sdl->zbuffer[a.x + a.y * sdl->window_w] * 0.99f || 0)
 				{
-					render->lightmap->data[x + render->lightmap->size.x * y] = 255;//((500.0f - (1.0f / fa)) / 500) * 255;
+					render->lightmap->data[x + render->lightmap->size.x * y] = 255;//((500.0f - (1.0f / fa)) / 500) * 255; //TODO: ADD THIS 
 					//printf("%d\n", render->lightmap->data[(x * render->lightmap->size.x) + y]);
 				}
 				/*if (x % 2 == 0)
@@ -465,10 +465,35 @@ static void clip_draw_lightmap(t_sdlcontext *sdl, t_render *render)
 		//visible_render_z_triangle(sdl, render->screenspace_ptris[i], render);
 		i++;
 	}
-	render->img = NULL;
-	render->lightmap = NULL;
-	render->worldspace_ptri_count = 0;
-	render->screenspace_ptri_count = 0;
+}
+
+typedef	struct s_rgb
+{
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
+	uint8_t a;
+} t_rgb;
+
+typedef struct s_color
+{
+	union cdata_u
+	{
+		t_rgb		rgb;
+		uint32_t	color;
+	} dat;
+}	t_color;
+
+static uint32_t	flip_channels(uint32_t clr)
+{
+	t_color		result;
+	t_color		orig;
+	orig.dat.color = clr;
+	result.dat.rgb.r = orig.dat.rgb.b;
+	result.dat.rgb.g = orig.dat.rgb.g;
+	result.dat.rgb.b = orig.dat.rgb.r;
+	result.dat.rgb.a = orig.dat.rgb.a;
+	return (result.dat.color);
 }
 
 void update_arealights_for_entity(t_sdlcontext sdl, t_render *render, t_entity *entity)
@@ -478,11 +503,15 @@ void update_arealights_for_entity(t_sdlcontext sdl, t_render *render, t_entity *
 	t_quaternion	temp;
 	t_vector2		max;
 
+
 	obj = entity->obj;
 	entity->lightmap = malloc(sizeof(t_lightmap) * entity->obj->material_count);
+	entity->map	= malloc(sizeof(t_map) * entity->obj->material_count);
 	render_worldspace(render, entity);
 	max.x = -10000.0f;
 	max.y = -10000.0f;
+	entity->max.x = max.x;
+	entity->max.y = max.y;
 	index = 0;
 	while (index < obj->face_count)
 	{
@@ -496,10 +525,14 @@ void update_arealights_for_entity(t_sdlcontext sdl, t_render *render, t_entity *
 			tritransformed.t[2] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[2] - 1]);
 			for (int j = 0; j < 3; j++)
 			{
-				if (tritransformed.t[j].u / tritransformed.t[j].w > max.x)
-					max.x = tritransformed.t[j].u / tritransformed.t[j].w;
-				if (tritransformed.t[j].v / tritransformed.t[j].w > max.y)
-					max.y = tritransformed.t[j].v / tritransformed.t[j].w;
+				if (tritransformed.t[j].u > max.x)
+					max.x = tritransformed.t[j].u;
+				if (tritransformed.t[j].v > max.y)
+					max.y = tritransformed.t[j].v;
+				if (entity->max.x < tritransformed.t[j].u)
+					entity->max.x = tritransformed.t[j].u;
+				if (entity->max.y < tritransformed.t[j].v)
+					entity->max.y = tritransformed.t[j].v;
 			}
 		}
 		t_triangle clipped[2];
@@ -509,9 +542,8 @@ void update_arealights_for_entity(t_sdlcontext sdl, t_render *render, t_entity *
 				render->worldspace_ptris[render->worldspace_ptri_count++] = triangle_to_screenspace_point_triangle(render->camera.matproj, clipped[n], sdl);
 		if (index + 1 == obj->face_count || obj->faces[index].materialindex != obj->faces[index + 1].materialindex)
 		{
-			//render->lightmap = &(entity->lightmap[obj->faces[index].materialindex]);
-			//this func could return lightmap
-			t_lightmap *lightmap;
+			t_lightmap	*lightmap;
+			int temp = obj->faces[index].materialindex;
 			lightmap = &entity->lightmap[obj->faces[index].materialindex];
 			render->lightmap = lightmap;
 			render->img = obj->materials[obj->faces[index].materialindex].img;
@@ -522,12 +554,34 @@ void update_arealights_for_entity(t_sdlcontext sdl, t_render *render, t_entity *
 			if (max.y > 1.0f)
 				lightmap->size.y = max.y * render->img->size.y;
 			else
-				lightmap->size.y = render->img->size.y;	
-			//lightmap->size.x = render->img->size.x;
-			//lightmap->size.y = render->img->size.y;
+				lightmap->size.y = render->img->size.y;
 			lightmap->data = malloc(sizeof(uint8_t) * lightmap->size.x * lightmap->size.y);
 			memset(lightmap->data, 50, sizeof(uint8_t) * lightmap->size.x * lightmap->size.y);
 			clip_draw_lightmap(&sdl, render);
+			entity->map[temp].size.x = lightmap->size.x;
+			entity->map[temp].size.y = lightmap->size.y;
+			entity->map[temp].img.size.x = render->img->size.x;
+			entity->map[temp].img.size.y = render->img->size.y;
+			entity->map[temp].img.data = malloc(sizeof(uint32_t) * entity->map[temp].size.x * entity->map[temp].size.y);
+			for (int i = 0; i < entity->map[temp].size.y; i++)
+			{
+				for (int j = 0; j < entity->map[temp].size.x; j++)
+				{
+					uint32_t	clr;
+					clr = render->img->data[(i % render->img->size.y) * render->img->size.x + (j % render->img->size.x)];
+					uint8_t light = render->lightmap->data[i * entity->map[temp].size.y + j];
+					Uint32 alpha = clr&0xFF000000;
+					Uint32 red=  ((clr&0x00FF0000)*light)>>8;
+					Uint32 green= ((clr&0x0000FF00)*light)>>8;
+					Uint32 blue=((clr&0x000000FF)*light)>>8;
+					clr = flip_channels(alpha|(red&0x00FF0000)|(green&0x0000FF00)|(blue&0x000000FF));
+					entity->map[temp].img.data[i * entity->map[temp].size.x + j] = clr;
+				}
+			}
+			render->img = NULL;
+			render->lightmap = NULL;
+			render->worldspace_ptri_count = 0;
+			render->screenspace_ptri_count = 0;
 			max.x = -10000.0f;
 			max.y = -10000.0f;
 		}

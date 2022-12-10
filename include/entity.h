@@ -47,7 +47,9 @@ typedef struct s_entity
 	t_anim			animation;
 	t_object		*obj;
 	t_occlusion		occlusion;
+	t_vector2		max;
 	t_lightmap		*lightmap;
+	t_map			*map;
 	//uint16_t		root_id;
 }	t_entity;
 

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/09 19:45:03 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/10 16:11:15 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 	int			i;
 	int			found;
 	t_entity	*ent;
-	t_entity	*test;
+	t_entity	*test = NULL;
 
 	i = 0;
 	found = 0;
@@ -70,7 +70,7 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 		}
 		i++;
 	}
-	for (int u = 0; u < test->lightmap->size.y; u++)
+	for (int u = 0; 0 && u < test->lightmap->size.y && test != NULL && 0; u++)
 	{
 		for (int v = 0; v < test->lightmap->size.x; v++)
 		{
