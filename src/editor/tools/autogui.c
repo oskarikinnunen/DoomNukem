@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/08 18:54:08 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/10 18:07:18 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -311,7 +311,7 @@ void	gui_endhorizontal(t_autogui *gui)
 {
 	gui->agl = agl_vertical;
 	gui->offset.x = 0;
-	gui->offset.y += 20;
+	gui->offset.y += 34;
 }
 
 //Internal function, rename with a better name
@@ -327,6 +327,25 @@ static	void	gui_layout(t_autogui *gui, t_rectangle rect)
 			gui->overdraw += 20;
 		}
 		gui->offset.y += 20;
+	}
+	else
+		gui->offset.x += x;
+	if (gui->offset.x > gui->x_maxdrawn)
+		gui->x_maxdrawn = gui->offset.x;
+}
+
+static	void	gui_layout_big(t_autogui *gui, t_rectangle rect)
+{
+	int	x;
+
+	x = ft_max(rect.size.x + 10, gui->min_x);
+	if (gui->agl == agl_vertical)
+	{
+		if (!gui_shoulddraw(gui))
+		{
+			gui->overdraw += 34;
+		}
+		gui->offset.y += 34;
 	}
 	else
 		gui->offset.x += x;
@@ -534,12 +553,11 @@ bool	gui_shortcut_button(char *str, int alpha_or_keymask, t_autogui *gui)
 
 	br.rect = empty_rect();
 	br.clicked = false;
+	str_s = ft_strnew(ft_strlen(str) + 4);
 	if (ft_isalpha(alpha_or_keymask))
-	{
-		str_s = ft_strnew(ft_strlen(str) + 4);
 		snprintf(str_s, ft_strlen(str) + 4, "[%c]%s", alpha_or_keymask, str);
-	} else
-		str_s = ft_strdup(str);
+	else
+		snprintf(str_s, ft_strlen(str) + 4, "[%s]", str);
 	if (gui_shoulddraw(gui))
 	{
 		br = autogui_internal_button(str_s, gui);
@@ -551,6 +569,30 @@ bool	gui_shortcut_button(char *str, int alpha_or_keymask, t_autogui *gui)
 	if (ft_isalpha(alpha_or_keymask) && check_alpha_key(gui->hid->alphakeystate, alpha_or_keymask))
 		br.clicked = true;
 	return (br.clicked);
+}
+
+bool	gui_imagebutton(t_img	*img, t_autogui *gui)
+{
+	t_rectangle		imgrect;
+	bool			ret;
+
+	imgrect = empty_rect();
+
+	ret = false;
+	if (gui_shoulddraw(gui))
+	{
+		draw_image(*gui->sdl, gui_currentpos(gui), *img, (t_point){32,32});
+		imgrect.size = (t_point){32,32};
+		imgrect.position = gui_currentpos(gui);
+		if (pointrectanglecollision(gui->hid->mouse.pos, imgrect))
+		{
+			print_text(gui->sdl, img->name, gui->hid->mouse.pos);
+			if (mouse_clicked(gui->hid->mouse, MOUSE_LEFT))
+				ret = true;
+		}
+	}
+	gui_layout_big(gui, imgrect);
+	return (ret);
 }
 
 bool	gui_button(char *str, t_autogui *gui)

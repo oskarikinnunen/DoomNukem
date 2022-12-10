@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fill_triangle.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/07 08:14:40 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/10 17:41:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ typedef struct s_color
 	} dat;
 }	t_color;
 
-static uint32_t	flip_channels(uint32_t clr)
+uint32_t	flip_channels(uint32_t clr)
 {
 	t_color		result;
 	t_color		orig;

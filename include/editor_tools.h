@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_tools.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/08 12:47:24 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/10 17:52:55 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "shapes.h"
 # include "render.h"
 # include "doomnukem.h"
+# include "collision.h"
 
 
 typedef enum e_point_tool_state
@@ -131,6 +132,8 @@ void				gui_point(t_point point, t_autogui *gui);
 //Draws a button with text 'str' on the gui, and returns true if the button was pressed
 bool				gui_button(char *str, t_autogui *gui);
 bool	gui_shortcut_button(char *str, int alpha_or_keymask, t_autogui *gui);
+
+bool	gui_imagebutton(t_img	*img, t_autogui *gui);
 bool	gui_highlighted_button(char *str, t_autogui *gui);
 
 //TODO: document

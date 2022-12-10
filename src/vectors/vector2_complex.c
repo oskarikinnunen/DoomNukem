@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector2_complex.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 11:43:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/30 18:19:43 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/10 16:25:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,14 @@
 float	vector2_sqr_magnitude(t_vector2 vec)
 {
 	return ((vec.x * vec.x) + (vec.y * vec.y));
+}
+
+float	vector2_sqr_dist(t_vector2 first, t_vector2 second)
+{
+	t_vector2	diff;
+
+	diff = vector2_sub(first, second);
+	return (vector2_sqr_magnitude(diff));
 }
 
 t_vector2 vector2_normalise(t_vector2 vec)

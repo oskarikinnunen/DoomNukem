@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/08 18:40:44 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/10 15:07:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -735,13 +735,17 @@ void	makefloor_room(t_editor *ed, t_sdlcontext *sdl, t_room *room, int debug)
 	circum_angle = 0.0f;
 	i = 0;
 	free_floor(&ed->world, room);
+	/*
 	while (i < room->wallcount)
 	{
-		// Check if vector between previous edge and current one is the same as current one to next one, if it is then ignore current edge
-		// Might be better to do that in triangulate ^ because the indexes
 		fc.edges[fc.edgecount++] = room->walls[i].line.start;
-		/*if (i == room->wallcount - 1)
-			fc.edges[fc.edgecount++] = room->walls[i].line.start;*/
+		i++;
+	}
+	*/
+	t_floor_area	a = room->floor_areas[0];
+	while (i < a.wall_count)
+	{
+		fc.edges[fc.edgecount++] = room->walls[a.wall_indices[i]].line.start;
 		i++;
 	}
 	triangulate(&fc, debug);

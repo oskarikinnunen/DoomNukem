@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   moveplayer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 10:10:08 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/10 14:14:22 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,13 @@
 #include "objects.h"
 #include "entity.h"
 #include "libft.h"
+
+#include <xmmintrin.h> // SSE
+
+//#include <glm/gtx/simd_vec4.hpp>
+//#include <pmmintrin.h> // SSE3
+//#include <nmmintrin.h> // SSE4.2
+//#include <immintrin.h> // AVX
 
 /* Previous working version before implementing updateinput */
 /*
