@@ -158,6 +158,7 @@ typedef struct s_render
 	//struct s_world		*world;
 	t_debug_occlusion	occlusion;
 	t_lightmap			*lightmap;
+	t_map				map;
 }	t_render;
 
 

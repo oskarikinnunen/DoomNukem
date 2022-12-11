@@ -51,8 +51,8 @@ int	editorloop(t_sdlcontext sdl)
 		update_render(&ed.render, &ed.player);
 		//print_vector3(ed.render.camera.lookdir);
 	//print_vector3(ed.render.camera.position);
-//		ed.render.camera.lookdir = (t_vector3){-0.630105, 0.650868, -0.423484};
-//		ed.render.camera.position = (t_vector3){1208.355713, 912.929382, 154.534698};
+	//	ed.render.camera.lookdir = (t_vector3){-0.630105, 0.650868, -0.423484};
+	//	ed.render.camera.position = (t_vector3){1208.355713, 912.929382, 154.534698};
 		screen_blank(sdl);
 		render_start(&ed.render);
 		update_world3d(&ed.world, &ed.render);

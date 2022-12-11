@@ -371,14 +371,16 @@ static void visible_fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle trian
 				float w2 = ((y - lt[0].y - w1 * (lt[1].y - lt[0].y))/(float)(lt[2].y - lt[0].y));
 				if (isinf(w1) || isnan(w1) || isinf(w2) || isnan(w2))
 				{
-					/*
+					
 					printf("first\n");
 					printf("lt0 %d lt1 %d lt2 %d\n", lt[0].x, lt[1].x, lt[2].x);
 					printf("lt0 %d lt1 %d lt2 %d\n", lt[0].y, lt[1].y, lt[2].y);
-					printf("error on either w1 %f w2 %f\n", w1, w2);*/
+					printf("error on either w1 %f w2 %f\n", w1, w2);
 					ft_swap(&lt[1], &lt[2], sizeof(t_point));
 					ft_swap(&p[1], &p[2], sizeof(t_point));
 					ft_swap(&t[1], &t[2], sizeof(t_texture));
+					if (!is_valid_tri(lt))
+						return;
 					w1 = ((lt[0].x * (lt[2].y - lt[0].y) + (y - lt[0].y) * (lt[2].x - lt[0].x) - x * (lt[2].y - lt[0].y)) / (float)((lt[1].y - lt[0].y) * (lt[2].x - lt[0].x) - (lt[1].x - lt[0].x) * (lt[2].y - lt[0].y)));
 					w2 = ((y - lt[0].y - w1 * (lt[1].y - lt[0].y)) / (float)(lt[2].y - lt[0].y));
 					if (isinf(w1) || isnan(w1) || isinf(w2) || isnan(w2))
@@ -406,17 +408,19 @@ static void visible_fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle trian
 				w2 = (a.y - p[0].y - w1 * (p[1].y - p[0].y))/(float)(p[2].y - p[0].y);
 				if (isinf(w1) || isnan(w1) || isinf(w2) || isnan(w2))
 				{
-				/*	printf("first2\n");
+					printf("first2\n");
 					printf("p0 %d p1 %d p2 %d\n", p[0].x, p[1].x, p[2].x);
 					printf("p0 %d p1 %d p2 %d\n", p[0].y, p[1].y, p[2].y);
-					printf("error on either w1 %f w2 %f", w1, w2);*/
+					printf("error on either w1 %f w2 %f", w1, w2);
 					ft_swap(&lt[1], &lt[2], sizeof(t_point));
 					ft_swap(&p[1], &p[2], sizeof(t_point));
 					ft_swap(&t[1], &t[2], sizeof(t_texture));
+					if (!is_valid_tri(p))
+						return;
 					w1 = (p[0].x * (p[2].y - p[0].y) + (a.y - p[0].y) * (p[2].x - p[0].x) - a.x * (p[2].y - p[0].y)) / (float)((p[1].y - p[0].y) * (p[2].x - p[0].x) - (p[1].x - p[0].x) * (p[2].y - p[0].y));
 					w2 = (a.y - p[0].y - w1 * (p[1].y - p[0].y))/(float)(p[2].y - p[0].y);
 					if (isinf(w1) || isnan(w1) || isinf(w2) || isnan(w2))
-						exit(0);
+						return;
 				}
 				//printf("second w1 %f w2 %f\n", w1, w2);
 				float da;
@@ -510,8 +514,6 @@ void update_arealights_for_entity(t_sdlcontext sdl, t_render *render, t_entity *
 	render_worldspace(render, entity);
 	max.x = -10000.0f;
 	max.y = -10000.0f;
-	entity->max.x = max.x;
-	entity->max.y = max.y;
 	index = 0;
 	while (index < obj->face_count)
 	{
@@ -529,10 +531,6 @@ void update_arealights_for_entity(t_sdlcontext sdl, t_render *render, t_entity *
 					max.x = tritransformed.t[j].u;
 				if (tritransformed.t[j].v > max.y)
 					max.y = tritransformed.t[j].v;
-				if (entity->max.x < tritransformed.t[j].u)
-					entity->max.x = tritransformed.t[j].u;
-				if (entity->max.y < tritransformed.t[j].v)
-					entity->max.y = tritransformed.t[j].v;
 			}
 		}
 		t_triangle clipped[2];
@@ -569,7 +567,7 @@ void update_arealights_for_entity(t_sdlcontext sdl, t_render *render, t_entity *
 				{
 					uint32_t	clr;
 					clr = render->img->data[(i % render->img->size.y) * render->img->size.x + (j % render->img->size.x)];
-					uint8_t light = render->lightmap->data[i * entity->map[temp].size.y + j];
+					uint8_t light = render->lightmap->data[i * entity->map[temp].size.x + j];
 					Uint32 alpha = clr&0xFF000000;
 					Uint32 red=  ((clr&0x00FF0000)*light)>>8;
 					Uint32 green= ((clr&0x0000FF00)*light)>>8;

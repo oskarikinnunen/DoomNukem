@@ -24,7 +24,7 @@ void bake_lighting(t_render *render, t_world *world)
 		}
 		i++;
 	}
-	render_entity_depth_buffer(*world->sdl, render, &world->skybox);
+	//render_entity_depth_buffer(*world->sdl, render, &world->skybox);
 	i = 0;
 	found = 0;
 	while (found < world->entitycache.existing_entitycount && 1)
@@ -40,7 +40,8 @@ void bake_lighting(t_render *render, t_world *world)
 		}
 		i++;
 	}
-	update_arealights_for_entity(*world->sdl, render, &world->skybox);
+	world->skybox.lightmap == NULL;
+//	update_arealights_for_entity(*world->sdl, render, &world->skybox);
 	printf("clean exit\n");
 	//exit(0);
 }

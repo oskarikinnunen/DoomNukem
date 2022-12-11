@@ -120,46 +120,16 @@ static t_texture calc_step_texture(t_texture *t, float delta)
 	return(step);
 }
 
-typedef	struct s_rgb
+static uint32_t sample_img(t_render *render, t_texture t)
 {
-	uint8_t r;
-	uint8_t g;
-	uint8_t b;
-	uint8_t a;
-} t_rgb;
-
-typedef struct s_color
-{
-	union cdata_u
-	{
-		t_rgb		rgb;
-		uint32_t	color;
-	} dat;
-}	t_color;
-
-static uint32_t	flip_channels(uint32_t clr)
-{
-	t_color		result;
-	t_color		orig;
-	orig.dat.color = clr;
-	result.dat.rgb.r = orig.dat.rgb.b;
-	result.dat.rgb.g = orig.dat.rgb.g;
-	result.dat.rgb.b = orig.dat.rgb.r;
-	result.dat.rgb.a = orig.dat.rgb.a;
-	return (result.dat.color);
-}
-
-inline uint32_t sample_img(const t_render *render, const t_texture t)
-{
-	t_img		*img;
 	uint32_t	xsample;
 	uint32_t	ysample;
 
-	img = render->img;
-	
-	xsample = (t.u / t.w) * (img->size.x - 1);
-	ysample = (t.v / t.w) * (img->size.y - 1);
-	return(render->img->data[xsample + img->size.x * ysample]);
+	xsample = (t.u / t.w) * (render->map.img.size.x - 1);
+	ysample = (t.v / t.w) * (render->map.img.size.y - 1);
+	xsample = xsample % render->map.size.x;
+	ysample = ysample % render->map.size.y;
+	return(render->map.img.data[ysample * render->map.size.x + xsample]);
 }
 
 #define FOG 0.0025f
@@ -302,14 +272,14 @@ void	render_triangle(t_sdlcontext *sdl, t_render *render, int index)
 	triangle = render->screenspace_ptris[index];
 	if (sdl->ps1_tri_div > 1)
 		triangle = ps1(triangle, sdl->ps1_tri_div);
-	p = triangle.p;
 	sort_point_tris(triangle.p, triangle.t);
+	p = triangle.p;
 	lerp = ((float)p[1].y - (float)p[2].y) / ((float)p[0].y - (float)p[2].y);
 	p_split.x = p[2].x + (lerp * ((float)p[0].x - (float)p[2].x));
 	p_split.y = p[1].y;
-	t_split.u = flerp(triangle.t[2].u, triangle.t[0].u, lerp);
-	t_split.v = flerp(triangle.t[2].v, triangle.t[0].v, lerp);
-	t_split.w = flerp(triangle.t[2].w, triangle.t[0].w, lerp);
+	t_split.u = ft_flerp(triangle.t[2].u, triangle.t[0].u, lerp);
+	t_split.v = ft_flerp(triangle.t[2].v, triangle.t[0].v, lerp);
+	t_split.w = ft_flerp(triangle.t[2].w, triangle.t[0].w, lerp);
 
 	if (p_split.x < p[1].x)
 	{
@@ -390,7 +360,7 @@ void render_solid_triangle(t_sdlcontext *sdl, t_render *render)
 
 void render_buffer(t_sdlcontext *sdl, t_render *render)
 {
-	if (!render->wireframe && render->img != NULL)
+	if (!render->wireframe && render->map.img.data != NULL)
 		render_buffer_triangles(sdl, render);
 	if (render->wireframe)
 		render_buffer_triangle_wireframes(sdl, render);
