@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/12 18:02:06 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/12 19:06:38 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ void	split_area(t_room *room, t_floor_area *old, t_floor_area *area, t_editor *e
 	t_wall	*w;
 	t_wall	*sw;
 	t_wall	*ew;
+	int		start;
 	int		i;
 
 	printf("room total walls: %i \n", room->wallcount);
@@ -95,27 +96,6 @@ void	split_area(t_room *room, t_floor_area *old, t_floor_area *area, t_editor *e
 	sw = &room->walls[area->wall_indices[0]];
 	ew = &room->walls[area->wall_indices[area->wallcount - 1]];
 	printf("assigned sw as wall %i and ew as wall %i\n", area->wall_indices[0], area->wall_indices[area->wallcount - 1]);
-/*	
-	i = 0;
-	w = &room->walls[old->wall_indices[i]];
-	while (!vector2_cmp(w->line.start, sw->line.start))
-	{
-		if (i >= old->wallcount)
-			i = 0;
-		w = &room->walls[old->wall_indices[i]];
-		i++;
-	}
-	printf("start index was %i \n", i);
-	while (!vector2_cmp(w->line.start, ew->line.end))
-	{
-		if (i >= old->wallcount)
-			i = 0;
-		w = &room->walls[old->wall_indices[i]];
-		area->wall_indices[area->wallcount] = old->wall_indices[i];
-		area->wallcount++;
-		i++;
-	}
-	printf("end index was %i \n", i - 1);*/
 	i = 0;
 	w = &room->walls[old->wall_indices[i]];
 	while (!vector2_cmp(w->line.start, ew->line.end))
@@ -128,8 +108,7 @@ void	split_area(t_room *room, t_floor_area *old, t_floor_area *area, t_editor *e
 	}
 	printf("start index is %i \n", i - 1);
 	i -= 1;
-	if (i == -1)
-		i = old->wallcount - 2;
+	start = i;
 	while (!vector2_cmp(w->line.end, sw->line.start))
 	{
 		if (i >= old->wallcount)
@@ -140,14 +119,30 @@ void	split_area(t_room *room, t_floor_area *old, t_floor_area *area, t_editor *e
 		printf("searching for sw->start\n");
 		i++;
 	}
-	printf("end index is %i \n", i - 1);
+	i = start;
+	t_floor_area temp = *old;
+	old->wallcount = 0;
+	w = &room->walls[temp.wall_indices[i]];
+	while (!vector2_cmp(w->line.start, sw->line.start))
+	{
+		if (i < 0)
+			i = temp.wallcount - 1;
+		w = &room->walls[temp.wall_indices[i]];
+		old->wall_indices[old->wallcount] = temp.wall_indices[i];
+		old->wallcount++;
+		i--;
+	}
 	i = 0;
-	return ;
 	while (i < area->wallcount)
 	{
 		printf("wall [%i] is %i\n", i, area->wall_indices[i]);
 		i++;
 	}
+	area->height += room->walls[area->wall_indices[0]].height;
+	room->floor_areas[room->floor_areacount] = *area;
+	room->floor_areacount++;
+	free_floor(&ed->world, room);
+	
 	/*if (area->wall_indices[area->unique_wallcount] > area->wall_indices[area->wallcount - 1])
 	{
 		printf("FIRST > LAST (gt)\n");
@@ -466,6 +461,7 @@ void	applydrag(t_vector2 snap, t_room *room, t_world *world)
 	t_wall	test[2];
 
 	i = 0;
+	free_floor(world, room);
 	while (i < room->wallcount)
 	{
 		if (vector2_sqr_magnitude(vector2_sub(snap, room->walls[i].line.start)) < 1000)
@@ -490,6 +486,7 @@ void	applydrag(t_vector2 snap, t_room *room, t_world *world)
 			break ;*/
 			room->walls[i].line.start = snap;
 			applywallmesh(&room->walls[i]);
+			
 		}
 		else if (vector2_sqr_magnitude(vector2_sub(snap, room->walls[i].line.end)) < 1000)
 		{
@@ -670,7 +667,11 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	if (looking_atcorner(ed, sdl, snap, dat->room) && ed->hid.mouse.held == MOUSE_LEFT)
 		applydrag(snap, dat->room, &ed->world);
 	else if (dat->room->floorcount == 0)
-		makefloor_room(ed, &sdl, dat->room, 2);
+	{
+		make_areas(ed, &sdl, dat->room);
+		//makefloor_room(ed, &sdl, dat->room, 2);
+	}
+		
 	if (!looking_atcorner(ed, sdl, snap, dat->room) && mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 	{
 		//force_mouseunlock(&ed->hid);
@@ -932,6 +933,7 @@ void	room_tool_split(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 		}
 		dat->room->walls[dat->room->wallcount] = *cur;
 		dat->room->walls[dat->room->wallcount].entity = spawn_entity(&ed->world);
+		dat->room->walls[dat->room->wallcount].entity->obj = object_plane(sdl);
 		dat->room->wallcount++;
 		dat->area->unique_wallcount++;
 		init_roomwalls(&ed->world, dat->room);

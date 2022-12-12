@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/12 15:52:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/12 19:02:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -723,35 +723,32 @@ void	free_floor(t_world *world, t_room *room)
 	room->floorcount = 0;
 }
 
-void	makefloor_room_area(t_editor *ed, t_sdlcontext *sdl, t_room *room, t_floor_area a, int debug)
+void	makefloor_room_area(t_editor *ed, t_sdlcontext *sdl, t_room *room, t_floor_area a)
 {
 	t_floorcalc	fc;
 	t_wall		*w;
 	t_meshtri	*mtri;
-	float		circum_angle;
 	int			i;
-	int			a_i;
 
 	ft_bzero(&fc, sizeof(fc));
-	circum_angle = 0.0f;
 	i = 0;
-	//free_floor(&ed->world, room);
 	while (i < a.wallcount)
 	{
 		fc.edges[fc.edgecount++] = room->walls[a.wall_indices[i]].line.start;
 		i++;
 	}
-	triangulate(&fc, debug);
+	triangulate(&fc, 2);
 	if (fc.facecount == 0)
 		return ;
-	room->floors = ft_memalloc(sizeof(t_meshtri) * fc.facecount);
-	room->floorcount = fc.facecount;
+	//room->floors = ft_memalloc(sizeof(t_meshtri) * fc.facecount);
+	
 	if (room->floors == NULL)
 		error_log(EC_MALLOC);
 	i = 0;
 	while (i < fc.facecount)
 	{
-		mtri = &room->floors[i];
+		mtri = &room->floors[i + (room->floorcount)];
+		printf("i %i \n", i);
 		//ft_bzero(&mtri->entity, sizeof(t_entity));
 		mtri->entity = spawn_entity(&ed->world);
 		mtri->entity->uneditable = true;
@@ -759,6 +756,9 @@ void	makefloor_room_area(t_editor *ed, t_sdlcontext *sdl, t_room *room, t_floor_
 		mtri->v[0] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[0]]);
 		mtri->v[1] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[1]]);
 		mtri->v[2] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[2]]);
+		mtri->v[0].z += a.height;
+		mtri->v[1].z += a.height;
+		mtri->v[2].z += a.height;
 		mtri->uv[0] = fc.edges[fc.faces[i].v_indices[0]];
 		mtri->uv[1] = fc.edges[fc.faces[i].v_indices[1]];
 		mtri->uv[2] = fc.edges[fc.faces[i].v_indices[2]];
@@ -766,32 +766,36 @@ void	makefloor_room_area(t_editor *ed, t_sdlcontext *sdl, t_room *room, t_floor_
 		mtri->uv[1] = vector2_div(mtri->uv[1], 100.0f);
 		mtri->uv[2] = vector2_div(mtri->uv[2], 100.0f);
 		applytrimesh(*mtri, mtri->entity->obj);
-		/*mtri->entity->transform.position = vector3_zero();
-		mtri->entity->transform.scale = vector3_one();*/
 		i++;
 	}
+	room->floorcount += fc.facecount;
 }
 
+void	make_areas(t_editor *ed, t_sdlcontext *sdl, t_room *room)
+{
+	int	i;
+
+	i = 0;
+	free_floor(&ed->world, room);
+	room->floors = ft_memalloc(sizeof(t_meshtri) * 1000);
+	while (i < room->floor_areacount)
+	{
+		makefloor_room_area(ed, sdl, room, room->floor_areas[i]);
+		i++;
+	}
+	printf("made floors for %i areas \n", i);
+}
 
 void	makefloor_room(t_editor *ed, t_sdlcontext *sdl, t_room *room, int debug)
 {
 	t_floorcalc	fc;
 	t_wall		*w;
 	t_meshtri	*mtri;
-	float		circum_angle;
 	int			i;
 
 	ft_bzero(&fc, sizeof(fc));
-	circum_angle = 0.0f;
 	i = 0;
 	free_floor(&ed->world, room);
-	/*
-	while (i < room->wallcount)
-	{
-		fc.edges[fc.edgecount++] = room->walls[i].line.start;
-		i++;
-	}
-	*/
 	t_floor_area	a = room->floor_areas[0];
 	while (i < a.wallcount)
 	{
@@ -816,6 +820,9 @@ void	makefloor_room(t_editor *ed, t_sdlcontext *sdl, t_room *room, int debug)
 		mtri->v[0] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[0]]);
 		mtri->v[1] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[1]]);
 		mtri->v[2] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[2]]);
+		mtri->v[0].z += a.height;
+		mtri->v[1].z += a.height;
+		mtri->v[2].z += a.height;
 		mtri->uv[0] = fc.edges[fc.faces[i].v_indices[0]];
 		mtri->uv[1] = fc.edges[fc.faces[i].v_indices[1]];
 		mtri->uv[2] = fc.edges[fc.faces[i].v_indices[2]];
@@ -823,8 +830,6 @@ void	makefloor_room(t_editor *ed, t_sdlcontext *sdl, t_room *room, int debug)
 		mtri->uv[1] = vector2_div(mtri->uv[1], 100.0f);
 		mtri->uv[2] = vector2_div(mtri->uv[2], 100.0f);
 		applytrimesh(*mtri, mtri->entity->obj);
-		/*mtri->entity->transform.position = vector3_zero();
-		mtri->entity->transform.scale = vector3_one();*/
 		i++;
 	}
 }
