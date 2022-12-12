@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/10 17:41:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/10 19:08:14 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,6 +159,49 @@ uint32_t	flip_channels(uint32_t clr)
 	result.dat.rgb.a = orig.dat.rgb.a;
 	return (result.dat.color);
 }
+
+#include <xmmintrin.h>
+
+/*static uint32_t sample_img(t_img *img, t_texture t)
+{
+    __m128 x8b, y8b, xsample, ysample;
+
+    // Load the size of the image as a __m128 vector
+    __m128 size = _mm_set_ps((float)img->size.x, (float)img->size.y, (float)img->size.x, (float)img->size.y);
+
+    // Compute the x and y coordinates of the sample using SIMD instructions
+    x8b = _mm_set1_ps((t.u / t.w) * 255.0f);
+    xsample = _mm_mul_ps(x8b, _mm_rcp_ps(_mm_set1_ps(255.0f)));
+    xsample = _mm_mul_ps(xsample, _mm_shuffle_ps(size, size, _MM_SHUFFLE(2, 2, 0, 0)));
+    y8b = _mm_set1_ps((t.v / t.w) * 255.0f);
+    ysample = _mm_mul_ps(y8b, _mm_rcp_ps(_mm_set1_ps(255.0f)));
+    ysample = _mm_mul_ps(ysample, _mm_shuffle_ps(size, size, _MM_SHUFFLE(3, 3, 1, 1)));
+
+    // Convert the x and y coordinates to integer values and use them to index the image data
+    __m128i xi = _mm_cvtps_epi32(xsample);
+    __m128i yi = _mm_cvtps_epi32(ysample);
+    __m128i index = _mm_add_epi32(_mm_mullo_epi32(yi, _mm_shuffle_epi32(size, _MM_SHUFFLE(2, 2, 0, 0))), xi);
+    uint32_t *data = (uint32_t*)img->data;
+    uint32_t result = flip_channels(data[index[0]]);
+
+    // Return the sampled color value
+    return result;
+}*/
+
+/*typedef struct s_img
+{
+	t_point		size;
+	char		name[128];
+	uint32_t	*data;
+	uint32_t	length;
+}	t_img;
+
+typedef struct s_texture
+{
+	float	u;
+	float	v;
+	float	w;
+} t_texture;*/
 
 static uint32_t sample_img(t_img *img, t_texture t)
 {

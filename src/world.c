@@ -186,6 +186,9 @@ t_room	load_room(char *filename)
 	temp = load_chunk(filename, "FLOR", sizeof(t_meshtri));
 	result.floors = list_to_ptr(temp, &result.floorcount);
 	listdel(&temp);
+	temp = load_chunk(filename, "AREA", sizeof(t_floor_area));
+	result.floor_areas = list_to_ptr(temp, &result.floor_areacount);
+	listdel(&temp);
 	return (result);
 }
 
@@ -469,6 +472,8 @@ void	save_room(t_room room)
 	save_chunk(room.name, "WALL", walls_list);
 	t_list *floorlist = ptr_to_list(room.floors, room.floorcount, sizeof(t_meshtri));
 	save_chunk(room.name, "FLOR", floorlist);
+	t_list *arealist = ptr_to_list(room.floor_areas, room.floor_areacount, sizeof(t_floor_area));
+	save_chunk(room.name, "AREA", arealist);
 	close(fd);
 }
 

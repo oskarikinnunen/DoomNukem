@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_events.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/08 12:38:19 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/12 16:37:14 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,12 @@ t_gamereturn	editor_events(t_editor *ed)
 		if (e.type == SDL_KEYDOWN)
 		{
 			if (iskey(e, SDLK_ESCAPE))
+			{
+				if ((ed->hid.keystate >> KEYS_SHIFTMASK) & 1)
+					exit(0);
 				return (game_exit);
+			}
+				
 			if (iskey(e, SDLK_TAB))
 			{
 				ed->hid.mouse.relative = !ed->hid.mouse.relative;

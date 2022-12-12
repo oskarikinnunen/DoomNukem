@@ -14,19 +14,17 @@ typedef struct s_meshtri
 	char		texname[256];
 }	t_meshtri;
 
+typedef struct s_floor_area
+{
+	uint32_t	wall_indices[64];
+	uint32_t	wallcount;
+	uint32_t	unique_wallcount;
+}	t_floor_area;
 typedef struct s_line
 {
 	t_vector2	start;
 	t_vector2	end;
 }	t_line;
-
-typedef struct s_line2
-{
-	uint32_t	start_index;
-	uint32_t	end_index;
-	t_vector2	*start;
-	t_vector2	*end;
-}	t_line2;
 
 typedef struct s_wall
 {
@@ -38,32 +36,44 @@ typedef struct s_wall
 	char		texname[256];
 }	t_wall;
 
-typedef struct s_floor_area
-{
-	uint32_t	wall_indices[64];
-	uint32_t	wall_count;
-}	t_floor_area;
 typedef struct s_room //TODO: rewrite rooms/walls so rooms have t_vector2 edges and walls have pointers to those
 {
 	char			name[32];
 	t_wall			*walls;
 	t_meshtri		*floors;
 	t_meshtri		*ceilings;
-	t_floor_area	*floor_areas;
+	t_floor_area	*floor_areas; //
 	uint32_t		wallcount;
 	uint32_t		floorcount;
 	uint32_t		ceilingcount;
 	uint32_t		floor_areacount;
 }	t_room;
 
+
+typedef struct s_line2
+{
+	uint32_t	start_index;
+	uint32_t	end_index;
+	t_vector2	*start;
+	t_vector2	*end;
+}	t_line2;
+typedef struct s_wall2
+{
+	t_entity	*entity;
+	uint16_t	saved_entityid;
+	t_line2		line;
+	int32_t		height;
+	char		texname[256];
+}	t_wall2;
 typedef struct s_room2 //TODO: rewrite rooms/walls so rooms have t_vector2 edges and walls have pointers to those
 {
 	char			name[32];
-	//t_vector2		*edges
-	t_wall			*walls;
+	t_vector2		*edges;
+	t_wall2			*walls;
 	t_meshtri		*floors;
 	t_meshtri		*ceilings;
 	t_floor_area	*floor_areas;
+	uint32_t		edgecount;
 	uint32_t		wallcount;
 	uint32_t		floorcount;
 	uint32_t		ceilingcount;
