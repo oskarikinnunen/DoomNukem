@@ -94,13 +94,12 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	{
 		update_deltatime(&game.clock);
 		update_deltatime(&game.world.clock);
-		//gr = handleinput(&game.hid);
-		gr = editor(&game.hid);
+		gr = handleinput(&game.hid);
 
 		if (sound)
 		{
 			sound = false;
-			play_sound(&sdl.audio, "pistol1.wav");
+			play_sound(&sdl.audio, "rock-music.wav");
 		}
 
 

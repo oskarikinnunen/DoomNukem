@@ -26,6 +26,8 @@ SDL2 = $(INSTALLED_LIBS_DIR)/lib/libSDL2.a
 SDL2_TTF = $(INSTALLED_LIBS_DIR)/lib/libSDL2_ttf.a
 FREETYPE = $(INSTALLED_LIBS_DIR)/lib/libfreetype.a
 
+FMOD_DIR = $(INSTALLED_LIBS_DIR)/lib/FMOD
+
 LIBFT = libft/libft.a
 
 LUAFOLDER= lua-5.3.6
@@ -101,7 +103,7 @@ INCLUDE= -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include \
 			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
 CC= gcc
 CFLAGS= $(INCLUDE) -g -finline-functions -O2 #-march=native
-LDFLAGS = -Wl,-rpath=$(INSTALLED_LIBS_DIR)/lib/FMOD
+LDFLAGS = -Wl,-rpath=$(INSTALLED_LIBS_DIR)/lib
 
 UNAME= $(shell uname)
 ifeq ($(UNAME), Darwin)
@@ -118,8 +120,8 @@ warning:
 endif
 
 
-all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(LUA) $(LIBFT) $(OBJ)
-	$(CC) $(OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LUA)
+all: $(SDL2) $(FREETYPE) $(SDL2_TTF) fmod $(LUA) $(LIBFT) $(OBJ)
+	$(CC) $(OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LUA) $(LDFLAGS)
 
 $(OBJ): include/*.h Makefile
 
@@ -138,7 +140,7 @@ clean-libs:
 		$(INSTALLED_LIBS_DIR)/lib/pkgconfig $(INSTALLED_LIBS_DIR)/lib/lib* \
 		$(INSTALLED_LIBS_DIR)/share
 
-re-libs: clean-libs $(SDL2) $(FREETYPE) $(SDL2_TTF)
+re-libs: clean-libs all
 
 clean-lua:
 	rm -rf $(LUAFOLDER)/install
@@ -147,6 +149,16 @@ re-lua: clean-lua $(LUA)
 
 $(LUA):
 	cd $(LUAFOLDER) && make generic && make local
+
+fmod:
+	cp $(FMOD_DIR)/libfmod.dylib $(INSTALLED_LIBS_DIR)/lib/
+	cp $(FMOD_DIR)/libfmodL.dylib $(INSTALLED_LIBS_DIR)/lib/
+	cp $(FMOD_DIR)/libfmod.so $(INSTALLED_LIBS_DIR)/lib/
+	cp $(FMOD_DIR)/libfmod.so.13 $(INSTALLED_LIBS_DIR)/lib/
+	cp $(FMOD_DIR)/libfmod.so.13.11 $(INSTALLED_LIBS_DIR)/lib/
+	cp $(FMOD_DIR)/libfmodL.so $(INSTALLED_LIBS_DIR)/lib/
+	cp $(FMOD_DIR)/libfmodL.so.13 $(INSTALLED_LIBS_DIR)/lib/
+	cp $(FMOD_DIR)/libfmodL.so.13.11 $(INSTALLED_LIBS_DIR)/lib/
 
 $(SDL2_DIR)/unpacked:
 	cd $(LIBS_DIR) && tar -xf SDL2-2.0.8.tar.gz
