@@ -40,7 +40,7 @@ void bake_lighting(t_render *render, t_world *world)
 		}
 		i++;
 	}
-	world->skybox.lightmap == NULL;
+	//world->skybox.map->img = NULL;
 //	update_arealights_for_entity(*world->sdl, render, &world->skybox);
 	printf("clean exit\n");
 	//exit(0);

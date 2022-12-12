@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/10 16:11:15 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/12 18:28:36 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 	int			i;
 	int			found;
 	t_entity	*ent;
-	t_entity	*test = NULL;
 
 	i = 0;
 	found = 0;
@@ -62,29 +61,11 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 		{
 			if (ent->status == es_active)
 			{
-				if (found == 2)
-					test = ent;
 				render_entity(sdl, render, ent);
 			}
 			found++;
 		}
 		i++;
-	}
-	for (int u = 0; 0 && u < test->lightmap->size.y && test != NULL && 0; u++)
-	{
-		for (int v = 0; v < test->lightmap->size.x; v++)
-		{
-			if (test->lightmap->data[v + (u * test->lightmap->size.x)] == 100)
-			{
-				((uint32_t *)sdl->surface->pixels)[v + (u * sdl->window_w)] = CLR_BLUE;
-				sdl->zbuffer[v + (u * sdl->window_w)] = 2.0f;
-			}
-			else
-			{
-				((uint32_t *)sdl->surface->pixels)[v + (u * sdl->window_w)] = CLR_RED * (test->lightmap->data[v + (u * test->lightmap->size.x)] / 255.0f);
-				sdl->zbuffer[v + (u * sdl->window_w)] = 2.0f;
-			}
-		}
 	}
 	render_entity(sdl, render, &world->skybox);
 }

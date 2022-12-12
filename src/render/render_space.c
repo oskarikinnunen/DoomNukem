@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 15:36:10 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/10 19:06:51 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/12 18:32:40 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,6 @@ t_point_triangle triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_tria
 	tri.p[2].x = triprojected.p[2].v.x;
 	tri.p[2].y = triprojected.p[2].v.y;
 	tri.clr = clipped.clr;
-
 	return(tri);
 }
 
@@ -136,35 +135,6 @@ static void clip_and_render_triangles(t_sdlcontext *sdl, t_render *render)
 	render->map.img.data = NULL;
 }
 
-typedef	struct s_rgb
-{
-	uint8_t r;
-	uint8_t g;
-	uint8_t b;
-	uint8_t a;
-} t_rgb;
-
-typedef struct s_color
-{
-	union cdata_u
-	{
-		t_rgb		rgb;
-		uint32_t	color;
-	} dat;
-}	t_color;
-
-static uint32_t	flip_channels(uint32_t clr)
-{
-	t_color		result;
-	t_color		orig;
-	orig.dat.color = clr;
-	result.dat.rgb.r = orig.dat.rgb.b;
-	result.dat.rgb.g = orig.dat.rgb.g;
-	result.dat.rgb.b = orig.dat.rgb.r;
-	result.dat.rgb.a = orig.dat.rgb.a;
-	return (result.dat.color);
-}
-
 void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 {
 	t_object		*obj;
@@ -174,6 +144,7 @@ void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 	obj = entity->obj;
 	render->worldspace_ptri_count = 0;
 	render->screenspace_ptri_count = 0;
+	
 	index = 0;
 	while (index < obj->face_count)
 	{
@@ -200,11 +171,14 @@ void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 			if (entity->map)
 			{
 				render->map = entity->map[obj->faces[index].materialindex];
+				render->map.img.size.x -= 1;
+				render->map.img.size.y -= 1;
+				render->is_wrap = false;
 			}
 			else
 			{
-				render->map.img = *(obj->materials[obj->faces[index].materialindex].img);
-				render->map.size = render->map.img.size;
+				render->map.img = *obj->materials[obj->faces[index].materialindex].img;
+				render->is_wrap = true;
 			}
 			if (obj->materials)
 			{

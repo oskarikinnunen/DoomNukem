@@ -159,6 +159,8 @@ typedef struct s_render
 	t_debug_occlusion	occlusion;
 	t_lightmap			*lightmap;
 	t_map				map;
+	//uint32_t			(*sample)(struct s_render*, t_texture);
+	bool				is_wrap;
 }	t_render;
 
 
@@ -187,7 +189,6 @@ typedef struct s_sdlcontext
 	t_point					screensize;
 }	t_sdlcontext;
 
-
 void	alloc_image(t_img *img, int width, int height);
 t_img	*get_image_by_index(t_sdlcontext sdl, int index); //TODO: add comments
 t_img	*get_image_by_name(t_sdlcontext sdl, char *name);
@@ -214,7 +215,6 @@ void		free_render(t_render render);
 void		render_start(t_render *render);
 
 /* RENDER */
-void				render_triangle(t_sdlcontext *sdl, t_render *render, int index);
 void				render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size);
 void				render_ray(t_sdlcontext sdl, t_render render, t_vector3 from, t_vector3 to);
 int					triangle_clipagainstplane(t_vector3 plane_p, t_vector3 plane_n, t_triangle *in_tri, t_triangle out_tri[2]);
@@ -223,6 +223,11 @@ void				clipped_point_triangle(t_render *render, t_sdlcontext sdl);
 void				render_buffer(t_sdlcontext *sdl, t_render *render);
 t_triangle			triangle_to_viewspace(t_triangle tritransformed, t_mat4x4 matview);
 t_point_triangle	triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_triangle clipped, t_sdlcontext sdl);
+
+/* RASTERIZER */
+void				render_triangle(t_sdlcontext *sdl, t_render *render, int index);
+void				render_triangle_wrap(t_sdlcontext *sdl, t_render *render, int index);
+
 /* AUDIO */
 
 // Mallocs the memory for sdl->audiocount many t_audio structs.
@@ -264,4 +269,14 @@ void	join_text_boxed_to_surface(t_sdlcontext *sdl, SDL_Surface *src, t_point pos
 
 /*occlusion*/
 void get_min_max_from_triangles(t_vector2 *min, t_vector2 *max, t_triangle *t, int count);
+
+/*Render helper*/
+t_point_triangle	wf_tri(t_point_triangle in, float scaling);
+t_texture			calc_step_texture(t_texture *t, float delta);
+void				calc_points_step(float x_step[2], t_texture t_step[2], t_point *p, t_texture *t, float delta);
+void				sort_point_tris(t_point *p, t_texture *t);
+void				ft_swap(void * a, void * b, size_t len);
+t_point_triangle	ps1(t_point_triangle in, int div);
+
+
 #endif

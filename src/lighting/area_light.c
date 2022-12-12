@@ -1,107 +1,5 @@
 #include "doomnukem.h"
 
-static void ft_swap(void * a, void * b, size_t len)
-{
-	unsigned char	*a1;
-	unsigned char	*b1;
-	unsigned char	temp;
-	size_t			i;
-
-	a1 = a;
-	b1 = b;
-	i = 0;
-	while (i < len)
-	{
-		temp = a1[i];
-		a1[i] = b1[i];
-		b1[i] = temp;
-		i++;
-	}
-}
-
-static void	sort_tris(t_quaternion	*q, t_texture *t)
-{
-	int	s_x;
-	int	s_j;
-	t_quaternion	temp_q;
-	t_texture 		temp_t;
-
-	s_x = 0;
-	s_j = 0;
-	while (s_x < 2)
-	{
-		while (s_j < 2 - s_x)
-		{
-			if (q[s_j].v.y < q[s_j + 1].v.y)
-			{
-				temp_q = q[s_j];
-				q[s_j] = q[s_j + 1];
-				q[s_j + 1] = temp_q;
-
-				temp_t = t[s_j];
-				t[s_j] = t[s_j + 1];
-				t[s_j + 1] = temp_t;
-			}
-			s_j++;
-		}
-		s_j = 0;
-		s_x++;
-	}
-}
-
-static void	sort_point_tris(t_point *p, t_texture *t)
-{
-	int	s_x;
-	int	s_j;
-	t_point			temp_p;
-	t_texture 		temp_t;
-
-	s_x = 0;
-	s_j = 0;
-	while (s_x < 2)
-	{
-		while (s_j < 2 - s_x)
-		{
-			if (p[s_j].y < p[s_j + 1].y)
-			{
-				temp_p = p[s_j];
-				p[s_j] = p[s_j + 1];
-				p[s_j + 1] = temp_p;
-
-				temp_t = t[s_j];
-				t[s_j] = t[s_j + 1];
-				t[s_j + 1] = temp_t;
-			}
-			s_j++;
-		}
-		s_j = 0;
-		s_x++;
-	}
-}
-
-static void  calc_points_step(float x_step[2], t_texture t_step[2], t_point *p, t_texture *t, float delta)
-{
-	x_step[0] = (p[0].x - p[1].x) * delta;
-	x_step[1] = (p[0].x - p[2].x) * delta;
-
-	t_step[0].u = (t[0].u - t[1].u) * delta;
-	t_step[0].v = (t[0].v - t[1].v) * delta;
-	t_step[0].w = (t[0].w - t[1].w) * delta;
-
-	t_step[1].u = (t[0].u - t[2].u) * delta;
-	t_step[1].v = (t[0].v - t[2].v) * delta;
-	t_step[1].w = (t[0].w - t[2].w) * delta;
-}
-
-static t_texture calc_step_texture(t_texture *t, float delta)
-{	
-	t_texture step;
-	step.u = (t[2].u - t[1].u) * delta;
-	step.v = (t[2].v - t[1].v) * delta;
-	step.w = (t[2].w - t[1].w) * delta;
-	return(step);
-}
-
 static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle)
 {
 	t_point			*p;
@@ -432,7 +330,7 @@ static void visible_fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle trian
 				db = db * w2;
 				da = da + db;
 				da = da + t[0].w;
-				if (da >= sdl->zbuffer[a.x + a.y * sdl->window_w] * 0.99f || 0)
+				if (da >= sdl->zbuffer[a.x + a.y * sdl->window_w] * 0.99f)
 				{
 					render->lightmap->data[x + render->lightmap->size.x * y] = 255;//((500.0f - (1.0f / fa)) / 500) * 255; //TODO: ADD THIS 
 					//printf("%d\n", render->lightmap->data[(x * render->lightmap->size.x) + y]);
@@ -455,9 +353,6 @@ static void visible_fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle trian
 static void clip_draw_lightmap(t_sdlcontext *sdl, t_render *render)
 {
 	int			i;
-	int			j;
-	t_vector2	max;
-	t_texture	t;
 
 	clipped_point_triangle(render, *sdl);
 	printf("lightmap size %d %d\n", render->lightmap->size.x, render->lightmap->size.y);

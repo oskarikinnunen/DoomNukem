@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/10 16:13:38 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/12 18:15:34 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ int	editorloop(t_sdlcontext sdl)
 		update_render(&ed.render, &ed.player);
 		//print_vector3(ed.render.camera.lookdir);
 	//print_vector3(ed.render.camera.position);
-	//	ed.render.camera.lookdir = (t_vector3){-0.630105, 0.650868, -0.423484};
-	//	ed.render.camera.position = (t_vector3){1208.355713, 912.929382, 154.534698};
+//		ed.render.camera.lookdir = (t_vector3){-0.630105, 0.650868, -0.423484};
+//		ed.render.camera.position = (t_vector3){1208.355713, 912.929382, 154.534698};
 		screen_blank(sdl);
 		render_start(&ed.render);
 		update_world3d(&ed.world, &ed.render);
@@ -61,19 +61,16 @@ int	editorloop(t_sdlcontext sdl)
 		{
 			ed.tool->update(&ed, &sdl);
 		}
-		
 		ed.hid.mouse.click_unhandled = false;
 		//print_text_boxed(&sdl, "tab to unlock/lock mouse, shift + enter to go to playmode", (t_point){sdl.window_w / 2, 10}, (t_point){sdl.window_w, sdl.window_h});
 		
 		char *fps = ft_itoa(ed.clock.fps);
 		print_text(&sdl, fps, (t_point){sdl.window_w - 80, 10});
-
 		drawcircle(sdl, point_div(sdl.screensize, 2), 4, CLR_BLUE);
 		free(fps);
 		if (!ed.player.gun->disabled)
 			render_entity(&sdl, &ed.render, &ed.player.gun->entity);
 		//update_debugconsole(&ed.world.debugconsole, &sdl, ed.clock.delta);
-		
 		rescale_surface(&sdl);
 		join_surfaces(sdl.window_surface, sdl.surface);
 		join_surfaces(sdl.window_surface, sdl.ui_surface);

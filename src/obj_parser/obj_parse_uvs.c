@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 14:17:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/09 13:32:15 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/12 16:17:21 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ t_list	*get_uv_list(int fd)
 			tempf = uv.x;
 			uv.x = -uv.y;
 			uv.y = tempf;*/
+			uv.y = 1.0f - uv.y;
 			list_push(&list, &uv, sizeof(t_vector2));
 		}
 		free(line);
