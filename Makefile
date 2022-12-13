@@ -21,12 +21,12 @@ INSTALLED_LIBS_DIR = $(LIBS_DIR)/installed_libs
 SDL2_DIR = $(LIBS_DIR)/SDL2-2.0.8
 SDL2_TTF_DIR = $(LIBS_DIR)/SDL2_ttf-2.0.15
 FREETYPE_DIR = $(LIBS_DIR)/freetype-2.9
+FMOD_DIR = $(INSTALLED_LIBS_DIR)/lib/FMOD
 
 SDL2 = $(INSTALLED_LIBS_DIR)/lib/libSDL2.a
 SDL2_TTF = $(INSTALLED_LIBS_DIR)/lib/libSDL2_ttf.a
 FREETYPE = $(INSTALLED_LIBS_DIR)/lib/libfreetype.a
-
-FMOD_DIR = $(INSTALLED_LIBS_DIR)/lib/FMOD
+FMOD = $(FMOD_DIR)/copied
 
 LIBFT = libft/libft.a
 
@@ -120,7 +120,7 @@ warning:
 endif
 
 
-all: $(SDL2) $(FREETYPE) $(SDL2_TTF) fmod $(LUA) $(LIBFT) $(OBJ)
+all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(FMOD) $(LUA) $(LIBFT) $(OBJ)
 	$(CC) $(OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LUA) $(LDFLAGS)
 
 $(OBJ): include/*.h Makefile
@@ -139,6 +139,7 @@ clean-libs:
 		$(INSTALLED_LIBS_DIR)/include/SDL2 $(INSTALLED_LIBS_DIR)/lib/cmake \
 		$(INSTALLED_LIBS_DIR)/lib/pkgconfig $(INSTALLED_LIBS_DIR)/lib/lib* \
 		$(INSTALLED_LIBS_DIR)/share
+	rm $(FMOD)
 
 re-libs: clean-libs all
 
@@ -150,7 +151,7 @@ re-lua: clean-lua $(LUA)
 $(LUA):
 	cd $(LUAFOLDER) && make generic && make local
 
-fmod:
+$(FMOD):
 	cp $(FMOD_DIR)/libfmod.dylib $(INSTALLED_LIBS_DIR)/lib/
 	cp $(FMOD_DIR)/libfmodL.dylib $(INSTALLED_LIBS_DIR)/lib/
 	cp $(FMOD_DIR)/libfmod.so $(INSTALLED_LIBS_DIR)/lib/
@@ -159,6 +160,7 @@ fmod:
 	cp $(FMOD_DIR)/libfmodL.so $(INSTALLED_LIBS_DIR)/lib/
 	cp $(FMOD_DIR)/libfmodL.so.13 $(INSTALLED_LIBS_DIR)/lib/
 	cp $(FMOD_DIR)/libfmodL.so.13.11 $(INSTALLED_LIBS_DIR)/lib/
+	touch $(FMOD)
 
 $(SDL2_DIR)/unpacked:
 	cd $(LIBS_DIR) && tar -xf SDL2-2.0.8.tar.gz

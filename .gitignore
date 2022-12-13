@@ -15,6 +15,7 @@ libs/installed_libs/include/*
 
 libs/installed_libs/lib/*
 !libs/installed_libs/lib/FMOD/
+libs/installed_libs/lib/FMOD/copied
 
 libft/libft.a
 libft/**.o
