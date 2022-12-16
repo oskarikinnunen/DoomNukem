@@ -80,8 +80,6 @@ void update_world3d(t_world *world, t_render *render)
 	
 	sdl = world->sdl;
 	ft_bzero(&render->rs, sizeof(t_render_statistics));
-	bzero((uint32_t *)sdl->surface->pixels, sizeof(uint32_t) * sdl->window_h * sdl->window_w);
-	bzero(sdl->zbuffer, sizeof(float) * sdl->window_h * sdl->window_w);
 	/*update_npcs(world);
 	i = 0;
 	while (i < 128)

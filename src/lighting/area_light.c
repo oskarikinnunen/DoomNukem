@@ -129,12 +129,12 @@ t_vector3 triIntersect(t_vector3 ro, t_vector3 rd, t_vector3 v0, t_vector3 v1, t
 	return(t_vector3){t, u, v};
 }
 
-float sign1 (t_point p1, t_point p2, t_point p3)
+static float sign1 (t_point p1, t_point p2, t_point p3)
 {
     return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
 }
 
-bool PointInTriangle (t_point pt, t_point v1, t_point v2, t_point v3)
+static bool PointInTriangle (t_point pt, t_point v1, t_point v2, t_point v3)
 {
     float d1, d2, d3;
     bool has_neg, has_pos;
@@ -197,16 +197,23 @@ bool is_valid_tri(t_point *p)
 	}
 	if (dist[(max_i + 1) % 3] + dist[(max_i + 2) % 3] == dist[max_i])
 		return(false);
-
-	//seems unnecessary
-	if ((p[0].x == p[1].x && p[0].y == p[1].y) || (p[0].x == p[2].x && p[0].y == p[2].y) || (p[2].x == p[1].x && p[2].y == p[1].y))
-	{
-		exit(0);
-		printf("not valid triangle in point_light.c\n");
-		return(false);
-	}
 	return(true);
 }
+
+static t_vector2 texcoord_to_loc(t_point *v, t_point *t, t_vector2 p)
+{
+    float       i;
+    float       s;
+    float       delta;
+    t_vector2  	r;
+    i = 1 / ((float)(t[1].x - t[0].x) * (float)(t[2].y - t[0].y) - (float)(t[1].y - t[0].y) * (float)(t[2].x - t[0].x));
+    s = i * (float)((float)(t[2].y - t[0].y) * (float)(p.x - t[0].x) - (float)(t[2].x - t[0].x) * (float)(p.y - t[0].y));
+    delta = i * (float)(-(float)(t[1].y - t[0].y) * (float)(p.x - t[0].x) + (float)(t[1].x - t[0].x) * (float)(p.y - t[0].y));
+    r.x = v[0].x + s * (float)(v[1].x - v[0].x) + delta * (float)(v[2].x - v[0].x);
+    r.y = v[0].y + s * (float)(v[1].y - v[0].y) + delta * (float)(v[2].y - v[0].y);
+    return (r);
+}
+
 
 static void visible_fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle, t_render *render)
 {
@@ -265,6 +272,43 @@ static void visible_fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle trian
 		{
 			if (PointInTriangle((t_point){x, y}, lt[0], lt[1], lt[2]))
 			{
+				/**/
+				t_vector2 test1 = texcoord_to_loc(p, lt, (t_vector2){x, y});
+
+				float w1 = (p[0].x * (p[2].y - p[0].y) + (test1.y - p[0].y) * (p[2].x - p[0].x) - test1.x * (p[2].y - p[0].y)) / (float)((p[1].y - p[0].y) * (p[2].x - p[0].x) - (p[1].x - p[0].x) * (p[2].y - p[0].y));
+				float w2 = (test1.y - p[0].y - w1 * (p[1].y - p[0].y))/(float)(p[2].y - p[0].y);
+				if (isinf(w1) || isnan(w1) || isinf(w2) || isnan(w2))
+				{
+					printf("first2\n");
+					printf("p0 %d p1 %d p2 %d\n", p[0].x, p[1].x, p[2].x);
+					printf("p0 %d p1 %d p2 %d\n", p[0].y, p[1].y, p[2].y);
+					printf("error on either w1 %f w2 %f", w1, w2);
+					ft_swap(&lt[1], &lt[2], sizeof(t_point));
+					ft_swap(&p[1], &p[2], sizeof(t_point));
+					ft_swap(&t[1], &t[2], sizeof(t_texture));
+					if (!is_valid_tri(p))
+						exit(0);
+					w1 = (p[0].x * (p[2].y - p[0].y) + (test1.y - p[0].y) * (p[2].x - p[0].x) - test1.x * (p[2].y - p[0].y)) / (float)((p[1].y - p[0].y) * (p[2].x - p[0].x) - (p[1].x - p[0].x) * (p[2].y - p[0].y));
+					w2 = (test1.y - p[0].y - w1 * (p[1].y - p[0].y))/(float)(p[2].y - p[0].y);
+					if (isinf(w1) || isnan(w1) || isinf(w2) || isnan(w2))
+						return;
+				}
+				//printf("second w1 %f w2 %f\n", w1, w2);
+				float da;
+				float db;
+
+				da = t[1].w - t[0].w;
+				db = t[2].w - t[0].w;
+				da = da * w1;
+				db = db * w2;
+				da = da + db;
+				da = da + t[0].w;
+				if (da >= sdl->zbuffer[(int)test1.x + (int)test1.y * sdl->window_w] * 0.99f)
+				{
+					render->lightmap->data[x + render->lightmap->size.x * y] = 255;//((500.0f - (1.0f / fa)) / 500) * 255; //TODO: ADD THIS 
+					//printf("%d\n", render->lightmap->data[(x * render->lightmap->size.x) + y]);
+				}
+				/*
 				float w1 = ((lt[0].x * (lt[2].y - lt[0].y) + (y - lt[0].y) * (lt[2].x - lt[0].x) - x * (lt[2].y - lt[0].y)) / (float)((lt[1].y - lt[0].y) * (lt[2].x - lt[0].x) - (lt[1].x - lt[0].x) * (lt[2].y - lt[0].y)));
 				float w2 = ((y - lt[0].y - w1 * (lt[1].y - lt[0].y))/(float)(lt[2].y - lt[0].y));
 				if (isinf(w1) || isnan(w1) || isinf(w2) || isnan(w2))
@@ -335,6 +379,7 @@ static void visible_fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle trian
 					render->lightmap->data[x + render->lightmap->size.x * y] = 255;//((500.0f - (1.0f / fa)) / 500) * 255; //TODO: ADD THIS 
 					//printf("%d\n", render->lightmap->data[(x * render->lightmap->size.x) + y]);
 				}
+				*/
 				/*if (x % 2 == 0)
 					render->lightmap->data[(x * render->img->size.x) + y] = 255;
 				else
@@ -440,6 +485,11 @@ void update_arealights_for_entity(t_sdlcontext sdl, t_render *render, t_entity *
 			lightmap = &entity->lightmap[obj->faces[index].materialindex];
 			render->lightmap = lightmap;
 			render->img = obj->materials[obj->faces[index].materialindex].img;
+			if (!render->img)
+			{
+				index++;
+				continue;
+			}
 			if (max.x > 1.0f)
 				lightmap->size.x = max.x * render->img->size.x;
 			else
@@ -473,6 +523,7 @@ void update_arealights_for_entity(t_sdlcontext sdl, t_render *render, t_entity *
 			}
 			render->img = NULL;
 			render->lightmap = NULL;
+			render->map.img.data = NULL;
 			render->worldspace_ptri_count = 0;
 			render->screenspace_ptri_count = 0;
 			max.x = -10000.0f;

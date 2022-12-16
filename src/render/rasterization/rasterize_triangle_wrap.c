@@ -31,14 +31,18 @@ static uint32_t	flip_channels(uint32_t clr)
 
 static uint32_t sample_img_wrapper(t_render *render, t_texture t)
 {
+	uint8_t		x8b;
+	uint8_t		y8b;
 	uint32_t	xsample;
 	uint32_t	ysample;
-	
-	xsample = (t.u / t.w) * (render->map.img.size.x);
-	ysample = (t.v / t.w) * (render->map.img.size.y);
-	xsample = xsample % (render->map.img.size.x);
-	ysample = ysample % (render->map.img.size.y);
-	return(flip_channels(render->map.img.data[ysample * render->map.img.size.x + xsample]));
+
+	x8b = (t.u / t.w) * 255;
+	xsample = (x8b * (render->img->size.x - 1)) / 255;
+	y8b = (t.v / t.w) * 255;
+	ysample = (y8b * (render->img->size.y - 1)) / 255;
+
+	return(render->img->data[0]);
+	return(flip_channels(render->img->data[ysample * render->img->size.x + xsample]));
 }
 
 static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_render *render)

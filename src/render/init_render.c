@@ -34,6 +34,7 @@ t_render	init_render(t_sdlcontext sdl, struct s_world *world)
 	render.occlusion.occlusion = false;
 	render.occlusion.cull_box = false;
 	render.occlusion.occluder_box = false;
+	render.world = world;
 	bake_lighting(&render, world);
 	return(render);
 }

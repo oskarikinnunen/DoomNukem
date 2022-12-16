@@ -234,6 +234,7 @@ void	update_wall_bounds(t_wall *w);
 void	bake_lighting(t_render *render, t_world *world);
 void	render_entity_depth_buffer(t_sdlcontext sdl, t_render *render, t_entity *entity);
 void	update_arealights_for_entity(t_sdlcontext sdl, t_render *render, t_entity *entity);
+void update_pointlight_for_entity(t_sdlcontext sdl, t_render *render, t_entity *entity);
 //
 
 #endif

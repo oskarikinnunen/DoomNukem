@@ -34,7 +34,8 @@ void bake_lighting(t_render *render, t_world *world)
 		{
 			if (ent->status == es_active)
 			{
-				update_arealights_for_entity(*world->sdl, render, ent);
+				update_pointlight_for_entity(*world->sdl, render, ent);
+				//update_arealights_for_entity(*world->sdl, render, ent);
 			}
 			found++;
 		}

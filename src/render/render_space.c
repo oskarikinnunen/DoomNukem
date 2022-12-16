@@ -133,6 +133,8 @@ static void clip_and_render_triangles(t_sdlcontext *sdl, t_render *render)
 	render->worldspace_ptri_count = 0;
 	render->screenspace_ptri_count = 0;
 	render->map.img.data = NULL;
+	render->img = NULL;
+	render->lightmap = NULL;
 }
 
 void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
@@ -168,40 +170,19 @@ void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 		}
 		if (index + 1 == obj->face_count || obj->faces[index].materialindex != obj->faces[index + 1].materialindex)
 		{
-			if (entity->map)
+			render->is_wrap = true;
+			if (obj->material_count > 0)
 			{
-				render->map = entity->map[obj->faces[index].materialindex];
-				render->map.img.size.x -= 1;
-				render->map.img.size.y -= 1;
-				render->is_wrap = false;
-			}
-			else
-			{
-				render->map.img = *obj->materials[obj->faces[index].materialindex].img;
-				render->is_wrap = true;
-			}
-			if (obj->materials)
-			{
-				t_img test = *obj->materials[obj->faces[index].materialindex].img;
-				t_map temp = entity->map[obj->faces[index].materialindex];
-				if (strcmp(test.name, "assets/images/car_red.png") == 0)
+				if (entity->map)
 				{
-					for (int e = 0; e < test.size.y; e++)
-					{
-						for (int j = 0; j < test.size.x; j++)
-						{
-							((uint32_t *)sdl->surface->pixels)[500 + e * sdl->window_w + j] = test.data[e * test.size.x + j];
-							sdl->zbuffer[500 + e * sdl->window_w + j] = 3.0f;
-						}
-					}
-					for (int e = 0; e < temp.size.y; e++)
-					{
-						for (int j = 0; j < temp.size.x; j++)
-						{
-							((uint32_t *)sdl->surface->pixels)[800 + e * sdl->window_w + j] = temp.img.data[e * temp.size.x + j];
-							sdl->zbuffer[800 + e * sdl->window_w + j] = 3.0f;
-						}
-					}
+					render->map = entity->map[obj->faces[index].materialindex];
+					render->map.img.size.x -= 1;
+					render->map.img.size.y -= 1;
+					render->is_wrap = false;
+				}
+				else
+				{
+					render->img = obj->materials[obj->faces[index].materialindex].img;
 				}
 			}
 			clip_and_render_triangles(sdl, render);

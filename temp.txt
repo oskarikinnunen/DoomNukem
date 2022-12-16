@@ -1,0 +1,1219 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  ms/call  ms/call  name    
+ 55.70      0.44     0.44 44737526     0.00     0.00  sample_img_wrapper
+ 30.38      0.68     0.24      589     0.41     1.15  render_triangle_wrap
+  8.86      0.75     0.07       62     1.13     1.13  join_surfaces
+  2.53      0.77     0.02       62     0.32     0.32  draw_rectangle_raster
+  1.27      0.78     0.01       31     0.32     0.32  moveplayer
+  1.27      0.79     0.01                             ft_lstapp
+  0.00      0.79     0.00   188546     0.00     0.00  blend_colors_alpha
+  0.00      0.79     0.00   154969     0.00     0.00  calc_step_texture
+  0.00      0.79     0.00    11196     0.00     0.00  list_push
+  0.00      0.79     0.00    11194     0.00     0.00  free_list_node
+  0.00      0.79     0.00     9393     0.00     0.00  vector2_fdist_to_plane
+  0.00      0.79     0.00     8091     0.00     0.00  point_add
+  0.00      0.79     0.00     6665     0.00     0.00  quaternion_mul_matrix
+  0.00      0.79     0.00     5911     0.00     0.00  parse_face
+  0.00      0.79     0.00     4496     0.00     0.00  vector3_dot
+  0.00      0.79     0.00     4342     0.00     0.00  vector3_magnitude
+  0.00      0.79     0.00     4309     0.00     0.00  vector2_normalise
+  0.00      0.79     0.00     3534     0.00     0.00  vector2_dot
+  0.00      0.79     0.00     3334     0.00     0.00  parse_vertex
+  0.00      0.79     0.00     3131     0.00     0.00  point_clip_triangle_against_plane
+  0.00      0.79     0.00     3008     0.00     0.00  vector3_add
+  0.00      0.79     0.00     2604     0.00     0.00  draw
+  0.00      0.79     0.00     2418     0.00     0.00  vector3_div
+  0.00      0.79     0.00     2418     0.00     0.00  vector3_negative
+  0.00      0.79     0.00     2327     0.00     0.00  vector3_sub
+  0.00      0.79     0.00     2232     0.00     0.00  vector2_to_texture
+  0.00      0.79     0.00     2232     0.00     0.00  vector3_fdist_to_plane
+  0.00      0.79     0.00     2201     0.00     0.00  drawline
+  0.00      0.79     0.00     2139     0.00     0.00  lerp_texture
+  0.00      0.79     0.00     2079     0.00     0.00  vector3_normalise
+  0.00      0.79     0.00     1941     0.00     0.00  vector2_zero
+  0.00      0.79     0.00     1911     0.00     0.00  parse_uv
+  0.00      0.79     0.00     1615     0.00     0.00  matrix_zero
+  0.00      0.79     0.00     1519     0.00     0.00  lerp_point
+  0.00      0.79     0.00     1178     0.00     0.00  vector2_line_intersect_plane
+  0.00      0.79     0.00      930     0.00     0.00  draw_rect_tri
+  0.00      0.79     0.00      807     0.00     0.00  vector3_crossproduct
+  0.00      0.79     0.00      806     0.00     0.00  triangle_to_screenspace_point_triangle
+  0.00      0.79     0.00      775     0.00     0.00  calc_points_step
+  0.00      0.79     0.00      744     0.00     0.00  clip_triangle_against_plane
+  0.00      0.79     0.00      744     0.00     0.00  triangle_to_viewspace
+  0.00      0.79     0.00      620     0.00     0.00  lerp_quaternion
+  0.00      0.79     0.00      589     0.00     0.00  sort_point_tris
+  0.00      0.79     0.00      558     0.00     0.00  ft_swap
+  0.00      0.79     0.00      527     0.00     0.00  matrix_makerotationy
+  0.00      0.79     0.00      527     0.00     0.00  matrix_makerotationz
+  0.00      0.79     0.00      527     0.00     0.00  vector3_mul_vector3
+  0.00      0.79     0.00      496     0.00     0.00  line_intersect_plane
+  0.00      0.79     0.00      496     0.00     0.00  matrix_makerotationx
+  0.00      0.79     0.00      496     0.00     0.00  quaternion_rotate_euler
+  0.00      0.79     0.00      496     0.00     0.00  transformed_vector3
+  0.00      0.79     0.00      434     0.00     0.00  join_text_to_surface
+  0.00      0.79     0.00      434     0.00     0.00  print_text
+  0.00      0.79     0.00      403     0.00     0.00  drawrectangle
+  0.00      0.79     0.00      403     0.00     0.00  print_text_colored
+  0.00      0.79     0.00      248     0.00     0.00  pointrectanglecollision
+  0.00      0.79     0.00      248     0.00     0.00  sort_quat_tex_by_dist
+  0.00      0.79     0.00      186     0.00     0.00  gui_label
+  0.00      0.79     0.00      186     0.00     0.00  join_text_boxed_to_surface
+  0.00      0.79     0.00      186     0.00     0.00  print_text_boxed
+  0.00      0.79     0.00      157     0.00     0.00  vector3_mul
+  0.00      0.79     0.00      155     0.00     0.00  gui_int
+  0.00      0.79     0.00      155     0.00     0.00  point_sub
+  0.00      0.79     0.00      124     0.00     0.00  clip_quad_to_triangles
+  0.00      0.79     0.00      124     0.00     0.00  clip_triangle
+  0.00      0.79     0.00      124     0.00     0.00  gui_button
+  0.00      0.79     0.00      124     0.00     0.00  point_one
+  0.00      0.79     0.00       93     0.00     0.00  gui_labeled_int
+  0.00      0.79     0.00       91     0.00     0.00  vector2_mul
+  0.00      0.79     0.00       63     0.00     0.00  vector3_zero
+  0.00      0.79     0.00       62     0.00     0.00  clipped_point_triangle
+  0.00      0.79     0.00       62     0.00     0.00  draw_rectangle_filled
+  0.00      0.79     0.00       62     0.00     0.00  gui_end
+  0.00      0.79     0.00       62     0.00     0.32  gui_start
+  0.00      0.79     0.00       62     0.00     0.00  render_buffer
+  0.00      0.79     0.00       62     0.00    10.97  render_buffer_triangles
+  0.00      0.79     0.00       62     0.00    10.97  render_entity
+  0.00      0.79     0.00       62     0.00    10.97  render_quaternions
+  0.00      0.79     0.00       62     0.00     0.00  render_worldspace
+  0.00      0.79     0.00       62     0.00     0.00  update_deltatime
+  0.00      0.79     0.00       38     0.00     0.00  parsemat
+  0.00      0.79     0.00       36     0.00     0.00  list_to_ptr
+  0.00      0.79     0.00       32     0.00     0.00  draw_triangle
+  0.00      0.79     0.00       32     0.00     0.00  matrix_lookat
+  0.00      0.79     0.00       32     0.00     0.00  matrix_quickinverse
+  0.00      0.79     0.00       31     0.00     0.00  drawcircle
+  0.00      0.79     0.00       31     0.00     0.00  editor_events
+  0.00      0.79     0.00       31     0.00     0.00  gui_endhorizontal
+  0.00      0.79     0.00       31     0.00     0.00  gui_float_slider
+  0.00      0.79     0.00       31     0.00     0.00  gui_int_slider
+  0.00      0.79     0.00       31     0.00     0.00  gui_labeled_float_slider
+  0.00      0.79     0.00       31     0.00     0.00  gui_labeled_int_slider
+  0.00      0.79     0.00       31     0.00     0.00  gui_labeled_point
+  0.00      0.79     0.00       31     0.00     0.00  gui_starthorizontal
+  0.00      0.79     0.00       31     0.00     0.00  lookdirection
+  0.00      0.79     0.00       31     0.00     0.00  point_div
+  0.00      0.79     0.00       31     0.00     0.00  point_fmul
+  0.00      0.79     0.00       31     0.00     0.00  render_start
+  0.00      0.79     0.00       31     0.00     0.00  rescale_surface
+  0.00      0.79     0.00       31     0.00     0.00  screen_blank
+  0.00      0.79     0.00       31     0.00     0.32  update_editor_toolbar
+  0.00      0.79     0.00       31     0.00    10.97  update_entitycache
+  0.00      0.79     0.00       31     0.00     0.00  update_render
+  0.00      0.79     0.00       31     0.00    22.26  update_world3d
+  0.00      0.79     0.00       31     0.00     0.00  updateguntransform
+  0.00      0.79     0.00       31     0.00     0.00  vector3_clamp_magnitude
+  0.00      0.79     0.00       31     0.00     0.00  vector3_up
+  0.00      0.79     0.00       30     0.00     0.00  point_to_vector2
+  0.00      0.79     0.00       30     0.00     0.00  updateinput
+  0.00      0.79     0.00       30     0.00     0.00  vector2_add
+  0.00      0.79     0.00       19     0.00     0.00  pngparse
+  0.00      0.79     0.00       19     0.00     0.00  pngtosimpleimg
+  0.00      0.79     0.00       19     0.00     0.00  point_zero
+  0.00      0.79     0.00       19     0.00     0.00  readdat
+  0.00      0.79     0.00       19     0.00     0.00  readpalette
+  0.00      0.79     0.00       19     0.00     0.00  sample_ouroboros
+  0.00      0.79     0.00       10     0.00     0.00  iskey
+  0.00      0.79     0.00        9     0.00     0.00  get_face_list
+  0.00      0.79     0.00        9     0.00     0.00  get_material_list
+  0.00      0.79     0.00        9     0.00     0.00  get_uv_list
+  0.00      0.79     0.00        9     0.00     0.00  get_vertex_list
+  0.00      0.79     0.00        9     0.00     0.00  mouse_event
+  0.00      0.79     0.00        9     0.00     0.00  objparse
+  0.00      0.79     0.00        9     0.00     0.00  parse_mtllib
+  0.00      0.79     0.00        9     0.00     0.00  toggle_keystates
+  0.00      0.79     0.00        5     0.00     0.00  get_image_by_name
+  0.00      0.79     0.00        4     0.00     0.00  get_object_by_name
+  0.00      0.79     0.00        4     0.00     0.00  vector3_one
+  0.00      0.79     0.00        3     0.00     0.00  load_chunk
+  0.00      0.79     0.00        3     0.00     0.00  load_wav
+  0.00      0.79     0.00        2     0.00     0.00  find_chunk_count
+  0.00      0.79     0.00        2     0.00     0.00  init_gui
+  0.00      0.79     0.00        2     0.00     0.00  parse_chunk
+  0.00      0.79     0.00        2     0.00     0.00  save_chunk
+  0.00      0.79     0.00        2     0.00     0.00  start_anim
+  0.00      0.79     0.00        1     0.00     0.00  close_audio
+  0.00      0.79     0.00        1     0.00     0.00  color32_to_sdlcolor
+  0.00      0.79     0.00        1     0.00     0.00  debug_gun
+  0.00      0.79     0.00        1     0.00     0.00  debugconsole_addmessage
+  0.00      0.79     0.00        1     0.00   780.00  editorloop
+  0.00      0.79     0.00        1     0.00     0.00  fileopen
+  0.00      0.79     0.00        1     0.00     0.00  free_render
+  0.00      0.79     0.00        1     0.00     0.00  init_debugconsole
+  0.00      0.79     0.00        1     0.00     0.00  init_entitycache
+  0.00      0.79     0.00        1     0.00     0.00  init_render
+  0.00      0.79     0.00        1     0.00     0.00  keyismovedown
+  0.00      0.79     0.00        1     0.00     0.00  keyismoveleft
+  0.00      0.79     0.00        1     0.00     0.00  keyismoveright
+  0.00      0.79     0.00        1     0.00     0.00  keyismoveup
+  0.00      0.79     0.00        1     0.00     0.00  load_audio
+  0.00      0.79     0.00        1     0.00     0.00  load_fonts
+  0.00      0.79     0.00        1     0.00     0.00  load_images
+  0.00      0.79     0.00        1     0.00     0.00  load_lua_conf
+  0.00      0.79     0.00        1     0.00     0.00  load_objects
+  0.00      0.79     0.00        1     0.00     0.00  load_resolution
+  0.00      0.79     0.00        1     0.00     0.00  load_rooms
+  0.00      0.79     0.00        1     0.00     0.00  load_world
+  0.00      0.79     0.00        1     0.00     0.00  matrix_makeidentity
+  0.00      0.79     0.00        1     0.00     0.00  matrix_makeprojection
+  0.00      0.79     0.00        1     0.00     0.00  objects_init
+  0.00      0.79     0.00        1     0.00     0.00  parseanim
+  0.00      0.79     0.00        1     0.00     0.00  player_init
+  0.00      0.79     0.00        1     0.00     0.00  quit_game
+  0.00      0.79     0.00        1     0.00     0.00  save_editordata
+  0.00      0.79     0.00        1     0.00     0.00  save_world
+  0.00      0.79     0.00        1     0.00     0.00  spawn_entity
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+Copyright (C) 2012-2022 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 4 byte(s) for 1.27% of 0.79 seconds
+
+index % time    self  children    called     name
+                0.00    0.78       1/1           main [2]
+[1]     98.7    0.00    0.78       1         editorloop [1]
+                0.00    0.69      31/31          update_world3d [3]
+                0.07    0.00      62/62          join_surfaces [10]
+                0.00    0.01      31/31          update_editor_toolbar [14]
+                0.01    0.00      31/31          moveplayer [13]
+                0.00    0.00      62/62          update_deltatime [85]
+                0.00    0.00      62/403         print_text_colored [64]
+                0.00    0.00      62/930         draw_rect_tri [45]
+                0.00    0.00      62/62          gui_end [82]
+                0.00    0.00      31/31          editor_events [92]
+                0.00    0.00      31/31          update_render [106]
+                0.00    0.00      31/31          screen_blank [105]
+                0.00    0.00      31/31          render_start [103]
+                0.00    0.00      31/434         print_text [62]
+                0.00    0.00      31/31          point_div [101]
+                0.00    0.00      31/31          drawcircle [91]
+                0.00    0.00      31/31          rescale_surface [104]
+                0.00    0.00       2/2           init_gui [134]
+                0.00    0.00       1/1           load_world [158]
+                0.00    0.00       1/1           init_render [146]
+                0.00    0.00       1/1           player_init [163]
+                0.00    0.00       1/1           save_world [166]
+                0.00    0.00       1/1           save_editordata [165]
+                0.00    0.00       1/1           free_render [143]
+                0.00    0.00       1/1           quit_game [164]
+-----------------------------------------------
+                                                 <spontaneous>
+[2]     98.7    0.00    0.78                 main [2]
+                0.00    0.78       1/1           editorloop [1]
+                0.00    0.00       1/1           load_lua_conf [154]
+                0.00    0.00       1/1           load_audio [151]
+                0.00    0.00       1/1           load_fonts [152]
+                0.00    0.00       1/1           objects_init [161]
+                0.00    0.00       1/4           get_object_by_name [129]
+                0.00    0.00       1/1           parseanim [162]
+-----------------------------------------------
+                0.00    0.69      31/31          editorloop [1]
+[3]     87.3    0.00    0.69      31         update_world3d [3]
+                0.00    0.34      31/62          render_entity [6]
+                0.00    0.34      31/31          update_entitycache [9]
+                0.00    0.01      31/62          gui_start [12]
+                0.00    0.00      93/93          gui_labeled_int [77]
+                0.00    0.00      31/31          gui_labeled_float_slider [96]
+                0.00    0.00      31/31          point_fmul [102]
+                0.00    0.00      31/31          gui_labeled_point [98]
+                0.00    0.00      31/31          gui_labeled_int_slider [97]
+-----------------------------------------------
+                0.24    0.44     589/589         render_buffer_triangles [5]
+[4]     86.1    0.24    0.44     589         render_triangle_wrap [4]
+                0.44    0.00 44737526/44737526     sample_img_wrapper [8]
+                0.00    0.00  154969/154969      calc_step_texture [17]
+                0.00    0.00     775/775         calc_points_step [48]
+                0.00    0.00     589/589         sort_point_tris [52]
+                0.00    0.00     558/558         ft_swap [53]
+-----------------------------------------------
+                0.00    0.68      62/62          render_quaternions [7]
+[5]     86.1    0.00    0.68      62         render_buffer_triangles [5]
+                0.24    0.44     589/589         render_triangle_wrap [4]
+-----------------------------------------------
+                0.00    0.34      31/62          update_entitycache [9]
+                0.00    0.34      31/62          update_world3d [3]
+[6]     86.1    0.00    0.68      62         render_entity [6]
+                0.00    0.68      62/62          render_quaternions [7]
+                0.00    0.00      62/62          render_worldspace [84]
+-----------------------------------------------
+                0.00    0.68      62/62          render_entity [6]
+[7]     86.1    0.00    0.68      62         render_quaternions [7]
+                0.00    0.68      62/62          render_buffer_triangles [5]
+                0.00    0.00    2232/2327        vector3_sub [34]
+                0.00    0.00    2232/2232        vector2_to_texture [35]
+                0.00    0.00     806/806         triangle_to_screenspace_point_triangle [47]
+                0.00    0.00     744/2079        vector3_normalise [39]
+                0.00    0.00     744/807         vector3_crossproduct [46]
+                0.00    0.00     744/4496        vector3_dot [24]
+                0.00    0.00     744/744         triangle_to_viewspace [50]
+                0.00    0.00     744/744         clip_triangle_against_plane [49]
+                0.00    0.00      62/62          clipped_point_triangle [80]
+                0.00    0.00      62/62          render_buffer [83]
+-----------------------------------------------
+                0.44    0.00 44737526/44737526     render_triangle_wrap [4]
+[8]     55.7    0.44    0.00 44737526         sample_img_wrapper [8]
+-----------------------------------------------
+                0.00    0.34      31/31          update_world3d [3]
+[9]     43.0    0.00    0.34      31         update_entitycache [9]
+                0.00    0.34      31/62          render_entity [6]
+-----------------------------------------------
+                0.07    0.00      62/62          editorloop [1]
+[10]     8.9    0.07    0.00      62         join_surfaces [10]
+-----------------------------------------------
+                0.02    0.00      62/62          gui_start [12]
+[11]     2.5    0.02    0.00      62         draw_rectangle_raster [11]
+-----------------------------------------------
+                0.00    0.01      31/62          update_editor_toolbar [14]
+                0.00    0.01      31/62          update_world3d [3]
+[12]     2.5    0.00    0.02      62         gui_start [12]
+                0.02    0.00      62/62          draw_rectangle_raster [11]
+                0.00    0.00     186/2201        drawline [37]
+                0.00    0.00     186/403         drawrectangle [63]
+                0.00    0.00     124/155         point_sub [72]
+                0.00    0.00     124/124         point_one [76]
+                0.00    0.00     124/8091        point_add [21]
+-----------------------------------------------
+                0.01    0.00      31/31          editorloop [1]
+[13]     1.3    0.01    0.00      31         moveplayer [13]
+                0.00    0.00     124/157         vector3_mul [70]
+                0.00    0.00      62/63          vector3_zero [79]
+                0.00    0.00      62/3008        vector3_add [30]
+                0.00    0.00      31/31          updateguntransform [107]
+                0.00    0.00      31/91          vector2_mul [78]
+                0.00    0.00      31/2327        vector3_sub [34]
+                0.00    0.00      31/31          lookdirection [100]
+                0.00    0.00      31/527         vector3_mul_vector3 [56]
+                0.00    0.00      31/2079        vector3_normalise [39]
+                0.00    0.00      31/31          vector3_up [109]
+                0.00    0.00      31/807         vector3_crossproduct [46]
+                0.00    0.00      31/31          vector3_clamp_magnitude [108]
+-----------------------------------------------
+                0.00    0.01      31/31          editorloop [1]
+[14]     1.3    0.00    0.01      31         update_editor_toolbar [14]
+                0.00    0.01      31/62          gui_start [12]
+                0.00    0.00     124/124         gui_button [75]
+                0.00    0.00      31/31          gui_starthorizontal [99]
+                0.00    0.00      31/31          gui_endhorizontal [93]
+-----------------------------------------------
+                                                 <spontaneous>
+[15]     1.3    0.01    0.00                 ft_lstapp [15]
+-----------------------------------------------
+                0.00    0.00   40986/188546      join_text_to_surface [61]
+                0.00    0.00  147560/188546      join_text_boxed_to_surface [68]
+[16]     0.0    0.00    0.00  188546         blend_colors_alpha [16]
+-----------------------------------------------
+                0.00    0.00  154969/154969      render_triangle_wrap [4]
+[17]     0.0    0.00    0.00  154969         calc_step_texture [17]
+-----------------------------------------------
+                0.00    0.00       1/11196       parse_chunk [135]
+                0.00    0.00       1/11196       save_world [166]
+                0.00    0.00      38/11196       parse_mtllib [126]
+                0.00    0.00    1911/11196       get_uv_list [122]
+                0.00    0.00    3334/11196       get_vertex_list [123]
+                0.00    0.00    5911/11196       get_face_list [120]
+[18]     0.0    0.00    0.00   11196         list_push [18]
+-----------------------------------------------
+                0.00    0.00   11194/11194       ft_lstdel [340]
+[19]     0.0    0.00    0.00   11194         free_list_node [19]
+-----------------------------------------------
+                0.00    0.00    9393/9393        point_clip_triangle_against_plane [29]
+[20]     0.0    0.00    0.00    9393         vector2_fdist_to_plane [20]
+-----------------------------------------------
+                0.00    0.00      93/8091        gui_float_slider [94]
+                0.00    0.00      93/8091        gui_int_slider [95]
+                0.00    0.00     124/8091        gui_start [12]
+                0.00    0.00     372/8091        gui_button [75]
+                0.00    0.00     465/8091        gui_int [71]
+                0.00    0.00    1116/8091        gui_label [67]
+                0.00    0.00    2015/8091        drawrectangle [63]
+                0.00    0.00    3813/8091        draw_rect_tri [45]
+[21]     0.0    0.00    0.00    8091         point_add [21]
+-----------------------------------------------
+                0.00    0.00      31/6665        lookdirection [100]
+                0.00    0.00     496/6665        render_worldspace [84]
+                0.00    0.00    1488/6665        quaternion_rotate_euler [59]
+                0.00    0.00    2232/6665        triangle_to_viewspace [50]
+                0.00    0.00    2418/6665        triangle_to_screenspace_point_triangle [47]
+[22]     0.0    0.00    0.00    6665         quaternion_mul_matrix [22]
+-----------------------------------------------
+                0.00    0.00    5911/5911        get_face_list [120]
+[23]     0.0    0.00    0.00    5911         parse_face [23]
+-----------------------------------------------
+                0.00    0.00      32/4496        matrix_lookat [89]
+                0.00    0.00     744/4496        render_quaternions [7]
+                0.00    0.00    1488/4496        line_intersect_plane [57]
+                0.00    0.00    2232/4496        vector3_fdist_to_plane [36]
+[24]     0.0    0.00    0.00    4496         vector3_dot [24]
+-----------------------------------------------
+                0.00    0.00      31/4342        vector3_clamp_magnitude [108]
+                0.00    0.00    2079/4342        vector3_normalise [39]
+                0.00    0.00    2232/4342        vector3_fdist_to_plane [36]
+[25]     0.0    0.00    0.00    4342         vector3_magnitude [25]
+-----------------------------------------------
+                0.00    0.00    1178/4309        vector2_line_intersect_plane [44]
+                0.00    0.00    3131/4309        point_clip_triangle_against_plane [29]
+[26]     0.0    0.00    0.00    4309         vector2_normalise [26]
+-----------------------------------------------
+                0.00    0.00    3534/3534        vector2_line_intersect_plane [44]
+[27]     0.0    0.00    0.00    3534         vector2_dot [27]
+-----------------------------------------------
+                0.00    0.00    3334/3334        get_vertex_list [123]
+[28]     0.0    0.00    0.00    3334         parse_vertex [28]
+-----------------------------------------------
+                0.00    0.00    3131/3131        clipped_point_triangle [80]
+[29]     0.0    0.00    0.00    3131         point_clip_triangle_against_plane [29]
+                0.00    0.00    9393/9393        vector2_fdist_to_plane [20]
+                0.00    0.00    3131/4309        vector2_normalise [26]
+                0.00    0.00    1519/1519        lerp_point [43]
+                0.00    0.00    1519/2139        lerp_texture [38]
+                0.00    0.00    1178/1178        vector2_line_intersect_plane [44]
+-----------------------------------------------
+                0.00    0.00       1/3008        init_render [146]
+                0.00    0.00      31/3008        render_start [103]
+                0.00    0.00      62/3008        moveplayer [13]
+                0.00    0.00     496/3008        transformed_vector3 [60]
+                0.00    0.00    2418/3008        triangle_to_screenspace_point_triangle [47]
+[30]     0.0    0.00    0.00    3008         vector3_add [30]
+-----------------------------------------------
+                0.00    0.00    2604/2604        draw_rect_tri [45]
+[31]     0.0    0.00    0.00    2604         draw [31]
+-----------------------------------------------
+                0.00    0.00    2418/2418        triangle_to_screenspace_point_triangle [47]
+[32]     0.0    0.00    0.00    2418         vector3_div [32]
+-----------------------------------------------
+                0.00    0.00    2418/2418        triangle_to_screenspace_point_triangle [47]
+[33]     0.0    0.00    0.00    2418         vector3_negative [33]
+-----------------------------------------------
+                0.00    0.00      31/2327        moveplayer [13]
+                0.00    0.00      64/2327        matrix_lookat [89]
+                0.00    0.00    2232/2327        render_quaternions [7]
+[34]     0.0    0.00    0.00    2327         vector3_sub [34]
+-----------------------------------------------
+                0.00    0.00    2232/2232        render_quaternions [7]
+[35]     0.0    0.00    0.00    2232         vector2_to_texture [35]
+-----------------------------------------------
+                0.00    0.00    2232/2232        clip_triangle_against_plane [49]
+[36]     0.0    0.00    0.00    2232         vector3_fdist_to_plane [36]
+                0.00    0.00    2232/4342        vector3_magnitude [25]
+                0.00    0.00    2232/4496        vector3_dot [24]
+-----------------------------------------------
+                0.00    0.00      31/2201        draw_rect_tri [45]
+                0.00    0.00      31/2201        gui_float_slider [94]
+                0.00    0.00      31/2201        gui_int_slider [95]
+                0.00    0.00      93/2201        draw_triangle [88]
+                0.00    0.00     124/2201        gui_button [75]
+                0.00    0.00     186/2201        gui_start [12]
+                0.00    0.00     496/2201        drawcircle [91]
+                0.00    0.00    1209/2201        drawrectangle [63]
+[37]     0.0    0.00    0.00    2201         drawline [37]
+-----------------------------------------------
+                0.00    0.00     248/2139        clip_triangle [74]
+                0.00    0.00     372/2139        clip_quad_to_triangles [73]
+                0.00    0.00    1519/2139        point_clip_triangle_against_plane [29]
+[38]     0.0    0.00    0.00    2139         lerp_texture [38]
+-----------------------------------------------
+                0.00    0.00      31/2079        moveplayer [13]
+                0.00    0.00      64/2079        matrix_lookat [89]
+                0.00    0.00     496/2079        line_intersect_plane [57]
+                0.00    0.00     744/2079        clip_triangle_against_plane [49]
+                0.00    0.00     744/2079        render_quaternions [7]
+[39]     0.0    0.00    0.00    2079         vector3_normalise [39]
+                0.00    0.00    2079/4342        vector3_magnitude [25]
+-----------------------------------------------
+                0.00    0.00      30/1941        updateinput [111]
+                0.00    0.00    1911/1941        parse_uv [41]
+[40]     0.0    0.00    0.00    1941         vector2_zero [40]
+-----------------------------------------------
+                0.00    0.00    1911/1911        get_uv_list [122]
+[41]     0.0    0.00    0.00    1911         parse_uv [41]
+                0.00    0.00    1911/1941        vector2_zero [40]
+-----------------------------------------------
+                0.00    0.00       1/1615        matrix_makeprojection [160]
+                0.00    0.00      32/1615        matrix_lookat [89]
+                0.00    0.00      32/1615        matrix_quickinverse [90]
+                0.00    0.00     496/1615        matrix_makerotationx [58]
+                0.00    0.00     527/1615        matrix_makerotationy [54]
+                0.00    0.00     527/1615        matrix_makerotationz [55]
+[42]     0.0    0.00    0.00    1615         matrix_zero [42]
+-----------------------------------------------
+                0.00    0.00    1519/1519        point_clip_triangle_against_plane [29]
+[43]     0.0    0.00    0.00    1519         lerp_point [43]
+-----------------------------------------------
+                0.00    0.00    1178/1178        point_clip_triangle_against_plane [29]
+[44]     0.0    0.00    0.00    1178         vector2_line_intersect_plane [44]
+                0.00    0.00    3534/3534        vector2_dot [27]
+                0.00    0.00    1178/4309        vector2_normalise [26]
+-----------------------------------------------
+                                  31             draw_rect_tri [45]
+                0.00    0.00      31/930         gui_labeled_float_slider [96]
+                0.00    0.00      31/930         gui_labeled_int_slider [97]
+                0.00    0.00      62/930         editorloop [1]
+                0.00    0.00      62/930         gui_float_slider [94]
+                0.00    0.00      62/930         gui_int_slider [95]
+                0.00    0.00      93/930         gui_labeled_point [98]
+                0.00    0.00     155/930         gui_int [71]
+                0.00    0.00     186/930         gui_labeled_int [77]
+                0.00    0.00     248/930         gui_button [75]
+[45]     0.0    0.00    0.00     930+31      draw_rect_tri [45]
+                0.00    0.00    3813/8091        point_add [21]
+                0.00    0.00    2604/2604        draw [31]
+                0.00    0.00      62/62          draw_rectangle_filled [81]
+                0.00    0.00      62/248         pointrectanglecollision [65]
+                0.00    0.00      31/32          draw_triangle [88]
+                0.00    0.00      31/2201        drawline [37]
+                0.00    0.00      31/403         drawrectangle [63]
+                0.00    0.00      31/155         point_sub [72]
+                                  31             draw_rect_tri [45]
+-----------------------------------------------
+                0.00    0.00      31/807         moveplayer [13]
+                0.00    0.00      32/807         matrix_lookat [89]
+                0.00    0.00     744/807         render_quaternions [7]
+[46]     0.0    0.00    0.00     807         vector3_crossproduct [46]
+-----------------------------------------------
+                0.00    0.00     806/806         render_quaternions [7]
+[47]     0.0    0.00    0.00     806         triangle_to_screenspace_point_triangle [47]
+                0.00    0.00    2418/6665        quaternion_mul_matrix [22]
+                0.00    0.00    2418/2418        vector3_div [32]
+                0.00    0.00    2418/2418        vector3_negative [33]
+                0.00    0.00    2418/3008        vector3_add [30]
+-----------------------------------------------
+                0.00    0.00     775/775         render_triangle_wrap [4]
+[48]     0.0    0.00    0.00     775         calc_points_step [48]
+-----------------------------------------------
+                0.00    0.00     744/744         render_quaternions [7]
+[49]     0.0    0.00    0.00     744         clip_triangle_against_plane [49]
+                0.00    0.00    2232/2232        vector3_fdist_to_plane [36]
+                0.00    0.00     744/2079        vector3_normalise [39]
+                0.00    0.00     248/248         sort_quat_tex_by_dist [66]
+                0.00    0.00     124/124         clip_triangle [74]
+                0.00    0.00     124/124         clip_quad_to_triangles [73]
+-----------------------------------------------
+                0.00    0.00     744/744         render_quaternions [7]
+[50]     0.0    0.00    0.00     744         triangle_to_viewspace [50]
+                0.00    0.00    2232/6665        quaternion_mul_matrix [22]
+-----------------------------------------------
+                0.00    0.00     248/620         clip_triangle [74]
+                0.00    0.00     372/620         clip_quad_to_triangles [73]
+[51]     0.0    0.00    0.00     620         lerp_quaternion [51]
+-----------------------------------------------
+                0.00    0.00     589/589         render_triangle_wrap [4]
+[52]     0.0    0.00    0.00     589         sort_point_tris [52]
+-----------------------------------------------
+                0.00    0.00     558/558         render_triangle_wrap [4]
+[53]     0.0    0.00    0.00     558         ft_swap [53]
+-----------------------------------------------
+                0.00    0.00      31/527         lookdirection [100]
+                0.00    0.00     496/527         quaternion_rotate_euler [59]
+[54]     0.0    0.00    0.00     527         matrix_makerotationy [54]
+                0.00    0.00     527/1615        matrix_zero [42]
+-----------------------------------------------
+                0.00    0.00      31/527         lookdirection [100]
+                0.00    0.00     496/527         quaternion_rotate_euler [59]
+[55]     0.0    0.00    0.00     527         matrix_makerotationz [55]
+                0.00    0.00     527/1615        matrix_zero [42]
+-----------------------------------------------
+                0.00    0.00      31/527         moveplayer [13]
+                0.00    0.00     496/527         transformed_vector3 [60]
+[56]     0.0    0.00    0.00     527         vector3_mul_vector3 [56]
+-----------------------------------------------
+                0.00    0.00     248/496         clip_quad_to_triangles [73]
+                0.00    0.00     248/496         clip_triangle [74]
+[57]     0.0    0.00    0.00     496         line_intersect_plane [57]
+                0.00    0.00    1488/4496        vector3_dot [24]
+                0.00    0.00     496/2079        vector3_normalise [39]
+-----------------------------------------------
+                0.00    0.00     496/496         quaternion_rotate_euler [59]
+[58]     0.0    0.00    0.00     496         matrix_makerotationx [58]
+                0.00    0.00     496/1615        matrix_zero [42]
+-----------------------------------------------
+                0.00    0.00     496/496         transformed_vector3 [60]
+[59]     0.0    0.00    0.00     496         quaternion_rotate_euler [59]
+                0.00    0.00    1488/6665        quaternion_mul_matrix [22]
+                0.00    0.00     496/527         matrix_makerotationy [54]
+                0.00    0.00     496/527         matrix_makerotationz [55]
+                0.00    0.00     496/496         matrix_makerotationx [58]
+-----------------------------------------------
+                0.00    0.00     496/496         render_worldspace [84]
+[60]     0.0    0.00    0.00     496         transformed_vector3 [60]
+                0.00    0.00     496/496         quaternion_rotate_euler [59]
+                0.00    0.00     496/527         vector3_mul_vector3 [56]
+                0.00    0.00     496/3008        vector3_add [30]
+-----------------------------------------------
+                0.00    0.00     434/434         print_text [62]
+[61]     0.0    0.00    0.00     434         join_text_to_surface [61]
+                0.00    0.00   40986/188546      blend_colors_alpha [16]
+-----------------------------------------------
+                0.00    0.00      31/434         editorloop [1]
+                0.00    0.00     403/434         print_text_colored [64]
+[62]     0.0    0.00    0.00     434         print_text [62]
+                0.00    0.00     434/434         join_text_to_surface [61]
+-----------------------------------------------
+                0.00    0.00      31/403         draw_rect_tri [45]
+                0.00    0.00      31/403         gui_float_slider [94]
+                0.00    0.00      31/403         gui_int_slider [95]
+                0.00    0.00     124/403         gui_button [75]
+                0.00    0.00     186/403         gui_start [12]
+[63]     0.0    0.00    0.00     403         drawrectangle [63]
+                0.00    0.00    2015/8091        point_add [21]
+                0.00    0.00    1209/2201        drawline [37]
+-----------------------------------------------
+                0.00    0.00      62/403         editorloop [1]
+                0.00    0.00     155/403         gui_int [71]
+                0.00    0.00     186/403         gui_label [67]
+[64]     0.0    0.00    0.00     403         print_text_colored [64]
+                0.00    0.00     403/434         print_text [62]
+-----------------------------------------------
+                0.00    0.00      31/248         gui_float_slider [94]
+                0.00    0.00      31/248         gui_int_slider [95]
+                0.00    0.00      62/248         draw_rect_tri [45]
+                0.00    0.00     124/248         gui_button [75]
+[65]     0.0    0.00    0.00     248         pointrectanglecollision [65]
+-----------------------------------------------
+                0.00    0.00     248/248         clip_triangle_against_plane [49]
+[66]     0.0    0.00    0.00     248         sort_quat_tex_by_dist [66]
+-----------------------------------------------
+                0.00    0.00      31/186         gui_labeled_float_slider [96]
+                0.00    0.00      31/186         gui_labeled_point [98]
+                0.00    0.00      31/186         gui_labeled_int_slider [97]
+                0.00    0.00      93/186         gui_labeled_int [77]
+[67]     0.0    0.00    0.00     186         gui_label [67]
+                0.00    0.00    1116/8091        point_add [21]
+                0.00    0.00     186/403         print_text_colored [64]
+-----------------------------------------------
+                0.00    0.00     186/186         print_text_boxed [69]
+[68]     0.0    0.00    0.00     186         join_text_boxed_to_surface [68]
+                0.00    0.00  147560/188546      blend_colors_alpha [16]
+-----------------------------------------------
+                0.00    0.00      31/186         gui_float_slider [94]
+                0.00    0.00      31/186         gui_int_slider [95]
+                0.00    0.00     124/186         gui_button [75]
+[69]     0.0    0.00    0.00     186         print_text_boxed [69]
+                0.00    0.00     186/186         join_text_boxed_to_surface [68]
+-----------------------------------------------
+                0.00    0.00       1/157         load_world [158]
+                0.00    0.00      32/157         matrix_lookat [89]
+                0.00    0.00     124/157         moveplayer [13]
+[70]     0.0    0.00    0.00     157         vector3_mul [70]
+-----------------------------------------------
+                0.00    0.00      62/155         gui_labeled_point [98]
+                0.00    0.00      93/155         gui_labeled_int [77]
+[71]     0.0    0.00    0.00     155         gui_int [71]
+                0.00    0.00     465/8091        point_add [21]
+                0.00    0.00     155/930         draw_rect_tri [45]
+                0.00    0.00     155/403         print_text_colored [64]
+-----------------------------------------------
+                0.00    0.00      31/155         draw_rect_tri [45]
+                0.00    0.00     124/155         gui_start [12]
+[72]     0.0    0.00    0.00     155         point_sub [72]
+-----------------------------------------------
+                0.00    0.00     124/124         clip_triangle_against_plane [49]
+[73]     0.0    0.00    0.00     124         clip_quad_to_triangles [73]
+                0.00    0.00     372/620         lerp_quaternion [51]
+                0.00    0.00     372/2139        lerp_texture [38]
+                0.00    0.00     248/496         line_intersect_plane [57]
+-----------------------------------------------
+                0.00    0.00     124/124         clip_triangle_against_plane [49]
+[74]     0.0    0.00    0.00     124         clip_triangle [74]
+                0.00    0.00     248/496         line_intersect_plane [57]
+                0.00    0.00     248/620         lerp_quaternion [51]
+                0.00    0.00     248/2139        lerp_texture [38]
+-----------------------------------------------
+                0.00    0.00     124/124         update_editor_toolbar [14]
+[75]     0.0    0.00    0.00     124         gui_button [75]
+                0.00    0.00     372/8091        point_add [21]
+                0.00    0.00     248/930         draw_rect_tri [45]
+                0.00    0.00     124/186         print_text_boxed [69]
+                0.00    0.00     124/2201        drawline [37]
+                0.00    0.00     124/403         drawrectangle [63]
+                0.00    0.00     124/248         pointrectanglecollision [65]
+-----------------------------------------------
+                0.00    0.00     124/124         gui_start [12]
+[76]     0.0    0.00    0.00     124         point_one [76]
+-----------------------------------------------
+                0.00    0.00      93/93          update_world3d [3]
+[77]     0.0    0.00    0.00      93         gui_labeled_int [77]
+                0.00    0.00     186/930         draw_rect_tri [45]
+                0.00    0.00      93/186         gui_label [67]
+                0.00    0.00      93/155         gui_int [71]
+-----------------------------------------------
+                0.00    0.00      31/91          moveplayer [13]
+                0.00    0.00      60/91          updateinput [111]
+[78]     0.0    0.00    0.00      91         vector2_mul [78]
+-----------------------------------------------
+                0.00    0.00       1/63          spawn_entity [167]
+                0.00    0.00      62/63          moveplayer [13]
+[79]     0.0    0.00    0.00      63         vector3_zero [79]
+-----------------------------------------------
+                0.00    0.00      62/62          render_quaternions [7]
+[80]     0.0    0.00    0.00      62         clipped_point_triangle [80]
+                0.00    0.00    3131/3131        point_clip_triangle_against_plane [29]
+-----------------------------------------------
+                0.00    0.00      62/62          draw_rect_tri [45]
+[81]     0.0    0.00    0.00      62         draw_rectangle_filled [81]
+-----------------------------------------------
+                0.00    0.00      62/62          editorloop [1]
+[82]     0.0    0.00    0.00      62         gui_end [82]
+-----------------------------------------------
+                0.00    0.00      62/62          render_quaternions [7]
+[83]     0.0    0.00    0.00      62         render_buffer [83]
+-----------------------------------------------
+                0.00    0.00      62/62          render_entity [6]
+[84]     0.0    0.00    0.00      62         render_worldspace [84]
+                0.00    0.00     496/496         transformed_vector3 [60]
+                0.00    0.00     496/6665        quaternion_mul_matrix [22]
+-----------------------------------------------
+                0.00    0.00      62/62          editorloop [1]
+[85]     0.0    0.00    0.00      62         update_deltatime [85]
+-----------------------------------------------
+                0.00    0.00      38/38          parse_mtllib [126]
+[86]     0.0    0.00    0.00      38         parsemat [86]
+-----------------------------------------------
+                0.00    0.00      36/36          objparse [125]
+[87]     0.0    0.00    0.00      36         list_to_ptr [87]
+-----------------------------------------------
+                0.00    0.00       1/32          get_image_by_name [128]
+                0.00    0.00      31/32          draw_rect_tri [45]
+[88]     0.0    0.00    0.00      32         draw_triangle [88]
+                0.00    0.00      93/2201        drawline [37]
+-----------------------------------------------
+                0.00    0.00       1/32          init_render [146]
+                0.00    0.00      31/32          render_start [103]
+[89]     0.0    0.00    0.00      32         matrix_lookat [89]
+                0.00    0.00      64/2079        vector3_normalise [39]
+                0.00    0.00      64/2327        vector3_sub [34]
+                0.00    0.00      32/4496        vector3_dot [24]
+                0.00    0.00      32/157         vector3_mul [70]
+                0.00    0.00      32/807         vector3_crossproduct [46]
+                0.00    0.00      32/1615        matrix_zero [42]
+-----------------------------------------------
+                0.00    0.00       1/32          init_render [146]
+                0.00    0.00      31/32          render_start [103]
+[90]     0.0    0.00    0.00      32         matrix_quickinverse [90]
+                0.00    0.00      32/1615        matrix_zero [42]
+-----------------------------------------------
+                0.00    0.00      31/31          editorloop [1]
+[91]     0.0    0.00    0.00      31         drawcircle [91]
+                0.00    0.00     496/2201        drawline [37]
+-----------------------------------------------
+                0.00    0.00      31/31          editorloop [1]
+[92]     0.0    0.00    0.00      31         editor_events [92]
+                0.00    0.00      30/30          updateinput [111]
+                0.00    0.00       9/9           toggle_keystates [127]
+                0.00    0.00       9/9           mouse_event [124]
+                0.00    0.00       1/10          iskey [119]
+-----------------------------------------------
+                0.00    0.00      31/31          update_editor_toolbar [14]
+[93]     0.0    0.00    0.00      31         gui_endhorizontal [93]
+-----------------------------------------------
+                0.00    0.00      31/31          gui_labeled_float_slider [96]
+[94]     0.0    0.00    0.00      31         gui_float_slider [94]
+                0.00    0.00      93/8091        point_add [21]
+                0.00    0.00      62/930         draw_rect_tri [45]
+                0.00    0.00      31/186         print_text_boxed [69]
+                0.00    0.00      31/2201        drawline [37]
+                0.00    0.00      31/403         drawrectangle [63]
+                0.00    0.00      31/248         pointrectanglecollision [65]
+-----------------------------------------------
+                0.00    0.00      31/31          gui_labeled_int_slider [97]
+[95]     0.0    0.00    0.00      31         gui_int_slider [95]
+                0.00    0.00      93/8091        point_add [21]
+                0.00    0.00      62/930         draw_rect_tri [45]
+                0.00    0.00      31/186         print_text_boxed [69]
+                0.00    0.00      31/2201        drawline [37]
+                0.00    0.00      31/403         drawrectangle [63]
+                0.00    0.00      31/248         pointrectanglecollision [65]
+-----------------------------------------------
+                0.00    0.00      31/31          update_world3d [3]
+[96]     0.0    0.00    0.00      31         gui_labeled_float_slider [96]
+                0.00    0.00      31/930         draw_rect_tri [45]
+                0.00    0.00      31/186         gui_label [67]
+                0.00    0.00      31/31          gui_float_slider [94]
+-----------------------------------------------
+                0.00    0.00      31/31          update_world3d [3]
+[97]     0.0    0.00    0.00      31         gui_labeled_int_slider [97]
+                0.00    0.00      31/930         draw_rect_tri [45]
+                0.00    0.00      31/186         gui_label [67]
+                0.00    0.00      31/31          gui_int_slider [95]
+-----------------------------------------------
+                0.00    0.00      31/31          update_world3d [3]
+[98]     0.0    0.00    0.00      31         gui_labeled_point [98]
+                0.00    0.00      93/930         draw_rect_tri [45]
+                0.00    0.00      62/155         gui_int [71]
+                0.00    0.00      31/186         gui_label [67]
+-----------------------------------------------
+                0.00    0.00      31/31          update_editor_toolbar [14]
+[99]     0.0    0.00    0.00      31         gui_starthorizontal [99]
+-----------------------------------------------
+                0.00    0.00      31/31          moveplayer [13]
+[100]    0.0    0.00    0.00      31         lookdirection [100]
+                0.00    0.00      31/527         matrix_makerotationy [54]
+                0.00    0.00      31/6665        quaternion_mul_matrix [22]
+                0.00    0.00      31/527         matrix_makerotationz [55]
+-----------------------------------------------
+                0.00    0.00      31/31          editorloop [1]
+[101]    0.0    0.00    0.00      31         point_div [101]
+-----------------------------------------------
+                0.00    0.00      31/31          update_world3d [3]
+[102]    0.0    0.00    0.00      31         point_fmul [102]
+-----------------------------------------------
+                0.00    0.00      31/31          editorloop [1]
+[103]    0.0    0.00    0.00      31         render_start [103]
+                0.00    0.00      31/3008        vector3_add [30]
+                0.00    0.00      31/32          matrix_lookat [89]
+                0.00    0.00      31/32          matrix_quickinverse [90]
+-----------------------------------------------
+                0.00    0.00      31/31          editorloop [1]
+[104]    0.0    0.00    0.00      31         rescale_surface [104]
+-----------------------------------------------
+                0.00    0.00      31/31          editorloop [1]
+[105]    0.0    0.00    0.00      31         screen_blank [105]
+-----------------------------------------------
+                0.00    0.00      31/31          editorloop [1]
+[106]    0.0    0.00    0.00      31         update_render [106]
+-----------------------------------------------
+                0.00    0.00      31/31          moveplayer [13]
+[107]    0.0    0.00    0.00      31         updateguntransform [107]
+-----------------------------------------------
+                0.00    0.00      31/31          moveplayer [13]
+[108]    0.0    0.00    0.00      31         vector3_clamp_magnitude [108]
+                0.00    0.00      31/4342        vector3_magnitude [25]
+-----------------------------------------------
+                0.00    0.00      31/31          moveplayer [13]
+[109]    0.0    0.00    0.00      31         vector3_up [109]
+-----------------------------------------------
+                0.00    0.00      30/30          updateinput [111]
+[110]    0.0    0.00    0.00      30         point_to_vector2 [110]
+-----------------------------------------------
+                0.00    0.00      30/30          editor_events [92]
+[111]    0.0    0.00    0.00      30         updateinput [111]
+                0.00    0.00      60/91          vector2_mul [78]
+                0.00    0.00      30/1941        vector2_zero [40]
+                0.00    0.00      30/30          point_to_vector2 [110]
+                0.00    0.00      30/30          vector2_add [112]
+-----------------------------------------------
+                0.00    0.00      30/30          updateinput [111]
+[112]    0.0    0.00    0.00      30         vector2_add [112]
+-----------------------------------------------
+                0.00    0.00      19/19          load_images [153]
+[113]    0.0    0.00    0.00      19         pngparse [113]
+                0.00    0.00      19/19          readpalette [117]
+                0.00    0.00      19/19          readdat [116]
+                0.00    0.00      19/19          pngtosimpleimg [114]
+-----------------------------------------------
+                0.00    0.00      19/19          pngparse [113]
+[114]    0.0    0.00    0.00      19         pngtosimpleimg [114]
+                0.00    0.00      19/19          sample_ouroboros [118]
+-----------------------------------------------
+                0.00    0.00      19/19          sample_ouroboros [118]
+[115]    0.0    0.00    0.00      19         point_zero [115]
+-----------------------------------------------
+                0.00    0.00      19/19          pngparse [113]
+[116]    0.0    0.00    0.00      19         readdat [116]
+-----------------------------------------------
+                0.00    0.00      19/19          pngparse [113]
+[117]    0.0    0.00    0.00      19         readpalette [117]
+-----------------------------------------------
+                0.00    0.00      19/19          pngtosimpleimg [114]
+[118]    0.0    0.00    0.00      19         sample_ouroboros [118]
+                0.00    0.00      19/19          point_zero [115]
+-----------------------------------------------
+                0.00    0.00       1/10          editor_events [92]
+                0.00    0.00       9/10          toggle_keystates [127]
+[119]    0.0    0.00    0.00      10         iskey [119]
+-----------------------------------------------
+                0.00    0.00       9/9           objparse [125]
+[120]    0.0    0.00    0.00       9         get_face_list [120]
+                0.00    0.00    5911/5911        parse_face [23]
+                0.00    0.00    5911/11196       list_push [18]
+-----------------------------------------------
+                0.00    0.00       9/9           objparse [125]
+[121]    0.0    0.00    0.00       9         get_material_list [121]
+                0.00    0.00       9/9           parse_mtllib [126]
+-----------------------------------------------
+                0.00    0.00       9/9           objparse [125]
+[122]    0.0    0.00    0.00       9         get_uv_list [122]
+                0.00    0.00    1911/1911        parse_uv [41]
+                0.00    0.00    1911/11196       list_push [18]
+-----------------------------------------------
+                0.00    0.00       9/9           objparse [125]
+[123]    0.0    0.00    0.00       9         get_vertex_list [123]
+                0.00    0.00    3334/3334        parse_vertex [28]
+                0.00    0.00    3334/11196       list_push [18]
+-----------------------------------------------
+                0.00    0.00       9/9           editor_events [92]
+[124]    0.0    0.00    0.00       9         mouse_event [124]
+-----------------------------------------------
+                0.00    0.00       9/9           load_objects [155]
+[125]    0.0    0.00    0.00       9         objparse [125]
+                0.00    0.00      36/36          list_to_ptr [87]
+                0.00    0.00       9/9           get_material_list [121]
+                0.00    0.00       9/9           get_vertex_list [123]
+                0.00    0.00       9/9           get_uv_list [122]
+                0.00    0.00       9/9           get_face_list [120]
+-----------------------------------------------
+                0.00    0.00       9/9           get_material_list [121]
+[126]    0.0    0.00    0.00       9         parse_mtllib [126]
+                0.00    0.00      38/38          parsemat [86]
+                0.00    0.00      38/11196       list_push [18]
+-----------------------------------------------
+                0.00    0.00       9/9           editor_events [92]
+[127]    0.0    0.00    0.00       9         toggle_keystates [127]
+                0.00    0.00       9/10          iskey [119]
+                0.00    0.00       1/1           keyismoveleft [148]
+                0.00    0.00       1/1           keyismoveright [149]
+                0.00    0.00       1/1           keyismoveup [150]
+                0.00    0.00       1/1           keyismovedown [147]
+-----------------------------------------------
+                0.00    0.00       1/5           load_world [158]
+                0.00    0.00       1/5           init_render [146]
+                0.00    0.00       3/5           objects_init [161]
+[128]    0.0    0.00    0.00       5         get_image_by_name [128]
+                0.00    0.00       1/32          draw_triangle [88]
+-----------------------------------------------
+                0.00    0.00       1/4           main [2]
+                0.00    0.00       1/4           debug_gun [140]
+                0.00    0.00       2/4           load_world [158]
+[129]    0.0    0.00    0.00       4         get_object_by_name [129]
+-----------------------------------------------
+                0.00    0.00       1/4           spawn_entity [167]
+                0.00    0.00       1/4           load_world [158]
+                0.00    0.00       1/4           debug_gun [140]
+                0.00    0.00       1/4           player_init [163]
+[130]    0.0    0.00    0.00       4         vector3_one [130]
+-----------------------------------------------
+                0.00    0.00       3/3           load_world [158]
+[131]    0.0    0.00    0.00       3         load_chunk [131]
+                0.00    0.00       2/2           parse_chunk [135]
+-----------------------------------------------
+                0.00    0.00       3/3           load_audio [151]
+[132]    0.0    0.00    0.00       3         load_wav [132]
+-----------------------------------------------
+                0.00    0.00       2/2           parse_chunk [135]
+[133]    0.0    0.00    0.00       2         find_chunk_count [133]
+-----------------------------------------------
+                0.00    0.00       2/2           editorloop [1]
+[134]    0.0    0.00    0.00       2         init_gui [134]
+-----------------------------------------------
+                0.00    0.00       2/2           load_chunk [131]
+[135]    0.0    0.00    0.00       2         parse_chunk [135]
+                0.00    0.00       2/2           find_chunk_count [133]
+                0.00    0.00       1/11196       list_push [18]
+-----------------------------------------------
+                0.00    0.00       2/2           save_world [166]
+[136]    0.0    0.00    0.00       2         save_chunk [136]
+-----------------------------------------------
+                0.00    0.00       2/2           init_debugconsole [144]
+[137]    0.0    0.00    0.00       2         start_anim [137]
+-----------------------------------------------
+                0.00    0.00       1/1           quit_game [164]
+[138]    0.0    0.00    0.00       1         close_audio [138]
+-----------------------------------------------
+                0.00    0.00       1/1           load_fonts [152]
+[139]    0.0    0.00    0.00       1         color32_to_sdlcolor [139]
+-----------------------------------------------
+                0.00    0.00       1/1           player_init [163]
+[140]    0.0    0.00    0.00       1         debug_gun [140]
+                0.00    0.00       1/4           get_object_by_name [129]
+                0.00    0.00       1/4           vector3_one [130]
+-----------------------------------------------
+                0.00    0.00       1/1           init_debugconsole [144]
+[141]    0.0    0.00    0.00       1         debugconsole_addmessage [141]
+-----------------------------------------------
+                0.00    0.00       1/1           save_world [166]
+[142]    0.0    0.00    0.00       1         fileopen [142]
+-----------------------------------------------
+                0.00    0.00       1/1           editorloop [1]
+[143]    0.0    0.00    0.00       1         free_render [143]
+-----------------------------------------------
+                0.00    0.00       1/1           load_world [158]
+[144]    0.0    0.00    0.00       1         init_debugconsole [144]
+                0.00    0.00       2/2           start_anim [137]
+                0.00    0.00       1/1           debugconsole_addmessage [141]
+-----------------------------------------------
+                0.00    0.00       1/1           load_world [158]
+[145]    0.0    0.00    0.00       1         init_entitycache [145]
+-----------------------------------------------
+                0.00    0.00       1/1           editorloop [1]
+[146]    0.0    0.00    0.00       1         init_render [146]
+                0.00    0.00       1/1           matrix_makeidentity [159]
+                0.00    0.00       1/1           matrix_makeprojection [160]
+                0.00    0.00       1/5           get_image_by_name [128]
+                0.00    0.00       1/3008        vector3_add [30]
+                0.00    0.00       1/32          matrix_lookat [89]
+                0.00    0.00       1/32          matrix_quickinverse [90]
+-----------------------------------------------
+                0.00    0.00       1/1           toggle_keystates [127]
+[147]    0.0    0.00    0.00       1         keyismovedown [147]
+-----------------------------------------------
+                0.00    0.00       1/1           toggle_keystates [127]
+[148]    0.0    0.00    0.00       1         keyismoveleft [148]
+-----------------------------------------------
+                0.00    0.00       1/1           toggle_keystates [127]
+[149]    0.0    0.00    0.00       1         keyismoveright [149]
+-----------------------------------------------
+                0.00    0.00       1/1           toggle_keystates [127]
+[150]    0.0    0.00    0.00       1         keyismoveup [150]
+-----------------------------------------------
+                0.00    0.00       1/1           main [2]
+[151]    0.0    0.00    0.00       1         load_audio [151]
+                0.00    0.00       3/3           load_wav [132]
+-----------------------------------------------
+                0.00    0.00       1/1           main [2]
+[152]    0.0    0.00    0.00       1         load_fonts [152]
+                0.00    0.00       1/1           color32_to_sdlcolor [139]
+-----------------------------------------------
+                0.00    0.00       1/1           load_lua_conf [154]
+[153]    0.0    0.00    0.00       1         load_images [153]
+                0.00    0.00      19/19          pngparse [113]
+-----------------------------------------------
+                0.00    0.00       1/1           main [2]
+[154]    0.0    0.00    0.00       1         load_lua_conf [154]
+                0.00    0.00       1/1           load_resolution [156]
+                0.00    0.00       1/1           load_objects [155]
+                0.00    0.00       1/1           load_images [153]
+-----------------------------------------------
+                0.00    0.00       1/1           load_lua_conf [154]
+[155]    0.0    0.00    0.00       1         load_objects [155]
+                0.00    0.00       9/9           objparse [125]
+-----------------------------------------------
+                0.00    0.00       1/1           load_lua_conf [154]
+[156]    0.0    0.00    0.00       1         load_resolution [156]
+-----------------------------------------------
+                0.00    0.00       1/1           load_world [158]
+[157]    0.0    0.00    0.00       1         load_rooms [157]
+-----------------------------------------------
+                0.00    0.00       1/1           editorloop [1]
+[158]    0.0    0.00    0.00       1         load_world [158]
+                0.00    0.00       3/3           load_chunk [131]
+                0.00    0.00       2/4           get_object_by_name [129]
+                0.00    0.00       1/1           init_debugconsole [144]
+                0.00    0.00       1/1           init_entitycache [145]
+                0.00    0.00       1/1           spawn_entity [167]
+                0.00    0.00       1/1           load_rooms [157]
+                0.00    0.00       1/5           get_image_by_name [128]
+                0.00    0.00       1/4           vector3_one [130]
+                0.00    0.00       1/157         vector3_mul [70]
+-----------------------------------------------
+                0.00    0.00       1/1           init_render [146]
+[159]    0.0    0.00    0.00       1         matrix_makeidentity [159]
+-----------------------------------------------
+                0.00    0.00       1/1           init_render [146]
+[160]    0.0    0.00    0.00       1         matrix_makeprojection [160]
+                0.00    0.00       1/1615        matrix_zero [42]
+-----------------------------------------------
+                0.00    0.00       1/1           main [2]
+[161]    0.0    0.00    0.00       1         objects_init [161]
+                0.00    0.00       3/5           get_image_by_name [128]
+-----------------------------------------------
+                0.00    0.00       1/1           main [2]
+[162]    0.0    0.00    0.00       1         parseanim [162]
+-----------------------------------------------
+                0.00    0.00       1/1           editorloop [1]
+[163]    0.0    0.00    0.00       1         player_init [163]
+                0.00    0.00       1/4           vector3_one [130]
+                0.00    0.00       1/1           debug_gun [140]
+-----------------------------------------------
+                0.00    0.00       1/1           editorloop [1]
+[164]    0.0    0.00    0.00       1         quit_game [164]
+                0.00    0.00       1/1           close_audio [138]
+-----------------------------------------------
+                0.00    0.00       1/1           editorloop [1]
+[165]    0.0    0.00    0.00       1         save_editordata [165]
+-----------------------------------------------
+                0.00    0.00       1/1           editorloop [1]
+[166]    0.0    0.00    0.00       1         save_world [166]
+                0.00    0.00       2/2           save_chunk [136]
+                0.00    0.00       1/1           fileopen [142]
+                0.00    0.00       1/11196       list_push [18]
+-----------------------------------------------
+                0.00    0.00       1/1           load_world [158]
+[167]    0.0    0.00    0.00       1         spawn_entity [167]
+                0.00    0.00       1/63          vector3_zero [79]
+                0.00    0.00       1/4           vector3_one [130]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function is in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+Copyright (C) 2012-2022 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+Index by function name
+
+  [16] blend_colors_alpha    [149] keyismoveright        [116] readdat
+  [48] calc_points_step      [150] keyismoveup           [117] readpalette
+  [17] calc_step_texture      [43] lerp_point             [83] render_buffer
+  [73] clip_quad_to_triangles (render_clip.c) [51] lerp_quaternion [5] render_buffer_triangles
+  [74] clip_triangle (render_clip.c) [38] lerp_texture     [6] render_entity
+  [49] clip_triangle_against_plane [57] line_intersect_plane [7] render_quaternions
+  [80] clipped_point_triangle [18] list_push             [103] render_start
+ [138] close_audio            [87] list_to_ptr             [4] render_triangle_wrap
+ [139] color32_to_sdlcolor   [151] load_audio             [84] render_worldspace
+ [140] debug_gun             [131] load_chunk            [104] rescale_surface
+ [141] debugconsole_addmessage [152] load_fonts            [8] sample_img_wrapper (rasterize_triangle_wrap.c)
+  [31] draw                  [153] load_images           [118] sample_ouroboros
+  [45] draw_rect_tri (autogui.c) [154] load_lua_conf     [136] save_chunk
+  [81] draw_rectangle_filled [155] load_objects          [165] save_editordata
+  [11] draw_rectangle_raster [156] load_resolution       [166] save_world
+  [88] draw_triangle         [157] load_rooms            [105] screen_blank
+  [91] drawcircle            [132] load_wav               [52] sort_point_tris
+  [37] drawline              [158] load_world             [66] sort_quat_tex_by_dist (render_clip.c)
+  [63] drawrectangle         [100] lookdirection         [167] spawn_entity
+  [92] editor_events          [89] matrix_lookat         [137] start_anim
+   [1] editorloop            [159] matrix_makeidentity   [127] toggle_keystates
+ [142] fileopen              [160] matrix_makeprojection  [60] transformed_vector3
+ [133] find_chunk_count       [58] matrix_makerotationx   [47] triangle_to_screenspace_point_triangle
+  [19] free_list_node         [54] matrix_makerotationy   [50] triangle_to_viewspace
+ [143] free_render            [55] matrix_makerotationz   [85] update_deltatime
+  [15] ft_lstapp              [90] matrix_quickinverse    [14] update_editor_toolbar
+  [53] ft_swap                [42] matrix_zero             [9] update_entitycache
+ [120] get_face_list         [124] mouse_event           [106] update_render
+ [128] get_image_by_name      [13] moveplayer              [3] update_world3d
+ [121] get_material_list     [161] objects_init          [107] updateguntransform
+ [129] get_object_by_name    [125] objparse              [111] updateinput
+ [122] get_uv_list           [135] parse_chunk           [112] vector2_add
+ [123] get_vertex_list        [23] parse_face             [27] vector2_dot
+  [75] gui_button            [126] parse_mtllib           [20] vector2_fdist_to_plane
+  [82] gui_end                [41] parse_uv               [44] vector2_line_intersect_plane
+  [93] gui_endhorizontal      [28] parse_vertex           [78] vector2_mul
+  [94] gui_float_slider      [162] parseanim              [26] vector2_normalise
+  [71] gui_int                [86] parsemat               [35] vector2_to_texture
+  [95] gui_int_slider        [163] player_init            [40] vector2_zero
+  [67] gui_label             [113] pngparse               [30] vector3_add
+  [96] gui_labeled_float_slider [114] pngtosimpleimg     [108] vector3_clamp_magnitude
+  [77] gui_labeled_int        [21] point_add              [46] vector3_crossproduct
+  [97] gui_labeled_int_slider [29] point_clip_triangle_against_plane [32] vector3_div
+  [98] gui_labeled_point     [101] point_div              [24] vector3_dot
+  [12] gui_start             [102] point_fmul             [36] vector3_fdist_to_plane
+  [99] gui_starthorizontal    [76] point_one              [25] vector3_magnitude
+ [144] init_debugconsole      [72] point_sub              [70] vector3_mul
+ [145] init_entitycache      [110] point_to_vector2       [56] vector3_mul_vector3
+ [134] init_gui              [115] point_zero             [33] vector3_negative
+ [146] init_render            [65] pointrectanglecollision [39] vector3_normalise
+ [119] iskey                  [62] print_text            [130] vector3_one
+  [10] join_surfaces          [69] print_text_boxed       [34] vector3_sub
+  [68] join_text_boxed_to_surface [64] print_text_colored [109] vector3_up
+  [61] join_text_to_surface   [22] quaternion_mul_matrix  [79] vector3_zero
+ [147] keyismovedown          [59] quaternion_rotate_euler
+ [148] keyismoveleft         [164] quit_game

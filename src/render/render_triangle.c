@@ -20,6 +20,7 @@ void render_buffer_triangles(t_sdlcontext *sdl, t_render *render)
 	index = 0;
 	if (render->is_wrap == true)
 	{
+		index = 0;
 		while (index < render->screenspace_ptri_count)
 		{
 			render_triangle_wrap(sdl, render, index);
@@ -28,6 +29,7 @@ void render_buffer_triangles(t_sdlcontext *sdl, t_render *render)
 	}
 	else
 	{
+		index = 0;
 		while (index < render->screenspace_ptri_count)
 		{
 			render_triangle(sdl, render, index);
@@ -65,8 +67,8 @@ void render_solid_triangle(t_sdlcontext *sdl, t_render *render)
 		img.size.x = 1;
 		img.size.y = 1;
 		img.length = 1;
-		render->img = &img;
-		render_triangle(sdl, render, index);
+		render->map.img = img;
+		render_triangle_wrap(sdl, render, index);
 		render->img = NULL;
 		index++;
 	}
@@ -74,8 +76,9 @@ void render_solid_triangle(t_sdlcontext *sdl, t_render *render)
 
 void render_buffer(t_sdlcontext *sdl, t_render *render)
 {
-	if (!render->wireframe && render->map.img.data != NULL)
+	if (!render->wireframe && (render->map.img.data != NULL || render->img != NULL))
 		render_buffer_triangles(sdl, render);
+	return;
 	if (render->wireframe)
 		render_buffer_triangle_wireframes(sdl, render);
 	if (render->img == NULL)

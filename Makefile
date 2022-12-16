@@ -82,6 +82,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		render/render_space.c \
 		lighting/bake_lighting.c \
 		lighting/area_light.c \
+		lighting/point_light.c \
 		render/rasterization/rasterize_triangle_wrap.c \
 		render/rasterization/rasterize_triangle.c \
 		render/rasterization/rasterize_triangle_zbuffer.c \

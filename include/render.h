@@ -155,11 +155,10 @@ typedef struct s_render
 	bool				wireframe;
 	uint32_t			gizmocolor;
 	t_render_statistics	rs;
-	//struct s_world		*world;
+	struct s_world		*world;
 	t_debug_occlusion	occlusion;
 	t_lightmap			*lightmap;
 	t_map				map;
-	//uint32_t			(*sample)(struct s_render*, t_texture);
 	bool				is_wrap;
 }	t_render;
 

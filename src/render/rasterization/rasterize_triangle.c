@@ -4,13 +4,12 @@
 
 static uint32_t sample_img(t_render *render, t_texture t)
 {
-	int	xsample;
-	int	ysample;
+	uint32_t	xsample;
+	uint32_t	ysample;
 	
 	xsample = (t.u / t.w) * (render->map.img.size.x);
 	ysample = (t.v / t.w) * (render->map.img.size.y);
-	if (ysample * render->map.size.x + xsample >= render->map.size.x * render->map.size.y)
-		exit(0);
+
 	return(render->map.img.data[ysample * render->map.size.x + xsample]);
 }
 
