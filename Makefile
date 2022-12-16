@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/12/09 16:24:58 by raho             ###   ########.fr        #
+#    Updated: 2022/12/17 00:59:18 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -103,15 +103,15 @@ INCLUDE= -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include \
 			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
 CC= gcc
 CFLAGS= $(INCLUDE) -g -finline-functions -O2 #-march=native
-LDFLAGS = -Wl,-rpath=$(INSTALLED_LIBS_DIR)/lib
+LDFLAGS = -Wl,-rpath $(INSTALLED_LIBS_DIR)/lib
 
 UNAME= $(shell uname)
 ifeq ($(UNAME), Darwin)
 override CFLAGS += '-D GL_SILENCE_DEPRECATION'
-LIBS= $(LIBFT) -lm -framework OpenGL -L$(INSTALLED_LIBS_DIR)/lib -lSDL2 -lSDL2_ttf -L$(INSTALLED_LIBS_DIR)/lib/FMOD -lfmod -lfmodL -rpath $(INSTALLED_LIBS_DIR)/lib/FMOD
+LIBS= $(LIBFT) -lm -framework OpenGL -L$(INSTALLED_LIBS_DIR)/lib -lSDL2 -lSDL2_ttf -L$(INSTALLED_LIBS_DIR)/lib -lfmod -lfmodL
 AUTOGEN =
 else ifeq ($(UNAME), Linux)
-LIBS =  $(LIBFT) -lm -lGL -L$(INSTALLED_LIBS_DIR)/lib -lSDL2 -lSDL2_ttf -L$(INSTALLED_LIBS_DIR)/lib/FMOD -lfmod -lfmodL
+LIBS =  $(LIBFT) -lm -lGL -L$(INSTALLED_LIBS_DIR)/lib -lSDL2 -lSDL2_ttf -L$(INSTALLED_LIBS_DIR)/lib -lfmod -lfmodL
 AUTOGEN = ./autogen.sh &&
 else
 warning:
@@ -176,7 +176,7 @@ $(SDL2_TTF_DIR)/unpacked:
 
 
 $(SDL2_DIR)/ready_to_build: $(SDL2_DIR)/unpacked
-	cd $(SDL2_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR) SDL_AUDIODRIVER=pulseaudio && touch ready_to_build
+	cd $(SDL2_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR) && touch ready_to_build
 
 $(FREETYPE_DIR)/ready_to_build: $(FREETYPE_DIR)/unpacked
 	cd $(FREETYPE_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR) && touch ready_to_build
