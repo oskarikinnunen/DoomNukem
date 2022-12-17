@@ -54,6 +54,9 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 
 	i = 0;
 	found = 0;
+	//render->wireframe = true;
+	//render->gizmocolor = CLR_RED;
+	memset(sdl->surface->pixels, 1, sizeof(uint32_t) * sdl->window_w * sdl->window_h);
 	while (found < world->entitycache.existing_entitycount)
 	{
 		ent = &world->entitycache.entities[i];

@@ -78,10 +78,10 @@ void render_buffer(t_sdlcontext *sdl, t_render *render)
 {
 	if (!render->wireframe && (render->map.img.data != NULL || render->img != NULL))
 		render_buffer_triangles(sdl, render);
-	return;
+	//return;
 	if (render->wireframe)
 		render_buffer_triangle_wireframes(sdl, render);
-	if (render->img == NULL)
-		render_solid_triangle(sdl, render);
+	//if (render->img == NULL)
+	//	render_solid_triangle(sdl, render);
 	render->rs.triangle_count += render->screenspace_ptri_count;
 }
