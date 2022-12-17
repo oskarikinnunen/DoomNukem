@@ -146,12 +146,13 @@ void bake_lighting(t_render *render, t_world *world)
 		}
 		i++;
 	}
-	world->lights_count = 1;
-	world->lights[0].origin = (t_vector3){500.0f, 500.0f, 250.0f};
+	world->lights_count = 2;
+	world->lights[0].origin = (t_vector3){500.0f, 500.0f, 50.0f};
+	world->lights[1].origin = (t_vector3){500.0f, 20.0f, 50.0f};
 	i = 0;
 	while (i < world->lights_count)
 	{
-		calculate_pointlight(&world->lights[i].origin, world, render);
+		calculate_pointlight(&world->lights[i], world, render);
 		i++;
 	}
 	i = 0;

@@ -331,8 +331,8 @@ void calculate_pointlight(t_pointlight *pointlight, t_world *world, t_render *re
 			for (int e = 0; e < 3; e++)
 			{
 				t_vector2 uv;
-				uv.x = triangles[i][j].uv[e].x * (ent->obj->materials[ent->obj->faces[j].materialindex].img->size.x - 1);
-				uv.y = triangles[i][j].uv[e].y * (ent->obj->materials[ent->obj->faces[j].materialindex].img->size.y - 1);
+				uv.x = triangles[i][j].uv[e].x * (float)(ent->obj->materials[ent->obj->faces[j].materialindex].img->size.x - 1);
+				uv.y = triangles[i][j].uv[e].y * (float)(ent->obj->materials[ent->obj->faces[j].materialindex].img->size.y - 1);
 				if (uv.x > max.x)
 					max.x = uv.x;
 				if (uv.y > max.y)
@@ -364,8 +364,11 @@ void calculate_pointlight(t_pointlight *pointlight, t_world *world, t_render *re
 								t_texture temp_t;
 								if (intersect_triangle(&ray, &temp_t, triangles[o][p].p[0], triangles[o][p].p[1], triangles[o][p].p[2]) == true)
 								{
-									ol = true;
-									break;
+									if (temp_t.w < 1.0f)
+									{
+										ol = true;
+										break;
+									}
 								}
 							}
 							if (ol == true)
