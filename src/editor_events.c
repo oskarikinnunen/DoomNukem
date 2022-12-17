@@ -32,6 +32,7 @@ void		toggle_keystates(t_hid_info *hid, SDL_Event e)
 		hid->keystate |= iskey(e, SDLK_2) << KEYS_2MASK;
 		hid->keystate |= iskey(e, SDLK_3) << KEYS_3MASK;
 		hid->keystate |= iskey(e, SDLK_4) << KEYS_4MASK;
+		hid->keystate |= iskey(e, SDLK_p) << KEYS_PMASK;
 	}
 	if (e.type == SDL_KEYUP)
 	{
@@ -48,6 +49,7 @@ void		toggle_keystates(t_hid_info *hid, SDL_Event e)
 		hid->keystate &= ~(iskey(e, SDLK_2) << KEYS_2MASK);
 		hid->keystate &= ~(iskey(e, SDLK_3) << KEYS_3MASK);
 		hid->keystate &= ~(iskey(e, SDLK_4) << KEYS_4MASK);
+		hid->keystate &= ~(iskey(e, SDLK_p) << KEYS_PMASK);
 	}
 }
 
@@ -84,6 +86,9 @@ t_gamereturn	editor_events(t_editor *ed)
 		mouse_event(e, &ed->hid.mouse);
 		if (e.type == SDL_KEYDOWN)
 		{
+			t_pointlight t;
+			if (iskey(e, SDLK_p))
+				bake_lighting(&ed->render, &ed->world);
 			if (iskey(e, SDLK_ESCAPE))
 				return (game_exit);
 			if (iskey(e, SDLK_TAB))

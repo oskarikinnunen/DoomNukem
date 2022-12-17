@@ -33,6 +33,7 @@ typedef struct s_mouse
 # define KEYS_2MASK 11
 # define KEYS_3MASK 12
 # define KEYS_4MASK 13
+# define KEYS_PMASK 14
 
 # define CONTROLLER_SENS 0.002f
 # define DEADZONE 0.1f

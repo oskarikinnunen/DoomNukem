@@ -153,7 +153,7 @@ static void ray_uv(t_triangle triangle, t_render *render, int id, int t_index)
         bool first = false;
 		while (x < max.x)
 		{
-			if (PointInTriangle((t_point){x, y}, lt[0], lt[1], lt[2]))
+			if (PointInTriangle((t_point){x, y}, (t_point){tes[0].x * render->lightmap->size.x, tes[0].y * render->lightmap->size.y}, (t_point){tes[1].x * render->lightmap->size.x, tes[1].y * render->lightmap->size.y}, (t_point){tes[2].x * render->lightmap->size.x, tes[2].y * render->lightmap->size.y}))
 			{
                /* if (first == false)
                 {
@@ -270,6 +270,121 @@ static void clip_draw_lightmap(t_sdlcontext *sdl, t_render *render, int id, int 
 	}
 }
 
+/*
+light get all entities around it.
+malloc space to those entities triangles
+*/
+
+void calculate_pointlight(t_pointlight *pointlight, t_world *world, t_render *render)
+{
+    int i = 0;
+    int found = 0;
+    int index = 0;
+	int j;
+	t_entity *ent;
+    t_triangle_polygon	**triangles;
+    t_entity			**entities;
+    triangles = malloc(sizeof(t_triangle_polygon *) * world->entitycache.existing_entitycount);
+    entities = malloc(sizeof(t_entity *) * world->entitycache.existing_entitycount);
+    while (found < world->entitycache.existing_entitycount)
+    {
+        ent = &world->entitycache.entities[i];
+        if (ent->status != es_free)
+        {
+            if (ent->status == es_active)
+            {
+                triangles[index] = malloc(sizeof(t_triangle_polygon) * ent->obj->face_count);
+                entities[index] = ent;
+                j = 0;
+                while (j < ent->obj->face_count)
+                {
+                    for (int e = 0; e < 3; e++)
+                    {
+                        t_quaternion temp;
+                        temp.v = ent->obj->vertices[ent->obj->faces[j].v_indices[e] - 1];
+                        temp = transformed_vector3(ent->transform, temp.v);
+						temp = quaternion_mul_matrix(render->camera.matworld, temp);
+                        triangles[index][j].p[e] = temp.v;
+						triangles[index][j].uv[e] = ent->obj->uvs[ent->obj->faces[j].uv_indices[e] - 1];
+                    }
+                    j++;
+                }
+                index++;
+            }
+            found++;
+        }
+        i++;
+    }
+	i = 0;
+	while (i < index)
+	{
+		ent = entities[i];
+		j = 0;
+		while (j < ent->obj->face_count)
+		{
+			t_lightmap *lightmap;
+			lightmap = &ent->lightmap[ent->obj->faces[j].materialindex];
+			t_vector2	max;
+			t_point		tri[3];
+			max.x = -10000.0f;
+			max.y = -10000.0f;
+			for (int e = 0; e < 3; e++)
+			{
+				t_vector2 uv;
+				uv.x = triangles[i][j].uv[e].x * (ent->obj->materials[ent->obj->faces[j].materialindex].img->size.x - 1);
+				uv.y = triangles[i][j].uv[e].y * (ent->obj->materials[ent->obj->faces[j].materialindex].img->size.y - 1);
+				if (uv.x > max.x)
+					max.x = uv.x;
+				if (uv.y > max.y)
+					max.y = uv.y;
+				tri[e].x = uv.x;
+				tri[e].y = uv.y;
+				triangles[i][j].uv[e].x = uv.x / (float)lightmap->size.x;
+				triangles[i][j].uv[e].y = uv.y / (float)lightmap->size.y;
+			}
+			for (int n = 0; n < max.y; n++)
+			{
+				for (int m = 0; m < max.x; m++)
+				{
+					if (PointInTriangle((t_point){m, n}, tri[0], tri[1], tri[2]))
+					{
+						t_ray ray;
+
+						ray.origin = texcoord_to_loc(triangles[i][j].p, triangles[i][j].uv, (t_vector2){m/(float)lightmap->size.x, n/(float)lightmap->size.y});
+               			ray.dir = vector3_sub(pointlight->origin, ray.origin);
+						bool ol = false;
+						for (int o = 0; o < index; o++)
+						{
+							for (int p = 0; p < entities[o]->obj->face_count; p++)
+							{
+								if (o == i && p == j)
+								{
+									continue; // if this isnt using for loop anymore remember to increment before continue
+								}
+								t_texture temp_t;
+								if (intersect_triangle(&ray, &temp_t, triangles[o][p].p[0], triangles[o][p].p[1], triangles[o][p].p[2]) == true)
+								{
+									ol = true;
+									break;
+								}
+							}
+							if (ol == true)
+								break;
+						}
+						if (ol == false)
+						{
+							lightmap->data[m + lightmap->size.x * n] = 255;
+						}
+					}
+				}
+			}
+			j++;
+		}
+		i++;
+	}
+	//exit(0);
+}
+
 void update_pointlight_for_entity(t_sdlcontext sdl, t_render *render, t_entity *entity)
 {
     int				index;
@@ -279,12 +394,8 @@ void update_pointlight_for_entity(t_sdlcontext sdl, t_render *render, t_entity *
 
 
 	obj = entity->obj;
-	entity->lightmap = malloc(sizeof(t_lightmap) * entity->obj->material_count);
-	entity->map	= malloc(sizeof(t_map) * entity->obj->material_count);
     render->occ_calc_tri_count = 0;
 	render_worldspace(render, entity);
-	max.x = -10000.0f;
-	max.y = -10000.0f;
 	index = 0;
     printf("id %d\n", entity->id);
 	while (index < obj->face_count)
@@ -297,13 +408,6 @@ void update_pointlight_for_entity(t_sdlcontext sdl, t_render *render, t_entity *
 			tritransformed.t[0] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[0] - 1]);
 			tritransformed.t[1] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[1] - 1]);
 			tritransformed.t[2] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[2] - 1]);
-			for (int j = 0; j < 3; j++)
-			{
-				if (tritransformed.t[j].u > max.x)
-					max.x = tritransformed.t[j].u;
-				if (tritransformed.t[j].v > max.y)
-					max.y = tritransformed.t[j].v;
-			}
 		}
         render->occ_calc_tris[render->occ_calc_tri_count++] = tritransformed;
 		if (index + 1 == obj->face_count || obj->faces[index].materialindex != obj->faces[index + 1].materialindex)
@@ -311,66 +415,14 @@ void update_pointlight_for_entity(t_sdlcontext sdl, t_render *render, t_entity *
        //     if (index + 1 != obj->face_count && obj->faces[index].materialindex != obj->faces[index + 1].materialindex)
      //           exit(0);
 			t_lightmap	*lightmap;
-			int temp = obj->faces[index].materialindex;
 			lightmap = &entity->lightmap[obj->faces[index].materialindex];
 			render->lightmap = lightmap;
 			render->img = obj->materials[obj->faces[index].materialindex].img;
-			if (!render->img)
-			{
-				index++;
-				continue;
-			}
-			if (max.x > 1.0f)
-				lightmap->size.x = max.x * render->img->size.x;
-			else
-            {
-                printf("test1 %s\n", entity->obj->name);
-                lightmap->size.x = render->img->size.x;
-            }
-			if (max.y > 1.0f)
-				lightmap->size.y = max.y * render->img->size.y;
-			else
-            {
-                printf("test2 %s\n", entity->obj->name);
-                lightmap->size.y = render->img->size.y;
-            }
-			lightmap->data = malloc(sizeof(uint8_t) * lightmap->size.x * lightmap->size.y);
-			memset(lightmap->data, 1, sizeof(uint8_t) * lightmap->size.x * lightmap->size.y);
 			clip_draw_lightmap(&sdl, render, entity->id, index);
-			entity->map[temp].size.x = lightmap->size.x;
-			entity->map[temp].size.y = lightmap->size.y;
-			entity->map[temp].img.size.x = render->img->size.x;
-			entity->map[temp].img.size.y = render->img->size.y;
-			entity->map[temp].img.data = malloc(sizeof(uint32_t) * entity->map[temp].size.x * entity->map[temp].size.y);
-			for (int i = 0; i < entity->map[temp].size.y; i++)
-			{
-				for (int j = 0; j < entity->map[temp].size.x; j++)
-				{
-					uint32_t	clr;
-					clr = render->img->data[(i % render->img->size.y) * render->img->size.x + (j % render->img->size.x)];
-					uint8_t light = render->lightmap->data[i * entity->map[temp].size.x + j];
-					Uint32 alpha = clr&0xFF000000;
-					Uint32 red=  ((clr&0x00FF0000)*light)>>8;
-					Uint32 green= ((clr&0x0000FF00)*light)>>8;
-					Uint32 blue=((clr&0x000000FF)*light)>>8;
-					clr = flip_channels(alpha|(red&0x00FF0000)|(green&0x0000FF00)|(blue&0x000000FF));
-                    if (light == 50)
-                        clr = CLR_BLUE;
-                    else if (light == 70)
-                        clr = CLR_RED;
-                    else if (light == 74)
-                        clr = CLR_PRPL;
-                 //   if (entity->id == 6)
-                 //       clr = CLR_PRPL;
-					entity->map[temp].img.data[i * entity->map[temp].size.x + j] = clr;
-				}
-			}
 			render->img = NULL;
 			render->lightmap = NULL;
 			render->map.img.data = NULL;
 			render->occ_calc_tri_count = 0;
-			max.x = -10000.0f;
-			max.y = -10000.0f;
 		}
 		index++;
 	}

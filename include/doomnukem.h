@@ -107,7 +107,8 @@ typedef struct s_world
 	struct s_autogui	*debug_gui;
 	t_sdlcontext		*sdl;
 	t_list				*guns;
-	t_list				*lights;
+	uint32_t			lights_count;
+	t_pointlight		lights[100];
 	t_list				*objectmetadatalist; //Move to sdl, this is only used when objects are initialized
 	t_npc				npcpool[128];
 	//t_list				*wall_list;
@@ -234,7 +235,8 @@ void	update_wall_bounds(t_wall *w);
 void	bake_lighting(t_render *render, t_world *world);
 void	render_entity_depth_buffer(t_sdlcontext sdl, t_render *render, t_entity *entity);
 void	update_arealights_for_entity(t_sdlcontext sdl, t_render *render, t_entity *entity);
-void update_pointlight_for_entity(t_sdlcontext sdl, t_render *render, t_entity *entity);
+void	update_pointlight_for_entity(t_sdlcontext sdl, t_render *render, t_entity *entity);
+void	calculate_pointlight(t_pointlight *pointlight, t_world *world, t_render *render);
 //
 
 #endif
