@@ -326,6 +326,7 @@ void calculate_pointlight(t_pointlight *pointlight, t_world *world, t_render *re
 			lightmap = &ent->lightmap[ent->obj->faces[j].materialindex];
 			t_vector2	max;
 			t_point		tri[3];
+			
 			max.x = -10000.0f;
 			max.y = -10000.0f;
 			for (int e = 0; e < 3; e++)
@@ -348,7 +349,8 @@ void calculate_pointlight(t_pointlight *pointlight, t_world *world, t_render *re
 				{
 					if (PointInTriangle((t_point){m, n}, tri[0], tri[1], tri[2]))
 					{
-						t_ray ray;
+						t_ray		ray;
+						t_texture	temp_t;
 
 						ray.origin = texcoord_to_loc(triangles[i][j].p, triangles[i][j].uv, (t_vector2){m/(float)lightmap->size.x, n/(float)lightmap->size.y});
                			ray.dir = vector3_sub(pointlight->origin, ray.origin);
@@ -361,7 +363,6 @@ void calculate_pointlight(t_pointlight *pointlight, t_world *world, t_render *re
 								{
 									continue; // if this isnt using for loop anymore remember to increment before continue
 								}
-								t_texture temp_t;
 								if (intersect_triangle(&ray, &temp_t, triangles[o][p].p[0], triangles[o][p].p[1], triangles[o][p].p[2]) == true)
 								{
 									if (temp_t.w < 1.0f)
@@ -376,7 +377,14 @@ void calculate_pointlight(t_pointlight *pointlight, t_world *world, t_render *re
 						}
 						if (ol == false)
 						{
-							lightmap->data[m + lightmap->size.x * n] = 255;
+							float dist = vector3_dist(ray.origin, pointlight->origin);
+						//	printf("dist is %f\n", dist);
+							if (dist <= pointlight->radius)
+							{
+								dist = 1.0f - (dist / pointlight->radius);
+								//printf("dist is %f\n", dist);
+								lightmap->data[m + lightmap->size.x * n] = ft_clamp((dist * 255) + lightmap->data[m + lightmap->size.x * n], 0, 255);
+							}
 						}
 					}
 				}

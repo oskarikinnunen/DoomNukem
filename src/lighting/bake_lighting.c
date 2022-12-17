@@ -139,6 +139,7 @@ void bake_lighting(t_render *render, t_world *world)
 		{
 			if (ent->status == es_active)
 			{
+				printf("radius %f\n", ent->obj->bounds.radius);
 				create_lightmap_for_entity(ent);
 				//render_entity_depth_buffer(*world->sdl, render, ent);
 			}
@@ -148,7 +149,9 @@ void bake_lighting(t_render *render, t_world *world)
 	}
 	world->lights_count = 2;
 	world->lights[0].origin = (t_vector3){500.0f, 500.0f, 50.0f};
+	world->lights[0].radius = 500.0f;
 	world->lights[1].origin = (t_vector3){500.0f, 20.0f, 50.0f};
+	world->lights[1].radius = 500.0f;
 	i = 0;
 	while (i < world->lights_count)
 	{
