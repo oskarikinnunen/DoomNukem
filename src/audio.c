@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/28 15:14:01 by raho              #+#    #+#             */
-/*   Updated: 2022/12/19 12:03:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/19 13:27:27 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ void	pause_audio(t_audio audio)
 
 void	open_audiodevice(t_audio *audio)
 {
+	SDL_AudioSpec	*ob;
 	audio->device = SDL_OpenAudioDevice(NULL, 0, &audio->wav_spec, NULL, SDL_AUDIO_ALLOW_ANY_CHANGE);
 	/*if (audio->device == 0)
 		error_log(EC_SDL_OPENAUDIODEVICE);*/

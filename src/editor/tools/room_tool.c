@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/19 12:02:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/19 13:35:18 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,7 @@ void add_room_to_world(t_world *world, t_room *room)
 
 	worldroom = ft_memalloc(sizeof(t_room));
 	worldroom->wallcount = room->wallcount;
-	worldroom->walls = ft_memalloc(sizeof(t_wall) * worldroom->wallcount);
+	worldroom->walls = ft_memalloc(sizeof(t_wall) * worldroom->wallcount * 2);
 	//TODO: memcpy from room to worldroom and overwrite?
 	i = 0;
 	while (i < room->wallcount)
@@ -559,14 +559,17 @@ static void insertwall(t_wall current, t_room *room, t_wall new[3])
 static void walleditmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 {
 	char	text[64] = { };
+	t_autogui	*gui;
+
+	gui = &dat->modroom_gui;
 
 	//snprintf(text, 64, "modifying selected wall");
 	//print_text_boxed(&sdl, text, (t_point){sdl.window_w / 2, 80});
 	//render_entity(sdl, &ed->render, &dat->doorwalls[0]);
 	highlight_object(ed, sdl, dat->ed_wall->entity, CLR_GREEN);
-	/*snprintf(text, 64, "make door");
-	print_text_boxed(&sdl, text, (t_point){20, 280}, sdl.screensize);*/
-	if (instantbutton((t_rectangle){20, 300, 40, 40}, &ed->hid.mouse, sdl, "stop.png"))
+	
+	gui_start(gui);
+	if (gui_button("Triple", gui))
 	{
 		//dat->ed_wall->entity.transform.scale = vector3_zero();
 		dat->doorwalls[0].line.start = dat->ed_wall->line.start;
@@ -586,11 +589,8 @@ static void walleditmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		dat->ed_wall = NULL;
 		return ;
 	}
-	if (instantbutton((t_rectangle){20, 345, 40, 40}, &ed->hid.mouse, sdl, "one.png"))
-	{
-		dat->ed_wall->disabled = !dat->ed_wall->disabled;
-		//init_roomwalls(dat->room, &sdl);
-	}
+	gui_labeled_bool_edit("Hide wall", &dat->ed_wall->entity->hidden, gui);
+	gui_end(gui);
 	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
 		dat->ed_wall = NULL;
 }
@@ -649,14 +649,14 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		dat->rtm = rtm_paint;
 		return ;
 	}
-	if (gui_shortcut_button("Split floor", 'Z', gui))
+	/*if (gui_shortcut_button("Split floor", 'Z', gui))
 	{
 		dat->rtm = rtm_split;
 		dat->wall.line.start = vector2_zero();
 		dat->splitwallcount = 0;
 		dat->area = ft_memalloc(sizeof(t_floor_area));
 		return ;
-	}
+	}*/
 	//int	prev = dat->floor_debugvalue;
 	//gui_labeled_int_slider("FLOORDEBUG:", &dat->floor_debugvalue, 1, gui);
 	//dat->floor_debugvalue = ft_clamp(dat->floor_debugvalue, 2, 5);
@@ -933,7 +933,7 @@ void	room_tool_split(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 		}
 		dat->room->walls[dat->room->wallcount] = *cur;
 		dat->room->walls[dat->room->wallcount].entity = spawn_entity(&ed->world);
-		dat->room->walls[dat->room->wallcount].entity->obj = object_plane(sdl);
+		//dat->room->walls[dat->room->wallcount].entity->obj = object_plane(sdl);
 		dat->room->wallcount++;
 		dat->area->unique_wallcount++;
 		init_roomwalls(&ed->world, dat->room);

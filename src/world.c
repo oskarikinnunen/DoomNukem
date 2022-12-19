@@ -57,7 +57,7 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 		ent = &world->entitycache.entities[i];
 		if (ent->status != es_free)
 		{
-			if (ent->status == es_active)
+			if (ent->status == es_active && !ent->hidden)
 				render_entity(*sdl, render, ent);
 			found++;
 		}
