@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_events.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 10:41:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/19 17:52:42 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,6 @@ t_gamereturn	editor_events(t_editor *ed)
 		if (ed->hid.mouse.safe_delta && ((ed->hid.mouse.delta.x) > 30 || ft_abs(ed->hid.mouse.delta.y) > 30))
 			ed->hid.mouse.delta = point_zero();
 	}
-		
 	while (SDL_PollEvent(&e))
 	{
 		toggle_keystates(&ed->hid, e);
@@ -87,7 +86,7 @@ t_gamereturn	editor_events(t_editor *ed)
 		if (e.type == SDL_KEYDOWN)
 		{
 			t_pointlight t;
-			if (iskey(e, SDLK_p))
+			if (iskey(e, SDLK_p))//TODO: temp shortcut for baking lighting
 				bake_lighting(&ed->render, &ed->world);
 			if (iskey(e, SDLK_ESCAPE))
 				return (game_exit);

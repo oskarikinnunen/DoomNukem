@@ -6,7 +6,7 @@ static uint32_t sample_img(t_render *render, t_texture t)
 {
 	uint32_t	xsample;
 	uint32_t	ysample;
-	
+
 	xsample = (t.u / t.w) * (render->map.img.size.x);
 	ysample = (t.v / t.w) * (render->map.img.size.y);
 

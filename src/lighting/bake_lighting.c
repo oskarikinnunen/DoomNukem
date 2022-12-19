@@ -29,7 +29,7 @@ static uint32_t	flip_channels(uint32_t clr)
 	return (result.dat.color);
 }
 
-void create_lightmap_for_entity(t_entity *entity)
+void create_lightmap_for_entity(t_entity *entity, struct s_world *world)
 {
 	t_object		*obj;
 	t_vector2		max;
@@ -58,17 +58,24 @@ void create_lightmap_for_entity(t_entity *entity)
 		{
 			t_lightmap *lightmap;
 			t_img *img;
-
 			lightmap = &entity->lightmap[obj->faces[i].materialindex];
 			img = obj->materials[obj->faces[i].materialindex].img;
-			if (max.x > 1.0f)
+			if (img)
+			{
+				if (max.x > 1.0f)
 				lightmap->size.x = max.x * img->size.x;
+				else
+					lightmap->size.x = img->size.x;
+				if (max.y > 1.0f)
+					lightmap->size.y = max.y * img->size.y;
+				else
+					lightmap->size.y = img->size.y;
+			}
 			else
-				lightmap->size.x = img->size.x;
-			if (max.y > 1.0f)
-				lightmap->size.y = max.y * img->size.y;
-			else
-				lightmap->size.y = img->size.y;
+			{
+				lightmap->size.x = 1;
+				lightmap->size.y = 1;
+			}
 			lightmap->data = malloc(sizeof(uint8_t) * lightmap->size.x * lightmap->size.y);
 			memset(lightmap->data, 50, sizeof(uint8_t) * lightmap->size.x * lightmap->size.y);
 			max.x = -10000.0f;
@@ -78,7 +85,7 @@ void create_lightmap_for_entity(t_entity *entity)
 	}
 }
 
-void create_map_for_entity(t_entity *entity)
+void create_map_for_entity(t_entity *entity, struct s_world *world)
 {
 	t_object		*obj;
 	t_lightmap		*lightmap;
@@ -98,8 +105,16 @@ void create_map_for_entity(t_entity *entity)
 			index = obj->faces[i].materialindex;
 			entity->map[index].size.x = lightmap->size.x;
 			entity->map[index].size.y = lightmap->size.y;
-			entity->map[index].img.size.x = img->size.x;
-			entity->map[index].img.size.y = img->size.y;
+			if(img)
+			{
+				entity->map[index].img.size.x = img->size.x;
+				entity->map[index].img.size.y = img->size.y;
+			}
+			else
+			{
+				entity->map[index].img.size.x = 1;
+				entity->map[index].img.size.y = 1;
+			}
 			entity->map[index].img.data = malloc(sizeof(uint32_t) * entity->map[index].size.x * entity->map[index].size.y);
 			for (int e = 0; e < entity->map[index].size.y; e++)
 			{
@@ -124,29 +139,9 @@ void create_map_for_entity(t_entity *entity)
 void bake_lighting(t_render *render, t_world *world)
 {
 	int			i;
-	int			found;
 	t_entity	*ent;
 
-	bzero(world->sdl->zbuffer, sizeof(uint32_t) * world->sdl->window_h * world->sdl->window_w);
-	render->camera.lookdir = (t_vector3){-0.630105, 0.650868, -0.423484};
-	render->camera.position = (t_vector3){1208.355713, 912.929382, 154.534698};
-	i = 0;
-	found = 0;
-	while (found < world->entitycache.existing_entitycount && 1)
-	{
-		ent = &world->entitycache.entities[i];
-		if (ent->status != es_free)
-		{
-			if (ent->status == es_active)
-			{
-				printf("radius %f\n", ent->obj->bounds.radius);
-				create_lightmap_for_entity(ent);
-				//render_entity_depth_buffer(*world->sdl, render, ent);
-			}
-			found++;
-		}
-		i++;
-	}
+	for_all_entities(world, create_lightmap_for_entity);
 	world->lights_count = 2;
 	world->lights[0].origin = (t_vector3){500.0f, 500.0f, 50.0f};
 	world->lights[0].radius = 500.0f;
@@ -158,25 +153,5 @@ void bake_lighting(t_render *render, t_world *world)
 		calculate_pointlight(&world->lights[i], world, render);
 		i++;
 	}
-	i = 0;
-	found = 0;
-	while (found < world->entitycache.existing_entitycount && 1)
-	{
-		ent = &world->entitycache.entities[i];
-		if (ent->status != es_free)
-		{
-			if (ent->status == es_active)
-			{
-				//update_pointlight_for_entity(*world->sdl, render, ent);
-				create_map_for_entity(ent);
-				//update_arealights_for_entity(*world->sdl, render, ent);
-			}
-			found++;
-		}
-		i++;
-	}
-	//world->skybox.map->img = NULL;
-//	update_arealights_for_entity(*world->sdl, render, &world->skybox);
-	printf("clean exit\n");
-	//exit(0);
+	for_all_entities(world, create_map_for_entity);
 }

@@ -55,7 +55,7 @@ typedef struct s_ray
     t_vector3 dir; //direction vector
 }   t_ray;
 
-bool intersect_triangle(t_ray *r, t_texture *t, t_vector3 a, t_vector3 b, t_vector3 c)
+bool intersect_triangle(t_ray r, t_texture *t, t_vector3 a, t_vector3 b, t_vector3 c)
 {
     t_vector3   e1, e2, n;
 
@@ -64,15 +64,13 @@ bool intersect_triangle(t_ray *r, t_texture *t, t_vector3 a, t_vector3 b, t_vect
     n = vector3_crossproduct(e1, e2);
 
     float det, invdet;
-    det = -vector3_dot(r->dir, n);
+    det = -vector3_dot(r.dir, n);
     invdet = 1.0f/det;
-    t_vector3 ao = vector3_sub(r->origin, a);
-    t_vector3 dao = vector3_crossproduct(ao, r->dir);
+    t_vector3 ao = vector3_sub(r.origin, a);
+    t_vector3 dao = vector3_crossproduct(ao, r.dir);
     t->u = vector3_dot(e2, dao) * invdet;
     t->v = -vector3_dot(e1, dao) * invdet;
     t->w = vector3_dot(ao, n) * invdet;
-    //if (isnan(t->u) || isnan(t->v) || isnan(t->w) || isinf(t->u) || isinf(t->v) || isinf(t->w))
-  //      exit(0);
     return(fabs(det) >= 1e-6 && t->w >= 0.00000f && t->u >= 0.00000f && t->v >= 0.00000f && (t->u + t->v) <= 1.00000f);
 }
 
@@ -89,8 +87,6 @@ static t_vector3 texcoord_to_loc(t_vector3 *v, t_vector2 *t, t_vector2 p)
     r.x = v[0].x + s * (v[1].x - v[0].x) + delta * (v[2].x - v[0].x);
     r.y = v[0].y + s * (v[1].y - v[0].y) + delta * (v[2].y - v[0].y);
     r.z = v[0].z + s * (v[1].z - v[0].z) + delta * (v[2].z - v[0].z);
-//    if (isnan(r.x) || isnan(r.y) || isnan(r.z) || isinf(r.x) || isinf(r.y) || isinf(r.z))
-  //      exit(0);
     return r;
 }
 
@@ -219,7 +215,7 @@ static void ray_uv(t_triangle triangle, t_render *render, int id, int t_index)
                                     print_vector3(p[2].v);
                                     printf("ent id %d index %d t index %d count %d\n", ent->id, index, t_index, ent->obj->face_count);
                                 }
-                                if (intersect_triangle(&ray, &temp_t, a, b, c) == true)
+                                if (intersect_triangle(ray, &temp_t, a, b, c) == true)
                                 {
                                     ol = true;
                                     if (id == 5 && x == max.x - 5 && y == min.y + 5 && ent->id == 6)
@@ -315,6 +311,8 @@ void calculate_pointlight(t_pointlight *pointlight, t_world *world, t_render *re
         }
         i++;
     }
+	bool		*map;
+	t_lightmap *lightmap;
 	i = 0;
 	while (i < index)
 	{
@@ -322,11 +320,15 @@ void calculate_pointlight(t_pointlight *pointlight, t_world *world, t_render *re
 		j = 0;
 		while (j < ent->obj->face_count)
 		{
-			t_lightmap *lightmap;
-			lightmap = &ent->lightmap[ent->obj->faces[j].materialindex];
 			t_vector2	max;
 			t_point		tri[3];
 			
+			if (j == 0 || ent->obj->faces[j].materialindex != ent->obj->faces[j - 1].materialindex)
+			{
+				lightmap = &ent->lightmap[ent->obj->faces[j].materialindex];
+				map = malloc(sizeof(bool) * lightmap->size.x * lightmap->size.y);
+				bzero(map, sizeof(bool) * lightmap->size.x * lightmap->size.y);
+			}
 			max.x = -10000.0f;
 			max.y = -10000.0f;
 			for (int e = 0; e < 3; e++)
@@ -363,9 +365,9 @@ void calculate_pointlight(t_pointlight *pointlight, t_world *world, t_render *re
 								{
 									continue; // if this isnt using for loop anymore remember to increment before continue
 								}
-								if (intersect_triangle(&ray, &temp_t, triangles[o][p].p[0], triangles[o][p].p[1], triangles[o][p].p[2]) == true)
+								if (intersect_triangle(ray, &temp_t, triangles[o][p].p[0], triangles[o][p].p[1], triangles[o][p].p[2]) == true)
 								{
-									if (temp_t.w < 1.0f)
+									if (temp_t.w < 1.0f && temp_t.w > 0.01f)
 									{
 										ol = true;
 										break;
@@ -375,25 +377,33 @@ void calculate_pointlight(t_pointlight *pointlight, t_world *world, t_render *re
 							if (ol == true)
 								break;
 						}
-						if (ol == false)
+						if (ol == false && map[m + lightmap->size.x * n] == false)
 						{
 							float dist = vector3_dist(ray.origin, pointlight->origin);
-						//	printf("dist is %f\n", dist);
 							if (dist <= pointlight->radius)
 							{
 								dist = 1.0f - (dist / pointlight->radius);
-								//printf("dist is %f\n", dist);
+								map[m + lightmap->size.x * n] = true;
 								lightmap->data[m + lightmap->size.x * n] = ft_clamp((dist * 255) + lightmap->data[m + lightmap->size.x * n], 0, 255);
 							}
 						}
 					}
 				}
 			}
+			if (j + 1 == ent->obj->face_count || ent->obj->faces[j].materialindex != ent->obj->faces[j + 1].materialindex)
+				free(map);
 			j++;
 		}
 		i++;
 	}
-	//exit(0);
+	i = 0;
+	while (i < index)
+	{
+		free(triangles[i]);
+		i++;
+	}
+	free(triangles);
+	free(entities);
 }
 
 void update_pointlight_for_entity(t_sdlcontext sdl, t_render *render, t_entity *entity)

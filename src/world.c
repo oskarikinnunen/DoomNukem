@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/12 18:28:36 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/19 17:50:46 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,18 +97,6 @@ void update_world3d(t_world *world, t_render *render)
 		i++;
 	}*/
 	update_entitycache(sdl, world, render);
-	gui_start(world->debug_gui);
-	gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);
-	gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);
-	gui_labeled_int("Entity count:", world->entitycache.existing_entitycount, world->debug_gui);
-	gui_labeled_float_slider("Resolution scale:", &world->sdl->resolution_scaling, 0.01f, world->debug_gui);
-	world->sdl->resolution_scaling = ft_clampf(world->sdl->resolution_scaling, 0.25f, 1.0f);
-	t_point	res;
-	res = point_fmul(sdl->screensize, sdl->resolution_scaling);
-	gui_labeled_point("3D Resolution:", res, world->debug_gui);
-	gui_labeled_int_slider("PS1 tri div:", &sdl->ps1_tri_div, 2.0f, world->debug_gui);
-	sdl->ps1_tri_div = ft_clamp(sdl->ps1_tri_div, 1, 4);
-	gui_end(world->debug_gui);
 }
 
 void	init_entity(t_entity *entity, t_world *world)
@@ -429,6 +417,8 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 	world.skybox.transform.position = (t_vector3){1500.0f, 1500.0f, 1495.0f};
 	//spawn_npc(&world, "cyborg", (t_vector3){500.0f, 500.0f, 0.0f}, &sdl);
 	//world.npcpool[0].destination = (t_vector3){200.0f, 200.0f, 0.0f};
+	for_all_entities(&world, create_lightmap_for_entity);
+	for_all_entities(&world, create_map_for_entity);
 	return (world);
 }
 

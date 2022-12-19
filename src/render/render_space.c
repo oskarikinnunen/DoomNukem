@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 15:36:10 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/12 18:32:40 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/19 18:14:03 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,6 @@ static void clip_and_render_triangles(t_sdlcontext *sdl, t_render *render)
 	render->screenspace_ptri_count = 0;
 	render->map.img.data = NULL;
 	render->img = NULL;
-	render->lightmap = NULL;
 }
 
 void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)

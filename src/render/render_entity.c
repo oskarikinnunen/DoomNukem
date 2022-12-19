@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/12 18:17:47 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/19 17:00:03 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,6 @@ void render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size)
 	obj.vertice_count = 1;
 	vertex = vector3_zero();
 	obj.vertices = &vertex;
-	//vertex = vector3_mul_vector3(entity->transform.scale, vertex);
 	vertex = pos;
 	render.q[0] = vector3_to_quaternion(vertex);
 	render.q[0] = quaternion_mul_matrix(c.matworld, render.q[0]);

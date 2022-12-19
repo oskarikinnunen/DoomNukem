@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/12 17:21:04 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/19 17:06:41 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,9 @@ t_render	init_render(t_sdlcontext sdl, struct s_world *world)
 	t_render	render;
 
 	bzero(&render, sizeof(t_render));
-	render.camera.lookdir = (t_vector3){-0.630105, 0.650868, -0.423484};
-	render.camera.position = (t_vector3){1208.355713, 912.929382, 154.534698};
+	bzero(&render.camera, sizeof(t_camera));
+	render.camera.lookdir = (t_vector3){0};
+	render.camera.position = (t_vector3){0};
 	render.camera.matworld = matrix_makeidentity();
 	render.camera.matproj = matrix_makeprojection(90.0f, (float)(sdl.window_h * sdl.resolution_scaling) / (float)(sdl.window_w * sdl.resolution_scaling), 2.0f, 1000.0f);
 	render.occ_calc_tris = malloc(sizeof(t_triangle) * 10000);
@@ -35,7 +36,6 @@ t_render	init_render(t_sdlcontext sdl, struct s_world *world)
 	render.occlusion.cull_box = false;
 	render.occlusion.occluder_box = false;
 	render.world = world;
-	bake_lighting(&render, world);
 	return(render);
 }
 

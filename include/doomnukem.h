@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/08 18:14:26 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/19 17:18:51 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,7 @@ typedef struct s_world
 
 t_vector2	flipped_uv(t_vector2 og);
 void		for_all_active_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *world));
+void		for_all_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *world));
 void		update_world3d(t_world *world, t_render *render);
 t_world		load_world(char *filename, t_sdlcontext *sdl);
 void		destroy_entity(t_world *world, t_entity *ent);

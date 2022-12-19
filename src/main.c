@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/10 16:13:12 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/19 16:11:50 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 {
 	const char	*platform;
 
+	ft_bzero(sdl, sizeof(t_sdlcontext));
 	load_lua_conf(sdl);
 	SDL_DisplayMode	mode;
 	sdl->resolution_scaling = 1.0f;
