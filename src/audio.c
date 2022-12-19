@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   audio.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/28 15:14:01 by raho              #+#    #+#             */
-/*   Updated: 2022/11/28 19:40:15 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/12 18:16:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 void	play_music(t_audio audio)
 {
+	if (audio.device == NULL)
+		return;
 	if (SDL_GetQueuedAudioSize(audio.device) == 0)
 	{
 		if (SDL_QueueAudio(audio.device, audio.wav_start, audio.wav_length) < 0)
@@ -38,6 +40,8 @@ void	pause_unused_audio(t_sdlcontext sdl)
 
 void	play_audio(t_audio audio)
 {
+	if (audio.device == NULL)
+		return;
 	if (SDL_QueueAudio(audio.device, audio.wav_start, audio.wav_length) < 0)
 		error_log(EC_SDL_QUEUEAUDIO);
 	SDL_PauseAudioDevice(audio.device, 0);
@@ -45,6 +49,8 @@ void	play_audio(t_audio audio)
 
 void	force_play_audio(t_audio audio)
 {
+	if (audio.device == NULL)
+		return;
 	if (SDL_GetQueuedAudioSize(audio.device) > 0)
 		SDL_ClearQueuedAudio(audio.device);
 	if (SDL_QueueAudio(audio.device, audio.wav_start, audio.wav_length) < 0)
@@ -54,18 +60,22 @@ void	force_play_audio(t_audio audio)
 
 void	pause_audio(t_audio audio)
 {
+	if (audio.device == NULL)
+		return;
 	SDL_PauseAudioDevice(audio.device, 1);
 }
 
 void	open_audiodevice(t_audio *audio)
 {
 	audio->device = SDL_OpenAudioDevice(NULL, 0, &audio->wav_spec, NULL, SDL_AUDIO_ALLOW_ANY_CHANGE);
-	if (audio->device == 0)
-		error_log(EC_SDL_OPENAUDIODEVICE);
+	/*if (audio->device == 0)
+		error_log(EC_SDL_OPENAUDIODEVICE);*/
 }
 
 void	load_wav(t_audio *audio, char *file)
 {
+	if (audio->device == NULL)
+		return;
 	ft_strcpy(audio->name, file);
 	if (SDL_LoadWAV(file, &audio->wav_spec, &audio->wav_start, &audio->wav_length) == NULL)
 		error_log(EC_SDL_LOADWAV);
@@ -76,6 +86,7 @@ void	close_audio(t_sdlcontext *sdl)
 	int	index;
 
 	index = 0;
+	if (sdl->audio)
 	while (index < sdl->audiocount)
 	{
 		SDL_FreeWAV(sdl->audio[index].wav_start);
