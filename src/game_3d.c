@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/08 15:38:01 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/19 13:58:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -406,7 +406,7 @@ void render_entity(t_sdlcontext sdl, t_render *render, t_entity *entity)
 	render->occ_tri_count = 0;
 	render->worldspace_ptri_count = 0;
 	render->screenspace_ptri_count = 0;
-	if (obj == NULL)
+	if (obj == NULL || entity->hidden)
 		return;
 	index = 0;
 	while (index < obj->vertice_count)

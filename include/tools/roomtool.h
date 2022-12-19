@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:42:04 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/12 14:37:18 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/19 14:55:19 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ typedef enum e_roomtoolmode
 	rtm_create,
 	rtm_modify,
 	rtm_split,
-	rtm_paint
+	rtm_paint,
+	rtm_connect
 } t_roomtoolmode;
 
 t_vector2	flipped_uv(t_vector2 og);

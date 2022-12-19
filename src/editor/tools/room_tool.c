@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/19 13:35:18 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/19 14:56:02 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -747,6 +747,18 @@ void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 		dat->rtm = rtm_create;
 		force_mouselock(&ed->hid);
 	}
+	if (gui_shortcut_button("Connect room", 'C', gui))
+	{
+		dat->room = ft_memalloc(sizeof(t_room));
+		ft_bzero(roomname, 64);
+		snprintf(roomname, 64, "room(%i)", ft_listlen(ed->world.roomlist));
+		ft_strcpy(dat->room->name, roomname);
+		dat->room->walls = ft_memalloc(sizeof(t_wall) * 32);
+		dat->rtm = rtm_connect;
+		//dat->
+		/*dat->rtm = rtm_create;
+		force_mouselock(&ed->hid);*/
+	}
 	gui_end(gui);
 }
 
@@ -1007,7 +1019,6 @@ void	room_tool_update(t_editor *ed, t_sdlcontext *sdl)
 		modifymode(ed, *sdl, dat);
 	if (dat->rtm == rtm_split && dat->room != NULL)
 		room_tool_split(ed, sdl, dat);
-
 	if (dat->rtm == rtm_paint && dat->room != NULL)
 		room_tool_paint(ed, sdl, dat);
 }

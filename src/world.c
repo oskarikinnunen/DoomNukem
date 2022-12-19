@@ -89,7 +89,7 @@ void update_world3d(t_world *world, t_render *render)
 		i++;
 	}*/
 	update_entitycache(sdl, world, render);
-	if (!sdl->global_wireframe)
+	if (!sdl->global_wireframe && !world->skybox.hidden)
 		render_entity(*sdl, render, &world->skybox);
 	gui_start(world->debug_gui);
 	gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);
@@ -102,6 +102,8 @@ void update_world3d(t_world *world, t_render *render)
 	gui_labeled_point("3D Resolution:", res, world->debug_gui);
 	gui_labeled_bool_edit("Wireframe:", &world->sdl->global_wireframe, world->debug_gui);
 	gui_labeled_int_slider("PS1 tri div:", &sdl->ps1_tri_div, 2.0f, world->debug_gui);
+	if (gui_shortcut_button("Toggle Skybox", 'H', world->debug_gui))
+		world->skybox.hidden = !world->skybox.hidden;
 	sdl->ps1_tri_div = ft_clamp(sdl->ps1_tri_div, 1, 4);
 	gui_end(world->debug_gui);
 }

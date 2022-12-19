@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/12 16:37:14 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/19 14:05:18 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ void		toggle_keystates(t_hid_info *hid, SDL_Event e)
 		while (c <= 'z')
 		{
 			hid->alphakeystate |= iskey(e, c) << (c - 'a');
+			hid->alphakey_pressed |= iskey(e, c) << (c - 'a');
 			c++; //Not the language
 		}
 	}
@@ -93,6 +94,7 @@ t_gamereturn	editor_events(t_editor *ed)
 	static SDL_Event	e;
 	
 	ed->hid.mouse.scroll_delta = 0; //Needs to be reset
+	ed->hid.alphakey_pressed = 0; //Needs to be reset
 	if (ed->hid.mouse.relative)
 	{
 		SDL_GetRelativeMouseState(&ed->hid.mouse.delta.x, &ed->hid.mouse.delta.y);
