@@ -19,6 +19,7 @@ typedef struct s_floor_area
 	uint32_t	wall_indices[64];
 	uint32_t	wallcount;
 	uint32_t	unique_wallcount;
+	int32_t		height;
 }	t_floor_area;
 typedef struct s_line
 {
