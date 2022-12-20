@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/09 20:04:39 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/20 12:08:23 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 		ent = &world->entitycache.entities[i];
 		if (ent->status != es_free)
 		{
-			if (ent->status == es_active)
+			if (ent->status == es_active && !ent->hidden)
 				render_entity(*sdl, render, ent);
 			found++;
 		}
@@ -91,7 +91,8 @@ void update_world3d(t_world *world, t_render *render)
 		i++;
 	}*/
 	update_entitycache(sdl, world, render);
-	render_entity(*sdl, render, &world->skybox);
+	if (!sdl->global_wireframe)
+		render_entity(*sdl, render, &world->skybox);
 	gui_start(world->debug_gui);
 	gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);
 	gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);
@@ -105,6 +106,7 @@ void update_world3d(t_world *world, t_render *render)
 	t_point	res;
 	res = point_fmul(sdl->screensize, sdl->resolution_scaling);
 	gui_labeled_point("3D Resolution:", res, world->debug_gui);
+	gui_labeled_bool_edit("Wireframe:", &world->sdl->global_wireframe, world->debug_gui);
 	gui_labeled_int_slider("PS1 tri div:", &sdl->ps1_tri_div, 2.0f, world->debug_gui);
 	sdl->ps1_tri_div = ft_clamp(sdl->ps1_tri_div, 1, 4);
 	gui_end(world->debug_gui);
@@ -189,6 +191,9 @@ t_room	load_room(char *filename)
 	listdel(&temp);
 	temp = load_chunk(filename, "FLOR", sizeof(t_meshtri));
 	result.floors = list_to_ptr(temp, &result.floorcount);
+	listdel(&temp);
+	temp = load_chunk(filename, "AREA", sizeof(t_floor_area));
+	result.floor_areas = list_to_ptr(temp, &result.floor_areacount);
 	listdel(&temp);
 	return (result);
 }
@@ -473,6 +478,8 @@ void	save_room(t_room room)
 	save_chunk(room.name, "WALL", walls_list);
 	t_list *floorlist = ptr_to_list(room.floors, room.floorcount, sizeof(t_meshtri));
 	save_chunk(room.name, "FLOR", floorlist);
+	t_list *arealist = ptr_to_list(room.floor_areas, room.floor_areacount, sizeof(t_floor_area));
+	save_chunk(room.name, "AREA", arealist);
 	close(fd);
 }
 

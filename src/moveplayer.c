@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/09 20:02:30 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/20 12:08:04 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,13 @@
 #include "objects.h"
 #include "entity.h"
 #include "libft.h"
+
+#include <xmmintrin.h> // SSE
+
+//#include <glm/gtx/simd_vec4.hpp>
+//#include <pmmintrin.h> // SSE3
+//#include <nmmintrin.h> // SSE4.2
+//#include <immintrin.h> // AVX
 
 /* Previous working version before implementing updateinput */
 /*

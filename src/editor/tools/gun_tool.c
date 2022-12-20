@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:49:59 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 10:56:24 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 13:57:44 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,10 @@ void	save_preset(t_editor *ed, t_sdlcontext sdl)
 		if (ft_strcmp(gun->preset_name, ed->player.gun->preset_name) == 0)
 		{
 			gun = ed->player.gun;
-			sprintf(str, "Overwrote preset %s", gun->preset_name);
-			debugconsole_addmessage(&ed->world.debugconsole, str);
+			sprintf(gun->preset_name, "%s(copy)", gun->preset_name);
+			list_push(&ed->world.guns, ed->player.gun, sizeof(t_gun));
+			/*sprintf(str, "Overwrote preset %s", gun->preset_name);
+			debugconsole_addmessage(&ed->world.debugconsole, str);*/
 			return ;
 		}
 		l = l->next;
@@ -77,13 +79,33 @@ void	gun_tool_update(t_editor *ed, t_sdlcontext *sdl)
 	gui = &dat->maingui;
 	gui_start(gui);
 	gui_label("Preset:", gui);
-	gui_label(ed->player.gun->preset_name, gui);
+	gui_string_edit(ed->player.gun->preset_name, gui);
+	//gui_label(ed->player.gun->preset_name, gui);
+	if (gui_button("Load preset", gui)) {
+		dat->presetgui.hidden = false;
+		dat->recoilgui.hidden = true;
+		dat->offsetgui.hidden = true;
+	}
+	if (gui_button("Save preset", gui))
+	{
+		save_preset(ed, *sdl);
+		dat->presetgui.hidden = false;
+		dat->recoilgui.hidden = true;
+		dat->offsetgui.hidden = true;
+	}
+	gui_emptyvertical(10, gui);
 	if (gui_button("Offset\xF1", gui))
 	{
 		dat->offsetgui.hidden = false;
+		dat->recoilgui.hidden = true;
+		dat->presetgui.hidden = true;
 	}
-	/*if (gui_button("Recoil\xF1", gui))
-		dat->gtm = gtm_recoil;*/
+	if (gui_button("Recoil\xF1", gui))
+	{
+		dat->recoilgui.hidden = false;
+		dat->offsetgui.hidden = true;
+		dat->presetgui.hidden = true;
+	}
 	gui_end(gui);
 
 	if (!dat->offsetgui.hidden)
@@ -108,6 +130,50 @@ void	gun_tool_update(t_editor *ed, t_sdlcontext *sdl)
 		gui_end(gui);
 		ed->player.locked = true;
 		moveplayer(&ed->player, &ed->hid.input, ed->clock);
+	}
+	if (!dat->recoilgui.hidden)
+	{
+		gui = &dat->recoilgui;
+		gui_start(gui);
+		gui_labeled_float_slider("Jump y", &ed->player.gun->recoiljump.y, 0.1f, gui);
+		gui_labeled_float_slider("Viewjump y", &ed->player.gun->viewrecoil.y, 0.0005f, gui);
+		gui_labeled_float_slider("Angle y", &ed->player.gun->recoilangle.y, 0.5f, gui);
+		gui_labeled_float_slider("Angle recover", &ed->player.gun->anglerecovery, 0.0001f, gui);
+		gui_labeled_bool_edit("Full auto", &ed->player.gun->fullauto, gui);
+		gui_labeled_int_slider("Fire delay", &ed->player.gun->firedelay, 1.0f, gui);
+		gui_end(gui);
+	}
+	if (!dat->presetgui.hidden)
+	{
+		gui = &dat->presetgui;
+		t_list	*l;
+		t_gun	*gun;
+
+		l = ed->world.guns;
+		gui_start(gui);
+		while (l != NULL)
+		{
+			gun = l->content;
+			if (ft_strcmp(gun->preset_name, ed->player.gun->preset_name) == 0)
+				gui_highlighted_button(gun->preset_name, gui);
+			else
+			{
+				gui_starthorizontal(gui);
+				if (gui_button(gun->preset_name, gui))
+					ed->player.gun = l->content;
+				if (gui_button("X", gui))
+				{
+					list_remove(&ed->world.guns, l->content, sizeof(t_gun));
+					gui_endhorizontal(gui);
+					gui_end(gui);
+					return ;
+				}
+					
+				gui_endhorizontal(gui);
+			}
+			l = l->next;
+		}
+		gui_end(gui);
 	}
 	/*if (instant_text_button(*sdl, &ed->hid.mouse, "Model", (t_point) {20, 140}))
 		dat->gtm = gtm_model;
@@ -146,20 +212,30 @@ void	gun_tool_init(t_editor *ed, t_sdlcontext *sdl)
 	dat = ed->tool->tooldata;
 	if (dat->maingui.sdl == NULL)
 	{
-		dat->maingui = init_gui(sdl, &ed->hid, &ed->player, (t_point){20, 20}, "Gun tool");
+		dat->maingui = init_gui(sdl, &ed->hid, &ed->player, (t_point){20, 100}, "Gun tool");
 		gui_autosize(&dat->maingui);
 	}
 	if (dat->offsetgui.sdl == NULL)
 	{
 		dat->offsetgui = init_gui(sdl, &ed->hid, &ed->player, (t_point){20, 20}, "Offset");
 		dat->offsetgui.dock = &dat->maingui;
+		dat->offsetgui.hidden = true;
 		dat->offsetgui.allow_user_hide = true;
 		gui_autosize(&dat->offsetgui);
+	}
+	if (dat->presetgui.sdl == NULL)
+	{
+		dat->presetgui = init_gui(sdl, &ed->hid, &ed->player, (t_point){20, 20}, "Select preset");
+		dat->presetgui.dock = &dat->maingui;
+		dat->presetgui.hidden = true;
+		dat->presetgui.allow_user_hide = true;
+		gui_autosize(&dat->presetgui);
 	}
 	if (dat->recoilgui.sdl == NULL)
 	{
 		dat->recoilgui = init_gui(sdl, &ed->hid, &ed->player, (t_point){20, 20}, "Recoil");
 		dat->recoilgui.dock = &dat->maingui;
+		dat->recoilgui.hidden = true;
 		dat->recoilgui.allow_user_hide = true;
 		gui_autosize(&dat->recoilgui);
 	}

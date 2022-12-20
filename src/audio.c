@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/28 15:14:01 by raho              #+#    #+#             */
-/*   Updated: 2022/12/09 19:44:37 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/20 12:07:44 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 
 void	play_music(t_audio *audio)
 {
-
 }
 
 void	play_sound(t_audio *audio, const char *name)

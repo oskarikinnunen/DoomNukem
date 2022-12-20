@@ -20,6 +20,7 @@
 //# define AMBER_2 0x831f00
 # define AMBER_2 0xbf7702
 # define AMBER_3 0xff9b05
+# define AMBER_4 0xf5a845
 # define CLEARSCREEN "\e[1;1H\e[2J"
 
 typedef enum e_platform
@@ -166,6 +167,7 @@ typedef struct s_sdlcontext
 	uint32_t				imagecount;
 	struct s_object			*objects;
 	int						ps1_tri_div;
+	bool					global_wireframe;
 	uint32_t				objectcount;
 	t_font					font;
 	t_audio					audio;

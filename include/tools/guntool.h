@@ -6,7 +6,7 @@
 /*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 16:08:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 10:18:22 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/07 12:22:53 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ typedef struct s_guntooldata
 {
 	t_autogui		maingui;
 	t_autogui		offsetgui;
+	t_autogui		presetgui;
 	t_autogui		recoilgui;
 	t_gun			gun;
 	bool			gun_aim;

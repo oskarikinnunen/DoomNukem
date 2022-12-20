@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wall_tool_rooms.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 11:54:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/12 19:02:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ static bool intersect(t_line line1, t_vector2 *edges, int edgecount)
 		ydiff2 = line2.start.y - line2.end.y;
 		res = xdiff1 * ydiff2 - ydiff1 * xdiff2;
 		
-		if (fabsf(res) > 0.01f)
+		if (fabsf(res) > 0.000001f)
 		{
 			float fa = line1.start.x * line1.end.y - line1.start.y * line1.end.x;
 			float fb = line2.start.x * line2.end.y - line2.start.y * line2.end.x;
@@ -158,8 +158,28 @@ static	bool correctangle(t_vector2 vs[3]) //TODO: takes 'fc', 'valid' array and 
 {
 	t_vector2	*tr;
 	float		angle = vector2_anglebetween(vs[0], vs[2]);
+	if (isinf(angle) || isnan(angle))
+	{
+		printf("angle was nan or inf \n");
+		exit(0);
+	}
 
 	tr = transformed_around(vs[2], -angle, vs, 3);
+	return (tr[1].y >= tr[0].y && tr[1].y >= tr[2].y);
+}
+
+static	bool correctangle_debug(t_vector2 vs[3]) //TODO: takes 'fc', 'valid' array and 'validcount'
+{
+	t_vector2	*tr;
+	float		angle = vector2_anglebetween(vs[0], vs[2]);
+	if (isinf(angle) || isnan(angle))
+	{
+		printf("angle was nan or inf \n");
+		exit(0);
+	}
+
+	tr = transformed_around(vs[2], -angle, vs, 3);
+	printf("0y: %f 5y: %f\n6 y: %f\n", tr[0].y, tr[2].y, tr[1].y);
 	return (tr[1].y >= tr[0].y && tr[1].y >= tr[2].y);
 }
 
@@ -441,19 +461,132 @@ bool	checkroomnormal(t_floorcalc *fc)
 	return (false);
 }
 
-void	triangulate(t_floorcalc *fc)
+bool	points_collide(t_floorcalc *fc, t_vector2 tri[3])
+{
+	int	i;
+
+	t_triangle	t;
+	t_point		p;
+
+	t.p[0].v = vector2_to_vector3(tri[0]);
+	t.p[1].v = vector2_to_vector3(tri[1]);
+	t.p[2].v = vector2_to_vector3(tri[2]);
+	i = 0;
+	while (i < fc->edgecount)
+	{
+		if (vector2_cmp(fc->edges[i], tri[0])
+			|| vector2_cmp(fc->edges[i], tri[1])
+			|| vector2_cmp(fc->edges[i], tri[2]))
+		{
+			i++;
+			continue;
+		}
+		p = vector2_to_point(fc->edges[i]);
+		if (pointtrianglecollision(p, t))
+			return (true);
+		i++;
+	}
+	return (false);
+	//pointtrianglecollision()
+	/*int	i;
+	t_line	o0;
+	t_line	o1;
+	t_line	o2;
+	t_line	t0;
+	t_line	t1;
+	t_line	t2;
+	t_line	t0s;
+	t_line	t1s;
+	t_line	t2s;
+
+	i = 0;
+	o0.start = tri[0];
+	o0.end = tri[1];
+	o1.start = tri[1];
+	o1.end = tri[2];
+	o2.start = tri[2];
+	o2.end = tri[0];
+
+
+	t0.end = tri[0];
+	t1.end = tri[1];
+	t2.end = tri[2];
+	while (i < fc->edgecount)
+	{
+		if (vector2_cmp(fc->edges[i], tri[0])
+			|| vector2_cmp(fc->edges[i], tri[1])
+			|| vector2_cmp(fc->edges[i], tri[2]))
+		{
+			i++;
+			continue;
+		}
+		t0.start = fc->edges[i];
+		t1.start = fc->edges[i];
+		t2.start = fc->edges[i];
+		t0s = line_shorten(t0);
+		t1s = line_shorten(t1);
+		t2s = line_shorten(t2);
+		if (!linelineintersect(t0s, o0) && !linelineintersect(t0s, o1) && !linelineintersect(t0s, o2)
+			&& !linelineintersect(t1s, o0) && !linelineintersect(t1s, o1) && !linelineintersect(t1s, o2)
+			&& !linelineintersect(t2s, o0) && !linelineintersect(t2s, o1) && !linelineintersect(t2s, o2))
+			{
+				printf("edge %f %f\n", fc->edges[i].x, fc->edges[i].y);
+				return (true);
+			}
+			
+		i++;
+	}
+	return (false);*/
+}
+
+bool isany(int o, int i1, int i2, int i3)
+{
+	return (o == i1 || o == i2 || o == i3);
+}
+
+bool isvalid_any(int i1, int i2, int i3, int valid[32], int validcount)
+{
+	return (isany(valid[0], i1, i2, i3)
+			&& isany(valid[1], i1, i2, i3)
+			&& isany(valid[validcount - 1], i1, i2, i3));
+}
+
+t_line	line_shorten(t_line line) //lol
+{
+	t_vector2	temp;
+	t_vector2	delta_start;
+	t_vector2	delta_end;
+	t_line		final;
+
+	float	dist = vector2_dist(line.start, line.end);
+	temp = vector2_sub(line.start, line.end);
+	temp = vector2_clamp_magnitude(temp, dist - 5.0f);
+	temp = vector2_add(temp, line.end);
+	final.start = temp;
+	temp = vector2_sub(line.end, line.start);
+	temp = vector2_clamp_magnitude(temp, dist - 5.0f);
+	temp = vector2_add(temp, line.start);
+	final.end = temp;
+	return (final);
+}
+
+void	triangulate(t_floorcalc *fc, int valid_target)
 {
 	int	valid[MAXSELECTED];
 	int	validcount;
 	int	i;
+	int	attempts = 0;
+	
 
+	validcount = 0;
 	populatevalid(valid, &validcount, *fc);
+	int	lowest = validcount;
 	i = 0;
 	fc->facecount = 0;
 	//checkroomnormal(fc);
 	printf("\nMAKING NEW FACES: \n");
 	printf("triangulating shape with %i edges\n", fc->edgecount);
-	while (validcount > 2)
+	while (validcount > valid_target)
 	{
 		//printf("try %i %i %i \n", valid[validcount - 1], valid[0], valid[1]);
 		t_line line1;
@@ -467,34 +600,95 @@ void	triangulate(t_floorcalc *fc)
 			printf("removed aligned %i \n", valid[0]);
 			removevalid(valid, validcount--, 0);
 		}
-			
-		if (correctangle((t_vector2[3]){first,center,second}) && !intersect(line1, fc->edges, fc->edgecount))
+
+		if (valid[0] == 2 && valid[1] == 5 && valid[validcount - 1] == 1)
+		{
+			if (!correctangle((t_vector2[3]){first,center,second}))
+				printf("512 IS INCORRECT??\n");
+		}
+		
+		/*if (!correctangle((t_vector2[3]){first,center,second}))
+		{
+			printf("incorrect angle between %i %i %i\n", valid[validcount - 1], valid[0], valid[1]);
+		}*/
+		if (!points_collide(fc, (t_vector2[3]){first,center,second})
+			&& correctangle((t_vector2[3]){first,center,second})
+			&& !intersect(line_shorten(line1), fc->edges, fc->edgecount))
 		{
 			fc->faces[fc->facecount].v_indices[0] = valid[validcount - 1];
 			fc->faces[fc->facecount].v_indices[1] = valid[0];
 			fc->faces[fc->facecount].v_indices[2] = valid[1];
 			//printf("connect %i %i %i \n", valid[validcount - 1], valid[0], valid[1]);
 			removevalid(valid, validcount--, 0);
+			printf("next valid = %i \n", valid[0]);
+			if (validcount == valid_target)
+			{
+				line1.start = fc->edges[valid[validcount - 1]];
+				line1.end = fc->edges[valid[1]];
+				first = fc->edges[valid[validcount - 1]];
+				center = fc->edges[valid[0]];
+				second = fc->edges[valid[1]];
+				printf("next line would be %i->%i\n", valid[validcount - 1], valid[1]);
+				if (points_collide(fc, (t_vector2[3]){first,center,second}))
+					printf("VALID 2 POINTS COLLIDE???\n");
+				if (!correctangle((t_vector2[3]){first,center,second}))
+					printf("Incorrect angle\n");
+				if (intersect(line_shorten(line1), fc->edges, fc->edgecount))
+				{
+					printf("Incorrect line??\n");
+				}
+			}
+			if (validcount <= lowest)
+				lowest = validcount;
 			fc->facecount++;
 		}
 		else
 		{
-			shiftvalid(valid, validcount);
+			if (valid_target == 4)
+				printf("ear %i failed \n", valid[0]);
+			if (valid[0] == 2 && valid[1] == 5 && valid[validcount - 1] == 1 && validcount == 4)
+			{
+				printf("521?? \n");
+				if (!correctangle((t_vector2[3]){first,center,second}))
+				{
+					printf("521 failed because angle was incorrect?\n");
+				} else {
+					printf("521 failed because line intersected?\n");
+				}
+			}
+			if ((i >= 25000 && i < 50000) || (i >= 75000 && i < 100000))
+				shiftvalid(valid, validcount);
+			else
+				shiftvalid_left(valid, validcount);
 		}
 		//printvalid(valid, validcount);
 		i++;
-		if (i == 24000)
+		if (i == 50000)
 		{
 			populatevalid_l(valid, &validcount, *fc);
 			fc->facecount = 0;
 		}
-		if (i > 48000)
+		if (i > 100000)
+		{
+			/*attempts++;
+			populatevalid(valid, &validcount, *fc);
+			i = 0;
+			while (i < attempts)
+			{
+				shiftvalid(valid, validcount);
+				i++;
+			}
+			i = 0;*/
+			//if (validcount > lowest)
+			fc->facecount = 0;
+			printf("iterated 100000 times, exiting \n");
+			printf("lowest validcount was %i \n", lowest);
+			return ;
+		}
+		if (attempts > fc->edgecount * 2)
 		{
 			fc->facecount = 0;
 			return ;
-			//TODO: return fail, don't generate floor mesh and prompt user somehow? to change the room geometry etc
-			printf("OVER 48000 ITERATIONS!\n");
-			exit(0);
 		}
 			
 	}
@@ -529,28 +723,86 @@ void	free_floor(t_world *world, t_room *room)
 	room->floorcount = 0;
 }
 
-void	makefloor_room(t_editor *ed, t_sdlcontext *sdl, t_room *room)
+void	makefloor_room_area(t_editor *ed, t_sdlcontext *sdl, t_room *room, t_floor_area a)
 {
 	t_floorcalc	fc;
 	t_wall		*w;
 	t_meshtri	*mtri;
-	float		circum_angle;
 	int			i;
 
 	ft_bzero(&fc, sizeof(fc));
-	circum_angle = 0.0f;
 	i = 0;
-	free_floor(&ed->world, room);
-	while (i < room->wallcount)
+	while (i < a.wallcount)
 	{
-		// Check if vector between previous edge and current one is the same as current one to next one, if it is then ignore current edge
-		// Might be better to do that in triangulate ^ because the indexes
-		fc.edges[fc.edgecount++] = room->walls[i].line.start;
-		/*if (i == room->wallcount - 1)
-			fc.edges[fc.edgecount++] = room->walls[i].line.start;*/
+		fc.edges[fc.edgecount++] = room->walls[a.wall_indices[i]].line.start;
 		i++;
 	}
-	triangulate(&fc);
+	triangulate(&fc, 2);
+	if (fc.facecount == 0)
+		return ;
+	//room->floors = ft_memalloc(sizeof(t_meshtri) * fc.facecount);
+	
+	if (room->floors == NULL)
+		error_log(EC_MALLOC);
+	i = 0;
+	while (i < fc.facecount)
+	{
+		mtri = &room->floors[i + (room->floorcount)];
+		printf("i %i \n", i);
+		//ft_bzero(&mtri->entity, sizeof(t_entity));
+		mtri->entity = spawn_entity(&ed->world);
+		mtri->entity->uneditable = true;
+		mtri->entity->obj = object_tri(sdl);
+		mtri->v[0] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[0]]);
+		mtri->v[1] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[1]]);
+		mtri->v[2] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[2]]);
+		mtri->v[0].z += a.height;
+		mtri->v[1].z += a.height;
+		mtri->v[2].z += a.height;
+		mtri->uv[0] = fc.edges[fc.faces[i].v_indices[0]];
+		mtri->uv[1] = fc.edges[fc.faces[i].v_indices[1]];
+		mtri->uv[2] = fc.edges[fc.faces[i].v_indices[2]];
+		mtri->uv[0] = vector2_div(mtri->uv[0], 100.0f);
+		mtri->uv[1] = vector2_div(mtri->uv[1], 100.0f);
+		mtri->uv[2] = vector2_div(mtri->uv[2], 100.0f);
+		applytrimesh(*mtri, mtri->entity->obj);
+		i++;
+	}
+	room->floorcount += fc.facecount;
+}
+
+void	make_areas(t_editor *ed, t_sdlcontext *sdl, t_room *room)
+{
+	int	i;
+
+	i = 0;
+	free_floor(&ed->world, room);
+	room->floors = ft_memalloc(sizeof(t_meshtri) * 1000);
+	while (i < room->floor_areacount)
+	{
+		makefloor_room_area(ed, sdl, room, room->floor_areas[i]);
+		i++;
+	}
+	printf("made floors for %i areas \n", i);
+}
+
+void	makefloor_room(t_editor *ed, t_sdlcontext *sdl, t_room *room, int debug)
+{
+	t_floorcalc	fc;
+	t_wall		*w;
+	t_meshtri	*mtri;
+	int			i;
+
+	ft_bzero(&fc, sizeof(fc));
+	i = 0;
+	free_floor(&ed->world, room);
+	t_floor_area	a = room->floor_areas[0];
+	while (i < a.wallcount)
+	{
+		fc.edges[fc.edgecount++] = room->walls[a.wall_indices[i]].line.start;
+		i++;
+	}
+	triangulate(&fc, debug);
 	if (fc.facecount == 0)
 		return ;
 	room->floors = ft_memalloc(sizeof(t_meshtri) * fc.facecount);
@@ -568,6 +820,9 @@ void	makefloor_room(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 		mtri->v[0] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[0]]);
 		mtri->v[1] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[1]]);
 		mtri->v[2] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[2]]);
+		mtri->v[0].z += a.height;
+		mtri->v[1].z += a.height;
+		mtri->v[2].z += a.height;
 		mtri->uv[0] = fc.edges[fc.faces[i].v_indices[0]];
 		mtri->uv[1] = fc.edges[fc.faces[i].v_indices[1]];
 		mtri->uv[2] = fc.edges[fc.faces[i].v_indices[2]];
@@ -575,8 +830,6 @@ void	makefloor_room(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 		mtri->uv[1] = vector2_div(mtri->uv[1], 100.0f);
 		mtri->uv[2] = vector2_div(mtri->uv[2], 100.0f);
 		applytrimesh(*mtri, mtri->entity->obj);
-		/*mtri->entity->transform.position = vector3_zero();
-		mtri->entity->transform.scale = vector3_one();*/
 		i++;
 	}
 }

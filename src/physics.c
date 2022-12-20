@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   physics.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 13:52:50 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/05 14:32:48 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/08 16:15:48 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ bool linelineintersect(t_line line1, t_line line2)
 	ydiff1 = line1.start.y - line1.end.y;
 	ydiff2 = line2.start.y - line2.end.y;
 	res = xdiff1 * ydiff2 - ydiff1 * xdiff2;
-	if (fabsf(res) > 0.01f)
+	if (fabsf(res) > 0.001f)
 	{
 		float fa = line1.start.x * line1.end.y - line1.start.y * line1.end.x;
 		float fb = line2.start.x * line2.end.y - line2.start.y * line2.end.x;
@@ -99,7 +99,6 @@ bool linelineintersect(t_line line1, t_line line2)
 			&& ft_minf(line2.start.y, line2.end.y) < y
 			&& ft_maxf(line2.start.y, line2.end.y) > y))
 		{
-			printf("\nLINE COLLIDES\n");
 			return (true);
 		}
 	}

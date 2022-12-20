@@ -33,6 +33,7 @@ typedef struct s_mouse
 # define KEYS_2MASK 11
 # define KEYS_3MASK 12
 # define KEYS_4MASK 13
+# define KEYS_VMASK 14
 
 # define CONTROLLER_SENS 0.002f
 # define DEADZONE 0.1f
@@ -86,12 +87,14 @@ typedef struct s_hid_info
 {
 	t_mouse			mouse;
 	uint32_t		keystate;
+	uint32_t		alphakeystate; //Stores keystate from 'a' to 'z'
 	t_controller	controller[2];
 	t_input			input;
 }	t_hid_info;
 
 void	updateinput(t_input *input, int keystate, t_mouse m, t_controller *controller);
 bool	iskey(SDL_Event e, int keycode);
+bool	check_alpha_key(uint32_t alphakeystate, char c);
 bool	mouse_clicked(t_mouse mouse, int button);
 bool	keyismoveleft(SDL_Event e);
 bool	keyismoveright(SDL_Event e);

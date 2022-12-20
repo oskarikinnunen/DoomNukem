@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw0.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 06:55:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/10 17:41:24 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,8 @@ void	draw_rectangle_filled(t_sdlcontext sdl, t_rectangle rect, uint32_t clr)
 	p = rect.position;
 
 	i = 0;
+	if (point_cmp(rect.size, point_zero()))
+		return ;
 	while (p.x < rect.position.x + rect.size.x)
 	{
 		p.y = rect.position.y;
@@ -139,6 +141,8 @@ void	draw_triangle(t_sdlcontext *sdl, t_point p1, t_point p2, t_point p3, uint32
 	drawline(*sdl, p2, p3, clr);
 	drawline(*sdl, p3, p1, clr);
 }*/
+
+uint32_t	flip_channels(uint32_t clr);
 
 void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale)
 {
@@ -171,7 +175,7 @@ void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale)
 			sample.x = ft_clamp(pixel.x * scalar.x, 0, img.size.x - 1);
 			sample.y = ft_clamp(pixel.y * scalar.y, 0, img.size.y - 1);
 			color = img.data[sample.x + (sample.y * img.size.x)];
-			draw(sdl, point_add(pos, pixel), color);
+			draw(sdl, point_add(pos, pixel), flip_channels(color));
 			pixel.x++;
 		}
 		pixel.y++;

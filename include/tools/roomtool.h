@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   roomtool.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:42:04 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 15:52:08 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/12 14:37:18 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,9 @@ typedef enum e_roomtoolmode
 {
 	/* rtm_select ?*/
 	rtm_create,
-	rtm_modify
+	rtm_modify,
+	rtm_split,
+	rtm_paint
 } t_roomtoolmode;
 
 t_vector2	flipped_uv(t_vector2 og);
@@ -36,6 +38,10 @@ typedef struct s_roomtooldata
 	t_wall			wall;
 	t_wall			*ed_wall;
 	t_wall			doorwalls[3];
+	t_wall			*splitwalls;
+	t_floor_area	*area;
+	uint32_t		splitwallcount;
+	int				floor_debugvalue;
 	t_floorcalc		fc;
 }	t_roomtooldata;
 
