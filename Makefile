@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/12/19 13:40:42 by okinnune         ###   ########.fr        #
+#    Updated: 2022/12/20 12:02:59 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,7 +41,8 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		editor/tools/wall_tool_rooms.c \
 		editor/tools/npc_tool.c \
 		editor/tools/room_tool.c \
-		editor/tools/room_tool_new.c \
+		editor/tools/room_tool_connect.c \
+		editor/tools/room_tool_common.c \
 		editor/tools/gun_tool.c \
 		editor/tools/tool_common_functions.c \
 		editor/tools/autogui.c \
@@ -98,7 +99,7 @@ OBJ= $(SRC:.c=.o)
 #Compilation stuff:
 INCLUDE= -I$(INSTALLED_LIBS_DIR)/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
 CC= gcc
-CFLAGS= $(INCLUDE) -g -finline-functions -O2#-march=native
+CFLAGS= $(INCLUDE) -g -finline-functions -O2 -Wuninitialized#-march=native
 
 UNAME= $(shell uname)
 ifeq ($(UNAME), Darwin)
@@ -114,6 +115,8 @@ warning:
 	exit 1
 endif
 
+#multi:
+#	$(MAKE) -j6 all
 
 all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(LUA) $(LIBFT) $(OBJ)
 	$(CC) $(OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LUA)

@@ -91,6 +91,7 @@ void update_world3d(t_world *world, t_render *render)
 	update_entitycache(sdl, world, render);
 	if (!sdl->global_wireframe && !world->skybox.hidden)
 		render_entity(*sdl, render, &world->skybox);
+	rescale_surface(sdl);
 	gui_start(world->debug_gui);
 	gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);
 	gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);

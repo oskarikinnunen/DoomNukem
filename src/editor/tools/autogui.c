@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/19 14:05:32 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/20 10:05:14 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -798,10 +798,7 @@ bool	gui_int_slider(int *i, float mul, t_autogui *gui)
 			if (gui->hid->mouse.relative && gui->locking_player)
 			{
 				//add += gui->hid->mouse.delta.x;
-				if (gui->hid->mouse.delta.x > 0)
-					add = 1;
-				if (gui->hid->mouse.delta.x < 0)
-					add = -1;
+				add = gui->hid->mouse.delta.x;
 				if (add != 0)
 					modified = true;
 			}

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/19 14:01:00 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/20 12:10:28 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,9 +69,9 @@ int	editorloop(t_sdlcontext sdl)
 			render_entity(sdl, &ed.render, &ed.player.gun->entity);
 		//update_debugconsole(&ed.world.debugconsole, &sdl, ed.clock.delta);
 		
-		rescale_surface(&sdl);
+		//rescale_surface(&sdl);
 		join_surfaces(sdl.window_surface, sdl.surface);
-		join_surfaces(sdl.window_surface, sdl.ui_surface);
+		//join_surfaces(sdl.window_surface, sdl.ui_surface);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 	}

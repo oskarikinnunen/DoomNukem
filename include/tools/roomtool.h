@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:42:04 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/19 14:55:19 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/20 10:13:18 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 //defines the current state of roomtool
 typedef enum e_roomtoolmode
 {
-	/* rtm_select ?*/
+	rtm_none,
 	rtm_create,
 	rtm_modify,
 	rtm_split,
@@ -45,5 +45,13 @@ typedef struct s_roomtooldata
 	int				floor_debugvalue;
 	t_floorcalc		fc;
 }	t_roomtooldata;
+
+void		highlight_entity(t_editor *ed, t_sdlcontext sdl, t_entity *entity, uint32_t color);
+void		highlight_room(t_editor *ed, t_sdlcontext sdl, t_room room, uint32_t color);
+void		highlight_roomwalls(t_editor *ed, t_sdlcontext sdl, t_room room, uint32_t color);
+t_meshtri	*selectedfloor(t_editor *ed, t_sdlcontext sdl, t_room *room);
+t_wall		*selectedwall(t_editor *ed, t_sdlcontext sdl, t_room *room);
+t_room		*selectedroom(t_editor *ed, t_sdlcontext sdl);
+
 
 # endif

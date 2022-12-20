@@ -34,6 +34,7 @@ typedef struct s_wall
 	t_line		line;
 	uint32_t	height;
 	bool		disabled; //TODO: implement
+	bool		connection;
 	char		texname[256];
 }	t_wall;
 

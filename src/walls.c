@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/19 12:19:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/20 10:38:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ void	render_snapgrid(t_editor *ed, t_sdlcontext *sdl, t_vector2 wallpos, bool sh
 
 void	applywallmesh(t_wall *wall)
 {
+	wall->line.start = vector2_snap(wall->line.start, 10);
+	wall->line.end = vector2_snap(wall->line.end, 10);
 	wall->entity->obj->vertices[0] = (t_vector3){wall->line.start.x, wall->line.start.y, 0.0f};
 	wall->entity->obj->vertices[1] = (t_vector3){wall->line.end.x, wall->line.end.y, 0.0f};
 	
@@ -80,7 +82,8 @@ void	init_roomwalls(t_world *world, t_room *room)
 		printf("i is %i \n", i);
 		if (room->walls[i].entity == NULL)
 			room->walls[i].entity = spawn_entity(world); //Copy saved entitys important values
-		
+		if (room->walls[i].disabled)
+			room->walls[i].entity->hidden = true;
 		room->walls[i].entity->transform.position = vector3_zero();
 		room->walls[i].entity->transform.scale = vector3_one();
 		room->walls[i].entity->obj = object_plane(world->sdl);
