@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   audio.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/28 15:14:01 by raho              #+#    #+#             */
-/*   Updated: 2022/12/20 12:07:44 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/20 12:20:01 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,16 +129,13 @@ void	load_audio(t_audio *audio)
 		printf("FMOD_System_Create error! (%d)\n", result);
 		exit (-1);
 	}
-	
 	result = FMOD_System_Init(audio->system, 20, FMOD_INIT_NORMAL, FMOD_OUTPUTTYPE_AUTODETECT);
 	if (result != FMOD_OK)
 	{
 		printf("FMOD_System_Init error! (%d)\n", result);
 		exit (-1);
 	}
-	
 	load_sounds(audio);
-	
 	set_max_volume(audio, 1.0f);
 	
 }
