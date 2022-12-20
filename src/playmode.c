@@ -77,7 +77,6 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	t_gamereturn	gr;
 	t_render		render;
 	bool			sound = 1;
-	int				volume = 0;
 
 	//alloc_image(&pgraph.image, PERFGRAPH_SAMPLES + 1, PERFGRAPH_SAMPLES + 1);
 	gr = game_continue;
@@ -101,7 +100,6 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 			sound = false;
 			play_sound(&sdl.audio, "rock-music.wav");
 		}
-
 
 		moveplayer(&game.player, &game.hid.input, game.clock);
 		update_render(&render, &game.player);
