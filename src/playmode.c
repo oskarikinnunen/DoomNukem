@@ -84,7 +84,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	game.world = load_world("world1", &sdl);
 	*(game.world.debug_gui) = init_gui(&sdl, &game.hid, &game.player, sdl.screensize, "Debugging menu (F2)");
 	game.world.debug_gui->rect.size.y = 120;
-	game.world.debug_gui->hidden = false;
+	game.world.debug_gui->hidden = true;
 	game.world.debug_gui->rect.position.y = sdl.window_h / 2;
 	game.world.debug_gui->rect.size.y = sdl.window_h / 2;
 	player_init(&game.player, &sdl);
