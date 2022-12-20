@@ -7,10 +7,10 @@ static uint32_t sample_img(t_render *render, t_texture t)
 	uint32_t	xsample;
 	uint32_t	ysample;
 
-	xsample = (t.u / t.w) * (render->map.img.size.x);
-	ysample = (t.v / t.w) * (render->map.img.size.y);
+	xsample = (t.u / t.w) * (render->map.img_size.x);
+	ysample = (t.v / t.w) * (render->map.img_size.y);
 
-	return(render->map.img.data[ysample * render->map.size.x + xsample]);
+	return(render->map.data[ysample * render->map.size.x + xsample]);
 }
 
 static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_render *render)
@@ -137,7 +137,7 @@ void	render_triangle(t_sdlcontext *sdl, t_render *render, int index)
 	if (sdl->ps1_tri_div > 1)
 		triangle = ps1(triangle, sdl->ps1_tri_div);
 	p = triangle.p;
-	sort_point_tris(triangle.p, triangle.t);
+	sort_point_uv_tri(triangle.p, triangle.t);
 	lerp = ((float)p[1].y - (float)p[2].y) / ((float)p[0].y - (float)p[2].y);
 	p_split.x = p[2].x + (lerp * ((float)p[0].x - (float)p[2].x));
 	p_split.y = p[1].y;

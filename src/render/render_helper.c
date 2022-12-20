@@ -35,7 +35,7 @@ void ft_swap(void * a, void * b, size_t len)
 	}
 }
 
-void	sort_point_tris(t_point *p, t_texture *t)
+void	sort_point_uv_tri(t_point *p, t_texture *t)
 {
 	int	s_x;
 	int	s_j;
@@ -65,6 +65,40 @@ void	sort_point_tris(t_point *p, t_texture *t)
 	}
 }
 
+void	sort_polygon_tri(t_point *p2, t_vector2 *t, t_vector3 *p3)
+{
+	int	s_x;
+	int	s_j;
+	t_point			temp_p2;
+	t_vector2 		temp_uv;
+	t_vector3		temp_p3;
+
+	s_x = 0;
+	s_j = 0;
+	while (s_x < 2)
+	{
+		while (s_j < 2 - s_x)
+		{
+			if (p2[s_j].y < p2[s_j + 1].y)
+			{
+				temp_p2 = p2[s_j];
+				p2[s_j] = p2[s_j + 1];
+				p2[s_j + 1] = temp_p2;
+
+				temp_uv = t[s_j];
+				t[s_j] = t[s_j + 1];
+				t[s_j + 1] = temp_uv;
+
+				temp_p3 = p3[s_j];
+				p3[s_j] = p3[s_j + 1];
+				p3[s_j + 1] = temp_p3;
+			}
+			s_j++;
+		}
+		s_j = 0;
+		s_x++;
+	}
+}
 
 void  calc_points_step(float x_step[2], t_texture t_step[2], t_point *p, t_texture *t, float delta)
 {

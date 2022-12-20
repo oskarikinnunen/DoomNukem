@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 15:36:10 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/19 18:14:03 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/20 15:40:52 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,7 @@ static void clip_and_render_triangles(t_sdlcontext *sdl, t_render *render)
 	render_buffer(sdl, render);
 	render->worldspace_ptri_count = 0;
 	render->screenspace_ptri_count = 0;
-	render->map.img.data = NULL;
+	render->map.data = NULL;
 	render->img = NULL;
 }
 
@@ -175,8 +175,9 @@ void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 				if (entity->map)
 				{
 					render->map = entity->map[obj->faces[index].materialindex];
-					render->map.img.size.x -= 1;
-					render->map.img.size.y -= 1;
+					//render->map.img_size = point_sub(render->map.img_size, (t_point){1, 1});
+					render->map.img_size.x -= 1;
+					render->map.img_size.y -= 1;
 					render->is_wrap = false;
 				}
 				else

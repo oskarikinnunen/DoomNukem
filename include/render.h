@@ -6,6 +6,7 @@
 # include "vectors.h"
 # include "shapes.h"
 # include "objects.h" // only one function is using currently can be moved to doomnukem.h if needed
+# include "lighting.h"
 
 # define CLR_PRPL 14231500
 # define CLR_TURQ 5505010
@@ -35,12 +36,6 @@ typedef struct s_img
 	uint32_t	*data;
 	uint32_t	length;
 }	t_img;
-
-typedef struct s_map
-{
-	t_img		img;
-	t_point		size;
-}	t_map;
 
 typedef struct s_fontcolors
 {
@@ -98,12 +93,6 @@ typedef struct s_point_triangle
 	uint32_t		clr;
 }	t_point_triangle;
 
-typedef struct s_triangle_polygon
-{
-	t_vector3	p[3];
-	t_vector2	uv[3];
-}	t_triangle_polygon;
-
 typedef struct s_render_statistics
 {
 	bool		statistics; // turns on, off
@@ -121,18 +110,6 @@ typedef struct s_debug_occlusion
 	bool		occluder_box; // turns on occluder boxes blue;
 	bool		cull_box;	// turns on cull boxes green not occluded, red occluded;
 }	t_debug_occlusion;
-
-typedef struct s_lightmap
-{
-	t_point		size;
-	uint8_t		*data;
-}	t_lightmap;
-
-typedef struct s_pointlight
-{
-	t_vector3	origin;
-	float		radius;
-}	t_pointlight;
 
 typedef struct s_camera
 {
@@ -164,11 +141,10 @@ typedef struct s_render
 	t_render_statistics	rs;
 	struct s_world		*world;
 	t_debug_occlusion	occlusion;
-	t_lightmap			*lightmap;
 	t_map				map;
 	bool				is_wrap;
+	struct s_sdlcontext	*sdl;
 }	t_render;
-
 
 typedef struct s_sdlcontext
 {
@@ -232,6 +208,7 @@ t_point_triangle	triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_tria
 
 /* RASTERIZER */
 void				render_triangle(t_sdlcontext *sdl, t_render *render, int index);
+void				render_triangle_uv(t_lighting l, t_triangle_polygon triangle);
 void				render_triangle_wrap(t_sdlcontext *sdl, t_render *render, int index);
 
 /* AUDIO */
@@ -280,7 +257,8 @@ void get_min_max_from_triangles(t_vector2 *min, t_vector2 *max, t_triangle *t, i
 t_point_triangle	wf_tri(t_point_triangle in, float scaling);
 t_texture			calc_step_texture(t_texture *t, float delta);
 void				calc_points_step(float x_step[2], t_texture t_step[2], t_point *p, t_texture *t, float delta);
-void				sort_point_tris(t_point *p, t_texture *t);
+void				sort_point_uv_tri(t_point *p, t_texture *t);
+void				sort_polygon_tri(t_point *p2, t_vector2 *t, t_vector3 *p3);
 void				ft_swap(void * a, void * b, size_t len);
 t_point_triangle	ps1(t_point_triangle in, int div);
 

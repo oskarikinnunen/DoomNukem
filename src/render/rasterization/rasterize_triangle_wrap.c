@@ -162,7 +162,7 @@ void	render_triangle_wrap(t_sdlcontext *sdl, t_render *render, int index)
 	if (sdl->ps1_tri_div > 1)
 		triangle = ps1(triangle, sdl->ps1_tri_div);
 	p = triangle.p;
-	sort_point_tris(triangle.p, triangle.t);
+	sort_point_uv_tri(triangle.p, triangle.t);
 	lerp = ((float)p[1].y - (float)p[2].y) / ((float)p[0].y - (float)p[2].y);
 	p_split.x = p[2].x + (lerp * ((float)p[0].x - (float)p[2].x));
 	p_split.y = p[1].y;

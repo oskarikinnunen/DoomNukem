@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/19 18:12:57 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/20 13:57:38 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,9 @@ void render_solid_triangle(t_sdlcontext *sdl, t_render *render)
 		img.size.x = 1;
 		img.size.y = 1;
 		img.length = 1;
-		render->map.img = img;
-		render_triangle_wrap(sdl, render, index);
+		render->map.data = img.data;
+		render->map.img_size = img.size;
+		//render_triangle_wrap(sdl, render, index);
 		render->img = NULL;
 		index++;
 	}
@@ -76,7 +77,7 @@ void render_solid_triangle(t_sdlcontext *sdl, t_render *render)
 
 void render_buffer(t_sdlcontext *sdl, t_render *render)
 {
-	if (!render->wireframe && (render->map.img.data != NULL || render->img != NULL))
+	if (!render->wireframe && (render->map.data != NULL || render->img != NULL))
 		render_buffer_triangles(sdl, render);
 	//return;
 	if (render->wireframe)

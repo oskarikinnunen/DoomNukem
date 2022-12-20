@@ -60,22 +60,16 @@ void create_lightmap_for_entity(t_entity *entity, struct s_world *world)
 			t_img *img;
 			lightmap = &entity->lightmap[obj->faces[i].materialindex];
 			img = obj->materials[obj->faces[i].materialindex].img;
-			if (img)
-			{
-				if (max.x > 1.0f)
+			if (!img)
+				return;
+			if (max.x > 1.0f)
 				lightmap->size.x = max.x * img->size.x;
-				else
-					lightmap->size.x = img->size.x;
-				if (max.y > 1.0f)
-					lightmap->size.y = max.y * img->size.y;
-				else
-					lightmap->size.y = img->size.y;
-			}
 			else
-			{
-				lightmap->size.x = 1;
-				lightmap->size.y = 1;
-			}
+				lightmap->size.x = img->size.x;
+			if (max.y > 1.0f)
+				lightmap->size.y = max.y * img->size.y;
+			else
+				lightmap->size.y = img->size.y;
 			lightmap->data = malloc(sizeof(uint8_t) * lightmap->size.x * lightmap->size.y);
 			memset(lightmap->data, 50, sizeof(uint8_t) * lightmap->size.x * lightmap->size.y);
 			max.x = -10000.0f;
@@ -93,42 +87,39 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 	int				index;
 	int				i;
 
+	printf("id %d\n", entity->id);
 	obj = entity->obj;
 	entity->map	= malloc(sizeof(t_map) * entity->obj->material_count);
 	i = 0;
 	while (i < obj->face_count)
 	{
-		if (i + 1 == obj->face_count || obj->faces[i].materialindex != obj->faces[i + 1].materialindex)
+		index = obj->faces[i].materialindex;
+		if (i + 1 == obj->face_count || index != obj->faces[i + 1].materialindex)
 		{
-			lightmap = &entity->lightmap[obj->faces[i].materialindex];
-			img = obj->materials[obj->faces[i].materialindex].img;
-			index = obj->faces[i].materialindex;
+			lightmap = &entity->lightmap[index];
+			img = obj->materials[index].img;
 			entity->map[index].size.x = lightmap->size.x;
 			entity->map[index].size.y = lightmap->size.y;
-			if(img)
+			if(!img)
 			{
-				entity->map[index].img.size.x = img->size.x;
-				entity->map[index].img.size.y = img->size.y;
+				entity->map = NULL;
+				return;
 			}
-			else
-			{
-				entity->map[index].img.size.x = 1;
-				entity->map[index].img.size.y = 1;
-			}
-			entity->map[index].img.data = malloc(sizeof(uint32_t) * entity->map[index].size.x * entity->map[index].size.y);
+			entity->map[index].img_size = img->size;
+			entity->map[index].data = malloc(sizeof(uint32_t) * entity->map[index].size.x * entity->map[index].size.y);
 			for (int e = 0; e < entity->map[index].size.y; e++)
 			{
 				for (int j = 0; j < entity->map[index].size.x; j++)
 				{
 					uint32_t	clr;
-					clr = img->data[(e % img->size.y) * img->size.x + (j % img->size.x)];
+					clr = img->data[(e % (img->size.y)) * img->size.x + (j % (img->size.x))];
 					uint8_t light = lightmap->data[e * entity->map[index].size.x + j];
 					Uint32 alpha = clr&0xFF000000;
 					Uint32 red=  ((clr&0x00FF0000)*light)>>8;
 					Uint32 green= ((clr&0x0000FF00)*light)>>8;
 					Uint32 blue=((clr&0x000000FF)*light)>>8;
 					clr = flip_channels(alpha|(red&0x00FF0000)|(green&0x0000FF00)|(blue&0x000000FF));
-					entity->map[index].img.data[e * entity->map[index].size.x + j] = clr;
+					entity->map[index].data[e * entity->map[index].size.x + j] = clr;
 				}
 			}
 		}
@@ -142,11 +133,13 @@ void bake_lighting(t_render *render, t_world *world)
 	t_entity	*ent;
 
 	for_all_entities(world, create_lightmap_for_entity);
-	world->lights_count = 2;
+	world->lights_count = 3;
 	world->lights[0].origin = (t_vector3){500.0f, 500.0f, 50.0f};
 	world->lights[0].radius = 500.0f;
 	world->lights[1].origin = (t_vector3){500.0f, 20.0f, 50.0f};
 	world->lights[1].radius = 500.0f;
+	world->lights[2].origin = (t_vector3){500.0f, 500.0f, 500.0f};
+	world->lights[2].radius = 5000.0f;
 	i = 0;
 	while (i < world->lights_count)
 	{

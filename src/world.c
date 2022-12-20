@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/19 17:50:46 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/20 15:57:38 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,19 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 			if (ent->status == es_active)
 			{
 				render_entity(sdl, render, ent);
+				if (ent->id == 63)
+				{
+					printf("%d %d\n", ent->map->size.x, ent->map->size.y);
+					for (int y1 = 0; y1 < ent->map->size.y; y1++)
+					{
+						for (int x1 = 0; x1 < ent->map->size.x; x1++)
+						{
+							//printf("%d %d\n", x1 + y1 * entity->map->size.x, entity->map->size.x * entity->map->size.y);
+							((uint32_t *)world->sdl->surface->pixels)[x1 + y1 * world->sdl->window_w] = ent->map->data[x1 + y1 * ent->map->size.x];
+							world->sdl->zbuffer[x1 + y1 * world->sdl->window_w] = 5.0f;
+						}
+					}
+				}
 			}
 			found++;
 		}

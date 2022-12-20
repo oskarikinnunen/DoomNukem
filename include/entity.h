@@ -6,6 +6,7 @@
 #include "objects.h"
 #include "occlusion.h"
 #include "render.h"
+#include "lighting.h"
 
 typedef struct s_bound
 {

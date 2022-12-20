@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/08 18:21:08 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/20 14:40:45 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -340,5 +340,12 @@ t_vector2		point_to_vector2(t_point point);
 char			*vector_string(t_vector3 vec);
 
 t_texture		vector2_to_texture(t_vector2 v);
+
+typedef struct s_ray
+{
+    t_vector3 origin;
+    t_vector3 dir;
+}   t_ray;
+
 
 #endif

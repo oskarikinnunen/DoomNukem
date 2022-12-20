@@ -1,5 +1,5 @@
-﻿resolution_width = 1280
-resolution_height = 720
+﻿resolution_width = 1600
+resolution_height = 900
 images =
 {
 	"entitytool.png",
