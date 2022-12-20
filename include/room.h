@@ -21,6 +21,7 @@ typedef struct s_floor_area
 	uint32_t	unique_wallcount;
 	int32_t		height;
 }	t_floor_area;
+
 typedef struct s_line
 {
 	t_vector2	start;

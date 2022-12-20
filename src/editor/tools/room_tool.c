@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/20 11:06:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/20 15:51:44 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,7 +282,7 @@ static bool illegalwall_move(t_wall *wall, t_room *room)
 	while (i < room->wallcount)
 	{
 		//if (linelineintersect(line_shorten(wall->line), line_shorten(room->walls[i].line)))
-		if (wall != &room->walls[i] && linelineintersect(wall->line, room->walls[i].line))
+		if (wall != &room->walls[i] && linelineintersect(line_shorten(wall->line), line_shorten(room->walls[i].line)))
 			return (true);
 		i++;
 	}
@@ -379,20 +379,120 @@ static void modifywallheights(t_room *room, int scrolldelta)
 	}
 }
 
-bool	isroomlegal(t_room *room)
+bool	isconnection(t_vector2 v2, t_room *room)
 {
-	int	i;
+	int		i;
+	t_wall	w;
 
 	i = 0;
 	while (i < room->wallcount)
 	{
-		/*if (vector2_cmp(room->walls[i].line.start, room->walls[i].line.end))
-			return (false);*/
-		if (illegalwall_move(&room->walls[i], room))
+		w = room->walls[i];
+		if (w.connection && (vector2_cmp(v2, w.line.start) || vector2_cmp(v2, w.line.end)))
+			return (true);
+		i++;
+	}
+	return (false);
+}
+
+bool	room_intersects(t_room *room, t_room *o_room)
+{
+	int		i;
+	int		ii;
+	t_wall	w;
+	t_wall	ow;
+
+	i = 0;
+	while (i < room->wallcount)
+	{
+		ii = 0;
+		w = room->walls[i];
+		while (ii < o_room->wallcount)
+		{
+			ow = o_room->walls[ii];
+			if ((!isconnection(ow.line.start, o_room) &&
+				(vector2_sqr_dist(w.line.start, ow.line.start) < 1000.0f ||
+				vector2_sqr_dist(w.line.end, ow.line.start) < 1000.0f))
+				||
+				(!isconnection(ow.line.end, o_room) &&
+				(vector2_sqr_dist(w.line.start, ow.line.end) < 1000.0f ||
+				vector2_sqr_dist(w.line.end, ow.line.end) < 1000.0f)))
+				return (true);
+			ii++;
+		}
+		i++;
+	}
+	return (false);
+}
+
+bool	isroomlegal(t_world *world, t_room *room) //TODO: too many of the same functions ,plz fix
+{
+	int		i;
+	int		ii;
+	t_list	*l;
+	t_room	*other;
+
+	i = 0;
+	while (i < room->wallcount)
+	{
+		if (vector2_cmp(room->walls[i].line.start, room->walls[i].line.end))
 			return (false);
+		l = world->roomlist;
+		while (l != NULL)
+		{
+			other = (t_room *)l->content;
+			if (illegalwall_move(&room->walls[i], other) || (other != room && room_intersects(room, other)))
+				return (false);
+			l = l->next;
+		}
 		i++;
 	}
 	return (true);
+}
+
+bool	anyisconnect(t_vector2 orig, t_room *room)
+{
+	int		i;
+	t_wall	w;
+
+	i = 0;
+	while (i < room->wallcount)
+	{
+		w = room->walls[i];
+		if (w.connection &&
+			(vector2_cmp(orig, w.line.end) || vector2_cmp(orig, w.line.start)))
+			return (true);
+		i++;
+	}
+	return (false);
+}
+
+t_list	*rooms_copy(t_list	*l)
+{
+	t_list	*new;
+
+	new = NULL;
+	while (l != NULL)
+	{
+		list_push(&new, l->content, sizeof(t_room));
+		((t_room *)list_findlast(new))->walls = ft_memalloc(sizeof(t_wall) * 32);
+		ft_memcpy(((t_room *)list_findlast(new))->walls, ((t_room *)l->content)->walls, sizeof(t_wall) * 32);
+		l = l->next;
+	}
+	return (new);
+}
+
+static void init_worldwalls(t_world *world)
+{
+	t_list	*l;
+
+	l = world->roomlist;
+	while (l != NULL)
+	{
+		free_floor(world, l->content);
+		init_roomwalls(world, l->content);
+		l = l->next;
+	}
 }
 
 void	applydrag(t_vector2 snap, t_room *room, t_world *world)
@@ -412,18 +512,24 @@ void	applydrag(t_vector2 snap, t_room *room, t_world *world)
 		test = &room->walls[i].line.start;
 		if (orig == NULL && vector2_sqr_dist(snap, *test) < 1000)
 			orig = test;
-		else if (orig != NULL && vector2_cmp(*test, *orig))
-			same[si++] = test;
-		test = &room->walls[i].line.end;
-		if (orig == NULL && vector2_sqr_dist(snap, *test) < 1000)
-			orig = test;
-		else if (orig != NULL && vector2_cmp(*test, *orig))
-			same[si++] = test;
 		i++;
 	}
+	printf("si is %i \n", si);
 	if (orig != NULL)
 	{
-		free_floor(world, room);
+		i = 0;
+		while (i < room->wallcount)
+		{
+			test = &room->walls[i].line.start;
+			if (orig != test && vector2_cmp(*orig, *test))
+				same[si++] = test;	
+			test = &room->walls[i].line.end;
+			if (orig != test && vector2_cmp(*orig, *test))
+				same[si++] = test;
+			i++;
+		}
+		//Check if orig is part of "connection" wall, if so then find the other room where walls need to be moved aswell
+		
 		old = ft_memalloc(sizeof(t_wall) * 32);
 		ft_memcpy(old, room->walls, sizeof(t_wall) * 32);
 		i = 0;
@@ -433,13 +539,17 @@ void	applydrag(t_vector2 snap, t_room *room, t_world *world)
 			i++;
 		}
 		*orig = snap;
-		if (!isroomlegal(room))
+		free_floor(world, room);
+		if (!isroomlegal(world,room))
 		{
 			free(room->walls);
 			room->walls = old;
-		} else
+		}
+		else
 			free(old);
 		init_roomwalls(world, room);
+		/*if (found)
+			init_roomwalls(world, r);*/
 	}
 	
 	/*int			i;

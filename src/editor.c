@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/20 12:10:28 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/20 12:42:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,8 @@ int	editorloop(t_sdlcontext sdl)
 		//update_debugconsole(&ed.world.debugconsole, &sdl, ed.clock.delta);
 		
 		//rescale_surface(&sdl);
-		join_surfaces(sdl.window_surface, sdl.surface);
+		//join_surfaces(sdl.window_surface, sdl.surface);
+		memcpy(sdl.window_surface->pixels, sdl.surface->pixels, sizeof(uint32_t) * sdl.window_w * sdl.window_h);
 		//join_surfaces(sdl.window_surface, sdl.ui_surface);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);

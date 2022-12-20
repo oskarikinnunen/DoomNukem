@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/19 13:02:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/20 12:46:44 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,8 @@ static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 		error_log(EC_SDL_CREATEWINDOW);
 	if (screenmode == screenmode_borderless)
 	{
-		//SDL_SetWindowBordered(sdl->window, SDL_FALSE);
-		//SDL_SetWindowPosition(sdl->window, 0, 0);
+		SDL_SetWindowBordered(sdl->window, SDL_FALSE);
+		SDL_SetWindowPosition(sdl->window, 0, 0);
 	}
 		
 	sdl->window_surface = SDL_GetWindowSurface(sdl->window);
