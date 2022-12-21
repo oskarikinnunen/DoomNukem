@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/20 14:40:45 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/21 17:00:26 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,9 @@ float		vector2_magnitude(t_vector2 vec);
 
 //returns the squared magnitude of the vector 'vec'
 float		vector2_sqr_magnitude(t_vector2 vec);
+
+//return the approximate distance between vectors 'first' and 'second'
+float		vector2_sqr_dist(t_vector2 first, t_vector2 second);
 
 //returns distance between first and second vector
 float		vector2_dist(t_vector2 first, t_vector2 second);

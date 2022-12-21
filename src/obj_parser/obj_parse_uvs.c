@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 14:17:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/19 18:08:34 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/21 17:53:08 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,6 @@ t_list	*get_uv_list(int fd)
 		if (ft_strnstr(line, "vt ", sizeof("vt")))
 		{
 			uv = parse_uv(line + sizeof("vt"));
-			/*float tempf;
-			tempf = uv.x;
-			uv.x = -uv.y;
-			uv.y = tempf;*/
 			uv.y = 1.0f - uv.y;
 			list_push(&list, &uv, sizeof(t_vector2));
 		}

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/09 14:26:04 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/21 17:07:32 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,10 @@ void	init_roomwalls(t_world *world, t_room *room)
 	i = 0;
 	while (i < room->wallcount)
 	{
-		//room->walls[i].entity = raise_entity(world); //Copy saved entitys important values
+		printf("i is %i \n", i);
+		if (room->walls[i].entity == NULL)
+			room->walls[i].entity = spawn_entity(world); //Copy saved entitys important values
+		
 		room->walls[i].entity->transform.position = vector3_zero();
 		room->walls[i].entity->transform.scale = vector3_one();
 		room->walls[i].entity->obj = object_plane(world->sdl);

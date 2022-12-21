@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/19 15:35:35 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/21 17:03:15 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ int	editorloop(t_sdlcontext sdl)
 			moveplayer(&ed.player, &ed.hid.input, ed.clock);
 		update_render(&ed.render, &ed.player);
 		screen_blank(sdl);
+		
 		render_start(&ed.render);
 		update_world3d(&ed.world, &ed.render);
 		update_editor_toolbar(&ed, &ed.toolbar_gui);

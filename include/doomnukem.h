@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/19 17:18:51 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/21 16:53:57 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,6 +192,9 @@ void	quit_game(t_sdlcontext *sdl);
 void	load_fonts(t_font *font);
 
 void	draw_black_background(t_sdlcontext *sdl, t_point pos, t_point size);
+
+//TEMP, TODO: move
+t_line	line_shorten(t_line line);
 
 /* TEXT.C */
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector2_more.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/07 01:54:00 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/19 18:33:48 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/08 15:00:24 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,22 @@ t_vector2	vector2_snap(t_vector2 vec, int interval)
 	return (result);
 }
 
+static bool	vector2_nan_or_inf(t_vector2 vec)
+{
+	if (isinf(vec.x) || isnan(vec.x))
+		return (true);
+	if (isinf(vec.y) || isnan(vec.y))
+		return (true);
+	return (false);
+}
+
 float vector2_anglebetween(t_vector2 first, t_vector2 second)
 {
 	t_vector2 temp = vector2_sub(second, first);
+	if (vector2_nan_or_inf(first) || vector2_nan_or_inf(second))
+	{
+		exit(0);
+	}
 	return (atan2f(temp.y, temp.x));
 }
 

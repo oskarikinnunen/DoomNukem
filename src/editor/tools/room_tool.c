@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/08 16:46:55 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/21 18:50:19 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,25 @@ static void	init_roomwalls_shallow(t_world *world, t_room *room)
 	}
 }
 
+static void	init_splitwalls(t_world *world, t_roomtooldata *dat)
+{
+	int			i;
+	t_wall		*w;
+
+	i = 0;
+	while (i < dat->splitwallcount)
+	{
+		w = &dat->splitwalls[i];
+		//room->walls[i].entity = raise_entity(world); //Copy saved entitys important values
+		w->entity->transform.position = vector3_zero();
+		w->entity->transform.scale = vector3_one();
+		w->entity->obj = object_plane(world->sdl);
+		printf("set splitwal obj %i \n", i);
+		applywallmesh(w);
+		i++;
+	}
+}
+
 
 static void highlight_object(t_editor *ed, t_sdlcontext sdl, t_entity *entity, uint32_t color)
 {
@@ -53,7 +72,102 @@ void remove_room(t_world *world, t_room *room)
 		destroy_entity(world, room->walls[i].entity);
 		i++;
 	}
+	free_floor(world, room);
 	list_remove(&world->roomlist, room, sizeof(t_room));
+}
+
+void	split_area(t_room *room, t_floor_area *old, t_floor_area *area, t_editor *ed, t_sdlcontext *sdl)
+{
+	t_wall	*w;
+	t_wall	*sw;
+	t_wall	*ew;
+	int		start;
+	int		i;
+
+	printf("room total walls: %i \n", room->wallcount);
+	printf("unique walls in area %i \n", area->unique_wallcount);
+	area->wallcount = 0;
+	while (area->wallcount < area->unique_wallcount)
+	{
+		area->wall_indices[area->wallcount] = (room->wallcount - area->unique_wallcount) + (area->wallcount);
+		area->wallcount++;
+	}
+	printf("area wall count now: %i \n", area->unique_wallcount);
+	sw = &room->walls[area->wall_indices[0]];
+	ew = &room->walls[area->wall_indices[area->wallcount - 1]];
+	printf("assigned sw as wall %i and ew as wall %i\n", area->wall_indices[0], area->wall_indices[area->wallcount - 1]);
+	i = 0;
+	w = &room->walls[old->wall_indices[i]];
+	while (!vector2_cmp(w->line.start, ew->line.end))
+	{
+		if (i >= old->wallcount)
+			i = 0;
+		w = &room->walls[old->wall_indices[i]];
+		printf("searching for ew->end\n");
+		i++;
+	}
+	printf("start index is %i \n", i - 1);
+	i -= 1;
+	start = i;
+	while (!vector2_cmp(w->line.end, sw->line.start))
+	{
+		if (i >= old->wallcount)
+			i = 0;
+		w = &room->walls[old->wall_indices[i]];
+		area->wall_indices[area->wallcount] = old->wall_indices[i];
+		area->wallcount++;
+		printf("searching for sw->start\n");
+		i++;
+	}
+	i = start;
+	t_floor_area temp = *old;
+	old->wallcount = 0;
+	w = &room->walls[temp.wall_indices[i]];
+	while (!vector2_cmp(w->line.start, sw->line.start))
+	{
+		if (i < 0)
+			i = temp.wallcount - 1;
+		w = &room->walls[temp.wall_indices[i]];
+		old->wall_indices[old->wallcount] = temp.wall_indices[i];
+		old->wallcount++;
+		i--;
+	}
+	i = 0;
+	while (i < area->wallcount)
+	{
+		printf("wall [%i] is %i\n", i, area->wall_indices[i]);
+		i++;
+	}
+	area->height += room->walls[area->wall_indices[0]].height;
+	room->floor_areas[room->floor_areacount] = *area;
+	room->floor_areacount++;
+	free_floor(&ed->world, room);
+	
+	/*if (area->wall_indices[area->unique_wallcount] > area->wall_indices[area->wallcount - 1])
+	{
+		printf("FIRST > LAST (gt)\n");
+	} else {
+		printf("FIRST < LAST (lt)\n");
+	}*/
+}
+
+void	assign_default_floor_area(t_room *room)
+{
+	int	i;
+	//int	w_i;
+
+	room->floor_areas = ft_memalloc(sizeof(t_floor_area) * 10);
+	room->floor_areacount = 1;
+
+	i = 0;
+	while (i < room->wallcount)
+	{
+		room->floor_areas[0].wall_indices[i] = i;
+		i++;
+	}
+	room->floor_areas[0].wallcount = room->wallcount;
+	room->floor_areas[0].unique_wallcount = room->wallcount;
+	//TODO: make a custom assign_floor area that takes the input from "floorarea_editmode" or whatevs, 
 }
 
 void add_room_to_world(t_world *world, t_room *room)
@@ -65,7 +179,7 @@ void add_room_to_world(t_world *world, t_room *room)
 
 	worldroom = ft_memalloc(sizeof(t_room));
 	worldroom->wallcount = room->wallcount;
-	worldroom->walls = ft_memalloc(sizeof(t_wall) * worldroom->wallcount);
+	worldroom->walls = ft_memalloc(sizeof(t_wall) * worldroom->wallcount * 2);
 	//TODO: memcpy from room to worldroom and overwrite?
 	i = 0;
 	while (i < room->wallcount)
@@ -82,6 +196,7 @@ void add_room_to_world(t_world *world, t_room *room)
 	list_push(&world->roomlist, worldroom, sizeof(t_room));
 	free(worldroom);
 	worldroom = list_findlast(world->roomlist);
+	assign_default_floor_area(worldroom);
 	init_roomwalls(world, worldroom);
 	free(room->walls);
 	free(room);
@@ -241,7 +356,8 @@ static bool illegalwall_move(t_wall *wall, t_room *room)
 		return (true);
 	while (i < room->wallcount)
 	{
-		if (linelineintersect(wall->line, room->walls[i].line))
+		if (ft_memcmp(&wall->line, &room->walls[i].line, sizeof(t_line)) &&
+			linelineintersect(line_shorten(wall->line), line_shorten(room->walls[i].line)))
 			return (true);
 		i++;
 	}
@@ -345,11 +461,12 @@ void	applydrag(t_vector2 snap, t_room *room, t_world *world)
 	t_wall	test[2];
 
 	i = 0;
+	free_floor(world, room);
 	while (i < room->wallcount)
 	{
 		if (vector2_sqr_magnitude(vector2_sub(snap, room->walls[i].line.start)) < 1000)
 		{
-			if (i == 0)
+			/*if (i == 0)
 				prev = &room->walls[room->wallcount - 1];
 			else
 				prev = &room->walls[i - 1];
@@ -357,15 +474,24 @@ void	applydrag(t_vector2 snap, t_room *room, t_world *world)
 			test[0].line.end = snap;
 			test[1] = room->walls[i];
 			test[1].line.start = snap;
-			if (!illegalwall_move(&test[0], room) || !illegalwall_move(&test[1], room))
+			if (!illegalwall_move(&test[0], room) && !illegalwall_move(&test[1], room))
 			{
 				prev->line.end = snap;
 				room->walls[i].line.start = snap;
 				applywallmesh(prev);
 				applywallmesh(&room->walls[i]);
 				free_floor(world, room);
+				assign_default_floor_area(room);
 			}
-			break ;
+			break ;*/
+			room->walls[i].line.start = snap;
+			applywallmesh(&room->walls[i]);
+			
+		}
+		else if (vector2_sqr_magnitude(vector2_sub(snap, room->walls[i].line.end)) < 1000)
+		{
+			room->walls[i].line.end = snap;
+			applywallmesh(&room->walls[i]);
 		}
 		i++;
 	}
@@ -388,6 +514,19 @@ bool	looking_atcorner(t_editor *ed, t_sdlcontext sdl, t_vector2 snap, t_room *ro
 		i++;
 	}
 	return (false);
+}
+
+void	highlight_room_corners(t_editor *ed, t_sdlcontext *sdl, t_room *room)
+{
+	int	i;
+
+	i = 0;
+	ed->render.gizmocolor = AMBER_0;
+	while (i < room->wallcount)
+	{
+		render_gizmo(*sdl, ed->render, vector2_to_vector3(room->walls[i].line.start), 5);
+		i++;
+	}
 }
 
 static void insertwall(t_wall current, t_room *room, t_wall new[3])
@@ -420,14 +559,17 @@ static void insertwall(t_wall current, t_room *room, t_wall new[3])
 static void walleditmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 {
 	char	text[64] = { };
+	t_autogui	*gui;
+
+	gui = &dat->modroom_gui;
 
 	//snprintf(text, 64, "modifying selected wall");
 	//print_text_boxed(&sdl, text, (t_point){sdl.window_w / 2, 80});
 	//render_entity(sdl, &ed->render, &dat->doorwalls[0]);
 	highlight_object(ed, sdl, dat->ed_wall->entity, CLR_GREEN);
-	/*snprintf(text, 64, "make door");
-	print_text_boxed(&sdl, text, (t_point){20, 280}, sdl.screensize);*/
-	if (instantbutton((t_rectangle){20, 300, 40, 40}, &ed->hid.mouse, sdl, "stop.png"))
+	
+	gui_start(gui);
+	if (gui_button("Triple", gui))
 	{
 		//dat->ed_wall->entity.transform.scale = vector3_zero();
 		dat->doorwalls[0].line.start = dat->ed_wall->line.start;
@@ -447,14 +589,13 @@ static void walleditmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		dat->ed_wall = NULL;
 		return ;
 	}
-	if (instantbutton((t_rectangle){20, 345, 40, 40}, &ed->hid.mouse, sdl, "one.png"))
-	{
-		dat->ed_wall->disabled = !dat->ed_wall->disabled;
-		//init_roomwalls(dat->room, &sdl);
-	}
+	gui_labeled_bool_edit("Hide wall", &dat->ed_wall->entity->hidden, gui);
+	gui_end(gui);
 	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
 		dat->ed_wall = NULL;
 }
+
+
 
 void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 {
@@ -471,12 +612,29 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		return ;
 	}
 	rc = raycast(ed);
+	
 	gui_start(gui);
 	gui_starthorizontal(gui);
 	gui_label("Modifying: ", gui);
 	gui_label(dat->room->name, gui);
 	gui_endhorizontal(gui);
-	if (gui_button("Delete", gui))
+
+	int i = 0;
+	char *ind_str;
+	while (i < dat->room->wallcount)
+	{
+		t_vector3	ws;
+		t_vector2	start;
+
+		start = dat->room->walls[i].line.start;
+		ws = (t_vector3){start.x, start.y, 0.0f};
+		t_point ss = vector3_to_screenspace(ed->render, ws, sdl);
+		ind_str = ft_itoa(i);
+		print_text_boxed(&sdl, ind_str, point_add(ss, (t_point){20, 20}));
+		free (ind_str);
+		i++;
+	}
+	if (gui_shortcut_button("Delete", KEYS_DELETEMASK, gui))
 	{
 		remove_room(&ed->world, dat->room);
 		//list_remove(&ed->world.roomlist, dat->room, sizeof(t_room));
@@ -486,18 +644,37 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		gui_end(gui);
 		return ;
 	}
+	if (gui_shortcut_button("Paint", 'P', gui))
+	{
+		dat->rtm = rtm_paint;
+		return ;
+	}
+	/*if (gui_shortcut_button("Split floor", 'Z', gui))
+	{
+		dat->rtm = rtm_split;
+		dat->wall.line.start = vector2_zero();
+		dat->splitwallcount = 0;
+		dat->area = ft_memalloc(sizeof(t_floor_area));
+		return ;
+	}*/
+	//int	prev = dat->floor_debugvalue;
+	//gui_labeled_int_slider("FLOORDEBUG:", &dat->floor_debugvalue, 1, gui);
+	//dat->floor_debugvalue = ft_clamp(dat->floor_debugvalue, 2, 5);
 	gui_end(gui);
-	//print_text_boxed(&sdl, text, (t_point){sdl.window_w / 2, 40}, sdl.screensize);
 	snap = vector2_snap((t_vector2){rc.x, rc.y}, 10);
-	highlight_room(ed, sdl, *dat->room, CLR_GREEN);
+	highlight_room(ed, sdl, *dat->room, AMBER_2);
 	look_wall = selectedwall(ed, sdl, dat->room);
 	if (looking_atcorner(ed, sdl, snap, dat->room) && ed->hid.mouse.held == MOUSE_LEFT)
 		applydrag(snap, dat->room, &ed->world);
 	else if (dat->room->floorcount == 0)
-		makefloor_room(ed, &sdl, dat->room);
+	{
+		make_areas(ed, &sdl, dat->room);
+		//makefloor_room(ed, &sdl, dat->room, 2);
+	}
+		
 	if (!looking_atcorner(ed, sdl, snap, dat->room) && mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 	{
-		force_mouseunlock(&ed->hid);
+		//force_mouseunlock(&ed->hid);
 		dat->ed_wall = look_wall;
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
@@ -549,10 +726,18 @@ void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 {
 	t_autogui	*gui;
 	char		roomname[64];
+	t_vector3	look;
+
+	look = raycast(ed);
+	t_point	p;
+
+	p.x = look.x;
+	p.y = look.y;
 
 	gui = &dat->maingui;
 	gui_start(gui);
-	if (gui_button("Add room", gui))
+	//gui_labeled_point("DEBUG:", p, gui);
+	if (gui_shortcut_button("New room", 'N', gui))
 	{
 		dat->room = ft_memalloc(sizeof(t_room));
 		ft_bzero(roomname, 64);
@@ -565,9 +750,243 @@ void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	gui_end(gui);
 }
 
+void	draw_t_line(t_sdlcontext *sdl, t_line line, uint32_t color)
+{
+	t_point p1;
+	t_point p2;
+
+	p1 = vector2_to_point(line.start);
+	p2 = vector2_to_point(line.end);
+	drawline(*sdl, p1, p2, color);
+}
+
+t_vector2	closest_corner(t_vector2	v2, t_room *room)
+{
+	int	i;
+	t_vector2	result;
+	float		dist;
+
+	i = 0;
+	//result = v2
+	result = room->walls[0].line.start;
+	dist = 100000.0f;
+	while (i < room->wallcount)
+	{
+		if (dist > vector2_sqr_dist(v2, room->walls[i].line.start))
+		{
+			dist = vector2_sqr_dist(v2, room->walls[i].line.start);
+			result = room->walls[i].line.start;
+		}
+			
+		i++;
+	}
+	return (result);
+}
+
+void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
+{
+	t_autogui	*gui;
+	static	t_img	*tex;
+	t_wall		*w;
+	static		int	img_index;
+	static		int	prev_img_index;
+	static		uint32_t	prev_changetime;
+	int			i;
+
+	gui = &dat->modroom_gui;
+	int	delt;
+	delt = 0;
+	if (ed->hid.mouse.scroll_delta > 0)
+		delt = 1;
+	else if (ed->hid.mouse.scroll_delta < 0)
+		delt = -1;
+	img_index += delt;
+	img_index = ft_clamp(img_index, 0, sdl->imagecount - 1);
+	tex = &sdl->images[img_index];
+	
+	if (img_index != prev_img_index)
+	{
+		prev_changetime = ed->world.clock.prev_time;
+		printf("CHANGED \n");
+	}
+	
+	highlight_room(ed, *sdl, *dat->room, AMBER_2);
+
+	t_point middle = point_div(sdl->screensize, 2);
+	middle = point_sub(middle, (t_point){16,16});
+	middle = point_add(middle, (t_point){0,32});
+	
+	t_rectangle mrect;
+	mrect.position = middle;
+	mrect.size = (t_point){32,32};
+	//draw_image(*sdl, point_div(sdl->screensize, 2), *tex, (t_point){64,64});
+	
+
+	int from = 0;
+	int	to = 1;
+	if (ed->clock.prev_time < prev_changetime + 1000)
+	{
+		i = -5;
+		while (i < 6)
+		{
+			t_point cur;
+
+			cur = point_add(middle, point_mul((t_point){32, 0}, i));
+			cur.y = middle.y + (cos(i / 5.0f) * 164);
+			if (img_index + i >= 0 && img_index + i < sdl->imagecount)
+			{
+				draw_image(*sdl, cur, sdl->images[img_index + i], (t_point){32,32});
+			}
+			i++;
+		}
+	}
+	i = from;
+	while (i < to)
+	{
+		t_point cur;
+
+		cur = point_add(middle, point_mul((t_point){32, 0}, i));
+		cur.y = middle.y + (cos(i / 5.0f) * 164);
+		t_rectangle rect;
+		rect.position = cur;
+		rect.size = (t_point){32,32};
+		if (img_index + i >= 0 && img_index + i < sdl->imagecount)
+		{
+			draw_image(*sdl, cur, sdl->images[img_index + i], (t_point){32,32});
+			if (i == 0)
+				drawrectangle(*sdl, rect, AMBER_4);
+		}
+		i++;
+	}
+	//drawrectangle(*sdl, mrect, AMBER_4);
+		
+	
+	prev_img_index = img_index;
+	if (tex != NULL && ed->hid.mouse.held == MOUSE_LEFT)
+	{
+		i = 0;
+		while (i < dat->room->wallcount)
+		{
+			t_wall *w;
+
+			w = &dat->room->walls[i];
+			if (entity_lookedat(ed, *sdl, w->entity))
+			{
+				if (w->entity->obj->materials->img != tex)
+				{
+					w->entity->obj->materials->img = tex;
+					bake_lighting(&ed->render, &ed->world);
+				}
+				return ;
+			}
+			i++;
+		}
+		i = 0;
+		while (i < dat->room->floorcount)
+		{
+			t_meshtri *f;
+
+			f = &dat->room->floors[i];
+			if (entity_lookedat(ed, *sdl, f->entity))
+			{
+				if (f->entity->obj->materials->img != tex)
+				{
+					f->entity->obj->materials->img = tex;
+					bake_lighting(&ed->render, &ed->world);
+				}
+				return ;
+			}
+			i++;
+		}
+	}
+	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
+		dat->rtm = rtm_modify;
+}
+
+void	room_tool_split(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
+{
+	t_autogui	*gui;
+	t_vector3	snap;
+	t_wall		*cur;
+	t_vector2	v2snap;
+
+	snap = raycast(ed);
+	v2snap = vector2_snap((t_vector2){snap.x, snap.y}, 10);
+	cur = &dat->wall;
+	cur->height = dat->room->walls[0].height / 2;
+	gui = &dat->modroom_gui;
+	
+	if ((dat->splitwallcount == 0  && vector2_cmp(cur->line.start, vector2_zero()))
+		|| (ed->hid.keystate >> KEYS_SHIFTMASK) & 1)
+		v2snap = closest_corner(v2snap, dat->room);
+
+	ed->render.gizmocolor = AMBER_4;
+	render_gizmo(*sdl, ed->render, vector2_to_vector3(v2snap), 10);
+	/*
+	have local wall * for split, after confirming the split is correct, append it to the room
+	
+	
+	*/
+	cur->line.end = v2snap;
+	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
+	{
+		if (vector2_cmp(cur->line.start, vector2_zero()))
+		{
+			cur->line.start = v2snap;
+			//Assing this new floorareas wall indice 0 to the one we selected
+			//
+			return ;
+		}
+		dat->room->walls[dat->room->wallcount] = *cur;
+		dat->room->walls[dat->room->wallcount].entity = spawn_entity(&ed->world);
+		//dat->room->walls[dat->room->wallcount].entity->obj = object_plane(sdl);
+		dat->room->wallcount++;
+		dat->area->unique_wallcount++;
+		init_roomwalls(&ed->world, dat->room);
+		if ((ed->hid.keystate >> KEYS_SHIFTMASK) & 1)
+		{
+			//assign_floor_area(dat->room, dat->area, ed, sdl);
+			split_area(dat->room, &dat->room->floor_areas[0], dat->area, ed, sdl);
+			dat->rtm = rtm_modify;
+			/*dat->room = NULL;
+			dat->rtm = rtm_create;*/
+			return ;
+		}
+		//init_splitwalls(&ed->world, dat);
+		//cur->line.end = v2snap;
+		cur->line.start = v2snap;
+		return ;
+	}
+	applywallmesh(cur);
+	if (!vector2_cmp(cur->line.start, vector2_zero()))
+		render_entity(sdl, &ed->render, cur->entity);
+	gui_start(gui);
+	gui_starthorizontal(gui);
+	gui_label("Modifying: ", gui);
+	gui_label(dat->room->name, gui);
+	gui_endhorizontal(gui);
+	gui_label("Select a point to start a new area from", gui);
+
+	int		i = 0;
+	char	str[256];
+	while (i < dat->room->floor_areacount)
+	{
+		ft_bzero(str, 256);
+		snprintf(str, 256, "Area %i\n", i);
+		gui_label(str, gui);
+		i++;
+	}
+	gui_end(gui);
+	highlight_room_corners(ed, sdl, dat->room);
+	
+	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
+		dat->rtm = rtm_modify;
+}
+
 void	room_tool_update(t_editor *ed, t_sdlcontext *sdl)
 {
 	t_roomtooldata	*dat;
+	t_line			line;
 
 	dat = (t_roomtooldata *)ed->tool->tooldata;
 	if (dat->room == NULL)
@@ -576,7 +995,7 @@ void	room_tool_update(t_editor *ed, t_sdlcontext *sdl)
 		hover = selectedroom(ed, *sdl);
 		if (hover != NULL)
 		{
-			highlight_room(ed, *sdl, *hover, CLR_BLUE);
+			highlight_room(ed, *sdl, *hover, AMBER_0);
 			if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 			{
 				dat->room = hover;
@@ -592,6 +1011,11 @@ void	room_tool_update(t_editor *ed, t_sdlcontext *sdl)
 	update_maingui(ed, sdl, dat);
 	if (dat->rtm == rtm_modify && dat->room != NULL)
 		modifymode(ed, *sdl, dat);
+	if (dat->rtm == rtm_split && dat->room != NULL)
+		room_tool_split(ed, sdl, dat);
+
+	if (dat->rtm == rtm_paint && dat->room != NULL)
+		room_tool_paint(ed, sdl, dat);
 }
 
 

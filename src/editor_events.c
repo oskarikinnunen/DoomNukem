@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/19 17:52:42 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/21 17:02:31 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,17 @@
  
 #include "editor_tools.h"
 
+bool		check_alpha_key(uint32_t alphakeystate, char c)
+{
+	c = ft_tolower(c);
+	if (!ft_isalpha(c))
+		return (false); //And log something?
+	return ((alphakeystate >> (c - 'a')) & 1);
+}
+
 void		toggle_keystates(t_hid_info *hid, SDL_Event e)
 {
+	char	c;
 	if (e.type == SDL_KEYDOWN)
 	{
 		hid->keystate |= keyismoveleft(e) << KEYS_LEFTMASK;
@@ -27,12 +36,17 @@ void		toggle_keystates(t_hid_info *hid, SDL_Event e)
 		hid->keystate |= iskey(e, SDLK_LSHIFT) << KEYS_SHIFTMASK;
 		hid->keystate |= iskey(e, SDLK_LALT) << KEYS_LALTMASK;
 		hid->keystate |= iskey(e, SDLK_DELETE) << KEYS_DELETEMASK;
-
 		hid->keystate |= iskey(e, SDLK_1) << KEYS_1MASK;
 		hid->keystate |= iskey(e, SDLK_2) << KEYS_2MASK;
 		hid->keystate |= iskey(e, SDLK_3) << KEYS_3MASK;
 		hid->keystate |= iskey(e, SDLK_4) << KEYS_4MASK;
-		hid->keystate |= iskey(e, SDLK_p) << KEYS_PMASK;
+		hid->keystate |= iskey(e, SDLK_v) << KEYS_VMASK;
+		c = 'a';
+		while (c <= 'z')
+		{
+			hid->alphakeystate |= iskey(e, c) << (c - 'a');
+			c++; //Not the language
+		}
 	}
 	if (e.type == SDL_KEYUP)
 	{
@@ -49,7 +63,13 @@ void		toggle_keystates(t_hid_info *hid, SDL_Event e)
 		hid->keystate &= ~(iskey(e, SDLK_2) << KEYS_2MASK);
 		hid->keystate &= ~(iskey(e, SDLK_3) << KEYS_3MASK);
 		hid->keystate &= ~(iskey(e, SDLK_4) << KEYS_4MASK);
-		hid->keystate &= ~(iskey(e, SDLK_p) << KEYS_PMASK);
+		hid->keystate &= ~(iskey(e, SDLK_v) << KEYS_VMASK);
+		c = 'a';
+		while (c <= 'z')
+		{
+			hid->alphakeystate &= ~(iskey(e, c) << (c - 'a'));
+			c++; //Not the language
+		}
 	}
 }
 
@@ -79,6 +99,7 @@ t_gamereturn	editor_events(t_editor *ed)
 		if (ed->hid.mouse.safe_delta && ((ed->hid.mouse.delta.x) > 30 || ft_abs(ed->hid.mouse.delta.y) > 30))
 			ed->hid.mouse.delta = point_zero();
 	}
+		
 	while (SDL_PollEvent(&e))
 	{
 		toggle_keystates(&ed->hid, e);
@@ -89,7 +110,12 @@ t_gamereturn	editor_events(t_editor *ed)
 			if (iskey(e, SDLK_p))//TODO: temp shortcut for baking lighting
 				bake_lighting(&ed->render, &ed->world);
 			if (iskey(e, SDLK_ESCAPE))
+			{
+				if ((ed->hid.keystate >> KEYS_SHIFTMASK) & 1)
+					exit(0);
 				return (game_exit);
+			}
+				
 			if (iskey(e, SDLK_TAB))
 			{
 				ed->hid.mouse.relative = !ed->hid.mouse.relative;

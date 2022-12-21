@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/09 16:35:07 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/21 17:30:56 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr)
 		|| pos.y < 0 || pos.y >= sdl.window_h - 2)
 		return ;
 	((uint32_t *)sdl.ui_surface->pixels)[pos.x + (pos.y * sdl.window_w)] = clr;
-	sdl.zbuffer[pos.x + (pos.y * sdl.window_w)] = 2.0f;
+	//sdl.zbuffer[pos.x + (pos.y * sdl.window_w)] = 2.0f;
 }
 
 void	draw_alpha(t_sdlcontext sdl, t_point pos, uint32_t clr)
@@ -110,6 +110,8 @@ void	draw_rectangle_filled(t_sdlcontext sdl, t_rectangle rect, uint32_t clr)
 	p = rect.position;
 
 	i = 0;
+	if (point_cmp(rect.size, point_zero()))
+		return ;
 	while (p.x < rect.position.x + rect.size.x)
 	{
 		p.y = rect.position.y;
@@ -171,7 +173,7 @@ void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale)
 			sample.x = ft_clamp(pixel.x * scalar.x, 0, img.size.x - 1);
 			sample.y = ft_clamp(pixel.y * scalar.y, 0, img.size.y - 1);
 			color = img.data[sample.x + (sample.y * img.size.x)];
-			draw(sdl, point_add(pos, pixel), color);
+			draw(sdl, point_add(pos, pixel), flip_channels(color));
 			pixel.x++;
 		}
 		pixel.y++;

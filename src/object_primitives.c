@@ -111,10 +111,10 @@ t_object	*object_plane(t_sdlcontext *sdl)
 	plane->uvs[1] = (t_vector2){1.0f, 0.0f};
 	plane->uvs[2] = (t_vector2){0.0f, 1.0f};
 	plane->uvs[3] = (t_vector2){1.0f, 1.0f};
-//	plane->uvs[0] = flipped_uv(plane->uvs[0]);
-//	plane->uvs[1] = flipped_uv(plane->uvs[1]);
-//	plane->uvs[2] = flipped_uv(plane->uvs[2]);
-//	plane->uvs[3] = flipped_uv(plane->uvs[3]);
+	plane->uvs[0] = flipped_uv(plane->uvs[0]);
+	plane->uvs[1] = flipped_uv(plane->uvs[1]);
+	plane->uvs[2] = flipped_uv(plane->uvs[2]);
+	plane->uvs[3] = flipped_uv(plane->uvs[3]);
 
 	/*sizeof(t_wall);
 	sizeof(t_object);*/

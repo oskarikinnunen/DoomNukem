@@ -40,6 +40,7 @@ typedef struct s_entity
 {
 	t_transform		transform;
 	bool			uneditable;
+	bool			hidden;
 	uint32_t		object_index;
 	char			object_name[64];
 	t_entitystatus	status;

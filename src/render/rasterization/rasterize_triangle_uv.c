@@ -45,7 +45,7 @@ static void sample_img(t_lighting l, int x, int y, t_triangle_polygon t)
 	if (l.pointlight->shadows == false)
 	{
 		float dist = vector3_dist(ray.origin, l.pointlight->origin);
-		if (dist <= l.pointlight->radius)
+		if (dist <= l.pointlight->radius && l.map[x + l.lightmap->size.x * y] == false)
 		{
 			dist = 1.0f - (dist / l.pointlight->radius);
 			l.map[x + l.lightmap->size.x * y] = true;

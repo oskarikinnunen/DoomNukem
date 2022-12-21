@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/21 16:41:14 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/21 17:25:49 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,15 +59,12 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 		ent = &world->entitycache.entities[i];
 		if (ent->status != es_free)
 		{
-			if (ent->status == es_active)
-			{
+			if (ent->status == es_active && !ent->hidden)
 				render_entity(sdl, render, ent);
-			}
 			found++;
 		}
 		i++;
 	}
-	render_entity(sdl, render, &world->skybox);
 }
 
 void update_world3d(t_world *world, t_render *render)
@@ -94,18 +91,25 @@ void update_world3d(t_world *world, t_render *render)
 		i++;
 	}*/
 	update_entitycache(sdl, world, render);
+	if (!sdl->global_wireframe)
+		render_entity(sdl, render, &world->skybox);
 	gui_start(world->debug_gui);
-    gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);
-    gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);
-    gui_labeled_int("Entity count:", world->entitycache.existing_entitycount, world->debug_gui);
-    gui_labeled_float_slider("Resolution scale:", &world->sdl->resolution_scaling, 0.01f, world->debug_gui);
-    world->sdl->resolution_scaling = ft_clampf(world->sdl->resolution_scaling, 0.25f, 1.0f);
-    t_point    res;
-    res = point_fmul(sdl->screensize, sdl->resolution_scaling);
-    gui_labeled_point("3D Resolution:", res, world->debug_gui);
-    gui_labeled_int_slider("PS1 tri div:", &sdl->ps1_tri_div, 2.0f, world->debug_gui);
-    sdl->ps1_tri_div = ft_clamp(sdl->ps1_tri_div, 1, 4);
-    gui_end(world->debug_gui);
+	gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);
+	gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);
+	gui_labeled_int("Entity count:", world->entitycache.existing_entitycount, world->debug_gui);
+	gui_labeled_float_slider("Resolution scale:", &world->sdl->resolution_scaling, 0.01f, world->debug_gui);
+	gui_labeled_float_slider("Audio max:", &world->sdl->audio.max_volume, 0.01f, world->debug_gui);
+	if (gui_button("Test audio", world->debug_gui))
+		play_sound(&sdl->audio, "bubbles.wav");
+	world->sdl->audio.max_volume = ft_clampf(world->sdl->audio.max_volume, 0.25f, 1.0f);
+	world->sdl->resolution_scaling = ft_clampf(world->sdl->resolution_scaling, 0.25f, 1.0f);
+	t_point	res;
+	res = point_fmul(sdl->screensize, sdl->resolution_scaling);
+	gui_labeled_point("3D Resolution:", res, world->debug_gui);
+	gui_labeled_bool_edit("Wireframe:", &world->sdl->global_wireframe, world->debug_gui);
+	gui_labeled_int_slider("PS1 tri div:", &sdl->ps1_tri_div, 2.0f, world->debug_gui);
+	sdl->ps1_tri_div = ft_clamp(sdl->ps1_tri_div, 1, 4);
+	gui_end(world->debug_gui);
 }
 
 void	init_entity(t_entity *entity, t_world *world)
@@ -187,6 +191,9 @@ t_room	load_room(char *filename)
 	listdel(&temp);
 	temp = load_chunk(filename, "FLOR", sizeof(t_meshtri));
 	result.floors = list_to_ptr(temp, &result.floorcount);
+	listdel(&temp);
+	temp = load_chunk(filename, "AREA", sizeof(t_floor_area));
+	result.floor_areas = list_to_ptr(temp, &result.floor_areacount);
 	listdel(&temp);
 	return (result);
 }
@@ -314,6 +321,7 @@ t_entity	*spawn_entity(t_world	*world)
 			cache->entities[i].transform.position = vector3_zero();
 			cache->entities[i].transform.scale = vector3_one();
 			cache->entities[i].id = i;
+			//cache->entities[i].transform.scale = vector3_zero();
 			cache->existing_entitycount++;
 			if (cache->existing_entitycount >= cache->alloc_count)
 				error_log(EC_MALLOC);
@@ -472,6 +480,8 @@ void	save_room(t_room room)
 	save_chunk(room.name, "WALL", walls_list);
 	t_list *floorlist = ptr_to_list(room.floors, room.floorcount, sizeof(t_meshtri));
 	save_chunk(room.name, "FLOR", floorlist);
+	t_list *arealist = ptr_to_list(room.floor_areas, room.floor_areacount, sizeof(t_floor_area));
+	save_chunk(room.name, "AREA", arealist);
 	close(fd);
 }
 

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 19:50:18 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/20 12:07:43 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/21 17:59:42 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ void	objects_init(t_sdlcontext *sdl)
 				printf("set null image, kd was %i\n", object->materials[m_i].kd & 0xFF);
 				object->materials[m_i].img = NULL;
 			}*/
+			
 			m_i++;
 		}
 		i++;

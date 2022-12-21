@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_mouse.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 14:14:29 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/21 17:02:42 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,24 @@ void	mouse_event(SDL_Event e, t_mouse *mouse)
 {
 	if (!mouse->relative)
 		SDL_GetMouseState(&mouse->pos.x, &mouse->pos.y);
+	
+	if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_v)
+	{
+		//printf("down _ v\n");
+		e.type = SDL_MOUSEBUTTONDOWN;
+		e.button.button = MOUSE_LEFT;
+	}
+
+	if (e.type == SDL_KEYUP && e.key.keysym.sym == SDLK_v)
+	{
+		//printf("up _ v\n");
+		e.type = SDL_MOUSEBUTTONUP;
+		e.button.button = MOUSE_LEFT;
+	}
+	
 	if (e.type == SDL_MOUSEBUTTONDOWN) //TODO: bitshift mouseheldstate
 	{
+		printf("MOUSE DOWN EVENT \n");
 		mouse->click_unhandled = true;
 		mouse->click_button = e.button.button;
 		mouse->held = e.button.button;

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 15:36:10 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/21 16:49:33 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/21 18:42:54 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ t_point_triangle triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_tria
 	t_triangle			triprojected;
 	t_point_triangle	tri;
 	int					i;
-	t_vector3 voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
+	t_vector3			voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
 
 	i = 0;
 	while (i < 3)
@@ -117,7 +117,7 @@ void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 	obj = entity->obj;
 	render->worldspace_ptri_count = 0;
 	render->screenspace_ptri_count = 0;
-	
+
 	index = 0;
 	while (index < obj->face_count)
 	{
