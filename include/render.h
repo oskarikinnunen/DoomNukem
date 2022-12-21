@@ -71,21 +71,6 @@ typedef struct s_font
 	char				*text;
 }	t_font;
 
-typedef struct s_audiosample
-{
-	char			name[64];
-	FMOD_SOUND		*sound;
-	FMOD_CHANNEL	*channel;
-}	t_audiosample;
-
-typedef struct s_audio
-{
-	FMOD_SYSTEM			*system;
-	float				max_volume;
-	uint32_t			samplecount;
-	t_audiosample		sample[10];
-}	t_audio;
-
 typedef struct	s_triangle
 {
 	t_quaternion	p[3];
@@ -150,6 +135,21 @@ typedef struct s_render
 	t_debug_occlusion	occlusion;
 }	t_render;
 
+typedef struct s_audiosample
+{
+	FMOD_SOUND		*sound;
+	FMOD_CHANNEL	*channel;
+	char			name[64];
+	float			volume;
+}	t_audiosample;
+
+typedef struct s_audio
+{
+	FMOD_SYSTEM			*system;
+	float				max_volume;
+	uint32_t			samplecount;
+	t_audiosample		sample[10];
+}	t_audio;
 
 typedef struct s_sdlcontext
 {

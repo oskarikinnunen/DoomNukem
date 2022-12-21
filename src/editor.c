@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 10:48:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/21 19:11:30 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,12 @@
 #include "render.h"
 #include "objects.h"
 
+void	play_sound3d(t_audio *audio, const char *name, t_vector3 *pos);
+
 int	editorloop(t_sdlcontext sdl)
 {
-	t_editor		ed;
+	t_editor	ed;
+	bool		audio = 0;
 
 	bzero(&ed, sizeof(t_editor));
 	ed.world = load_world("world1", &sdl);
@@ -39,6 +42,13 @@ int	editorloop(t_sdlcontext sdl)
 	ed.position = (t_vector3){500.0f, 500.0f, 200.0f};*/
 	ed.tool = NULL;
 	//set_font_size(&sdl, 0);
+	
+	/* if (ed.world.entitycache.entities[0].status == es_active)
+	{
+		//sdl.audio.sample[4].entity = &ed.world.entitycache.entities[0];
+		audio = 1;
+	} */
+		
 	while (ed.gamereturn == game_continue)
 	{
 		update_deltatime(&ed.clock);
@@ -74,6 +84,22 @@ int	editorloop(t_sdlcontext sdl)
 		join_surfaces(sdl.window_surface, sdl.ui_surface);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
+
+		if (audio == 0)
+		{
+			t_vector3	nf = ed.player.lookdir;
+			/*float temp = -nf.x;
+			nf.x = nf.y;
+			nf.y = temp;*/
+			nf = (t_vector3){-nf.x, -nf.y, 0.0f};
+			nf = vector3_normalise(nf);
+			FMOD_System_Set3DListenerAttributes(sdl.audio.system, 0, &ed.player.transform.position, &((t_vector3){0}), &nf, &((t_vector3){.z = 1.0f}));
+			play_sound3d(&sdl.audio, "bubbles.wav", &ed.world.entitycache.entities[0].transform.position);
+			printf("player pos\nx %f\ny %f\nz %f\n", ed.player.transform.position.x, ed.player.transform.position.y, ed.player.transform.position.z);
+			printf("player dir\nx %f\ny %f\nz %f\n\n", ed.player.lookdir.x, ed.player.lookdir.y, ed.player.lookdir.z);
+			FMOD_System_Update(sdl.audio.system);
+		}
+		
 	}
 	save_world("world1", ed.world);
 	save_editordata(&ed);
