@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/19 16:11:50 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/21 15:35:49 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,8 @@ static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 	SDL_GL_SwapWindow(sdl->window);
 	SDL_Delay(10000);*/
 	printf("OPENGL RENDERER: '%s' \n", glGetString(GL_RENDERER));
+
+	sdl->ambient_light = 70;
 }
 
 void	quit_game(t_sdlcontext *sdl)

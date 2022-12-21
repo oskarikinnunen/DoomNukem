@@ -27,6 +27,7 @@ typedef struct s_pointlight
 {
 	t_vector3	origin;
 	float		radius;
+	bool		shadows;
 }	t_pointlight;
 
 typedef struct s_lighting

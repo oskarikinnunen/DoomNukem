@@ -169,6 +169,7 @@ typedef struct s_sdlcontext
 	uint32_t				window_w;
 	uint32_t				window_h;
 	t_point					screensize;
+	uint8_t					ambient_light;
 }	t_sdlcontext;
 
 void	alloc_image(t_img *img, int width, int height);

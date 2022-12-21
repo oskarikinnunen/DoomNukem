@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/20 15:57:38 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/21 16:41:14 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,6 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 
 	i = 0;
 	found = 0;
-	//render->wireframe = true;
-	//render->gizmocolor = CLR_RED;
-	memset(sdl->surface->pixels, 1, sizeof(uint32_t) * sdl->window_w * sdl->window_h);
 	while (found < world->entitycache.existing_entitycount)
 	{
 		ent = &world->entitycache.entities[i];
@@ -65,19 +62,6 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 			if (ent->status == es_active)
 			{
 				render_entity(sdl, render, ent);
-				if (ent->id == 63)
-				{
-					printf("%d %d\n", ent->map->size.x, ent->map->size.y);
-					for (int y1 = 0; y1 < ent->map->size.y; y1++)
-					{
-						for (int x1 = 0; x1 < ent->map->size.x; x1++)
-						{
-							//printf("%d %d\n", x1 + y1 * entity->map->size.x, entity->map->size.x * entity->map->size.y);
-							((uint32_t *)world->sdl->surface->pixels)[x1 + y1 * world->sdl->window_w] = ent->map->data[x1 + y1 * ent->map->size.x];
-							world->sdl->zbuffer[x1 + y1 * world->sdl->window_w] = 5.0f;
-						}
-					}
-				}
 			}
 			found++;
 		}
@@ -110,6 +94,18 @@ void update_world3d(t_world *world, t_render *render)
 		i++;
 	}*/
 	update_entitycache(sdl, world, render);
+	gui_start(world->debug_gui);
+    gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);
+    gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);
+    gui_labeled_int("Entity count:", world->entitycache.existing_entitycount, world->debug_gui);
+    gui_labeled_float_slider("Resolution scale:", &world->sdl->resolution_scaling, 0.01f, world->debug_gui);
+    world->sdl->resolution_scaling = ft_clampf(world->sdl->resolution_scaling, 0.25f, 1.0f);
+    t_point    res;
+    res = point_fmul(sdl->screensize, sdl->resolution_scaling);
+    gui_labeled_point("3D Resolution:", res, world->debug_gui);
+    gui_labeled_int_slider("PS1 tri div:", &sdl->ps1_tri_div, 2.0f, world->debug_gui);
+    sdl->ps1_tri_div = ft_clamp(sdl->ps1_tri_div, 1, 4);
+    gui_end(world->debug_gui);
 }
 
 void	init_entity(t_entity *entity, t_world *world)

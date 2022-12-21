@@ -41,28 +41,32 @@ static void sample_img(t_lighting l, int x, int y, t_triangle_polygon t)
 	t_ray		ray;
 	t_texture	temp_t;
 
-	//l.map[x + l.lightmap->size.x * y] = true;
-	l.lightmap->data[x + l.lightmap->size.x * y] = 255;
-	return;
 	ray.origin = texcoord_to_loc(t.p3, t.uv, (t_vector2){x/(float)l.lightmap->size.x, y/(float)l.lightmap->size.y});
+	if (l.pointlight->shadows == false)
+	{
+		float dist = vector3_dist(ray.origin, l.pointlight->origin);
+		if (dist <= l.pointlight->radius)
+		{
+			dist = 1.0f - (dist / l.pointlight->radius);
+			l.map[x + l.lightmap->size.x * y] = true;
+			l.lightmap->data[x + l.lightmap->size.x * y] = ft_clamp((dist * 255) + l.lightmap->data[x + l.lightmap->size.x * y], 0, 255);
+		}
+		return;
+	}
 	ray.dir = vector3_sub(l.pointlight->origin, ray.origin);
 	bool ol = false;
 	for (int o = 0; o < l.entities_count; o++)
 	{
 		for (int p = 0; p < l.entities[o]->obj->face_count; p++)
 		{
-			//if (o == i && p == j)
-		//	{
-		//		continue; // if this isnt using for loop anymore remember to increment before continue
-		//	}
-		//	if (intersect_triangle(ray, &temp_t, l.triangles[o][p].p3[0], l.triangles[o][p].p3[1], l.triangles[o][p].p3[2]) == true)
-		//	{
-		//		if (temp_t.w < 1.0f && temp_t.w > 0.01f)
-		//		{
-		//			ol = true;
-	//				break;
-	//			}
-	//		}
+			if (intersect_triangle(ray, &temp_t, l.triangles[o][p].p3[0], l.triangles[o][p].p3[1], l.triangles[o][p].p3[2]) == true)
+			{
+				if (temp_t.w < 1.0f && temp_t.w > 0.01f)
+				{
+					ol = true;
+						break;
+				}
+			}
 		}
 		if (ol == true)
 			break;
@@ -137,6 +141,7 @@ creates two triangles from the given triangle one flat top and one flat bottom.
 both triangles are then assigned to t_point p[3] array and passed onto fill_tri_bot/top functions.
 p[0] is always the pointy head of the triangle p[1] and p[2] are flat points where, p[1] x is smaller than p[2]
 */
+
 void	render_triangle_uv(t_lighting l, t_triangle_polygon triangle)
 {
 	t_point			p2_split;
@@ -168,18 +173,14 @@ void	render_triangle_uv(t_lighting l, t_triangle_polygon triangle)
 	p2_temp = p2[2];
 	uv_temp = triangle.uv[2];
 	p3_temp = p3[2];
-
 	p2[2] = p2_split;
 	triangle.uv[2] = uv_split;
 	p3[2] = p3_split;
-
 	if (p2[0].y != p2[1].y)
 		fill_point_tri_top(l, triangle);
-
 	p2[0] = p2_temp;
 	triangle.uv[0] = uv_temp;
 	p3[0] = p3_temp;
-
 	if (p2[0].y != p2[1].y)
 		fill_point_tri_bot(l, triangle);
 }

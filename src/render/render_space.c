@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 15:36:10 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/20 15:40:52 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/21 16:49:33 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,52 +76,24 @@ t_point_triangle triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_tria
 {
 	t_triangle			triprojected;
 	t_point_triangle	tri;
-
-	triprojected.p[0] = quaternion_mul_matrix(matproj, clipped.p[0]);
-	triprojected.p[1] = quaternion_mul_matrix(matproj, clipped.p[1]);
-	triprojected.p[2] = quaternion_mul_matrix(matproj, clipped.p[2]);
-	triprojected.t[0] = clipped.t[0];
-	triprojected.t[1] = clipped.t[1];
-	triprojected.t[2] = clipped.t[2];
-
-	tri.t[0].u = triprojected.t[0].u / triprojected.p[0].w;
-	tri.t[1].u = triprojected.t[1].u / triprojected.p[1].w;
-	tri.t[2].u = triprojected.t[2].u / triprojected.p[2].w;
-
-	tri.t[0].v = triprojected.t[0].v / triprojected.p[0].w;
-	tri.t[1].v = triprojected.t[1].v / triprojected.p[1].w;
-	tri.t[2].v = triprojected.t[2].v / triprojected.p[2].w;
-
-	tri.t[0].w = 1.0f / triprojected.p[0].w;
-	tri.t[1].w = 1.0f / triprojected.p[1].w;
-	tri.t[2].w = 1.0f / triprojected.p[2].w;
-	
-	triprojected.p[0].v = vector3_div(triprojected.p[0].v, triprojected.p[0].w);
-	triprojected.p[1].v = vector3_div(triprojected.p[1].v, triprojected.p[1].w);
-	triprojected.p[2].v = vector3_div(triprojected.p[2].v, triprojected.p[2].w);
-
-	triprojected.p[0].v = vector3_negative(triprojected.p[0].v);
-	triprojected.p[1].v = vector3_negative(triprojected.p[1].v);
-	triprojected.p[2].v = vector3_negative(triprojected.p[2].v);
-
+	int					i;
 	t_vector3 voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
-	triprojected.p[0].v = vector3_add(triprojected.p[0].v, voffsetview);
-	triprojected.p[1].v = vector3_add(triprojected.p[1].v, voffsetview);
-	triprojected.p[2].v = vector3_add(triprojected.p[2].v, voffsetview);
 
-	triprojected.p[0].v.x *= 0.5f * (float)(sdl.window_w * sdl.resolution_scaling);
-	triprojected.p[0].v.y *= 0.5f * (float)(sdl.window_h * sdl.resolution_scaling);
-	triprojected.p[1].v.x *= 0.5f * (float)(sdl.window_w * sdl.resolution_scaling);
-	triprojected.p[1].v.y *= 0.5f * (float)(sdl.window_h * sdl.resolution_scaling);
-	triprojected.p[2].v.x *= 0.5f * (float)(sdl.window_w * sdl.resolution_scaling);
-	triprojected.p[2].v.y *= 0.5f * (float)(sdl.window_h * sdl.resolution_scaling);
-
-	tri.p[0].x = triprojected.p[0].v.x;
-	tri.p[0].y = triprojected.p[0].v.y;
-	tri.p[1].x = triprojected.p[1].v.x;
-	tri.p[1].y = triprojected.p[1].v.y;
-	tri.p[2].x = triprojected.p[2].v.x;
-	tri.p[2].y = triprojected.p[2].v.y;
+	i = 0;
+	while (i < 3)
+	{
+		triprojected.p[i] = quaternion_mul_matrix(matproj, clipped.p[i]);
+		triprojected.t[i] = clipped.t[i];
+		tri.t[i].u = triprojected.t[i].u / triprojected.p[i].w;
+		tri.t[i].v = triprojected.t[i].v / triprojected.p[i].w;
+		tri.t[i].w = 1.0f / triprojected.p[i].w;
+		triprojected.p[i].v = vector3_div(triprojected.p[i].v, triprojected.p[i].w);
+		triprojected.p[i].v = vector3_negative(triprojected.p[i].v);
+		triprojected.p[i].v = vector3_add(triprojected.p[i].v, voffsetview);
+		tri.p[i].x = triprojected.p[i].v.x * (0.5f * (float)(sdl.window_w * sdl.resolution_scaling));
+		tri.p[i].y = triprojected.p[i].v.y * (0.5f * (float)(sdl.window_h * sdl.resolution_scaling));
+		i++;
+	}
 	tri.clr = clipped.clr;
 	return(tri);
 }
@@ -170,20 +142,15 @@ void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 		if (index + 1 == obj->face_count || obj->faces[index].materialindex != obj->faces[index + 1].materialindex)
 		{
 			render->is_wrap = true;
-			if (obj->material_count > 0)
+			if (entity->map)
 			{
-				if (entity->map)
-				{
-					render->map = entity->map[obj->faces[index].materialindex];
-					//render->map.img_size = point_sub(render->map.img_size, (t_point){1, 1});
-					render->map.img_size.x -= 1;
-					render->map.img_size.y -= 1;
-					render->is_wrap = false;
-				}
-				else
-				{
-					render->img = obj->materials[obj->faces[index].materialindex].img;
-				}
+				render->map = entity->map[obj->faces[index].materialindex];
+				render->map.img_size = point_sub(render->map.img_size, (t_point){1, 1});
+				render->is_wrap = false;
+			}
+			else
+			{
+				render->img = obj->materials[obj->faces[index].materialindex].img;
 			}
 			clip_and_render_triangles(sdl, render);
 		}
