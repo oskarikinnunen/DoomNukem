@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/12/20 12:02:59 by okinnune         ###   ########.fr        #
+#    Updated: 2022/12/21 07:14:22 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -133,6 +133,9 @@ $(LIBFT):
 
 clean-libs:
 	rm -rf $(INSTALLED_LIBS_DIR)
+	rm -rf $(SDL2_DIR)
+	rm -rf $(FREETYPE_DIR)
+	rm -rf $(SDL2_TTF_DIR)
 
 re-libs: clean-libs $(SDL2) $(FREETYPE) $(SDL2_TTF)
 

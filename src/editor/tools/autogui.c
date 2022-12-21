@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/20 10:05:14 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/21 11:50:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -687,6 +687,19 @@ bool	gui_highlighted_button(char *str, t_autogui *gui) //TODO, DRAWRECTANGLE AMB
 	drawrectangle(*gui->sdl, br.rect, AMBER_3);
 	gui_layout(gui, br.rect);
 	return (br.clicked);
+}
+
+bool	gui_labeled_bool(char *str, bool b, t_autogui *gui)
+{
+	char	tstr[12] = "true";
+	char	fstr[12] = "false";
+	gui_starthorizontal(gui);
+	gui_label(str, gui);
+	if (b)
+		gui_label(tstr, gui);
+	else
+		gui_label(fstr, gui);
+	gui_endhorizontal(gui);
 }
 
 bool	gui_labeled_bool_edit(char *str, bool *b, t_autogui *gui)

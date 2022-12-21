@@ -207,7 +207,7 @@ static void	startup_init_room(t_world *world, t_room *r)
 		w = &r->walls[i];
 		w->entity = &world->entitycache.entities[w->saved_entityid]; //TODO: make function "get_entity_from_cache_by_id" (with a shorter name, lol)
 		w->entity->obj = object_plane(world->sdl);
-		applywallmesh(w);
+		applywallmesh(w, r);
 		i++;
 	}
 	i = 0;
@@ -408,6 +408,7 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 
 	ft_bzero(&world, sizeof(t_world));
 	world.sdl = sdl;
+	t_vector2 v;
 	world.guns = load_chunk(filename, "GUNS", sizeof(t_gun));
 	world.debugconsole = init_debugconsole();
 	world.entitycache = init_entitycache(1024);
