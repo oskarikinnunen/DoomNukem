@@ -51,6 +51,12 @@ typedef struct s_entity
 	//uint16_t		root_id;
 }	t_entity;
 
+/*typedef enum s_audiosource
+{
+	t_entity	*entity;
+	uint16_t	entity_id;
+}	t_audiosource;*/
+
 typedef enum e_prefabtype
 {
 	//pft_pickup,
@@ -61,12 +67,12 @@ typedef enum e_prefabtype
 	pft_eventtrigger
 }	t_prefabtype;
 
-typedef struct s_prefab
+/*typedef struct s_prefab
 {
 	t_object		object_name[64];
 	t_prefabtype	prefabtype;
 	uint16_t		prefab_id;
-}	t_prefab;
+}	t_prefab;*/
 
 typedef struct s_gun
 {

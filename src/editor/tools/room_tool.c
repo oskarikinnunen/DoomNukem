@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/21 14:28:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/21 18:49:58 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -542,20 +542,100 @@ bool	edge_is_legal(t_vector2 *edge, t_room *room)
 	return (true);
 }
 
+typedef struct s_edgereturn
+{
+	t_vector2	*edge;
+	t_room		*room;
+}	t_edgereturn;
+
+t_edgereturn	get_other_edge(t_vector2 *edge, t_room *room, t_world *world)
+{
+	t_list			*l;
+	int				i;
+	t_room			*other;
+	t_edgereturn	er;
+
+	ft_bzero(&er, sizeof(er));
+	l = world->roomlist;
+	while (l != NULL)
+	{
+		other = l->content;
+		if (other != room)
+		{
+			i = 0;
+			while (i < other->edgecount)
+			{
+				if (vector2_cmp(*edge, other->edges[i]))
+				{
+					er.edge = &other->edges[i];
+					er.room = other;
+					return (er);
+				}
+					
+				i++;
+			}
+		}
+		l = l->next;
+	}
+	return (er);
+}
+
+bool	is_connected(t_vector2 *edge, t_room *room)
+{
+	int	i;
+
+	i = 0;
+	while (i < room->wallcount)
+	{
+		
+		if (room->walls[i].connection && (
+			room->walls[i].edgeline.start == edge || room->walls[i].edgeline.end == edge))
+			return (true);
+		i++;
+	}
+	return (false);
+}
+
 void	applyedgedrag(t_vector2 *edge, t_vector2 snap, t_room *room, t_world *world)
 {
-	int			i;
-	t_vector2	temp;
+	int				i;
+	t_vector2		temp;
+	t_edgereturn	er;
 
 	temp = *edge;
-	*edge = snap;
-	if (edge_is_legal(edge, room) && isroomlegal(world, room))
+	ft_bzero(&er, sizeof(er));
+	if (is_connected(edge, room))
 	{
-		init_roomwalls(world, room);
-		free_floor(world, room);
+		printf("IS CONNECTED \n");
+		er = get_other_edge(edge, room, world);
+		if (er.edge != NULL)
+			*er.edge = snap;
+		*edge = snap;
+		if (edge_is_legal(edge, room) && isroomlegal(world, room) &&
+			edge_is_legal(er.edge, er.room) && isroomlegal(world, er.room))
+		{
+			init_roomwalls(world, room);
+			free_floor(world, room);
+			init_roomwalls(world, er.room);
+			free_floor(world, er.room);
+		}
+		else
+		{
+			*edge = temp;
+			*er.edge = temp;
+		}
 	}
 	else
-		*edge = temp;
+	{
+		*edge = snap;
+		if (edge_is_legal(edge, room) && isroomlegal(world, room))
+		{
+			init_roomwalls(world, room);
+			free_floor(world, room);
+		}
+		else
+			*edge = temp;
+	}
 }
 
 void	highlight_room_corners(t_editor *ed, t_sdlcontext *sdl, t_room *room)
@@ -684,23 +764,15 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	snap = vector2_snap((t_vector2){rc.x, rc.y}, 10);
 	highlight_room(ed, sdl, *dat->room, AMBER_2);
 	look_wall = selectedwall(ed, sdl, dat->room);
-	if (ed->hid.mouse.held == MOUSE_LEFT)
-	{
-		dat->held_edge = lookedat_edge(dat->room, snap);
-		//Find looked at edge, highlight it and call edgedrag for it
-		
-	} else
-		dat->held_edge = NULL;
 	
-	if (dat->held_edge != NULL)
-	{
-		render_gizmo(sdl, ed->render, vector2_to_vector3(*dat->held_edge), 10);
-	}
-
+	if (ed->hid.mouse.held == MOUSE_LEFT)
+		dat->held_edge = lookedat_edge(dat->room, snap);
+	else
+		dat->held_edge = NULL;
+	if (lookedat_edge(dat->room, snap) != NULL)
+		render_gizmo(sdl, ed->render, vector2_to_vector3(*lookedat_edge(dat->room, snap)), 10);
 	if (dat->held_edge != NULL && ed->hid.mouse.held == MOUSE_LEFT)
-	{
 		applyedgedrag(dat->held_edge, snap, dat->room, &ed->world);
-	}
 
 	else if (dat->room->floorcount == 0)
 	{
@@ -708,7 +780,7 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		//makefloor_room(ed, &sdl, dat->room, 2);
 	}
 		
-	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT) && look_wall != NULL)
+	if (dat->held_edge == NULL && mouse_clicked(ed->hid.mouse, MOUSE_LEFT) && look_wall != NULL)
 	{
 		//force_mouseunlock(&ed->hid);
 		dat->ed_wall = look_wall;
@@ -920,8 +992,6 @@ void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 			i++;
 		}
 	}
-	
-	
 	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
 		dat->rtm = rtm_none;
 }

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:52:00 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/21 14:50:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/21 15:20:13 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,11 +243,13 @@ void	room_tool_connect(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 				dat->room->edges[1] = *dat->ed_wall->edgeline.end;
 
 				dat->room->walls[0] = *dat->ed_wall;
-				//dat->room->walls[0].edgeline.start = 
+				dat->room->walls[0].edgeline.start = &dat->room->edges[0];
+				dat->room->walls[0].edgeline.end = &dat->room->edges[1];
 				dat->room->walls[0].entity = ft_memalloc(sizeof(t_entity));
 				dat->room->walls[0].disabled = true;
 				dat->room->walls[0].connection = true;
 				dat->room->wallcount = 1;
+				dat->wall.edgeline.start = &dat->room->edges[1];
 				//dat->wall.line.start = dat->ed_wall->line.end;
 				//dat->wall.ed
 				dat->rtm = rtm_create;

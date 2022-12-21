@@ -46,6 +46,7 @@ typedef struct s_wall
 	uint32_t	height;
 	bool		disabled;
 	bool		connection;
+	//t_room		*connected;
 	char		texname[256];
 }	t_wall;
 

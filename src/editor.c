@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/20 12:42:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/21 16:08:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "file_io.h"
 #include "render.h"
 #include "objects.h"
+#include "entity.h"
 
 int	editorloop(t_sdlcontext sdl)
 {
@@ -39,6 +40,7 @@ int	editorloop(t_sdlcontext sdl)
 	ed.position = (t_vector3){500.0f, 500.0f, 200.0f};*/
 	ed.tool = NULL;
 	//set_font_size(&sdl, 0);
+	//audiosource.entity = &ed.world.entitycache.entities[0];
 	while (ed.gamereturn == game_continue)
 	{
 		update_deltatime(&ed.clock);
