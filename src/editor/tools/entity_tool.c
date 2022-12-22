@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 11:54:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/22 09:40:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,8 @@ static void	entity_tool_lazyinit(t_editor *ed, t_sdlcontext *sdl, t_entitytoolda
 	{
 		dat->entitygui = init_gui(sdl, &ed->hid, &ed->player, (t_point) {20, 40}, "Edit entity");
 		dat->entitygui.minimum_size.x = 300;
+		dat->entitygui.minimum_size.y = 550;
+		dat->entitygui.rect.size.y = 550;
 	}
 }
 
@@ -262,7 +264,8 @@ void	entity_tool_init(t_editor *ed, t_sdlcontext *sdl)
 	{
 		dat->entitygui = init_gui(sdl, &ed->hid, &ed->player, (t_point) {20, 40}, "Edit entity");
 		dat->entitygui.minimum_size.x = 300;
-		dat->entitygui.rect.size.y = 220;
+		dat->entitygui.minimum_size.y = 450;
+		//dat->entitygui.rect.size.y = 220;
 	}
 }
 

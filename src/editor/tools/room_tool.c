@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/21 18:49:58 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/22 09:47:37 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -520,12 +520,6 @@ static void init_worldwalls(t_world *world)
 	}
 }
 
-typedef struct s_drag
-{
-	t_wall	*w;
-	bool is_start;
-}	t_drag;
-
 bool	edge_is_legal(t_vector2 *edge, t_room *room)
 {
 	int			i;
@@ -615,9 +609,9 @@ void	applyedgedrag(t_vector2 *edge, t_vector2 snap, t_room *room, t_world *world
 			edge_is_legal(er.edge, er.room) && isroomlegal(world, er.room))
 		{
 			init_roomwalls(world, room);
-			free_floor(world, room);
+			makefloor_room(world, room);
 			init_roomwalls(world, er.room);
-			free_floor(world, er.room);
+			makefloor_room(world, er.room);
 		}
 		else
 		{

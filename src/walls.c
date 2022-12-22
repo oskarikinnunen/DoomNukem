@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/21 13:51:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/22 10:06:04 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,8 @@ void	init_roomwalls(t_world *world, t_room *room)
 			room->walls[i].edgeline.end = &room->edges[0];
 		room->walls[i].entity->transform.position = vector3_zero();
 		room->walls[i].entity->transform.scale = vector3_one();
-		room->walls[i].entity->obj = object_plane(world->sdl);
+		if (room->walls[i].entity->obj == NULL)
+			room->walls[i].entity->obj = object_plane(world->sdl);
 		applywallmesh(&room->walls[i], room);
 		update_wall_bounds(&room->walls[i]);
 		i++;

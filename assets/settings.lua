@@ -20,7 +20,8 @@ images =
 	"stone02.png",
 	"stone11.png",
 	"concrete02.png",
-	"wood02.png"
+	"wood02.png",
+	"Transformer-Texture.png"
 }
 objects =
 {
@@ -32,5 +33,6 @@ objects =
 	"Pistol_1.obj",
 	"Shotgun.obj",
 	"Smg.obj",
-	"Revolver.obj"
+	"Revolver.obj",
+	"Transformer.obj"
 }

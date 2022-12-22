@@ -58,6 +58,7 @@ typedef struct s_room //TODO: rewrite rooms/walls so rooms have t_vector2 edges 
 	t_meshtri		*floors;
 	t_meshtri		*ceilings;
 	t_floor_area	*floor_areas; //
+	char			floortex[64];
 	uint32_t		height;
 	uint32_t		edgecount;
 	uint32_t		wallcount;
@@ -100,6 +101,7 @@ typedef struct s_room2 //TODO: rewrite rooms/walls so rooms have t_vector2 edges
 
 struct s_world;
 
+void			makefloor_room(struct s_world *world, t_room *room);
 void			add_room_to_world(struct s_world *world, t_room *room);
 void			applywallmesh(t_wall *wall, t_room *room);
 void			applytrimesh(t_meshtri tri, t_object *obj);
