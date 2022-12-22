@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/20 15:43:06 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/22 15:06:28 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ t_render	init_render(t_sdlcontext sdl, struct s_world *world)
 	render.occlusion.cull_box = false;
 	render.occlusion.occluder_box = false;
 	render.world = world;
-	render.sdl = &sdl;
 	return(render);
 }
 

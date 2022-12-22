@@ -6,7 +6,7 @@
 #    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/12/21 17:30:36 by vlaine           ###   ########.fr        #
+#    Updated: 2022/12/22 13:44:15 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -77,6 +77,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		occlusion/peripheral_culling.c \
 		occlusion/occlusion_culling.c \
 		occlusion/culling_debug.c \
+		occlusion/bitmask_culling.c \
 		surface_tools.c \
 		colors.c \
 		render/render_entity.c \
@@ -89,6 +90,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		render/rasterization/rasterize_triangle_wrap.c \
 		render/rasterization/rasterize_triangle.c \
 		render/rasterization/rasterize_triangle_uv.c \
+		render/rasterization/rasterize_triangle_bit.c \
 		render/render_helper.c \
 		render/flip_channel.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \

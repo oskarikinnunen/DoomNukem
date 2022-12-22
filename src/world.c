@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/21 17:25:49 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/22 17:12:20 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,34 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 	}
 }
 
+static void bitmask_to_pixels(t_sdlcontext *sdl)
+{
+	return;
+	uint32_t	clr;
+
+
+	t_point max;
+	max.x = sdl->window_w/8;
+	max.y = sdl->window_h/4;
+	sdl->bitmask.bitmask[5050] = 1;
+	for (int y = 0; y < sdl->window_h; y++)
+	{
+		for (int x = 0; x < sdl->window_w; x++)
+		{
+			clr = INT_MAX;
+			//printf("x %d, y %d\n", x, y);
+			//printf("bitmask chunk %d\n", (y / 4) * (sdl->window_w / 8) + (x / 8));
+			/*y = (y/4) * (1024/8);
+			x = (x/8);
+			y = (y % 4) * 8;
+			x = x % 8;*/
+			if ((sdl->bitmask.bitmask[(y / 4) * (sdl->window_w / 8) + (x / 8)] >> ((y % 4) * 8) + (x % 8) & 1))
+				clr = CLR_RED;
+			((uint32_t *)sdl->surface->pixels)[sdl->window_w * y + x] = clr;
+		}
+	}
+}
+
 void update_world3d(t_world *world, t_render *render)
 {
 	t_list			*l;
@@ -77,6 +105,9 @@ void update_world3d(t_world *world, t_render *render)
 	
 	sdl = world->sdl;
 	ft_bzero(&render->rs, sizeof(t_render_statistics));
+	memset(sdl->surface->pixels, 1, sizeof(uint32_t) * sdl->window_h * sdl->window_w);
+	//memset(sdl->bitmask.bitmask, UINT32_MAX, sizeof(uint32_t) * (sdl->window_w/8) * (sdl->window_h/4));
+	bzero(sdl->bitmask.bitmask, sizeof(uint32_t) * (sdl->window_w/8) * (sdl->window_h/4));
 	/*update_npcs(world);
 	i = 0;
 	while (i < 128)
@@ -91,8 +122,9 @@ void update_world3d(t_world *world, t_render *render)
 		i++;
 	}*/
 	update_entitycache(sdl, world, render);
-	if (!sdl->global_wireframe)
-		render_entity(sdl, render, &world->skybox);
+	//if (!sdl->global_wireframe)
+	//	render_entity(sdl, render, &world->skybox);
+	bitmask_to_pixels(sdl);
 	gui_start(world->debug_gui);
 	gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);
 	gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);

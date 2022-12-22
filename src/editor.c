@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/21 17:03:15 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/22 17:15:24 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,11 @@ int	editorloop(t_sdlcontext sdl)
 
 	ed.gamereturn = game_continue;
 	ed.render = init_render(sdl, &ed.world);
+	sdl.render = ed.render;
 	player_init(&ed.player, &sdl);
+	sdl.bitmask.bitmask = malloc(sizeof(uint32_t) * ((sdl.window_h * sdl.window_w) / 32));
+	sdl.bitmask.chunk_size.x = sdl.window_w/8;
+	sdl.bitmask.chunk_size.y = sdl.window_h/4;
 	ed.player.transform.position = (t_vector3){1000, 1000, 250};
 	ed.player.gun->disabled = true;
 	/*ed.angle = (t_vector2){-20.0f, -RAD90 * 0.99f};
@@ -50,7 +54,13 @@ int	editorloop(t_sdlcontext sdl)
 			moveplayer(&ed.player, &ed.hid.input, ed.clock);
 		update_render(&ed.render, &ed.player);
 		screen_blank(sdl);
-		
+		//print_vector3(ed.render.camera.position);
+		//print_vector3(ed.render.camera.lookdir);
+	if (1)
+	{
+		ed.render.camera.position = (t_vector3){999.322266, 1018.797913, 19.004656};
+		ed.render.camera.lookdir = (t_vector3){-0.000000, -0.997152, -0.075418};
+	}
 		render_start(&ed.render);
 		update_world3d(&ed.world, &ed.render);
 		update_editor_toolbar(&ed, &ed.toolbar_gui);

@@ -63,6 +63,7 @@ static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 		t[2].w += t_step[1].w;
 		y--;
 	}
+	render->rs.triangle_count++;
 }
 
 
@@ -115,6 +116,7 @@ static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 		t[2].w += t_step[1].w;
 		y++;
 	}
+	render->rs.triangle_count++;
 }
 
 /*
@@ -122,6 +124,60 @@ creates two triangles from the given triangle one flat top and one flat bottom.
 both triangles are then assigned to t_point p[3] array and passed onto fill_tri_bot/top functions.
 p[0] is always the pointy head of the triangle p[1] and p[2] are flat points where, p[1] x is smaller than p[2]
 */
+
+void fill_point_bit_tri_bot1(t_sdlcontext *sdl, t_point *p)
+{
+	float			step[2];
+	int				x;
+	int				y;
+	float			delta;
+
+	delta = 1.0f / ((float)(p[1].y - p[0].y));
+	step[0] = (p[0].x - p[1].x) * delta;
+	step[1] = (p[0].x - p[2].x) * delta;
+	y = p[1].y;
+	while (y >= p[0].y)
+	{
+		x = p[1].x + (step[0] * (float)(p[1].y - y));
+		int ax =  p[2].x + (step[1] * (float)(p[1].y - y));
+		while(x <= ax)
+		{
+		//	if (!((sdl->bitmask.bitmask[(y / 4) * (sdl->window_w / 8) + (x / 8)] >> (((y % 4) * 8) + (x % 8))) & 1))
+			//	return(true);
+				//is_visible = true;
+			sdl->bitmask.bitmask[(y / 4) * sdl->bitmask.chunk_size.x + (x / 8)] |= 1UL << (((y % 4) * 8) + (x % 8));
+			x++;
+		}
+		y--;
+	}
+}
+
+void fill_point_bit_tri_top1(t_sdlcontext *sdl, t_point *p)
+{
+	float			step[2];
+	int				x;
+	int				y;
+	float			delta;
+
+	delta = 1.0f/((float)(p[0].y - p[1].y));
+	step[0] = (p[0].x - p[1].x) * delta;
+	step[1] = (p[0].x - p[2].x) * delta;
+	y = p[1].y;
+	while (y <= p[0].y)
+	{
+		x = p[1].x + (step[0] * (float)(y - p[1].y));
+		int ax =  p[2].x + (step[1] * (float)(y - p[1].y));
+		while(x <= ax)
+		{
+			//if (!((sdl->bitmask.bitmask[(y / 4) * (sdl->window_w / 8) + (x / 8)] >> (((y % 4) * 8) + (x % 8))) & 1))
+		//		return(true);
+			//	is_visible = true;
+			sdl->bitmask.bitmask[(y / 4) * sdl->bitmask.chunk_size.x + (x / 8)] |= 1UL << (((y % 4) * 8) + (x % 8));
+			x++;
+		}
+		y++;
+	}
+}
 
 void	render_triangle(t_sdlcontext *sdl, t_render *render, int index)
 {
@@ -154,10 +210,16 @@ void	render_triangle(t_sdlcontext *sdl, t_render *render, int index)
 	t_temp = triangle.t[2];
 	p[2] = p_split;
 	triangle.t[2] = t_split;
-	if (p[0].y != p[1].y)
+	if (p[0].y != p[1].y && fill_point_bit_tri_top(sdl, triangle.p))
+	{
+		fill_point_bit_tri_top1(sdl, triangle.p);
 		fill_point_tri_top(sdl, triangle, render);
+	}
 	p[0] = p_temp;
 	triangle.t[0] = t_temp;
-	if (p[0].y != p[1].y)
+	if (p[0].y != p[1].y && fill_point_bit_tri_bot(sdl, triangle.p))
+	{
+		fill_point_bit_tri_bot1(sdl, triangle.p);
 		fill_point_tri_bot(sdl, triangle, render);
+	}
 }

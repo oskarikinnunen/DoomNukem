@@ -35,6 +35,31 @@ void ft_swap(void * a, void * b, size_t len)
 	}
 }
 
+void	sort_point_tri(t_point *p)
+{
+	int	s_x;
+	int	s_j;
+	t_point			temp_p;
+
+	s_x = 0;
+	s_j = 0;
+	while (s_x < 2)
+	{
+		while (s_j < 2 - s_x)
+		{
+			if (p[s_j].y < p[s_j + 1].y)
+			{
+				temp_p = p[s_j];
+				p[s_j] = p[s_j + 1];
+				p[s_j + 1] = temp_p;
+			}
+			s_j++;
+		}
+		s_j = 0;
+		s_x++;
+	}
+}
+
 void	sort_point_uv_tri(t_point *p, t_texture *t)
 {
 	int	s_x;

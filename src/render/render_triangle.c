@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/20 13:57:38 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/22 16:43:17 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,5 +84,4 @@ void render_buffer(t_sdlcontext *sdl, t_render *render)
 		render_buffer_triangle_wireframes(sdl, render);
 	if (render->img == NULL)
 		render_solid_triangle(sdl, render);
-	render->rs.triangle_count += render->screenspace_ptri_count;
 }
