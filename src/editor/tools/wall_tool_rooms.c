@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/22 09:47:24 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/22 13:42:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -767,6 +767,8 @@ void	makefloor_room_area(t_editor *ed, t_sdlcontext *sdl, t_room *room, t_floor_
 		mtri->uv[1] = vector2_div(mtri->uv[1], 100.0f);
 		mtri->uv[2] = vector2_div(mtri->uv[2], 100.0f);
 		applytrimesh(*mtri, mtri->entity->obj);
+		create_lightmap_for_entity(mtri->entity, &ed->world);
+		create_map_for_entity(mtri->entity, &ed->world);
 		i++;
 	}
 	room->floorcount += fc.facecount;

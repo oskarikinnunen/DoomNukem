@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/12/21 07:14:22 by okinnune         ###   ########.fr        #
+#    Updated: 2022/12/22 16:25:46 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,16 +16,19 @@ NAME = DoomNukem
 #Library dependencies:
 
 LIBS_DIR = libs
+INSTALLED_LIBS_DIR = $(LIBS_DIR)/installed_libs
+
 SDL2_DIR = $(LIBS_DIR)/SDL2-2.0.8
 SDL2_TTF_DIR = $(LIBS_DIR)/SDL2_ttf-2.0.15
 FREETYPE_DIR = $(LIBS_DIR)/freetype-2.9
-INSTALLED_LIBS_DIR = $(LIBS_DIR)/installed_libs
+FMOD_DIR = $(INSTALLED_LIBS_DIR)/lib/FMOD
+
 SDL2 = $(INSTALLED_LIBS_DIR)/lib/libSDL2.a
 SDL2_TTF = $(INSTALLED_LIBS_DIR)/lib/libSDL2_ttf.a
 FREETYPE = $(INSTALLED_LIBS_DIR)/lib/libfreetype.a
+FMOD = $(FMOD_DIR)/copied
+
 LIBFT = libft/libft.a
-
-
 
 LUAFOLDER= lua-5.3.6
 LUA= $(LUAFOLDER)/install/lib/liblua.a #TODO: find out real name!
@@ -54,7 +57,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		walls.c file_open.c \
 		moveplayer.c errors.c \
 		physics.c \
-		game_3d.c fill_triangle.c perfgraph.c \
+		perfgraph.c \
 		png.c lua_conf.c list_helper.c \
 		spaceconversions.c \
 		entity/entity_animate.c \
@@ -67,7 +70,6 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		object_init.c \
 		object_primitives.c \
 		world.c player.c \
-		init_render.c \
 		resolution_scaling.c \
 		controller.c \
 		audio.c \
@@ -76,9 +78,21 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		occlusion/peripheral_culling.c \
 		occlusion/occlusion_culling.c \
 		occlusion/culling_debug.c \
-		render_clip.c \
 		surface_tools.c \
-		colors.c
+		colors.c \
+		render/render_entity.c \
+		render/render_clip.c \
+		render/render_triangle.c \
+		render/init_render.c \
+		render/render_space.c \
+		lighting/bake_lighting.c \
+		lighting/point_light.c \
+		render/rasterization/rasterize_triangle_wrap.c \
+		render/rasterization/rasterize_triangle.c \
+		render/rasterization/rasterize_triangle_uv.c \
+		render/rasterization/rasterize_triangle_dynamic.c \
+		render/render_helper.c \
+		render/flip_channel.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \
 		vector2_elementary.c vector2_shorthands.c \
@@ -97,17 +111,20 @@ SRC+= $(VECTORSRC)
 OBJ= $(SRC:.c=.o)
 
 #Compilation stuff:
-INCLUDE= -I$(INSTALLED_LIBS_DIR)/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
+INCLUDE= -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include \
+			-I$(INSTALLED_LIBS_DIR)/include/SDL2/ \
+			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
 CC= gcc
-CFLAGS= $(INCLUDE) -g -finline-functions -O2 -Wuninitialized#-march=native
+CFLAGS= $(INCLUDE) -g -finline-functions -O2 #-march=native
+LDFLAGS = -Wl,-rpath $(INSTALLED_LIBS_DIR)/lib
 
 UNAME= $(shell uname)
 ifeq ($(UNAME), Darwin)
 override CFLAGS += '-D GL_SILENCE_DEPRECATION'
-LIBS= $(LIBFT) -lm -framework OpenGL `$(INSTALLED_LIBS_DIR)/bin/sdl2-config --cflags --libs` -L$(INSTALLED_LIBS_DIR)/lib -lSDL2_ttf
+LIBS= $(LIBFT) -lm -framework OpenGL -L$(INSTALLED_LIBS_DIR)/lib -lSDL2 -lSDL2_ttf -L$(INSTALLED_LIBS_DIR)/lib -lfmod -lfmodL
 AUTOGEN =
 else ifeq ($(UNAME), Linux)
-LIBS =  $(LIBFT) -lm -lGL `$(INSTALLED_LIBS_DIR)/bin/sdl2-config --cflags --libs` -L$(INSTALLED_LIBS_DIR)/lib -lSDL2_ttf
+LIBS =  $(LIBFT) -lm -lGL -L$(INSTALLED_LIBS_DIR)/lib -lSDL2 -lSDL2_ttf -L$(INSTALLED_LIBS_DIR)/lib -lfmod -lfmodL
 AUTOGEN = ./autogen.sh &&
 else
 warning:
@@ -118,8 +135,8 @@ endif
 #multi:
 #	$(MAKE) -j6 all
 
-all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(LUA) $(LIBFT) $(OBJ)
-	$(CC) $(OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LUA)
+all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(FMOD) $(LUA) $(LIBFT) $(OBJ)
+	$(CC) $(OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LUA) $(LDFLAGS)
 
 $(OBJ): include/*.h Makefile
 
@@ -132,12 +149,14 @@ $(LIBFT):
 	make -C libft
 
 clean-libs:
-	rm -rf $(INSTALLED_LIBS_DIR)
-	rm -rf $(SDL2_DIR)
-	rm -rf $(FREETYPE_DIR)
-	rm -rf $(SDL2_TTF_DIR)
+	rm -rf $(SDL2_DIR) $(FREETYPE_DIR) $(SDL2_TTF_DIR) \
+		$(INSTALLED_LIBS_DIR)/bin $(INSTALLED_LIBS_DIR)/include/freetype2 \
+		$(INSTALLED_LIBS_DIR)/include/SDL2 $(INSTALLED_LIBS_DIR)/lib/cmake \
+		$(INSTALLED_LIBS_DIR)/lib/pkgconfig $(INSTALLED_LIBS_DIR)/lib/lib* \
+		$(INSTALLED_LIBS_DIR)/share
+	rm $(FMOD)
 
-re-libs: clean-libs $(SDL2) $(FREETYPE) $(SDL2_TTF)
+re-libs: clean-libs all
 
 clean-lua:
 	rm -rf $(LUAFOLDER)/install
@@ -146,6 +165,17 @@ re-lua: clean-lua $(LUA)
 
 $(LUA):
 	cd $(LUAFOLDER) && make generic && make local
+
+$(FMOD):
+	cp $(FMOD_DIR)/libfmod.dylib $(INSTALLED_LIBS_DIR)/lib/
+	cp $(FMOD_DIR)/libfmodL.dylib $(INSTALLED_LIBS_DIR)/lib/
+	cp $(FMOD_DIR)/libfmod.so $(INSTALLED_LIBS_DIR)/lib/
+	cp $(FMOD_DIR)/libfmod.so.13 $(INSTALLED_LIBS_DIR)/lib/
+	cp $(FMOD_DIR)/libfmod.so.13.11 $(INSTALLED_LIBS_DIR)/lib/
+	cp $(FMOD_DIR)/libfmodL.so $(INSTALLED_LIBS_DIR)/lib/
+	cp $(FMOD_DIR)/libfmodL.so.13 $(INSTALLED_LIBS_DIR)/lib/
+	cp $(FMOD_DIR)/libfmodL.so.13.11 $(INSTALLED_LIBS_DIR)/lib/
+	touch $(FMOD)
 
 $(SDL2_DIR)/unpacked:
 	cd $(LIBS_DIR) && tar -xf SDL2-2.0.8.tar.gz
@@ -161,7 +191,7 @@ $(SDL2_TTF_DIR)/unpacked:
 
 
 $(SDL2_DIR)/ready_to_build: $(SDL2_DIR)/unpacked
-	cd $(SDL2_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR) SDL_AUDIODRIVER=pulseaudio && touch ready_to_build
+	cd $(SDL2_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR) && touch ready_to_build
 
 $(FREETYPE_DIR)/ready_to_build: $(FREETYPE_DIR)/unpacked
 	cd $(FREETYPE_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR) && touch ready_to_build

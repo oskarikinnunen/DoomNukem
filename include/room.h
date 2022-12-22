@@ -103,7 +103,7 @@ struct s_world;
 
 void			makefloor_room(struct s_world *world, t_room *room);
 void			add_room_to_world(struct s_world *world, t_room *room);
-void			applywallmesh(t_wall *wall, t_room *room);
+void			applywallmesh(t_wall *wall, t_room *room, struct s_world *world);
 void			applytrimesh(t_meshtri tri, t_object *obj);
 void			init_room_meshes(t_room *room, t_sdlcontext *sdl, struct s_world *world);
 void			walls_init(struct s_world *world, struct s_sdlcontext *sdl);

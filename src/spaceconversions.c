@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   spaceconversions.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 13:31:43 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 16:09:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/21 17:06:42 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,14 +55,16 @@ t_vector3	anim_transformed_vector3(t_entity *entity, t_vector3 v)
 
 t_point vector3_to_screenspace(t_render r, t_vector3 vec, t_sdlcontext sdl)
 {
+	t_camera		c;
 	t_quaternion	proj_q;
 	t_point			result;
 
+	c = r.camera;
 	proj_q = vector3_to_quaternion(vec);
-	proj_q = quaternion_mul_matrix(r.matworld, proj_q);
-	proj_q = quaternion_mul_matrix(r.matview, proj_q);
+	proj_q = quaternion_mul_matrix(c.matworld, proj_q);
+	proj_q = quaternion_mul_matrix(c.matview, proj_q);
 	//clip
-	proj_q = quaternion_mul_matrix(r.matproj, proj_q);
+	proj_q = quaternion_mul_matrix(c.matproj, proj_q);
 	proj_q.v = vector3_div(proj_q.v, proj_q.w);
 	proj_q.v = vector3_negative(proj_q.v);
 

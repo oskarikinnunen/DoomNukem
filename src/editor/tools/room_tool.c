@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/22 09:47:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/22 13:30:04 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,9 @@ static void	init_roomwalls_shallow(t_world *world, t_room *room)
 		room->walls[i].entity->transform.position = vector3_zero();
 		room->walls[i].entity->transform.scale = vector3_one();
 		room->walls[i].entity->obj = object_plane(world->sdl);
-		applywallmesh(&room->walls[i], room);
+		applywallmesh(&room->walls[i], room, world);
 		i++;
 	}
-}
-
-static void	init_splitwalls(t_world *world, t_roomtooldata *dat)
-{
-	
 }
 
 void remove_room(t_world *world, t_room *room)
@@ -272,7 +267,7 @@ static void renderroom(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 	{
 		/*ed->render.wireframe = true;
 		ed->render.gizmocolor = CLR_GREEN;*/
-		render_entity(*sdl, &ed->render, room->walls[i].entity);
+		render_entity(sdl, &ed->render, room->walls[i].entity);
 		//ed->render.wireframe = false;
 		i++;
 	}
@@ -342,8 +337,8 @@ static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 		
 	if (cur->edgeline.start != NULL && cur->edgeline.end != NULL)
 	{
-		applywallmesh(cur, dat->room);
-		render_entity(*sdl, &ed->render, cur->entity);
+		applywallmesh(cur, dat->room, &ed->world);
+		render_entity(sdl, &ed->render, cur->entity);
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 	{
@@ -429,7 +424,7 @@ static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 			dat->room->wallcount--;
 			//dat->room->edgecount--;
 			init_roomwalls_shallow(&ed->world, dat->room);
-			applywallmesh(&dat->wall, dat->room);
+			applywallmesh(&dat->wall, dat->room, &ed->world);
 		}
 		else
 		{
@@ -445,7 +440,7 @@ static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	render_snapgrid(ed, sdl, snap, false, false);
 }
 
-static void modifywallheights(t_room *room, int scrolldelta)
+static void modifywallheights(t_room *room, int scrolldelta, t_world *world)
 {
 	int	i;
 
@@ -454,7 +449,7 @@ static void modifywallheights(t_room *room, int scrolldelta)
 	{
 		room->walls[i].height += scrolldelta * 10;
 		room->walls[i].height = ft_clamp(room->walls[i].height, 40, 300);
-		applywallmesh(&room->walls[i], room);
+		applywallmesh(&room->walls[i], room, world);
 		i++;
 	}
 }
@@ -793,7 +788,7 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 			init_roomwalls(&ed->world, dat->room);
 			make_areas(ed, &sdl, dat->room);
 		} else
-			modifywallheights(dat->room, ed->hid.mouse.scroll_delta);
+			modifywallheights(dat->room, ed->hid.mouse.scroll_delta, &ed->world);
 	}
 }
 
@@ -967,7 +962,11 @@ void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 			w = &dat->room->walls[i];
 			if (entity_lookedat(ed, *sdl, w->entity))
 			{
-				w->entity->obj->materials->img = tex;
+				if (w->entity->obj->materials->img != tex)
+				{
+					w->entity->obj->materials->img = tex;
+					bake_lighting(&ed->render, &ed->world);
+				}
 				return ;
 			}
 			i++;
@@ -980,7 +979,11 @@ void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 			f = &dat->room->floors[i];
 			if (entity_lookedat(ed, *sdl, f->entity))
 			{
-				f->entity->obj->materials->img = tex;
+				if (f->entity->obj->materials->img != tex)
+				{
+					f->entity->obj->materials->img = tex;
+					bake_lighting(&ed->render, &ed->world);
+				}
 				return ;
 			}
 			i++;
@@ -1039,7 +1042,7 @@ void	room_tool_split(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	}
 	applywallmesh(cur, dat->room);
 	if (!vector2_cmp(cur->line.start, vector2_zero()))
-		render_entity(*sdl, &ed->render, cur->entity);
+		render_entity(sdl, &ed->render, cur->entity);
 	gui_start(gui);
 	gui_starthorizontal(gui);
 	gui_label("Modifying: ", gui);

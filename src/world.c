@@ -6,6 +6,8 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
+/*   Updated: 2022/12/22 16:08:59 by okinnune         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
@@ -58,7 +60,7 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 		if (ent->status != es_free)
 		{
 			if (ent->status == es_active && !ent->hidden)
-				render_entity(*sdl, render, ent);
+				render_entity(sdl, render, ent);
 			found++;
 		}
 		i++;
@@ -90,21 +92,32 @@ void update_world3d(t_world *world, t_render *render)
 	}*/
 	update_entitycache(sdl, world, render);
 	if (!sdl->global_wireframe && !world->skybox.hidden)
-		render_entity(*sdl, render, &world->skybox);
+		render_entity(sdl, render, &world->skybox);
 	rescale_surface(sdl);
 	gui_start(world->debug_gui);
 	gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);
 	gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);
 	gui_labeled_int("Entity count:", world->entitycache.existing_entitycount, world->debug_gui);
 	gui_labeled_float_slider("Resolution scale:", &world->sdl->resolution_scaling, 0.01f, world->debug_gui);
+	gui_labeled_float_slider("Audio max:", &world->sdl->audio.max_volume, 0.01f, world->debug_gui);
+	if (gui_button("Test audio", world->debug_gui))
+		play_sound(&sdl->audio, "bubbles.wav");
+	world->sdl->audio.max_volume = ft_clampf(world->sdl->audio.max_volume, 0.25f, 1.0f);
 	world->sdl->resolution_scaling = ft_clampf(world->sdl->resolution_scaling, 0.25f, 1.0f);
 	t_point	res;
 	res = point_fmul(sdl->screensize, sdl->resolution_scaling);
 	gui_labeled_point("3D Resolution:", res, world->debug_gui);
 	gui_labeled_bool_edit("Wireframe:", &world->sdl->global_wireframe, world->debug_gui);
+	if (gui_shortcut_button("Toggle Lighting", 'L', world->debug_gui))
+		sdl->lighting_toggled = !sdl->lighting_toggled;
+	//gui_labeled_bool_edit("Lighting:", &world->sdl->lighting_toggled, world->debug_gui);
 	gui_labeled_int_slider("PS1 tri div:", &sdl->ps1_tri_div, 2.0f, world->debug_gui);
 	if (gui_shortcut_button("Toggle Skybox", 'H', world->debug_gui))
 		world->skybox.hidden = !world->skybox.hidden;
+	if (gui_shortcut_button("Bake lighting", 'b', world->debug_gui))
+		bake_lighting(render, world);
+	if (gui_shortcut_button("Bake lighting (new)", 'v', world->debug_gui))
+		start_lightbake(&world->sdl->render, world);
 	sdl->ps1_tri_div = ft_clamp(sdl->ps1_tri_div, 1, 4);
 	gui_end(world->debug_gui);
 }
@@ -207,7 +220,7 @@ static void	startup_init_room(t_world *world, t_room *r)
 		w = &r->walls[i];
 		w->entity = &world->entitycache.entities[w->saved_entityid]; //TODO: make function "get_entity_from_cache_by_id" (with a shorter name, lol)
 		w->entity->obj = object_plane(world->sdl);
-		applywallmesh(w, r);
+		applywallmesh(w, r, world);
 		i++;
 	}
 	i = 0;
@@ -290,6 +303,7 @@ void		destroy_entity(t_world *world, t_entity *ent)
 	cache = &world->entitycache;
 	//protect id here? if greater than alloccount
 	cache->entities[ent->id].status = es_free;
+	cache->entities[ent->id].obj = NULL;
 	if (cache->existing_entitycount == 0)
 		error_log(EC_MALLOC);
 	cache->existing_entitycount--;
@@ -331,7 +345,14 @@ t_entity	*spawn_entity(t_world	*world)
 	return (NULL); //never gets here
 }
 
-t_entity	*spawn_basic_entity(t_world *world, char *objectname, t_vector3 position)
+void		entity_assign_object(t_world *world, t_entity *entity, t_object *obj)
+{
+	entity->obj = obj;
+	create_lightmap_for_entity(entity, world);
+	create_map_for_entity(entity, world);
+}
+
+t_entity	*spawn_basic_entity(t_world *world, char *objectname, t_vector3 position) //UNUSED
 {
 	t_entity	*ent;
 
@@ -428,10 +449,14 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 	world.skybox.obj = get_object_by_name(*sdl, "cube");
 	world.skybox.obj->materials[0].img = get_image_by_name(*sdl, "grid_d.png");
 	//scale_skybox_uvs(world.skybox.obj);
-	world.skybox.transform.scale = vector3_mul(vector3_one(), 3000.0f);
-	world.skybox.transform.position = (t_vector3){1500.0f, 1500.0f, 1495.0f};
+	world.skybox.transform.scale = vector3_mul(vector3_one(), 300.0f);
+	world.skybox.transform.position = (t_vector3){150.0f, 150.0f, 1499.0f};
 	//spawn_npc(&world, "cyborg", (t_vector3){500.0f, 500.0f, 0.0f}, &sdl);
 	//world.npcpool[0].destination = (t_vector3){200.0f, 200.0f, 0.0f};
+	ft_bzero(&world.lighting, sizeof(t_lighting));
+	world.lighting.ambient_light = 20;
+	for_all_entities(&world, create_lightmap_for_entity);
+	for_all_entities(&world, create_map_for_entity);
 	return (world);
 }
 

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/22 10:06:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/22 15:52:26 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	render_snapgrid(t_editor *ed, t_sdlcontext *sdl, t_vector2 wallpos, bool sh
 	}
 }
 
-void	applywallmesh(t_wall *wall, t_room *room)
+void	applywallmesh(t_wall *wall, t_room *room, t_world *world)
 {
 	if (wall->edgeline.end != NULL && wall->edgeline.start != NULL)
 	{
@@ -70,9 +70,13 @@ void	applywallmesh(t_wall *wall, t_room *room)
 		wall->entity->obj->uvs[1] = (t_vector2){dist / 100.0f, 0.0f};
 		wall->entity->obj->uvs[2] = (t_vector2){0.0f, wall->height / 100.0f};
 		wall->entity->obj->uvs[3] = (t_vector2){dist / 100.0f, wall->height / 100.0f};
-		wall->entity->obj->uvs[1] = flipped_uv(wall->entity->obj->uvs[1]);
+		create_lightmap_for_entity(wall->entity, world);
+		create_map_for_entity(wall->entity, world);
+
+		
+		/*wall->entity->obj->uvs[1] = flipped_uv(wall->entity->obj->uvs[1]);
 		wall->entity->obj->uvs[2] = flipped_uv(wall->entity->obj->uvs[2]);
-		wall->entity->obj->uvs[3] = flipped_uv(wall->entity->obj->uvs[3]);
+		wall->entity->obj->uvs[3] = flipped_uv(wall->entity->obj->uvs[3]);*/
 	}/* else
 	{
 		wall->entity->obj->vertices[0] = (t_vector3){wall->line.start.x, wall->line.start.y, 0.0f};
@@ -114,7 +118,7 @@ void	init_roomwalls(t_world *world, t_room *room)
 		room->walls[i].entity->transform.scale = vector3_one();
 		if (room->walls[i].entity->obj == NULL)
 			room->walls[i].entity->obj = object_plane(world->sdl);
-		applywallmesh(&room->walls[i], room);
+		applywallmesh(&room->walls[i], room, world);
 		update_wall_bounds(&room->walls[i]);
 		i++;
 	}

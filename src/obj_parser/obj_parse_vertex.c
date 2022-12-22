@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 15:38:32 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/27 17:03:58 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/22 15:31:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ t_list	*get_vertex_list(int fd)
 		if (ft_strnstr(line, "v ", sizeof("v")))
 		{
 			vec = parse_vertex(line + sizeof("v"));
+			vec = vector3_mul(vec, 10.0f);
 			list_push(&list, &vec, sizeof(t_vector3));
 		}
 		free(line);

@@ -21,7 +21,8 @@ images =
 	"stone11.png",
 	"concrete02.png",
 	"wood02.png",
-	"Transformer-Texture.png"
+	"Transformer-Texture.png",
+	"gl.png"
 }
 objects =
 {
@@ -34,5 +35,6 @@ objects =
 	"Shotgun.obj",
 	"Smg.obj",
 	"Revolver.obj",
-	"Transformer.obj"
+	"Transformer.obj",
+	"grenadelauncher.obj"
 }

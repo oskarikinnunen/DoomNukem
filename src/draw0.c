@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/20 12:34:01 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/22 10:26:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,8 +142,6 @@ void	draw_triangle(t_sdlcontext *sdl, t_point p1, t_point p2, t_point p3, uint32
 	drawline(*sdl, p2, p3, clr);
 	drawline(*sdl, p3, p1, clr);
 }*/
-
-uint32_t	flip_channels(uint32_t clr);
 
 void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale)
 {

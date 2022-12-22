@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:53:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/21 15:22:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/22 10:31:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ void highlight_entity(t_editor *ed, t_sdlcontext sdl, t_entity *entity, uint32_t
 {
 	ed->render.wireframe = true;
 	ed->render.gizmocolor = color;
-	render_entity(sdl, &ed->render, entity);
+	render_entity(&sdl, &ed->render, entity);
 	ed->render.wireframe = false;
 }
 
@@ -169,7 +169,7 @@ void highlight_roomwalls(t_editor *ed, t_sdlcontext sdl, t_room room, uint32_t c
 	while (i < room.wallcount)
 	{
 		//printf("HIGHLIGHTING ROOM \n");
-		render_entity(sdl, &ed->render, room.walls[i].entity);
+		render_entity(&sdl, &ed->render, room.walls[i].entity);
 		i++;
 	}
 	ed->render.wireframe = false;

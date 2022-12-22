@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/22 09:40:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/22 16:48:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,6 +143,7 @@ void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 		dat->entitygui.hidden = false;
 		gui_start(&dat->entitygui);
 		gui_preset_scale_and_rotate(&dat->ent->transform, &dat->entitygui);
+		gui_labeled_int("Object triangles: ", dat->ent->obj->face_count, &dat->entitygui);
 		gui_end(&dat->entitygui);
 		findbounds(dat->ent);
 		dat->ent->transform.position = raycast(ed);//vector3_movetowards(ent->transform.position, dir, ed->clock.delta * 1.0f);
@@ -150,13 +151,14 @@ void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 		dat->ent->transform.rotation.x += ed->hid.mouse.scroll_delta * 0.25f;
 		ed->render.wireframe = true;
 		ed->render.gizmocolor = AMBER_3;
-		render_entity(*sdl, &ed->render, dat->ent);
+		render_entity(sdl, &ed->render, dat->ent);
 		ed->render.wireframe = false;
 	}
-	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT) && dat->ent != NULL)
+	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT) && ed->hid.mouse.relative && dat->ent != NULL)
 	{
 		t_entity *went = spawn_entity(&ed->world);
-		went->obj = dat->ent->obj;
+		entity_assign_object(&ed->world, went, dat->ent->obj);
+		/*went->obj = dat->ent->obj;*/
 		ft_strcpy(went->object_name, dat->ent->object_name);
 		went->transform = dat->ent->transform;
 	}
@@ -181,7 +183,7 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 	{
 		ed->render.wireframe = true;
 		ed->render.gizmocolor = AMBER_1;
-		render_entity(*sdl, &ed->render, hover);
+		render_entity(sdl, &ed->render, hover);
 		ed->render.wireframe = false;
 		if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 			dat->sel_ent = hover;
@@ -192,12 +194,14 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 		ent = dat->sel_ent;
 		ed->render.wireframe = true;
 		ed->render.gizmocolor = AMBER_3;
-		render_entity(*sdl, &ed->render, ent);
+		render_entity(sdl, &ed->render, ent);
 		ed->render.wireframe = false;
 
 		gui_start(gui);
 		gui_preset_transform(&ent->transform, gui);
 		gui_emptyvertical(15, gui);
+		gui_labeled_bool_edit("Dynamic lighting: ", &ent->lightmap->dynamic, gui);
+		gui_labeled_int("Cur light: ", ent->lightmap->dynamic_data, gui);
 		if (gui_button("Reset rotation", gui))
 			ent->transform.rotation = vector3_zero();
 		if (gui_button("Reset scale", gui))

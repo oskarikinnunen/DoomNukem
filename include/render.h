@@ -5,6 +5,10 @@
 # include "../libs/installed_libs/include/SDL2/SDL_ttf.h"
 # include "vectors.h"
 # include "shapes.h"
+# include "objects.h" // only one function is using currently can be moved to doomnukem.h if needed
+# include "lighting.h"
+
+# include "fmod.h"
 
 # define CLR_PRPL 14231500
 # define CLR_TURQ 5505010
@@ -69,13 +73,19 @@ typedef struct s_font
 	char				*text;
 }	t_font;
 
+typedef struct s_audiosample
+{
+	char			name[64];
+	FMOD_SOUND		*sound;
+	FMOD_CHANNEL	*channel;
+}	t_audiosample;
+
 typedef struct s_audio
 {
-	char				name[128];
-	SDL_AudioDeviceID	device;
-	SDL_AudioSpec		wav_spec;
-	uint8_t				*wav_start;
-	uint32_t			wav_length;
+	FMOD_SYSTEM			*system;
+	float				max_volume;
+	uint32_t			samplecount;
+	t_audiosample		sample[10];
 }	t_audio;
 
 typedef struct	s_triangle
@@ -91,11 +101,6 @@ typedef struct s_point_triangle
 	t_texture		t[3];
 	uint32_t		clr;
 }	t_point_triangle;
-
-typedef struct s_triangle_polygon
-{
-	t_point p[3];
-}	t_triangle_polygon;
 
 typedef struct s_render_statistics
 {
@@ -115,7 +120,7 @@ typedef struct s_debug_occlusion
 	bool		cull_box;	// turns on cull boxes green not occluded, red occluded;
 }	t_debug_occlusion;
 
-typedef struct s_render
+typedef struct s_camera
 {
 	t_vector3			vtarget;
 	t_mat4x4			matcamera;
@@ -124,6 +129,18 @@ typedef struct s_render
 	t_mat4x4			matproj;
 	t_vector3			position;
 	t_vector3			lookdir;
+}	t_camera;
+
+typedef enum e_rend_lightmode
+{
+	lm_unlit,
+	lm_lit,
+	lm_dynamic
+}	t_rend_lightmode;
+
+typedef struct s_render
+{
+	t_camera			camera;
 	t_triangle			*occ_draw_tris;
 	t_triangle			*occ_calc_tris;
 	t_point_triangle	*worldspace_ptris;
@@ -138,10 +155,15 @@ typedef struct s_render
 	bool				wireframe;
 	uint32_t			gizmocolor;
 	t_render_statistics	rs;
-	//struct s_world		*world;
+	struct s_world		*world;
 	t_debug_occlusion	occlusion;
+	t_map				map;
+	uint32_t			dynamic_light;
+	t_rend_lightmode	lightmode;
+	/*bool				is_wrap;
+	bool				dynamic_light;*/
+	struct s_sdlcontext	*sdl;
 }	t_render;
-
 
 typedef struct s_sdlcontext
 {
@@ -160,15 +182,14 @@ typedef struct s_sdlcontext
 	struct s_object			*objects;
 	int						ps1_tri_div;
 	bool					global_wireframe;
+	bool					lighting_toggled;
 	uint32_t				objectcount;
 	t_font					font;
-	t_audio					*audio;
-	uint32_t				audiocount;
+	t_audio					audio;
 	uint32_t				window_w;
 	uint32_t				window_h;
 	t_point					screensize;
 }	t_sdlcontext;
-
 
 void	alloc_image(t_img *img, int width, int height);
 t_img	*get_image_by_index(t_sdlcontext sdl, int index); //TODO: add comments
@@ -196,38 +217,32 @@ void		free_render(t_render render);
 void		render_start(t_render *render);
 
 /* RENDER */
-void	render_triangle(t_sdlcontext *sdl, t_point_triangle triangle, t_img *img);
-void	render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size);
-void	render_ray(t_sdlcontext sdl, t_render render, t_vector3 from, t_vector3 to);
-int		triangle_clipagainstplane(t_vector3 plane_p, t_vector3 plane_n, t_triangle *in_tri, t_triangle out_tri[2]);
-void	draw_screen_to_worldspace_ray(t_sdlcontext sdl, t_render render, t_point origin, t_vector2 angle);
+void				render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size);
+void				render_ray(t_sdlcontext sdl, t_render render, t_vector3 from, t_vector3 to);
+int					triangle_clipagainstplane(t_vector3 plane_p, t_vector3 plane_n, t_triangle *in_tri, t_triangle out_tri[2]);
+void				draw_screen_to_worldspace_ray(t_sdlcontext sdl, t_render render, t_point origin, t_vector2 angle);
+void				clipped_point_triangle(t_render *render, t_sdlcontext sdl);
+void				render_buffer(t_sdlcontext *sdl, t_render *render);
+t_triangle			triangle_to_viewspace(t_triangle tritransformed, t_mat4x4 matview);
+t_point_triangle	triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_triangle clipped, t_sdlcontext sdl);
+
+/* RASTERIZER */
+void				render_triangle(t_sdlcontext *sdl, t_render *render, int index);
+void				render_triangle_uv(t_lighting l, t_triangle_polygon triangle);
+void				render_triangle_wrap(t_sdlcontext *sdl, t_render *render, int index);
+void				render_triangle_dynamic(t_sdlcontext *sdl, t_render *render, int index);
 
 /* AUDIO */
 
-// Mallocs the memory for sdl->audiocount many t_audio structs.
-// Then calls load_wav and open_audiodevice to finish setting up audio.
-void	load_audio(t_sdlcontext *sdl);
-void	load_wav(t_audio *audio, char *file);
+void	load_audio(t_audio *sudio);
 
-// Each sound file needs to be opened to its own t_audio struct.
-void	open_audiodevice(t_audio *audio);
+void	play_sound(t_audio *audio, const char *name);
 
-// Plays the audio. In the case there are multiple audio calls using the same device,
-// play_audio waits until the previous audio in the queue is finished and then plays.
-void	play_audio(t_audio audio);
+void	pause_audio(t_audio *audio);
 
-// Clears the audio queue and plays the audio right away
-void	force_play_audio(t_audio audio);
+void	play_music(t_audio *audio);
 
-// Pauses a audio device. If you call play_audio, it continues from where it was paused at.
-void	pause_audio(t_audio audio);
-
-// Loops the background music.
-void	play_music(t_audio audio);
-
-// Clears and pauses all unused audio device queues.
-void	pause_unused_audio(t_sdlcontext sdl);
-void	close_audio(t_sdlcontext *sdl);
+void	close_audio(t_audio *audio);
 
 int		clip_triangle_against_occluder_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
 int		clip_triangle_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
@@ -243,4 +258,16 @@ void	join_text_boxed_to_surface(t_sdlcontext *sdl, SDL_Surface *src, t_point pos
 
 /*occlusion*/
 void get_min_max_from_triangles(t_vector2 *min, t_vector2 *max, t_triangle *t, int count);
+
+/*Render helper*/
+t_point_triangle	wf_tri(t_point_triangle in, float scaling);
+t_texture			calc_step_texture(t_texture *t, float delta);
+void				calc_points_step(float x_step[2], t_texture t_step[2], t_point *p, t_texture *t, float delta);
+void				sort_point_uv_tri(t_point *p, t_texture *t);
+void				sort_polygon_tri(t_point *p2, t_vector2 *t, t_vector3 *p3);
+void				ft_swap(void * a, void * b, size_t len);
+t_point_triangle	ps1(t_point_triangle in, int div);
+uint32_t			flip_channels(uint32_t clr);
+
+
 #endif
