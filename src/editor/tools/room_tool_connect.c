@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:52:00 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/21 15:20:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/26 17:23:32 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,6 @@ void    set_nullentities(t_wall **ptr, int count)
 		(*ptr)[i].entity = NULL;
 		i++;
 	}
-}
-
-void	add_edge_to_floorarea(t_floor_area *area, t_vector2 *edge, int i)
-{
-	
 }
 
 t_wall  *insertdoorway(t_world *world, t_wall *current, t_room *room)
@@ -114,19 +109,6 @@ t_wall  *insertdoorway(t_world *world, t_wall *current, t_room *room)
 	new_walls[0].height = current->height;
 	new_walls[1].height = current->height;
 	new_walls[2].height = current->height;
-	//new[0].edgeline = current->edgeline;
-	/*new[0].edgeline.end = &room->edges[i];
-	new[0].height = current->height;
-	new[2].height = current->height;
-	new[2].edgeline.end = current->line.end;
-	new[2].edgeline.start = vector2_add(current->line.end, norm);
-	
-	new[1].edgeline.start = new[0].edgeline.end;
-	new[1].edgeline.end = new[2].edgeline.start;
-	new[1].height = current->height;
-	new[1].connection = true;
-	new[1].disabled = true;*/
-	//return (&room->walls[0]);
 	i = 0;
 	while (i < room->wallcount)
 	{
@@ -150,13 +132,13 @@ t_wall  *insertdoorway(t_world *world, t_wall *current, t_room *room)
 	return (NULL);
 }
 
-void    adjust_door_depth(t_wall *wall, t_room *room, t_world *world, int depth)
+void	adjust_door_depth(t_wall *wall, t_room *room, t_world *world, int depth)
 {
 	return ;
-	int         i;
-	t_vector2   norm;
-	t_line      *left;
-	t_line      *right;
+	int	i;
+	t_vector2	norm;
+	t_line	*left;
+	t_line	*right;
 
 	depth = -depth;
 	i = 0;

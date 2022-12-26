@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 13:42:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/26 14:38:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/26 17:43:18 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ t_img	*get_image_by_name(t_sdlcontext sdl, char *name) //TODO: return pointer, t
 		ft_strcpy(fullpath, name);*/
 	while (i < sdl.imagecount && sdl.images != NULL)
 	{
-		printf("image name %s \n", sdl.images[i].name);
+		//printf("image name %s \n", sdl.images[i].name);
 		if (ft_strcmp(sdl.images[i].name, name) == 0)
 			return (&sdl.images[i]);
 		i++;

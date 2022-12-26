@@ -44,7 +44,7 @@ void create_lightmap_for_entity(t_entity *entity, struct s_world *world)
 			else
 				lightmap->size.y = img->size.y;
 			lightmap->data = malloc(sizeof(uint8_t) * lightmap->size.x * lightmap->size.y);
-			printf("lighting ambient is %i \n", world->lighting.ambient_light);
+			//printf("lighting ambient is %i \n", world->lighting.ambient_light);
 			memset(lightmap->data, world->lighting.ambient_light, sizeof(uint8_t) * lightmap->size.x * lightmap->size.y);
 			// ft_bzero(lightmap->data, sizeof(uint8_t) * lightmap->size.x * lightmap->size.y);
 			max.x = -10000.0f;

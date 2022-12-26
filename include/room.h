@@ -31,6 +31,8 @@ typedef struct s_line
 
 typedef struct s_edgeline
 {
+	/*int32_t		start_offset;
+	int32_t		end_offset;*/
 	uint32_t	start_index;
 	uint32_t	end_index;
 	t_vector2	*start;

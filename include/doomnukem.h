@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/23 13:29:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/26 17:25:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,6 +238,10 @@ void	default_wall_occlusion_settings(t_wall *w, t_world *world);
 void	update_entity_bounds(t_entity *e);
 void	update_floor_bounds(t_meshtri *f);
 void	update_wall_bounds(t_wall *w);
+
+void	free_roomwalls(t_world *world, t_room *room);
+
+void	set_nullentities(t_wall **ptr, int count);
 
 //TODO: temp for lights
 void	start_lightbake(t_render *render, t_world *world);

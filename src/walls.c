@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/23 14:42:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/26 18:23:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,6 @@ void	applywallmesh(t_wall *wall, t_room *room, t_world *world)
 		wall->entity->obj->uvs[3] = (t_vector2){dist / 100.0f, wall->height / 100.0f};
 		create_lightmap_for_entity(wall->entity, world);
 		create_map_for_entity(wall->entity, world);
-
 		
 		/*wall->entity->obj->uvs[1] = flipped_uv(wall->entity->obj->uvs[1]);
 		wall->entity->obj->uvs[2] = flipped_uv(wall->entity->obj->uvs[2]);
@@ -103,7 +102,7 @@ void	init_roomwalls(t_world *world, t_room *room)
 	i = 0;
 	while (i < room->wallcount)
 	{
-		printf("i is %i \n", i);
+		//printf("i is %i \n", i);
 		if (room->walls[i].entity == NULL)
 			room->walls[i].entity = spawn_entity(world); //Copy saved entitys important values
 		if (room->walls[i].disabled)
@@ -118,14 +117,21 @@ void	init_roomwalls(t_world *world, t_room *room)
 		}
 		else
 		{
-			room->walls[i].edgeline.end = &room->edges[0];
+			//printf("i is %i \n", i);
+			room->walls[i]
+			.edgeline
+				.end = 
+				&room->edges[0];
 			room->walls[i].edgeline.end_index = 0;
 		}
 			
 		room->walls[i].entity->transform.position = vector3_zero();
 		room->walls[i].entity->transform.scale = vector3_one();
 		if (room->walls[i].entity->obj == NULL)
+		{
 			room->walls[i].entity->obj = object_plane(world->sdl);
+			room->walls[i].entity->obj->materials->img = get_image_by_name(*world->sdl, room->walls[i].texname);
+		}
 		applywallmesh(&room->walls[i], room, world);
 		update_wall_bounds(&room->walls[i]);
 		i++;

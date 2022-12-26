@@ -16,6 +16,10 @@ static t_vector3 texcoord_to_loc(t_vector3 *v, t_vector2 *t, t_vector2 p)
 	return r;
 }
 
+//	abc = tri to check against
+//	w = distance of ray hit
+// disable inverse normal hitting by removing fabs
+
 static bool intersect_triangle(t_ray r, t_texture *t, t_vector3 a, t_vector3 b, t_vector3 c)
 {
 	t_vector3   e1, e2, n;
