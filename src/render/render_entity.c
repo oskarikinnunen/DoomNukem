@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/19 17:00:03 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/26 19:43:40 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,10 @@ void clipped(t_render *render, t_sdlcontext sdl)
 				nnewtriangles--;
 				switch (p)
 				{
-				case 0: ntristoadd = clip_triangle_against_plane((t_vector3){0.0f, 0.0f, 0.0f}, (t_vector3){0.0f, 1.0f, 0.0f}, test, clipped); break;
-				case 1: ntristoadd = clip_triangle_against_plane((t_vector3){0.0f, (float)(sdl.window_h * sdl.resolution_scaling) - 1.0f, 0.0f}, (t_vector3){0.0f, -1.0f, 0.0f}, test, clipped); break;
-				case 2: ntristoadd = clip_triangle_against_plane((t_vector3){0.0f, 0.0f, 0.0f}, (t_vector3){1.0f, 0.0f, 0.0f}, test, clipped); break;
-				case 3: ntristoadd = clip_triangle_against_plane((t_vector3){(float)(sdl.window_w * sdl.resolution_scaling) *  - 1.0f, 0.0f, 0.0f}, (t_vector3){-1.0f, 0.0f, 0.0f}, test, clipped); break;
+				case 0: ntristoadd = clip_triangle_against_plane((t_vector3){0.0f, 0.0f}, (t_vector3){0.0f, 1.0f}, test, clipped); break;
+				case 1: ntristoadd = clip_triangle_against_plane((t_vector3){0.0f, (float)(sdl.window_h * sdl.resolution_scaling) - 1.0f}, (t_vector3){0.0f, -1.0f}, test, clipped); break;
+				case 2: ntristoadd = clip_triangle_against_plane((t_vector3){0.0f, 0.0f}, (t_vector3){1.0f, 0.0f}, test, clipped); break;
+				case 3: ntristoadd = clip_triangle_against_plane((t_vector3){(float)(sdl.window_w * sdl.resolution_scaling) - 1.0f, 0.0f}, (t_vector3){-1.0f, 0.0f}, test, clipped); break;
 				}
 				for (int w = 0; w < ntristoadd; w++)
 				{

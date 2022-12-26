@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/22 17:15:24 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/26 14:50:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,7 @@
 #include "file_io.h"
 #include "render.h"
 #include "objects.h"
-
-static void swap(float **a, float **b)
-{
-	float *temp;
-
-	temp = *a;
-	*a = *b;
-	*b = temp;
-}
+#include "entity.h"
 
 int	editorloop(t_sdlcontext sdl)
 {
@@ -32,33 +24,23 @@ int	editorloop(t_sdlcontext sdl)
 	bzero(&ed, sizeof(t_editor));
 	ed.world = load_world("world1", &sdl);
 	
+	
 	*(ed.world.debug_gui) = init_gui(&sdl, &ed.hid, &ed.player, sdl.screensize, "Debugging menu (F2)");
 	ed.world.debug_gui->minimum_size.y = 135;
 	ed.world.debug_gui->rect.position = sdl.screensize;
 	ed.toolbar_gui = init_gui(&sdl, &ed.hid, &ed.player, (t_point){5, 5}, "Toolbar");
 	ed.toolbar_gui.minimum_size = (t_point){165, 20};
 	ed.toolbar_gui.locked = true;
-
+	sdl.lighting_toggled = true;
+	
 	ed.gamereturn = game_continue;
 	ed.render = init_render(sdl, &ed.world);
-	sdl.render = ed.render;
-	player_init(&ed.player, &sdl);
-	sdl.bitmask.bitmask = malloc(sizeof(uint32_t) * ((sdl.window_h * sdl.window_w) / 32));
-	sdl.bitmask.chunk_size.x = sdl.window_w/8;
-	sdl.bitmask.chunk_size.y = sdl.window_h/4;
-	sdl.cpy_pixel = malloc(sizeof(uint32_t) * sdl.window_h * sdl.window_w);
-	sdl.buf1 = malloc(sizeof(float) * sdl.window_h * sdl.window_w);
-	sdl.buf2 = malloc(sizeof(float) * sdl.window_h * sdl.window_w);
-	bzero(sdl.buf1, sizeof(float) * sdl.window_h * sdl.window_w);
-	bzero(sdl.buf2, sizeof(float) * sdl.window_h * sdl.window_w);
-	sdl.draw_buffer = sdl.buf1;
-	sdl.copy_buffer = sdl.buf2;
-	ed.player.transform.position = (t_vector3){1000, 1000, 250};
+	player_init(&ed.player, &sdl, &ed.world);
+	ed.player.transform.position = (t_vector3){100, 100, 100.0f};
 	ed.player.gun->disabled = true;
-	/*ed.angle = (t_vector2){-20.0f, -RAD90 * 0.99f};
-	ed.position = (t_vector3){500.0f, 500.0f, 200.0f};*/
+	ed.world.player = &ed.player;
 	ed.tool = NULL;
-	//set_font_size(&sdl, 0);
+	ed.world.sdl->lighting_toggled = false; //
 	while (ed.gamereturn == game_continue)
 	{
 		bzero((uint32_t *)sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
@@ -66,17 +48,12 @@ int	editorloop(t_sdlcontext sdl)
 		update_deltatime(&ed.clock);
 		update_deltatime(&ed.world.clock);
 		ed.gamereturn = editor_events(&ed);
+		bake_lights(&ed.render, &ed.world);
 		if (!ed.player.locked)
 			moveplayer(&ed.player, &ed.hid.input, ed.clock);
 		update_render(&ed.render, &ed.player);
 		screen_blank(sdl);
-		//print_vector3(ed.render.camera.position);
-		//print_vector3(ed.render.camera.lookdir);
-	if (1)
-	{
-		ed.render.camera.position = (t_vector3){999.322266, 1018.797913, 19.004656};
-		ed.render.camera.lookdir = (t_vector3){-0.000000, -0.997152, -0.075418};
-	}
+		
 		render_start(&ed.render);
 		update_world3d(&ed.world, &ed.render);
 		update_editor_toolbar(&ed, &ed.toolbar_gui);
@@ -92,10 +69,12 @@ int	editorloop(t_sdlcontext sdl)
 		free(fps);
 		if (!ed.player.gun->disabled)
 			render_entity(&sdl, &ed.render, &ed.player.gun->entity);
-		//update_debugconsole(&ed.world.debugconsole, &sdl, ed.clock.delta);
-		rescale_surface(&sdl);
-		join_surfaces(sdl.window_surface, sdl.surface);
-		join_surfaces(sdl.window_surface, sdl.ui_surface);
+		update_debugconsole(&ed.world.debugconsole, &sdl, ed.clock.delta);
+		
+		//rescale_surface(&sdl);
+		//join_surfaces(sdl.window_surface, sdl.surface);
+		memcpy(sdl.window_surface->pixels, sdl.surface->pixels, sizeof(uint32_t) * sdl.window_w * sdl.window_h);
+		//join_surfaces(sdl.window_surface, sdl.ui_surface);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 	}

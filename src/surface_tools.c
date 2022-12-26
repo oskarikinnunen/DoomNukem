@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   surface_tools.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 19:37:04 by raho              #+#    #+#             */
-/*   Updated: 2022/12/21 17:06:59 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/22 10:27:59 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,28 +23,28 @@ void	join_text_boxed_to_surface(t_sdlcontext *sdl, SDL_Surface *src, t_point pos
 		i.x = 0 - padding.x;
 		while (i.x < src->w + padding.x)
 		{
-			if (i.x + pos.x > 0 && i.x + pos.x < sdl->ui_surface->w && \
-				i.y + pos.y > 0 && i.y + pos.y < sdl->ui_surface->h)
+			if (i.x + pos.x > 0 && i.x + pos.x < sdl->surface->w && \
+				i.y + pos.y > 0 && i.y + pos.y < sdl->surface->h)
 			{
 				if (i.x >= 0 && i.x < src->w && i.y >= 0 && i.y < src->h)
 				{	
 					if (((uint32_t *)src->pixels)[i.x + (i.y * src->w)] >> 24 > 0) // checking alpha
 					{
-						((uint32_t *)sdl->ui_surface->pixels)[(i.x + pos.x) + ((i.y + pos.y) * sdl->ui_surface->w)] = \
-								blend_colors_alpha(((uint32_t *)sdl->ui_surface->pixels)[(i.x + pos.x) + ((i.y + pos.y) * sdl->ui_surface->w)], \
+						((uint32_t *)sdl->surface->pixels)[(i.x + pos.x) + ((i.y + pos.y) * sdl->surface->w)] = \
+								blend_colors_alpha(((uint32_t *)sdl->surface->pixels)[(i.x + pos.x) + ((i.y + pos.y) * sdl->surface->w)], \
 								((uint32_t *)src->pixels)[i.x + (i.y * src->w)], sdl->font.color.a);
 					}
 					else
 					{
-						((uint32_t *)sdl->ui_surface->pixels)[(i.x + pos.x) + ((i.y + pos.y) * sdl->ui_surface->w)] = \
-								blend_colors_alpha(((uint32_t *)sdl->ui_surface->pixels)[(i.x + pos.x) + ((i.y + pos.y) * sdl->ui_surface->w)], \
+						((uint32_t *)sdl->surface->pixels)[(i.x + pos.x) + ((i.y + pos.y) * sdl->surface->w)] = \
+								blend_colors_alpha(((uint32_t *)sdl->surface->pixels)[(i.x + pos.x) + ((i.y + pos.y) * sdl->surface->w)], \
 								sdl->font.box_color, sdl->font.color.a);
 					}
 				}
 				else
 				{
-					((uint32_t *)sdl->ui_surface->pixels)[(i.x + pos.x) + ((i.y + pos.y) * sdl->ui_surface->w)] = \
-							blend_colors_alpha(((uint32_t *)sdl->ui_surface->pixels)[(i.x + pos.x) + ((i.y + pos.y) * sdl->ui_surface->w)], \
+					((uint32_t *)sdl->surface->pixels)[(i.x + pos.x) + ((i.y + pos.y) * sdl->surface->w)] = \
+							blend_colors_alpha(((uint32_t *)sdl->surface->pixels)[(i.x + pos.x) + ((i.y + pos.y) * sdl->surface->w)], \
 							sdl->font.box_color, sdl->font.color.a);
 				}
 			}

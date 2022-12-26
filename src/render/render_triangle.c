@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_triangle.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/22 16:43:17 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/23 15:28:55 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,21 +18,21 @@ void render_buffer_triangles(t_sdlcontext *sdl, t_render *render)
 	int index;
 
 	index = 0;
-	if (render->is_wrap == true)
+	if (render->lightmode == lm_unlit || !sdl->lighting_toggled)
 	{
 		index = 0;
 		while (index < render->screenspace_ptri_count)
 		{
-			render_triangle_wrap(sdl, render, index);
+			render_triangle_unlit(sdl, render, index);
 			index++;
 		}
 	}
-	else
+	else if (render->lightmode == lm_lit)
 	{
 		index = 0;
 		while (index < render->screenspace_ptri_count)
 		{
-			render_triangle(sdl, render, index);
+			render_triangle_lit(sdl, render, index);
 			index++;
 		}
 	}
@@ -84,4 +84,5 @@ void render_buffer(t_sdlcontext *sdl, t_render *render)
 		render_buffer_triangle_wireframes(sdl, render);
 	if (render->img == NULL)
 		render_solid_triangle(sdl, render);
+	render->rs.triangle_count += render->screenspace_ptri_count;
 }

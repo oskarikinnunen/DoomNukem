@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vectors.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/21 17:00:26 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/22 16:56:20 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,9 @@ float		vector3_sqr_magnitude(t_vector3 vec);
 
 //returns distance between first and second vector
 float		vector3_dist(t_vector3 first, t_vector3 second);
+
+//returns distance between first and second vector, but different //TODO: better explanation
+float	vector3_sqr_dist(t_vector3 first, t_vector3 second);
 
 //returns dot product of vector 'first' and vector 'second'
 float		vector3_dot(t_vector3 first, t_vector3 second);
@@ -346,9 +349,9 @@ t_texture		vector2_to_texture(t_vector2 v);
 
 typedef struct s_ray
 {
-    t_vector3 origin;
-    t_vector3 dir;
-}   t_ray;
+	t_vector3 origin;
+	t_vector3 dir;
+}	t_ray;
 
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   occlusion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 14:40:03 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/06 18:08:47 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/26 19:12:32 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,25 @@ static float get_wall_radius(t_bounds bounds)
 		return(min_radius);
 }
 
+void update_object_bounds(t_object *obj)
+{
+	t_vector3	max;
+	t_vector3	min;
+
+	set_bounding_box(&max, &min, obj->vertices, obj->vertice_count);
+	obj->bounds.origin = vector3_lerp(max, min, 0.5f);
+	obj->bounds.radius = get_box_sphere_radius(obj->bounds.origin, max, min);
+	obj->bounds.box.v[0] = (t_vector3){.x = max.x, .y = max.y, min.z};
+	obj->bounds.box.v[1] = (t_vector3){.x = max.x, .y = min.y, min.z};
+	obj->bounds.box.v[2] = (t_vector3){.x = min.x, .y = min.y, min.z};
+	obj->bounds.box.v[3] = (t_vector3){.x = min.x, .y = max.y, min.z};
+	obj->bounds.box.v[4] = (t_vector3){.x = max.x, .y = max.y, max.z};
+	obj->bounds.box.v[5] = (t_vector3){.x = max.x, .y = min.y, max.z};
+	obj->bounds.box.v[6] = (t_vector3){.x = min.x, .y = min.y, max.z};
+	obj->bounds.box.v[7] = (t_vector3){.x = min.x, .y = max.y, max.z};
+	obj->bounds.type = bt_box;
+}
+
 void update_entity_bounds(t_entity *e)
 {
 	t_object	*obj;
@@ -99,13 +118,17 @@ void update_floor_bounds(t_meshtri *f)
 
 void update_wall_bounds(t_wall *w)
 {
-	t_object *obj;
+	t_object	*obj;
+	t_vector2	start;
+	t_vector2	end;
 
 	obj = w->entity->obj;
-	obj->bounds.box.v[0] = (t_vector3){w->line.start.x, w->line.start.y, 0.0f};
-	obj->bounds.box.v[1] = (t_vector3){w->line.end.x, w->line.end.y, 0.0f};
-	obj->bounds.box.v[2] = (t_vector3){w->line.start.x, w->line.start.y, w->height};
-	obj->bounds.box.v[3] = (t_vector3){w->line.end.x, w->line.end.y, w->height};
+	start = *w->edgeline.start;
+	end = *w->edgeline.end;
+	obj->bounds.box.v[0] = (t_vector3){start.x, start.y, 0.0f};
+	obj->bounds.box.v[1] = (t_vector3){end.x, end.y, 0.0f};
+	obj->bounds.box.v[2] = (t_vector3){start.x, start.y, w->height};
+	obj->bounds.box.v[3] = (t_vector3){end.x, end.y, w->height};
 	bzero(&obj->bounds.box.v[4], sizeof(t_vector3) * 4);
 	obj->bounds.origin = vector3_lerp(obj->bounds.box.v[0], obj->bounds.box.v[3], 0.5f);
 	obj->bounds.radius = get_wall_radius(obj->bounds);
@@ -114,17 +137,14 @@ void update_wall_bounds(t_wall *w)
 
 void default_entity_occlusion_settings(t_entity *e, t_world *world)
 {
-	//e->id = get_id(world);
 	e->occlusion.is_backface_cull = true;
 	e->occlusion.is_occluded = false;
-	e->occlusion.occlude = false;
+	e->occlusion.occlude = true;
 	e->occlusion.cull = true;
 }
 
-//id can be same for floors because they arent considered occluders, id is used to check if occluder is trying to cull itself.
 void default_floor_occlusion_settings(t_meshtri *f, t_world *world)
 {
-	f->entity->id = -2;
 	f->entity->occlusion.cull = true;
 	f->entity->occlusion.occlude = false;
 	f->entity->occlusion.is_backface_cull = false;
@@ -140,28 +160,31 @@ void default_wall_occlusion_settings(t_wall *w, t_world *world)
 	w->entity->occlusion.cull = true;
 }
 
-static void update_room_occlusion(t_sdlcontext sdl, t_render *render, t_room *room)
+void update_occlusion(struct s_world *world, t_render *render)
 {
-	int	i;
+	int			i;
+	int			found;
+	t_entity	*ent;
 
+	if (render->occlusion.occlusion == false)
+		return;
 	i = 0;
-	while (i < room->wallcount)
+	found = 0;
+	while (found < world->entitycache.existing_entitycount)
 	{
-		if (render->occlusion.occluder_box == true)
-			draw_edges(sdl, render, room->walls[i].entity, CLR_BLUE);
-		if (room->walls[i].entity->occlusion.occlude == true)
-			update_occlusion_culling(sdl, render, room->walls[i].entity);
+		ent = &world->entitycache.entities[i];
+		if (ent->status != es_free)
+		{
+			if (ent->status == es_active && !ent->hidden)
+			{
+				if (render->occlusion.occluder_box == true)
+					draw_edges(*world->sdl, render, ent, CLR_BLUE);
+				update_occlusion_culling(*world->sdl, render, ent);
+			}
+			found++;
+		}
 		i++;
 	}
-}
-
-void update_occlusion(t_sdlcontext sdl, t_render *render)
-{
-	t_list		*l;
-	t_entity	*ent;
-	t_wall		wall;
-	int			i;
-
 	//TODO: use entitycache
 
 	/*if (render->occlusion.occlusion == false)
@@ -184,26 +207,26 @@ void update_occlusion(t_sdlcontext sdl, t_render *render)
 	}*/
 }
 
-bool is_entity_culled(t_sdlcontext sdl, t_render *render, t_entity *entity)
+bool is_entity_culled(struct s_world *world, t_render *render, t_entity *entity)
 {
 	if (render->occlusion.occlusion == false)
 		return(false);
-	if (is_entity_frustrum_culled(sdl, render, entity) == false)
+	if (is_entity_frustrum_culled(*world->sdl, render, entity) == false)
 	{
-		if (is_entity_peripheral_culled(sdl, render, entity) == false)
+		if (is_entity_peripheral_culled(*world->sdl, render, entity) == false)
 		{
 			if (entity->occlusion.cull == true)
 			{
-				if (is_entity_occlusion_culled(sdl, render, entity) == false)
+				if (is_entity_occlusion_culled(world, render, entity) == false)
 				{
 					if (render->occlusion.cull_box == true)
-						draw_wireframe(sdl, render, entity, CLR_GREEN);
+						draw_wireframe(*world->sdl, render, entity, CLR_GREEN);
 					return(false);
 				}
 				else
 				{
 					if (render->occlusion.cull_box == true)
-						draw_wireframe(sdl, render, entity, CLR_RED);
+						draw_wireframe(*world->sdl, render, entity, CLR_RED);
 					render->rs.occlusion_cull_amount++;
 					return(true);
 				}

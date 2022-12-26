@@ -2,53 +2,58 @@
 
 static t_vector3 texcoord_to_loc(t_vector3 *v, t_vector2 *t, t_vector2 p)
 {
-    float       i;
-    float       s;
-    float       delta;
+	float       i;
+	float       s;
+	float       delta;
 
-    t_vector3   r;
-    i = 1.0f / ((t[1].x - t[0].x) * (t[2].y - t[0].y) - (t[1].y - t[0].y) * (t[2].x - t[0].x));
-    s = i * ((t[2].y - t[0].y) * (p.x - t[0].x) - (t[2].x - t[0].x) * (p.y - t[0].y));
-    delta = i * (-(t[1].y - t[0].y) * (p.x - t[0].x) + (t[1].x - t[0].x) * (p.y - t[0].y));
-    r.x = v[0].x + s * (v[1].x - v[0].x) + delta * (v[2].x - v[0].x);
-    r.y = v[0].y + s * (v[1].y - v[0].y) + delta * (v[2].y - v[0].y);
-    r.z = v[0].z + s * (v[1].z - v[0].z) + delta * (v[2].z - v[0].z);
-    return r;
+	t_vector3   r;
+	i = 1.0f / ((t[1].x - t[0].x) * (t[2].y - t[0].y) - (t[1].y - t[0].y) * (t[2].x - t[0].x));
+	s = i * ((t[2].y - t[0].y) * (p.x - t[0].x) - (t[2].x - t[0].x) * (p.y - t[0].y));
+	delta = i * (-(t[1].y - t[0].y) * (p.x - t[0].x) + (t[1].x - t[0].x) * (p.y - t[0].y));
+	r.x = v[0].x + s * (v[1].x - v[0].x) + delta * (v[2].x - v[0].x);
+	r.y = v[0].y + s * (v[1].y - v[0].y) + delta * (v[2].y - v[0].y);
+	r.z = v[0].z + s * (v[1].z - v[0].z) + delta * (v[2].z - v[0].z);
+	return r;
 }
 
 static bool intersect_triangle(t_ray r, t_texture *t, t_vector3 a, t_vector3 b, t_vector3 c)
 {
-    t_vector3   e1, e2, n;
+	t_vector3   e1, e2, n;
 
-    e1 = vector3_sub(b, a);
-    e2 = vector3_sub(c, a);
-    n = vector3_crossproduct(e1, e2);
+	e1 = vector3_sub(b, a);
+	e2 = vector3_sub(c, a);
+	n = vector3_crossproduct(e1, e2);
 
-    float det, invdet;
-    det = -vector3_dot(r.dir, n);
-    invdet = 1.0f/det;
-    t_vector3 ao = vector3_sub(r.origin, a);
-    t_vector3 dao = vector3_crossproduct(ao, r.dir);
-    t->u = vector3_dot(e2, dao) * invdet;
-    t->v = -vector3_dot(e1, dao) * invdet;
-    t->w = vector3_dot(ao, n) * invdet;
-    return(fabs(det) >= 1e-6 && t->w >= 0.0f && t->u >= 0.0f && t->v >= 0.0f && (t->u + t->v) <= 1.0f);
+	float det, invdet;
+	det = -vector3_dot(r.dir, n);
+	invdet = 1.0f/det;
+	t_vector3 ao = vector3_sub(r.origin, a);
+	t_vector3 dao = vector3_crossproduct(ao, r.dir);
+	t->u = vector3_dot(e2, dao) * invdet;
+	t->v = -vector3_dot(e1, dao) * invdet;
+	t->w = vector3_dot(ao, n) * invdet;
+	return(fabs(det) >= 1e-6 && t->w >= -0.01f && t->u >= 0.0f && t->v >= 0.0f && (t->u + t->v) <= 1.0f);
 }
-
 
 static void sample_img(t_lighting l, int x, int y, t_triangle_polygon t)
 {
 	t_ray		ray;
 	t_texture	temp_t;
 
+	if (l.lightmap->data[x + l.lightmap->size.x * y] != l.ambient_light)
+	{
+		printf("light map data %i, ambient %i \n", l.lightmap->data[x + l.lightmap->size.x * y], l.ambient_light);
+		return ;
+	}
+		
 	ray.origin = texcoord_to_loc(t.p3, t.uv, (t_vector2){x/(float)l.lightmap->size.x, y/(float)l.lightmap->size.y});
 	if (l.pointlight->shadows == false)
 	{
 		float dist = vector3_dist(ray.origin, l.pointlight->origin);
-		if (dist <= l.pointlight->radius && l.map[x + l.lightmap->size.x * y] == false)
+		if (dist <= l.pointlight->radius /*&& l.drawnbuff[x + l.lightmap->size.x * y] == false*/)
 		{
 			dist = 1.0f - (dist / l.pointlight->radius);
-			l.map[x + l.lightmap->size.x * y] = true;
+			//l.drawnbuff[x + l.lightmap->size.x * y] = true;
 			l.lightmap->data[x + l.lightmap->size.x * y] = ft_clamp((dist * 255) + l.lightmap->data[x + l.lightmap->size.x * y], 0, 255);
 		}
 		return;
@@ -57,6 +62,8 @@ static void sample_img(t_lighting l, int x, int y, t_triangle_polygon t)
 	bool ol = false;
 	for (int o = 0; o < l.entities_count; o++)
 	{
+		/*if (l.entities[o]->id == l.entity_id)
+			continue ;*/
 		for (int p = 0; p < l.entities[o]->obj->face_count; p++)
 		{
 			if (intersect_triangle(ray, &temp_t, l.triangles[o][p].p3[0], l.triangles[o][p].p3[1], l.triangles[o][p].p3[2]) == true)
@@ -71,13 +78,13 @@ static void sample_img(t_lighting l, int x, int y, t_triangle_polygon t)
 		if (ol == true)
 			break;
 	}
-	if (ol == false && l.map[x + l.lightmap->size.x * y] == false)
+	if (ol == false /*&& l.drawnbuff[x + l.lightmap->size.x * y] == false*/)
 	{
 		float dist = vector3_dist(ray.origin, l.pointlight->origin);
 		if (dist <= l.pointlight->radius)
 		{
 			dist = 1.0f - (dist / l.pointlight->radius);
-			l.map[x + l.lightmap->size.x * y] = true;
+			//l.drawnbuff[x + l.lightmap->size.x * y] = true;
 			l.lightmap->data[x + l.lightmap->size.x * y] = ft_clamp((dist * 255) + l.lightmap->data[x + l.lightmap->size.x * y], 0, 255);
 		}
 	}

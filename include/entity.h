@@ -55,6 +55,29 @@ typedef struct s_entity
 	//uint16_t		root_id;
 }	t_entity;
 
+/*typedef enum s_audiosource
+{
+	t_entity	*entity;
+	uint16_t	entity_id;
+}	t_audiosource;*/
+
+typedef enum e_prefabtype
+{
+	//pft_pickup,
+	pft_interactable,
+	pft_light,
+	pft_npc,
+	pft_audiosource,
+	pft_eventtrigger
+}	t_prefabtype;
+
+/*typedef struct s_prefab
+{
+	t_object		object_name[64];
+	t_prefabtype	prefabtype;
+	uint16_t		prefab_id;
+}	t_prefab;*/
+
 typedef struct s_gun
 {
 	t_entity	entity;
@@ -86,10 +109,10 @@ typedef struct s_entitycache
 void update_peripheral_culling(t_sdlcontext sdl, t_render *render, t_entity *entity);
 void update_occlusion_culling(t_sdlcontext sdl, t_render *render, t_entity *entity);
 
-bool is_entity_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
+bool is_entity_culled(struct s_world *world, t_render *render, t_entity *entity);
 bool is_entity_frustrum_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
 bool is_entity_peripheral_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
-bool is_entity_occlusion_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
+bool is_entity_occlusion_culled(struct s_world *world, t_render *render, t_entity *cull);
 
 void	calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity);
 int		calculate_tris_from_square(t_square s, t_entity *ent, t_render *render);
@@ -102,6 +125,7 @@ void	render_worldspace(t_render *render, t_entity *entity);
 void	render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 
 void create_map_for_entity(t_entity *entity, struct s_world *world);
+void create_dynamic_map_for_entity(t_entity *entity, struct s_world *world);
 void create_lightmap_for_entity(t_entity *entity, struct s_world *world);
 
 #endif

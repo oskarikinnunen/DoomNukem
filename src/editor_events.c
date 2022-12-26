@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_events.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/21 17:02:31 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/22 12:11:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,12 @@ void		toggle_keystates(t_hid_info *hid, SDL_Event e)
 		hid->keystate |= iskey(e, SDLK_2) << KEYS_2MASK;
 		hid->keystate |= iskey(e, SDLK_3) << KEYS_3MASK;
 		hid->keystate |= iskey(e, SDLK_4) << KEYS_4MASK;
-		hid->keystate |= iskey(e, SDLK_v) << KEYS_VMASK;
+		//hid->keystate |= iskey(e, SDLK_v) << KEYS_VMASK;
 		c = 'a';
 		while (c <= 'z')
 		{
 			hid->alphakeystate |= iskey(e, c) << (c - 'a');
+			hid->alphakey_pressed |= iskey(e, c) << (c - 'a');
 			c++; //Not the language
 		}
 	}
@@ -63,7 +64,7 @@ void		toggle_keystates(t_hid_info *hid, SDL_Event e)
 		hid->keystate &= ~(iskey(e, SDLK_2) << KEYS_2MASK);
 		hid->keystate &= ~(iskey(e, SDLK_3) << KEYS_3MASK);
 		hid->keystate &= ~(iskey(e, SDLK_4) << KEYS_4MASK);
-		hid->keystate &= ~(iskey(e, SDLK_v) << KEYS_VMASK);
+		//hid->keystate &= ~(iskey(e, SDLK_v) << KEYS_VMASK);
 		c = 'a';
 		while (c <= 'z')
 		{
@@ -93,6 +94,7 @@ t_gamereturn	editor_events(t_editor *ed)
 	static SDL_Event	e;
 	
 	ed->hid.mouse.scroll_delta = 0; //Needs to be reset
+	ed->hid.alphakey_pressed = 0; //Needs to be reset
 	if (ed->hid.mouse.relative)
 	{
 		SDL_GetRelativeMouseState(&ed->hid.mouse.delta.x, &ed->hid.mouse.delta.y);
@@ -107,8 +109,8 @@ t_gamereturn	editor_events(t_editor *ed)
 		if (e.type == SDL_KEYDOWN)
 		{
 			t_pointlight t;
-			if (iskey(e, SDLK_p))//TODO: temp shortcut for baking lighting
-				bake_lighting(&ed->render, &ed->world);
+			/*if (iskey(e, SDLK_p))//TODO: temp shortcut for baking lighting
+				bake_lighting_shadows(&ed->render, &ed->world);*/
 			if (iskey(e, SDLK_ESCAPE))
 			{
 				if ((ed->hid.keystate >> KEYS_SHIFTMASK) & 1)

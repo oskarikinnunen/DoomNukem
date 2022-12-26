@@ -71,16 +71,6 @@ void print_tri(t_triangle tri)
 	print_quat(tri.p[2]);
 }
 
-void print_point_tri(t_point_triangle tri)
-{
-	if (DEBUG_ON == 0)
-		return;
-	printf("printf t_point_triangle\n");
-	print_point(tri.p[0]);
-	print_point(tri.p[1]);
-	print_point(tri.p[2]);
-}
-
 void print_texture(t_texture t)
 {
 	if (DEBUG_ON == 0)

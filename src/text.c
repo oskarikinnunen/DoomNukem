@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   text.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 22:00:00 by raho              #+#    #+#             */
-/*   Updated: 2022/12/21 17:07:14 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/22 10:28:04 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ t_rectangle	print_text(t_sdlcontext *sdl, const char *text, t_point pos)
 	rect.position = pos;
 	rect.size.x = surfacetext->w;
 	rect.size.y = surfacetext->h;
-	join_text_to_surface(sdl->ui_surface, surfacetext, pos, sdl->font.color.a);
+	join_text_to_surface(sdl->surface, surfacetext, pos, sdl->font.color.a);
 	SDL_FreeSurface(surfacetext);
 	return (rect);
 }

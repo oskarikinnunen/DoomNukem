@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_raycast.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 18:03:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/21 17:23:16 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/26 14:48:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,8 +170,8 @@ t_vector3	raycast(t_editor *ed)
 		result = vector3_movetowards(result, rayforward, dist);
 		iter++;
 	}
-	result.x = ft_clampf(result.x, 0.0f, 2500.0f);
-	result.y = ft_clampf(result.y, 0.0f, 2500.0f);
+	result.x = ft_clampf(result.x, 0.0f, 3000.0f);
+	result.y = ft_clampf(result.y, 0.0f, 3000.0f);
 	result.z = 0.0f;
 	return (result);
 }

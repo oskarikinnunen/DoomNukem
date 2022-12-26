@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   culling_debug.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 14:59:10 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/06 19:41:55 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/26 18:53:05 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,9 @@ void draw_wireframe(t_sdlcontext sdl, t_render *render, t_entity *e, uint32_t cl
 	render->occ_tri_count = 0;
 	render->occ_calc_tri_count = 0;
 	calculate_triangles(sdl, render, e);
-	i = 0;
 	get_min_max_from_triangles(&s.min, &s.max, render->occ_draw_tris, render->occ_tri_count);
 	calculate_tris_from_square(s, e, render);
+	i = 0;
 	while (i < render->occ_tri_count)
 	{
 		drawline(sdl, (t_point){render->occ_draw_tris[i].p[0].v.x, render->occ_draw_tris[i].p[0].v.y}, (t_point){render->occ_draw_tris[i].p[1].v.x, render->occ_draw_tris[i].p[1].v.y}, clr);

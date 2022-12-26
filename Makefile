@@ -6,7 +6,7 @@
 #    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/12/22 13:44:15 by vlaine           ###   ########.fr        #
+#    Updated: 2022/12/26 15:41:27 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,10 +31,7 @@ FMOD = $(FMOD_DIR)/copied
 LIBFT = libft/libft.a
 
 LUAFOLDER= lua-5.3.6
-LUA= $(LUAFOLDER)/install/lib/liblua.a #TODO: find out real name!
-
-LUAFOLDER= lua-5.3.6
-LUA= $(LUAFOLDER)/install/lib/liblua.a #TODO: find out real name!
+LUA= $(LUAFOLDER)/install/lib/liblua.a
 
 #Source files:
 SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
@@ -44,7 +41,8 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		editor/tools/wall_tool_rooms.c \
 		editor/tools/npc_tool.c \
 		editor/tools/room_tool.c \
-		editor/tools/room_tool_new.c \
+		editor/tools/room_tool_connect.c \
+		editor/tools/room_tool_common.c \
 		editor/tools/gun_tool.c \
 		editor/tools/tool_common_functions.c \
 		editor/tools/autogui.c \
@@ -77,7 +75,6 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		occlusion/peripheral_culling.c \
 		occlusion/occlusion_culling.c \
 		occlusion/culling_debug.c \
-		occlusion/bitmask_culling.c \
 		surface_tools.c \
 		colors.c \
 		render/render_entity.c \
@@ -90,7 +87,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		render/rasterization/rasterize_triangle_wrap.c \
 		render/rasterization/rasterize_triangle.c \
 		render/rasterization/rasterize_triangle_uv.c \
-		render/rasterization/rasterize_triangle_bit.c \
+		render/rasterization/rasterize_triangle_dynamic.c \
 		render/render_helper.c \
 		render/flip_channel.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
@@ -132,6 +129,8 @@ warning:
 	exit 1
 endif
 
+#multi:
+#	$(MAKE) -j6 all
 
 all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(FMOD) $(LUA) $(LIBFT) $(OBJ)
 	$(CC) $(OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LUA) $(LDFLAGS)

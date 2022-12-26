@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   obj_parse_faces.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 15:55:15 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/02 20:44:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/22 09:48:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ t_list	*get_face_list(int fd, t_list *materials)
 	int			mat_index;
 
 	list = NULL;
+	mat_index = 0;
 	while (ft_get_next_line(fd, &line))
 	{
 		if (ft_strnstr(line, "usemtl ", sizeof("usemtl")))

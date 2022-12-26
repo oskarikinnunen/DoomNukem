@@ -7,7 +7,6 @@
 # include "shapes.h"
 # include "objects.h" // only one function is using currently can be moved to doomnukem.h if needed
 # include "lighting.h"
-# include "occlusion.h"
 
 # include "fmod.h"
 
@@ -132,6 +131,13 @@ typedef struct s_camera
 	t_vector3			lookdir;
 }	t_camera;
 
+typedef enum e_rend_lightmode
+{
+	lm_unlit,
+	lm_lit,
+	lm_dynamic
+}	t_rend_lightmode;
+
 typedef struct s_render
 {
 	t_camera			camera;
@@ -152,7 +158,10 @@ typedef struct s_render
 	struct s_world		*world;
 	t_debug_occlusion	occlusion;
 	t_map				map;
-	bool				is_wrap;
+	uint32_t			dynamic_light;
+	t_rend_lightmode	lightmode;
+	/*bool				is_wrap;
+	bool				dynamic_light;*/
 	struct s_sdlcontext	*sdl;
 }	t_render;
 
@@ -173,19 +182,13 @@ typedef struct s_sdlcontext
 	struct s_object			*objects;
 	int						ps1_tri_div;
 	bool					global_wireframe;
+	bool					lighting_toggled;
 	uint32_t				objectcount;
 	t_font					font;
 	t_audio					audio;
 	uint32_t				window_w;
 	uint32_t				window_h;
 	t_point					screensize;
-	uint8_t					ambient_light;
-	t_bitmask				bitmask;
-	uint32_t				*cpy_pixel;
-	float					*buf1;
-	float					*buf2;
-	float					*draw_buffer;
-	float					*copy_buffer;
 }	t_sdlcontext;
 
 void	alloc_image(t_img *img, int width, int height);
@@ -224,13 +227,10 @@ t_triangle			triangle_to_viewspace(t_triangle tritransformed, t_mat4x4 matview);
 t_point_triangle	triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_triangle clipped, t_sdlcontext sdl);
 
 /* RASTERIZER */
-void				render_triangle(t_sdlcontext *sdl, t_render *render, int index);
-void				render_triangle_wrap(t_sdlcontext *sdl, t_render *render, int index);
+void				render_triangle_lit(t_sdlcontext *sdl, t_render *render, int index);
 void				render_triangle_uv(t_lighting l, t_triangle_polygon triangle);
-bool				render_triangle_bit(t_sdlcontext *sdl, t_bit_triangle triangle);
-
-bool fill_point_bit_tri_top(t_sdlcontext *sdl, t_point *p);
-bool fill_point_bit_tri_bot(t_sdlcontext *sdl, t_point *p);
+void				render_triangle_unlit(t_sdlcontext *sdl, t_render *render, int index);
+void				render_triangle_dynamic(t_sdlcontext *sdl, t_render *render, int index);
 
 /* AUDIO */
 
@@ -264,7 +264,6 @@ t_point_triangle	wf_tri(t_point_triangle in, float scaling);
 t_texture			calc_step_texture(t_texture *t, float delta);
 void				calc_points_step(float x_step[2], t_texture t_step[2], t_point *p, t_texture *t, float delta);
 void				sort_point_uv_tri(t_point *p, t_texture *t);
-void				sort_point_tri(t_point *p);
 void				sort_polygon_tri(t_point *p2, t_vector2 *t, t_vector3 *p3);
 void				ft_swap(void * a, void * b, size_t len);
 t_point_triangle	ps1(t_point_triangle in, int div);

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/22 17:12:20 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/26 17:46:49 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,39 +59,11 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 		ent = &world->entitycache.entities[i];
 		if (ent->status != es_free)
 		{
-			if (ent->status == es_active && !ent->hidden)
+			if (ent->status == es_active && !ent->hidden && is_entity_culled(world, render, ent) == false)
 				render_entity(sdl, render, ent);
 			found++;
 		}
 		i++;
-	}
-}
-
-static void bitmask_to_pixels(t_sdlcontext *sdl)
-{
-	return;
-	uint32_t	clr;
-
-
-	t_point max;
-	max.x = sdl->window_w/8;
-	max.y = sdl->window_h/4;
-	sdl->bitmask.bitmask[5050] = 1;
-	for (int y = 0; y < sdl->window_h; y++)
-	{
-		for (int x = 0; x < sdl->window_w; x++)
-		{
-			clr = INT_MAX;
-			//printf("x %d, y %d\n", x, y);
-			//printf("bitmask chunk %d\n", (y / 4) * (sdl->window_w / 8) + (x / 8));
-			/*y = (y/4) * (1024/8);
-			x = (x/8);
-			y = (y % 4) * 8;
-			x = x % 8;*/
-			if ((sdl->bitmask.bitmask[(y / 4) * (sdl->window_w / 8) + (x / 8)] >> ((y % 4) * 8) + (x % 8) & 1))
-				clr = CLR_RED;
-			((uint32_t *)sdl->surface->pixels)[sdl->window_w * y + x] = clr;
-		}
 	}
 }
 
@@ -105,9 +77,6 @@ void update_world3d(t_world *world, t_render *render)
 	
 	sdl = world->sdl;
 	ft_bzero(&render->rs, sizeof(t_render_statistics));
-	memset(sdl->surface->pixels, 1, sizeof(uint32_t) * sdl->window_h * sdl->window_w);
-	//memset(sdl->bitmask.bitmask, UINT32_MAX, sizeof(uint32_t) * (sdl->window_w/8) * (sdl->window_h/4));
-	bzero(sdl->bitmask.bitmask, sizeof(uint32_t) * (sdl->window_w/8) * (sdl->window_h/4));
 	/*update_npcs(world);
 	i = 0;
 	while (i < 128)
@@ -121,10 +90,11 @@ void update_world3d(t_world *world, t_render *render)
 		}
 		i++;
 	}*/
+	update_occlusion(world, render);
 	update_entitycache(sdl, world, render);
-	if (!sdl->global_wireframe)
+	if (!sdl->global_wireframe && !world->skybox.hidden)
 		render_entity(sdl, render, &world->skybox);
-	bitmask_to_pixels(sdl);
+	rescale_surface(sdl);
 	gui_start(world->debug_gui);
 	gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);
 	gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);
@@ -139,7 +109,16 @@ void update_world3d(t_world *world, t_render *render)
 	res = point_fmul(sdl->screensize, sdl->resolution_scaling);
 	gui_labeled_point("3D Resolution:", res, world->debug_gui);
 	gui_labeled_bool_edit("Wireframe:", &world->sdl->global_wireframe, world->debug_gui);
+	if (gui_shortcut_button("Toggle Lighting", 'L', world->debug_gui))
+		sdl->lighting_toggled = !sdl->lighting_toggled;
+	//gui_labeled_bool_edit("Lighting:", &world->sdl->lighting_toggled, world->debug_gui);
 	gui_labeled_int_slider("PS1 tri div:", &sdl->ps1_tri_div, 2.0f, world->debug_gui);
+	if (gui_shortcut_button("Toggle Skybox", 'H', world->debug_gui))
+		world->skybox.hidden = !world->skybox.hidden;
+	if (gui_shortcut_button("Bake lighting", 'b', world->debug_gui))
+		bake_lighting(render, world);
+	if (gui_shortcut_button("Bake lighting (new)", 'v', world->debug_gui))
+		start_lightbake(&world->sdl->render, world);
 	sdl->ps1_tri_div = ft_clamp(sdl->ps1_tri_div, 1, 4);
 	gui_end(world->debug_gui);
 }
@@ -147,6 +126,7 @@ void update_world3d(t_world *world, t_render *render)
 void	init_entity(t_entity *entity, t_world *world)
 {
 	entity->obj = get_object_by_name(*world->sdl, entity->object_name);
+	default_entity_occlusion_settings(entity, NULL);
 }
 
 void	scale_skybox_uvs(t_object *obj)
@@ -227,6 +207,10 @@ t_room	load_room(char *filename)
 	temp = load_chunk(filename, "AREA", sizeof(t_floor_area));
 	result.floor_areas = list_to_ptr(temp, &result.floor_areacount);
 	listdel(&temp);
+
+	temp = load_chunk(filename, "EDGE", sizeof(t_vector2));
+	result.edges = list_to_ptr(temp, &result.edgecount);
+	listdel(&temp);
 	return (result);
 }
 
@@ -240,9 +224,13 @@ static void	startup_init_room(t_world *world, t_room *r)
 	while (i < r->wallcount)
 	{
 		w = &r->walls[i];
+		w->edgeline.start = &r->edges[w->edgeline.start_index];
+		w->edgeline.end = &r->edges[w->edgeline.end_index];
 		w->entity = &world->entitycache.entities[w->saved_entityid]; //TODO: make function "get_entity_from_cache_by_id" (with a shorter name, lol)
-		w->entity->obj = object_plane(world->sdl);
-		applywallmesh(w);
+		//w->entity->obj = object_plane(world->sdl);
+		entity_assign_object(world, w->entity, object_plane(world->sdl));
+		w->entity->obj->materials[0].img = get_image_by_name(*world->sdl, w->texname);
+		applywallmesh(w, r, world);
 		i++;
 	}
 	i = 0;
@@ -251,6 +239,7 @@ static void	startup_init_room(t_world *world, t_room *r)
 		f = &r->floors[i];
 		f->entity = &world->entitycache.entities[f->saved_entityid]; //TODO: make function "get_entity_from_cache_by_id" (with a shorter name, lol)
 		f->entity->obj = object_tri(world->sdl);
+		f->entity->obj->materials[0].img = get_image_by_name(*world->sdl, f->texname);
 		applytrimesh(*f, f->entity->obj);
 		i++;
 	}
@@ -325,6 +314,7 @@ void		destroy_entity(t_world *world, t_entity *ent)
 	cache = &world->entitycache;
 	//protect id here? if greater than alloccount
 	cache->entities[ent->id].status = es_free;
+	cache->entities[ent->id].obj = NULL;
 	if (cache->existing_entitycount == 0)
 		error_log(EC_MALLOC);
 	cache->existing_entitycount--;
@@ -366,7 +356,14 @@ t_entity	*spawn_entity(t_world	*world)
 	return (NULL); //never gets here
 }
 
-t_entity	*spawn_basic_entity(t_world *world, char *objectname, t_vector3 position)
+void		entity_assign_object(t_world *world, t_entity *entity, t_object *obj)
+{
+	entity->obj = obj;
+	create_lightmap_for_entity(entity, world);
+	create_map_for_entity(entity, world);
+}
+
+t_entity	*spawn_basic_entity(t_world *world, char *objectname, t_vector3 position) //UNUSED
 {
 	t_entity	*ent;
 
@@ -443,6 +440,7 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 
 	ft_bzero(&world, sizeof(t_world));
 	world.sdl = sdl;
+	t_vector2 v;
 	world.guns = load_chunk(filename, "GUNS", sizeof(t_gun));
 	world.debugconsole = init_debugconsole();
 	world.entitycache = init_entitycache(1024);
@@ -460,12 +458,14 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 	load_walltextures(&world, *sdl);
 	ft_bzero(&world.skybox, sizeof(t_entity));
 	world.skybox.obj = get_object_by_name(*sdl, "cube");
-	world.skybox.obj->materials[0].img = get_image_by_name(*sdl, "grid_d.png");
+	world.skybox.obj->materials[0].img = get_image_by_name(*sdl, "grid_d.cng");
 	//scale_skybox_uvs(world.skybox.obj);
-	world.skybox.transform.scale = vector3_mul(vector3_one(), 3000.0f);
-	world.skybox.transform.position = (t_vector3){1500.0f, 1500.0f, 1495.0f};
+	world.skybox.transform.scale = vector3_mul(vector3_one(), 300.0f);
+	world.skybox.transform.position = (t_vector3){1500.0f, 1500.0f, 1497.5f};
 	//spawn_npc(&world, "cyborg", (t_vector3){500.0f, 500.0f, 0.0f}, &sdl);
 	//world.npcpool[0].destination = (t_vector3){200.0f, 200.0f, 0.0f};
+	ft_bzero(&world.lighting, sizeof(t_lighting));
+	world.lighting.ambient_light = 20;
 	for_all_entities(&world, create_lightmap_for_entity);
 	for_all_entities(&world, create_map_for_entity);
 	return (world);
@@ -491,12 +491,14 @@ void	prepare_saving(t_room *room)
 	while (i < room->wallcount)
 	{
 		room->walls[i].saved_entityid = room->walls[i].entity->id;
+		ft_strcpy(room->walls[i].texname, room->walls[i].entity->obj->materials[0].img->name);
 		i++;
 	}
 	i = 0;
 	while (i < room->floorcount)
 	{
 		room->floors[i].saved_entityid = room->floors[i].entity->id;
+		ft_strcpy(room->floors[i].texname, room->floors[i].entity->obj->materials[0].img->name);
 		i++;
 	}
 }
@@ -514,6 +516,8 @@ void	save_room(t_room room)
 	save_chunk(room.name, "FLOR", floorlist);
 	t_list *arealist = ptr_to_list(room.floor_areas, room.floor_areacount, sizeof(t_floor_area));
 	save_chunk(room.name, "AREA", arealist);
+	t_list *edgelist = ptr_to_list(room.edges, room.edgecount, sizeof(t_vector2));
+	save_chunk(room.name, "EDGE", edgelist);
 	close(fd);
 }
 

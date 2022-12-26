@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:17:04 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/08 16:31:58 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/22 09:48:12 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ struct s_roomtooldata;
 struct s_room;
 
 void		makefloor(struct s_editor *ed, struct s_roomtooldata dat, struct s_sdlcontext *sdl);
-void		makefloor_room(struct s_editor *ed, struct s_sdlcontext *sdl, struct s_room *room, int debug);
+//void		makefloor_room(struct s_editor *ed, struct s_sdlcontext *sdl, struct s_room *room, int debug);
 void		floorcalc_debugdraw(struct s_editor *ed, struct s_sdlcontext *sdl, t_floorcalc fc, int tri_i, float rad);
 void		render_snapgrid(struct s_editor *ed, struct s_sdlcontext *sdl, t_vector2 wallpos, bool shift, bool hover); //TODO: move somewhere
 

@@ -58,8 +58,9 @@ static void triangle_to_projection(t_sdlcontext sdl, t_render *render, t_triangl
 			t_vector3 voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
 			buff[i].p[index].v = vector3_add(buff[i].p[index].v, voffsetview);
 
-			buff[i].p[index].v.x *= 0.5f * (float)sdl.window_w;
-			buff[i].p[index].v.y *= 0.5f * (float)sdl.window_h;
+			buff[i].p[index].v.x *= 0.5f * (float)(sdl.window_w * sdl.resolution_scaling);
+			buff[i].p[index].v.y *= 0.5f * (float)(sdl.window_h * sdl.resolution_scaling);
+
 			index++;
 		}
 		render->occ_calc_tris[render->occ_calc_tri_count++] = buff[i];
@@ -187,8 +188,8 @@ static int	edge_to_screenspace(t_sdlcontext sdl, int *v, t_quaternion q[8], t_re
 		t_vector3 voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
 		edge->v[i] = vector3_add(edge->v[i], voffsetview);
 
-		edge->v[i].x *= 0.5f * sdl.window_w;
-		edge->v[i].y *= 0.5f * sdl.window_h;
+		edge->v[i].x *= 0.5f * (float)(sdl.window_w * sdl.resolution_scaling);
+		edge->v[i].y *= 0.5f * (float)(sdl.window_h * sdl.resolution_scaling);
 	}
 	return(1);
 }
@@ -297,7 +298,9 @@ void update_occlusion_culling(t_sdlcontext sdl, t_render *render, t_entity *enti
 	render->occ_tri_count = 0;
 	render->occ_calc_tri_count = 0;
 	if (entity->obj->bounds.type == bt_plane)
+	{
 		count = entity_plane_to_screenspace_edges(sdl, render, entity, edges, q);
+	}
 	else
 		count = entity_box_to_screenspace_edges(sdl, render, entity, edges, q);
 	i = 0;
@@ -382,7 +385,9 @@ void update_occlusion_culling(t_sdlcontext sdl, t_render *render, t_entity *enti
 		occlusion->is_occluded = false;
 	}
 	else
+	{
 		occlusion->is_occluded = true;
+	}
 }
 
 
@@ -498,11 +503,9 @@ bool is_valid_occlude_check(int32_t id, t_entity *occlude, t_render *render, t_s
 	return(false);
 }
 
-bool is_entity_occlusion_culled(t_sdlcontext sdl, t_render *render, t_entity *cull)
+bool is_entity_occlusion_culled(struct s_world *world, t_render *render, t_entity *cull)
 {
-	int			i;
 	t_list		*l;
-	t_entity	*ent;
 	t_triangle	*ta;
 	t_triangle	*tb;
 	t_square	cull_square;
@@ -513,53 +516,42 @@ bool is_entity_occlusion_culled(t_sdlcontext sdl, t_render *render, t_entity *cu
 	render->occ_calc_tri_count = 0;
 	if (cull->occlusion.is_occluded == true)
 		return(true);
-	calculate_triangles(sdl, render, cull);
+	calculate_triangles(*world->sdl, render, cull);
 	ta = render->occ_draw_tris;
 	tb = render->occ_calc_tris;
 	cull_dist = vector3_dist(vector3_add(cull->obj->bounds.origin, cull->transform.position), render->camera.position);
 	get_min_max_from_triangles(&cull_square.min, &cull_square.max, render->occ_draw_tris, render->occ_tri_count);
 	count = calculate_tris_from_square(cull_square, cull, render);
-	/*l = render->world->roomlist;
-	while (l != NULL)
+
+	int			i;
+	int			found;
+	t_entity	*ent;
+
+	i = 0;
+	found = 0;
+	while (found < world->entitycache.existing_entitycount)
 	{
-		t_room room = *(t_room *)l->content;
-		i = 0;
-		while (i < room.wallcount)
+		ent = &world->entitycache.entities[i];
+		if (ent->status != es_free)
 		{
-			ent = room.walls[i].entity;
-			if (is_valid_occlude_check(cull->id, ent, render, cull_square, cull_dist))
+			if (ent->status == es_active && !ent->hidden)
 			{
-				count = is_culled(ent, count, &ta, &tb);
-				if (count > 100)
-					return(false);
-				if (count == 0)
-					return(true);
-				swap(&ta, &tb);
+				if (is_valid_occlude_check(cull->id, ent, render, cull_square, cull_dist))
+				{
+					count = is_culled(ent, count, &ta, &tb);
+					if (count > 100)
+					{
+						return(false);
+					}
+					if (count == 0)
+						return(true);
+					swap(&ta, &tb);
+				}
 			}
-			i++;
+			found++;
 		}
-		i = 0;
-		while (i < room.floorcount)
-		{
-			i++;
-		}
-		l = l->next;
+		i++;
 	}
-	l = render->world->entitylist;
-	while (l != NULL)
-	{
-		ent = (t_entity *)l->content;
-		if (is_valid_occlude_check(cull->id, ent, render, cull_square, cull_dist))
-		{
-			count = is_culled(ent, count, &ta, &tb);
-			if (count > 10)
-				return(false);
-			if (count == 0)
-				return(true);
-			swap(&ta, &tb);
-		}
-		l = l->next;
-	}*/
 	render->occ_tri_count = 0;
 	render->occ_calc_tri_count = 0;
 	return(false);

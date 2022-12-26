@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   autogui.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/21 17:09:54 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/22 10:29:10 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -566,7 +566,7 @@ bool	gui_shortcut_button(char *str, int alpha_or_keymask, t_autogui *gui)
 	gui_layout(gui, br.rect);
 	if (alpha_or_keymask < 32 && (gui->hid->keystate >> alpha_or_keymask) & 1) //Assumed keymask
 		br.clicked = true;
-	if (ft_isalpha(alpha_or_keymask) && check_alpha_key(gui->hid->alphakeystate, alpha_or_keymask))
+	if (ft_isalpha(alpha_or_keymask) && check_alpha_key(gui->hid->alphakey_pressed, alpha_or_keymask))
 		br.clicked = true;
 	return (br.clicked);
 }
@@ -689,6 +689,19 @@ bool	gui_highlighted_button(char *str, t_autogui *gui) //TODO, DRAWRECTANGLE AMB
 	return (br.clicked);
 }
 
+bool	gui_labeled_bool(char *str, bool b, t_autogui *gui)
+{
+	char	tstr[12] = "true";
+	char	fstr[12] = "false";
+	gui_starthorizontal(gui);
+	gui_label(str, gui);
+	if (b)
+		gui_label(tstr, gui);
+	else
+		gui_label(fstr, gui);
+	gui_endhorizontal(gui);
+}
+
 bool	gui_labeled_bool_edit(char *str, bool *b, t_autogui *gui)
 {
 	gui_starthorizontal(gui);
@@ -798,10 +811,7 @@ bool	gui_int_slider(int *i, float mul, t_autogui *gui)
 			if (gui->hid->mouse.relative && gui->locking_player)
 			{
 				//add += gui->hid->mouse.delta.x;
-				if (gui->hid->mouse.delta.x > 0)
-					add = 1;
-				if (gui->hid->mouse.delta.x < 0)
-					add = -1;
+				add = gui->hid->mouse.delta.x;
 				if (add != 0)
 					modified = true;
 			}

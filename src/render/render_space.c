@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_space.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 15:36:10 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/21 18:42:54 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/23 15:27:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ t_point_triangle triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_tria
 		triprojected.t[i] = clipped.t[i];
 		tri.t[i].u = triprojected.t[i].u / triprojected.p[i].w;
 		tri.t[i].v = triprojected.t[i].v / triprojected.p[i].w;
-		tri.t[i].w = 1.0f / triprojected.p[i].w;
+		tri.t[i].w = 1.0f / triprojected.p[i].w; //1.0f /
 		triprojected.p[i].v = vector3_div(triprojected.p[i].v, triprojected.p[i].w);
 		triprojected.p[i].v = vector3_negative(triprojected.p[i].v);
 		triprojected.p[i].v = vector3_add(triprojected.p[i].v, voffsetview);
@@ -141,16 +141,22 @@ void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 		}
 		if (index + 1 == obj->face_count || obj->faces[index].materialindex != obj->faces[index + 1].materialindex)
 		{
-			render->is_wrap = true;
-			if (entity->map)
+			render->lightmode = lm_unlit;
+			render->img = obj->materials[obj->faces[index].materialindex].img;
+			if (entity->map && sdl->lighting_toggled)
 			{
-				render->map = entity->map[obj->faces[index].materialindex];
-				render->map.img_size = point_sub(render->map.img_size, (t_point){1, 1});
-				render->is_wrap = false;
-			}
-			else
-			{
-				render->img = obj->materials[obj->faces[index].materialindex].img;
+				/*if (entity->lightmap->dynamic)
+				{
+					render->dynamic_light = entity->lightmap->dynamic_data;
+					render->lightmode = lm_dynamic;
+				}
+					
+				else {*/
+					render->map = entity->map[obj->faces[index].materialindex];
+					//if (!entity->lightmap->dynamic)
+					render->map.img_size = point_sub(render->map.img_size, (t_point){1, 1});
+					render->lightmode = lm_lit;
+				//}
 			}
 			clip_and_render_triangles(sdl, render);
 		}

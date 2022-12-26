@@ -87,7 +87,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	game.world.debug_gui->hidden = true;
 	game.world.debug_gui->rect.position.y = sdl.window_h / 2;
 	game.world.debug_gui->rect.size.y = sdl.window_h / 2;
-	player_init(&game.player, &sdl);
+	player_init(&game.player, &sdl, &game.world);
 	initialize_controllers(&game.hid);
 	while (gr == game_continue)
 	{

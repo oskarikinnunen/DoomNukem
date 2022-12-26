@@ -1,6 +1,6 @@
 #include "doomnukem.h"
 
-static uint32_t sample_img_wrapper(t_render *render, t_texture t)
+static uint32_t sample_img_dynamic(t_render *render, t_texture t)
 {
 	static uint8_t	x8b;
 	static uint8_t	y8b;
@@ -12,7 +12,7 @@ static uint32_t sample_img_wrapper(t_render *render, t_texture t)
 	y8b = (t.v / t.w) * 255;
 	ysample = (y8b * (render->img->size.y - 1)) / 255;
 
-	return(flip_channels(render->img->data[(xsample * render->img->size.x) + ysample]));
+	return(flip_channels(render->img->data[(ysample * render->img->size.x) + xsample]));
 }
 
 static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_render *render)
@@ -49,7 +49,7 @@ static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 			{
 				sdl->zbuffer[x + y * sdl->window_w] = t[0].w;
 				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] =
-					sample_img_wrapper(render, t[0]);
+					sample_img_dynamic(render, t[0]);
 			}
 			t[0].u += t_step[2].u;
 			t[0].v += t_step[2].v;
@@ -101,7 +101,7 @@ static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 			{
 				sdl->zbuffer[x + y * sdl->window_w] = t[0].w;
 				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] =
-					sample_img_wrapper(render, t[0]);
+					sample_img_dynamic(render, t[0]);
 			}
 			t[0].u += t_step[2].u;
 			t[0].v += t_step[2].v;
@@ -119,7 +119,7 @@ static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 	}
 }
 
-void	render_triangle_wrap(t_sdlcontext *sdl, t_render *render, int index)
+void	render_triangle_unlit(t_sdlcontext *sdl, t_render *render, int index)
 {
 	t_point_triangle	triangle;
 	t_point				p_split;

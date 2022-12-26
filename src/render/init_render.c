@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/22 15:06:28 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/26 20:14:49 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,11 @@ t_render	init_render(t_sdlcontext sdl, struct s_world *world)
 	render.camera.vtarget = vector3_add(render.camera.position, render.camera.lookdir);
 	render.camera.matcamera = matrix_lookat(render.camera.position, render.camera.vtarget, (t_vector3){0.0f, 0.0f, 1.0f});
 	render.camera.matview = matrix_quickinverse(render.camera.matcamera);
-	render.occlusion.occlusion = false;
-	render.occlusion.cull_box = false;
-	render.occlusion.occluder_box = false;
+	render.occlusion.occlusion = true;
+	render.occlusion.cull_box = true;
+	render.occlusion.occluder_box = true;
 	render.world = world;
+	render.sdl = &sdl;
 	return(render);
 }
 
