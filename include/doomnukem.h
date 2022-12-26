@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/22 15:48:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/23 13:29:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,6 +243,8 @@ void	update_wall_bounds(t_wall *w);
 void	start_lightbake(t_render *render, t_world *world);
 void	bake_lights(t_render *render, t_world *world);
 
+
+uint8_t *smooth_lightmap(t_lightmap *lmap);
 
 void	bake_lighting(t_render *render, t_world *world);
 void	bake_lighting_shadows(t_render *render, t_world *world);

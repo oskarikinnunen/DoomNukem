@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/22 17:12:53 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/23 15:28:55 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void render_buffer_triangles(t_sdlcontext *sdl, t_render *render)
 		index = 0;
 		while (index < render->screenspace_ptri_count)
 		{
-			render_triangle_wrap(sdl, render, index);
+			render_triangle_unlit(sdl, render, index);
 			index++;
 		}
 	}
@@ -32,19 +32,10 @@ void render_buffer_triangles(t_sdlcontext *sdl, t_render *render)
 		index = 0;
 		while (index < render->screenspace_ptri_count)
 		{
-			render_triangle(sdl, render, index);
+			render_triangle_lit(sdl, render, index);
 			index++;
 		}
 	}
-	/*else
-	{
-		index = 0;
-		while (index < render->screenspace_ptri_count)
-		{
-			render_triangle_dynamic(sdl, render, index);
-			index++;
-		}
-	}*/
 }
 
 void render_buffer_triangle_wireframes(t_sdlcontext *sdl, t_render *render)

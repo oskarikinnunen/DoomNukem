@@ -123,6 +123,15 @@ t_texture calc_step_texture(t_texture *t, float delta)
 	return(step);
 }
 
+/*t_texture calc_step_texture2(t_texture *t, float delta)
+{	
+	t_texture step;
+	step.u = (t[2].u - t[1].u) / delta;
+	step.v = (t[2].v - t[1].v) / delta;
+	step.w = (t[2].w - t[1].w) / delta;
+	return(step);
+}*/
+
 t_point_triangle	wf_tri(t_point_triangle in, float scaling)
 {
 	t_point_triangle	res;

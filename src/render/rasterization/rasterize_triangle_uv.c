@@ -32,7 +32,7 @@ static bool intersect_triangle(t_ray r, t_texture *t, t_vector3 a, t_vector3 b, 
 	t->u = vector3_dot(e2, dao) * invdet;
 	t->v = -vector3_dot(e1, dao) * invdet;
 	t->w = vector3_dot(ao, n) * invdet;
-	return(fabs(det) >= 1e-6 && t->w >= 0.0f && t->u >= 0.0f && t->v >= 0.0f && (t->u + t->v) <= 1.0f);
+	return(fabs(det) >= 1e-6 && t->w >= -0.01f && t->u >= 0.0f && t->v >= 0.0f && (t->u + t->v) <= 1.0f);
 }
 
 static void sample_img(t_lighting l, int x, int y, t_triangle_polygon t)

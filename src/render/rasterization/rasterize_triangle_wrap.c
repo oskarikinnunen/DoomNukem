@@ -119,7 +119,7 @@ static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 	}
 }
 
-void	render_triangle_wrap(t_sdlcontext *sdl, t_render *render, int index)
+void	render_triangle_unlit(t_sdlcontext *sdl, t_render *render, int index)
 {
 	t_point_triangle	triangle;
 	t_point				p_split;

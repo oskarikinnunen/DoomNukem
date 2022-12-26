@@ -111,6 +111,60 @@ void create_dynamic_map_for_entity(t_entity *entity, struct s_world *world)
 	}
 }
 
+uint8_t	average(t_point sample, t_lightmap *lmap, t_map *map)
+{
+	t_point	subsample;
+	t_point	avgsample;
+	t_point	start;
+	uint32_t	avg;
+	int			hit;
+
+	subsample.x = 0;
+	subsample.y = 0;
+	start = point_sub(sample, point_one());
+	avg = 0;
+	hit = 0;
+	while (subsample.y < 3)
+	{
+		subsample.x = 0;
+		while (subsample.x < 3)
+		{
+			avgsample = point_add(start, subsample);
+			/*if (avgsample.x >= 0 && avgsample.y >= 0 && avgsample.x < map->size.x - 1 && avgsample.y < map->size.y - 1)
+			{*/
+			avg += lmap->data[avgsample.x * map->size.x + avgsample.y];
+			hit++;
+			//}
+			subsample.x++;
+		}
+		subsample.y++;
+	}
+	//printf("hit %i \n", hit);
+	if (hit == 0)
+		return (lmap->data[sample.x * lmap->size.x + sample.y]);
+	return ((uint8_t)(avg / hit));
+}
+
+/*uint8_t *smooth_lightmap(t_lightmap *lmap)
+{
+	t_point	sample;
+	uint8_t *temp;
+
+	sample = point_zero();
+	temp = ft_memdup(lmap->data, lmap->size.x * lmap->size.y);
+	while (sample.y < lmap->size.y)
+	{
+		sample.x = 0;
+		while (sample.x < lmap->size.y)
+		{
+			temp[sample.x + (sample.y * lmap->size.x)] = average(sample, lmap);
+			sample.x++;
+		}
+		sample.y++;
+	}
+	return (temp);
+}*/
+
 void create_map_for_entity(t_entity *entity, struct s_world *world)
 {
 	t_object *obj;
@@ -149,11 +203,12 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 				{
 					uint32_t clr;
 					clr = img->data[(e % (img->size.y)) * img->size.x + (j % (img->size.x))];
-					uint8_t light = lightmap->data[e * entity->map[index].size.x + j];
+					uint8_t light = average((t_point){e, j}, lightmap, entity->map);
+					//uint8_t light = //lightmap->data[e * entity->map[index].size.x + j];
 					Uint32 alpha = clr & 0xFF000000;
-					Uint32 red = ((clr & 0x00FF0000) * light) >> 8;
-					Uint32 green = ((clr & 0x0000FF00) * light) >> 8;
-					Uint32 blue = ((clr & 0x000000FF) * light) >> 8;
+					Uint32 red = ((clr & 0x00FF0000) * (uint8_t)(light * 0.4f)) >> 8;
+					Uint32 green = ((clr & 0x0000FF00) * (uint8_t)(light * 0.5f)) >> 8;
+					Uint32 blue = ((clr & 0x000000FF) * (uint8_t)(light * 0.9f)) >> 8;
 					clr = flip_channels(alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF));
 					entity->map[index].data[e * entity->map[index].size.x + j] = clr;
 					/*light = light / 2;

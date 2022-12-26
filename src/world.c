@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/22 16:08:59 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/26 14:47:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,6 +205,10 @@ t_room	load_room(char *filename)
 	temp = load_chunk(filename, "AREA", sizeof(t_floor_area));
 	result.floor_areas = list_to_ptr(temp, &result.floor_areacount);
 	listdel(&temp);
+
+	temp = load_chunk(filename, "EDGE", sizeof(t_vector2));
+	result.edges = list_to_ptr(temp, &result.edgecount);
+	listdel(&temp);
 	return (result);
 }
 
@@ -218,8 +222,12 @@ static void	startup_init_room(t_world *world, t_room *r)
 	while (i < r->wallcount)
 	{
 		w = &r->walls[i];
+		w->edgeline.start = &r->edges[w->edgeline.start_index];
+		w->edgeline.end = &r->edges[w->edgeline.end_index];
 		w->entity = &world->entitycache.entities[w->saved_entityid]; //TODO: make function "get_entity_from_cache_by_id" (with a shorter name, lol)
-		w->entity->obj = object_plane(world->sdl);
+		//w->entity->obj = object_plane(world->sdl);
+		entity_assign_object(world, w->entity, object_plane(world->sdl));
+		w->entity->obj->materials[0].img = get_image_by_name(*world->sdl, w->texname);
 		applywallmesh(w, r, world);
 		i++;
 	}
@@ -229,6 +237,7 @@ static void	startup_init_room(t_world *world, t_room *r)
 		f = &r->floors[i];
 		f->entity = &world->entitycache.entities[f->saved_entityid]; //TODO: make function "get_entity_from_cache_by_id" (with a shorter name, lol)
 		f->entity->obj = object_tri(world->sdl);
+		f->entity->obj->materials[0].img = get_image_by_name(*world->sdl, f->texname);
 		applytrimesh(*f, f->entity->obj);
 		i++;
 	}
@@ -447,10 +456,10 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 	load_walltextures(&world, *sdl);
 	ft_bzero(&world.skybox, sizeof(t_entity));
 	world.skybox.obj = get_object_by_name(*sdl, "cube");
-	world.skybox.obj->materials[0].img = get_image_by_name(*sdl, "grid_d.png");
+	world.skybox.obj->materials[0].img = get_image_by_name(*sdl, "grid_d.cng");
 	//scale_skybox_uvs(world.skybox.obj);
 	world.skybox.transform.scale = vector3_mul(vector3_one(), 300.0f);
-	world.skybox.transform.position = (t_vector3){150.0f, 150.0f, 1499.0f};
+	world.skybox.transform.position = (t_vector3){1500.0f, 1500.0f, 1497.5f};
 	//spawn_npc(&world, "cyborg", (t_vector3){500.0f, 500.0f, 0.0f}, &sdl);
 	//world.npcpool[0].destination = (t_vector3){200.0f, 200.0f, 0.0f};
 	ft_bzero(&world.lighting, sizeof(t_lighting));
@@ -480,12 +489,14 @@ void	prepare_saving(t_room *room)
 	while (i < room->wallcount)
 	{
 		room->walls[i].saved_entityid = room->walls[i].entity->id;
+		ft_strcpy(room->walls[i].texname, room->walls[i].entity->obj->materials[0].img->name);
 		i++;
 	}
 	i = 0;
 	while (i < room->floorcount)
 	{
 		room->floors[i].saved_entityid = room->floors[i].entity->id;
+		ft_strcpy(room->floors[i].texname, room->floors[i].entity->obj->materials[0].img->name);
 		i++;
 	}
 }
@@ -503,6 +514,8 @@ void	save_room(t_room room)
 	save_chunk(room.name, "FLOR", floorlist);
 	t_list *arealist = ptr_to_list(room.floor_areas, room.floor_areacount, sizeof(t_floor_area));
 	save_chunk(room.name, "AREA", arealist);
+	t_list *edgelist = ptr_to_list(room.edges, room.edgecount, sizeof(t_vector2));
+	save_chunk(room.name, "EDGE", edgelist);
 	close(fd);
 }
 

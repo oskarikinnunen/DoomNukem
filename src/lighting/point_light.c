@@ -86,6 +86,7 @@ void calculate_pointlight_step(t_pointlight *pointlight, t_world *world, t_rende
 		{
 			ent->lightmap->done = true;
 			//printf("entity %i lightmap done, did %i triangles\n", j, ent->lightmap->progress + 1);
+			//ent->lightmap->data = smooth_lightmap(ent->lightmap);
 			create_map_for_entity(ent, world);
 		}
 		i++;

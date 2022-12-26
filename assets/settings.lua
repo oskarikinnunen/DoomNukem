@@ -22,7 +22,14 @@ images =
 	"concrete02.png",
 	"wood02.png",
 	"Transformer-Texture.png",
-	"gl.png"
+	"gl.png",
+	"barrel.png",
+	"concrete.png",
+	"concretebench.png",
+	"rustymetal.png",
+	"scifi_barrel.png",
+	"trash.png",
+	"Keyboard.png"
 }
 objects =
 {
@@ -36,5 +43,10 @@ objects =
 	"Smg.obj",
 	"Revolver.obj",
 	"Transformer.obj",
-	"grenadelauncher.obj"
+	"grenadelauncher.obj",
+	"barrel.obj",
+	"trashcan.obj",
+	"bench.obj",
+	"trash.obj",
+	"untitled.obj"
 }

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/22 16:48:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/26 14:50:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,8 @@ int	editorloop(t_sdlcontext sdl)
 	ed.player.transform.position = (t_vector3){100, 100, 100.0f};
 	ed.player.gun->disabled = true;
 	ed.world.player = &ed.player;
-	/*ed.angle = (t_vector2){-20.0f, -RAD90 * 0.99f};
-	ed.position = (t_vector3){500.0f, 500.0f, 200.0f};*/
 	ed.tool = NULL;
-	//set_font_size(&sdl, 0);
-	//audiosource.entity = &ed.world.entitycache.entities[0];
-	
+	ed.world.sdl->lighting_toggled = false; //
 	while (ed.gamereturn == game_continue)
 	{
 		bzero((uint32_t *)sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);

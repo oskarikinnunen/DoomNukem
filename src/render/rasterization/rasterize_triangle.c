@@ -66,6 +66,14 @@ static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 	}
 }
 
+t_texture calc_step_texture2(t_texture *t, float delta)
+{	
+	t_texture step;
+	step.u = (t[2].u - t[1].u) / delta;
+	step.v = (t[2].v - t[1].v) / delta;
+	step.w = (t[2].w - t[1].w) / delta;
+	return(step);
+}
 
 static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle, t_render *render)
 {
@@ -85,7 +93,7 @@ static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 	{
 		x = p[1].x + (step[0] * (float)(y - p[1].y));
 		int ax =  p[2].x + (step[1] * (float)(y - p[1].y));
-		t_step[2] = calc_step_texture(t, 1.0f / (float)(ax - x));
+		t_step[2] = calc_step_texture2(t, (float)(ax - x));
 		t[0].u = t[1].u;
 		t[0].v = t[1].v;
 		t[0].w = t[1].w;
@@ -124,7 +132,7 @@ both triangles are then assigned to t_point p[3] array and passed onto fill_tri_
 p[0] is always the pointy head of the triangle p[1] and p[2] are flat points where, p[1] x is smaller than p[2]
 */
 
-void	render_triangle(t_sdlcontext *sdl, t_render *render, int index)
+void	render_triangle_lit(t_sdlcontext *sdl, t_render *render, int index)
 {
 	t_point_triangle	triangle;
 	t_point				p_split;

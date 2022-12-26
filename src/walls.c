@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/22 15:52:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/23 14:42:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,10 +110,18 @@ void	init_roomwalls(t_world *world, t_room *room)
 			room->walls[i].entity->hidden = true;
 		//room->walls
 		room->walls[i].edgeline.start = &room->edges[i];
+		room->walls[i].edgeline.start_index = i;
 		if (i != room->wallcount - 1)
+		{
 			room->walls[i].edgeline.end = &room->edges[i + 1];
+			room->walls[i].edgeline.end_index = i + 1;
+		}
 		else
+		{
 			room->walls[i].edgeline.end = &room->edges[0];
+			room->walls[i].edgeline.end_index = 0;
+		}
+			
 		room->walls[i].entity->transform.position = vector3_zero();
 		room->walls[i].entity->transform.scale = vector3_one();
 		if (room->walls[i].entity->obj == NULL)

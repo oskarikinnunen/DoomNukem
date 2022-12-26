@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/22 13:30:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/23 14:44:14 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -965,7 +965,8 @@ void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 				if (w->entity->obj->materials->img != tex)
 				{
 					w->entity->obj->materials->img = tex;
-					bake_lighting(&ed->render, &ed->world);
+					create_map_for_entity(w->entity, &ed->world);
+					//bake_lighting(&ed->render, &ed->world);
 				}
 				return ;
 			}
@@ -982,7 +983,8 @@ void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 				if (f->entity->obj->materials->img != tex)
 				{
 					f->entity->obj->materials->img = tex;
-					bake_lighting(&ed->render, &ed->world);
+					create_map_for_entity(f->entity, &ed->world);
+					//bake_lighting(&ed->render, &ed->world);
 				}
 				return ;
 			}
