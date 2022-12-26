@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/26 14:34:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/26 15:00:24 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,7 @@ void	load_all_images(t_sdlcontext *sdl)
 	char fullpath	[512];
 	int				i;
 
+	printf("LOAD IMAGES! \n");
 	allocate_image_count(sdl);
 	d = opendir(path);
 	i = 0;
@@ -222,6 +223,11 @@ void	load_lua_conf(t_sdlcontext *sdl)
 		load_resolution(lua, sdl);
 		load_images(lua, sdl);
 		load_objects(lua, sdl);
+	}
+	else
+	{
+		printf("LUA FILE NOT OK \n");
+		error_log(EC_SDL_INIT);
 	}
 	lua_close(lua);
 	return ;

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/23 14:14:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/26 14:57:10 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,9 @@ static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 	const char	*platform;
 
 	ft_bzero(sdl, sizeof(t_sdlcontext));
+	printf("load lua conf start\n");
 	load_lua_conf(sdl);
+	printf("load lua conf end\n");
 	SDL_DisplayMode	mode;
 	sdl->resolution_scaling = 1.0f;
 	if (SDL_Init(SDL_INIT_VIDEO) < 0 \
@@ -91,8 +93,8 @@ static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 
 	sdl->zbuffer = malloc(sdl->window_w * sdl->window_h * sizeof(float));
 	objects_init(sdl);
-	t_object *o = get_object_by_name(*sdl, "cyborg");
-	parseanim(o, "walk");
+	//t_object *o = get_object_by_name(*sdl, "cyborg");
+	//parseanim(o, "walk");
 	/* create context here, call gl clear in render start, glbegin in drawtriangles etc */
 	SDL_GLContext glc = SDL_GL_CreateContext(sdl->window);
 	t_point	drawablesize;
