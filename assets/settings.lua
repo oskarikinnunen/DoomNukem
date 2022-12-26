@@ -29,7 +29,7 @@ images =
 	"rustymetal.png",
 	"scifi_barrel.png",
 	"trash.png",
-	"Keyboard.png"
+	"Keyboard.png"-
 }
 objects =
 {
