@@ -26,6 +26,7 @@ void	update_debugconsole(t_debugconsole *console, t_sdlcontext *sdl, uint32_t de
 
 /*DEBUG FILES*/
 void print_tri(t_triangle tri);
+void print_point_tri(t_point_triangle tri);
 void print_vec(t_vector3 v);
 void print_matrix(t_mat4x4 m);
 void print_point(t_point p);

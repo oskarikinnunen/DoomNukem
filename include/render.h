@@ -181,6 +181,11 @@ typedef struct s_sdlcontext
 	t_point					screensize;
 	uint8_t					ambient_light;
 	t_bitmask				bitmask;
+	uint32_t				*cpy_pixel;
+	float					*buf1;
+	float					*buf2;
+	float					*draw_buffer;
+	float					*copy_buffer;
 }	t_sdlcontext;
 
 void	alloc_image(t_img *img, int width, int height);

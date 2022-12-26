@@ -122,8 +122,8 @@ void update_world3d(t_world *world, t_render *render)
 		i++;
 	}*/
 	update_entitycache(sdl, world, render);
-	//if (!sdl->global_wireframe)
-	//	render_entity(sdl, render, &world->skybox);
+	if (!sdl->global_wireframe)
+		render_entity(sdl, render, &world->skybox);
 	bitmask_to_pixels(sdl);
 	gui_start(world->debug_gui);
 	gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);

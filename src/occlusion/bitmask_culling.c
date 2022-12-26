@@ -1,5 +1,5 @@
 #include "doomnukem.h"
-
+/*
 static void ft_swap(void * a, void * b, size_t len)
 {
 	unsigned char	*a1;
@@ -152,11 +152,11 @@ static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 	}
 }
 
-/*
-creates two triangles from the given triangle one flat top and one flat bottom.
-both triangles are then assigned to t_point p[3] array and passed onto fill_tri_bot/top functions.
-p[0] is always the pointy head of the triangle p[1] and p[2] are flat points where, p[1] x is smaller than p[2]
-*/
+
+//creates two triangles from the given triangle one flat top and one flat bottom.
+//both triangles are then assigned to t_point p[3] array and passed onto fill_tri_bot/top functions.
+//p[0] is always the pointy head of the triangle p[1] and p[2] are flat points where, p[1] x is smaller than p[2]
+
 void	render_tri(t_sdlcontext *sdl, t_point_triangle triangle, t_render *render)
 {
 	t_point			p_split;
@@ -273,4 +273,4 @@ void update_bitmask_culling(t_sdlcontext sdl, t_render *render, t_entity *entity
 bool is_entity_bitmask_culled(t_sdlcontext sdl, t_render *render, t_entity *entity)
 {
     return(false);
-}
+}*/

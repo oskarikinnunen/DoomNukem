@@ -16,6 +16,15 @@
 #include "render.h"
 #include "objects.h"
 
+static void swap(float **a, float **b)
+{
+	float *temp;
+
+	temp = *a;
+	*a = *b;
+	*b = temp;
+}
+
 int	editorloop(t_sdlcontext sdl)
 {
 	t_editor		ed;
@@ -37,6 +46,13 @@ int	editorloop(t_sdlcontext sdl)
 	sdl.bitmask.bitmask = malloc(sizeof(uint32_t) * ((sdl.window_h * sdl.window_w) / 32));
 	sdl.bitmask.chunk_size.x = sdl.window_w/8;
 	sdl.bitmask.chunk_size.y = sdl.window_h/4;
+	sdl.cpy_pixel = malloc(sizeof(uint32_t) * sdl.window_h * sdl.window_w);
+	sdl.buf1 = malloc(sizeof(float) * sdl.window_h * sdl.window_w);
+	sdl.buf2 = malloc(sizeof(float) * sdl.window_h * sdl.window_w);
+	bzero(sdl.buf1, sizeof(float) * sdl.window_h * sdl.window_w);
+	bzero(sdl.buf2, sizeof(float) * sdl.window_h * sdl.window_w);
+	sdl.draw_buffer = sdl.buf1;
+	sdl.copy_buffer = sdl.buf2;
 	ed.player.transform.position = (t_vector3){1000, 1000, 250};
 	ed.player.gun->disabled = true;
 	/*ed.angle = (t_vector2){-20.0f, -RAD90 * 0.99f};

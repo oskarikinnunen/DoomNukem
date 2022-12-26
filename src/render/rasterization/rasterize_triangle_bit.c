@@ -6,9 +6,7 @@ bool fill_point_bit_tri_bot(t_sdlcontext *sdl, t_point *p)
 	int				x;
 	int				y;
 	float			delta;
-	bool			is_visible;
 
-	is_visible = false;
 	delta = 1.0f / ((float)(p[1].y - p[0].y));
 	step[0] = (p[0].x - p[1].x) * delta;
 	step[1] = (p[0].x - p[2].x) * delta;
@@ -36,9 +34,7 @@ bool fill_point_bit_tri_top(t_sdlcontext *sdl, t_point *p)
 	int				x;
 	int				y;
 	float			delta;
-	bool			is_visible;
 
-	is_visible = false;
 	delta = 1.0f/((float)(p[0].y - p[1].y));
 	step[0] = (p[0].x - p[1].x) * delta;
 	step[1] = (p[0].x - p[2].x) * delta;
