@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 13:42:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/26 17:43:18 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/27 17:27:36 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,21 @@
 static t_img	*error_image()
 {
 	static t_img		err_img;
-	static	uint32_t	data[256];
+	static	uint32_t	data[32 * 32];
 	int					i;
 
 	if (err_img.size.x == 0 || err_img.size.y == 0)
 	{
-		err_img.size.x = 16;
-		err_img.size.y = 16;
-		err_img.length = 256;
+		err_img.size.x = 32;
+		err_img.size.y = 32;
+		err_img.length = 32 * 32;
 		ft_strcpy(err_img.name, "ERRORIMAGE");
 		i = 0;
-		while (i < 256)
+		while (i < 32 * 32)
 		{
 			if (i % 2 == 0)
 			{
-				data[i] = CLR_PRPL;
+				data[i] = flip_channels(AMBER_2);
 			}
 			i++;
 		}

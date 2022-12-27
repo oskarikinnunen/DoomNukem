@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/22 12:11:23 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/27 19:13:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,8 @@ t_gamereturn	editor_events(t_editor *ed)
 				return(game_switchmode);
 			if (iskey(e, SDLK_F2))
 				ed->world.debug_gui->hidden = !ed->world.debug_gui->hidden;
+			if (iskey(e, SDLK_F1))
+				ed->toolbar_gui.hidden = !ed->toolbar_gui.hidden;
 		}
 		if (e.type == SDL_CONTROLLERBUTTONDOWN)
 		{

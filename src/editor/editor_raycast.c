@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 18:03:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/26 14:48:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/27 17:42:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,53 @@ bool	object_lookedat(t_editor *ed, t_sdlcontext sdl, t_object *obj)
 	}
 	return (false);
 }
+
+//	abc = tri to check against
+//	w = distance of ray hit
+// disable inverse normal hitting by removing fabs
+
+typedef struct s_raycastinfo
+{
+	t_entity	*hit_entity;
+	t_vector3	hit_pos;
+}	t_raycastinfo;
+
+static bool raycast_new(t_ray r, t_raycastinfo *info, t_world *world)
+{
+	/*int				i;
+	int				found;
+	t_entitycache	*cache;
+
+	i = 0;
+	cache = world->entitycache;
+	while (found < world->entitycache.existing_entitycount)
+	{
+		if (cache->entities[i].status != es_free)
+		{
+			found++;
+		}
+	}*/
+}
+
+static bool raycast_uv_old(t_ray r, t_texture *t, t_vector3 a, t_vector3 b, t_vector3 c)
+{
+	t_vector3   e1, e2, n;
+
+	e1 = vector3_sub(b, a);
+	e2 = vector3_sub(c, a);
+	n = vector3_crossproduct(e1, e2);
+
+	float det, invdet;
+	det = -vector3_dot(r.dir, n);
+	invdet = 1.0f/det;
+	t_vector3 ao = vector3_sub(r.origin, a);
+	t_vector3 dao = vector3_crossproduct(ao, r.dir);
+	t->u = vector3_dot(e2, dao) * invdet;
+	t->v = -vector3_dot(e1, dao) * invdet;
+	t->w = vector3_dot(ao, n) * invdet;
+	return(fabs(det) >= 1e-6 && t->w >= -0.01f && t->u >= 0.0f && t->v >= 0.0f && (t->u + t->v) <= 1.0f);
+}
+
 
 t_vector3	raycast(t_editor *ed)
 {

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/26 14:47:23 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/27 13:31:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,7 +196,7 @@ t_room	load_room(char *filename)
 	fd = fileopen(filename, O_RDONLY);
 	ft_bzero(&result, sizeof(t_room));
 	ft_strcpy(result.name, filename);
-	temp = load_chunk(filename, "WALL", sizeof(t_wall)); //FREE!
+	temp = load_chunk(filename, "WALL", sizeof(t_wall));
 	result.walls = list_to_ptr(temp, &result.wallcount);
 	listdel(&temp);
 	temp = load_chunk(filename, "FLOR", sizeof(t_meshtri));
@@ -448,7 +448,6 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 	for_all_entities(&world, init_entity);
 
 	world.debug_gui = ft_memalloc(sizeof(t_autogui));
-
 	world.roomlist = load_chunk(filename, "RMNM", sizeof(t_room));
 	load_rooms(&world, sdl);
 	

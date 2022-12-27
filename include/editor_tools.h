@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/22 10:26:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/27 20:14:29 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,15 @@ typedef struct s_autogui
 	bool				drag_held;
 }	t_autogui;
 
+typedef struct s_jointedge
+{
+	t_vector2	*edge;
+	//t_room		*room;
+	uint32_t	edge_id;
+	uint32_t	room_id;
+}	t_jointedge;
+
+//typedef struct t_
 
 typedef struct s_editor
 {

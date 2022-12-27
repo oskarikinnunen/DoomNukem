@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:53:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/22 10:31:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/27 18:55:18 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ void highlight_roomborders(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 		i++;
 	}
 	i = 0;
-	ed->render.gizmocolor = CLR_RED;
+	/*ed->render.gizmocolor = CLR_RED;
 	while (i < edgecount)
 	{
 		if (i == edgecount - 1)
@@ -101,7 +101,7 @@ void highlight_roomborders(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 		}
 			
 		i++;
-	}
+	}*/
 }
 
 void highlight_entity(t_editor *ed, t_sdlcontext sdl, t_entity *entity, uint32_t color)
@@ -153,6 +153,19 @@ void highlight_room(t_editor *ed, t_sdlcontext sdl, t_room room, uint32_t color)
 	while (i < room.floorcount)
 	{
 		//render_entity(sdl, &ed->render, room.floors[i].entity);
+		i++;
+	}
+	i = 0;
+	while (i < room.edgecount)
+	{
+		t_vector3	ws;
+		t_vector2	start;
+
+		start = room.edges[i];
+		ws = (t_vector3){start.x, start.y, room.height};
+		t_point ss = vector3_to_screenspace(ed->render, ws, sdl);
+		ed->render.gizmocolor = CLR_BLUE;
+		render_gizmo(sdl, ed->render, ws, 4);
 		i++;
 	}
 	ed->render.wireframe = false;
@@ -215,8 +228,8 @@ t_room *selectedroom(t_editor *ed, t_sdlcontext sdl)
 		r = (t_room *)l->content;
 		if (selectedwall(ed, sdl, r) != NULL)
 			return (r);
-		/*if (selectedfloor(ed, sdl, r) != NULL)
-			return (r);*/
+		if (selectedfloor(ed, sdl, r) != NULL)
+			return (r);
 		l = l->next;
 	}
 	return (NULL);
