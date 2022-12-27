@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
+#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/12/20 12:06:53 by raho             ###   ########.fr        #
+#    Updated: 2022/12/22 16:25:46 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,7 +44,8 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		editor/tools/wall_tool_rooms.c \
 		editor/tools/npc_tool.c \
 		editor/tools/room_tool.c \
-		editor/tools/room_tool_new.c \
+		editor/tools/room_tool_connect.c \
+		editor/tools/room_tool_common.c \
 		editor/tools/gun_tool.c \
 		editor/tools/tool_common_functions.c \
 		editor/tools/autogui.c \
@@ -56,7 +57,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		walls.c file_open.c \
 		moveplayer.c errors.c \
 		physics.c \
-		game_3d.c fill_triangle.c perfgraph.c \
+		perfgraph.c \
 		png.c lua_conf.c list_helper.c \
 		spaceconversions.c \
 		entity/entity_animate.c \
@@ -69,7 +70,6 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		object_init.c \
 		object_primitives.c \
 		world.c player.c \
-		init_render.c \
 		resolution_scaling.c \
 		controller.c \
 		audio.c \
@@ -78,9 +78,21 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		occlusion/peripheral_culling.c \
 		occlusion/occlusion_culling.c \
 		occlusion/culling_debug.c \
-		render_clip.c \
 		surface_tools.c \
-		colors.c
+		colors.c \
+		render/render_entity.c \
+		render/render_clip.c \
+		render/render_triangle.c \
+		render/init_render.c \
+		render/render_space.c \
+		lighting/bake_lighting.c \
+		lighting/point_light.c \
+		render/rasterization/rasterize_triangle_wrap.c \
+		render/rasterization/rasterize_triangle.c \
+		render/rasterization/rasterize_triangle_uv.c \
+		render/rasterization/rasterize_triangle_dynamic.c \
+		render/render_helper.c \
+		render/flip_channel.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \
 		vector2_elementary.c vector2_shorthands.c \
@@ -120,6 +132,8 @@ warning:
 	exit 1
 endif
 
+#multi:
+#	$(MAKE) -j6 all
 
 all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(FMOD) $(LUA) $(LIBFT) $(OBJ)
 	$(CC) $(OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LUA) $(LDFLAGS)

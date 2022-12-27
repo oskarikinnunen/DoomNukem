@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   npc_tool.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 15:18:07 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 10:47:35 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/21 17:10:59 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,7 +227,7 @@ void	render_box_colliders(t_entity *ent, t_editor *ed, t_sdlcontext sdl)
 		box.transform.scale = bc.size;
 		ed->render.wireframe = true;
 		ed->render.gizmocolor = CLR_GREEN;
-		render_entity(sdl, &ed->render, &box);
+		render_entity(&sdl, &ed->render, &box);
 		ed->render.wireframe = false;
 		i++;
 	}
@@ -362,7 +362,7 @@ void	npc_tool_update(t_editor *ed, t_sdlcontext *sdl)
 	npc_tool_lazy_init(ed, sdl, dat);
 	//autoguitest(ed, sdl);
 	//ed->render.wireframe = true;
-	render_entity(*sdl, &ed->render, dat->ent);
+	render_entity(sdl, &ed->render, dat->ent);
 	maingui(ed, sdl, dat);
 	objectgui(ed, sdl, dat);
 	collidergui(ed, sdl, dat);

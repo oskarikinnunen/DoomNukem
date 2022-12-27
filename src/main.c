@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/20 12:07:55 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/26 14:57:10 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,9 @@ static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 	const char	*platform;
 
 	ft_bzero(sdl, sizeof(t_sdlcontext));
+	printf("load lua conf start\n");
 	load_lua_conf(sdl);
+	printf("load lua conf end\n");
 	SDL_DisplayMode	mode;
 	sdl->resolution_scaling = 1.0f;
 	if (SDL_Init(SDL_INIT_VIDEO) < 0 \
@@ -42,7 +44,7 @@ static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 		|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0 \
 		|| TTF_Init() < 0)
 		error_log(EC_SDL_INIT);
-	if (screenmode == screenmode_borderless && SDL_GetCurrentDisplayMode(0, &mode) == 0)
+	if (screenmode == screenmode_borderless && SDL_GetCurrentDisplayMode(1, &mode) == 0)
 	{
 		sdl->window_w = mode.w;
 		sdl->window_h = mode.h;
@@ -72,8 +74,8 @@ static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 		error_log(EC_SDL_CREATEWINDOW);
 	if (screenmode == screenmode_borderless)
 	{
-		//SDL_SetWindowBordered(sdl->window, SDL_FALSE);
-		//SDL_SetWindowPosition(sdl->window, 0, 0);
+		SDL_SetWindowBordered(sdl->window, SDL_FALSE);
+		SDL_SetWindowPosition(sdl->window, 0, 0);
 	}
 		
 	sdl->window_surface = SDL_GetWindowSurface(sdl->window);
@@ -91,8 +93,8 @@ static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 
 	sdl->zbuffer = malloc(sdl->window_w * sdl->window_h * sizeof(float));
 	objects_init(sdl);
-	t_object *o = get_object_by_name(*sdl, "cyborg");
-	parseanim(o, "walk");
+	//t_object *o = get_object_by_name(*sdl, "cyborg");
+	//parseanim(o, "walk");
 	/* create context here, call gl clear in render start, glbegin in drawtriangles etc */
 	SDL_GLContext glc = SDL_GL_CreateContext(sdl->window);
 	t_point	drawablesize;

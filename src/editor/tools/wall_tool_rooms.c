@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/12 19:02:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/22 13:42:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -376,6 +376,7 @@ static	void shiftvalid(int valid[32], int count)
 	int	i;
 
 	f_temp = valid[0];
+	i = 0;
 	while (i < count)
 	{
 		if (i == count - 1)
@@ -560,11 +561,11 @@ t_line	line_shorten(t_line line) //lol
 
 	float	dist = vector2_dist(line.start, line.end);
 	temp = vector2_sub(line.start, line.end);
-	temp = vector2_clamp_magnitude(temp, dist - 5.0f);
+	temp = vector2_clamp_magnitude(temp, dist - 1.0f);
 	temp = vector2_add(temp, line.end);
 	final.start = temp;
 	temp = vector2_sub(line.end, line.start);
-	temp = vector2_clamp_magnitude(temp, dist - 5.0f);
+	temp = vector2_clamp_magnitude(temp, dist - 1.0f);
 	temp = vector2_add(temp, line.start);
 	final.end = temp;
 	return (final);
@@ -732,9 +733,9 @@ void	makefloor_room_area(t_editor *ed, t_sdlcontext *sdl, t_room *room, t_floor_
 
 	ft_bzero(&fc, sizeof(fc));
 	i = 0;
-	while (i < a.wallcount)
+	while (i < a.edgecount)
 	{
-		fc.edges[fc.edgecount++] = room->walls[a.wall_indices[i]].line.start;
+		fc.edges[fc.edgecount++] = room->edges[a.edge_indices[i]];
 		i++;
 	}
 	triangulate(&fc, 2);
@@ -756,9 +757,9 @@ void	makefloor_room_area(t_editor *ed, t_sdlcontext *sdl, t_room *room, t_floor_
 		mtri->v[0] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[0]]);
 		mtri->v[1] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[1]]);
 		mtri->v[2] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[2]]);
-		mtri->v[0].z += a.height;
-		mtri->v[1].z += a.height;
-		mtri->v[2].z += a.height;
+		mtri->v[0].z += a.height + room->height;
+		mtri->v[1].z += a.height + room->height;
+		mtri->v[2].z += a.height + room->height;
 		mtri->uv[0] = fc.edges[fc.faces[i].v_indices[0]];
 		mtri->uv[1] = fc.edges[fc.faces[i].v_indices[1]];
 		mtri->uv[2] = fc.edges[fc.faces[i].v_indices[2]];
@@ -766,6 +767,8 @@ void	makefloor_room_area(t_editor *ed, t_sdlcontext *sdl, t_room *room, t_floor_
 		mtri->uv[1] = vector2_div(mtri->uv[1], 100.0f);
 		mtri->uv[2] = vector2_div(mtri->uv[2], 100.0f);
 		applytrimesh(*mtri, mtri->entity->obj);
+		create_lightmap_for_entity(mtri->entity, &ed->world);
+		create_map_for_entity(mtri->entity, &ed->world);
 		i++;
 	}
 	room->floorcount += fc.facecount;
@@ -786,7 +789,7 @@ void	make_areas(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 	printf("made floors for %i areas \n", i);
 }
 
-void	makefloor_room(t_editor *ed, t_sdlcontext *sdl, t_room *room, int debug)
+void	makefloor_room(t_world *world, t_room *room)
 {
 	t_floorcalc	fc;
 	t_wall		*w;
@@ -795,14 +798,13 @@ void	makefloor_room(t_editor *ed, t_sdlcontext *sdl, t_room *room, int debug)
 
 	ft_bzero(&fc, sizeof(fc));
 	i = 0;
-	free_floor(&ed->world, room);
-	t_floor_area	a = room->floor_areas[0];
-	while (i < a.wallcount)
+	free_floor(world, room);
+	while (i < room->edgecount)
 	{
-		fc.edges[fc.edgecount++] = room->walls[a.wall_indices[i]].line.start;
+		fc.edges[fc.edgecount++] = room->edges[i];
 		i++;
 	}
-	triangulate(&fc, debug);
+	triangulate(&fc, 2);
 	if (fc.facecount == 0)
 		return ;
 	room->floors = ft_memalloc(sizeof(t_meshtri) * fc.facecount);
@@ -814,15 +816,15 @@ void	makefloor_room(t_editor *ed, t_sdlcontext *sdl, t_room *room, int debug)
 	{
 		mtri = &room->floors[i];
 		//ft_bzero(&mtri->entity, sizeof(t_entity));
-		mtri->entity = spawn_entity(&ed->world);
+		mtri->entity = spawn_entity(world);
 		mtri->entity->uneditable = true;
-		mtri->entity->obj = object_tri(sdl);
+		mtri->entity->obj = object_tri(world->sdl);
 		mtri->v[0] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[0]]);
 		mtri->v[1] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[1]]);
 		mtri->v[2] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[2]]);
-		mtri->v[0].z += a.height;
-		mtri->v[1].z += a.height;
-		mtri->v[2].z += a.height;
+		mtri->v[0].z += room->height;
+		mtri->v[1].z += room->height;
+		mtri->v[2].z += room->height;
 		mtri->uv[0] = fc.edges[fc.faces[i].v_indices[0]];
 		mtri->uv[1] = fc.edges[fc.faces[i].v_indices[1]];
 		mtri->uv[2] = fc.edges[fc.faces[i].v_indices[2]];

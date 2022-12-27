@@ -86,7 +86,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	game.world.debug_gui->hidden = true;
 	game.world.debug_gui->rect.position.y = sdl.window_h / 2;
 	game.world.debug_gui->rect.size.y = sdl.window_h / 2;
-	player_init(&game.player, &sdl);
+	player_init(&game.player, &sdl, &game.world);
 	initialize_controllers(&game.hid);
 	while (gr == game_continue)
 	{
@@ -102,7 +102,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 		print_text(&sdl, "PLAYMODE", (t_point){5, 5});
 		/*game.player.gun->transform.position = vector3_add(game.player.position, (t_vector3){.z = -25.5f});
 		game.player.gun->transform.rotation.x = game.player.angle.x + ft_degtorad(100.0f);*/
-		render_entity(sdl, &render, &game.player.gun->entity);
+		render_entity(&sdl, &render, &game.player.gun->entity);
 		//DRAWPERFGRAPH
 		rescale_surface(&sdl);
 		join_surfaces(sdl.window_surface, sdl.surface);

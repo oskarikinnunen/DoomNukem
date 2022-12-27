@@ -17,6 +17,11 @@ int	point_sqr_magnitude(t_point point)
 	return ((point.x * point.x) + (point.y * point.y));
 }
 
+float	point_sqr_fmagnitude(t_point point)
+{
+	return ((point.x * point.x) + (point.y * point.y));
+}
+
 t_point	point_normalise(t_point point)
 {
 	t_vector2	v2;

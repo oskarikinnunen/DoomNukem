@@ -88,6 +88,7 @@ typedef struct s_hid_info
 	t_mouse			mouse;
 	uint32_t		keystate;
 	uint32_t		alphakeystate; //Stores keystate from 'a' to 'z'
+	uint32_t		alphakey_pressed; //Stores keystate from 'a' to 'z'
 	t_controller	controller[2];
 	t_input			input;
 }	t_hid_info;

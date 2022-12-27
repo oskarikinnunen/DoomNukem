@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lua_conf.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 06:04:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/26 15:00:24 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,120 @@
 #include "doomnukem.h"
 #include "objects.h"
 #include "png.h"
+#include <dirent.h>
+
+void	allocate_object_count(t_sdlcontext *sdl)
+{
+		DIR				*d;
+	struct dirent	*dfile;
+	char path		[256] = "assets/objects";
+	int				i;
+
+	d = opendir(path);
+	i = 0;
+	if (d)
+	{
+		dfile = readdir(d);
+		while (dfile != NULL)
+		{
+			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".obj") != NULL)
+				i++;
+			dfile = readdir(d);
+		}
+		closedir(d);
+	}
+	sdl->objectcount = i;
+	printf("Found %i .obj files \n", sdl->objectcount);
+	sdl->objects = ft_memalloc(sizeof(t_object) * sdl->objectcount);
+}
+
+void	load_all_objects(t_sdlcontext *sdl)
+{
+	DIR				*d;
+	struct dirent	*dfile;
+	char path		[256] = "assets/objects";
+	char fullpath	[512];
+	int				i;
+
+	allocate_object_count(sdl);
+	d = opendir(path);
+	i = 0;
+	if (d)
+	{
+		dfile = readdir(d);
+		while (dfile != NULL)
+		{
+			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".obj") != NULL)
+			{
+				snprintf(fullpath, 512, "%s/%s", path, dfile->d_name);
+				sdl->objects[i] = objparse(fullpath);
+				ft_strcpy(sdl->objects[i].name, dfile->d_name);
+				printf("	parsed objectfile: %s \n", fullpath);
+				i++;
+			}
+			dfile = readdir(d);
+		}
+		closedir(d);
+	}
+	printf("parsed %i objectfiles \n", i);
+}
+
+void	allocate_image_count(t_sdlcontext *sdl)
+{
+	DIR				*d;
+	struct dirent	*dfile;
+	char path		[256] = "assets/images";
+	int				i;
+
+	d = opendir(path);
+	i = 0;
+	if (d)
+	{
+		dfile = readdir(d);
+		while (dfile != NULL)
+		{
+			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".cng") != NULL)
+				i++;
+			dfile = readdir(d);
+		}
+		closedir(d);
+	}
+	sdl->imagecount = i;
+	printf("Found %i .cng files \n", sdl->objectcount);
+	sdl->images = ft_memalloc(sizeof(t_img) * sdl->imagecount);
+}
+
+void	load_all_images(t_sdlcontext *sdl)
+{
+	DIR				*d;
+	struct dirent	*dfile;
+	char path		[256] = "assets/images";
+	char fullpath	[512];
+	int				i;
+
+	printf("LOAD IMAGES! \n");
+	allocate_image_count(sdl);
+	d = opendir(path);
+	i = 0;
+	if (d)
+	{
+		dfile = readdir(d);
+		while (dfile != NULL)
+		{
+			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".cng") != NULL)
+			{
+				snprintf(fullpath, 512, "%s/%s", path, dfile->d_name);
+				sdl->images[i] = pngparse(fullpath);
+				ft_strcpy(sdl->images[i].name, dfile->d_name);
+				printf("	parsed cpng file: %s \n", fullpath);
+				i++;
+			}
+			dfile = readdir(d);
+		}
+		closedir(d);
+	}
+	printf("parsed %i imagefiles \n", i);
+}
 
 void	load_images(lua_State *lua, t_sdlcontext *sdl)
 {
@@ -23,6 +137,8 @@ void	load_images(lua_State *lua, t_sdlcontext *sdl)
 	char	indexer[256];
 	int		i;
 
+	load_all_images(sdl);
+	return ;
 	lua_getglobal(lua, "images");
 	sdl->imagecount = lua_rawlen(lua, -1);
 	if (sdl->imagecount == 0)
@@ -51,6 +167,10 @@ void	load_objects(lua_State *lua, t_sdlcontext *sdl)
 	char	indexer[256];
 	int		i;
 
+	load_all_objects(sdl);
+	printf("load object done \n");
+	//exit(0);
+	return ;
 	lua_getglobal(lua, "objects");
 	sdl->objectcount = lua_rawlen(lua, -1);
 	if (sdl->objectcount == 0)
@@ -103,6 +223,11 @@ void	load_lua_conf(t_sdlcontext *sdl)
 		load_resolution(lua, sdl);
 		load_images(lua, sdl);
 		load_objects(lua, sdl);
+	}
+	else
+	{
+		printf("LUA FILE NOT OK \n");
+		error_log(EC_SDL_INIT);
 	}
 	lua_close(lua);
 	return ;

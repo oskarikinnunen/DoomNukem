@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/12 18:43:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/23 13:29:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,11 +102,16 @@ struct s_autogui;
 
 typedef struct s_world
 {
+	t_player			*player;
 	t_clock				clock;
 	t_debugconsole		debugconsole;
 	struct s_autogui	*debug_gui;
 	t_sdlcontext		*sdl;
 	t_list				*guns;
+	t_lighting			lighting;
+	uint32_t			lights_count;
+	t_pointlight		lights[100];
+	bool				lighting_baked;
 	t_list				*objectmetadatalist; //Move to sdl, this is only used when objects are initialized
 	t_npc				npcpool[128];
 	//t_list				*wall_list;
@@ -117,11 +122,13 @@ typedef struct s_world
 
 t_vector2	flipped_uv(t_vector2 og);
 void		for_all_active_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *world));
+void		for_all_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *world));
 void		update_world3d(t_world *world, t_render *render);
 t_world		load_world(char *filename, t_sdlcontext *sdl);
 void		destroy_entity(t_world *world, t_entity *ent);
 t_entity	*spawn_entity(t_world	*world);
 t_entity	*spawn_basic_entity(t_world *world, char *objectname, t_vector3 position);
+void		entity_assign_object(t_world *world, t_entity *entity, t_object *obj);
 void		save_world(char *filename, t_world world);
 void		init_roomwalls(t_world *world, t_room *room);
 void		free_floor(t_world *world, t_room *room);
@@ -172,7 +179,7 @@ int		controller_events(SDL_Event e, t_hid_info *hid);
 int		playmode(t_sdlcontext sdl);
 
 /* PLAYER.C */
-void	player_init(t_player *player, t_sdlcontext *sdl);
+void	player_init(t_player *player, t_sdlcontext *sdl, t_world *world);
 void	update_render(t_render *render, t_player *player);
 
 /* MOVEPLAYER.C */
@@ -232,10 +239,20 @@ void	update_entity_bounds(t_entity *e);
 void	update_floor_bounds(t_meshtri *f);
 void	update_wall_bounds(t_wall *w);
 
+//TODO: temp for lights
+void	start_lightbake(t_render *render, t_world *world);
+void	bake_lights(t_render *render, t_world *world);
 
-//TODO: temp for occlusion
-int32_t		get_id(t_world *world);
 
+uint8_t *smooth_lightmap(t_lightmap *lmap);
+
+void	bake_lighting(t_render *render, t_world *world);
+void	bake_lighting_shadows(t_render *render, t_world *world);
+void	render_entity_depth_buffer(t_sdlcontext sdl, t_render *render, t_entity *entity);
+void	update_arealights_for_entity(t_sdlcontext sdl, t_render *render, t_entity *entity);
+void	update_pointlight_for_entity(t_sdlcontext sdl, t_render *render, t_entity *entity);
+void	calculate_pointlight(t_pointlight *pointlight, t_world *world, t_render *render);
+void	calculate_pointlight_step(t_pointlight *pointlight, t_world *world, t_render *render);
 //
 
 #endif

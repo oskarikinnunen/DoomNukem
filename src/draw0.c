@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/10 17:41:24 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/22 10:26:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr)
 	if (pos.x < 0 || pos.x >= sdl.window_w - 2
 		|| pos.y < 0 || pos.y >= sdl.window_h - 2)
 		return ;
-	((uint32_t *)sdl.ui_surface->pixels)[pos.x + (pos.y * sdl.window_w)] = clr;
+	((uint32_t *)sdl.surface->pixels)[pos.x + (pos.y * sdl.window_w)] = clr;
 	//sdl.zbuffer[pos.x + (pos.y * sdl.window_w)] = 2.0f;
 }
 
@@ -37,6 +37,7 @@ void	draw_alpha(t_sdlcontext sdl, t_point pos, uint32_t clr)
 void	screen_blank(t_sdlcontext sdl)
 {
 	bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
+	bzero(sdl.window_surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 	bzero(sdl.ui_surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 	bzero(sdl.zbuffer, sizeof(float) * sdl.window_h * sdl.window_w);
 }
@@ -141,8 +142,6 @@ void	draw_triangle(t_sdlcontext *sdl, t_point p1, t_point p2, t_point p3, uint32
 	drawline(*sdl, p2, p3, clr);
 	drawline(*sdl, p3, p1, clr);
 }*/
-
-uint32_t	flip_channels(uint32_t clr);
 
 void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale)
 {

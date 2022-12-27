@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 18:03:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/08 18:43:49 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/26 14:48:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,17 +27,19 @@ t_triangle	triangle_to_screenspace(t_render r, t_triangle tri, t_sdlcontext sdl)
 
 bool	triangle_lookedat(t_render r, t_triangle tri, t_sdlcontext sdl)
 {
+	t_camera	c;
 	t_triangle	clipped[2];
 	int			clipamount;
 	int			i;
 	int			p_i;
 
-	tri.p[0] = quaternion_mul_matrix(r.matworld, tri.p[0]);
-	tri.p[1] = quaternion_mul_matrix(r.matworld, tri.p[1]);
-	tri.p[2] = quaternion_mul_matrix(r.matworld, tri.p[2]);
-	tri.p[0] = quaternion_mul_matrix(r.matview, tri.p[0]);
-	tri.p[1] = quaternion_mul_matrix(r.matview, tri.p[1]);
-	tri.p[2] = quaternion_mul_matrix(r.matview, tri.p[2]);
+	c = r.camera;
+	tri.p[0] = quaternion_mul_matrix(c.matworld, tri.p[0]);
+	tri.p[1] = quaternion_mul_matrix(c.matworld, tri.p[1]);
+	tri.p[2] = quaternion_mul_matrix(c.matworld, tri.p[2]);
+	tri.p[0] = quaternion_mul_matrix(c.matview, tri.p[0]);
+	tri.p[1] = quaternion_mul_matrix(c.matview, tri.p[1]);
+	tri.p[2] = quaternion_mul_matrix(c.matview, tri.p[2]);
 	clipamount = clip_triangle_against_plane((t_vector3){.z = 0.1f}, vector3_up(), tri, clipped);
 	if (clipamount == 0)
 		return (false);
@@ -47,7 +49,7 @@ bool	triangle_lookedat(t_render r, t_triangle tri, t_sdlcontext sdl)
 		p_i = 0;
 		while (p_i < 3)
 		{
-			clipped[i].p[p_i] = quaternion_mul_matrix(r.matproj, clipped[i].p[p_i]);
+			clipped[i].p[p_i] = quaternion_mul_matrix(c.matproj, clipped[i].p[p_i]);
 			clipped[i].p[p_i].v = vector3_div(clipped[i].p[p_i].v, clipped[i].p[p_i].w);
 			clipped[i].p[p_i].v = vector3_negative(clipped[i].p[p_i].v);
 			t_vector3 voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
@@ -168,8 +170,8 @@ t_vector3	raycast(t_editor *ed)
 		result = vector3_movetowards(result, rayforward, dist);
 		iter++;
 	}
-	result.x = ft_clampf(result.x, 0.0f, 2500.0f);
-	result.y = ft_clampf(result.y, 0.0f, 2500.0f);
+	result.x = ft_clampf(result.x, 0.0f, 3000.0f);
+	result.y = ft_clampf(result.y, 0.0f, 3000.0f);
 	result.z = 0.0f;
 	return (result);
 }

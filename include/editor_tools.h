@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/12 18:43:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/22 10:26:21 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,8 @@ bool	gui_highlighted_button(char *str, t_autogui *gui);
 void				gui_string_edit(char *str, t_autogui	*gui);
 //TODO: document
 bool				gui_bool_edit(bool *b, t_autogui *gui);
+
+bool				gui_labeled_bool(char *str, bool b, t_autogui *gui);
 //Draws an integer slider which allows modifying the integers value, returns true if the integer changed
 bool				gui_int_slider(int *i, float mul, t_autogui *gui);
 //Draws a float slider which allows modifying the floats value, returns true if the float changed

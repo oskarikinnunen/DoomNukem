@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/19 12:19:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/23 14:42:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,21 +52,47 @@ void	render_snapgrid(t_editor *ed, t_sdlcontext *sdl, t_vector2 wallpos, bool sh
 	}
 }
 
-void	applywallmesh(t_wall *wall)
+void	applywallmesh(t_wall *wall, t_room *room, t_world *world)
 {
-	wall->entity->obj->vertices[0] = (t_vector3){wall->line.start.x, wall->line.start.y, 0.0f};
-	wall->entity->obj->vertices[1] = (t_vector3){wall->line.end.x, wall->line.end.y, 0.0f};
-	
-	wall->entity->obj->vertices[2] = (t_vector3){wall->line.start.x, wall->line.start.y, wall->height};
-	wall->entity->obj->vertices[3] = (t_vector3){wall->line.end.x, wall->line.end.y, wall->height};
+	if (wall->edgeline.end != NULL && wall->edgeline.start != NULL)
+	{
+		wall->entity->obj->vertices[0] = vector2_to_vector3(*wall->edgeline.start);
+		wall->entity->obj->vertices[0].z += room->height;
+		wall->entity->obj->vertices[1] = vector2_to_vector3(*wall->edgeline.end);
+		wall->entity->obj->vertices[1].z += room->height;
+		
+		wall->entity->obj->vertices[2] = vector2_to_vector3(*wall->edgeline.start);
+		wall->entity->obj->vertices[2].z += wall->height + room->height;
+		wall->entity->obj->vertices[3] = vector2_to_vector3(*wall->edgeline.end);
+		wall->entity->obj->vertices[3].z += wall->height + room->height;
 
-	float dist = vector2_dist(wall->line.start, wall->line.end) + 2.0f;
-	wall->entity->obj->uvs[1] = (t_vector2){dist / 100.0f, 0.0f};
-	wall->entity->obj->uvs[2] = (t_vector2){0.0f, wall->height / 100.0f};
-	wall->entity->obj->uvs[3] = (t_vector2){dist / 100.0f, wall->height / 100.0f};
-	wall->entity->obj->uvs[1] = flipped_uv(wall->entity->obj->uvs[1]);
-	wall->entity->obj->uvs[2] = flipped_uv(wall->entity->obj->uvs[2]);
-	wall->entity->obj->uvs[3] = flipped_uv(wall->entity->obj->uvs[3]);
+		float dist = vector2_dist(*wall->edgeline.start, *wall->edgeline.end) + 2.0f;
+		wall->entity->obj->uvs[1] = (t_vector2){dist / 100.0f, 0.0f};
+		wall->entity->obj->uvs[2] = (t_vector2){0.0f, wall->height / 100.0f};
+		wall->entity->obj->uvs[3] = (t_vector2){dist / 100.0f, wall->height / 100.0f};
+		create_lightmap_for_entity(wall->entity, world);
+		create_map_for_entity(wall->entity, world);
+
+		
+		/*wall->entity->obj->uvs[1] = flipped_uv(wall->entity->obj->uvs[1]);
+		wall->entity->obj->uvs[2] = flipped_uv(wall->entity->obj->uvs[2]);
+		wall->entity->obj->uvs[3] = flipped_uv(wall->entity->obj->uvs[3]);*/
+	}/* else
+	{
+		wall->entity->obj->vertices[0] = (t_vector3){wall->line.start.x, wall->line.start.y, 0.0f};
+		wall->entity->obj->vertices[1] = (t_vector3){wall->line.end.x, wall->line.end.y, 0.0f};
+		wall->entity->obj->vertices[2] = (t_vector3){wall->line.start.x, wall->line.start.y, wall->height};
+		wall->entity->obj->vertices[3] = (t_vector3){wall->line.end.x, wall->line.end.y, wall->height};
+
+		float dist = vector2_dist(wall->line.start, wall->line.end) + 2.0f;
+		wall->entity->obj->uvs[1] = (t_vector2){dist / 100.0f, 0.0f};
+		wall->entity->obj->uvs[2] = (t_vector2){0.0f, wall->height / 100.0f};
+		wall->entity->obj->uvs[3] = (t_vector2){dist / 100.0f, wall->height / 100.0f};
+		wall->entity->obj->uvs[1] = flipped_uv(wall->entity->obj->uvs[1]);
+		wall->entity->obj->uvs[2] = flipped_uv(wall->entity->obj->uvs[2]);
+		wall->entity->obj->uvs[3] = flipped_uv(wall->entity->obj->uvs[3]);
+	}*/
+	
 }
 
 void	init_roomwalls(t_world *world, t_room *room)
@@ -80,11 +106,27 @@ void	init_roomwalls(t_world *world, t_room *room)
 		printf("i is %i \n", i);
 		if (room->walls[i].entity == NULL)
 			room->walls[i].entity = spawn_entity(world); //Copy saved entitys important values
-		
+		if (room->walls[i].disabled)
+			room->walls[i].entity->hidden = true;
+		//room->walls
+		room->walls[i].edgeline.start = &room->edges[i];
+		room->walls[i].edgeline.start_index = i;
+		if (i != room->wallcount - 1)
+		{
+			room->walls[i].edgeline.end = &room->edges[i + 1];
+			room->walls[i].edgeline.end_index = i + 1;
+		}
+		else
+		{
+			room->walls[i].edgeline.end = &room->edges[0];
+			room->walls[i].edgeline.end_index = 0;
+		}
+			
 		room->walls[i].entity->transform.position = vector3_zero();
 		room->walls[i].entity->transform.scale = vector3_one();
-		room->walls[i].entity->obj = object_plane(world->sdl);
-		applywallmesh(&room->walls[i]);
+		if (room->walls[i].entity->obj == NULL)
+			room->walls[i].entity->obj = object_plane(world->sdl);
+		applywallmesh(&room->walls[i], room, world);
 		update_wall_bounds(&room->walls[i]);
 		i++;
 	}
