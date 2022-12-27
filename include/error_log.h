@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 20:21:24 by raho              #+#    #+#             */
-/*   Updated: 2022/12/01 18:41:21 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/27 10:51:36 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,16 @@
 # define EC_WRITE 13
 # define EC_MALLOC 15
 # define EC_GETNEXTLINE 16
+# define EC_FMOD_SYSTEMCREATE 40
+# define EC_FMOD_SYSTEMINIT 41
+# define EC_FMOD_SYSTEMCLOSE 42
+# define EC_FMOD_SYSTEMRELEASE 43
+# define EC_FMOD_SYSTEMCREATESOUND 44
+# define EC_FMOD_SYSTEMPLAYSOUND 45
+# define EC_FMOD_CHANNELSETVOLUME 46
+# define EC_FMOD_CHANNELSETPAUSED 47
+# define EC_FMOD_CHANNELSET3DATTRIBUTES 48
+# define EC_FMOD_CHANNELISPLAYING 49
+# define EC_FMOD_CHANNELSTOP 50
 
 #endif

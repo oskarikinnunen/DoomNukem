@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/27 08:14:54 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/27 10:39:17 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,22 @@ void update_world3d(t_world *world, t_render *render)
 	gui_labeled_float_slider("Resolution scale:", &world->sdl->resolution_scaling, 0.01f, world->debug_gui);
 	gui_labeled_float_slider("Audio max:", &world->sdl->audio.max_volume, 0.01f, world->debug_gui);
 	if (gui_button("Test audio", world->debug_gui))
-		play_sound(&sdl->audio, "bubbles.wav");
+	{
+		static bool	statement = false;
+
+		if (statement)
+		{
+			//pause_audio(&sdl->audio, statement);
+			play_worldsound(&sdl->audio, "bubbles.wav", &world->entitycache.entities[0].transform.position);
+			statement = false;
+		}
+		else
+		{
+			//pause_audio(&sdl->audio, statement);
+			//play_localsound(&sdl->audio, "bubbles.wav");
+			statement = true; 
+		}
+	}
 	world->sdl->audio.max_volume = ft_clampf(world->sdl->audio.max_volume, 0.25f, 1.0f);
 	world->sdl->resolution_scaling = ft_clampf(world->sdl->resolution_scaling, 0.25f, 1.0f);
 	t_point	res;

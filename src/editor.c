@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/27 08:14:43 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/27 10:23:20 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 #include "render.h"
 #include "objects.h"
 #include "entity.h"
-
-void	play_sound3d(t_audio *audio, const char *name, t_vector3 *pos);
 
 int	editorloop(t_sdlcontext sdl)
 {
@@ -91,15 +89,11 @@ int	editorloop(t_sdlcontext sdl)
 		if (audio == 0)
 		{
 			t_vector3	nf = ed.player.lookdir;
-			/*float temp = -nf.x;
-			nf.x = nf.y;
-			nf.y = temp;*/
+
 			nf = (t_vector3){-nf.x, -nf.y, 0.0f};
 			nf = vector3_normalise(nf);
 			FMOD_System_Set3DListenerAttributes(sdl.audio.system, 0, &ed.player.transform.position, &((t_vector3){0}), &nf, &((t_vector3){.z = 1.0f}));
-			play_sound3d(&sdl.audio, "bubbles.wav", &ed.world.entitycache.entities[0].transform.position);
-			printf("player pos\nx %f\ny %f\nz %f\n", ed.player.transform.position.x, ed.player.transform.position.y, ed.player.transform.position.z);
-			printf("player dir\nx %f\ny %f\nz %f\n\n", ed.player.lookdir.x, ed.player.lookdir.y, ed.player.lookdir.z);
+			//play_worldsound(&sdl.audio, "bubbles.wav", &ed.world.entitycache.entities[0].transform.position);
 			FMOD_System_Update(sdl.audio.system);
 		}
 		
