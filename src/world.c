@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/27 10:39:17 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/27 13:17:15 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,22 +100,27 @@ void update_world3d(t_world *world, t_render *render)
 	gui_labeled_int("Entity count:", world->entitycache.existing_entitycount, world->debug_gui);
 	gui_labeled_float_slider("Resolution scale:", &world->sdl->resolution_scaling, 0.01f, world->debug_gui);
 	gui_labeled_float_slider("Audio max:", &world->sdl->audio.max_volume, 0.01f, world->debug_gui);
+	update_volume(&world->sdl->audio);
 	if (gui_button("Test audio", world->debug_gui))
 	{
 		static bool	statement = false;
 
 		if (statement)
 		{
+			//pause_music(&sdl->audio, statement);
 			//pause_audio(&sdl->audio, statement);
-			play_worldsound(&sdl->audio, "bubbles.wav", &world->entitycache.entities[0].transform.position);
+			//play_worldsound(&sdl->audio, "bubbles.wav", &world->entitycache.entities[0].transform.position);
+			play_localsound(&sdl->audio, "pistol1.wav");
 			statement = false;
 		}
 		else
 		{
+			//pause_music(&sdl->audio, statement);
 			//pause_audio(&sdl->audio, statement);
-			//play_localsound(&sdl->audio, "bubbles.wav");
-			statement = true; 
+			play_localsound(&sdl->audio, "bubbles.wav");
+			statement = true;
 		}
+		
 	}
 	world->sdl->audio.max_volume = ft_clampf(world->sdl->audio.max_volume, 0.25f, 1.0f);
 	world->sdl->resolution_scaling = ft_clampf(world->sdl->resolution_scaling, 0.25f, 1.0f);

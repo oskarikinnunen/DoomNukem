@@ -240,6 +240,7 @@ void				render_triangle_dynamic(t_sdlcontext *sdl, t_render *render, int index);
 int		check_channel_status(FMOD_CHANNEL *channel);
 int		find_sound(t_audio *audio, const char *name);
 int		find_music(t_audio *audio, const char *name);
+void	update_volume(t_audio *audio);
 
 /* AUDIO */
 
@@ -249,9 +250,12 @@ void	close_audio(t_audio *audio);
 
 void	play_localsound(t_audio *audio, const char *name);
 void	play_worldsound(t_audio *audio, const char *name, t_vector3 *pos);
+void	pause_sound(t_audio *audio, const char *name, bool pause);
+void	pause_all_sounds(t_audio *audio, bool pause);
 
 void	play_music(t_audio *audio, const char *name);
 void	change_music(t_audio *audio, const char *name);
+void	pause_music(t_audio *audio, bool pause);
 void	stop_music(t_audio *audio);
 
 int		clip_triangle_against_occluder_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
