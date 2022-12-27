@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/26 17:46:49 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/27 18:23:33 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 	int			found;
 	t_entity	*ent;
 
+	printf("LOOP START\n\n\n");
 	i = 0;
 	found = 0;
 	while (found < world->entitycache.existing_entitycount)

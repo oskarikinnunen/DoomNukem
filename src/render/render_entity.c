@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/26 19:43:40 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/27 20:12:15 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,51 +15,6 @@
 #include "bresenham.h"
 #include "objects.h"
 #include "vectors.h"
-
-//TODO: Legacy occlusion using deprecated after occlusion gets updated
-void clipped(t_render *render, t_sdlcontext sdl)
-{
-	int i = 0;
-	int start = 0;
-	int end = 0;
-
-	t_triangle	triangles[200];
-	t_triangle	clipped[2];
-	while (i < render->occ_calc_tri_count)
-	{
-		triangles[end++] = render->occ_calc_tris[i];
-		int nnewtriangles = 1;
-		for (int p = 0; p < 4; p++)
-		{
-			int ntristoadd = 0;
-			while (nnewtriangles > 0)
-			{
-				t_triangle test;
-				test = triangles[start++];
-				nnewtriangles--;
-				switch (p)
-				{
-				case 0: ntristoadd = clip_triangle_against_plane((t_vector3){0.0f, 0.0f}, (t_vector3){0.0f, 1.0f}, test, clipped); break;
-				case 1: ntristoadd = clip_triangle_against_plane((t_vector3){0.0f, (float)(sdl.window_h * sdl.resolution_scaling) - 1.0f}, (t_vector3){0.0f, -1.0f}, test, clipped); break;
-				case 2: ntristoadd = clip_triangle_against_plane((t_vector3){0.0f, 0.0f}, (t_vector3){1.0f, 0.0f}, test, clipped); break;
-				case 3: ntristoadd = clip_triangle_against_plane((t_vector3){(float)(sdl.window_w * sdl.resolution_scaling) - 1.0f, 0.0f}, (t_vector3){-1.0f, 0.0f}, test, clipped); break;
-				}
-				for (int w = 0; w < ntristoadd; w++)
-				{
-					triangles[end++] = clipped[w];
-				}
-			}
-			nnewtriangles = end - start;
-		}
-		while (start < end)
-		{
-			render->occ_draw_tris[render->occ_tri_count++] = triangles[start++];
-		}
-		start = 0;
-		end = 0;
-		i++;
-	}
-}
 
 static t_quaternion quaternion_to_screenspace(t_mat4x4 matproj, t_quaternion q, t_sdlcontext sdl)
 {
@@ -96,6 +51,9 @@ uint32_t shade(uint32_t clr, float norm)
 
 void render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 {
+	return;
+	if (strcmp(entity->obj->name, "bench.obj") == 0)
+		return;
 	render_worldspace(render, entity);
 	render_quaternions(sdl, render, entity);
 	render->rs.render_count++;
@@ -117,9 +75,8 @@ void render_ray(t_sdlcontext sdl, t_render render, t_vector3 from, t_vector3 to)
 	drawline(sdl,
 		(t_point) {render.q[0].v.x, render.q[0].v.y},
 		(t_point) {render.q[1].v.x, render.q[1].v.y}, render.gizmocolor);
-		
-	render.occ_calc_tri_count = 0;
-	render.occ_tri_count = 0;
+	render.worldspace_ptri_count = 0;
+	render.screenspace_ptri_count = 0;
 }
 
 void render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size)
@@ -141,8 +98,8 @@ void render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size)
 		&& render.q[0].v.x >= 0.0f && render.q[0].v.x < sdl.window_w
 		&& render.q[0].v.y >= 0.0f && render.q[0].v.y < sdl.window_h)
 		drawcircle(sdl, (t_point){render.q[0].v.x, render.q[0].v.y}, size, render.gizmocolor);
-	render.occ_calc_tri_count = 0;
-	render.occ_tri_count = 0;
+	render.worldspace_ptri_count = 0;
+	render.screenspace_ptri_count = 0;
 }
 
 static t_vector3 lookdirection2(t_vector2 angle)

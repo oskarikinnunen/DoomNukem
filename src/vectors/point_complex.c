@@ -50,6 +50,14 @@ int	point_dist(t_point first, t_point second)
 		+ (first.y - second.y) * (first.y - second.y)));
 }
 
+float	point_fdist(t_point first, t_point second)
+{
+	return (
+		sqrt
+		((first.x - second.x) * (first.x - second.x)
+		+ (first.y - second.y) * (first.y - second.y)));
+}
+
 int	point_dot(t_point first, t_point second)
 {
 	return ((first.x * second.x) + (first.y * second.y));

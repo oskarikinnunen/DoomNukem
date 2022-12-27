@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_events.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/22 12:11:23 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/27 14:20:29 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,15 @@ t_gamereturn	editor_events(t_editor *ed)
 					exit(0);
 				return (game_exit);
 			}
-				
+			if (iskey(e, SDLK_p))
+			{
+				ed->render.occlusion.cull_box = !ed->render.occlusion.cull_box;
+				ed->render.occlusion.occluder_box = !ed->render.occlusion.occluder_box;
+			}
+			if (iskey(e, SDLK_o))
+			{
+				ed->render.occlusion.occlusion = !ed->render.occlusion.occlusion;
+			}
 			if (iskey(e, SDLK_TAB))
 			{
 				ed->hid.mouse.relative = !ed->hid.mouse.relative;

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/21 17:04:56 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/27 15:26:15 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,5 +188,5 @@ void	moveplayer(t_player *player, t_input *input, t_clock clock)
 	move_vector = vector3_mul(move_vector, clock.delta * MOVESPEED);
 	player->speed = move_vector;
 	player->transform.position = vector3_add(player->transform.position, move_vector);
-	player->transform.position.z = ft_clampf(player->transform.position.z, player->height, 1000.0f);
+	//player->transform.position.z = ft_clampf(player->transform.position.z, player->height, 1000.0f);
 }

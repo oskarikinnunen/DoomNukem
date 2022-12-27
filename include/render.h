@@ -141,14 +141,10 @@ typedef enum e_rend_lightmode
 typedef struct s_render
 {
 	t_camera			camera;
-	t_triangle			*occ_draw_tris;
-	t_triangle			*occ_calc_tris;
 	t_point_triangle	*worldspace_ptris;
 	t_point_triangle	*screenspace_ptris;
 	uint32_t			worldspace_ptri_count;
 	uint32_t			screenspace_ptri_count;
-	uint32_t			occ_tri_count;
-	uint32_t			occ_calc_tri_count;
 	t_img				*img;
 	t_img				*debug_img;
 	t_quaternion		*q;
@@ -244,11 +240,9 @@ void	play_music(t_audio *audio);
 
 void	close_audio(t_audio *audio);
 
-int		clip_triangle_against_occluder_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
 int		clip_triangle_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
-void	clipped(t_render *render, t_sdlcontext sdl);
-
 int		point_clip_triangle_against_plane(t_vector2 plane_p, t_vector2 plane_n, t_point_triangle in_tri, t_point_triangle out_tri[2]);
+int		clip_triangle_against_occluder_plane(t_vector2 plane_p, t_vector2 plane_n, t_point_triangle in_tri, t_point_triangle out_tri[2]);
 
 /* SURFACE TOOLS */
 
@@ -257,7 +251,7 @@ void	join_text_to_surface(SDL_Surface *dest, SDL_Surface *src, t_point pos, uint
 void	join_text_boxed_to_surface(t_sdlcontext *sdl, SDL_Surface *src, t_point pos, t_point padding);
 
 /*occlusion*/
-void get_min_max_from_triangles(t_vector2 *min, t_vector2 *max, t_triangle *t, int count);
+void get_min_max_from_triangles(t_vector2 *min, t_vector2 *max, t_point_triangle *t, int count);
 
 /*Render helper*/
 t_point_triangle	wf_tri(t_point_triangle in, float scaling);

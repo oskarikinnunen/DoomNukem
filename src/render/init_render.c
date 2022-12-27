@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/26 20:14:49 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/27 15:16:34 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,6 @@ t_render	init_render(t_sdlcontext sdl, struct s_world *world)
 	render.camera.position = (t_vector3){0};
 	render.camera.matworld = matrix_makeidentity();
 	render.camera.matproj = matrix_makeprojection(90.0f, (float)(sdl.window_h * sdl.resolution_scaling) / (float)(sdl.window_w * sdl.resolution_scaling), 2.0f, 1000.0f);
-	render.occ_calc_tris = malloc(sizeof(t_triangle) * 10000);
-	render.occ_draw_tris = malloc(sizeof(t_triangle) * 10000);
 	render.worldspace_ptris = malloc(sizeof(t_point_triangle) * 10000);
 	render.screenspace_ptris = malloc(sizeof(t_point_triangle) * 10000);
 	render.q = malloc(sizeof(t_quaternion) * 10000); //TODO: should be multiplied by the largest obj vertex count
@@ -55,7 +53,7 @@ void update_render(t_render *render, t_player *player)
 
 void	free_render(t_render render)
 {
-	free(render.occ_calc_tris);
-	free(render.occ_draw_tris);
+	free(render.worldspace_ptris);
+	free(render.screenspace_ptris);
 	free(render.q);
 }

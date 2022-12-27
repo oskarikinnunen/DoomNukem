@@ -5,8 +5,8 @@
 
 typedef struct s_occluder
 {
-	t_vector3		vector[2]; // position vector matches normal len
-	t_vector3		normal[3]; // which way the occluder plane points to in 2d screenspace in theory should be able to do this in 3d space, saving time
+	t_point			vector[2]; // position vector matches normal len
+	t_vector2		normal[3]; // which way the occluder plane points to in 2d screenspace in theory should be able to do this in 3d space, saving time
 }	t_occluder;
 
 typedef struct s_occlusion

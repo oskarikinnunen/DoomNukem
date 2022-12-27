@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/26 19:17:53 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/27 18:41:11 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,6 +155,7 @@ void	init_room_meshes(t_room *room, t_sdlcontext *sdl, t_world *world)
 		room->floors[i].entity->obj = object_tri(sdl);
 		applytrimesh(room->floors[i], room->floors[i].entity->obj);
 		default_floor_occlusion_settings(&room->floors[i], NULL);
+		update_floor_bounds(&room->floors[i]);
 		/*room->walls[i].entity->transform.position = vector3_zero();
 		room->walls[i].entity->transform.scale = vector3_one();
 		room->walls[i].entity->obj = object_plane(sdl);

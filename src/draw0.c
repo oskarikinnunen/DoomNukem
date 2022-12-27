@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/26 19:41:25 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/27 18:28:46 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,10 @@ void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr)
 		|| pos.y < 0 || pos.y >= sdl.window_h - 2)
 		return ;
 	((uint32_t *)sdl.surface->pixels)[pos.x + (pos.y * sdl.window_w)] = clr;
-	sdl.zbuffer[pos.x + (pos.y * sdl.window_w)] = 2.0f;
+	if (clr == CLR_TURQ)
+		sdl.zbuffer[pos.x + (pos.y * sdl.window_w)] = 3.0f;
+	else if (sdl.zbuffer[pos.x + (pos.y * sdl.window_w)] < 3.0f)
+		sdl.zbuffer[pos.x + (pos.y * sdl.window_w)] = 2.0f;
 }
 
 void	draw_alpha(t_sdlcontext sdl, t_point pos, uint32_t clr)

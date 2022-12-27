@@ -24,7 +24,8 @@ static t_box get_entity_box_transformed(t_entity *e)
 
 static void triangle_to_projection(t_sdlcontext sdl, t_render *render, t_triangle t)
 {
-	t_triangle	buff[2];
+	t_triangle			buff[2];
+	t_point_triangle	res_buff;
 	int	index;
 	int	clipamount;
 	int	i;
@@ -58,12 +59,14 @@ static void triangle_to_projection(t_sdlcontext sdl, t_render *render, t_triangl
 			t_vector3 voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
 			buff[i].p[index].v = vector3_add(buff[i].p[index].v, voffsetview);
 
-			buff[i].p[index].v.x *= 0.5f * (float)(sdl.window_w * sdl.resolution_scaling);
-			buff[i].p[index].v.y *= 0.5f * (float)(sdl.window_h * sdl.resolution_scaling);
+			res_buff.p[index].x = buff[i].p[index].v.x * (0.5f * (float)(sdl.window_w * sdl.resolution_scaling));
+			res_buff.p[index].y = buff[i].p[index].v.y * (0.5f * (float)(sdl.window_h * sdl.resolution_scaling));
 
+			res_buff.t[index] = buff[i].t[index];
+			res_buff.clr = buff[i].clr;
 			index++;
 		}
-		render->occ_calc_tris[render->occ_calc_tri_count++] = buff[i];
+		render->worldspace_ptris[render->worldspace_ptri_count++] = res_buff;
 		i++;
 	}
 }
@@ -140,7 +143,7 @@ void calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity)
 			i++;
 		}
 	}
-	clipped(render, sdl);
+	clipped_point_triangle(render, sdl);
 }
 
 static int	edge_clip_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_edge *edge)
@@ -262,41 +265,50 @@ static int entity_box_to_screenspace_edges(t_sdlcontext sdl, t_render *render, t
 	return(count);
 }
 
-static t_vector3 normal_from_triangle(t_vector3 va, t_vector3 vb, t_vector3 vc)
+static t_vector2 normal_from_triangle(t_point va, t_point vb, t_point vc)
 {
 	float		delta;
-	t_vector3	n;
+	t_vector2	n;
 
-	delta = vector3_dist(va, vc) / vector3_dist(va, vb);
+	delta = point_fdist(va, vc) / point_fdist(va, vb);
 	n.x = ft_flerp(va.x, vb.x, delta);
 	n.y = ft_flerp(va.y, vb.y, delta);
 
-	n = vector3_sub(n, vc);
-	n.z = 0.0f;
-	vector3_normalise(n);
+	n = vector2_sub(n, (t_vector2){vc.x, vc.y});
+	vector2_normalise(n);
 	return(n);
 }
 
+static bool is_valid_vector2(t_vector2 v)
+{
+	if (isnan(v.x) || isnan(v.y) || isinf(v.x) || isinf(v.y))
+		return(false);
+	return(true);
+}
 void update_occlusion_culling(t_sdlcontext sdl, t_render *render, t_entity *entity)
 {
-	t_occlusion *occlusion;
-	int			i;
-	int			j;
-	int			clipamount;
-	float		test;
-	float		min;
-	float		delta;
+	t_occlusion		*occlusion;
+	int				i;
+	int				j;
+	int				clipamount;
+	float			test;
+	float			min;
+	float			delta;
 	t_quaternion	q[8];
 	t_edge			edges[12];
 	int				count;
+	t_triangle		t;
 
-	t_triangle	t;
-
+	if (entity->obj->bounds.type == bt_box)
+		printf("box\n");
+	else if (entity->obj->bounds.type == bt_plane)
+		printf("wall\n");
+	else if (entity->obj->bounds.type == bt_ignore)
+		printf("floor\n");
 	occlusion = &entity->occlusion;
-
 	occlusion->occluder_count = 0;
-	render->occ_tri_count = 0;
-	render->occ_calc_tri_count = 0;
+	render->worldspace_ptri_count = 0;
+	render->screenspace_ptri_count = 0;
 	if (entity->obj->bounds.type == bt_plane)
 	{
 		count = entity_plane_to_screenspace_edges(sdl, render, entity, edges, q);
@@ -306,18 +318,17 @@ void update_occlusion_culling(t_sdlcontext sdl, t_render *render, t_entity *enti
 	i = 0;
 	while (i < count)
 	{
-		float	dist[2];
-		t_vector3 plane_p;
-		t_vector3 plane_n;
+		float		dist[2];
+		t_point		plane_p;
+		t_vector2	plane_n;
 
-		plane_p = edges[i].v[0];
-		plane_n = vector3_sub(edges[i].v[1], plane_p);
-		plane_n.z = plane_n.x;
+		plane_p = (t_point){edges[i].v[0].x, edges[i].v[0].y};
+		plane_n = vector2_sub((t_vector2){edges[i].v[1].x, edges[i].v[1].y}, (t_vector2){plane_p.x, plane_p.y});
+		float temp = plane_n.x;
 		plane_n.x = -plane_n.y;
-		plane_n.y = plane_n.z;
-		plane_n.z = 0.0f;
+		plane_n.y = temp;
 		test = vector2_magnitude((t_vector2){plane_n.x, plane_n.y});
-		plane_n = (t_vector3){.x = plane_n.x/test, .y = plane_n.y/test, .z = 0.0f};
+		plane_n = (t_vector2){plane_n.x / test, plane_n.y / test};
 
 		int neg, pos;
 		neg = 0;
@@ -341,7 +352,7 @@ void update_occlusion_culling(t_sdlcontext sdl, t_render *render, t_entity *enti
 		if (pos == 0 || neg == 0)
 		{
 			occlusion->occluder[occlusion->occluder_count].vector[0] = plane_p;
-			occlusion->occluder[occlusion->occluder_count].vector[1] = edges[i].v[1];
+			occlusion->occluder[occlusion->occluder_count].vector[1] = (t_point){edges[i].v[1].x, edges[i].v[1].y};
 			if (pos > 0)
 			{
 				plane_n.x = -plane_n.x;
@@ -354,8 +365,8 @@ void update_occlusion_culling(t_sdlcontext sdl, t_render *render, t_entity *enti
 		}
 		i++;
 	}
-	t_vector3	va,vb,vc;
-	t_vector3	n;
+	t_vector2	va,vb,vc;
+	t_vector2	n;
 	i = 0;
 	while (i < occlusion->occluder_count)
 	{
@@ -377,6 +388,11 @@ void update_occlusion_culling(t_sdlcontext sdl, t_render *render, t_entity *enti
 				occlusion->occluder[i].normal[2] = normal_from_triangle(occlusion->occluder[i].vector[1], occlusion->occluder[i].vector[0], occlusion->occluder[j].vector[0]);
 			j++;
 		}
+		if (is_valid_vector2(occlusion->occluder[i].normal[1]) == false || is_valid_vector2(occlusion->occluder[i].normal[2]) == false)
+		{
+			print_vector2(occlusion->occluder[i].normal[1]);
+			print_vector2(occlusion->occluder[i].normal[2]);
+		}
 		i++;
 	}
 	if (occlusion->occluder_count > 0)
@@ -391,9 +407,9 @@ void update_occlusion_culling(t_sdlcontext sdl, t_render *render, t_entity *enti
 }
 
 
-static void swap(t_triangle **a, t_triangle **b)
+static void swap(t_point_triangle **a, t_point_triangle **b)
 {
-	t_triangle *temp;
+	t_point_triangle *temp;
 
 	temp = *a;
 	*a = *b;
@@ -410,14 +426,14 @@ static bool is_tri_nan(t_triangle t)
 	return(false);
 }
 
-static int	is_culled(t_entity *occlude, uint32_t input_count, t_triangle **input, t_triangle **output)
+static int	is_culled(t_entity *occlude, uint32_t input_count, t_point_triangle **input, t_point_triangle **output, t_world *world)
 {
-	int 		i;
-	int			j;
-	int			output_count;
-	t_occlusion	*occlusion;
-	uint32_t	uclipamount, vclipamount, wclipamount;
-	t_triangle	uclipped[2], vclipped[2], wclipped[2];
+	int 				i;
+	int					j;
+	int					output_count;
+	t_occlusion			*occlusion;
+	uint32_t			uclipamount, vclipamount, wclipamount;
+	t_point_triangle	uclipped[2], vclipped[2], wclipped[2];
 
 	occlusion = &occlude->occlusion;
 	output_count = 0;
@@ -427,13 +443,13 @@ static int	is_culled(t_entity *occlude, uint32_t input_count, t_triangle **input
 		j = 0;
 		while (j < input_count)
 		{
-			uclipamount = clip_triangle_against_occluder_plane(occlusion->occluder[i].vector[0], occlusion->occluder[i].normal[0], (*input)[j], uclipped);
+			uclipamount = clip_triangle_against_occluder_plane((t_vector2){occlusion->occluder[i].vector[0].x, occlusion->occluder[i].vector[0].y}, occlusion->occluder[i].normal[0], (*input)[j], uclipped);
 			for (int u = 0; u < uclipamount; u++)
 			{
-				vclipamount = clip_triangle_against_occluder_plane(occlusion->occluder[i].vector[0], occlusion->occluder[i].normal[1], uclipped[u], vclipped);
+				vclipamount = clip_triangle_against_occluder_plane((t_vector2){occlusion->occluder[i].vector[0].x, occlusion->occluder[i].vector[0].y}, occlusion->occluder[i].normal[1], uclipped[u], vclipped);
 				for (int v = 0; v < vclipamount; v++)
 				{
-					wclipamount = clip_triangle_against_occluder_plane(occlusion->occluder[i].vector[1], occlusion->occluder[i].normal[2], vclipped[v], wclipped);
+					wclipamount = clip_triangle_against_occluder_plane((t_vector2){occlusion->occluder[i].vector[1].x, occlusion->occluder[i].vector[1].y}, occlusion->occluder[i].normal[2], vclipped[v], wclipped);
 					for (int w = 0; w < wclipamount; w++)
 					{
 						(*output)[output_count++] = wclipped[w];
@@ -449,7 +465,7 @@ static int	is_culled(t_entity *occlude, uint32_t input_count, t_triangle **input
 
 static void get_min_max_from_edges(t_vector2 *min, t_vector2 *max, t_occluder *occl, int count)
 {
-	t_vector3	v;
+	t_vector2	v;
 	int			i;
 
 	max->x = -1000000000;
@@ -461,7 +477,7 @@ static void get_min_max_from_edges(t_vector2 *min, t_vector2 *max, t_occluder *o
 	{
 		for (int j = 0; j < 2; j++)
 		{
-			v = occl[i].vector[j];
+			v = (t_vector2){occl[i].vector[j].x, occl[i].vector[j].y};
 			if (v.x < min->x)
 				min->x = v.x;
 			if (v.x > max->x)
@@ -505,28 +521,32 @@ bool is_valid_occlude_check(int32_t id, t_entity *occlude, t_render *render, t_s
 
 bool is_entity_occlusion_culled(struct s_world *world, t_render *render, t_entity *cull)
 {
-	t_list		*l;
-	t_triangle	*ta;
-	t_triangle	*tb;
-	t_square	cull_square;
-	int			count;
-	float		cull_dist;
+	int					i;
+	int					found;
+	t_entity			*ent;
+	t_list				*l;
+	t_point_triangle	*ta;
+	t_point_triangle	*tb;
+	t_square			cull_square;
+	int					count;
+	float				cull_dist;
 
-	render->occ_tri_count = 0;
-	render->occ_calc_tri_count = 0;
-	if (cull->occlusion.is_occluded == true)
-		return(true);
+	render->worldspace_ptri_count = 0;
+	render->screenspace_ptri_count = 0;
+	if (strcmp(cull->obj->name, "bench.obj") == 0)
+		return(false);
+	if (cull->obj->bounds.type == bt_box)
+		printf("box\n");
+	else if (cull->obj->bounds.type == bt_plane)
+		printf("wall\n");
+	else if (cull->obj->bounds.type == bt_ignore)
+		printf("floor\n");
 	calculate_triangles(*world->sdl, render, cull);
-	ta = render->occ_draw_tris;
-	tb = render->occ_calc_tris;
+	ta = render->screenspace_ptris;
+	tb = render->worldspace_ptris;
 	cull_dist = vector3_dist(vector3_add(cull->obj->bounds.origin, cull->transform.position), render->camera.position);
-	get_min_max_from_triangles(&cull_square.min, &cull_square.max, render->occ_draw_tris, render->occ_tri_count);
+	get_min_max_from_triangles(&cull_square.min, &cull_square.max, render->screenspace_ptris, render->screenspace_ptri_count);
 	count = calculate_tris_from_square(cull_square, cull, render);
-
-	int			i;
-	int			found;
-	t_entity	*ent;
-
 	i = 0;
 	found = 0;
 	while (found < world->entitycache.existing_entitycount)
@@ -538,13 +558,24 @@ bool is_entity_occlusion_culled(struct s_world *world, t_render *render, t_entit
 			{
 				if (is_valid_occlude_check(cull->id, ent, render, cull_square, cull_dist))
 				{
-					count = is_culled(ent, count, &ta, &tb);
-					if (count > 100)
+					count = is_culled(ent, count, &ta, &tb, world);
+					if (0 && count > 100)
 					{
+						for (int e = 0; e < count && cull->obj->bounds.type == bt_box; e++)
+						{
+							t_point_triangle t1 = (tb)[e];
+							drawline(*world->sdl, t1.p[0], t1.p[1], CLR_PRPL);
+							drawline(*world->sdl, t1.p[1], t1.p[2], CLR_PRPL);
+							drawline(*world->sdl, t1.p[2], t1.p[0], CLR_PRPL);
+						}
+						printf("ITS OVER 9000!!!\n");
 						return(false);
 					}
 					if (count == 0)
+					{
+						printf("count 0 early return\n");
 						return(true);
+					}
 					swap(&ta, &tb);
 				}
 			}
@@ -552,7 +583,15 @@ bool is_entity_occlusion_culled(struct s_world *world, t_render *render, t_entit
 		}
 		i++;
 	}
-	render->occ_tri_count = 0;
-	render->occ_calc_tri_count = 0;
+	for (int e = 0; e < count && cull->obj->bounds.type == bt_box; e++)
+	{
+		t_point_triangle t1 = (ta)[e];
+		drawline(*world->sdl, t1.p[0], t1.p[1], CLR_PRPL);
+		drawline(*world->sdl, t1.p[1], t1.p[2], CLR_PRPL);
+		drawline(*world->sdl, t1.p[2], t1.p[0], CLR_PRPL);
+	}
+	printf("count is %d\n", count);
+	render->worldspace_ptri_count = 0;
+	render->screenspace_ptri_count = 0;
 	return(false);
 }

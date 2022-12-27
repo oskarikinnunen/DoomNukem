@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_new_buttons.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 14:34:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 10:43:47 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/27 19:11:51 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,22 +35,23 @@ int		get_tool_index(t_editor *ed)
 	return (0);
 }
 
-void	update_editor_toolbar(t_editor *ed, t_autogui *toolbar)
+void    update_editor_toolbar(t_editor *ed, t_autogui *toolbar)
 {
-	SDL_Event	e;
-	toolbar->rect.size.y = 60;
-	toolbar->rect.size.x = 324;
-	gui_start(toolbar);
-	gui_starthorizontal(toolbar);
-	if (gui_button("[1]Rooms", toolbar) || ed->hid.keystate >> KEYS_1MASK & 1)
-		changetool(ed, toolbar->sdl, get_room_tool());
-	if (gui_button("[2]Entities", toolbar) || ed->hid.keystate >> KEYS_2MASK & 1)
-		changetool(ed, toolbar->sdl, get_entity_tool());
-	if (gui_button("[3]Guns", toolbar) || ed->hid.keystate >> KEYS_3MASK & 1)
-		changetool(ed, toolbar->sdl, get_gun_tool());
-	if (gui_button("[4]NPCs", toolbar) || ed->hid.keystate >> KEYS_4MASK & 1)
-		changetool(ed, toolbar->sdl, get_npc_tool());
-	gui_endhorizontal(toolbar);
-	gui_end(toolbar);
+    SDL_Event    e;
+    toolbar->rect.size.y = 60;
+    toolbar->rect.size.x = 420;
+    gui_start(toolbar);
+    gui_starthorizontal(toolbar);
+    if (gui_button("[1]Rooms", toolbar) || ed->hid.keystate >> KEYS_1MASK & 1)
+        changetool(ed, toolbar->sdl, get_room_tool());
+    if (gui_button("[2]Entities", toolbar) || ed->hid.keystate >> KEYS_2MASK & 1)
+        changetool(ed, toolbar->sdl, get_entity_tool());
+    if (gui_button("[3]Guns", toolbar) || ed->hid.keystate >> KEYS_3MASK & 1)
+        changetool(ed, toolbar->sdl, get_gun_tool());
+    if (gui_button("[4]NPCs", toolbar) || ed->hid.keystate >> KEYS_4MASK & 1)
+        changetool(ed, toolbar->sdl, get_npc_tool());
+    if (gui_shortcut_button("No tool", 't', toolbar))
+        ed->tool = NULL;
+    gui_endhorizontal(toolbar);
+    gui_end(toolbar);
 }
-
