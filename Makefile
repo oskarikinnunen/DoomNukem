@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/12/27 11:29:41 by raho             ###   ########.fr        #
+#    Updated: 2022/12/27 14:15:17 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -76,6 +76,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		audio_tools.c \
 		audio_sounds.c \
 		audio_music.c \
+		audio_volume.c \
 		occlusion/occlusion.c \
 		occlusion/frustrum_culling.c \
 		occlusion/peripheral_culling.c \

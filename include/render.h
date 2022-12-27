@@ -240,7 +240,7 @@ void				render_triangle_dynamic(t_sdlcontext *sdl, t_render *render, int index);
 int		check_channel_status(FMOD_CHANNEL *channel);
 int		find_sound(t_audio *audio, const char *name);
 int		find_music(t_audio *audio, const char *name);
-void	update_volume(t_audio *audio);
+void	update_maxvolume(t_audio *audio);
 
 /* AUDIO */
 

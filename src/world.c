@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/27 13:17:15 by raho             ###   ########.fr       */
+/*   Updated: 2022/12/27 14:16:08 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,8 +99,8 @@ void update_world3d(t_world *world, t_render *render)
 	gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);
 	gui_labeled_int("Entity count:", world->entitycache.existing_entitycount, world->debug_gui);
 	gui_labeled_float_slider("Resolution scale:", &world->sdl->resolution_scaling, 0.01f, world->debug_gui);
-	gui_labeled_float_slider("Audio max:", &world->sdl->audio.max_volume, 0.01f, world->debug_gui);
-	update_volume(&world->sdl->audio);
+	if (gui_labeled_float_slider("Audio max:", &world->sdl->audio.max_volume, 0.01f, world->debug_gui))
+		update_maxvolume(&world->sdl->audio);
 	if (gui_button("Test audio", world->debug_gui))
 	{
 		static bool	statement = false;
