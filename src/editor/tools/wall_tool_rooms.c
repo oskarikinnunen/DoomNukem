@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/27 19:22:29 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/28 20:17:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -774,21 +774,6 @@ void	makefloor_room_area(t_editor *ed, t_sdlcontext *sdl, t_room *room, t_floor_
 	room->floorcount += fc.facecount;
 }
 
-void	make_areas(t_editor *ed, t_sdlcontext *sdl, t_room *room)
-{
-	int	i;
-
-	i = 0;
-	free_floor(&ed->world, room);
-	room->floors = ft_memalloc(sizeof(t_meshtri) * 1000);
-	while (i < room->floor_areacount)
-	{
-		makefloor_room_area(ed, sdl, room, room->floor_areas[i]);
-		i++;
-	}
-	printf("made floors for %i areas \n", i);
-}
-
 void	makefloor_room(t_world *world, t_room *room)
 {
 	t_floorcalc	fc;
@@ -831,7 +816,25 @@ void	makefloor_room(t_world *world, t_room *room)
 		mtri->uv[0] = vector2_div(mtri->uv[0], 100.0f);
 		mtri->uv[1] = vector2_div(mtri->uv[1], 100.0f);
 		mtri->uv[2] = vector2_div(mtri->uv[2], 100.0f);
+		create_lightmap_for_entity(mtri->entity, world);
+		create_map_for_entity(mtri->entity, world);
 		applytrimesh(*mtri, mtri->entity->obj);
 		i++;
 	}
+}
+
+void	make_areas(t_editor *ed, t_sdlcontext *sdl, t_room *room)
+{
+	int	i;
+
+	i = 0;
+	free_floor(&ed->world, room);
+	room->floors = ft_memalloc(sizeof(t_meshtri) * 1000);
+	/*while (i < room->floor_areacount)
+	{
+		makefloor_room_area(ed, sdl, room, room->floor_areas[i]);
+		i++;
+	}*/
+	makefloor_room(&ed->world, room);
+	printf("made floors for %i areas \n", i);
 }

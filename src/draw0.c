@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/22 10:26:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/28 15:57:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ void	draw_alpha(t_sdlcontext sdl, t_point pos, uint32_t clr)
 
 void	screen_blank(t_sdlcontext sdl)
 {
-	bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
-	bzero(sdl.window_surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
+	//bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
+	//bzero(sdl.window_surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 	bzero(sdl.ui_surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 	bzero(sdl.zbuffer, sizeof(float) * sdl.window_h * sdl.window_w);
 }

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/27 13:31:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/28 19:08:51 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,7 +228,7 @@ static void	startup_init_room(t_world *world, t_room *r)
 		//w->entity->obj = object_plane(world->sdl);
 		entity_assign_object(world, w->entity, object_plane(world->sdl));
 		w->entity->obj->materials[0].img = get_image_by_name(*world->sdl, w->texname);
-		applywallmesh(w, r, world);
+		//applywallmesh(w, r, world);
 		i++;
 	}
 	i = 0;
@@ -247,6 +247,7 @@ void	load_rooms(t_world *world, t_sdlcontext *sdl)
 {
 	t_list	*l;
 	t_room	*r;
+	int		i;
 
 	l = world->roomlist;
 	while (l != NULL)
@@ -254,6 +255,18 @@ void	load_rooms(t_world *world, t_sdlcontext *sdl)
 		r = (t_room *)l->content;
 		*r = load_room(r->name);
 		startup_init_room(world, r);
+		l = l->next;
+	}
+	l = world->roomlist;
+	while (l != NULL)
+	{
+		r = (t_room *)l->content;
+		i = 0;
+		while (i < r->wallcount)
+		{
+			applywallmesh(&r->walls[i], r, world);
+			i++;
+		}
 		l = l->next;
 	}
 }

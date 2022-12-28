@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:53:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/27 18:55:18 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/28 17:32:06 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,21 @@ void highlight_roomborders(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 			
 		i++;
 	}*/
+}
+
+bool	edge_exists(t_vector2 edge, t_room	*room)
+{
+	int	i;
+
+	i = 0;
+	while (i < room->edgecount)
+	{
+		if (vector2_cmp(edge,
+			room->edges[i]))
+			return (true);
+		i++;
+	}
+	return (false);
 }
 
 void highlight_entity(t_editor *ed, t_sdlcontext sdl, t_entity *entity, uint32_t color)
