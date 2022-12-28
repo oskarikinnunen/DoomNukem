@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/27 14:20:29 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/28 16:04:52 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,14 @@ t_gamereturn	editor_events(t_editor *ed)
 			if (iskey(e, SDLK_o))
 			{
 				ed->render.occlusion.occlusion = !ed->render.occlusion.occlusion;
+			}
+			if (iskey(e, SDLK_y))
+			{
+				ed->world.sdl->bitmask1 = !ed->world.sdl->bitmask1;
+			}
+			if (iskey(e, SDLK_u))
+			{
+				ed->world.sdl->bitmask2 = !ed->world.sdl->bitmask2;
 			}
 			if (iskey(e, SDLK_TAB))
 			{

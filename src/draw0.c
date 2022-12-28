@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/27 18:28:46 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/28 16:09:42 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ void	screen_blank(t_sdlcontext sdl)
 	bzero(sdl.window_surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 	bzero(sdl.ui_surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 	bzero(sdl.zbuffer, sizeof(float) * sdl.window_h * sdl.window_w);
+	bzero(sdl.bitmask.bitmask, sizeof(__uint128_t) * ((sdl.window_h * sdl.window_w) / 128));
 }
 
 # define CRCL_SIDES 16

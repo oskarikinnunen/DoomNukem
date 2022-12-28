@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/27 20:12:15 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/28 14:58:23 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,6 @@ uint32_t shade(uint32_t clr, float norm)
 
 void render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 {
-	return;
-	if (strcmp(entity->obj->name, "bench.obj") == 0)
-		return;
 	render_worldspace(render, entity);
 	render_quaternions(sdl, render, entity);
 	render->rs.render_count++;

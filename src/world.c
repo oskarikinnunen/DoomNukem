@@ -1,4 +1,4 @@
-/* ************************************************************************** */
+	/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/27 18:23:33 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/28 16:46:38 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 	int			found;
 	t_entity	*ent;
 
-	printf("LOOP START\n\n\n");
 	i = 0;
 	found = 0;
 	while (found < world->entitycache.existing_entitycount)
@@ -61,10 +60,85 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 		if (ent->status != es_free)
 		{
 			if (ent->status == es_active && !ent->hidden && is_entity_culled(world, render, ent) == false)
-				render_entity(sdl, render, ent);
+			{
+				if (sdl->bitmask2 == true)
+					render_entity(sdl, render, ent);
+				else
+					render_entity_to_bitmask(sdl, render, ent);
+			}
 			found++;
 		}
 		i++;
+	}
+}
+
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
+
+/*
+right = 8
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0
+
+left = 3
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1
+
+&
+1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0
+0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1
+
+0 0 0 1 1 1 1 1 0 0 0 0 0 0 0 0
+*/
+
+static uint16_t mask_x(uint16_t left_x, uint16_t right_x)
+{
+	uint16_t	row = ~0;
+	return((row >> left_x)& ~(row >> right_x));
+}
+
+static void bitmask_to_pixels(t_sdlcontext *sdl)
+{
+	if (sdl->bitmask1 == true)
+		return;
+	uint32_t	clr;
+
+	//sdl->bitmask.bitmask[5050] = ~sdl->bitmask.bitmask[5050];
+	//sdl->bitmask.bitmask[5050] = 0;
+	////sdl->bitmask.bitmask[temp1] |= 1UL << (temp2);
+	// 0 8 16 24 32
+	//sdl->bitmask.bitmask[5050] |= 255 << 0;
+	//sdl->bitmask.bitmask[5050] |= 127 << 16;
+	//sdl->bitmask.bitmask[5050] |= ((~((__uint128_t)0L) >> (__uint128_t)7)& ~(~((__uint128_t)0) >> (__uint128_t)8));
+	sdl->bitmask.bitmask[5050] |= mask_x(3, 8);
+	//mask_x(3, 8);
+	//~((__uint128_t)0) >> (__uint128_t)64;
+
+	//if (sdl->bitmask.bitmask[5050] == sdl->bitmask.bitmask[5051])
+	//	exit(0);
+		//
+	//sdl->bitmask.bitmask[5050] |= mask_x(16, 0, 17);
+	//sdl->bitmask.bitmask[5050] |= ~0;
+	//sdl->bitmask.bitmask[5050] |= 255 << 24;
+	//1 3 7 15 31 63 127 255
+	//sdl->bitmask.bitmask[temp1] |= 1UL << (temp2);
+	//number &= ~(1UL << n);
+	for (int y = 0; y < sdl->window_h; y++)
+	{
+		for (int x = 0; x < sdl->window_w; x++)
+		{
+			clr = INT_MAX;
+			//printf("x %d, y %d\n", x, y);
+			//printf("bitmask chunk %d\n", (y / 4) * (sdl->window_w / 8) + (x / 8));
+			/*y = (y/4) * (1024/8);
+			x = (x/8);
+			y = (y % 4) * 8;
+			x = x % 8;*/
+			if ((sdl->bitmask.bitmask[(y / 8) * sdl->bitmask.chunk_size.x + (x / 16)] >> ((y % 8) * 16) + (x % 16) & 1))
+				clr = CLR_RED;
+			((uint32_t *)sdl->surface->pixels)[sdl->window_w * y + x] = clr;
+		}
 	}
 }
 
@@ -95,6 +169,7 @@ void update_world3d(t_world *world, t_render *render)
 	update_entitycache(sdl, world, render);
 	if (!sdl->global_wireframe && !world->skybox.hidden)
 		render_entity(sdl, render, &world->skybox);
+	bitmask_to_pixels(sdl);
 	rescale_surface(sdl);
 	gui_start(world->debug_gui);
 	gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/27 14:18:18 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/28 16:12:29 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,9 @@ int	editorloop(t_sdlcontext sdl)
 	ed.gamereturn = game_continue;
 	ed.render = init_render(sdl, &ed.world);
 	player_init(&ed.player, &sdl, &ed.world);
+	sdl.bitmask.bitmask = malloc(sizeof(__uint128_t) * ((sdl.window_h * sdl.window_w) / 128));
+	sdl.bitmask.chunk_size.x = (sdl.window_w)/16;
+	sdl.bitmask.chunk_size.y = (sdl.window_h)/8;
 	ed.player.transform.position = (t_vector3){100, 100, 100.0f};
 	ed.player.gun->disabled = true;
 	ed.world.player = &ed.player;

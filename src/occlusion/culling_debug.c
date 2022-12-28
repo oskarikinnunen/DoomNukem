@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 14:59:10 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/27 20:14:21 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/28 14:59:05 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,6 @@ void draw_wireframe(t_sdlcontext sdl, t_render *render, t_entity *e, uint32_t cl
 	t_square	s;
 	int			i;
 
-	if (strcmp(e->obj->name, "bench.obj") == 0 || clr != CLR_BLUE)
-	{
-		return;
-	}
 	render->worldspace_ptri_count = 0;
 	render->screenspace_ptri_count = 0;
 	calculate_triangles(sdl, render, e);

@@ -533,14 +533,7 @@ bool is_entity_occlusion_culled(struct s_world *world, t_render *render, t_entit
 
 	render->worldspace_ptri_count = 0;
 	render->screenspace_ptri_count = 0;
-	if (strcmp(cull->obj->name, "bench.obj") == 0)
-		return(false);
-	if (cull->obj->bounds.type == bt_box)
-		printf("box\n");
-	else if (cull->obj->bounds.type == bt_plane)
-		printf("wall\n");
-	else if (cull->obj->bounds.type == bt_ignore)
-		printf("floor\n");
+
 	calculate_triangles(*world->sdl, render, cull);
 	ta = render->screenspace_ptris;
 	tb = render->worldspace_ptris;
@@ -559,21 +552,12 @@ bool is_entity_occlusion_culled(struct s_world *world, t_render *render, t_entit
 				if (is_valid_occlude_check(cull->id, ent, render, cull_square, cull_dist))
 				{
 					count = is_culled(ent, count, &ta, &tb, world);
-					if (0 && count > 100)
+					if (count > 100)
 					{
-						for (int e = 0; e < count && cull->obj->bounds.type == bt_box; e++)
-						{
-							t_point_triangle t1 = (tb)[e];
-							drawline(*world->sdl, t1.p[0], t1.p[1], CLR_PRPL);
-							drawline(*world->sdl, t1.p[1], t1.p[2], CLR_PRPL);
-							drawline(*world->sdl, t1.p[2], t1.p[0], CLR_PRPL);
-						}
-						printf("ITS OVER 9000!!!\n");
 						return(false);
 					}
 					if (count == 0)
 					{
-						printf("count 0 early return\n");
 						return(true);
 					}
 					swap(&ta, &tb);
@@ -583,14 +567,7 @@ bool is_entity_occlusion_culled(struct s_world *world, t_render *render, t_entit
 		}
 		i++;
 	}
-	for (int e = 0; e < count && cull->obj->bounds.type == bt_box; e++)
-	{
-		t_point_triangle t1 = (ta)[e];
-		drawline(*world->sdl, t1.p[0], t1.p[1], CLR_PRPL);
-		drawline(*world->sdl, t1.p[1], t1.p[2], CLR_PRPL);
-		drawline(*world->sdl, t1.p[2], t1.p[0], CLR_PRPL);
-	}
-	printf("count is %d\n", count);
+
 	render->worldspace_ptri_count = 0;
 	render->screenspace_ptri_count = 0;
 	return(false);

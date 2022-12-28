@@ -130,18 +130,15 @@ uint8_t	average(t_point sample, t_lightmap *lmap, t_map *map)
 		while (subsample.x < 3)
 		{
 			avgsample = point_add(start, subsample);
-			/*if (avgsample.x >= 0 && avgsample.y >= 0 && avgsample.x < map->size.x - 1 && avgsample.y < map->size.y - 1)
-			{*/
-			avg += lmap->data[avgsample.x * map->size.x + avgsample.y];
+			if (avgsample.x >= 0 && avgsample.y >= 0 && avgsample.x < map->size.x - 1 && avgsample.y < map->size.y - 1)
+			{
+			avg += lmap->data[avgsample.y * map->size.x + avgsample.x];
 			hit++;
-			//}
+			}
 			subsample.x++;
 		}
 		subsample.y++;
 	}
-	//printf("hit %i \n", hit);
-	if (hit == 0)
-		return (lmap->data[sample.x * lmap->size.x + sample.y]);
 	return ((uint8_t)(avg / hit));
 }
 
@@ -203,7 +200,7 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 				{
 					uint32_t clr;
 					clr = img->data[(e % (img->size.y)) * img->size.x + (j % (img->size.x))];
-					uint8_t light = average((t_point){e, j}, lightmap, entity->map);
+					uint8_t light = average((t_point){j, e}, lightmap, entity->map);
 					//uint8_t light = //lightmap->data[e * entity->map[index].size.x + j];
 					Uint32 alpha = clr & 0xFF000000;
 					Uint32 red = ((clr & 0x00FF0000) * (uint8_t)(light * 0.4f)) >> 8;

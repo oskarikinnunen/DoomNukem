@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 15:36:10 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/27 15:00:36 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/28 17:00:16 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ static t_vector3 normal_calc(t_triangle tritransformed)
 	return (normal);
 }
 
-static bool is_triangle_backface(t_triangle tritransformed, t_render *render)
+bool is_triangle_backface(t_triangle tritransformed, t_render *render)
 {
 	t_vector3	normal;	
 	t_vector3	vcameraray;
