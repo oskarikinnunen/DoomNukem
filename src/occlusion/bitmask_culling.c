@@ -32,10 +32,10 @@ return (~0 >> max(0, left - x))
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
-static __uint128_t mask_x(uint16_t left_x, uint16_t right_x)
+static __uint128_t mask_x(int x, int left_x, int right_x)
 {
 	uint16_t	row = ~0;
-	return((row << (left_x))& ~(row << (right_x)));
+	return(((row << MAX(0, left_x - x))& ~(row << MAX(0, right_x - x))));
 }
 
 static void fill_point_tri_bot2(t_point_triangle triangle, t_sdlcontext *sdl)
@@ -72,7 +72,6 @@ __uint128_t create_bitmask(uint16_t mask1, uint16_t mask2, uint16_t mask3, uint1
   return result;
 }
 
-
 static void fill_point_tri_top2(t_point *t, t_point_triangle triangle, t_sdlcontext *sdl)
 {
 	t_point			*p;
@@ -99,35 +98,56 @@ static void fill_point_tri_top2(t_point *t, t_point_triangle triangle, t_sdlcont
 		i.x = t[1].x + (t_step[0] * (float)(i.y - t[1].y));
 		int ab =  t[2].x + (t_step[1] * (float)(i.y - t[1].y)); // - 1
 
-		if (i.x < ab)
+		y = i.y * 8;
+		index = 0;
+		__uint128_t e = 0;
+		int chunk_j = i.y * (sdl->bitmask.chunk_size.x) + i.x;
+		int prev;
+		while (index < 8 && y < p[0].y)
 		{
-			y = i.y * 8;
-			index = 0;
-			int e = 112;
-			int chunk_i = i.y * sdl->bitmask.chunk_size.x + i.x;
-			y = p[1].y;
-			while (y < p[0].y)
+			x = p[1].x + (step[0] * (float)(y - p[1].y));
+			int ax =  p[2].x + (step[1] * (float)(y - p[1].y));
+			chunk_j = i.y * (sdl->bitmask.chunk_size.x) + (x / 16);
+			if (index != 0 && prev != chunk_j)
 			{
-				x = p[1].x + (step[0] * (float)(y - p[1].y));
-				int ax =  p[2].x + (step[1] * (float)(y - p[1].y));
-				//sdl->bitmask.bitmask[chunk_i] |= mask_x(x, ax) << e;
-				while(x <= ax)
+				//printf("prev %d %d\n", prev, chunk_j);
+				while (prev < chunk_j)
 				{
-					//sdl->bitmask.bitmask[chunk_i] |= 1UL << (((y % 8) * 16) + (x % 16));
-					sdl->bitmask.bitmask[(y / 8) * ((sdl->window_w)/16) + (x / 16)] |= 1UL << (((y % 8) * 16) + (x % 16));
-					x++;
+					prev++;
+					for (int j = 0; j < index; j++)
+					{
+						sdl->bitmask.bitmask[prev] |= mask_x(0, 0, 16) << (j * 16); //(__uint128_t)65535
+					}
 				}
-				//sdl->bitmask.bitmask[i.y * sdl->bitmask.chunk_size.x + i.x] = ~0;
-				e -= 16;
-				y++;
-				index++;
-			}/*
-			i.x++;
-			while (i.x < ab)
+			}
+			prev = chunk_j;
+			if (chunk_j > sdl->bitmask.chunk_size.x * sdl->bitmask.chunk_size.y)
 			{
-				sdl->bitmask.bitmask[i.y * sdl->bitmask.chunk_size.x + i.x] = ~0;
+				for (int i = 0; i < 3; i++)
+				{
+					print_point(triangle.p[i]);
+				}
+				printf("y %d x %d %d %f %f %d\n", y, x, p[1].x, step[0], (float)(y - p[1].y), p[1].y);
+				printf("chunk j %d max size %d x %d %d %d\n", chunk_j, sdl->bitmask.chunk_size.x * sdl->bitmask.chunk_size.y, sdl->bitmask.chunk_size.x, sdl->bitmask.chunk_size.y, i.y);
+				exit(0);
+			}
+			sdl->bitmask.bitmask[chunk_j] |= mask_x(0, x % 16, 16) << e;
+			e += 16;
+			y++;
+			index++;
+			//chunk_j++;
+		}
+	//	printf("iy is %d\n", i.y);
+	//	i.x++;
+		//i.x++;
+		if (1)
+		{
+			chunk_j++;
+			while (chunk_j <= i.y * (sdl->bitmask.chunk_size.x) + ab)
+			{
+				sdl->bitmask.bitmask[chunk_j++] = ~0;
 				i.x++;
-			}*/
+			}
 		}
 		i.y++;
 	}
@@ -135,6 +155,13 @@ static void fill_point_tri_top2(t_point *t, t_point_triangle triangle, t_sdlcont
 }
 
 /*
+	while(x <= ax)
+	{
+
+		//sdl->bitmask.bitmask[chunk_i] |= 1UL << (((y % 8) * 16) + (x % 16));
+		sdl->bitmask.bitmask[(y / 8) * ((sdl->window_w)/16) + (x / 16)] |= (__uint128_t)((__uint128_t)1 << (__uint128_t)(((y % 8) * 16) + (x % 16)));
+		x++;
+	}
 creates two triangles from the given triangle one flat top and one flat bottom.
 both triangles are then assigned to t_point p[3] array and passed onto fill_tri_bot/top functions.
 p[0] is always the pointy head of the triangle p[1] and p[2] are flat points where, p[1] x is smaller than p[2]
@@ -156,9 +183,12 @@ void	render_bitmask_triangle(t_sdlcontext *sdl, t_render *render, int index)
 	float			lerp;
 
 	p2 = render->screenspace_ptris[index].p;
-	p2[0] = (t_point){0, 0};
-	p2[1] = (t_point){500, 0};
-	p2[2] = (t_point){500, 500};
+	p2[0] = (t_point){630, 320};
+	p2[1] = (t_point){548, 280};
+	p2[2] = (t_point){445, 406};//175 176 breaks
+	for (int i = 0; i < 3; i++)
+		print_point(p2[i]);
+	printf("end\n");
 	sort_point_tri(p2);
 	lerp = ((float)p2[1].y - (float)p2[2].y) / ((float)p2[0].y - (float)p2[2].y);
 	p2_split.x = p2[2].x + (lerp * ((float)p2[0].x - (float)p2[2].x));

@@ -92,10 +92,10 @@ left = 3
 0 0 0 1 1 1 1 1 0 0 0 0 0 0 0 0
 */
 
-static __uint128_t mask_x(uint16_t left_x, uint16_t right_x)
+static __uint128_t mask_x(int x, int left_x, int right_x)
 {
 	uint16_t	row = ~0;
-	return((row << left_x)& ~(row << right_x));
+	return(((row << MAX(0, left_x - x))& ~(row << MAX(0, right_x - x))));
 }
 
 static void bitmask_to_pixels(t_sdlcontext *sdl)
@@ -115,7 +115,8 @@ static void bitmask_to_pixels(t_sdlcontext *sdl)
 	sdl->bitmask.bitmask[5051] |= ~0;
 	sdl->bitmask.bitmask[5050 + sdl->bitmask.chunk_size.x] |= ~0;
 	sdl->bitmask.bitmask[5050 - sdl->bitmask.chunk_size.x] |= ~0;
-	sdl->bitmask.bitmask[5050] |= mask_x(1, 16) << 32;
+	sdl->bitmask.bitmask[5050] |= mask_x(0, 0, 16) << (16);
+	//sdl->bitmask.bitmask[5050] |= mask_x(0, 0, 16) << 32 + 16;
 	//mask_x(3, 8);
 	//~((__uint128_t)0) >> (__uint128_t)64;
 
