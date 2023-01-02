@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/26 17:25:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/29 12:52:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,7 +157,7 @@ t_quaternion	transformed_vector3(t_transform transform, t_vector3 v);//TODO: vec
 void			mouse_event(SDL_Event e, t_mouse *mouse);//TODO: input.h
 
 /* SPACECONVERSIONS.C */
-t_point vector3_to_screenspace(t_render r, t_vector3 vec, t_sdlcontext sdl);//TODO: vectors.h
+t_point vector3_to_screenspace(t_vector3 vec, t_sdlcontext sdl);
 
 /* EDITOR_MAP_IO.C */
 t_list	*loadmap(char *filename);

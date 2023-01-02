@@ -10,6 +10,12 @@ static uint32_t sample_img(t_render *render, t_texture t)
 	xsample = (t.u / t.w) * (render->map.img_size.x);
 	ysample = (t.v / t.w) * (render->map.img_size.y);
 
+	/*if (xsample >= render->map.size.x || xsample < 0 || ysample < 0 || ysample >= render->map.size.y)
+	{
+		printf("xsample %i", xsample);
+		printf("ysample %i \n", ysample);
+		printf("img dim %i %i \n\n", render->map.size.x, render->map.size.y);
+	}*/
 	//render->
 	return(render->map.data[ysample * render->map.size.x + xsample]);
 }

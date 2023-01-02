@@ -46,7 +46,7 @@ static void sample_img(t_lighting l, int x, int y, t_triangle_polygon t)
 
 	if (l.lightmap->data[x + l.lightmap->size.x * y] != l.ambient_light)
 	{
-		printf("light map data %i, ambient %i \n", l.lightmap->data[x + l.lightmap->size.x * y], l.ambient_light);
+		//printf("light map data %i, ambient %i \n", l.lightmap->data[x + l.lightmap->size.x * y], l.ambient_light);
 		return ;
 	}
 		
@@ -68,6 +68,8 @@ static void sample_img(t_lighting l, int x, int y, t_triangle_polygon t)
 	{
 		/*if (l.entities[o]->id == l.entity_id)
 			continue ;*/
+		if (l.entities[o]->hidden)
+			continue;
 		for (int p = 0; p < l.entities[o]->obj->face_count; p++)
 		{
 			if (intersect_triangle(ray, &temp_t, l.triangles[o][p].p3[0], l.triangles[o][p].p3[1], l.triangles[o][p].p3[2]) == true)

@@ -8,7 +8,7 @@ void create_lightmap_for_entity(t_entity *entity, struct s_world *world)
 	int j;
 
 	obj = entity->obj;
-	printf("obj mat count %i \n", obj->material_count);
+	//printf("obj mat count %i \n", obj->material_count);
 	entity->lightmap = ft_memalloc(sizeof(t_lightmap) * obj->material_count);
 	max.x = -10000.0f;
 	max.y = -10000.0f;
@@ -21,7 +21,7 @@ void create_lightmap_for_entity(t_entity *entity, struct s_world *world)
 			t_vector2 uv;
 
 			uv = obj->uvs[obj->faces[i].uv_indices[j] - 1];
-			printf("face %i uv: %f %f \n", i, uv.x, uv.y);
+			//printf("face %i uv: %f %f \n", i, uv.x, uv.y);
 			if (uv.x > max.x)
 				max.x = uv.x;
 			if (uv.y > max.y)
@@ -44,15 +44,15 @@ void create_lightmap_for_entity(t_entity *entity, struct s_world *world)
 			if (max.y > 1.0f)
 			{
 				lightmap->size.y = max.y * img->size.y;
-				printf("max y exceeds 1.0f, max y: %f, img size.y %i\n", max.y, img->size.y);
+				//printf("max y exceeds 1.0f, max y: %f, img size.y %i\n", max.y, img->size.y);
 			}
 				
 			else
 				lightmap->size.y = img->size.y;
 			lightmap->data = malloc(sizeof(uint8_t) * lightmap->size.x * lightmap->size.y);
 			//printf("lighting ambient is %i \n", world->lighting.ambient_light);
-			printf("max %f x %f \n", max.x, max.y);
-			printf("lightmap size: %i x %i \n", lightmap->size.x, lightmap->size.y);
+			/*printf("max %f x %f \n", max.x, max.y);
+			printf("lightmap size: %i x %i \n", lightmap->size.x, lightmap->size.y);*/
 			memset(lightmap->data, world->lighting.ambient_light, lightmap->size.x * lightmap->size.y);
 			// ft_bzero(lightmap->data, sizeof(uint8_t) * lightmap->size.x * lightmap->size.y);
 			max.x = -10000.0f;
@@ -278,7 +278,7 @@ void start_lightbake(t_render *render, t_world *world)
 	world->lights_count = 1;
 	world->lights[0].origin = world->player->transform.position;
 	world->lights[0].radius = 250.0f;
-	world->lights[0].shadows = true;
+	world->lights[0].shadows = false;
 	for_all_entities(world, create_lightmap_for_entity);
 	i = 0;
 	while (i < world->lights_count)

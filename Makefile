@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2022/12/22 16:25:46 by okinnune         ###   ########.fr        #
+#    Updated: 2023/01/02 14:52:55 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,6 +46,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		editor/tools/room_tool.c \
 		editor/tools/room_tool_connect.c \
 		editor/tools/room_tool_common.c \
+		editor/tools/room_tool_paint.c \
 		editor/tools/gun_tool.c \
 		editor/tools/tool_common_functions.c \
 		editor/tools/autogui.c \

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:52:00 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/26 17:23:32 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/29 15:06:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,7 +174,7 @@ void	room_tool_connect(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	select = NULL;
 	while (l != NULL)
 	{
-		highlight_roomwalls(ed, *sdl, *(t_room *)l->content, AMBER_2);
+		//highlight_roomwalls(ed, *sdl, *(t_room *)l->content, AMBER_2);
 		if (select == NULL)
 		{
 			dat->room = (t_room *)l->content;
@@ -184,7 +184,7 @@ void	room_tool_connect(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 		l = l->next;
 	}
 	if (select != NULL)
-		highlight_entity(ed, *sdl, select->entity, AMBER_3);
+		highlight_entity(sdl, select->entity, AMBER_3);
 	if (select != NULL && mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 	{
 		if (select->connection)
@@ -203,7 +203,7 @@ void	room_tool_connect(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 		gui_labeled_int("Room walls:", dat->room->wallcount, gui);
 	if (dat->ed_wall != NULL)
 	{
-		highlight_entity(ed, *sdl, dat->ed_wall->entity, AMBER_4);
+		highlight_entity(sdl, dat->ed_wall->entity, AMBER_4);
 		if (dat->ed_wall->connection)
 		{
 			if (gui_labeled_int_slider("Door depth:", &cdepth, 1.0f, gui) || ed->hid.mouse.scroll_delta != 0)

@@ -1,0 +1,4 @@
+raycast_against_plane
+remove selected edge from room(s)
+shift to move edge inside area (so ignores connected edges)
+floor texture for rooms

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/26 18:43:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/29 14:23:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,25 +101,9 @@ void render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 	render->rs.render_count++;
 }
 
-void render_ray(t_sdlcontext sdl, t_render render, t_vector3 from, t_vector3 to)
+void render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to)
 {
-	t_camera c;
-
-	c = render.camera;
-	render.q[0] = vector3_to_quaternion(from);
-	render.q[0] = quaternion_mul_matrix(c.matworld, render.q[0]);
-	render.q[0] = quaternion_mul_matrix(c.matview, render.q[0]);
-	render.q[0] = quaternion_to_screenspace(c.matproj, render.q[0], sdl);
-	render.q[1] = vector3_to_quaternion(to);
-	render.q[1] = quaternion_mul_matrix(c.matworld, render.q[1]);
-	render.q[1] = quaternion_mul_matrix(c.matview, render.q[1]);
-	render.q[1] = quaternion_to_screenspace(c.matproj, render.q[1], sdl);
-	drawline(sdl,
-		(t_point) {render.q[0].v.x, render.q[0].v.y},
-		(t_point) {render.q[1].v.x, render.q[1].v.y}, render.gizmocolor);
-		
-	render.occ_calc_tri_count = 0;
-	render.occ_tri_count = 0;
+	drawline(*sdl, vector3_to_screenspace(from, *sdl), vector3_to_screenspace(to, *sdl), sdl->render.gizmocolor);
 }
 
 void render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size)

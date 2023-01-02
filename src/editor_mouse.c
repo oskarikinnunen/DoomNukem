@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_mouse.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/21 17:02:42 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/02 16:05:58 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,13 @@ bool	mouse_clicked(t_mouse mouse, int button)
 
 void	mouse_event(SDL_Event e, t_mouse *mouse)
 {
-	if (!mouse->relative)
-		SDL_GetMouseState(&mouse->pos.x, &mouse->pos.y);
+	//if (!mouse->relative)
 	
-	if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_v)
+	/*if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_v)
 	{
-		//printf("down _ v\n");
 		e.type = SDL_MOUSEBUTTONDOWN;
 		e.button.button = MOUSE_LEFT;
-	}
+	}*/
 
 	if (e.type == SDL_KEYUP && e.key.keysym.sym == SDLK_v)
 	{

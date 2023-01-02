@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 15:36:10 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/28 15:15:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/02 16:28:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 		{
 			render->lightmode = lm_unlit;
 			render->img = obj->materials[obj->faces[index].materialindex].img;
-			if (entity->map && sdl->lighting_toggled)
+			if (entity->map != NULL && sdl->lighting_toggled)
 			{
 				render->map = entity->map[obj->faces[index].materialindex];
 				render->map.img_size = point_sub(render->map.img_size, (t_point){1, 1});

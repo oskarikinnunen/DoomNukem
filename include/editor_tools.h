@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/27 20:14:29 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/29 16:45:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ typedef struct s_editor
 	t_hid_info			hid;
 	t_player			player;
 	t_gamereturn		gamereturn;
-	t_render			render;
+	//t_render			render;
 	struct s_tool		*tool;
 }	t_editor;
 
@@ -185,7 +185,16 @@ t_tool				*get_gun_tool();
 t_tool				*get_room_tool(void);
 t_tool				*get_entity_tool(void);
 t_tool				*get_npc_tool(void);
-t_vector3			raycast(t_editor *ed);
+t_vector3			raycast_DEPRECATED(t_editor *ed);
+
+typedef struct s_raycastinfo
+{
+	t_entity	*hit_entity;
+	t_vector3	hit_pos;
+	float		distance;
+}	t_raycastinfo;
+
+bool				raycast_new(t_ray r, t_raycastinfo *info, t_world *world);
 bool				entity_lookedat(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
 bool				triangle_lookedat(t_render r, t_triangle tri, t_sdlcontext sdl);
 int32_t				entity_lookedat_triangle_index(t_editor *ed, t_sdlcontext sdl, t_entity *entity);

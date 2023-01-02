@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/28 20:34:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/02 18:55:13 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,14 +194,8 @@ t_room	*add_room_to_world(t_world *world, t_room *room)
 	worldroom->walls = ft_memalloc(sizeof(t_wall) * 32); //DON'T ACTUALLY COPY ANY WALLS, JUST RECREATE THEM FROM EDGES
 	worldroom->edges = room->edges;
 	worldroom->edgecount = room->edgecount;
-	//worldroom->name = f
-	
-	//TODO: memcpy from room to worldroom and overwrite?
 	if (room->ceiling_height == 0)
 		room->ceiling_height = 100;
-
-	/*if (room->height == 0)
-		room->height = 100;*/
 	ft_strcpy(worldroom->name, room->name);
 	worldroom->height = room->height;
 	
@@ -234,10 +228,10 @@ static void render_connect(t_editor *ed, t_sdlcontext sdl, t_roomtooldata dat)
 	{
 		t_vector3 from = (t_vector3){first->line.start.x, first->line.start.y, 0.0f};
 		t_vector3 to = (t_vector3){last->line.end.x, last->line.end.y, 0.0f};
-		ed->render.gizmocolor = CLR_PRPL;
+		sdl->render.gizmocolor = CLR_PRPL;
 		if (from.x == to.x || from.y == to.y)
-			ed->render.gizmocolor = CLR_GREEN;
-		render_ray(sdl, ed->render, from, to);
+			sdl->render.gizmocolor = CLR_GREEN;
+		render_ray(sdl, sdl->render, from, to);
 	}*/
 }
 
@@ -272,10 +266,10 @@ static void renderroom(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 	i = 0;
 	while (i < room->wallcount)
 	{
-		/*ed->render.wireframe = true;
-		ed->render.gizmocolor = CLR_GREEN;*/
-		render_entity(sdl, &ed->render, room->walls[i].entity);
-		//ed->render.wireframe = false;
+		/*sdl->render.wireframe = true;
+		sdl->render.gizmocolor = CLR_GREEN;*/
+		render_entity(sdl, &sdl->render, room->walls[i].entity);
+		//sdl->render.wireframe = false;
 		i++;
 	}
 }
@@ -326,7 +320,7 @@ static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	t_autogui		*gui;
 
 	cur = &dat->wall;
-	rc = raycast(ed);
+	rc = raycast_DEPRECATED(ed);
 	snap = vector2_snap((t_vector2){rc.x, rc.y}, 10);
 	gui = &dat->newroom_gui;
 	gui_start(gui);
@@ -350,7 +344,7 @@ static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	if (cur->edgeline.start != NULL && cur->edgeline.end != NULL)
 	{
 		applywallmesh(cur, dat->room, &ed->world);
-		render_entity(sdl, &ed->render, cur->entity);
+		render_entity(sdl, &sdl->render, cur->entity);
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 	{
@@ -364,6 +358,7 @@ static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 			cur->edgeline.start = edge;
 		else
 		{
+			ft_strcpy(cur->texname, "grid_d.png");
 			if (!placelast)
 				cur->edgeline.end = edge;
 			dat->room->walls[dat->room->wallcount] = *cur;
@@ -402,7 +397,7 @@ static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 		}
 	}
 	renderroom(ed, sdl, dat->room);
-	highlight_room(ed, *sdl, *dat->room, CLR_RED);
+	highlight_room(ed, sdl, *dat->room, CLR_RED);
 	render_snapgrid(ed, sdl, snap, false, false);
 }
 
@@ -614,11 +609,11 @@ void	applyedgedrag(t_vector2 *edge, t_vector2 snap, t_room *room, t_world *world
 		while (l != NULL)
 		{
 			cur = l->content;
-			if (edge_exists(snap, cur))
+			/*if (edge_exists(snap, cur))
 			{
-				init_roomwalls(world, cur);
-				free_floor(world, cur);
-			}
+				//init_roomwalls(world, cur);
+				//free_floor(world, cur);
+			}*/
 			l = l->next;
 		}
 	}
@@ -638,10 +633,10 @@ void	highlight_room_corners(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 	int	i;
 
 	i = 0;
-	ed->render.gizmocolor = AMBER_0;
+	sdl->render.gizmocolor = AMBER_0;
 	while (i < room->wallcount)
 	{
-		//render_gizmo(*sdl, ed->render, vector2_to_vector3(room->walls[i].line.start), 5);
+		//render_gizmo(*sdl, sdl->render, vector2_to_vector3(room->walls[i].line.start), 5);
 		i++;
 	}
 }
@@ -727,11 +722,15 @@ static void walleditmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 
 	//snprintf(text, 64, "modifying selected wall");
 	//print_text_boxed(&sdl, text, (t_point){sdl.window_w / 2, 80});
-	//render_entity(sdl, &ed->render, &dat->doorwalls[0]);
-	highlight_entity(ed, sdl, dat->ed_wall->entity, CLR_GREEN);
+	//render_entity(sdl, &sdl->render, &dat->doorwalls[0]);
+	highlight_entity(&sdl, dat->ed_wall->entity, AMBER_4);
 	
 	gui_start(gui);
 	gui_labeled_bool_edit("Hide wall", &dat->ed_wall->entity->hidden, gui);
+	if (gui_labeled_float_slider("UV offset x:", &dat->ed_wall->uv_offset.x, 1.0f, gui))
+		applywallmesh(dat->ed_wall, dat->room, &ed->world);
+	if (gui_labeled_float_slider("UV offset y:", &dat->ed_wall->uv_offset.y, 1.0f, gui))
+		applywallmesh(dat->ed_wall, dat->room, &ed->world);
 	if (gui_shortcut_button("Split wall", 'X', gui))
 	{
 		split_wall(dat->ed_wall, &dat->room, &ed->world);
@@ -746,6 +745,31 @@ static void walleditmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		init_roomwalls(&ed->world, dat->room);
 	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
 		dat->ed_wall = NULL;
+}
+
+t_vector2	*closest_edge(t_room *room, t_vector3 rc)
+{
+	int			i;
+	t_vector2	*edge;
+	t_vector3	edge_3d;
+	float		prev_dist;
+	t_vector2	*looked;
+
+	i = 0;
+	looked = NULL;
+	prev_dist = 1001.0f;
+	while (i < room->edgecount)
+	{
+		edge = &room->edges[i];
+		edge_3d = (t_vector3){edge->x, edge->y, room->height};
+		if (vector3_sqr_dist(rc, edge_3d) < 1000.0f && vector3_sqr_dist(rc, edge_3d) < prev_dist)
+		{
+			looked = edge;
+			prev_dist = vector3_sqr_dist(rc, edge_3d);
+		}
+		i++;
+	}
+	return (looked);
 }
 
 t_vector2	*lookedat_edge(t_room *room, t_vector2 snap)
@@ -768,6 +792,55 @@ t_vector2	*lookedat_edge(t_room *room, t_vector2 snap)
 	return (looked);
 }
 
+
+void	recalculate_joined_rooms(t_editor *ed, t_room *room)
+{
+	t_list	*l;
+	t_room	*other;
+	int		i;
+
+	l = ed->world.roomlist;
+
+	while (l != NULL)
+	{
+		other = l->content;
+		if (other != room)
+		{
+			i = 0;
+			while (i < room->edgecount)
+			{
+				if (edge_exists(room->edges[i], other))
+				{
+					init_roomwalls(&ed->world, other);
+					make_areas(ed, ed->world.sdl, other);
+					break ;
+				}
+				i++;
+			}
+		}
+		l = l->next;
+	}
+}
+
+void	recalculate_rooms(t_editor *ed, t_vector2 *edge)
+{
+	t_list	*l;
+	t_room	*r;
+	int		i;
+
+	l = ed->world.roomlist;
+	while (l != NULL)
+	{
+		r = l->content;
+		if (edge_exists(*edge, r))
+		{
+			init_roomwalls(&ed->world, r);
+			make_areas(ed, ed->world.sdl, r);
+		}
+		l = l->next;
+	}
+}
+
 void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 {
 	t_vector3		rc;
@@ -782,7 +855,14 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		walleditmode(ed, sdl, dat);
 		return ;
 	}
-	rc = raycast(ed);
+	//rc = raycast_DEPRECATED(ed); //TODO: replace with new raycast
+	if (dat->raycastinfo.hit_entity != NULL)
+	{
+		rc = dat->raycastinfo.hit_pos;
+		rc.x = vector2_snap((t_vector2){rc.x, rc.y}, 10).x;
+		rc.y = vector2_snap((t_vector2){rc.x, rc.y}, 10).y;
+	}
+		
 	
 	gui_start(gui);
 	gui_starthorizontal(gui);
@@ -798,7 +878,7 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		make_areas(ed, &sdl, dat->room);
 	}
 
-	int i = 0;
+	/*int i = 0;
 	char *ind_str;
 	while (i < dat->room->edgecount)
 	{
@@ -807,15 +887,15 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 
 		start = dat->room->edges[i];
 		ws = (t_vector3){start.x, start.y, 0.0f};
-		t_point ss = vector3_to_screenspace(ed->render, ws, sdl);
+		t_point ss = vector3_to_screenspace(ws, sdl);
 		ind_str = ft_itoa(i);
-		//print_text(&sdl, ind_str, point_add(ss, (t_point){20 + (i * 5), 20}));
 		print_text(&sdl, ind_str, ss);
-		ed->render.gizmocolor = CLR_BLUE;
-		render_gizmo(sdl, ed->render, ws, 4);
+		sdl.render.gizmocolor = CLR_BLUE;
+		render_gizmo(sdl, sdl.render, ws, 4);
 		free (ind_str);
 		i++;
-	}
+	}*/
+	
 	if (gui_shortcut_button("Delete", KEYS_DELETEMASK, gui))
 	{
 		remove_room(&ed->world, dat->room);
@@ -824,11 +904,6 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		//dat->wall.line.end = vector2_zero();
 		dat->room = NULL;
 		gui_end(gui);
-		return ;
-	}
-	if (gui_shortcut_button("Paint", 'P', gui))
-	{
-		dat->rtm = rtm_paint;
 		return ;
 	}
 	if (gui_shortcut_button("Split floor", 'Z', gui))
@@ -844,17 +919,25 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	//dat->floor_debugvalue = ft_clamp(dat->floor_debugvalue, 2, 5);
 	gui_end(gui);
 	snap = vector2_snap((t_vector2){rc.x, rc.y}, 10);
-	highlight_room(ed, sdl, *dat->room, AMBER_2);
 	look_wall = selectedwall(ed, sdl, dat->room);
 	
-	if (ed->hid.mouse.held == MOUSE_LEFT)
-		dat->held_edge = lookedat_edge(dat->room, snap);
-	else
+	if (ed->hid.mouse.held == MOUSE_LEFT && dat->held_edge == NULL
+		&& closest_edge(dat->room, rc) != NULL)
+		dat->held_edge = closest_edge(dat->room, rc);
+	if (closest_edge(dat->room, rc) != NULL)
+		render_gizmo(sdl, sdl.render,
+			vector3_add(
+				vector2_to_vector3(*closest_edge(dat->room, rc)),
+					(t_vector3){.z = dat->room->height}), 10);
+	if (dat->held_edge != NULL/* && ed->hid.mouse.held == MOUSE_LEFT*/)
+		applyedgedrag(dat->held_edge, (t_vector2){rc.x, rc.y}, dat->room, &ed->world);
+
+	if (ed->hid.mouse.held == 0 && dat->held_edge != NULL)
+	{
+		recalculate_rooms(ed, dat->held_edge);
 		dat->held_edge = NULL;
-	if (lookedat_edge(dat->room, snap) != NULL)
-		render_gizmo(sdl, ed->render, vector2_to_vector3(*lookedat_edge(dat->room, snap)), 10);
-	if (dat->held_edge != NULL && ed->hid.mouse.held == MOUSE_LEFT)
-		applyedgedrag(dat->held_edge, snap, dat->room, &ed->world);
+	}
+		
 
 	else if (dat->room->floorcount == 0)
 	{
@@ -867,6 +950,7 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		//force_mouseunlock(&ed->hid);
 		dat->ed_wall = look_wall;
 	}
+	highlight_room(ed, &sdl, *dat->room, CLR_GREEN);
 	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
 	{
 		dat->room = NULL;
@@ -880,8 +964,12 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 			dat->room->height = ft_clamp(dat->room->height, 0, 200);
 			init_roomwalls(&ed->world, dat->room);
 			make_areas(ed, &sdl, dat->room);
-		} else
+			recalculate_joined_rooms(ed, dat->room);
+		}
+		else
+		{
 			modifywallheights(dat->room, ed->hid.mouse.scroll_delta, &ed->world);
+		}
 	}
 }
 
@@ -910,6 +998,15 @@ void	room_tool_init(t_editor *ed, t_sdlcontext *sdl)
 		dat->modroom_gui.minimum_size.x = 130;
 		dat->modroom_gui.rect.size.x = 130;
 	}
+	if (dat->paint_gui.sdl == NULL)
+	{
+		dat->paint_gui = init_gui(sdl, &ed->hid, &ed->player, (t_point){20, 80}, "Paint rooms");
+		//dat->paint_gui.dock = &dat->maingui;
+		dat->modroom_gui.minimum_size.x = 130;
+		dat->modroom_gui.minimum_size.y = 160;
+		dat->modroom_gui.rect.size.x = 130;
+		dat->modroom_gui.rect.size.y = 160;
+	}
 }
 
 void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
@@ -917,7 +1014,7 @@ void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	t_autogui	*gui;
 	t_vector3	look;
 
-	look = raycast(ed);
+	look = raycast_DEPRECATED(ed);
 	t_point	p;
 
 	p.x = look.x;
@@ -935,20 +1032,11 @@ void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 		dat->rtm = rtm_create;
 		force_mouselock(&ed->hid);
 	}
-	if (gui_shortcut_button("Connect room", 'C', gui))
+	if (gui_shortcut_button("Paint rooms", 'P', gui))
+		dat->rtm = rtm_paint;
+	/*if (gui_shortcut_button("Connect room", 'C', gui))
 	{
-		/*dat->room = ft_memalloc(sizeof(t_room));
-		ft_bzero(roomname, 64);
-		snprintf(roomname, 64, "room(%i)", ft_listlen(ed->world.roomlist));*/
-		//ft_strcpy(dat->room->name, roomname);
-		//dat->room->walls = ft_memalloc(sizeof(t_wall) * 32);
-		
-		dat->rtm = rtm_connect;
-		dat->ed_wall = NULL;
-		//dat->
-		/*dat->rtm = rtm_create;
-		force_mouselock(&ed->hid);*/
-	}
+	}*/
 	gui_end(gui);
 }
 
@@ -962,126 +1050,7 @@ void	draw_t_line(t_sdlcontext *sdl, t_line line, uint32_t color)
 	drawline(*sdl, p1, p2, color);
 }
 
-void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
-{
-	t_autogui	*gui;
-	static	t_img	*tex;
-	t_wall		*w;
-	static		int	img_index;
-	static		int	prev_img_index;
-	static		uint32_t	prev_changetime;
-	int			i;
 
-	gui = &dat->modroom_gui;
-	int	delt;
-	delt = 0;
-	if (ed->hid.mouse.scroll_delta > 0)
-		delt = 1;
-	else if (ed->hid.mouse.scroll_delta < 0)
-		delt = -1;
-	img_index += delt;
-	img_index = ft_clamp(img_index, 0, sdl->imagecount - 1);
-	tex = &sdl->images[img_index];
-	
-	if (img_index != prev_img_index)
-	{
-		prev_changetime = ed->world.clock.prev_time;
-		printf("CHANGED \n");
-	}
-	
-	highlight_room(ed, *sdl, *dat->room, AMBER_2);
-
-	t_point middle = point_div(sdl->screensize, 2);
-	middle = point_sub(middle, (t_point){16,16});
-	middle = point_add(middle, (t_point){0,32});
-	
-	t_rectangle mrect;
-	mrect.position = middle;
-	mrect.size = (t_point){32,32};
-	//draw_image(*sdl, point_div(sdl->screensize, 2), *tex, (t_point){64,64});
-
-	int from = 0;
-	int	to = 1;
-	if (ed->clock.prev_time < prev_changetime + 1000)
-	{
-		i = -5;
-		while (i < 6)
-		{
-			t_point cur;
-
-			cur = point_add(middle, point_mul((t_point){32, 0}, i));
-			cur.y = middle.y + (cos(i / 5.0f) * 164);
-			if (img_index + i >= 0 && img_index + i < sdl->imagecount)
-			{
-				draw_image(*sdl, cur, sdl->images[img_index + i], (t_point){32,32});
-			}
-			i++;
-		}
-	}
-	i = from;
-	while (i < to)
-	{
-		t_point cur;
-
-		cur = point_add(middle, point_mul((t_point){32, 0}, i));
-		cur.y = middle.y + (cos(i / 5.0f) * 164);
-		t_rectangle rect;
-		rect.position = cur;
-		rect.size = (t_point){32,32};
-		if (img_index + i >= 0 && img_index + i < sdl->imagecount)
-		{
-			draw_image(*sdl, cur, sdl->images[img_index + i], (t_point){32,32});
-			if (i == 0)
-				drawrectangle(*sdl, rect, AMBER_4);
-		}
-		i++;
-	}
-	//drawrectangle(*sdl, mrect, AMBER_4);
-		
-	
-	prev_img_index = img_index;
-	if (tex != NULL && ed->hid.mouse.held == MOUSE_LEFT)
-	{
-		i = 0;
-		while (i < dat->room->wallcount)
-		{
-			t_wall *w;
-
-			w = &dat->room->walls[i];
-			if (entity_lookedat(ed, *sdl, w->entity))
-			{
-				if (w->entity->obj->materials->img != tex)
-				{
-					w->entity->obj->materials->img = tex;
-					create_map_for_entity(w->entity, &ed->world);
-					//bake_lighting(&ed->render, &ed->world);
-				}
-				return ;
-			}
-			i++;
-		}
-		i = 0;
-		while (i < dat->room->floorcount)
-		{
-			t_meshtri *f;
-
-			f = &dat->room->floors[i];
-			if (entity_lookedat(ed, *sdl, f->entity))
-			{
-				if (f->entity->obj->materials->img != tex)
-				{
-					f->entity->obj->materials->img = tex;
-					create_map_for_entity(f->entity, &ed->world);
-					//bake_lighting(&ed->render, &ed->world);
-				}
-				return ;
-			}
-			i++;
-		}
-	}
-	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
-		dat->rtm = rtm_none;
-}
 
 int		movetowards(int cur, int target)
 {
@@ -1216,25 +1185,25 @@ void	room_tool_split(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 		printf("allocated split room\n");
 		//new_room->walls = ft_memalloc(sizeof(t_wall) * 32);
 	}
-	snap = raycast(ed);
+	snap = raycast_DEPRECATED(ed);
 	v2snap = vector2_snap((t_vector2){snap.x, snap.y}, 10);
 	edge = lookedat_edge(dat->room, v2snap);
 	if (edge != NULL)
 	{
 		v2snap = *edge;
-		ed->render.gizmocolor = CLR_RED;
+		sdl->render.gizmocolor = CLR_RED;
 		if (new_room->edgecount > 0)
-			ed->render.gizmocolor = CLR_GREEN;
-		render_gizmo(*sdl, ed->render, vector2_to_vector3(*edge), 10);
+			sdl->render.gizmocolor = CLR_GREEN;
+		render_gizmo(*sdl, sdl->render, vector2_to_vector3(*edge), 10);
 	}
 	/*else
 	{*/
-		ed->render.gizmocolor = AMBER_4;
-		render_gizmo(*sdl, ed->render, vector2_to_vector3(v2snap), 7);
+		sdl->render.gizmocolor = AMBER_4;
+		render_gizmo(*sdl, sdl->render, vector2_to_vector3(v2snap), 7);
 	//}
-	ed->render.gizmocolor = AMBER_2;
+	sdl->render.gizmocolor = AMBER_2;
 	if (new_room->edgecount > 0)
-		render_ray(*sdl, ed->render, vector2_to_vector3(new_room->edges[new_room->edgecount - 1]), vector2_to_vector3(v2snap));
+		render_ray(sdl, vector2_to_vector3(new_room->edges[new_room->edgecount - 1]), vector2_to_vector3(v2snap));
 
 	int	i = 0;
 	
@@ -1242,9 +1211,9 @@ void	room_tool_split(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	{
 		if (i < new_room->edgecount - 1)
 		{
-			render_ray(*sdl, ed->render, vector2_to_vector3(new_room->edges[i]), vector2_to_vector3(new_room->edges[i + 1]));
+			render_ray(sdl, vector2_to_vector3(new_room->edges[i]), vector2_to_vector3(new_room->edges[i + 1]));
 		}
-		render_gizmo(*sdl, ed->render, vector2_to_vector3(new_room->edges[i]), 6);
+		render_gizmo(*sdl, sdl->render, vector2_to_vector3(new_room->edges[i]), 6);
 		i++;
 	}
 
@@ -1287,24 +1256,30 @@ void	room_tool_update(t_editor *ed, t_sdlcontext *sdl)
 {
 	t_roomtooldata	*dat;
 	t_line			line;
+	t_ray			ray;
 
 	dat = (t_roomtooldata *)ed->tool->tooldata;
+	ray.origin = ed->player.transform.position;
+	ray.dir = ed->player.lookdir;
+	raycast_new(ray, &dat->raycastinfo, &ed->world); //TODO: filter so this only hits rigid geometry
+
+
 	t_list	*l;
 
 	l = ed->world.roomlist;
 	while (l != NULL)
 	{
-		highlight_room(ed, *sdl, *(t_room *)l->content, AMBER_0);
+		highlight_room(ed, sdl, *(t_room *)l->content, AMBER_1);
 		l = l->next;
 	}
-
 	if (dat->room == NULL && dat->rtm == rtm_none)
 	{
 		t_room	*hover;
 		hover = selectedroom(ed, *sdl);
 		if (hover != NULL)
 		{
-			highlight_room(ed, *sdl, *hover, AMBER_0);
+			highlight_room(ed, sdl, *hover, AMBER_3);
+			print_text_boxed(sdl, hover->name, point_div(sdl->screensize, 2));
 			if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 			{
 				dat->room = hover;
@@ -1318,11 +1293,16 @@ void	room_tool_update(t_editor *ed, t_sdlcontext *sdl)
 		createmode(ed, sdl, dat);
 	}
 	update_maingui(ed, sdl, dat);
+	//TODO: make modifymode, paintmode and splitmode independent of dat->room
+	//			require room selection for "split/add geometry" mode
+	//TODO: show keybind for paintmode in maingui
+
+
 	if (dat->rtm == rtm_modify && dat->room != NULL)
 		modifymode(ed, *sdl, dat);
 	if (dat->rtm == rtm_split && dat->room != NULL)
 		room_tool_split(ed, sdl, dat);
-	if (dat->rtm == rtm_paint && dat->room != NULL)
+	if (dat->rtm == rtm_paint/* && dat->room != NULL*/)
 		room_tool_paint(ed, sdl, dat);
 	if (dat->rtm == rtm_connect)
 		room_tool_connect(ed, sdl, dat);

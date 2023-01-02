@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 13:42:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/27 17:27:36 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/02 17:30:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,10 @@ t_img	*get_image_by_index(t_sdlcontext sdl, int index)
 	int		i;
 
 	i = 0;
-	while (i < sdl.imagecount && sdl.images != NULL)
+	while (i < sdl.texturecount && sdl.textures != NULL)
 	{
 		if (i == index)
-			return (&sdl.images[i]);
+			return (&sdl.textures[i]);
 		i++;
 	}
 	return (error_image()); //TODO: RETURN DEBUGIMAGE HERE
@@ -70,11 +70,11 @@ t_img	*get_image_by_name(t_sdlcontext sdl, char *name) //TODO: return pointer, t
 		sprintf(fullpath, "%s%s", IMGPATH, name);
 	else
 		ft_strcpy(fullpath, name);*/
-	while (i < sdl.imagecount && sdl.images != NULL)
+	while (i < sdl.texturecount && sdl.textures != NULL)
 	{
 		//printf("image name %s \n", sdl.images[i].name);
-		if (ft_strcmp(sdl.images[i].name, name) == 0)
-			return (&sdl.images[i]);
+		if (ft_strcmp(sdl.textures[i].name, name) == 0)
+			return (&sdl.textures[i]);
 		i++;
 	}
 	return (error_image()); //TODO: RETURN DEBUGIMAGE HERE

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/22 10:29:10 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/02 16:20:10 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,7 +178,7 @@ void	gui_end(t_autogui *gui)
 			drawrectangle(*gui->sdl, dragbar, AMBER_1);
 		if (gui->hid->mouse.held == MOUSE_LEFT && pointrectanglecollision(gui->hid->mouse.pos, dragbar) && !gui->hid->mouse.dragging_ui)
 		{
-			gui->hid->mouse.dragging_ui = true;
+			//gui->hid->mouse.dragging_ui = true;
 			gui->move_held = true;
 		}
 			
@@ -198,7 +198,7 @@ void	gui_end(t_autogui *gui)
 			draw_rect_tri(gui->sdl, dragcorner, AMBER_1);
 		if (gui->hid->mouse.held == MOUSE_LEFT && pointrectanglecollision(gui->hid->mouse.pos, dragcorner) && !gui->hid->mouse.dragging_ui)
 		{
-			gui->hid->mouse.dragging_ui = true;
+			//gui->hid->mouse.dragging_ui = true;
 			gui->drag_held = true;
 		}
 		if (gui->drag_held)
@@ -212,15 +212,12 @@ void	gui_end(t_autogui *gui)
 	{
 		gui->move_held = false;
 		gui->drag_held = false;
-		gui->hid->mouse.dragging_ui = false;
-		gui->scroll_held = false;
-		if (gui->locking_player)
+		if (gui->hid->mouse.dragging_ui)
 		{
-			gui->locking_player = false;
-			gui->player->locked = false;
-			gui->hid->mouse.safe_delta = false;
+			gui->hid->mouse.dragging_ui = false;
 			force_mouseunlock(gui->hid);
 		}
+		gui->scroll_held = false;
 	}
 	if (gui->offset.y < gui->rect.size.y)
 	{
@@ -440,16 +437,19 @@ bool	gui_float_slider(float	*f, float mul, t_autogui *gui)
 				mousepos = gui->hid->mouse.pos;
 				force_mouselock(gui->hid);
 				gui->hid->mouse.pos = mousepos;
-				gui->hid->mouse.safe_delta = true;
-				gui->player->locked = true;
-				gui->locking_player = true;
+				gui->hid->mouse.dragging_ui = true;
+				/*gui->player->locked = true;
+				gui->locking_player = true;*/
 			}
-			if (gui->hid->mouse.relative && gui->locking_player)
+			/*if (gui->hid->mouse.relative && gui->locking_player)
+			{*/
+			if (gui->hid->mouse.held == MOUSE_LEFT)
 			{
 				add += (float)gui->hid->mouse.delta.x * mul;
 				if (add != 0.0f)
 					modified = true;
 			}
+			//}
 			if ((gui->hid->keystate >> KEYS_SHIFTMASK) & 1)
 				add *= 2.0f;
 			if ((gui->hid->keystate >> KEYS_LALTMASK) & 1)

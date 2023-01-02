@@ -39,7 +39,8 @@ typedef enum s_entitystatus
 typedef struct s_entity
 {
 	t_transform		transform;
-	bool			uneditable;
+	bool			ignore_raycasts;
+	bool			rigid;
 	bool			hidden;
 	uint32_t		object_index;
 	char			object_name[64];
@@ -118,6 +119,7 @@ void	calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity);
 int		calculate_tris_from_square(t_square s, t_entity *ent, t_render *render);
 
 /* RENDERING */
+void	highlight_entity(t_sdlcontext *sdl, t_entity *entity, uint32_t color);
 void	render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 void	draw_wireframe(t_sdlcontext sdl, t_render *render, t_entity *e, uint32_t clr);
 void	draw_edges(t_sdlcontext sdl, t_render *render, t_entity *e, uint32_t clr);

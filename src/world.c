@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/28 19:08:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/29 15:56:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,13 +247,17 @@ void	load_rooms(t_world *world, t_sdlcontext *sdl)
 {
 	t_list	*l;
 	t_room	*r;
+	t_room	temp;
 	int		i;
 
 	l = world->roomlist;
 	while (l != NULL)
 	{
 		r = (t_room *)l->content;
+		temp = *r;
 		*r = load_room(r->name);
+		r->height = temp.height; //TODO: remove these and bzero all room pointers before loading room so all other values come from the list room
+		r->ceiling_height = temp.ceiling_height;
 		startup_init_room(world, r);
 		l = l->next;
 	}
@@ -267,8 +271,10 @@ void	load_rooms(t_world *world, t_sdlcontext *sdl)
 			applywallmesh(&r->walls[i], r, world);
 			i++;
 		}
+		init_roomwalls(world, r);
 		l = l->next;
 	}
+	
 }
 
 void	init_guns(t_world *world, t_sdlcontext *sdl)

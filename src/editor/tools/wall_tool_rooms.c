@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/28 20:17:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/02 18:01:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,28 +210,22 @@ void	floorcalc_debugdraw(t_editor *ed, t_sdlcontext *sdl, t_floorcalc fc, int tr
 	while (i < fc.edgecount)
 	{
 		ws = (t_vector3){fc.edges[i].x, fc.edges[i].y, 0.0f};
-		ss = vector3_to_screenspace(ed->render, ws, *sdl);
+		ss = vector3_to_screenspace(ws, *sdl);
 		str = ft_itoa(i);
 		print_text_boxed(sdl, str, ss);
 		free (str);
-		ed->render.gizmocolor = CLR_RED;
-		render_gizmo(*sdl, ed->render, ws, 10);
+		sdl->render.gizmocolor = CLR_RED;
+		render_gizmo(*sdl, sdl->render, ws, 10);
 		i++;
 	}
 	i = tri_i;
-	ed->render.gizmocolor = CLR_PRPL;
+	sdl->render.gizmocolor = CLR_PRPL;
 	
 	/*CREATED LINE */
 	t_vector2 first = fc.edges[fc.faces[i].v_indices[0]];
 	t_vector2 center = fc.edges[fc.faces[i].v_indices[1]];
 	t_vector2 second = fc.edges[fc.faces[i].v_indices[2]];
 	indexesdebug(sdl, fc, i);
-	
-	/*ws = (t_vector3){fc.edges[fc.faces[i].v_indices[2]].x,
-					fc.edges[fc.faces[i].v_indices[2]].y, 0.0f};
-	ws_to = (t_vector3){fc.edges[fc.faces[i].v_indices[0]].x,
-					fc.edges[fc.faces[i].v_indices[0]].y, 0.0f};
-	render_ray(*sdl, ed->render, ws, ws_to);*/
 
 	char *stra;
 	float a1 = vector2_anglebetween(first, second);
@@ -752,7 +746,7 @@ void	makefloor_room_area(t_editor *ed, t_sdlcontext *sdl, t_room *room, t_floor_
 		printf("i %i \n", i);
 		//ft_bzero(&mtri->entity, sizeof(t_entity));
 		mtri->entity = spawn_entity(&ed->world);
-		mtri->entity->uneditable = true;
+		mtri->entity->rigid = true;
 		mtri->entity->obj = object_tri(sdl);
 		mtri->v[0] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[0]]);
 		mtri->v[1] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[1]]);
@@ -802,7 +796,7 @@ void	makefloor_room(t_world *world, t_room *room)
 		mtri = &room->floors[i];
 		//ft_bzero(&mtri->entity, sizeof(t_entity));
 		mtri->entity = spawn_entity(world);
-		mtri->entity->uneditable = true;
+		mtri->entity->rigid = true;
 		mtri->entity->obj = object_tri(world->sdl);
 		mtri->v[0] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[0]]);
 		mtri->v[1] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[1]]);
@@ -816,9 +810,11 @@ void	makefloor_room(t_world *world, t_room *room)
 		mtri->uv[0] = vector2_div(mtri->uv[0], 100.0f);
 		mtri->uv[1] = vector2_div(mtri->uv[1], 100.0f);
 		mtri->uv[2] = vector2_div(mtri->uv[2], 100.0f);
-		create_lightmap_for_entity(mtri->entity, world);
-		create_map_for_entity(mtri->entity, world);
 		applytrimesh(*mtri, mtri->entity->obj);
+		printf("uv 1: %f %f2: %f %f 3: %f %f\n", mtri->uv[0].x, mtri->uv[0].y, mtri->uv[1].x, mtri->uv[1].y, mtri->uv[2].x, mtri->uv[2].y);
+		//create_lightmap_for_entity(mtri->entity, world);
+		//create_map_for_entity(mtri->entity, world);
+		
 		i++;
 	}
 }
@@ -830,11 +826,6 @@ void	make_areas(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 	i = 0;
 	free_floor(&ed->world, room);
 	room->floors = ft_memalloc(sizeof(t_meshtri) * 1000);
-	/*while (i < room->floor_areacount)
-	{
-		makefloor_room_area(ed, sdl, room, room->floor_areas[i]);
-		i++;
-	}*/
 	makefloor_room(&ed->world, room);
 	printf("made floors for %i areas \n", i);
 }

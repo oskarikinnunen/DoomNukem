@@ -50,6 +50,7 @@ typedef struct s_wall
 	bool		connection;
 	//t_room		*connected;
 	char		texname[256];
+	t_vector2	uv_offset;
 }	t_wall;
 
 typedef struct s_room //TODO: rewrite rooms/walls so rooms have t_vector2 edges and walls have pointers to those
