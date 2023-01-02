@@ -121,7 +121,7 @@ static void bitmask_to_pixels(t_sdlcontext *sdl)
 	sdl->bitmask.bitmask[5051] |= ~0;
 	sdl->bitmask.bitmask[5050 + sdl->bitmask.chunk_size.x] |= ~0;
 	sdl->bitmask.bitmask[5050 - sdl->bitmask.chunk_size.x] |= ~0;
-	sdl->bitmask.bitmask[5050] |= mask_x(0, 0, 17) << (16);
+	sdl->bitmask.bitmask[5050] |= mask_x(0, 21 % 16, 16) << (16);
 //
 	//sdl->bitmask.bitmask[5050] |= mask_x(0, 0, 16) << 32 + 16;
 	//mask_x(3, 8);
