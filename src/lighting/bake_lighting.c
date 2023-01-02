@@ -139,6 +139,8 @@ uint8_t	average(t_point sample, t_lightmap *lmap, t_map *map)
 		}
 		subsample.y++;
 	}
+	if (hit == 0)
+		return(255);
 	return ((uint8_t)(avg / hit));
 }
 

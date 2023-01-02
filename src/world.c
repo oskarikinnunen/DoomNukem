@@ -52,6 +52,7 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 	int			found;
 	t_entity	*ent;
 
+	
 	i = 0;
 	found = 0;
 	while (found < world->entitycache.existing_entitycount)
@@ -61,9 +62,8 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 		{
 			if (ent->status == es_active && !ent->hidden && is_entity_culled(world, render, ent) == false)
 			{
-				if (sdl->bitmask2 == true)
-					render_entity(sdl, render, ent);
-				else
+				render_entity(sdl, render, ent);
+				if (sdl->bitmask2 == false)
 					render_entity_to_bitmask(sdl, render, ent);
 			}
 			found++;
@@ -98,6 +98,12 @@ static __uint128_t mask_x(int x, int left_x, int right_x)
 	return(((row << MAX(0, left_x - x))& ~(row << MAX(0, right_x - x))));
 }
 
+/*
+function coverage(x, left, right)
+return (~0 >> max(0, left - x))
+& ~(~0 >> max(0, right - x))
+*/
+
 static void bitmask_to_pixels(t_sdlcontext *sdl)
 {
 	if (sdl->bitmask1 == true)
@@ -115,7 +121,8 @@ static void bitmask_to_pixels(t_sdlcontext *sdl)
 	sdl->bitmask.bitmask[5051] |= ~0;
 	sdl->bitmask.bitmask[5050 + sdl->bitmask.chunk_size.x] |= ~0;
 	sdl->bitmask.bitmask[5050 - sdl->bitmask.chunk_size.x] |= ~0;
-	sdl->bitmask.bitmask[5050] |= mask_x(0, 0, 16) << (16);
+	sdl->bitmask.bitmask[5050] |= mask_x(0, 0, 17) << (16);
+//
 	//sdl->bitmask.bitmask[5050] |= mask_x(0, 0, 16) << 32 + 16;
 	//mask_x(3, 8);
 	//~((__uint128_t)0) >> (__uint128_t)64;

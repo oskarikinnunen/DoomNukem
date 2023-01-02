@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/29 16:39:41 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/02 18:54:04 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,13 @@ int	editorloop(t_sdlcontext sdl)
 			moveplayer(&ed.player, &ed.hid.input, ed.clock);
 		update_render(&ed.render, &ed.player);
 		screen_blank(sdl);
-		
+		//print_vector3(ed.render.camera.lookdir);
+		//print_vector3(ed.render.camera.position);
+		if (0)
+		{
+			ed.render.camera.lookdir = (t_vector3){-0.038406, -0.060719, -0.997416};
+			ed.render.camera.position = (t_vector3){450.928040, 636.168823, 184.386581};
+		}
 		render_start(&ed.render);
 		update_world3d(&ed.world, &ed.render);
 		update_editor_toolbar(&ed, &ed.toolbar_gui);

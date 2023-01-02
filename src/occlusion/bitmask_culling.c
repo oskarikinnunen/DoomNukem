@@ -40,12 +40,13 @@ static __uint128_t mask_x(int x, int left_x, int right_x)
 
 static void fill_point_tri_bot2(t_point_triangle triangle, t_sdlcontext *sdl)
 {
-	return;
 	t_point			*p;
 	float			step[2];
 	int				x;
 	int				y;
 	float			delta;
+	int				y_chunk;
+	const __uint128_t line = 65535;
 
 	p = triangle.p;
 	delta = 1.0f / ((float)(p[1].y - p[0].y));
@@ -54,9 +55,25 @@ static void fill_point_tri_bot2(t_point_triangle triangle, t_sdlcontext *sdl)
 	y = p[1].y;
 	while (y >= p[0].y)
 	{
-		x = p[1].x + (step[0] * (float)(p[1].y - y));
-		int ax =  p[2].x + (step[1] * (float)(p[1].y - y));
-		//sdl->bitmask.bitmask[(y / 8) * sdl->bitmask.chunk_size.x + (x / 16)] |= mask_x(y * 16, x, ax);
+		delta = (float)(p[1].y - y);
+		x = p[1].x + (step[0] * delta);
+		int ax =  p[2].x + (step[1] * delta);
+		int temp1, temp2;
+		temp1 = x % 16;
+		temp2 = ax - x + temp1 + 1;
+		if (temp2 > 16)
+			temp2 = 16;
+		int chunk = (y / 8) * (sdl->bitmask.chunk_size.x) + (x / 16);
+		int end_chunk = (y / 8) * (sdl->bitmask.chunk_size.x) + (ax / 16);
+		y_chunk = ((y % 8) * 16);
+		sdl->bitmask.bitmask[chunk++] |= mask_x(0, temp1, temp2) << y_chunk;
+		x += 16 - temp1;
+		while (x <= ax - 16)
+		{
+			sdl->bitmask.bitmask[chunk++] |= line << y_chunk;
+			x += 16;
+		}
+		sdl->bitmask.bitmask[end_chunk] |= mask_x(0, 0, ax - x + 1) << y_chunk;
 		y--;
 	}
 }
@@ -77,6 +94,48 @@ static void fill_point_tri_top2(t_point *t, t_point_triangle triangle, t_sdlcont
 	t_point			*p;
 	float			step[2];
 	float			t_step[2];
+	int				x;
+	int				y;
+	float			delta;
+	int				y_chunk;
+	int index;
+	const __uint128_t line = 65535;
+
+	p = triangle.p;
+	delta = 1.0f/((float)(p[0].y - p[1].y));
+	step[0] = (p[0].x - p[1].x) * delta;
+	step[1] = (p[0].x - p[2].x) * delta;
+	y = p[1].y;
+	while (y <= p[0].y)
+	{
+		delta = (float)(y - p[1].y);
+		x = p[1].x + (step[0] * delta);
+		int ax =  p[2].x + (step[1] * delta);
+		int temp1, temp2;
+		temp1 = x % 16;
+		temp2 = ax - x + temp1 + 1;
+		if (temp2 > 16)
+			temp2 = 16;
+		int chunk = (y / 8) * (sdl->bitmask.chunk_size.x) + (x / 16);
+		int end_chunk = (y / 8) * (sdl->bitmask.chunk_size.x) + (ax / 16);
+		y_chunk = ((y % 8) * 16);
+		sdl->bitmask.bitmask[chunk++] |= mask_x(0, temp1, temp2) << y_chunk;
+		x += 16 - temp1;
+		while (x <= ax - 16)
+		{
+			sdl->bitmask.bitmask[chunk++] |= line << y_chunk; // static line
+			x += 16;
+		}
+		sdl->bitmask.bitmask[end_chunk] |= mask_x(0, 0, ax - x + 1) << y_chunk;
+		y++;
+	}
+}
+
+static void fill_point_tri_top(t_point *t, t_point_triangle triangle, t_sdlcontext *sdl)
+{
+	t_point			*p;
+	float			step[2];
+	float			t_step[2];
 	t_point			i;
 	int				x;
 	int				y;
@@ -84,7 +143,6 @@ static void fill_point_tri_top2(t_point *t, t_point_triangle triangle, t_sdlcont
 	int index;
 
 	p = triangle.p;
-	printf("start");
 	delta = 1.0f/((float)(p[0].y - p[1].y));
 	step[0] = (p[0].x - p[1].x) * delta;
 	step[1] = (p[0].x - p[2].x) * delta;
@@ -98,22 +156,36 @@ static void fill_point_tri_top2(t_point *t, t_point_triangle triangle, t_sdlcont
 		i.x = t[1].x + (t_step[0] * (float)(i.y - t[1].y));
 		int ab =  t[2].x + (t_step[1] * (float)(i.y - t[1].y)); // - 1
 
+		int start, end;
+		start = p[1].x + (step[0] * (float)((i.y * 8) - p[1].y));
+		end = p[1].x + (step[0] * (float)((i.y * 8 + 8) - p[1].y));
+
+		int start_c, end_c;
+		if (start < end)
+		{
+			start_c = i.y * (sdl->bitmask.chunk_size.x) + (start / 16);
+			end_c = i.y * (sdl->bitmask.chunk_size.x) + (end / 16);
+		}
+		else
+		{
+			start_c = i.y * (sdl->bitmask.chunk_size.x) + (end / 16);
+			end_c = i.y * (sdl->bitmask.chunk_size.x) + (start / 16);
+		}
 		y = i.y * 8;
 		y = ft_clamp(y, p[1].y, sdl->window_h);
 		index = 0;
 		__uint128_t e = 0;
 		int chunk_j = i.y * (sdl->bitmask.chunk_size.x) + i.x;
 		int prev;
-
 		while (index < 8 && y < p[0].y)
 		{
 			x = p[1].x + (step[0] * (float)(y - p[1].y));
 			int ax =  p[2].x + (step[1] * (float)(y - p[1].y));
 			chunk_j = i.y * (sdl->bitmask.chunk_size.x) + (x / 16);
-			if (1 && i.y == 47)
+			if (i.y == 45)
 			{
-				printf("1 %d\n", chunk_j);
-				printf("%f %f\n", step[0], step[1]);
+				printf("x = %d\n", x);
+				printf("1chunkj = %d\n", chunk_j);
 			}
 			if (index != 0 && prev != chunk_j)
 			{
@@ -142,28 +214,27 @@ static void fill_point_tri_top2(t_point *t, t_point_triangle triangle, t_sdlcont
 			e += 16;
 			y++;
 			index++;
-			//chunk_j++;
 		}
-		//printf("iy is %d\n", i.y);
-		//i.x++;
-		//i.x++;
-		//printf("%d\n", i.y);
-		//calculate the y 0/start and y 8/max and see which chunk it ends and starts and then fill the in between chunks easily and rasterize only the sideblocks
-		if (1 && i.y == 47)
+		chunk_j = end_c;
+		if (i.y == 45)
 		{
-			if (1 && i.y == 47)
-			{
-				printf("2 %d\n", chunk_j);
-			}
+			printf("chunkj = %d\n", chunk_j);
+
+		}
+		if (i.y == 45 && chunk_j == 3630)
+		{
 			chunk_j++;
-			while (chunk_j <= i.y * (sdl->bitmask.chunk_size.x) + ab)
+			while (chunk_j <= i.y * (sdl->bitmask.chunk_size.x) + ab && i.y == 45)
 			{
 				sdl->bitmask.bitmask[chunk_j++] = ~0;
 				i.x++;
 			}
+			if ((sdl->bitmask.bitmask[chunk_j++] & 0) == 0)
+				printf("is zero\n\n");
 		}
 		i.y++;
 	}
+
 	return;
 }
 
@@ -196,9 +267,9 @@ void	render_bitmask_triangle(t_sdlcontext *sdl, t_render *render, int index)
 	float			lerp;
 
 	p2 = render->screenspace_ptris[index].p;
-	p2[0] = (t_point){630, 320};
-	p2[1] = (t_point){548, 280};
-	p2[2] = (t_point){445, 406};//175 176 breaks
+	//p2[0] = (t_point){0, 0};
+	//p2[1] = (t_point){0, 450};
+	//p2[2] = (t_point){899, 250};//175 176 breaks
 	//for (int i = 0; i < 3; i++)
 	//	print_point(p2[i]);
 	//printf("end\n");
