@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 20:21:24 by raho              #+#    #+#             */
-/*   Updated: 2022/12/27 10:51:36 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/03 13:27:26 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,5 +42,6 @@
 # define EC_FMOD_CHANNELSET3DATTRIBUTES 48
 # define EC_FMOD_CHANNELISPLAYING 49
 # define EC_FMOD_CHANNELSTOP 50
+# define EC_FMOD_CHANNELGETCURRENTSOUND 51
 
 #endif

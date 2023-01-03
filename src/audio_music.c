@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/27 11:27:24 by raho              #+#    #+#             */
-/*   Updated: 2022/12/27 11:57:18 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/03 13:53:40 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ void	pause_music(t_audio *audio,bool pause)
 	{
 		if (audio->music[index].channel)
 		{
+			if (FMOD_Channel_SetVolume(audio->music[index].channel, audio->max_volume) != FMOD_OK)
+				error_log(EC_FMOD_CHANNELSETVOLUME);
 			if (check_channel_status(audio->music[index].channel))
 			{
 				if (FMOD_Channel_SetPaused(audio->music[index].channel, pause) != FMOD_OK)

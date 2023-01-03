@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/28 15:14:01 by raho              #+#    #+#             */
-/*   Updated: 2022/12/27 11:55:25 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/03 13:52:11 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ void	pause_all_sounds(t_audio *audio, bool pause)
 	{
 		if (audio->sample[index].channel)
 		{
+			if (FMOD_Channel_SetVolume(audio->sample[index].channel, audio->max_volume) != FMOD_OK)
+				error_log(EC_FMOD_CHANNELSETVOLUME);
 			if (check_channel_status(audio->sample[index].channel))
 			{
 				if (FMOD_Channel_SetPaused(audio->sample[index].channel, pause) != FMOD_OK)
@@ -47,6 +49,8 @@ void	pause_sound(t_audio *audio, const char *name, bool pause)
 	{
 		if (audio->sample[index].channel)
 		{
+			if (FMOD_Channel_SetVolume(audio->sample[index].channel, audio->max_volume) != FMOD_OK)
+				error_log(EC_FMOD_CHANNELSETVOLUME);
 			if (check_channel_status(audio->sample[index].channel))
 			{
 				if (FMOD_Channel_SetPaused(audio->sample[index].channel, pause) != FMOD_OK)

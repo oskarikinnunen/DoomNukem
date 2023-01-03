@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 15:53:51 by raho              #+#    #+#             */
-/*   Updated: 2022/12/27 10:56:23 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/03 13:27:58 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,8 @@ static void	fmod_errors(int error_code)
 		fprintf(stderr, "FMOD_Channel_IsPlaying failed\n");
 	if (error_code == EC_FMOD_CHANNELSTOP)
 		fprintf(stderr, "FMOD_Channel_Stop failed\n");
+	if (error_code == EC_FMOD_CHANNELGETCURRENTSOUND)
+		fprintf(stderr, "FMOD_Channel_GetCurrentSound failed\n");
 	exit (3);
 }
 

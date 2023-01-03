@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/27 10:42:33 by raho              #+#    #+#             */
-/*   Updated: 2022/12/27 14:15:33 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/03 13:55:13 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,11 +54,6 @@ static void	load_music(t_audio *audio)
 	audio->musiccount = index;
 }
 
-void	set_max_volume(t_audio *audio, float nb)
-{
-	audio->max_volume = nb;
-}
-
 void	load_audio(t_audio *audio)
 {
 	ft_bzero(audio, sizeof(t_audio));
@@ -68,5 +63,5 @@ void	load_audio(t_audio *audio)
 		error_log(EC_FMOD_SYSTEMINIT);
 	load_sounds1(audio);
 	load_music(audio);
-	set_max_volume(audio, 1.0f);
+	audio->max_volume = 1.0f;
 }

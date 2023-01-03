@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/27 14:16:08 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/03 13:57:00 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,21 +103,22 @@ void update_world3d(t_world *world, t_render *render)
 		update_maxvolume(&world->sdl->audio);
 	if (gui_button("Test audio", world->debug_gui))
 	{
-		static bool	statement = false;
+		static bool	statement = true;
 
 		if (statement)
 		{
 			//pause_music(&sdl->audio, statement);
 			//pause_audio(&sdl->audio, statement);
-			//play_worldsound(&sdl->audio, "bubbles.wav", &world->entitycache.entities[0].transform.position);
-			play_localsound(&sdl->audio, "pistol1.wav");
+			play_worldsound(&sdl->audio, "bubbles.wav", &world->entitycache.entities[0].transform.position);
+			//play_localsound(&sdl->audio, "pistol1.wav");
 			statement = false;
 		}
 		else
 		{
 			//pause_music(&sdl->audio, statement);
 			//pause_audio(&sdl->audio, statement);
-			play_localsound(&sdl->audio, "bubbles.wav");
+			play_worldsound(&sdl->audio, "bubbles.wav", &world->entitycache.entities[0].transform.position);
+			//play_localsound(&sdl->audio, "bubbles.wav");
 			statement = true;
 		}
 		
