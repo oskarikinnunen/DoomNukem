@@ -62,9 +62,12 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 		{
 			if (ent->status == es_active && !ent->hidden && is_entity_culled(world, render, ent) == false)
 			{
-				render_entity(sdl, render, ent);
-				if (sdl->bitmask2 == false)
-					render_entity_to_bitmask(sdl, render, ent);
+				if (is_entity_bitmask_culled(sdl, render, ent) == false)
+				{
+					render_entity(sdl, render, ent);
+					if (sdl->bitmask2 == false)
+						render_entity_to_bitmask(sdl, render, ent);
+				}
 			}
 			found++;
 		}
@@ -136,19 +139,32 @@ static void bitmask_to_pixels(t_sdlcontext *sdl)
 	//1 3 7 15 31 63 127 255
 	//sdl->bitmask.bitmask[temp1] |= 1UL << (temp2);
 	//number &= ~(1UL << n);
+	float max_w = 0.0f;
 	for (int y = 0; y < sdl->window_h; y++)
 	{
 		for (int x = 0; x < sdl->window_w; x++)
 		{
+			if (sdl->bitmask.dist[(y / 8) * (sdl->window_w/8) + (x / 8)] > max_w)
+				max_w = sdl->bitmask.dist[(y / 8) * (sdl->window_w/8) + (x / 8)];
+		}
+	}
+	printf("max w %f\n", max_w);
+	max_w = 2500.0f;
+	for (int y = 0; y < sdl->window_h; y++)
+	{
+		for (int x = 0; x < sdl->window_w; x++)
+		{
+			if ((sdl->bitmask.bitmask[(y / 8) * sdl->bitmask.chunk_size.x + (x / 16)] >> ((y % 8) * 16) + (x % 16) & 1) == 0)
+				continue;
 			clr = INT_MAX;
-			//printf("x %d, y %d\n", x, y);
-			//printf("bitmask chunk %d\n", (y / 4) * (sdl->window_w / 8) + (x / 8));
-			/*y = (y/4) * (1024/8);
-			x = (x/8);
-			y = (y % 4) * 8;
-			x = x % 8;*/
-			if ((sdl->bitmask.bitmask[(y / 8) * sdl->bitmask.chunk_size.x + (x / 16)] >> ((y % 8) * 16) + (x % 16) & 1))
-				clr = CLR_RED;
+			float w = sdl->bitmask.dist[(y / 8) * (sdl->window_w/8) + (x / 8)];
+			w = (1.0f/w) / max_w;
+			uint8_t p = 255 - ft_clamp(w * 255, 0, 255);
+			Uint32 alpha = clr & 0xFF000000;
+			Uint32 red = ((clr & 0x00FF0000) * p) >> 8;
+			Uint32 green = ((clr & 0x0000FF00) * p) >> 8;
+			Uint32 blue = ((clr & 0x000000FF) * p) >> 8;
+			clr = flip_channels(alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF));
 			((uint32_t *)sdl->surface->pixels)[sdl->window_w * y + x] = clr;
 		}
 	}

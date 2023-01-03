@@ -19,6 +19,12 @@ typedef struct s_occlusion
 	bool				is_occluded;
 }	t_occlusion;
 
+typedef struct s_bit_tri
+{
+	t_point	p[3];
+	float	w[3];
+}	t_bit_tri;
+
 typedef struct s_bitmask
 {
 	__uint128_t			*bitmask;

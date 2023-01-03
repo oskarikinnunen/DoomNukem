@@ -113,6 +113,7 @@ bool is_entity_culled(struct s_world *world, t_render *render, t_entity *entity)
 bool is_entity_frustrum_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
 bool is_entity_peripheral_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
 bool is_entity_occlusion_culled(struct s_world *world, t_render *render, t_entity *cull);
+bool is_entity_bitmask_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 
 void	calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity);
 int		calculate_tris_from_square(t_square s, t_entity *ent, t_render *render);

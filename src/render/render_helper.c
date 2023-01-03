@@ -65,11 +65,12 @@ void	sort_point_uv_tri(t_point *p, t_texture *t)
 	}
 }
 
-void	sort_point_tri(t_point *p2)
+void	sort_point_tri(t_point *p2, float *w)
 {
 	int	s_x;
 	int	s_j;
 	t_point			temp_p2;
+	float			temp_w;
 
 	s_x = 0;
 	s_j = 0;
@@ -82,6 +83,10 @@ void	sort_point_tri(t_point *p2)
 				temp_p2 = p2[s_j];
 				p2[s_j] = p2[s_j + 1];
 				p2[s_j + 1] = temp_p2;
+
+				temp_w = w[s_j];
+				w[s_j] = w[s_j + 1];
+				w[s_j + 1] = temp_w;
 			}
 			s_j++;
 		}

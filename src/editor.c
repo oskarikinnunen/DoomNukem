@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/02 18:54:04 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/03 12:21:33 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ int	editorloop(t_sdlcontext sdl)
 	ed.render = init_render(sdl, &ed.world);
 	player_init(&ed.player, &sdl, &ed.world);
 	sdl.bitmask.bitmask = malloc(sizeof(__uint128_t) * ((sdl.window_h * sdl.window_w) / 128));
+	sdl.bitmask.dist = malloc(sizeof(float) * ((sdl.window_h * sdl.window_w) / 64));
 	sdl.bitmask.chunk_size.x = (sdl.window_w)/16;
 	sdl.bitmask.chunk_size.y = (sdl.window_h)/8;
 	ed.player.transform.position = (t_vector3){100, 100, 100.0f};
