@@ -62,7 +62,7 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 		{
 			if (ent->status == es_active && !ent->hidden && is_entity_culled(world, render, ent) == false)
 			{
-				if (is_entity_bitmask_culled(sdl, render, ent) == false)
+				if (0 || is_entity_culled(sdl, render, ent) == false)
 				{
 					render_entity(sdl, render, ent);
 					if (sdl->bitmask2 == false)
@@ -148,8 +148,9 @@ static void bitmask_to_pixels(t_sdlcontext *sdl)
 				max_w = sdl->bitmask.dist[(y / 8) * (sdl->window_w/8) + (x / 8)];
 		}
 	}
-	printf("max w %f\n", max_w);
+	printf("max w %f\n", max_w / 1.0f);
 	max_w = 2500.0f;
+//	max_w = max_w/1.0f;
 	for (int y = 0; y < sdl->window_h; y++)
 	{
 		for (int x = 0; x < sdl->window_w; x++)

@@ -64,7 +64,8 @@ static void fill_point_tri_bot2(t_bit_tri	bt, t_sdlcontext *sdl)
 		int ax =  p[2].x + (step[1] * delta);
 		float aw = bt.w[1] + (t_step[0] * delta);
 		float bw = bt.w[2] + (t_step[1] * delta);
-		float wstep = (bw - aw)/8.0f;
+		//t[0].u - t[2].u) * delta;1.0f / (float)(ax - x)
+		float wstep = (bw - aw) * (8.0f / (float)(ax - x));
 
 		int temp1, temp2;
 		temp1 = x % 16;
@@ -75,40 +76,34 @@ static void fill_point_tri_bot2(t_bit_tri	bt, t_sdlcontext *sdl)
 		int end_chunk = (y / 8) * (sdl->bitmask.chunk_size.x) + (ax / 16);
 
 		int wchunk = (y / 8) * (sdl->window_w/8) + (x / 8);
-	
+		int start = wchunk;
 		y_chunk = ((y % 8) * 16);
 		sdl->bitmask.bitmask[chunk++] |= mask_x(0, temp1, temp2) << y_chunk;
 		if (aw > sdl->bitmask.dist[wchunk])
-			sdl->bitmask.dist[wchunk] = aw;
+			sdl->bitmask.dist[wchunk] = aw + ((wchunk - start) * (bw - aw));
 		wchunk++;
-		aw += wstep;
 		if (aw > sdl->bitmask.dist[wchunk])
-			sdl->bitmask.dist[wchunk] = aw;
+			sdl->bitmask.dist[wchunk] = aw + ((wchunk - start) * (bw - aw));
 		wchunk++;
-		aw += wstep;
 		x += 16 - temp1;
 		while (x <= ax - 16)
 		{
 			sdl->bitmask.bitmask[chunk++] |= line << y_chunk;
 			if (aw > sdl->bitmask.dist[wchunk])
-			sdl->bitmask.dist[wchunk] = aw;
-			wchunk++;
-			aw += wstep;
+			sdl->bitmask.dist[wchunk] = aw + ((wchunk - start) * (bw - aw));
+		wchunk++;
 			if (aw > sdl->bitmask.dist[wchunk])
-				sdl->bitmask.dist[wchunk] = aw;
-			wchunk++;
-			aw += wstep;
+			sdl->bitmask.dist[wchunk] = aw + ((wchunk - start) * (bw - aw));
+		wchunk++;
 			x += 16;
 		}
 		sdl->bitmask.bitmask[chunk] |= mask_x(0, 0, ax - x + 1) << y_chunk;
 		if (aw > sdl->bitmask.dist[wchunk])
-			sdl->bitmask.dist[wchunk] = aw;
+			sdl->bitmask.dist[wchunk] = aw + ((wchunk - start) * (bw - aw));
 		wchunk++;
-		aw += wstep;
 		if (aw > sdl->bitmask.dist[wchunk])
-			sdl->bitmask.dist[wchunk] = aw;
+			sdl->bitmask.dist[wchunk] = aw + ((wchunk - start) * (bw - aw));
 		wchunk++;
-		aw += wstep;
 		y--;
 	}
 }
@@ -150,7 +145,7 @@ static void fill_point_tri_top2(t_bit_tri	bt, t_sdlcontext *sdl)
 		int ax =  p[2].x + (step[1] * delta);
 		float aw = bt.w[1] + (t_step[0] * delta);
 		float bw = bt.w[2] + (t_step[1] * delta);
-		float wstep = (bw - aw)/8.0f;
+		float wstep = (bw - aw) * (8.0f / (float)(ax - x));
 		//printf("wstep %f\n", wstep);
 		int temp1, temp2;
 		temp1 = x % 16;
@@ -161,40 +156,35 @@ static void fill_point_tri_top2(t_bit_tri	bt, t_sdlcontext *sdl)
 		int end_chunk = (y / 8) * (sdl->bitmask.chunk_size.x) + (ax / 16);
 
 		int wchunk = (y / 8) * (sdl->window_w/8) + (x / 8);
+		int start = wchunk;
 
 		y_chunk = ((y % 8) * 16);
 		sdl->bitmask.bitmask[chunk++] |= mask_x(0, temp1, temp2) << y_chunk;
 		if (aw > sdl->bitmask.dist[wchunk])
-			sdl->bitmask.dist[wchunk] = aw;
+			sdl->bitmask.dist[wchunk] = aw + ((wchunk - start) * (bw - aw));
 		wchunk++;
-		aw += wstep;
 		if (aw > sdl->bitmask.dist[wchunk])
-			sdl->bitmask.dist[wchunk] = aw;
+			sdl->bitmask.dist[wchunk] = aw + ((wchunk - start) * (bw - aw));
 		wchunk++;
-		aw += wstep;
 		x += 16 - temp1;
 		while (x <= ax - 16)
 		{
 			sdl->bitmask.bitmask[chunk++] |= line << y_chunk; // static line
 			if (aw > sdl->bitmask.dist[wchunk])
-				sdl->bitmask.dist[wchunk] = aw;
-			wchunk++;
-			aw += wstep;
+			sdl->bitmask.dist[wchunk] = aw + ((wchunk - start) * (bw - aw));
+		wchunk++;
 			if (aw > sdl->bitmask.dist[wchunk])
-				sdl->bitmask.dist[wchunk] = aw;
-			wchunk++;
-			aw += wstep;
+			sdl->bitmask.dist[wchunk] = aw + ((wchunk - start) * (bw - aw));
+		wchunk++;
 			x += 16;
 		}
 		sdl->bitmask.bitmask[chunk] |= mask_x(0, 0, ax - x + 1) << y_chunk;
 		if (aw > sdl->bitmask.dist[wchunk])
-			sdl->bitmask.dist[wchunk] = aw;
+			sdl->bitmask.dist[wchunk] = aw + ((wchunk - start) * (bw - aw));
 		wchunk++;
-		aw += wstep;
 		if (aw > sdl->bitmask.dist[wchunk])
-			sdl->bitmask.dist[wchunk] = aw;
+			sdl->bitmask.dist[wchunk] = aw + ((wchunk - start) * (bw - aw));
 		wchunk++;
-		aw += wstep;
 		y++;
 	}
 }

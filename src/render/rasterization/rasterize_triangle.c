@@ -93,11 +93,11 @@ static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 	{
 		x = p[1].x + (step[0] * (float)(y - p[1].y));
 		int ax =  p[2].x + (step[1] * (float)(y - p[1].y));
-		t_step[2] = calc_step_texture2(t, (float)(ax - x));
+		t_step[2] = calc_step_texture2(t, 1.0f / (float)(ax - x));
 		t[0].u = t[1].u;
 		t[0].v = t[1].v;
 		t[0].w = t[1].w;
-		while(x <= ax)
+		while(x < ax)
 		{
 			/*if (t[0].w < FOG && t[0].w > sdl->zbuffer[x + y * sdl->window_w])
 			{
