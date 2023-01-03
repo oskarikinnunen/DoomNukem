@@ -1,4 +1,35 @@
-raycast_against_plane
-remove selected edge from room(s)
-shift to move edge inside area (so ignores connected edges)
-floor texture for rooms
+
+Level editor
+	raycast_against_plane
+	remove selected edge from room(s)
+	connect areas (combine height)
+	shift to move edge inside area (so ignores connected edges)
+	raycasting for all the room_tool subsystems
+	floor texture for rooms
+	ramps/stairs
+
+Preset editor (assign behaviour to an object)
+	audiosource
+	light
+	npc
+	interactable(health pack, new gun, open door, keycard etc.)
+
+norminette
+
+single file
+
+memory leaks
+
+particles (sprites)
+	multiple sprite (only for compliance, not an actual feature that's used)
+
+player behaviour
+	fake 3d collision (2d with extra steps)
+	shooting hurts enemies and enemies hurt player (raycast and some kind of health system)
+
+AI
+	navmesh (subdivide triangle into point grid)
+	A* algorithm for pathfinding
+	state machine for behaviour
+		think of more detailed behaviour for each state
+

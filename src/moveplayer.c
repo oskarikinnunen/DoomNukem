@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   moveplayer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/21 17:04:56 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/03 11:30:24 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,8 @@ t_vector3	vector3_movetowards2(t_vector3 vec, t_vector3 to, float delta)
 	return (result);
 }
 
+
+
 void	updateguntransform(t_input *input, t_clock *clock, t_player *player)
 {
 	static float	lerp;
@@ -136,8 +138,10 @@ void	updateguntransform(t_input *input, t_clock *clock, t_player *player)
 	//neutralpos = gun->entity.transform.location;
 	if (input->shoot && gun->readytoshoot)
 	{
+		//particle_start(gunpos, player.)
 		start_anim(&gun->shoot_anim, anim_forwards);
 		start_anim(&gun->view_anim, anim_forwards);
+		
 		gun->readytoshoot = false;
 		gun->lastshottime = clock->prev_time;
 	}

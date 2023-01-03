@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/29 15:56:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/03 12:23:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -457,7 +457,6 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 
 	ft_bzero(&world, sizeof(t_world));
 	world.sdl = sdl;
-	t_vector2 v;
 	world.guns = load_chunk(filename, "GUNS", sizeof(t_gun));
 	world.debugconsole = init_debugconsole();
 	world.entitycache = init_entitycache(1024);
@@ -482,6 +481,7 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 	//world.npcpool[0].destination = (t_vector3){200.0f, 200.0f, 0.0f};
 	ft_bzero(&world.lighting, sizeof(t_lighting));
 	world.lighting.ambient_light = 20;
+	//raycast_new()
 	for_all_entities(&world, create_lightmap_for_entity);
 	for_all_entities(&world, create_map_for_entity);
 	return (world);

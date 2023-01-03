@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   obj_parse_uvs.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 14:17:47 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/21 17:53:08 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/03 11:57:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,14 @@ t_list	*get_uv_list(int fd)
 	t_vector2	uv;
 
 	list = NULL;
+	//system("tar")
 	while (ft_get_next_line(fd, &line))
 	{
 		if (ft_strnstr(line, "vt ", sizeof("vt")))
 		{
 			uv = parse_uv(line + sizeof("vt"));
 			uv.y = 1.0f - uv.y;
+			//uv = vector2_mul(uv, 100.0f);
 			list_push(&list, &uv, sizeof(t_vector2));
 		}
 		free(line);
