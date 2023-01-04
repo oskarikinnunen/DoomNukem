@@ -142,6 +142,8 @@ static void fill_point_tri_bot2(t_bit_tri	bt, t_sdlcontext *sdl)
 				sdl->bitmask.tile[wchunk].max1 = 0;
 				sdl->bitmask.tile[wchunk].mask = 0;
 			}
+			if (sdl->bitmask.tile[wchunk].max0 == 0)
+				sdl->bitmask.tile[wchunk].max0 = aw;
 		}
 		wchunk++;
 		aw += wstep;
@@ -165,6 +167,8 @@ static void fill_point_tri_bot2(t_bit_tri	bt, t_sdlcontext *sdl)
 				sdl->bitmask.tile[wchunk].max1 = 0;
 				sdl->bitmask.tile[wchunk].mask = 0;
 			}
+			if (sdl->bitmask.tile[wchunk].max0 == 0)
+				sdl->bitmask.tile[wchunk].max0 = aw;
 		}
 		wchunk++;
 		aw += wstep;
@@ -174,51 +178,55 @@ static void fill_point_tri_bot2(t_bit_tri	bt, t_sdlcontext *sdl)
 			res = line;
 			sdl->bitmask.bitmask[chunk++] |= (__uint128_t)res << y_chunk;
 			if (aw > sdl->bitmask.tile[wchunk].max0)
-		{
-			float dist1t = (1.0f/sdl->bitmask.tile[wchunk].max1) - (1.0f/aw);
-			float dist0t = (1.0f/sdl->bitmask.tile[wchunk].max0) - (1.0f/sdl->bitmask.tile[wchunk].max1);
-			
-			if (dist1t > dist0t)
 			{
-				sdl->bitmask.tile[wchunk].max1 = 0;
-				sdl->bitmask.tile[wchunk].mask = 0;
-			}
-			if (sdl->bitmask.tile[wchunk].max1 < aw)
-				sdl->bitmask.tile[wchunk].max1 = aw;
-			sdl->bitmask.tile[wchunk].mask |= (uint64_t)((uint8_t)(res >> 8)) << y1_chunk; // shift to right every other chunk
+				float dist1t = (1.0f/sdl->bitmask.tile[wchunk].max1) - (1.0f/aw);
+				float dist0t = (1.0f/sdl->bitmask.tile[wchunk].max0) - (1.0f/sdl->bitmask.tile[wchunk].max1);
+				
+				if (dist1t > dist0t)
+				{
+					sdl->bitmask.tile[wchunk].max1 = 0;
+					sdl->bitmask.tile[wchunk].mask = 0;
+				}
+				if (sdl->bitmask.tile[wchunk].max1 < aw)
+					sdl->bitmask.tile[wchunk].max1 = aw;
+				sdl->bitmask.tile[wchunk].mask |= (uint64_t)((uint8_t)(res >> 8)) << y1_chunk; // shift to right every other chunk
 
-			if (sdl->bitmask.tile[wchunk].mask == ~0)
-			{
-				sdl->bitmask.tile[wchunk].max0 = sdl->bitmask.tile[wchunk].max1;
-				sdl->bitmask.tile[wchunk].max1 = 0;
-				sdl->bitmask.tile[wchunk].mask = 0;
+				if (sdl->bitmask.tile[wchunk].mask == ~0)
+				{
+					sdl->bitmask.tile[wchunk].max0 = sdl->bitmask.tile[wchunk].max1;
+					sdl->bitmask.tile[wchunk].max1 = 0;
+					sdl->bitmask.tile[wchunk].mask = 0;
+				}
+				if (sdl->bitmask.tile[wchunk].max0 == 0)
+					sdl->bitmask.tile[wchunk].max0 = aw;
 			}
-		}
-		wchunk++;
-		aw += wstep;
-		if (aw > sdl->bitmask.tile[wchunk].max0)
-		{
-			float dist1t = (1.0f/sdl->bitmask.tile[wchunk].max1) - (1.0f/aw);
-			float dist0t = (1.0f/sdl->bitmask.tile[wchunk].max0) - (1.0f/sdl->bitmask.tile[wchunk].max1);
-			
-			if (dist1t > dist0t)
+			wchunk++;
+			aw += wstep;
+			if (aw > sdl->bitmask.tile[wchunk].max0)
 			{
-				sdl->bitmask.tile[wchunk].max1 = 0;
-				sdl->bitmask.tile[wchunk].mask = 0;
-			}
-			if (sdl->bitmask.tile[wchunk].max1 < aw)
-				sdl->bitmask.tile[wchunk].max1 = aw;
-			sdl->bitmask.tile[wchunk].mask |= (uint64_t)((uint8_t)res) << y1_chunk; // shift to right every other chunk
+				float dist1t = (1.0f/sdl->bitmask.tile[wchunk].max1) - (1.0f/aw);
+				float dist0t = (1.0f/sdl->bitmask.tile[wchunk].max0) - (1.0f/sdl->bitmask.tile[wchunk].max1);
+				
+				if (dist1t > dist0t)
+				{
+					sdl->bitmask.tile[wchunk].max1 = 0;
+					sdl->bitmask.tile[wchunk].mask = 0;
+				}
+				if (sdl->bitmask.tile[wchunk].max1 < aw)
+					sdl->bitmask.tile[wchunk].max1 = aw;
+				sdl->bitmask.tile[wchunk].mask |= (uint64_t)((uint8_t)res) << y1_chunk; // shift to right every other chunk
 
-			if (sdl->bitmask.tile[wchunk].mask == ~0)
-			{
-				sdl->bitmask.tile[wchunk].max0 = sdl->bitmask.tile[wchunk].max1;
-				sdl->bitmask.tile[wchunk].max1 = 0;
-				sdl->bitmask.tile[wchunk].mask = 0;
+				if (sdl->bitmask.tile[wchunk].mask == ~0)
+				{
+					sdl->bitmask.tile[wchunk].max0 = sdl->bitmask.tile[wchunk].max1;
+					sdl->bitmask.tile[wchunk].max1 = 0;
+					sdl->bitmask.tile[wchunk].mask = 0;
+				}
+				if (sdl->bitmask.tile[wchunk].max0 == 0)
+					sdl->bitmask.tile[wchunk].max0 = aw;
 			}
-		}
-		wchunk++;
-		aw += wstep;
+			wchunk++;
+			aw += wstep;
 			x += 16;
 		}
 		res = mask_x(0, 0, ax - x + 1);
@@ -243,6 +251,8 @@ static void fill_point_tri_bot2(t_bit_tri	bt, t_sdlcontext *sdl)
 				sdl->bitmask.tile[wchunk].max1 = 0;
 				sdl->bitmask.tile[wchunk].mask = 0;
 			}
+			if (sdl->bitmask.tile[wchunk].max0 == 0)
+				sdl->bitmask.tile[wchunk].max0 = aw;
 		}
 		wchunk++;
 		aw += wstep;
@@ -266,6 +276,8 @@ static void fill_point_tri_bot2(t_bit_tri	bt, t_sdlcontext *sdl)
 				sdl->bitmask.tile[wchunk].max1 = 0;
 				sdl->bitmask.tile[wchunk].mask = 0;
 			}
+			if (sdl->bitmask.tile[wchunk].max0 == 0)
+				sdl->bitmask.tile[wchunk].max0 = aw;
 		}
 		wchunk++;
 		aw += wstep;
@@ -286,7 +298,6 @@ __uint128_t create_bitmask(uint16_t mask1, uint16_t mask2, uint16_t mask3, uint1
 
 static void fill_point_tri_top2(t_bit_tri	bt, t_sdlcontext *sdl)
 {
-	return;
 	t_point			*p;
 	float			step[2];
 	float			t_step[2];
@@ -330,22 +341,55 @@ static void fill_point_tri_top2(t_bit_tri	bt, t_sdlcontext *sdl)
 		int wchunk = (y / 8) * (sdl->window_w/8) + (x / 8);
 
 		y_chunk = ((y % 8) * 16);
+		int y1_chunk = ((y % 8) * 8);
 		res = mask_x(0, temp1, temp2);
 		sdl->bitmask.bitmask[chunk++] |= (__uint128_t)res << y_chunk;
 		if (aw > sdl->bitmask.tile[wchunk].max0)
 		{
-			if (aw > sdl->bitmask.tile[wchunk].max1)
+			float dist1t = (1.0f/sdl->bitmask.tile[wchunk].max1) - (1.0f/aw);
+			float dist0t = (1.0f/sdl->bitmask.tile[wchunk].max0) - (1.0f/sdl->bitmask.tile[wchunk].max1);
+			
+			if (dist1t > dist0t)
+			{
+				sdl->bitmask.tile[wchunk].max1 = 0;
+				sdl->bitmask.tile[wchunk].mask = 0;
+			}
+			if (sdl->bitmask.tile[wchunk].max1 < aw)
 				sdl->bitmask.tile[wchunk].max1 = aw;
-			else
+			sdl->bitmask.tile[wchunk].mask |= (uint64_t)((uint8_t)(res >> 8)) << y1_chunk; // shift to right every other chunk
+
+			if (sdl->bitmask.tile[wchunk].mask == ~0)
+			{
+				sdl->bitmask.tile[wchunk].max0 = sdl->bitmask.tile[wchunk].max1;
+				sdl->bitmask.tile[wchunk].max1 = 0;
+				sdl->bitmask.tile[wchunk].mask = 0;
+			}
+			if (sdl->bitmask.tile[wchunk].max0 == 0)
 				sdl->bitmask.tile[wchunk].max0 = aw;
 		}
 		wchunk++;
 		aw += wstep;
 		if (aw > sdl->bitmask.tile[wchunk].max0)
 		{
-			if (aw > sdl->bitmask.tile[wchunk].max1)
+			float dist1t = (1.0f/sdl->bitmask.tile[wchunk].max1) - (1.0f/aw);
+			float dist0t = (1.0f/sdl->bitmask.tile[wchunk].max0) - (1.0f/sdl->bitmask.tile[wchunk].max1);
+			
+			if (dist1t > dist0t)
+			{
+				sdl->bitmask.tile[wchunk].max1 = 0;
+				sdl->bitmask.tile[wchunk].mask = 0;
+			}
+			if (sdl->bitmask.tile[wchunk].max1 < aw)
 				sdl->bitmask.tile[wchunk].max1 = aw;
-			else
+			sdl->bitmask.tile[wchunk].mask |= (uint64_t)((uint8_t)res) << y1_chunk; // shift to right every other chunk
+
+			if (sdl->bitmask.tile[wchunk].mask == ~0)
+			{
+				sdl->bitmask.tile[wchunk].max0 = sdl->bitmask.tile[wchunk].max1;
+				sdl->bitmask.tile[wchunk].max1 = 0;
+				sdl->bitmask.tile[wchunk].mask = 0;
+			}
+			if (sdl->bitmask.tile[wchunk].max0 == 0)
 				sdl->bitmask.tile[wchunk].max0 = aw;
 		}
 		wchunk++;
@@ -357,18 +401,50 @@ static void fill_point_tri_top2(t_bit_tri	bt, t_sdlcontext *sdl)
 			sdl->bitmask.bitmask[chunk++] |= (__uint128_t)res << y_chunk;
 			if (aw > sdl->bitmask.tile[wchunk].max0)
 			{
-				if (aw > sdl->bitmask.tile[wchunk].max1)
+				float dist1t = (1.0f/sdl->bitmask.tile[wchunk].max1) - (1.0f/aw);
+				float dist0t = (1.0f/sdl->bitmask.tile[wchunk].max0) - (1.0f/sdl->bitmask.tile[wchunk].max1);
+				
+				if (dist1t > dist0t)
+				{
+					sdl->bitmask.tile[wchunk].max1 = 0;
+					sdl->bitmask.tile[wchunk].mask = 0;
+				}
+				if (sdl->bitmask.tile[wchunk].max1 < aw)
 					sdl->bitmask.tile[wchunk].max1 = aw;
-				else
+				sdl->bitmask.tile[wchunk].mask |= (uint64_t)((uint8_t)(res >> 8)) << y1_chunk; // shift to right every other chunk
+
+				if (sdl->bitmask.tile[wchunk].mask == ~0)
+				{
+					sdl->bitmask.tile[wchunk].max0 = sdl->bitmask.tile[wchunk].max1;
+					sdl->bitmask.tile[wchunk].max1 = 0;
+					sdl->bitmask.tile[wchunk].mask = 0;
+				}
+				if (sdl->bitmask.tile[wchunk].max0 == 0)
 					sdl->bitmask.tile[wchunk].max0 = aw;
 			}
 			wchunk++;
 			aw += wstep;
 			if (aw > sdl->bitmask.tile[wchunk].max0)
 			{
-				if (aw > sdl->bitmask.tile[wchunk].max1)
+				float dist1t = (1.0f/sdl->bitmask.tile[wchunk].max1) - (1.0f/aw);
+				float dist0t = (1.0f/sdl->bitmask.tile[wchunk].max0) - (1.0f/sdl->bitmask.tile[wchunk].max1);
+				
+				if (dist1t > dist0t)
+				{
+					sdl->bitmask.tile[wchunk].max1 = 0;
+					sdl->bitmask.tile[wchunk].mask = 0;
+				}
+				if (sdl->bitmask.tile[wchunk].max1 < aw)
 					sdl->bitmask.tile[wchunk].max1 = aw;
-				else
+				sdl->bitmask.tile[wchunk].mask |= (uint64_t)((uint8_t)res) << y1_chunk; // shift to right every other chunk
+
+				if (sdl->bitmask.tile[wchunk].mask == ~0)
+				{
+					sdl->bitmask.tile[wchunk].max0 = sdl->bitmask.tile[wchunk].max1;
+					sdl->bitmask.tile[wchunk].max1 = 0;
+					sdl->bitmask.tile[wchunk].mask = 0;
+				}
+				if (sdl->bitmask.tile[wchunk].max0 == 0)
 					sdl->bitmask.tile[wchunk].max0 = aw;
 			}
 			wchunk++;
@@ -379,18 +455,50 @@ static void fill_point_tri_top2(t_bit_tri	bt, t_sdlcontext *sdl)
 		sdl->bitmask.bitmask[chunk] |= (__uint128_t)res << y_chunk;
 		if (aw > sdl->bitmask.tile[wchunk].max0)
 		{
-			if (aw > sdl->bitmask.tile[wchunk].max1)
+			float dist1t = (1.0f/sdl->bitmask.tile[wchunk].max1) - (1.0f/aw);
+			float dist0t = (1.0f/sdl->bitmask.tile[wchunk].max0) - (1.0f/sdl->bitmask.tile[wchunk].max1);
+			
+			if (dist1t > dist0t)
+			{
+				sdl->bitmask.tile[wchunk].max1 = 0;
+				sdl->bitmask.tile[wchunk].mask = 0;
+			}
+			if (sdl->bitmask.tile[wchunk].max1 < aw)
 				sdl->bitmask.tile[wchunk].max1 = aw;
-			else
+			sdl->bitmask.tile[wchunk].mask |= (uint64_t)((uint8_t)(res >> 8)) << y1_chunk; // shift to right every other chunk
+
+			if (sdl->bitmask.tile[wchunk].mask == ~0)
+			{
+				sdl->bitmask.tile[wchunk].max0 = sdl->bitmask.tile[wchunk].max1;
+				sdl->bitmask.tile[wchunk].max1 = 0;
+				sdl->bitmask.tile[wchunk].mask = 0;
+			}
+			if (sdl->bitmask.tile[wchunk].max0 == 0)
 				sdl->bitmask.tile[wchunk].max0 = aw;
 		}
 		wchunk++;
 		aw += wstep;
 		if (aw > sdl->bitmask.tile[wchunk].max0)
 		{
-			if (aw > sdl->bitmask.tile[wchunk].max1)
+			float dist1t = (1.0f/sdl->bitmask.tile[wchunk].max1) - (1.0f/aw);
+			float dist0t = (1.0f/sdl->bitmask.tile[wchunk].max0) - (1.0f/sdl->bitmask.tile[wchunk].max1);
+			
+			if (dist1t > dist0t)
+			{
+				sdl->bitmask.tile[wchunk].max1 = 0;
+				sdl->bitmask.tile[wchunk].mask = 0;
+			}
+			if (sdl->bitmask.tile[wchunk].max1 < aw)
 				sdl->bitmask.tile[wchunk].max1 = aw;
-			else
+			sdl->bitmask.tile[wchunk].mask |= (uint64_t)((uint8_t)res) << y1_chunk; // shift to right every other chunk
+
+			if (sdl->bitmask.tile[wchunk].mask == ~0)
+			{
+				sdl->bitmask.tile[wchunk].max0 = sdl->bitmask.tile[wchunk].max1;
+				sdl->bitmask.tile[wchunk].max1 = 0;
+				sdl->bitmask.tile[wchunk].mask = 0;
+			}
+			if (sdl->bitmask.tile[wchunk].max0 == 0)
 				sdl->bitmask.tile[wchunk].max0 = aw;
 		}
 		wchunk++;
