@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/02 18:01:23 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/04 19:52:22 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -590,11 +590,11 @@ void	triangulate(t_floorcalc *fc, int valid_target)
 		t_vector2 first = fc->edges[valid[validcount - 1]];
 		t_vector2 center = fc->edges[valid[0]];
 		t_vector2 second = fc->edges[valid[1]];
-		if (isaligned((t_vector2[3]){first,center,second}))
+		/*if (isaligned((t_vector2[3]){first,center,second}))
 		{
 			printf("removed aligned %i \n", valid[0]);
 			removevalid(valid, validcount--, 0);
-		}
+		}*/
 
 		if (valid[0] == 2 && valid[1] == 5 && valid[validcount - 1] == 1)
 		{
@@ -718,56 +718,6 @@ void	free_floor(t_world *world, t_room *room)
 	room->floorcount = 0;
 }
 
-void	makefloor_room_area(t_editor *ed, t_sdlcontext *sdl, t_room *room, t_floor_area a)
-{
-	t_floorcalc	fc;
-	t_wall		*w;
-	t_meshtri	*mtri;
-	int			i;
-
-	ft_bzero(&fc, sizeof(fc));
-	i = 0;
-	while (i < a.edgecount)
-	{
-		fc.edges[fc.edgecount++] = room->edges[a.edge_indices[i]];
-		i++;
-	}
-	triangulate(&fc, 2);
-	if (fc.facecount == 0)
-		return ;
-	//room->floors = ft_memalloc(sizeof(t_meshtri) * fc.facecount);
-	
-	if (room->floors == NULL)
-		error_log(EC_MALLOC);
-	i = 0;
-	while (i < fc.facecount)
-	{
-		mtri = &room->floors[i + (room->floorcount)];
-		printf("i %i \n", i);
-		//ft_bzero(&mtri->entity, sizeof(t_entity));
-		mtri->entity = spawn_entity(&ed->world);
-		mtri->entity->rigid = true;
-		mtri->entity->obj = object_tri(sdl);
-		mtri->v[0] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[0]]);
-		mtri->v[1] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[1]]);
-		mtri->v[2] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[2]]);
-		mtri->v[0].z += a.height + room->height;
-		mtri->v[1].z += a.height + room->height;
-		mtri->v[2].z += a.height + room->height;
-		mtri->uv[0] = fc.edges[fc.faces[i].v_indices[0]];
-		mtri->uv[1] = fc.edges[fc.faces[i].v_indices[1]];
-		mtri->uv[2] = fc.edges[fc.faces[i].v_indices[2]];
-		mtri->uv[0] = vector2_div(mtri->uv[0], 100.0f);
-		mtri->uv[1] = vector2_div(mtri->uv[1], 100.0f);
-		mtri->uv[2] = vector2_div(mtri->uv[2], 100.0f);
-		applytrimesh(*mtri, mtri->entity->obj);
-		create_lightmap_for_entity(mtri->entity, &ed->world);
-		create_map_for_entity(mtri->entity, &ed->world);
-		i++;
-	}
-	room->floorcount += fc.facecount;
-}
-
 void	makefloor_room(t_world *world, t_room *room)
 {
 	t_floorcalc	fc;
@@ -819,13 +769,13 @@ void	makefloor_room(t_world *world, t_room *room)
 	}
 }
 
-void	make_areas(t_editor *ed, t_sdlcontext *sdl, t_room *room)
+void	make_areas(t_world *world, t_room *room)
 {
 	int	i;
 
 	i = 0;
-	free_floor(&ed->world, room);
+	free_floor(world, room);
 	room->floors = ft_memalloc(sizeof(t_meshtri) * 1000);
-	makefloor_room(&ed->world, room);
+	makefloor_room(world, room);
 	printf("made floors for %i areas \n", i);
 }

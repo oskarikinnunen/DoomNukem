@@ -1,12 +1,17 @@
 
 Level editor
-	raycast_against_plane
-	remove selected edge from room(s)
+	make wallsplit also split the wall in joined rooms
+
+
+
+	bool for checking that rooms share the same z space
 	connect areas (combine height)
-	shift to move edge inside area (so ignores connected edges)
-	raycasting for all the room_tool subsystems
+
+	raycasting for createmode (removing the old raycast) !!
 	floor texture for rooms
 	ramps/stairs
+
+load/save different world (file selector)
 
 Preset editor (assign behaviour to an object)
 	audiosource
@@ -20,6 +25,8 @@ single file
 
 memory leaks
 
+actually implement playmode
+
 particles (sprites)
 	multiple sprite (only for compliance, not an actual feature that's used)
 
@@ -32,4 +39,3 @@ AI
 	A* algorithm for pathfinding
 	state machine for behaviour
 		think of more detailed behaviour for each state
-

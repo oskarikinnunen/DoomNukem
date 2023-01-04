@@ -14,15 +14,6 @@ typedef struct s_meshtri
 	char		texname[256];
 }	t_meshtri;
 
-typedef struct s_floor_area
-{
-	t_vector2	*edges[32];
-	uint32_t	edge_indices[64];
-	uint32_t	edgecount;
-	uint32_t	unique_wallcount;
-	int32_t		height;
-}	t_floor_area;
-
 typedef struct s_line
 {
 	t_vector2	start;
@@ -43,8 +34,9 @@ typedef struct s_wall
 {
 	t_entity	*entity;
 	uint16_t	saved_entityid;
-	t_line		line;
+//	t_line		line;
 	t_edgeline	edgeline;
+	uint32_t	z_offset;
 	uint32_t	height;
 	bool		disabled;
 	bool		connection;
@@ -60,7 +52,6 @@ typedef struct s_room //TODO: rewrite rooms/walls so rooms have t_vector2 edges 
 	t_wall			*walls;
 	t_meshtri		*floors;
 	t_meshtri		*ceilings;
-	t_floor_area	*floor_areas; //
 	char			floortex[64];
 	uint32_t		height;
 	uint32_t		ceiling_height;
@@ -68,7 +59,6 @@ typedef struct s_room //TODO: rewrite rooms/walls so rooms have t_vector2 edges 
 	uint32_t		wallcount;
 	uint32_t		floorcount;
 	uint32_t		ceilingcount;
-	uint32_t		floor_areacount;
 }	t_room;
 
 void	assign_default_floor_area(t_room *room);

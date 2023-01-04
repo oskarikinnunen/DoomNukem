@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 14:52:25 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/02 17:30:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/04 18:26:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,13 +110,12 @@ void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	}
 	print_text_boxed(sdl, tex->name, point_add(cur, (t_point){0, 40}));
 	//drawrectangle(*sdl, mrect, AMBER_4);
-		
-	
 	prev_img_index = img_index;
 	if (ed->hid.mouse.held == MOUSE_LEFT &&
 		ent != NULL &&
 		ent->rigid &&
-		ent->obj->materials->img != tex && tex != NULL)
+		ent->obj->materials->img != tex && tex != NULL
+		&& ent->obj != NULL)
 	{
 		printf("applying tex \n");
 		ent->obj->materials->img = tex;

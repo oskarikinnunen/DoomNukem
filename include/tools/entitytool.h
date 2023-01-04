@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 15:28:31 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/29 15:12:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/03 15:16:00 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 
 typedef struct s_entitytooldata
 {
+	t_autogui		worldgui;
 	t_autogui		entitygui;
 	t_objectgui		objectgui;
 	t_entity		*ent;

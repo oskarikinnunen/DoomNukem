@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/29 14:23:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/03 14:36:29 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,25 +108,7 @@ void render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to)
 
 void render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size)
 {
-	t_camera		c;
-	t_object		obj;
-	t_vector3		vertex;
-
-	c = render.camera;
-	obj.vertice_count = 1;
-	vertex = vector3_zero();
-	obj.vertices = &vertex;
-	vertex = pos;
-	render.q[0] = vector3_to_quaternion(vertex);
-	render.q[0] = quaternion_mul_matrix(c.matworld, render.q[0]);
-	render.q[0] = quaternion_mul_matrix(c.matview, render.q[0]);
-	render.q[0] = quaternion_to_screenspace(c.matproj, render.q[0], sdl);
-	if (render.q[0].w > 0.0f
-		&& render.q[0].v.x >= 0.0f && render.q[0].v.x < sdl.window_w
-		&& render.q[0].v.y >= 0.0f && render.q[0].v.y < sdl.window_h)
-		drawcircle(sdl, (t_point){render.q[0].v.x, render.q[0].v.y}, size, render.gizmocolor);
-	render.occ_calc_tri_count = 0;
-	render.occ_tri_count = 0;
+	drawcircle(sdl, vector3_to_screenspace(pos, sdl), size, render.gizmocolor);
 }
 
 static t_vector3 lookdirection2(t_vector2 angle)

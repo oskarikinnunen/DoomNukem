@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/02 17:57:40 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/04 19:57:25 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,41 @@ void	render_snapgrid(t_editor *ed, t_sdlcontext *sdl, t_vector2 wallpos, bool sh
 	}
 }
 
+void	free_walls(t_room *room, t_world *world)
+{
+	int	i;
+
+	i = 0;
+	while (i < room->wallcount)
+	{
+		if (room->walls[i].entity->obj != NULL)
+		{
+			free_object(room->walls[i].entity->obj);
+			destroy_entity(world, room->walls[i].entity);
+			room->walls[i].entity = NULL;
+		}
+		i++;
+	}
+}
+
 //if edges_exists_in_other_room && 
+
+t_wall	*find_wall(t_wall wall, t_room *room)
+{
+	int	i;
+
+	i = 0;
+	while (i < room->wallcount)
+	{
+		if ((vector2_cmp(*room->walls[i].edgeline.start, *wall.edgeline.start)
+			&& vector2_cmp(*room->walls[i].edgeline.end, *wall.edgeline.end))
+			|| (vector2_cmp(*room->walls[i].edgeline.start, *wall.edgeline.end)
+			&& vector2_cmp(*room->walls[i].edgeline.end, *wall.edgeline.start)))
+			return (&room->walls[i]);
+		i++;
+	}
+	return (NULL);	
+}
 
 void	clamp_wall_areaheight(t_wall *wall, t_room *room, t_world *world)
 {
@@ -60,15 +94,37 @@ void	clamp_wall_areaheight(t_wall *wall, t_room *room, t_world *world)
 	t_list	*l;
 
 	l = world->roomlist;
+	wall->entity->hidden = false;
+	wall->height = room->ceiling_height;
+	wall->z_offset = 0;
 	while (l != NULL)
 	{
 		cur = l->content;
-		if (cur != room && edge_exists(*wall->edgeline.start, cur) && edge_exists(*wall->edgeline.end, cur))
+		if (cur != room && /*edge_exists(*wall->edgeline.start, cur) && edge_exists(*wall->edgeline.end, cur)*/
+			find_wall(*wall, cur) != NULL)
 		{
 			if (cur->height <= room->height)
 			{
-				wall->height = room->ceiling_height;
+				/*wall->height = room->ceiling_height;
 				wall->entity->hidden = true;
+				if (cur->height + cur->ceiling_height < room->height + room->ceiling_height)
+				{*/
+				wall->height = ft_abs((room->height + room->ceiling_height) - (cur->height + cur->ceiling_height));
+				if (room->height + room->ceiling_height
+					<= cur->height + cur->ceiling_height)
+				{
+					//int diff = (cur->height - room->height)
+					wall->z_offset = room->ceiling_height;
+					wall->height = (cur->height - room->height) + (cur->ceiling_height - room->ceiling_height);
+					//wall->height = 10;
+					//wall->z_offset = (cur->ceiling_height) - wall->height;
+				}
+				else {
+					wall->z_offset = (room->ceiling_height) - wall->height;
+				}
+					
+				wall->entity->hidden = false;
+				//}
 				//wall->entity->hidden = !wall->disabled;b
 			}
 			else
@@ -89,14 +145,14 @@ void	applywallmesh(t_wall *wall, t_room *room, t_world *world)
 	if (wall->edgeline.end != NULL && wall->edgeline.start != NULL)
 	{
 		wall->entity->obj->vertices[0] = vector2_to_vector3(*wall->edgeline.start);
-		wall->entity->obj->vertices[0].z += room->height;
+		wall->entity->obj->vertices[0].z += room->height + wall->z_offset;
 		wall->entity->obj->vertices[1] = vector2_to_vector3(*wall->edgeline.end);
-		wall->entity->obj->vertices[1].z += room->height;
+		wall->entity->obj->vertices[1].z += room->height+ wall->z_offset;
 		
 		wall->entity->obj->vertices[2] = vector2_to_vector3(*wall->edgeline.start);
-		wall->entity->obj->vertices[2].z += wall->height + room->height;
+		wall->entity->obj->vertices[2].z += wall->height + room->height + wall->z_offset;
 		wall->entity->obj->vertices[3] = vector2_to_vector3(*wall->edgeline.end);
-		wall->entity->obj->vertices[3].z += wall->height + room->height;
+		wall->entity->obj->vertices[3].z += wall->height + room->height + wall->z_offset;
 
 		float dist = vector2_dist(*wall->edgeline.start, *wall->edgeline.end);
 		wall->entity->obj->uvs[0] = vector2_zero();
@@ -159,9 +215,8 @@ void	init_roomwalls(t_world *world, t_room *room)
 				
 		}
 		room->walls[i].height = room->ceiling_height;
-		//printf("wall height %i points: 1: %f %f 2: %f %f  \n", room->walls[i].height, room->walls[i].edgeline.start->x, room->walls[i].edgeline.start->y, room->walls[i].edgeline.end->x, room->walls[i].edgeline.start->y);
 		applywallmesh(&room->walls[i], room, world);
-		update_wall_bounds(&room->walls[i]);
+		//update_wall_bounds(&room->walls[i]);
 		i++;
 	}
 }

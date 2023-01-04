@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:42:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/02 15:37:40 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/04 20:28:15 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ typedef struct s_roomtooldata
 	t_roomtoolmode	rtm;
 	t_autogui		maingui;
 	t_autogui		modroom_gui;
+	t_autogui		edge_gui;
 	t_autogui		newroom_gui;
 	t_autogui		paint_gui;
 	t_raycastinfo	raycastinfo;
@@ -41,7 +42,7 @@ typedef struct s_roomtooldata
 	t_wall			wall;
 	t_wall			*ed_wall;
 	t_vector2		*held_edge;
-	t_floor_area	*area;
+	bool			room_should_recalculate;
 	t_floorcalc		fc;
 }	t_roomtooldata;
 

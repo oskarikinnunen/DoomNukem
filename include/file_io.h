@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   file_io.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 16:56:41 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 16:08:59 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/03 16:34:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 void	save_entitylist(t_list *entitylist, char *filename);
 t_list	*load_chunk(char *filename, char *chunkname, size_t size);
 void	save_chunk(char *filename, char *chunkname, t_list *content);
+//void	save_filechunk(char	*filename, char *filechunkname, )
 void	save_editordata(t_editor *ed);
 int		fileopen(char *filename, int flags);
 

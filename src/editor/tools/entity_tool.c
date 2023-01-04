@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/02 16:22:59 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/03 16:37:43 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,6 +261,36 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 	}
 }
 
+void	entity_tool_list(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
+{
+	t_autogui		*gui = &dat->worldgui;
+	int				i = 0;
+	int				found = 0;
+	t_entitycache	*cache;
+	
+	gui_start(gui);
+	i = 0;
+	cache = &ed->world.entitycache;
+	while (i < cache->alloc_count)
+	{
+		t_entity	ent;
+		char		*str;
+
+		ent = cache->entities[i];
+		str = ft_itoa(ent.id);
+		gui_starthorizontal(gui);
+		gui_label(str, gui);
+		if (gui_hoverlabel("Show", gui))
+		{
+			highlight_entity(sdl, &ent, CLR_RED);
+		}
+		gui_endhorizontal(gui);
+		free(str);
+		i++;
+	}
+	gui_end(gui);
+}
+
 void	entity_tool_update(t_editor *ed, t_sdlcontext *sdl)
 {
 	t_entitytooldata	*dat;
@@ -273,7 +303,8 @@ void	entity_tool_update(t_editor *ed, t_sdlcontext *sdl)
 
 	if (raycast_new(ray, &dat->info, &ed->world))
 	{
-		if (!dat->info.hit_entity->rigid)
+		if (dat->info.hit_entity != NULL
+			&& !dat->info.hit_entity->rigid)
 			highlight_entity(sdl, dat->info.hit_entity, AMBER_4);
 		
 		/*sdl->render.gizmocolor = CLR_BLUE;
@@ -281,7 +312,7 @@ void	entity_tool_update(t_editor *ed, t_sdlcontext *sdl)
 	}
 	//t_rayc
 
-	
+	//entity_tool_list(ed, sdl, dat);
 	entity_tool_place(ed, sdl, dat);
 	entity_tool_modify(ed, sdl, dat);
 }
@@ -304,6 +335,13 @@ void	entity_tool_init(t_editor *ed, t_sdlcontext *sdl)
 		dat->entitygui.minimum_size.x = 300;
 		dat->entitygui.minimum_size.y = 450;
 		//dat->entitygui.rect.size.y = 220;
+	}
+	if (dat->worldgui.sdl == NULL)
+	{
+		dat->worldgui = init_gui(sdl, &ed->hid, &ed->player, (t_point) {200, 40}, "World entities");
+		dat->worldgui.minimum_size.x = 300;
+		dat->worldgui.minimum_size.y = 450;
+		dat->worldgui.rect.size = dat->worldgui.minimum_size;
 	}
 }
 

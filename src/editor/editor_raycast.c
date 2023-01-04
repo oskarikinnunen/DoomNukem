@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 18:03:40 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/02 18:35:06 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/03 13:52:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,6 +237,32 @@ static bool raycast_entity(t_ray r, t_raycastinfo *info, t_entity *entity)
 	return (hit);
 }
 
+bool raycast_plane(t_ray r, t_raycastinfo *info, float plane_z)
+{
+	t_vector3_tri	tri;
+	t_raycastinfo	internal_info;
+	bool			hit;
+
+	ft_bzero(&internal_info, sizeof(t_raycastinfo));
+	internal_info.distance = 100000.0f; //TODO: inf?
+	r.dir = vector3_normalise(r.dir);
+	tri.a = (t_vector3){.z = plane_z};
+	tri.b = (t_vector3){10000.0f, 0.0f, plane_z};
+	tri.c = (t_vector3){0.0f, 10000.0f, plane_z};
+	if (raycast_tri(r, tri, &internal_info.distance))
+	{
+		internal_info.hit_pos =
+			vector3_add(r.origin, vector3_mul(r.dir, internal_info.distance));
+		hit = true;
+	}
+	//tri.c = (t_vector3){10000.0f, 0.0f, plane_z}; //Do the other triangle
+	if (info != NULL)
+		*info = internal_info;
+	return (hit);
+	//raycas
+	//raycast_tri(r, )
+}
+
 bool raycast_new(t_ray r, t_raycastinfo *info, t_world *world)
 {
 	int				i;
@@ -249,7 +275,7 @@ bool raycast_new(t_ray r, t_raycastinfo *info, t_world *world)
 	hit = false;
 	cache = &world->entitycache;
 	ft_bzero(&internal_info, sizeof(t_raycastinfo));
-	internal_info.distance = 100000.0f;
+	internal_info.distance = 100000.0f; //TODO: inf?
 	r.dir = vector3_normalise(r.dir);
 	i = 0;
 	while (found < cache->existing_entitycount
@@ -264,6 +290,8 @@ bool raycast_new(t_ray r, t_raycastinfo *info, t_world *world)
 		}
 		i++;
 	}
+	/*if (!hit)
+		hit = raycast_plane(r, &internal_info, 0.0f);*/
 	if (info != NULL)
 		*info = internal_info;
 	return (hit);

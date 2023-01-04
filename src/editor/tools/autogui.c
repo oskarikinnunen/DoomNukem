@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/02 16:20:10 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/03 15:50:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -608,6 +608,23 @@ bool	gui_button(char *str, t_autogui *gui)
 	}
 	gui_layout(gui, br.rect);
 	return (br.clicked);
+}
+
+bool	gui_hoverlabel(char *str, t_autogui *gui)
+{
+	t_rectangle	rect;
+	bool		hovered;
+
+	rect = empty_rect();
+	hovered = false;
+	if (gui_shoulddraw(gui))
+	{
+		rect = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
+		if (pointrectanglecollision(gui->hid->mouse.pos, rect))
+			hovered = true;
+	}
+	gui_layout(gui, rect);
+	return (hovered);
 }
 
 void	gui_string_edit(char *str, t_autogui	*gui)

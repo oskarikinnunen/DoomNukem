@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/03 12:23:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/04 19:58:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	update_npcs(t_world *world)
 					cur->destination = (t_vector3) {200.0f, 200.0f, 0.0f};
 			}
 			update_anim(&(cur->entity->animation), world->clock.delta);
-			update_entity_bounds(cur->entity);
+			//update_entity_bounds(cur->entity);
 		}
 		i++;
 	}
@@ -108,8 +108,8 @@ void update_world3d(t_world *world, t_render *render)
 	res = point_fmul(sdl->screensize, sdl->resolution_scaling);
 	gui_labeled_point("3D Resolution:", res, world->debug_gui);
 	gui_labeled_bool_edit("Wireframe:", &world->sdl->global_wireframe, world->debug_gui);
-	if (gui_shortcut_button("Toggle Lighting", 'L', world->debug_gui))
-		sdl->lighting_toggled = !sdl->lighting_toggled;
+	/*if (gui_shortcut_button("Toggle Lighting", 'L', world->debug_gui))
+		sdl->lighting_toggled = !sdl->lighting_toggled;*/
 	//gui_labeled_bool_edit("Lighting:", &world->sdl->lighting_toggled, world->debug_gui);
 	gui_labeled_int_slider("PS1 tri div:", &sdl->ps1_tri_div, 2.0f, world->debug_gui);
 	if (gui_shortcut_button("Toggle Skybox", 'H', world->debug_gui))
@@ -201,9 +201,6 @@ t_room	load_room(char *filename)
 	listdel(&temp);
 	temp = load_chunk(filename, "FLOR", sizeof(t_meshtri));
 	result.floors = list_to_ptr(temp, &result.floorcount);
-	listdel(&temp);
-	temp = load_chunk(filename, "AREA", sizeof(t_floor_area));
-	result.floor_areas = list_to_ptr(temp, &result.floor_areacount);
 	listdel(&temp);
 
 	temp = load_chunk(filename, "EDGE", sizeof(t_vector2));
@@ -356,6 +353,7 @@ t_entity	*spawn_entity(t_world	*world)
 	{
 		if (cache->entities[i].status == es_free)
 		{
+			ft_bzero(&cache->entities[i], sizeof(t_entity));
 			cache->entities[i].status = es_active;
 			cache->entities[i].transform.position = vector3_zero();
 			cache->entities[i].transform.scale = vector3_one();
@@ -376,8 +374,8 @@ t_entity	*spawn_entity(t_world	*world)
 void		entity_assign_object(t_world *world, t_entity *entity, t_object *obj)
 {
 	entity->obj = obj;
-	create_lightmap_for_entity(entity, world);
-	create_map_for_entity(entity, world);
+	//create_lightmap_for_entity(entity, world);
+	//create_map_for_entity(entity, world);
 }
 
 t_entity	*spawn_basic_entity(t_world *world, char *objectname, t_vector3 position) //UNUSED
@@ -530,8 +528,6 @@ void	save_room(t_room room)
 	save_chunk(room.name, "WALL", walls_list);
 	t_list *floorlist = ptr_to_list(room.floors, room.floorcount, sizeof(t_meshtri));
 	save_chunk(room.name, "FLOR", floorlist);
-	t_list *arealist = ptr_to_list(room.floor_areas, room.floor_areacount, sizeof(t_floor_area));
-	save_chunk(room.name, "AREA", arealist);
 	t_list *edgelist = ptr_to_list(room.edges, room.edgecount, sizeof(t_vector2));
 	save_chunk(room.name, "EDGE", edgelist);
 	close(fd);

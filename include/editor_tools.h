@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/29 16:45:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/04 17:17:35 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,6 +171,8 @@ bool				gui_labeled_int_slider(char *str, int *i, float mul, t_autogui *gui);
 //Draws a label and a modifiable vector slider next to eachother
 void				gui_labeled_vector3_slider(char *str, t_vector3 *vec, float mul, t_autogui *gui);
 
+bool				gui_hoverlabel(char *str, t_autogui *gui);
+
 void				gui_autosize(t_autogui *gui);
 
 void				point_tool_delete(struct s_editor *ed, t_point crd);
@@ -185,6 +187,7 @@ t_tool				*get_gun_tool();
 t_tool				*get_room_tool(void);
 t_tool				*get_entity_tool(void);
 t_tool				*get_npc_tool(void);
+t_tool				*get_load_tool(void);
 t_vector3			raycast_DEPRECATED(t_editor *ed);
 
 typedef struct s_raycastinfo
@@ -195,13 +198,14 @@ typedef struct s_raycastinfo
 }	t_raycastinfo;
 
 bool				raycast_new(t_ray r, t_raycastinfo *info, t_world *world);
+bool				raycast_plane(t_ray r, t_raycastinfo *info, float plane_z);
 bool				entity_lookedat(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
 bool				triangle_lookedat(t_render r, t_triangle tri, t_sdlcontext sdl);
 int32_t				entity_lookedat_triangle_index(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
 t_vector3			*entity_lookedat_vertex(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
 t_entity			*selected_entity(t_editor *ed, t_sdlcontext sdl);
 
-void			make_areas(t_editor *ed, t_sdlcontext *sdl, t_room *room);
+void			make_areas(t_world *world, t_room *room);
 
 /* TOOL_COMMON_FUNCTIONS.C */
 void				string_box(char *name, char *str, t_editor *ed, t_sdlcontext sdl, t_point pos);

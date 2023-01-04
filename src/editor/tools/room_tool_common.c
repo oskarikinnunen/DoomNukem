@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:53:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/02 19:06:49 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/04 15:30:14 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,15 +154,20 @@ void highlight_room(t_editor *ed, t_sdlcontext *sdl, t_room room, uint32_t color
 		//render_entity(sdl, &sdl->render, room.walls[i].entity);
 		if (w.edgeline.end != NULL && w.edgeline.start != NULL && !w.entity->hidden)
 		{
+			float zl = room.height + w.z_offset;
+			float zh = room.height + w.z_offset + w.height;
 			render_ray(sdl,
-				vector3_add(vector2_to_vector3(*w.edgeline.start),(t_vector3){.z = room.height + w.height}),
-				vector3_add(vector2_to_vector3(*w.edgeline.end),(t_vector3){.z = room.height + w.height}));
+				vector3_add(vector2_to_vector3(*w.edgeline.start),(t_vector3){.z = zh}),
+				vector3_add(vector2_to_vector3(*w.edgeline.end),(t_vector3){.z = zh}));
 			render_ray(sdl,
-				vector3_add(vector2_to_vector3(*w.edgeline.start),(t_vector3){.z = room.height}),
-				vector3_add(vector2_to_vector3(*w.edgeline.start),(t_vector3){.z = room.height + w.height}));
+				vector3_add(vector2_to_vector3(*w.edgeline.start),(t_vector3){.z = zl}),
+				vector3_add(vector2_to_vector3(*w.edgeline.end),(t_vector3){.z = zl}));
 			render_ray(sdl,
-				vector3_add(vector2_to_vector3(*w.edgeline.end),(t_vector3){.z = room.height}),
-				vector3_add(vector2_to_vector3(*w.edgeline.end),(t_vector3){.z = room.height + w.height}));
+				vector3_add(vector2_to_vector3(*w.edgeline.start),(t_vector3){.z = zl}),
+				vector3_add(vector2_to_vector3(*w.edgeline.start),(t_vector3){.z = zh}));
+			render_ray(sdl,
+				vector3_add(vector2_to_vector3(*w.edgeline.end),(t_vector3){.z = zl}),
+				vector3_add(vector2_to_vector3(*w.edgeline.end),(t_vector3){.z = zh}));
 			/*render_ray(sdl,
 				vector3_add(vector2_to_vector3(*w.edgeline.start),(t_vector3){.z = room.height}),
 				vector3_add(vector2_to_vector3(*w.edgeline.end),(t_vector3){.z = room.height}));*/
