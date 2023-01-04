@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/04 21:10:35 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/04 21:32:21 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,27 +217,18 @@ bool	collision_check(t_world *world, t_vector3 potential_pos)
 		if (room != NULL)
 		{
 			index = 0;
-			if (printer == 0)
-				printf("room wallcount: %d\n", room->wallcount);
 			while (index < room->wallcount)
 			{
 				wall_line = &room->walls[index].edgeline;
-				if (printer == 0)
-				{
-					printf("wall[%d]: %f,%f   <->   %f,%f\n", index, wall_line->start->x, wall_line->start->y, wall_line->end->x, wall_line->end->y);
-					if (index == room->wallcount - 1)
-						printer = 1;
-				}
 				if (pointcircle(*wall_line->start, (t_vector2){potential_pos.x, potential_pos.y}, circle_radius) || \
 					pointcircle(*wall_line->end, (t_vector2){potential_pos.x, potential_pos.y}, circle_radius))
-				{
-					printf("pointcircle collition detected -> circle_radius: %f   -   potential_pos: %f,%f\n", circle_radius, potential_pos.x, potential_pos.y);
 					return (true);
-				}
 				wall_len = vector2_dist(*wall_line->start, *wall_line->end);
-				dot = vector2_dot((t_vector2){(potential_pos.x - wall_line->start->x), (wall_line->end->x - wall_line->start->x)}, \
+				/* dot = vector2_dot((t_vector2){(potential_pos.x - wall_line->start->x), (wall_line->end->x - wall_line->start->x)}, \
 								(t_vector2){(potential_pos.y - wall_line->start->y), (wall_line->end->y - wall_line->start->y)}) / \
-								(wall_len * wall_len);
+								(wall_len * wall_len); */ //didnt work so had to write it open below
+				dot = (((potential_pos.x - wall_line->start->x) * (wall_line->end->x - wall_line->start->x)) + \
+						((potential_pos.y - wall_line->start->y) * (wall_line->end->y - wall_line->start->y))) / (wall_len * wall_len);
 				closest.x = wall_line->start->x + (dot * (wall_line->end->x - wall_line->start->x));
 				closest.y = wall_line->start->y + (dot * (wall_line->end->y - wall_line->start->y));
 				on_segment = linepoint(*wall_line->start, *wall_line->end, closest);
@@ -245,10 +236,7 @@ bool	collision_check(t_world *world, t_vector3 potential_pos)
 				{
 					distance = vector2_dist(closest, (t_vector2){potential_pos.x, potential_pos.y});
 					if (distance <= circle_radius)
-					{
-						printf("linepoint collition detected -> circle_radius: %f   -   potential_pos: %f,%f\n", circle_radius, potential_pos.x, potential_pos.y);
 						return (true);
-					}
 				}
 				index++;
 			}
