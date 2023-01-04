@@ -62,12 +62,9 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 		{
 			if (ent->status == es_active && !ent->hidden && is_entity_culled(world, render, ent) == false)
 			{
-				if (0 || is_entity_culled(sdl, render, ent) == false)
-				{
-					render_entity(sdl, render, ent);
-					if (sdl->bitmask2 == false)
-						render_entity_to_bitmask(sdl, render, ent);
-				}
+				render_entity(sdl, render, ent);
+				if (sdl->bitmask2 == false)
+					render_entity_to_bitmask(sdl, render, ent);
 			}
 			found++;
 		}
@@ -125,14 +122,14 @@ static void bitmask_to_pixels(t_sdlcontext *sdl)
 	sdl->bitmask.bitmask[5050 + sdl->bitmask.chunk_size.x] |= ~0;
 	sdl->bitmask.bitmask[5050 - sdl->bitmask.chunk_size.x] |= ~0;
 	sdl->bitmask.bitmask[5050] |= mask_x(0, 21 % 16, 16) << (16);
-//
+	//
 	//sdl->bitmask.bitmask[5050] |= mask_x(0, 0, 16) << 32 + 16;
 	//mask_x(3, 8);
 	//~((__uint128_t)0) >> (__uint128_t)64;
 
 	//if (sdl->bitmask.bitmask[5050] == sdl->bitmask.bitmask[5051])
 	//	exit(0);
-		//
+	//
 	//sdl->bitmask.bitmask[5050] |= mask_x(16, 0, 17);
 	//sdl->bitmask.bitmask[5050] |= ~0;
 	//sdl->bitmask.bitmask[5050] |= 255 << 24;
@@ -144,13 +141,13 @@ static void bitmask_to_pixels(t_sdlcontext *sdl)
 	{
 		for (int x = 0; x < sdl->window_w; x++)
 		{
-			if (sdl->bitmask.dist[(y / 8) * (sdl->window_w/8) + (x / 8)] > max_w)
-				max_w = sdl->bitmask.dist[(y / 8) * (sdl->window_w/8) + (x / 8)];
+			if (sdl->bitmask.tile[(y / 8) * (sdl->window_w/8) + (x / 8)].max0 < max_w)
+				max_w = sdl->bitmask.tile[(y / 8) * (sdl->window_w/8) + (x / 8)].max0;
 		}
 	}
 	printf("max w %f\n", max_w / 1.0f);
 	max_w = 2500.0f;
-//	max_w = max_w/1.0f;
+	//max_w = 1.0f/max_w;
 	for (int y = 0; y < sdl->window_h; y++)
 	{
 		for (int x = 0; x < sdl->window_w; x++)
@@ -158,7 +155,7 @@ static void bitmask_to_pixels(t_sdlcontext *sdl)
 			if ((sdl->bitmask.bitmask[(y / 8) * sdl->bitmask.chunk_size.x + (x / 16)] >> ((y % 8) * 16) + (x % 16) & 1) == 0)
 				continue;
 			clr = INT_MAX;
-			float w = sdl->bitmask.dist[(y / 8) * (sdl->window_w/8) + (x / 8)];
+			float w = sdl->bitmask.tile[(y / 8) * (sdl->window_w/8) + (x / 8)].max0;
 			w = (1.0f/w) / max_w;
 			uint8_t p = 255 - ft_clamp(w * 255, 0, 255);
 			Uint32 alpha = clr & 0xFF000000;
@@ -178,7 +175,7 @@ void update_world3d(t_world *world, t_render *render)
 	t_wall			wall;
 	t_sdlcontext	*sdl;
 	int				i;
-	
+
 	sdl = world->sdl;
 	ft_bzero(&render->rs, sizeof(t_render_statistics));
 	/*update_npcs(world);

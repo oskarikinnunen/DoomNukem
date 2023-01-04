@@ -25,11 +25,19 @@ typedef struct s_bit_tri
 	float	w[3];
 }	t_bit_tri;
 
+typedef struct s_tile
+{
+	float		max1; // closer one
+	float		max0; // further one
+	uint64_t	mask;
+}	t_tile;
+
 typedef struct s_bitmask
 {
 	__uint128_t			*bitmask;
-	float				*dist;
+	//float				*dist;
 	t_point				chunk_size; // (currently shows how many chunks in x y axis)should store how wide each chunk is in x and y axis make another that has chunk amount on x and y axis
+	t_tile				*tile;
 }	t_bitmask;
 
 #endif
