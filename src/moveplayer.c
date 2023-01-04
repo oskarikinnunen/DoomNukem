@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   moveplayer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/21 17:04:56 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/04 21:10:35 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,13 +170,101 @@ void	updateguntransform(t_input *input, t_clock *clock, t_player *player)
 	player->transform.rotation.y += gun->view_anim.lerp * clock->delta * gun->viewrecoil.y; //Separate view jump animation that is longer than gun jump animation?
 }
 
-void	moveplayer(t_player *player, t_input *input, t_clock clock)
+bool	linepoint(t_vector2 start, t_vector2 end, t_vector2 point)
+{
+	float	distance1;
+	float	distance2;
+	float	line_len;
+	float	buffer;
+
+	distance1 = vector2_dist(point, start);
+	distance2 = vector2_dist(point, end);
+	line_len = vector2_dist(start, end);
+	buffer = 0.1;
+	if ((distance1 + distance2) >= (line_len - buffer) && (distance1 + distance2) <= (line_len + buffer))
+		return (true);
+	return (false);
+}
+
+bool	pointcircle(t_vector2 point, t_vector2 circle, float radius)
+{
+	if (vector2_dist(point, circle) <= radius)
+		return (true);
+	return (false);
+}
+
+// Make sure gun_tool didnt break since it also calls for moveplayer and through that collision check
+bool	collision_check(t_world *world, t_vector3 potential_pos)
+{
+	t_list		*l;
+	t_room		*room;
+	t_edgeline	*wall_line;
+	int			index;
+	float		circle_radius;
+	float		wall_len;
+	float		dot;
+	t_vector2	closest;
+	bool		on_segment;
+	t_vector2	dist;
+	float		distance;
+	static int	printer = 0;
+
+	circle_radius = 10;
+	l = world->roomlist;
+	while (l != NULL)
+	{
+		room = l->content;
+		if (room != NULL)
+		{
+			index = 0;
+			if (printer == 0)
+				printf("room wallcount: %d\n", room->wallcount);
+			while (index < room->wallcount)
+			{
+				wall_line = &room->walls[index].edgeline;
+				if (printer == 0)
+				{
+					printf("wall[%d]: %f,%f   <->   %f,%f\n", index, wall_line->start->x, wall_line->start->y, wall_line->end->x, wall_line->end->y);
+					if (index == room->wallcount - 1)
+						printer = 1;
+				}
+				if (pointcircle(*wall_line->start, (t_vector2){potential_pos.x, potential_pos.y}, circle_radius) || \
+					pointcircle(*wall_line->end, (t_vector2){potential_pos.x, potential_pos.y}, circle_radius))
+				{
+					printf("pointcircle collition detected -> circle_radius: %f   -   potential_pos: %f,%f\n", circle_radius, potential_pos.x, potential_pos.y);
+					return (true);
+				}
+				wall_len = vector2_dist(*wall_line->start, *wall_line->end);
+				dot = vector2_dot((t_vector2){(potential_pos.x - wall_line->start->x), (wall_line->end->x - wall_line->start->x)}, \
+								(t_vector2){(potential_pos.y - wall_line->start->y), (wall_line->end->y - wall_line->start->y)}) / \
+								(wall_len * wall_len);
+				closest.x = wall_line->start->x + (dot * (wall_line->end->x - wall_line->start->x));
+				closest.y = wall_line->start->y + (dot * (wall_line->end->y - wall_line->start->y));
+				on_segment = linepoint(*wall_line->start, *wall_line->end, closest);
+				if (on_segment)
+				{
+					distance = vector2_dist(closest, (t_vector2){potential_pos.x, potential_pos.y});
+					if (distance <= circle_radius)
+					{
+						printf("linepoint collition detected -> circle_radius: %f   -   potential_pos: %f,%f\n", circle_radius, potential_pos.x, potential_pos.y);
+						return (true);
+					}
+				}
+				index++;
+			}
+		}
+		l = l->next;
+	}
+	return (false);
+}
+
+void	moveplayer(t_player *player, t_input *input, t_clock clock, t_world *world)
 {
 	t_vector3	move_vector;
 	t_vector3	potential_pos; //Unused right now, will be used when collision is reimplemented
 	float		angle;
 
-	updateguntransform(input, &clock, player);
+	/* updateguntransform(input, &clock, player);
 	if (player->locked)
 		return ;
 	move_vector = vector3_zero();
@@ -188,5 +276,22 @@ void	moveplayer(t_player *player, t_input *input, t_clock clock)
 	move_vector = vector3_mul(move_vector, clock.delta * MOVESPEED);
 	player->speed = move_vector;
 	player->transform.position = vector3_add(player->transform.position, move_vector);
-	player->transform.position.z = ft_clampf(player->transform.position.z, player->height, 1000.0f);
+	player->transform.position.z = ft_clampf(player->transform.position.z, player->height, 1000.0f); */
+
+	potential_pos = player->transform.position;
+	updateguntransform(input, &clock, player);
+	if (player->locked)
+		return ;
+	move_vector = vector3_zero();
+	t_vector2 delta_angle = vector2_mul(input->turn, clock.delta);
+	player->transform.rotation = vector3_sub(player->transform.rotation, (t_vector3){delta_angle.x, delta_angle.y, 0.0f}); //TODO: this
+	player->transform.rotation.y = ft_clampf(player->transform.rotation.y, -RAD90 * 0.99f, RAD90 * 0.99f);
+	player->lookdir = lookdirection((t_vector2){player->transform.rotation.x, player->transform.rotation.y});
+	move_vector = player_movementvector(*input, *player);
+	move_vector = vector3_mul(move_vector, clock.delta * MOVESPEED);
+	player->speed = move_vector;
+	potential_pos = vector3_add(potential_pos, move_vector);
+	potential_pos.z = ft_clampf(potential_pos.z, player->height, 1000.0f);
+	if (!collision_check(world, potential_pos))
+		player->transform.position = potential_pos;
 }

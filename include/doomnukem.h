@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/23 13:29:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/04 17:48:17 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,7 +183,7 @@ void	player_init(t_player *player, t_sdlcontext *sdl, t_world *world);
 void	update_render(t_render *render, t_player *player);
 
 /* MOVEPLAYER.C */
-void	moveplayer(t_player *player, t_input *input, t_clock clock);
+void	moveplayer(t_player *player, t_input *input, t_clock clock, t_world *world);
 
 /* ERRORS.C */
 void	error_log(int error_code);
