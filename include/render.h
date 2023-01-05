@@ -218,6 +218,8 @@ void		render_start(t_render *render);
 
 /* RENDER */
 void				render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size);
+void				render_gizmo3d(t_sdlcontext *sdl, t_vector3 pos, int size, uint32_t color);
+void				render_gizmo2d(t_sdlcontext *sdl, t_vector2 pos, int size, uint32_t color);
 void				render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to);
 int					triangle_clipagainstplane(t_vector3 plane_p, t_vector3 plane_n, t_triangle *in_tri, t_triangle out_tri[2]);
 void				draw_screen_to_worldspace_ray(t_sdlcontext sdl, t_render render, t_point origin, t_vector2 angle);

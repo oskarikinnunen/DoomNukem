@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/04 19:58:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/05 16:26:37 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,8 +108,8 @@ void update_world3d(t_world *world, t_render *render)
 	res = point_fmul(sdl->screensize, sdl->resolution_scaling);
 	gui_labeled_point("3D Resolution:", res, world->debug_gui);
 	gui_labeled_bool_edit("Wireframe:", &world->sdl->global_wireframe, world->debug_gui);
-	/*if (gui_shortcut_button("Toggle Lighting", 'L', world->debug_gui))
-		sdl->lighting_toggled = !sdl->lighting_toggled;*/
+	if (gui_shortcut_button("Toggle Lighting", 'L', world->debug_gui))
+		sdl->lighting_toggled = !sdl->lighting_toggled;
 	//gui_labeled_bool_edit("Lighting:", &world->sdl->lighting_toggled, world->debug_gui);
 	gui_labeled_int_slider("PS1 tri div:", &sdl->ps1_tri_div, 2.0f, world->debug_gui);
 	if (gui_shortcut_button("Toggle Skybox", 'H', world->debug_gui))

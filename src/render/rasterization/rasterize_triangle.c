@@ -24,7 +24,6 @@ static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 {
 	t_point			*p;
 	t_texture		*t;
-	//t_point		t[3];
 	float			step[2];
 	t_texture		t_step[3];
 	int				x;
@@ -105,12 +104,7 @@ static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 		t[0].w = t[1].w;
 		while(x <= ax)
 		{
-			/*if (t[0].w < FOG && t[0].w > sdl->zbuffer[x + y * sdl->window_w])
-			{
-				sdl->zbuffer[x + y * sdl->window_w] = t[0].w;
-				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] = 1;
-			}
-			else */if (t[0].w > sdl->zbuffer[x + y * sdl->window_w])
+			if (t[0].w > sdl->zbuffer[x + y * sdl->window_w])
 			{
 				sdl->zbuffer[x + y * sdl->window_w] = t[0].w;
 				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] =

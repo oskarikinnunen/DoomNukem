@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/04 21:21:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/05 15:58:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -830,6 +830,34 @@ void	remove_edge(t_world *world, t_room *room, t_vector2 *edge)
 	}
 }
 
+t_vector2	*other_room_edge(t_editor *ed, t_roomtooldata *dat)
+{
+	t_list		*l;
+	t_room		*other;
+	t_vector2	*result;
+
+	result = NULL;
+	l = ed->world.roomlist;
+	while (l != NULL)
+	{
+		other = l->content;
+		if (other != dat->room)
+			result = closest_edge(other, dat->raycastinfo.hit_pos);
+		l = l->next;
+	}
+	return (result);
+}
+
+static void render_edgegizmo(t_world *world, t_vector2 edge, uint32_t color)
+{
+	world->sdl->render.gizmocolor = color;
+}
+
+t_vector3	edge3d(t_vector2 edge, t_room *room)
+{
+	return ((t_vector3){edge.x, edge.y, room->height});
+}
+
 void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 {
 	t_vector3		rc;
@@ -890,26 +918,19 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	gui_end(gui);
 	snap = vector2_snap((t_vector2){rc.x, rc.y}, 10);
 	look_wall = selectedwall(ed, sdl, dat->room);
-	
-	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT) && closest_edge(dat->room, rc) != NULL)
-		dat->held_edge = closest_edge(dat->room, rc);
-	if (closest_edge(dat->room, rc) != NULL)
+	t_vector2	*hover_edge = closest_edge(dat->room, rc);
+	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT) && hover_edge != NULL)
+		dat->held_edge = hover_edge;
+	if (hover_edge != NULL)
 	{
-		sdl.render.gizmocolor = AMBER_2;
-		render_gizmo(sdl, sdl.render,
-			vector3_add(
-				vector2_to_vector3(*closest_edge(dat->room, rc)),
-					(t_vector3){.z = dat->room->height}), 10);
+		render_gizmo3d(ed->world.sdl, edge3d(*hover_edge, dat->room), 10, AMBER_2);
 	}
 	if (dat->held_edge != NULL)
 	{
-		sdl.render.gizmocolor = AMBER_3;
-		render_gizmo(sdl, sdl.render,
-			vector3_add(
-				vector2_to_vector3(*dat->held_edge),
-					(t_vector3){.z = dat->room->height}), 11);
-		if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT) && closest_edge(dat->room, rc) != dat->held_edge)
+		render_gizmo3d(ed->world.sdl, edge3d(*dat->held_edge, dat->room), 11, AMBER_3);
+		if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT) && hover_edge != dat->held_edge)
 		{
+			//if other edge != NULL, connect held_edge
 			dat->held_edge = NULL;
 			return ;
 		}
@@ -953,13 +974,9 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
 	{
-		if (dat->held_edge != NULL)
-			dat->held_edge = NULL;
-		else
-		{
-			dat->room = NULL;
-			dat->rtm = rtm_none;
-		}
+		dat->room = NULL;
+		dat->rtm = rtm_none;
+		return ;
 	}
 	if (ed->hid.mouse.scroll_delta != 0)
 	{
@@ -1399,16 +1416,17 @@ void	room_tool_update(t_editor *ed, t_sdlcontext *sdl)
 		highlight_room(ed, sdl, *(t_room *)l->content, AMBER_1);
 		l = l->next;
 	}
-	if (dat->rtm != rtm_connect)
+	if (dat->rtm != rtm_connect && dat->rtm != rtm_paint)
 	{
 		t_room	*hover;
 		hover = selectedroom(ed, *sdl);
-		if (hover != dat->room && hover != NULL)
+		if (hover != dat->room && hover != NULL) //AND SHIFT NOT PRESSED
 		{
 			highlight_room(ed, sdl, *hover, AMBER_2);
 			print_text_boxed(sdl, hover->name, point_div(sdl->screensize, 2));
 			if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 			{
+				dat->held_edge = NULL;
 				dat->room = hover;
 				dat->rtm = rtm_modify;
 				ed->hid.mouse.click_unhandled = false;

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/03 14:36:29 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/05 15:43:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,17 @@ void render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to)
 void render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size)
 {
 	drawcircle(sdl, vector3_to_screenspace(pos, sdl), size, render.gizmocolor);
+}
+
+void render_gizmo3d(t_sdlcontext *sdl, t_vector3 pos, int size, uint32_t color)
+{
+	drawcircle(*sdl, vector3_to_screenspace(pos, *sdl), size, color);
+}
+
+void render_gizmo2d(t_sdlcontext *sdl, t_vector2 pos, int size, uint32_t color)
+{
+	drawcircle(*sdl,
+		vector3_to_screenspace(vector2_to_vector3(pos), *sdl), size, color);
 }
 
 static t_vector3 lookdirection2(t_vector2 angle)
