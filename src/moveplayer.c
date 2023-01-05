@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/05 13:16:04 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/05 18:07:12 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,90 +170,11 @@ void	updateguntransform(t_input *input, t_clock *clock, t_player *player)
 	player->transform.rotation.y += gun->view_anim.lerp * clock->delta * gun->viewrecoil.y; //Separate view jump animation that is longer than gun jump animation?
 }
 
-bool	linepoint(t_vector2 start, t_vector2 end, t_vector2 point)
-{
-	float	distance1;
-	float	distance2;
-	float	line_len;
-	float	buffer;
-
-	distance1 = vector2_dist(point, start);
-	distance2 = vector2_dist(point, end);
-	line_len = vector2_dist(start, end);
-	buffer = 0.1;
-	if ((distance1 + distance2) >= (line_len - buffer) && (distance1 + distance2) <= (line_len + buffer))
-		return (true);
-	return (false);
-}
-
-bool	pointcircle(t_vector2 point, t_vector2 circle, float radius)
-{
-	if (vector2_dist(point, circle) <= radius)
-		return (true);
-	return (false);
-}
-
-// Make sure gun_tool didnt break since it also calls for moveplayer and through that collision check
-bool	collision_check(t_player *player, t_world *world, t_vector3 potential_pos)
-{
-	t_list		*l;
-	t_room		*room;
-	t_edgeline	*wall_line;
-	int			index;
-	float		circle_radius;
-	float		wall_len;
-	float		dot;
-	t_vector2	closest;
-	bool		on_segment;
-	t_vector2	dist;
-	float		distance;
-	static int	printer = 0;
-
-	circle_radius = 10;
-	l = world->roomlist;
-	while (l != NULL)
-	{
-		room = l->content;
-		if (room != NULL)
-		{
-			index = 0;
-			while (index < room->wallcount)
-			{
-				wall_line = &room->walls[index].edgeline;
-				printf("potential_pos.z: %f\n", potential_pos.z);
-				if (potential_pos.z < room->walls[index].height * 1.3f)
-				{
-					if (pointcircle(*wall_line->start, (t_vector2){potential_pos.x, potential_pos.y}, circle_radius) || \
-						pointcircle(*wall_line->end, (t_vector2){potential_pos.x, potential_pos.y}, circle_radius))
-						return (true);
-					wall_len = vector2_dist(*wall_line->start, *wall_line->end);
-					/* dot = vector2_dot((t_vector2){(potential_pos.x - wall_line->start->x), (wall_line->end->x - wall_line->start->x)}, \
-									(t_vector2){(potential_pos.y - wall_line->start->y), (wall_line->end->y - wall_line->start->y)}) / \
-									(wall_len * wall_len); */ //didnt work so had to write it open below
-					dot = (((potential_pos.x - wall_line->start->x) * (wall_line->end->x - wall_line->start->x)) + \
-							((potential_pos.y - wall_line->start->y) * (wall_line->end->y - wall_line->start->y))) / (wall_len * wall_len);
-					closest.x = wall_line->start->x + (dot * (wall_line->end->x - wall_line->start->x));
-					closest.y = wall_line->start->y + (dot * (wall_line->end->y - wall_line->start->y));
-					on_segment = linepoint(*wall_line->start, *wall_line->end, closest);
-					if (on_segment)
-					{
-						distance = vector2_dist(closest, (t_vector2){potential_pos.x, potential_pos.y});
-						if (distance <= circle_radius)
-							return (true);
-					}
-				}
-				index++;
-			}
-		}
-		l = l->next;
-	}
-	return (false);
-}
-
 void	moveplayer(t_player *player, t_input *input, t_clock clock, t_world *world)
 {
 	t_vector3	move_vector;
-	t_vector3	potential_pos; //Unused right now, will be used when collision is reimplemented
+	t_vector3	potential_pos;
+	t_vector3	new_pos;
 	float		angle;
 
 	/* updateguntransform(input, &clock, player);
@@ -284,6 +205,8 @@ void	moveplayer(t_player *player, t_input *input, t_clock clock, t_world *world)
 	player->speed = move_vector;
 	potential_pos = vector3_add(potential_pos, move_vector);
 	potential_pos.z = ft_clampf(potential_pos.z, player->height, 1000.0f);
-	if (!collision_check(player, world, potential_pos))
+	if (check_collision(world, player, potential_pos, &new_pos))
+		player->transform.position = new_pos;
+	else
 		player->transform.position = potential_pos;
 }

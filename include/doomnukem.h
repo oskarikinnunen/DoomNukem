@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/04 17:48:17 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/05 18:06:57 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,6 +184,9 @@ void	update_render(t_render *render, t_player *player);
 
 /* MOVEPLAYER.C */
 void	moveplayer(t_player *player, t_input *input, t_clock clock, t_world *world);
+
+/* COLLISION */
+bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, t_vector3 *newpos);
 
 /* ERRORS.C */
 void	error_log(int error_code);
