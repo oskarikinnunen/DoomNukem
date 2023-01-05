@@ -92,9 +92,9 @@ left = 3
 0 0 0 1 1 1 1 1 0 0 0 0 0 0 0 0
 */
 
-static __uint128_t mask_x(int x, int left_x, int right_x)
+static uint16_t mask_x(int x, int left_x, int right_x)
 {
-	uint16_t	row = ~0;
+	const uint16_t	row = ~0;
 	return(((row << MAX(0, left_x - x))& ~(row << MAX(0, right_x - x))));
 }
 
@@ -119,9 +119,11 @@ static void bitmask_to_pixels(t_sdlcontext *sdl)
 	//sdl->bitmask.bitmask[5050] |= ((~((__uint128_t)0L) >> (__uint128_t)7)& ~(~((__uint128_t)0) >> (__uint128_t)8));
 	sdl->bitmask.bitmask[5049] |= ~0;
 	sdl->bitmask.bitmask[5051] |= ~0;
-	sdl->bitmask.bitmask[5050 + sdl->bitmask.chunk_size.x] |= ~0;
-	sdl->bitmask.bitmask[5050 - sdl->bitmask.chunk_size.x] |= ~0;
-	sdl->bitmask.bitmask[5050] |= mask_x(0, 21 % 16, 16) << (16);
+	sdl->bitmask.bitmask[5050 + sdl->bitmask.bitmask_chunks.x] |= ~0;
+	sdl->bitmask.bitmask[5050 - sdl->bitmask.bitmask_chunks.x] |= ~0;
+	sdl->bitmask.bitmask[5050] |= mask_x(0, 0, 12) << (16);
+	printf("%d\n", mask_x(0, 0, 12));
+	exit(0);
 	//
 	//sdl->bitmask.bitmask[5050] |= mask_x(0, 0, 16) << 32 + 16;
 	//mask_x(3, 8);
@@ -136,13 +138,25 @@ static void bitmask_to_pixels(t_sdlcontext *sdl)
 	//1 3 7 15 31 63 127 255
 	//sdl->bitmask.bitmask[temp1] |= 1UL << (temp2);
 	//number &= ~(1UL << n);
+	/*
+	1 1 1 1 1 1 1 1 
+	1 1 1 1 1 1 1 1 
+	1 1 1 1 1 1 1 1 
+	0 0 0 0 0 1 1 1 
+	0 0 0 0 0 1 1 1 
+	0 0 0 0 0 0 0 0 
+	1 1 1 1 1 1 1 1 
+	1 1 1 1 1 1 1 1
+	*/
 	float max_w = 0.0f;
 	for (int y = 0; y < sdl->window_h && 0; y++)
 	{
 		for (int x = 0; x < sdl->window_w; x++)
 		{
-			if (sdl->bitmask.tile[(y / 8) * (sdl->window_w/8) + (x / 8)].max0 == 0.0f && sdl->bitmask.tile[(y / 8) * (sdl->window_w/8) + (x / 8)].max1 > 0.0f)
-				sdl->bitmask.tile[(y / 8) * (sdl->window_w/8) + (x / 8)].max0 = sdl->bitmask.tile[(y / 8) * (sdl->window_w/8) + (x / 8)].max1;
+			if (sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0 > 0.0f)
+				exit(0);
+			if (sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0 == 0.0f && sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max1 > 0.0f)
+				sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0 = sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max1;
 
 		}
 	}
@@ -150,10 +164,25 @@ static void bitmask_to_pixels(t_sdlcontext *sdl)
 	{
 		for (int x = 0; x < sdl->window_w; x++)
 		{
-			if (1.0f/sdl->bitmask.tile[(y / 8) * (sdl->window_w/8) + (x / 8)].max0 > max_w && !isinf(1.0f/sdl->bitmask.tile[(y / 8) * (sdl->window_w/8) + (x / 8)].max0))
-				max_w = 1.0f/sdl->bitmask.tile[(y / 8) * (sdl->window_w/8) + (x / 8)].max0;
+
+			if (sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0 > max_w)
+				max_w = sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0;
 		}
 	}
+	bool screen = false;
+	for (int y = 0; y < sdl->window_h; y++)
+	{
+		for (int x = 0; x < sdl->window_w; x++)
+		{
+			if (sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0 < 1.0f || sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0 > 5000.0f)
+			{
+				printf("mask %llu\n", sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].mask);
+				screen = true;
+			}
+		}
+	}
+	if (screen == true)
+		printf("SCREEN NOT FULL\n");
 	printf("max w %f\n", max_w);
 	max_w = 2500.0f;
 	//max_w = 1.0f/max_w;
@@ -161,11 +190,11 @@ static void bitmask_to_pixels(t_sdlcontext *sdl)
 	{
 		for (int x = 0; x < sdl->window_w; x++)
 		{
-			if ((sdl->bitmask.bitmask[(y / 8) * sdl->bitmask.chunk_size.x + (x / 16)] >> ((y % 8) * 16) + (x % 16) & 1) == 0)
+			if ((sdl->bitmask.bitmask[(y / 8) * sdl->bitmask.bitmask_chunks.x + (x / 16)] >> ((y % 8) * 16) + (x % 16) & 1) == 0)
 				continue;
 			clr = INT_MAX;
-			float w = sdl->bitmask.tile[(y / 8) * (sdl->window_w/8) + (x / 8)].max0;
-			w = (1.0f/w) / max_w;
+			float w = sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0;
+			w = w / max_w;
 			uint8_t p = 255 - ft_clamp(w * 255.0f, 0, 255);
 			Uint32 alpha = clr & 0xFF000000;
 			Uint32 red = ((clr & 0x00FF0000) * p) >> 8;

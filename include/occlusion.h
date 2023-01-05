@@ -36,7 +36,8 @@ typedef struct s_bitmask
 {
 	__uint128_t			*bitmask;
 	//float				*dist;
-	t_point				chunk_size; // (currently shows how many chunks in x y axis)should store how wide each chunk is in x and y axis make another that has chunk amount on x and y axis
+	t_point				bitmask_chunks; //amount of bitmask chunks in x and y axis
+	t_point				tile_chunks; //amount of tile chunks in x and y axis
 	t_tile				*tile;
 }	t_bitmask;
 

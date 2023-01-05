@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/04 16:07:08 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/05 20:36:51 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,10 @@ int	editorloop(t_sdlcontext sdl)
 	player_init(&ed.player, &sdl, &ed.world);
 	sdl.bitmask.bitmask = malloc(sizeof(__uint128_t) * ((sdl.window_h * sdl.window_w) / 128));
 	sdl.bitmask.tile = malloc(sizeof(t_tile) * ((sdl.window_h * sdl.window_w) / 64));
-	sdl.bitmask.chunk_size.x = (sdl.window_w)/16;
-	sdl.bitmask.chunk_size.y = (sdl.window_h)/8;
+	sdl.bitmask.bitmask_chunks.x = (sdl.window_w)/16;
+	sdl.bitmask.bitmask_chunks.y = (sdl.window_h)/8;
+	sdl.bitmask.tile_chunks.x = (sdl.window_w)/8;
+	sdl.bitmask.tile_chunks.y = (sdl.window_h)/8;
 	ed.player.transform.position = (t_vector3){100, 100, 100.0f};
 	ed.player.gun->disabled = true;
 	ed.world.player = &ed.player;
@@ -59,10 +61,10 @@ int	editorloop(t_sdlcontext sdl)
 		screen_blank(sdl);
 		//print_vector3(ed.render.camera.lookdir);
 		//print_vector3(ed.render.camera.position);
-		if (0)
+		if (1)
 		{
-			ed.render.camera.lookdir = (t_vector3){-0.038406, -0.060719, -0.997416};
-			ed.render.camera.position = (t_vector3){450.928040, 636.168823, 184.386581};
+			ed.render.camera.lookdir = (t_vector3){-0.061903, -0.987584, -0.144382};
+			ed.render.camera.position = (t_vector3){177.342743, 97.001740, 63.845863};
 		}
 		render_start(&ed.render);
 		update_world3d(&ed.world, &ed.render);
