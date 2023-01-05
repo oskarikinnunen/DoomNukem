@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/03 14:00:29 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/05 18:09:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	update_npcs(t_world *world)
 					cur->destination = (t_vector3) {200.0f, 200.0f, 0.0f};
 			}
 			update_anim(&(cur->entity->animation), world->clock.delta);
-			update_entity_bounds(cur->entity);
+			//update_entity_bounds(cur->entity);
 		}
 		i++;
 	}
@@ -217,14 +217,11 @@ t_room	load_room(char *filename)
 	fd = fileopen(filename, O_RDONLY);
 	ft_bzero(&result, sizeof(t_room));
 	ft_strcpy(result.name, filename);
-	temp = load_chunk(filename, "WALL", sizeof(t_wall)); //FREE!
+	temp = load_chunk(filename, "WALL", sizeof(t_wall));
 	result.walls = list_to_ptr(temp, &result.wallcount);
 	listdel(&temp);
 	temp = load_chunk(filename, "FLOR", sizeof(t_meshtri));
 	result.floors = list_to_ptr(temp, &result.floorcount);
-	listdel(&temp);
-	temp = load_chunk(filename, "AREA", sizeof(t_floor_area));
-	result.floor_areas = list_to_ptr(temp, &result.floor_areacount);
 	listdel(&temp);
 
 	temp = load_chunk(filename, "EDGE", sizeof(t_vector2));
@@ -249,7 +246,7 @@ static void	startup_init_room(t_world *world, t_room *r)
 		//w->entity->obj = object_plane(world->sdl);
 		entity_assign_object(world, w->entity, object_plane(world->sdl));
 		w->entity->obj->materials[0].img = get_image_by_name(*world->sdl, w->texname);
-		applywallmesh(w, r, world);
+		//applywallmesh(w, r, world);
 		i++;
 	}
 	i = 0;
@@ -268,15 +265,34 @@ void	load_rooms(t_world *world, t_sdlcontext *sdl)
 {
 	t_list	*l;
 	t_room	*r;
+	t_room	temp;
+	int		i;
 
 	l = world->roomlist;
 	while (l != NULL)
 	{
 		r = (t_room *)l->content;
+		temp = *r;
 		*r = load_room(r->name);
+		r->height = temp.height; //TODO: remove these and bzero all room pointers before loading room so all other values come from the list room
+		r->ceiling_height = temp.ceiling_height;
 		startup_init_room(world, r);
 		l = l->next;
 	}
+	l = world->roomlist;
+	while (l != NULL)
+	{
+		r = (t_room *)l->content;
+		i = 0;
+		while (i < r->wallcount)
+		{
+			applywallmesh(&r->walls[i], r, world);
+			i++;
+		}
+		init_roomwalls(world, r);
+		l = l->next;
+	}
+	
 }
 
 void	init_guns(t_world *world, t_sdlcontext *sdl)
@@ -358,6 +374,7 @@ t_entity	*spawn_entity(t_world	*world)
 	{
 		if (cache->entities[i].status == es_free)
 		{
+			ft_bzero(&cache->entities[i], sizeof(t_entity));
 			cache->entities[i].status = es_active;
 			cache->entities[i].transform.position = vector3_zero();
 			cache->entities[i].transform.scale = vector3_one();
@@ -378,8 +395,8 @@ t_entity	*spawn_entity(t_world	*world)
 void		entity_assign_object(t_world *world, t_entity *entity, t_object *obj)
 {
 	entity->obj = obj;
-	create_lightmap_for_entity(entity, world);
-	create_map_for_entity(entity, world);
+	//create_lightmap_for_entity(entity, world);
+	//create_map_for_entity(entity, world);
 }
 
 t_entity	*spawn_basic_entity(t_world *world, char *objectname, t_vector3 position) //UNUSED
@@ -459,7 +476,6 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 
 	ft_bzero(&world, sizeof(t_world));
 	world.sdl = sdl;
-	t_vector2 v;
 	world.guns = load_chunk(filename, "GUNS", sizeof(t_gun));
 	world.debugconsole = init_debugconsole();
 	world.entitycache = init_entitycache(1024);
@@ -469,7 +485,6 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 	for_all_entities(&world, init_entity);
 
 	world.debug_gui = ft_memalloc(sizeof(t_autogui));
-
 	world.roomlist = load_chunk(filename, "RMNM", sizeof(t_room));
 	load_rooms(&world, sdl);
 	
@@ -485,6 +500,7 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 	//world.npcpool[0].destination = (t_vector3){200.0f, 200.0f, 0.0f};
 	ft_bzero(&world.lighting, sizeof(t_lighting));
 	world.lighting.ambient_light = 20;
+	//raycast_new()
 	for_all_entities(&world, create_lightmap_for_entity);
 	for_all_entities(&world, create_map_for_entity);
 	return (world);
@@ -533,8 +549,6 @@ void	save_room(t_room room)
 	save_chunk(room.name, "WALL", walls_list);
 	t_list *floorlist = ptr_to_list(room.floors, room.floorcount, sizeof(t_meshtri));
 	save_chunk(room.name, "FLOR", floorlist);
-	t_list *arealist = ptr_to_list(room.floor_areas, room.floor_areacount, sizeof(t_floor_area));
-	save_chunk(room.name, "AREA", arealist);
 	t_list *edgelist = ptr_to_list(room.edges, room.edgecount, sizeof(t_vector2));
 	save_chunk(room.name, "EDGE", edgelist);
 	close(fd);

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/04 17:48:28 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/05 18:14:28 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,20 +35,14 @@ int	editorloop(t_sdlcontext sdl)
 	sdl.lighting_toggled = true;
 	
 	ed.gamereturn = game_continue;
-	ed.render = init_render(sdl, &ed.world);
+	sdl.render = init_render(sdl, &ed.world);
 	player_init(&ed.player, &sdl, &ed.world);
 	ed.player.transform.position = (t_vector3){100, 100, 100.0f};
 	ed.player.gun->disabled = true;
 	ed.world.player = &ed.player;
 	ed.tool = NULL;
-
-	/* if (ed.world.entitycache.entities[0].status == es_active)
-	{
-		//sdl.audio.sample[4].entity = &ed.world.entitycache.entities[0];
-		audio = 1;
-	} */
-		
-	ed.world.sdl->lighting_toggled = false; //
+	sdl.lighting_toggled = false;
+	//ed.world.sdl->render = 
 	while (ed.gamereturn == game_continue)
 	{
 		bzero((uint32_t *)sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
@@ -56,14 +50,14 @@ int	editorloop(t_sdlcontext sdl)
 		update_deltatime(&ed.clock);
 		update_deltatime(&ed.world.clock);
 		ed.gamereturn = editor_events(&ed);
-		bake_lights(&ed.render, &ed.world);
+		bake_lights(&sdl.render, &ed.world);
 		if (!ed.player.locked)
 			moveplayer(&ed.player, &ed.hid.input, ed.clock, &ed.world);
-		update_render(&ed.render, &ed.player);
+		update_render(&sdl.render, &ed.player);
 		screen_blank(sdl);
 		
-		render_start(&ed.render);
-		update_world3d(&ed.world, &ed.render);
+		render_start(&sdl.render);
+		update_world3d(&ed.world, &sdl.render);
 		update_editor_toolbar(&ed, &ed.toolbar_gui);
 		if (ed.tool != NULL)
 		{
@@ -76,7 +70,7 @@ int	editorloop(t_sdlcontext sdl)
 		drawcircle(sdl, point_div(sdl.screensize, 2), 4, CLR_BLUE);
 		free(fps);
 		if (!ed.player.gun->disabled)
-			render_entity(&sdl, &ed.render, &ed.player.gun->entity);
+			render_entity(&sdl, &sdl.render, &ed.player.gun->entity);
 		update_debugconsole(&ed.world.debugconsole, &sdl, ed.clock.delta);
 		
 		//rescale_surface(&sdl);
@@ -100,7 +94,7 @@ int	editorloop(t_sdlcontext sdl)
 	}
 	save_world("world1", ed.world);
 	save_editordata(&ed);
-	free_render(ed.render);
+	free_render(sdl.render);
 	if (ed.gamereturn == game_exit)
 		quit_game(&sdl);
 	return (ed.gamereturn);

@@ -9,7 +9,7 @@ static t_material	*planemat()
 	mat = ft_memalloc(sizeof(t_material));
 	if (mat == NULL)
 		error_log(EC_MALLOC);
-	ft_strcpy(mat->texturename, "metal04.cng");
+	ft_strcpy(mat->texturename, "metal03.cng");
 	mat->kd = INT_MAX;
 	return (mat);
 }

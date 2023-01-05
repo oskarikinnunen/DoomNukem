@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/23 15:28:55 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/02 19:09:24 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,12 +77,12 @@ void render_solid_triangle(t_sdlcontext *sdl, t_render *render)
 
 void render_buffer(t_sdlcontext *sdl, t_render *render)
 {
-	if (!render->wireframe && (render->map.data != NULL || render->img != NULL))
+	if (!render->wireframe && (render->map.data != NULL || render->img != NULL) && !sdl->global_wireframe)
 		render_buffer_triangles(sdl, render);
 	//return;
-	if (render->wireframe)
+	if (render->wireframe/* || sdl->global_wireframe*/)
 		render_buffer_triangle_wireframes(sdl, render);
-	if (render->img == NULL)
-		render_solid_triangle(sdl, render);
+	/*if (render->img == NULL)
+		render_solid_triangle(sdl, render);*/
 	render->rs.triangle_count += render->screenspace_ptri_count;
 }

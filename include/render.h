@@ -147,7 +147,7 @@ typedef struct s_render
 	t_rend_lightmode	lightmode;
 	/*bool				is_wrap;
 	bool				dynamic_light;*/
-	struct s_sdlcontext	*sdl;
+	//struct s_sdlcontext	*sdl;
 }	t_render;
 
 typedef struct s_audiosample
@@ -180,8 +180,8 @@ typedef struct s_sdlcontext
 	float					*zbuffer;
 	float					resolution_scaling;
 	SDL_Renderer			*renderer; //TODO: for testing remove.
-	t_img					*images;
-	uint32_t				imagecount;
+	t_img					*textures;
+	uint32_t				texturecount;
 	struct s_object			*objects;
 	int						ps1_tri_div;
 	bool					global_wireframe;
@@ -221,7 +221,9 @@ void		render_start(t_render *render);
 
 /* RENDER */
 void				render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size);
-void				render_ray(t_sdlcontext sdl, t_render render, t_vector3 from, t_vector3 to);
+void				render_gizmo3d(t_sdlcontext *sdl, t_vector3 pos, int size, uint32_t color);
+void				render_gizmo2d(t_sdlcontext *sdl, t_vector2 pos, int size, uint32_t color);
+void				render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to);
 int					triangle_clipagainstplane(t_vector3 plane_p, t_vector3 plane_n, t_triangle *in_tri, t_triangle out_tri[2]);
 void				draw_screen_to_worldspace_ray(t_sdlcontext sdl, t_render render, t_point origin, t_vector2 angle);
 void				clipped_point_triangle(t_render *render, t_sdlcontext sdl);

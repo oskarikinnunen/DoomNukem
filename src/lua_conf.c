@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/26 15:00:24 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/02 17:30:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,9 @@ void	allocate_image_count(t_sdlcontext *sdl)
 		}
 		closedir(d);
 	}
-	sdl->imagecount = i;
+	sdl->texturecount = i;
 	printf("Found %i .cng files \n", sdl->objectcount);
-	sdl->images = ft_memalloc(sizeof(t_img) * sdl->imagecount);
+	sdl->textures = ft_memalloc(sizeof(t_img) * sdl->texturecount);
 }
 
 void	load_all_images(t_sdlcontext *sdl)
@@ -119,8 +119,8 @@ void	load_all_images(t_sdlcontext *sdl)
 			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".cng") != NULL)
 			{
 				snprintf(fullpath, 512, "%s/%s", path, dfile->d_name);
-				sdl->images[i] = pngparse(fullpath);
-				ft_strcpy(sdl->images[i].name, dfile->d_name);
+				sdl->textures[i] = pngparse(fullpath);
+				ft_strcpy(sdl->textures[i].name, dfile->d_name);
 				printf("	parsed cpng file: %s \n", fullpath);
 				i++;
 			}
@@ -140,23 +140,23 @@ void	load_images(lua_State *lua, t_sdlcontext *sdl)
 	load_all_images(sdl);
 	return ;
 	lua_getglobal(lua, "images");
-	sdl->imagecount = lua_rawlen(lua, -1);
-	if (sdl->imagecount == 0)
+	sdl->texturecount = lua_rawlen(lua, -1);
+	if (sdl->texturecount == 0)
 	{
 		printf("no images in settings.lua \n");
 		return ;
 	}
-	sdl->images = ft_memalloc(sizeof(t_img) * sdl->imagecount);
-	if (sdl->images == NULL)
+	sdl->textures = ft_memalloc(sizeof(t_img) * sdl->texturecount);
+	if (sdl->textures == NULL)
 		error_log(EC_MALLOC);
 	i = 1;
-	while (i <= sdl->imagecount)
+	while (i <= sdl->texturecount)
 	{
 		sprintf(indexer, "eval=images[%i]", i);
 		luaL_dostring(lua, indexer);
 		lua_getglobal(lua, "eval");
 		sprintf(imagename, "%s%s", IMGPATH, lua_tostring(lua, -1));
-		sdl->images[i - 1] = pngparse(imagename);
+		sdl->textures[i - 1] = pngparse(imagename);
 		i++;
 	}
 }

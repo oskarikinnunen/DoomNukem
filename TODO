@@ -1,0 +1,36 @@
+
+Level editor
+	bool for checking that rooms share the same z space
+	connect areas (combine height)
+	raycasting for createmode (removing the old raycast) !!
+	floor texture for rooms
+	ramps/stairs
+
+load/save different world (file selector)
+
+Preset editor (assign behaviour to an object)
+	audiosource
+	light
+	npc
+	interactable(health pack, new gun, open door, keycard etc.)
+
+norminette
+
+single file
+
+memory leaks
+
+actually implement playmode
+
+particles (sprites)
+	multiple sprite (only for compliance, not an actual feature that's used)
+
+player behaviour
+	fake 3d collision (2d with extra steps)
+	shooting hurts enemies and enemies hurt player (raycast and some kind of health system)
+
+AI
+	navmesh (subdivide triangle into point grid)
+	A* algorithm for pathfinding
+	state machine for behaviour
+		think of more detailed behaviour for each state

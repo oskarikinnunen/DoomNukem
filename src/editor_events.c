@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/22 12:11:23 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/02 16:33:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,12 +95,11 @@ t_gamereturn	editor_events(t_editor *ed)
 	
 	ed->hid.mouse.scroll_delta = 0; //Needs to be reset
 	ed->hid.alphakey_pressed = 0; //Needs to be reset
-	if (ed->hid.mouse.relative)
-	{
-		SDL_GetRelativeMouseState(&ed->hid.mouse.delta.x, &ed->hid.mouse.delta.y);
-		if (ed->hid.mouse.safe_delta && ((ed->hid.mouse.delta.x) > 30 || ft_abs(ed->hid.mouse.delta.y) > 30))
-			ed->hid.mouse.delta = point_zero();
-	}
+	SDL_GetRelativeMouseState(&ed->hid.mouse.delta.x, &ed->hid.mouse.delta.y);
+	if (!ed->hid.mouse.dragging_ui && ed->player.locked)
+		SDL_GetMouseState(&ed->hid.mouse.pos.x, &ed->hid.mouse.pos.y);
+		/*if (ed->hid.mouse.safe_delta && ((ed->hid.mouse.delta.x) > 30 || ft_abs(ed->hid.mouse.delta.y) > 30))
+			ed->hid.mouse.delta = point_zero();*/
 		
 	while (SDL_PollEvent(&e))
 	{
@@ -110,7 +109,7 @@ t_gamereturn	editor_events(t_editor *ed)
 		{
 			t_pointlight t;
 			/*if (iskey(e, SDLK_p))//TODO: temp shortcut for baking lighting
-				bake_lighting_shadows(&ed->render, &ed->world);*/
+				bake_lighting_shadows(&sdl->render, &ed->world);*/
 			if (iskey(e, SDLK_ESCAPE))
 			{
 				if ((ed->hid.keystate >> KEYS_SHIFTMASK) & 1)
@@ -130,6 +129,8 @@ t_gamereturn	editor_events(t_editor *ed)
 				return(game_switchmode);
 			if (iskey(e, SDLK_F2))
 				ed->world.debug_gui->hidden = !ed->world.debug_gui->hidden;
+			if (iskey(e, SDLK_F1))
+				ed->toolbar_gui.hidden = !ed->toolbar_gui.hidden;
 		}
 		if (e.type == SDL_CONTROLLERBUTTONDOWN)
 		{

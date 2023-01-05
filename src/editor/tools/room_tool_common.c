@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:53:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/22 10:31:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/04 15:30:14 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,31 +85,50 @@ void highlight_roomborders(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 		i++;
 	}
 	i = 0;
-	ed->render.gizmocolor = CLR_RED;
+	/*sdl->render.gizmocolor = CLR_RED;
 	while (i < edgecount)
 	{
 		if (i == edgecount - 1)
 		{
-			//render_ray(*sdl, ed->render, vector2_to_vector3(room->edges[i]), vector2_to_vector3(room->edges[0]));
+			//render_ray(*sdl, sdl->render, vector2_to_vector3(room->edges[i]), vector2_to_vector3(room->edges[0]));
 
-			render_ray(*sdl, ed->render, edges[i], edges[0]);
+			render_ray(*sdl, sdl->render, edges[i], edges[0]);
 		}
 		else
 		{
-			//render_ray(*sdl, ed->render, vector2_to_vector3(room->edges[i]), vector2_to_vector3(room->edges[i + 1]));
-			render_ray(*sdl, ed->render, edges[i], edges[i + 1]);
+			//render_ray(*sdl, sdl->render, vector2_to_vector3(room->edges[i]), vector2_to_vector3(room->edges[i + 1]));
+			render_ray(*sdl, sdl->render, edges[i], edges[i + 1]);
 		}
 			
 		i++;
-	}
+	}*/
 }
 
-void highlight_entity(t_editor *ed, t_sdlcontext sdl, t_entity *entity, uint32_t color)
+bool	edge_exists(t_vector2 edge, t_room	*room)
 {
-	ed->render.wireframe = true;
-	ed->render.gizmocolor = color;
-	render_entity(&sdl, &ed->render, entity);
-	ed->render.wireframe = false;
+	int	i;
+
+	i = 0;
+	while (i < room->edgecount)
+	{
+		if (vector2_cmp(edge,
+			room->edges[i]))
+			return (true);
+		i++;
+	}
+	return (false);
+}
+
+void highlight_entity(t_sdlcontext *sdl, t_entity *entity, uint32_t color)
+{
+	uint32_t	temp;
+
+	sdl->render.wireframe = true;
+	temp = sdl->render.gizmocolor;
+	sdl->render.gizmocolor = color;
+	render_entity(sdl, &sdl->render, entity);
+	sdl->render.wireframe = false;
+	sdl->render.gizmocolor = temp;
 }
 
 void highlight_room_edgelines(t_editor *ed, t_sdlcontext *sdl, t_room *room)
@@ -120,60 +139,81 @@ void highlight_room_edgelines(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 	//while (i < )
 }
 
-void highlight_room(t_editor *ed, t_sdlcontext sdl, t_room room, uint32_t color)
+void highlight_room(t_editor *ed, t_sdlcontext *sdl, t_room room, uint32_t color)
 {
 	int	i;
 
 	i = 0;
-	ed->render.wireframe = true;
-	ed->render.gizmocolor = color;
+	sdl->render.wireframe = true;
+	sdl->render.gizmocolor = color;
 	while (i < room.wallcount)
 	{
-		//render_entity(sdl, &ed->render, room.walls[i].entity);
-		if (room.walls[i].edgeline.end != NULL && room.walls[i].edgeline.start != NULL)
+		t_wall	w;
+
+		w = room.walls[i];
+		//render_entity(sdl, &sdl->render, room.walls[i].entity);
+		if (w.edgeline.end != NULL && w.edgeline.start != NULL && !w.entity->hidden)
 		{
-			//render ray from edgeline start to end
-			ed->render.gizmocolor = CLR_BLUE;
-			render_ray(sdl, ed->render,
-				vector3_add(vector2_to_vector3(*room.walls[i].edgeline.start),(t_vector3){.z = room.height}),
-				vector3_add(vector2_to_vector3(*room.walls[i].edgeline.end),(t_vector3){.z = room.height}));
-			ed->render.gizmocolor = color;
-		}
-		else
-		{
-			ed->render.gizmocolor = CLR_GREEN;
-			render_ray(sdl, ed->render,
-				vector2_to_vector3(*room.walls[i].edgeline.start),
-				vector2_to_vector3(*room.walls[i].edgeline.end));
-			ed->render.gizmocolor = color;
+			float zl = room.height + w.z_offset;
+			float zh = room.height + w.z_offset + w.height;
+			render_ray(sdl,
+				vector3_add(vector2_to_vector3(*w.edgeline.start),(t_vector3){.z = zh}),
+				vector3_add(vector2_to_vector3(*w.edgeline.end),(t_vector3){.z = zh}));
+			render_ray(sdl,
+				vector3_add(vector2_to_vector3(*w.edgeline.start),(t_vector3){.z = zl}),
+				vector3_add(vector2_to_vector3(*w.edgeline.end),(t_vector3){.z = zl}));
+			render_ray(sdl,
+				vector3_add(vector2_to_vector3(*w.edgeline.start),(t_vector3){.z = zl}),
+				vector3_add(vector2_to_vector3(*w.edgeline.start),(t_vector3){.z = zh}));
+			render_ray(sdl,
+				vector3_add(vector2_to_vector3(*w.edgeline.end),(t_vector3){.z = zl}),
+				vector3_add(vector2_to_vector3(*w.edgeline.end),(t_vector3){.z = zh}));
+			/*render_ray(sdl,
+				vector3_add(vector2_to_vector3(*w.edgeline.start),(t_vector3){.z = room.height}),
+				vector3_add(vector2_to_vector3(*w.edgeline.end),(t_vector3){.z = room.height}));*/
 		}
 		i++;
 	}
 	i = 0;
 	while (i < room.floorcount)
 	{
-		//render_entity(sdl, &ed->render, room.floors[i].entity);
+		//render_entity(sdl, &sdl->render, room.floors[i].entity);
 		i++;
 	}
-	ed->render.wireframe = false;
-	highlight_roomborders(ed, &sdl, &room);
+	i = 0;
+	while (i < room.edgecount)
+	{
+		t_vector3	ws;
+		t_vector3	ws2;
+		t_vector2	start;
+
+		start = room.edges[i];
+		ws = (t_vector3){start.x, start.y, room.height};
+		render_gizmo(*sdl, sdl->render, ws, 2);
+		ws2 = vector2_to_vector3(next_edge(&room, i));
+		ws2.z = room.height;
+		render_ray(sdl, ws, ws2);
+		i++;
+	}
+	sdl->render.wireframe = false;
+	highlight_roomborders(ed, sdl, &room);
 }
 
-void highlight_roomwalls(t_editor *ed, t_sdlcontext sdl, t_room room, uint32_t color)
+/*void highlight_roomwalls(t_editor *ed, t_sdlcontext sdl, t_room room, uint32_t color)
 {
 	int	i;
 
 	i = 0;
-	ed->render.wireframe = true;
-	ed->render.gizmocolor = color;
+	sdl->render.wireframe = true;
+	sdl->render.gizmocolor = color;
 	while (i < room.wallcount)
 	{
 		//printf("HIGHLIGHTING ROOM \n");
-		render_entity(&sdl, &ed->render, room.walls[i].entity);
+		render_entity(&sdl, &sdl->render, room.walls[i].entity);
 		i++;
 	}
-	ed->render.wireframe = false;
-}
+	sdl->render.wireframe = false;
+}*/
 
 
 t_meshtri	*selectedfloor(t_editor *ed, t_sdlcontext sdl, t_room *room)
@@ -215,8 +255,8 @@ t_room *selectedroom(t_editor *ed, t_sdlcontext sdl)
 		r = (t_room *)l->content;
 		if (selectedwall(ed, sdl, r) != NULL)
 			return (r);
-		/*if (selectedfloor(ed, sdl, r) != NULL)
-			return (r);*/
+		if (selectedfloor(ed, sdl, r) != NULL)
+			return (r);
 		l = l->next;
 	}
 	return (NULL);

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/23 15:23:36 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/29 13:04:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ t_render	init_render(t_sdlcontext sdl, struct s_world *world)
 	render.occlusion.cull_box = false;
 	render.occlusion.occluder_box = false;
 	render.world = world;
-	render.sdl = &sdl;
+	//render.sdl = &sdl;
 	return(render);
 }
 

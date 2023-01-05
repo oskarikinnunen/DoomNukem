@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/01/05 18:08:04 by raho             ###   ########.fr        #
+#    Updated: 2023/01/05 18:12:52 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,9 +43,11 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		editor/tools/entity_tool.c \
 		editor/tools/wall_tool_rooms.c \
 		editor/tools/npc_tool.c \
+		editor/tools/load_tool.c \
 		editor/tools/room_tool.c \
 		editor/tools/room_tool_connect.c \
 		editor/tools/room_tool_common.c \
+		editor/tools/room_tool_paint.c \
 		editor/tools/gun_tool.c \
 		editor/tools/tool_common_functions.c \
 		editor/tools/autogui.c \

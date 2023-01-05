@@ -25,6 +25,7 @@ void calculate_pointlight_step(t_pointlight *pointlight, t_world *world, t_rende
             {
 				l.triangles[index] = malloc(sizeof(t_triangle_polygon) * ent->obj->face_count);
 				l.entities[index] = ent;
+				l.entities[index]->lightmap->done = false;
 				j = 0;
 				while (j < ent->obj->face_count)
 				{
@@ -47,12 +48,15 @@ void calculate_pointlight_step(t_pointlight *pointlight, t_world *world, t_rende
     }
 	l.entities_count = index;
 	i = 0;
+	//timestart = 0;
+	timestart = 0;
 	timestart = SDL_GetTicks();
 	timecur = timestart;
 	while (i < l.entities_count)
 	{
 		ent = l.entities[i];
 		j = ent->lightmap->progress;
+		//printf("entity light %i \n", i);
 		while (timecur - timestart < 5 && j < ent->obj->face_count)
 		{
 			if (j == ent->lightmap->progress/* || ent->obj->faces[j].materialindex != ent->obj->faces[j - 1].materialindex*/)
@@ -79,16 +83,19 @@ void calculate_pointlight_step(t_pointlight *pointlight, t_world *world, t_rende
 				free(l.drawnbuff);*/
 			j++;
 			ent->lightmap->progress = j;
-			printf("tri %i \n", j);
+			if (ent->lightmap->progress == ent->obj->face_count/* && !ent->lightmap->done*/)
+			{
+				char msg[256];
+				sprintf(msg, "LIGHT CALC %i/%i \n", ent->id + 1, l.entities_count);
+				debugconsole_addmessage(&world->debugconsole, msg);
+				//printf("ent %i done \n", ent->id);
+				ent->lightmap->done = true;
+				create_map_for_entity(ent, world);
+			}
+			//printf("tri %i \n", j);
 			timecur = SDL_GetTicks();
 		}
-		if (ent->lightmap->progress == ent->obj->face_count)
-		{
-			ent->lightmap->done = true;
-			//printf("entity %i lightmap done, did %i triangles\n", j, ent->lightmap->progress + 1);
-			//ent->lightmap->data = smooth_lightmap(ent->lightmap);
-			create_map_for_entity(ent, world);
-		}
+		
 		i++;
 		//timecur = SDL_GetTicks();
 	}

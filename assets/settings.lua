@@ -1,6 +1,6 @@
 ﻿resolution_width = 1280
 resolution_height = 720
-images =
+--[[images =
 {
 	"entitytool.png",
 	"linetool.png",
@@ -50,3 +50,4 @@ objects =
 	"trash.obj",
 	"untitled.obj"
 }
+--]]

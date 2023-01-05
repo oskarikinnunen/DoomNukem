@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/05 18:06:57 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/05 18:13:35 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,8 +130,12 @@ t_entity	*spawn_entity(t_world	*world);
 t_entity	*spawn_basic_entity(t_world *world, char *objectname, t_vector3 position);
 void		entity_assign_object(t_world *world, t_entity *entity, t_object *obj);
 void		save_world(char *filename, t_world world);
+
+//TODO: move to room.h
 void		init_roomwalls(t_world *world, t_room *room);
+t_wall		*find_wall(t_wall wall, t_room *room);
 void		free_floor(t_world *world, t_room *room);
+void		free_walls(t_room *room, t_world *world);
 
 typedef struct s_game
 {
@@ -157,7 +161,7 @@ t_quaternion	transformed_vector3(t_transform transform, t_vector3 v);//TODO: vec
 void			mouse_event(SDL_Event e, t_mouse *mouse);//TODO: input.h
 
 /* SPACECONVERSIONS.C */
-t_point vector3_to_screenspace(t_render r, t_vector3 vec, t_sdlcontext sdl);//TODO: vectors.h
+t_point vector3_to_screenspace(t_vector3 vec, t_sdlcontext sdl);
 
 /* EDITOR_MAP_IO.C */
 t_list	*loadmap(char *filename);
@@ -241,6 +245,10 @@ void	default_wall_occlusion_settings(t_wall *w, t_world *world);
 void	update_entity_bounds(t_entity *e);
 void	update_floor_bounds(t_meshtri *f);
 void	update_wall_bounds(t_wall *w);
+
+void	free_roomwalls(t_world *world, t_room *room);
+
+void	set_nullentities(t_wall **ptr, int count);
 
 //TODO: temp for lights
 void	start_lightbake(t_render *render, t_world *world);

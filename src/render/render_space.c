@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 15:36:10 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/23 15:27:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/05 16:16:27 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,20 +143,11 @@ void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 		{
 			render->lightmode = lm_unlit;
 			render->img = obj->materials[obj->faces[index].materialindex].img;
-			if (entity->map && sdl->lighting_toggled)
+			if (entity->map != NULL && sdl->lighting_toggled)
 			{
-				/*if (entity->lightmap->dynamic)
-				{
-					render->dynamic_light = entity->lightmap->dynamic_data;
-					render->lightmode = lm_dynamic;
-				}
-					
-				else {*/
-					render->map = entity->map[obj->faces[index].materialindex];
-					//if (!entity->lightmap->dynamic)
-					render->map.img_size = point_sub(render->map.img_size, (t_point){1, 1});
-					render->lightmode = lm_lit;
-				//}
+				render->map = entity->map[obj->faces[index].materialindex];
+				render->map.img_size = point_sub(render->map.img_size, (t_point){1, 1});
+				render->lightmode = lm_lit;
 			}
 			clip_and_render_triangles(sdl, render);
 		}

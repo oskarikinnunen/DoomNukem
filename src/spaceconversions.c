@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   spaceconversions.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 13:31:43 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/21 17:06:42 by vlaine           ###   ########.fr       */
+/*   Updated: 2022/12/29 14:25:27 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,13 +53,13 @@ t_vector3	anim_transformed_vector3(t_entity *entity, t_vector3 v)
 	}*/
 }
 
-t_point vector3_to_screenspace(t_render r, t_vector3 vec, t_sdlcontext sdl)
+t_point vector3_to_screenspace(t_vector3 vec, t_sdlcontext sdl) //TODO: clip
 {
 	t_camera		c;
 	t_quaternion	proj_q;
 	t_point			result;
 
-	c = r.camera;
+	c = sdl.render.camera;
 	proj_q = vector3_to_quaternion(vec);
 	proj_q = quaternion_mul_matrix(c.matworld, proj_q);
 	proj_q = quaternion_mul_matrix(c.matview, proj_q);

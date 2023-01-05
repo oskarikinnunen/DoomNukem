@@ -16,6 +16,10 @@ static t_vector3 texcoord_to_loc(t_vector3 *v, t_vector2 *t, t_vector2 p)
 	return r;
 }
 
+//	abc = tri to check against
+//	w = distance of ray hit
+// disable inverse normal hitting by removing fabs
+
 static bool intersect_triangle(t_ray r, t_texture *t, t_vector3 a, t_vector3 b, t_vector3 c)
 {
 	t_vector3   e1, e2, n;
@@ -42,7 +46,7 @@ static void sample_img(t_lighting l, int x, int y, t_triangle_polygon t)
 
 	if (l.lightmap->data[x + l.lightmap->size.x * y] != l.ambient_light)
 	{
-		printf("light map data %i, ambient %i \n", l.lightmap->data[x + l.lightmap->size.x * y], l.ambient_light);
+		//printf("light map data %i, ambient %i \n", l.lightmap->data[x + l.lightmap->size.x * y], l.ambient_light);
 		return ;
 	}
 		
@@ -64,6 +68,8 @@ static void sample_img(t_lighting l, int x, int y, t_triangle_polygon t)
 	{
 		/*if (l.entities[o]->id == l.entity_id)
 			continue ;*/
+		if (l.entities[o]->hidden)
+			continue;
 		for (int p = 0; p < l.entities[o]->obj->face_count; p++)
 		{
 			if (intersect_triangle(ray, &temp_t, l.triangles[o][p].p3[0], l.triangles[o][p].p3[1], l.triangles[o][p].p3[2]) == true)
