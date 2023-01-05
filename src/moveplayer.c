@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/04 21:32:21 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/05 13:01:56 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,7 +194,7 @@ bool	pointcircle(t_vector2 point, t_vector2 circle, float radius)
 }
 
 // Make sure gun_tool didnt break since it also calls for moveplayer and through that collision check
-bool	collision_check(t_world *world, t_vector3 potential_pos)
+bool	collision_check(t_player *player, t_world *world, t_vector3 potential_pos)
 {
 	t_list		*l;
 	t_room		*room;
@@ -220,23 +220,27 @@ bool	collision_check(t_world *world, t_vector3 potential_pos)
 			while (index < room->wallcount)
 			{
 				wall_line = &room->walls[index].edgeline;
-				if (pointcircle(*wall_line->start, (t_vector2){potential_pos.x, potential_pos.y}, circle_radius) || \
-					pointcircle(*wall_line->end, (t_vector2){potential_pos.x, potential_pos.y}, circle_radius))
-					return (true);
-				wall_len = vector2_dist(*wall_line->start, *wall_line->end);
-				/* dot = vector2_dot((t_vector2){(potential_pos.x - wall_line->start->x), (wall_line->end->x - wall_line->start->x)}, \
-								(t_vector2){(potential_pos.y - wall_line->start->y), (wall_line->end->y - wall_line->start->y)}) / \
-								(wall_len * wall_len); */ //didnt work so had to write it open below
-				dot = (((potential_pos.x - wall_line->start->x) * (wall_line->end->x - wall_line->start->x)) + \
-						((potential_pos.y - wall_line->start->y) * (wall_line->end->y - wall_line->start->y))) / (wall_len * wall_len);
-				closest.x = wall_line->start->x + (dot * (wall_line->end->x - wall_line->start->x));
-				closest.y = wall_line->start->y + (dot * (wall_line->end->y - wall_line->start->y));
-				on_segment = linepoint(*wall_line->start, *wall_line->end, closest);
-				if (on_segment)
+				printf("potential_pos.z: %f\n", potential_pos.z);
+				if (potential_pos.z < room->walls[index].height * 1.3f)
 				{
-					distance = vector2_dist(closest, (t_vector2){potential_pos.x, potential_pos.y});
-					if (distance <= circle_radius)
+					if (pointcircle(*wall_line->start, (t_vector2){potential_pos.x, potential_pos.y}, circle_radius) || \
+						pointcircle(*wall_line->end, (t_vector2){potential_pos.x, potential_pos.y}, circle_radius))
 						return (true);
+					wall_len = vector2_dist(*wall_line->start, *wall_line->end);
+					/* dot = vector2_dot((t_vector2){(potential_pos.x - wall_line->start->x), (wall_line->end->x - wall_line->start->x)}, \
+									(t_vector2){(potential_pos.y - wall_line->start->y), (wall_line->end->y - wall_line->start->y)}) / \
+									(wall_len * wall_len); */ //didnt work so had to write it open below
+					dot = (((potential_pos.x - wall_line->start->x) * (wall_line->end->x - wall_line->start->x)) + \
+							((potential_pos.y - wall_line->start->y) * (wall_line->end->y - wall_line->start->y))) / (wall_len * wall_len);
+					closest.x = wall_line->start->x + (dot * (wall_line->end->x - wall_line->start->x));
+					closest.y = wall_line->start->y + (dot * (wall_line->end->y - wall_line->start->y));
+					on_segment = linepoint(*wall_line->start, *wall_line->end, closest);
+					if (on_segment)
+					{
+						distance = vector2_dist(closest, (t_vector2){potential_pos.x, potential_pos.y});
+						if (distance <= circle_radius)
+							return (true);
+					}
 				}
 				index++;
 			}
@@ -280,6 +284,6 @@ void	moveplayer(t_player *player, t_input *input, t_clock clock, t_world *world)
 	player->speed = move_vector;
 	potential_pos = vector3_add(potential_pos, move_vector);
 	potential_pos.z = ft_clampf(potential_pos.z, player->height, 1000.0f);
-	if (!collision_check(world, potential_pos))
+	if (!collision_check(player, world, potential_pos))
 		player->transform.position = potential_pos;
 }
