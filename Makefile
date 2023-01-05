@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/01/03 16:17:37 by okinnune         ###   ########.fr        #
+#    Updated: 2023/01/05 18:08:31 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -74,7 +74,10 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		world.c player.c \
 		resolution_scaling.c \
 		controller.c \
-		audio.c \
+		audio_init.c \
+		audio_tools.c \
+		audio_sounds.c \
+		audio_music.c \
 		occlusion/occlusion.c \
 		occlusion/frustrum_culling.c \
 		occlusion/peripheral_culling.c \

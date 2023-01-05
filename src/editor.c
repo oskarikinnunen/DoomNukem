@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/03 15:56:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/05 18:08:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@
 
 int	editorloop(t_sdlcontext sdl)
 {
-	t_editor		ed;
+	t_editor	ed;
+	bool		audio = 0;
 
 	bzero(&ed, sizeof(t_editor));
 	ed.world = load_world("world1", &sdl);
@@ -78,6 +79,18 @@ int	editorloop(t_sdlcontext sdl)
 		//join_surfaces(sdl.window_surface, sdl.ui_surface);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
+
+		if (audio == 0)
+		{
+			t_vector3	nf = ed.player.lookdir;
+
+			nf = (t_vector3){-nf.x, -nf.y, 0.0f};
+			nf = vector3_normalise(nf);
+			FMOD_System_Set3DListenerAttributes(sdl.audio.system, 0, &ed.player.transform.position, &((t_vector3){0}), &nf, &((t_vector3){.z = 1.0f}));
+			//play_worldsound(&sdl.audio, "bubbles.wav", &ed.world.entitycache.entities[0].transform.position);
+			FMOD_System_Update(sdl.audio.system);
+		}
+		
 	}
 	save_world("world1", ed.world);
 	save_editordata(&ed);

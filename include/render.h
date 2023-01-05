@@ -73,21 +73,6 @@ typedef struct s_font
 	char				*text;
 }	t_font;
 
-typedef struct s_audiosample
-{
-	char			name[64];
-	FMOD_SOUND		*sound;
-	FMOD_CHANNEL	*channel;
-}	t_audiosample;
-
-typedef struct s_audio
-{
-	FMOD_SYSTEM			*system;
-	float				max_volume;
-	uint32_t			samplecount;
-	t_audiosample		sample[10];
-}	t_audio;
-
 typedef struct	s_triangle
 {
 	t_quaternion	p[3];
@@ -165,6 +150,24 @@ typedef struct s_render
 	//struct s_sdlcontext	*sdl;
 }	t_render;
 
+typedef struct s_audiosample
+{
+	FMOD_SOUND		*sound;
+	FMOD_CHANNEL	*channel;
+	char			name[64];
+	float			volume;
+}	t_audiosample;
+
+typedef struct s_audio
+{
+	FMOD_SYSTEM			*system;
+	float				max_volume;
+	uint32_t			samplecount;
+	t_audiosample		sample[10];
+	uint32_t			musiccount;
+	t_audiosample		music[5];
+}	t_audio;
+
 typedef struct s_sdlcontext
 {
 	SDL_Window				*window;
@@ -234,17 +237,28 @@ void				render_triangle_uv(t_lighting l, t_triangle_polygon triangle);
 void				render_triangle_unlit(t_sdlcontext *sdl, t_render *render, int index);
 void				render_triangle_dynamic(t_sdlcontext *sdl, t_render *render, int index);
 
+/* AUDIO TOOLS */
+
+int		check_channel_status(FMOD_CHANNEL *channel);
+int		find_sound(t_audio *audio, const char *name);
+int		find_music(t_audio *audio, const char *name);
+void	update_maxvolume(t_audio *audio);
+
 /* AUDIO */
 
-void	load_audio(t_audio *sudio);
-
-void	play_sound(t_audio *audio, const char *name);
-
-void	pause_audio(t_audio *audio);
-
-void	play_music(t_audio *audio);
-
+void	load_audio(t_audio *audio);
+void	pause_audio(t_audio *audio, bool pause);
 void	close_audio(t_audio *audio);
+
+void	play_localsound(t_audio *audio, const char *name);
+void	play_worldsound(t_audio *audio, const char *name, t_vector3 *pos);
+void	pause_sound(t_audio *audio, const char *name, bool pause);
+void	pause_all_sounds(t_audio *audio, bool pause);
+
+void	play_music(t_audio *audio, const char *name);
+void	change_music(t_audio *audio, const char *name);
+void	pause_music(t_audio *audio, bool pause);
+void	stop_music(t_audio *audio);
 
 int		clip_triangle_against_occluder_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
 int		clip_triangle_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]);

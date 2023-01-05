@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/26 14:57:10 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/27 11:19:43 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 
 void	quit_game(t_sdlcontext *sdl)
 {
-	close_audio(&sdl->audio);
+	//close_audio(&sdl->audio);
 	SDL_Quit();
 	exit(0);
 }
