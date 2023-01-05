@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/05 15:58:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/05 18:46:41 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -438,6 +438,35 @@ int	find_edge_match_index(t_vector2 start, t_room *room)
 	return (-1);
 }
 
+void	recalculate_joined_rooms(t_world *world, t_room *room)
+{
+	t_list	*l;
+	t_room	*other;
+	int		i;
+
+	l = world->roomlist;
+
+	while (l != NULL)
+	{
+		other = l->content;
+		if (other != room)
+		{
+			i = 0;
+			while (i < room->edgecount)
+			{
+				if (edge_exists(room->edges[i], other))
+				{
+					init_roomwalls(world, other);
+					make_areas(world, other);
+					break ;
+				}
+				i++;
+			}
+		}
+		l = l->next;
+	}
+}
+
 void	applyedgedrag_solo(t_vector2 *edge, t_vector2 snap, t_room *room, t_world *world)
 {
 	int				i;
@@ -742,35 +771,6 @@ bool	rooms_have_joined_walls(t_room *room1, t_room *room2)
 	return (false);
 }
 
-void	recalculate_joined_rooms(t_world *world, t_room *room)
-{
-	t_list	*l;
-	t_room	*other;
-	int		i;
-
-	l = world->roomlist;
-
-	while (l != NULL)
-	{
-		other = l->content;
-		if (other != room)
-		{
-			i = 0;
-			while (i < room->edgecount)
-			{
-				if (edge_exists(room->edges[i], other))
-				{
-					init_roomwalls(world, other);
-					make_areas(world, other);
-					break ;
-				}
-				i++;
-			}
-		}
-		l = l->next;
-	}
-}
-
 void	recalculate_rooms(t_editor *ed, t_vector2 *edge)
 {
 	t_list	*l;
@@ -980,8 +980,9 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	}
 	if (ed->hid.mouse.scroll_delta != 0)
 	{
-		if ((ed->hid.keystate >> KEYS_SHIFTMASK) & 1)
+		if ((ed->hid.keystate >> KEYS_LALTMASK) & 1)
 		{
+			printf("SCROLL %i \n", ed->hid.mouse.scroll_delta * 10);
 			dat->room->height += ed->hid.mouse.scroll_delta * 10;
 			dat->room->height = ft_clamp(dat->room->height, 0, 200);
 			init_roomwalls(&ed->world, dat->room);

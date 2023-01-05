@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/05 13:48:43 by raho              #+#    #+#             */
-/*   Updated: 2023/01/05 18:10:13 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/05 19:22:24 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ bool	linecircle(t_vector2 start, t_vector2 end, t_vector2 circle, float radius)
 	
 }
 
-bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, t_vector3 *newpos)
+bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, t_vector3 *new_pos)
 {
 	t_list		*l;
 	t_room		*room;
@@ -66,8 +66,9 @@ bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, 
 			while (index < room->wallcount)
 			{
 				wall_line = &room->walls[index].edgeline;
-				printf("potential_pos.z: %f\n", potential_pos.z);
-				if (potential_pos.z < room->walls[index].height * 1.3f)
+				//printf("potential_pos.z: %f\n", potential_pos.z);
+				//room->walls[index].entity->obj->vertices[0].z
+				if (!room->walls[index].entity->hidden && potential_pos.z < room->walls[index].entity->obj->vertices[2].z * 1.3f)
 				{
 					if (pointcircle(*wall_line->start, (t_vector2){potential_pos.x, potential_pos.y}, circle_radius) || \
 						pointcircle(*wall_line->end, (t_vector2){potential_pos.x, potential_pos.y}, circle_radius))
@@ -87,6 +88,7 @@ bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, 
 						if (distance <= circle_radius)
 							return (true);
 					}
+					
 				}
 				index++;
 			}
