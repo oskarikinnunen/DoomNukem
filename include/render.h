@@ -15,6 +15,7 @@
 # define CLR_BLUE 255
 # define CLR_GRAY 4868682
 # define CLR_DARKGRAY 0x292929
+# define CLR_BLACKGRAY 0x1a1a1a
 # define CLR_GREEN 3002977
 # define CLR_RED 0xFF2919
 # define AMBER_0 0x551501

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:42:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/04 20:28:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/06 21:00:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ typedef enum e_roomtoolmode
 	rtm_none,
 	rtm_create,
 	rtm_modify,
+	rtm_move,
 	rtm_split,
 	rtm_paint,
 	rtm_connect
@@ -48,7 +49,7 @@ typedef struct s_roomtooldata
 
 bool		isconnect(t_vector2 v2, t_room *room);
 t_vector2	vector2_flipxy(t_vector2 vec);
-void		highlight_room(t_editor *ed, t_sdlcontext *sdl, t_room room, uint32_t color);
+void		highlight_room(t_editor *ed, t_sdlcontext *sdl, t_room *room, uint32_t color);
 //void		highlight_roomwalls(t_editor *ed, t_sdlcontext sdl, t_room room, uint32_t color);
 t_meshtri	*selectedfloor(t_editor *ed, t_sdlcontext sdl, t_room *room);
 t_wall		*selectedwall(t_editor *ed, t_sdlcontext sdl, t_room *room);

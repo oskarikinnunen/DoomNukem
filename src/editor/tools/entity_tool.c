@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/03 16:37:43 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/05 22:38:43 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,8 +209,11 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 		gui_start(gui);
 		gui_preset_transform(&ent->transform, gui);
 		gui_emptyvertical(15, gui);
-		gui_labeled_bool_edit("Dynamic lighting: ", &ent->lightmap->dynamic, gui);
-		gui_labeled_int("Cur light: ", ent->lightmap->dynamic_data, gui);
+		if (ent->lightmap != NULL)
+		{
+			gui_labeled_bool_edit("Dynamic lighting: ", &ent->lightmap->dynamic, gui);
+			gui_labeled_int("Cur light: ", ent->lightmap->dynamic_data, gui);
+		}
 		if (gui_button("Reset rotation", gui))
 			ent->transform.rotation = vector3_zero();
 		if (gui_button("Reset scale", gui))

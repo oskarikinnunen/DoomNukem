@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/22 16:56:20 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/06 16:06:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -334,7 +334,9 @@ float	radtodeg(float rad);
 
 t_quaternion	vector3_to_quaternion(t_vector3 v);
 
-t_vector3		vector2_to_vector3(t_vector2 vec);
+t_vector3		v2tov3(t_vector2 vec);
+
+t_vector2		v3tov2(t_vector3 vec);
 
 //Returns t_vector2 'vec' casted to t_point. (Shorthand for '*(t_point *)&vec').
 t_point			vector2_to_point(t_vector2 vec);

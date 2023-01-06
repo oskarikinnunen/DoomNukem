@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/04 17:17:35 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/06 21:39:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ typedef struct s_editor
 	t_hid_info			hid;
 	t_player			player;
 	t_gamereturn		gamereturn;
+	bool				ceiling_toggle;
 	//t_render			render;
 	struct s_tool		*tool;
 }	t_editor;
@@ -188,6 +189,8 @@ t_tool				*get_room_tool(void);
 t_tool				*get_entity_tool(void);
 t_tool				*get_npc_tool(void);
 t_tool				*get_load_tool(void);
+void				rendergrid(t_world *world, t_vector3 position, int size, uint32_t color);
+bool				rooms_share_zspace(t_room *room1, t_room *room2);
 t_vector3			raycast_DEPRECATED(t_editor *ed);
 
 typedef struct s_raycastinfo

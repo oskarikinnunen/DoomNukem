@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/28 15:57:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/06 19:49:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,8 +187,12 @@ void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr)
 
 	if ((from.x == to.x && from.y == to.y)|| from.x < 0 || to.x < 0 || from.x > sdl.window_w - 1 || to.x > sdl.window_w - 1 || from.y < 0 || to.y < 0 || from.y > sdl.window_h - 1 || to.y > sdl.window_h - 1)
 	{
-		return ;
+		//printf("line start: %i %i end: %i %i \n", from.x, from.y, to.x, to.y);
+		;//return ;
 	}
+	//point_dist()
+	if (from.x == to.x && from.y == to.y/* || point_dist(from, to) > 10000.0f*/)
+		return ;
 	populate_bresenham(&b, from, to);
 	draw(sdl, b.local, clr);
 	while (step_bresenham(&b) != 1)

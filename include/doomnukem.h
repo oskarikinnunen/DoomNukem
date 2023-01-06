@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/04 19:51:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/05 20:51:37 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,12 +118,14 @@ typedef struct s_world
 	t_list				*roomlist;
 	t_entitycache		entitycache;
 	t_entity			skybox;
+	bool				ceiling_toggle;
 }	t_world;
 
 t_vector2	flipped_uv(t_vector2 og);
 void		for_all_active_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *world));
 void		for_all_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *world));
 void		update_world3d(t_world *world, t_render *render);
+void		toggle_ceilings(t_world *world);
 t_world		load_world(char *filename, t_sdlcontext *sdl);
 void		destroy_entity(t_world *world, t_entity *ent);
 t_entity	*spawn_entity(t_world	*world);

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 13:31:43 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/29 14:25:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/06 16:49:36 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ t_point vector3_to_screenspace(t_vector3 vec, t_sdlcontext sdl) //TODO: clip
 	proj_q = quaternion_mul_matrix(c.matproj, proj_q);
 	proj_q.v = vector3_div(proj_q.v, proj_q.w);
 	proj_q.v = vector3_negative(proj_q.v);
-
 	t_vector3 voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
 	proj_q.v = vector3_add(proj_q.v, voffsetview);
 

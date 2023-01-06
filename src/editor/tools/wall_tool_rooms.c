@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/04 19:52:22 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/06 22:03:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -463,9 +463,9 @@ bool	points_collide(t_floorcalc *fc, t_vector2 tri[3])
 	t_triangle	t;
 	t_point		p;
 
-	t.p[0].v = vector2_to_vector3(tri[0]);
-	t.p[1].v = vector2_to_vector3(tri[1]);
-	t.p[2].v = vector2_to_vector3(tri[2]);
+	t.p[0].v = v2tov3(tri[0]);
+	t.p[1].v = v2tov3(tri[1]);
+	t.p[2].v = v2tov3(tri[2]);
 	i = 0;
 	while (i < fc->edgecount)
 	{
@@ -590,11 +590,13 @@ void	triangulate(t_floorcalc *fc, int valid_target)
 		t_vector2 first = fc->edges[valid[validcount - 1]];
 		t_vector2 center = fc->edges[valid[0]];
 		t_vector2 second = fc->edges[valid[1]];
-		/*if (isaligned((t_vector2[3]){first,center,second}))
+		if (isaligned((t_vector2[3]){first,center,second}))
 		{
-			printf("removed aligned %i \n", valid[0]);
-			removevalid(valid, validcount--, 0);
-		}*/
+			center.x = 0.0001f;
+			center.y = -0.0001f;
+			//printf("removed aligned %i \n", valid[0]);
+			//removevalid(valid, validcount--, 0);
+		}
 
 		if (valid[0] == 2 && valid[1] == 5 && valid[validcount - 1] == 1)
 		{
@@ -692,6 +694,8 @@ void	triangulate(t_floorcalc *fc, int valid_target)
 
 void	free_object(t_object *object)
 {
+	if (object == NULL)
+		return ;
 	if (object->faces != NULL)
 		free(object->faces);
 	if (object->materials != NULL)
@@ -717,6 +721,8 @@ void	free_floor(t_world *world, t_room *room)
 	}
 	room->floorcount = 0;
 }
+
+//void	apply_currentfloortexture(t_world *world, t_room *room, char *texname)
 
 void	makefloor_room(t_world *world, t_room *room)
 {
@@ -748,9 +754,10 @@ void	makefloor_room(t_world *world, t_room *room)
 		mtri->entity = spawn_entity(world);
 		mtri->entity->rigid = true;
 		mtri->entity->obj = object_tri(world->sdl);
-		mtri->v[0] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[0]]);
-		mtri->v[1] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[1]]);
-		mtri->v[2] = vector2_to_vector3(fc.edges[fc.faces[i].v_indices[2]]);
+		mtri->entity->obj->materials->img = get_image_by_name(*world->sdl, room->floortex);
+		mtri->v[0] = v2tov3(fc.edges[fc.faces[i].v_indices[0]]);
+		mtri->v[1] = v2tov3(fc.edges[fc.faces[i].v_indices[1]]);
+		mtri->v[2] = v2tov3(fc.edges[fc.faces[i].v_indices[2]]);
 		mtri->v[0].z += room->height;
 		mtri->v[1].z += room->height;
 		mtri->v[2].z += room->height;

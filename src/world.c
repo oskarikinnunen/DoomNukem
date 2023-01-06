@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/05 18:09:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/06 22:06:28 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,11 @@ void update_world3d(t_world *world, t_render *render)
 	gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);
 	gui_labeled_int("Entity count:", world->entitycache.existing_entitycount, world->debug_gui);
 	gui_labeled_float_slider("Resolution scale:", &world->sdl->resolution_scaling, 0.01f, world->debug_gui);
+	if (gui_shortcut_button("Toggle ceilings:", 'J', world->debug_gui))
+	{
+		world->ceiling_toggle = !world->ceiling_toggle;
+		toggle_ceilings(world);
+	}
 	if (gui_labeled_float_slider("Audio max:", &world->sdl->audio.max_volume, 0.01f, world->debug_gui))
 		update_maxvolume(&world->sdl->audio);
 	if (gui_button("Test audio", world->debug_gui))
@@ -128,7 +133,8 @@ void update_world3d(t_world *world, t_render *render)
 	t_point	res;
 	res = point_fmul(sdl->screensize, sdl->resolution_scaling);
 	gui_labeled_point("3D Resolution:", res, world->debug_gui);
-	gui_labeled_bool_edit("Wireframe:", &world->sdl->global_wireframe, world->debug_gui);
+	if (gui_shortcut_button("Toggle rendering:", 'R', world->debug_gui))
+		world->sdl->global_wireframe = !world->sdl->global_wireframe;
 	if (gui_shortcut_button("Toggle Lighting", 'L', world->debug_gui))
 		sdl->lighting_toggled = !sdl->lighting_toggled;
 	//gui_labeled_bool_edit("Lighting:", &world->sdl->lighting_toggled, world->debug_gui);
@@ -230,6 +236,25 @@ t_room	load_room(char *filename)
 	return (result);
 }
 
+void	load_room_new(char *filename, t_room *room)
+{
+	t_list	*temp;
+	int		fd;
+
+	fd = fileopen(filename, O_RDONLY);
+	//ft_bzero(&result, sizeof(t_room));
+	//ft_strcpy(result.name, filename);
+	temp = load_chunk(filename, "WALL", sizeof(t_wall));
+	room->walls = list_to_ptr(temp, &room->wallcount);
+	listdel(&temp);
+	temp = load_chunk(filename, "FLOR", sizeof(t_meshtri));
+	room->floors = list_to_ptr(temp, &room->floorcount);
+	listdel(&temp);
+	temp = load_chunk(filename, "EDGE", sizeof(t_vector2));
+	room->edges = list_to_ptr(temp, &room->edgecount);
+	listdel(&temp);
+}
+
 static void	startup_init_room(t_world *world, t_room *r)
 {
 	int			i;
@@ -243,13 +268,15 @@ static void	startup_init_room(t_world *world, t_room *r)
 		w->edgeline.start = &r->edges[w->edgeline.start_index];
 		w->edgeline.end = &r->edges[w->edgeline.end_index];
 		w->entity = &world->entitycache.entities[w->saved_entityid]; //TODO: make function "get_entity_from_cache_by_id" (with a shorter name, lol)
-		//w->entity->obj = object_plane(world->sdl);
+		w->entity->obj = object_plane(world->sdl);
 		entity_assign_object(world, w->entity, object_plane(world->sdl));
 		w->entity->obj->materials[0].img = get_image_by_name(*world->sdl, w->texname);
-		//applywallmesh(w, r, world);
 		i++;
 	}
 	i = 0;
+	//r->floors = NULL;
+	//r->floorcount == 0;
+	//make_areas(world, r);
 	while (i < r->floorcount)
 	{
 		f = &r->floors[i];
@@ -272,10 +299,13 @@ void	load_rooms(t_world *world, t_sdlcontext *sdl)
 	while (l != NULL)
 	{
 		r = (t_room *)l->content;
-		temp = *r;
-		*r = load_room(r->name);
-		r->height = temp.height; //TODO: remove these and bzero all room pointers before loading room so all other values come from the list room
-		r->ceiling_height = temp.ceiling_height;
+		//temp = *r;
+		//*r = load_room(r->name);
+		load_room_new(r->name, r);
+		//ft_strcpy(r->floortex, temp.floortex);
+		//r->height = temp.height; //TODO: remove these and bzero all room pointers before loading room so all other values come from the list room
+		//r->ceiling_height = temp.ceiling_height;
+		
 		startup_init_room(world, r);
 		l = l->next;
 	}
@@ -283,13 +313,8 @@ void	load_rooms(t_world *world, t_sdlcontext *sdl)
 	while (l != NULL)
 	{
 		r = (t_room *)l->content;
-		i = 0;
-		while (i < r->wallcount)
-		{
-			applywallmesh(&r->walls[i], r, world);
-			i++;
-		}
 		init_roomwalls(world, r);
+		//make_areas(world, r);
 		l = l->next;
 	}
 	
@@ -501,8 +526,8 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 	ft_bzero(&world.lighting, sizeof(t_lighting));
 	world.lighting.ambient_light = 20;
 	//raycast_new()
-	for_all_entities(&world, create_lightmap_for_entity);
-	for_all_entities(&world, create_map_for_entity);
+	//for_all_entities(&world, create_lightmap_for_entity);
+	//for_all_entities(&world, create_map_for_entity);
 	return (world);
 }
 

@@ -38,7 +38,7 @@ typedef struct s_wall
 	t_edgeline	edgeline;
 	uint32_t	z_offset;
 	uint32_t	height;
-	bool		disabled;
+	bool		ceilingwall;
 	bool		connection;
 	//t_room		*connected;
 	char		texname[256];
