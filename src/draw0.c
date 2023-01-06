@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/06 19:26:40 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/06 19:46:11 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	draw_alpha(t_sdlcontext sdl, t_point pos, uint32_t clr)
 }
 
 void	screen_blank(t_sdlcontext sdl)
-{
+{	
 	bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 	bzero(sdl.window_surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 	bzero(sdl.ui_surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
@@ -47,7 +47,7 @@ void	screen_blank(t_sdlcontext sdl)
 	bzero(sdl.bitmask.tile, sizeof(t_tile) * ((sdl.window_h * sdl.window_w) / 64));
 	for (int i =0; i < ((sdl.window_h * sdl.window_w) / 64); i++)
 	{
-		sdl.bitmask.tile[i].max0 = 100000.0f;
+		sdl.bitmask.tile[i].max0 = 10000.0f;
 	}
 }
 

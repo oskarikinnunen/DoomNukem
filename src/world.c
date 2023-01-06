@@ -128,6 +128,46 @@ static void bitmask_to_pixels(t_sdlcontext *sdl)
 		}
 	}
 }
+void insertionSort(t_entity arr[], int n)
+{
+    int i, key, j;
+    for (i = 1; i < n; i++) {
+        key = arr[i];
+        j = i - 1;
+
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j = j - 1;
+        }
+        arr[j + 1] = key;
+    }
+}
+static void sort_entitycache(t_world *world, t_vector3 location)
+{
+	int			i;
+	t_entity	*key;
+	int			j;
+	int			found;
+	t_entity	*ent;
+
+	i = 0;
+	found = 0;
+	while (found < world->entitycache.existing_entitycount && 0) // disabled this cache isnt in use remember
+	{
+		ent = world->entitycache.sorted_entities[i];
+		if (ent->status != es_free)
+		{
+			key = ent;
+			j = i - 1;
+			while (j >= 0 && world->entitycache.sorted_entities[i]->status != es_free && vector3_dist(world->entitycache.sorted_entities[i]->transform.position, location) < vector3_dist(key->transform.position, location))
+			{
+				
+			}
+			found++;
+		}
+		i++;
+	}
+}
 
 void update_world3d(t_world *world, t_render *render)
 {
@@ -152,6 +192,7 @@ void update_world3d(t_world *world, t_render *render)
 		}
 		i++;
 	}*/
+	sort_entitycache()
 	update_entitycache(sdl, world, render);
 	if (!sdl->global_wireframe && !world->skybox.hidden)
 		render_entity(sdl, render, &world->skybox);
@@ -359,11 +400,13 @@ t_entitycache	init_entitycache(uint32_t cachesize)
 	ft_bzero(&cache, sizeof(t_entitycache));
 	cache.alloc_count = cachesize;
 	cache.entities = ft_memalloc(cache.alloc_count * sizeof(t_entity));
+	cache.sorted_entities = ft_memalloc(cache.alloc_count * sizeof(t_entity *));
 	cache.existing_entitycount = 0;
 	i = 0;
 	while (i < cache.alloc_count)
 	{
 		cache.entities[i].id = i;
+		cache.sorted_entities[i] = &cache.entities[i];
 		i++;
 	}
 	return (cache);

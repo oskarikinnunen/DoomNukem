@@ -103,6 +103,7 @@ typedef struct s_entitycache
 	t_entity	*entities;
 	uint32_t	existing_entitycount;
 	uint32_t	alloc_count;
+	t_entity	**sorted_entities;
 }	t_entitycache;
 
 /* OCCLUSION FOLDER */

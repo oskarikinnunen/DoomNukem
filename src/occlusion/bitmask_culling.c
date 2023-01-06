@@ -1,73 +1,13 @@
 #include "doomnukem.h"
 
-
-t_point_triangle triangle_to_bitmask_screenspace_point_triangle(t_mat4x4 matproj, t_triangle clipped, t_sdlcontext sdl)
-{
-	t_triangle			triprojected;
-	t_point_triangle	tri;
-	int					i;
-	t_vector3			voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
-
-	i = 0;
-	while (i < 3)
-	{
-		triprojected.p[i] = quaternion_mul_matrix(matproj, clipped.p[i]);
-		tri.t[i].w = triprojected.p[i].w; //might not be necessary as we are not beding uvs with perspective and only need the distance
-		triprojected.p[i].v = vector3_div(triprojected.p[i].v, triprojected.p[i].w);
-		triprojected.p[i].v = vector3_negative(triprojected.p[i].v);
-		triprojected.p[i].v = vector3_add(triprojected.p[i].v, voffsetview);
-		tri.p[i].x = triprojected.p[i].v.x * (0.5f * (float)(sdl.window_w * sdl.resolution_scaling));
-		tri.p[i].y = triprojected.p[i].v.y * (0.5f * (float)(sdl.window_h * sdl.resolution_scaling));
-		i++;
-	}
-	return(tri);
-}
-
-/*
-function coverage(x, left, right)
-return (~0 >> max(0, left - x))
-& ~(~0 >> max(0, right - x))
-
-0 0 0 0 0 0 0 0
-1 1 1 1 1 1 1 1
-
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-*/
-
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
-static uint16_t mask_x(int x, int left_x, int right_x)
+static uint16_t mask_x(int left_x, int right_x)
 {
 	const uint16_t	row = ~0;
-	return(((row << MAX(0, left_x - x))& ~(row << MAX(0, right_x - x))));
+	return(((row << MAX(0, left_x))& ~(row << MAX(0, right_x))));
 }
-
-/*
-Z1max value as the working layer and
-Z0max as the reference layer
-
-function updateHiZBuffer(tile, tri)
-// Discard working layer heuristic
-dist1t = tile.zMax1 - tri.zMax
-dist01 = tile.zMax0 - tile.zMax1
-if (dist1t > dist01)
-tile.zMax1 = 0
-tile.mask = 0
-
-// Merge current triangle into working layer
-tile.zMax1 = max(tile.zMax1, tri.zMax)
-tile.mask |= tri.coverageMask
-
-// Overwrite ref. layer if working layer full
-if (tile.mask == ~0)
-tile.zMax0 = tile.zMax1
-tile.zMax1 = 0
-tile.mask = 0
-*/
 
 static t_tile update_tile(float aw, t_tile tile, uint64_t res)
 {
@@ -138,7 +78,7 @@ static void fill_point_tri_bot2(t_bit_tri	bt, t_sdlcontext *sdl)
 		int wchunk = chunk * 2;
 		y_chunk = ((y % 8) * 16);
 		int y1_chunk = ((y % 8) * 8);
-		res = mask_x(0, temp1, temp2);
+		res = mask_x(temp1, temp2);
 		sdl->bitmask.bitmask[chunk++] |= (__uint128_t)res << y_chunk;
 		sdl->bitmask.tile[wchunk] = update_tile(aw, sdl->bitmask.tile[wchunk], ((uint64_t)(res & 0xFF)) << y1_chunk);
 		wchunk++;
@@ -158,8 +98,7 @@ static void fill_point_tri_bot2(t_bit_tri	bt, t_sdlcontext *sdl)
 			aw += wstep;
 			x += 16;
 		}
-
-		res = mask_x(0, 0, ax - x + 1);
+		res = mask_x(0, ax - x + 1);
 		sdl->bitmask.bitmask[chunk] |= (__uint128_t)res << y_chunk;
 		sdl->bitmask.tile[wchunk] = update_tile(aw, sdl->bitmask.tile[wchunk], ((uint64_t)(res & 0xFF)) << y1_chunk);
 		wchunk++;
@@ -213,7 +152,7 @@ static void fill_point_tri_top2(t_bit_tri	bt, t_sdlcontext *sdl)
 		int wchunk = chunk * 2;
 		y_chunk = ((y % 8) * 16);
 		int y1_chunk = ((y % 8) * 8);
-		res = mask_x(0, temp1, temp2);
+		res = mask_x(temp1, temp2);
 		sdl->bitmask.bitmask[chunk++] |= (__uint128_t)res << y_chunk;
 		sdl->bitmask.tile[wchunk] = update_tile(aw, sdl->bitmask.tile[wchunk], ((uint64_t)(res & 0xFF)) << y1_chunk);
 		wchunk++;
@@ -233,7 +172,7 @@ static void fill_point_tri_top2(t_bit_tri	bt, t_sdlcontext *sdl)
 			aw += wstep;
 			x += 16;
 		}
-		res = mask_x(0, 0, ax - x + 1);
+		res = mask_x(0, ax - x + 1);
 		sdl->bitmask.bitmask[chunk] |= (__uint128_t)res << y_chunk;
 		sdl->bitmask.tile[wchunk] = update_tile(aw, sdl->bitmask.tile[wchunk], ((uint64_t)(res & 0xFF)) << y1_chunk);
 		wchunk++;
@@ -293,34 +232,4 @@ void render_bitmask(t_sdlcontext *sdl, t_render *render)
 		render_bitmask_triangle(sdl, render, index);	
 		index++;
 	}
-}
-
-bool is_entity_bitmask_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity)
-{
-	t_square	s;
-	const __uint128_t max = ~0;
-
-	render->worldspace_ptri_count = 0;
-	render->screenspace_ptri_count = 0;
-	calculate_triangles(*sdl, render, entity);
-	get_min_max_from_triangles(&s.min, &s.max, render->screenspace_ptris, render->screenspace_ptri_count);
-	float w = vector3_dist(vector3_add(entity->obj->bounds.origin, entity->transform.position), render->camera.position);
-	if (s.min.x < 0.0f || s.min.y < 0.0f || isnan(s.min.y) || isnan(s.min.x))
-	{
-		exit(0);
-	}
-	if (s.max.x > sdl->window_w || s.max.y > sdl->window_h)
-		exit(0);
-	for (int y = s.min.y; y < s.max.y; y++)
-	{
-		for (int x = s.min.x; x < s.max.x; x++)
-		{
-		//	printf("x %d y %d\n", x, y);
-		//	if (sdl->bitmask.bitmask[(y / 8) * sdl->bitmask.chunk_size.x + (x / 16)] != max)
-		//		return(false);
-			if (w < sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0)
-				return(false);
-		}
-	}
-	return (true);
 }

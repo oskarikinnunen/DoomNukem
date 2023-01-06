@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 14:40:03 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/03 15:18:34 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/06 22:03:50 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,53 +160,6 @@ void default_wall_occlusion_settings(t_wall *w, t_world *world)
 	w->entity->occlusion.cull = true;
 }
 
-void update_occlusion(struct s_world *world, t_render *render)
-{
-	int			i;
-	int			found;
-	t_entity	*ent;
-
-	if (render->occlusion.occlusion == false)
-		return;
-	i = 0;
-	found = 0;
-	while (found < world->entitycache.existing_entitycount)
-	{
-		ent = &world->entitycache.entities[i];
-		if (ent->status != es_free)
-		{
-			if (ent->status == es_active && !ent->hidden)
-			{
-				if (render->occlusion.occluder_box == true)
-					draw_edges(*world->sdl, render, ent, CLR_BLUE);
-				update_occlusion_culling(*world->sdl, render, ent);
-			}
-			found++;
-		}
-		i++;
-	}
-	//TODO: use entitycache
-
-	/*if (render->occlusion.occlusion == false)
-		return;
-	l = render->world->roomlist;
-	while (l != NULL)
-	{
-		update_room_occlusion(sdl, render, (t_room *)l->content);
-		l = l->next;
-	}
-	
-	l = render->world->entitylist;
-	while (l != NULL)
-	{
-		ent = (t_entity *)l->content;
-		if (render->occlusion.occluder_box == true)
-			draw_edges(sdl, render, ent, CLR_BLUE);
-		update_occlusion_culling(sdl, render, ent);
-		l = l->next;
-	}*/
-}
-
 bool is_entity_culled(struct s_world *world, t_render *render, t_entity *entity)
 {
 	if (render->occlusion.occlusion == false)
@@ -227,28 +180,10 @@ bool is_entity_culled(struct s_world *world, t_render *render, t_entity *entity)
 						draw_wireframe(*world->sdl, render, entity, CLR_RED);
 				render->rs.occlusion_cull_amount++;
 				return(true);
-			}/*
-			if (entity->occlusion.cull == true)
-			{
-				if (is_entity_occlusion_culled(world, render, entity) == false)
-				{
-					if (render->occlusion.cull_box == true)
-						draw_wireframe(*world->sdl, render, entity, CLR_GREEN);
-					return(false);
-				}
-				else
-				{
-					if (render->occlusion.cull_box == true)
-						draw_wireframe(*world->sdl, render, entity, CLR_RED);
-					render->rs.occlusion_cull_amount++;
-					return(true);
-				}
 			}
-			else
-			{
-				return(false);
-			}*/
 		}
 	}
+	else
+		return(true);
 	return (false);
 }
