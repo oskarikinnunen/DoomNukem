@@ -124,8 +124,6 @@ void	draw_wireframe(t_sdlcontext sdl, t_render *render, t_entity *e, uint32_t cl
 void	draw_edges(t_sdlcontext sdl, t_render *render, t_entity *e, uint32_t clr);
 void	render_worldspace(t_render *render, t_entity *entity);
 void	render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity);
-//Occlusion render
-void	render_entity_to_bitmask(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 
 void create_map_for_entity(t_entity *entity, struct s_world *world);
 void create_dynamic_map_for_entity(t_entity *entity, struct s_world *world);

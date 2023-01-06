@@ -63,8 +63,6 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 			if (ent->status == es_active && !ent->hidden && is_entity_culled(world, render, ent) == false)
 			{
 				render_entity(sdl, render, ent);
-				if (sdl->bitmask2 == false)
-					render_entity_to_bitmask(sdl, render, ent);
 			}
 			found++;
 		}
@@ -110,82 +108,7 @@ static void bitmask_to_pixels(t_sdlcontext *sdl)
 		return;
 	uint32_t	clr;
 
-	//sdl->bitmask.bitmask[5050] = ~sdl->bitmask.bitmask[5050];
-	//sdl->bitmask.bitmask[5050] = 0;
-	////sdl->bitmask.bitmask[temp1] |= 1UL << (temp2);
-	// 0 8 16 24 32
-	//sdl->bitmask.bitmask[5050] |= 255 << 0;
-	//sdl->bitmask.bitmask[5050] |= 127 << 16;
-	//sdl->bitmask.bitmask[5050] |= ((~((__uint128_t)0L) >> (__uint128_t)7)& ~(~((__uint128_t)0) >> (__uint128_t)8));
-	sdl->bitmask.bitmask[5049] |= ~0;
-	sdl->bitmask.bitmask[5051] |= ~0;
-	sdl->bitmask.bitmask[5050 + sdl->bitmask.bitmask_chunks.x] |= ~0;
-	sdl->bitmask.bitmask[5050 - sdl->bitmask.bitmask_chunks.x] |= ~0;
-	sdl->bitmask.bitmask[5050] |= mask_x(0, 0, 12) << (16);
-	printf("%d\n", mask_x(0, 0, 12));
-	exit(0);
-	//
-	//sdl->bitmask.bitmask[5050] |= mask_x(0, 0, 16) << 32 + 16;
-	//mask_x(3, 8);
-	//~((__uint128_t)0) >> (__uint128_t)64;
-
-	//if (sdl->bitmask.bitmask[5050] == sdl->bitmask.bitmask[5051])
-	//	exit(0);
-	//
-	//sdl->bitmask.bitmask[5050] |= mask_x(16, 0, 17);
-	//sdl->bitmask.bitmask[5050] |= ~0;
-	//sdl->bitmask.bitmask[5050] |= 255 << 24;
-	//1 3 7 15 31 63 127 255
-	//sdl->bitmask.bitmask[temp1] |= 1UL << (temp2);
-	//number &= ~(1UL << n);
-	/*
-	1 1 1 1 1 1 1 1 
-	1 1 1 1 1 1 1 1 
-	1 1 1 1 1 1 1 1 
-	0 0 0 0 0 1 1 1 
-	0 0 0 0 0 1 1 1 
-	0 0 0 0 0 0 0 0 
-	1 1 1 1 1 1 1 1 
-	1 1 1 1 1 1 1 1
-	*/
-	float max_w = 0.0f;
-	for (int y = 0; y < sdl->window_h && 0; y++)
-	{
-		for (int x = 0; x < sdl->window_w; x++)
-		{
-			if (sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0 > 0.0f)
-				exit(0);
-			if (sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0 == 0.0f && sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max1 > 0.0f)
-				sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0 = sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max1;
-
-		}
-	}
-	for (int y = 0; y < sdl->window_h; y++)
-	{
-		for (int x = 0; x < sdl->window_w; x++)
-		{
-
-			if (sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0 > max_w)
-				max_w = sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0;
-		}
-	}
-	bool screen = false;
-	for (int y = 0; y < sdl->window_h; y++)
-	{
-		for (int x = 0; x < sdl->window_w; x++)
-		{
-			if (sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0 < 1.0f || sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0 > 5000.0f)
-			{
-				printf("mask %llu\n", sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].mask);
-				screen = true;
-			}
-		}
-	}
-	if (screen == true)
-		printf("SCREEN NOT FULL\n");
-	printf("max w %f\n", max_w);
-	max_w = 2500.0f;
-	//max_w = 1.0f/max_w;
+	float max_w = 5000.0f;
 	for (int y = 0; y < sdl->window_h; y++)
 	{
 		for (int x = 0; x < sdl->window_w; x++)
@@ -229,7 +152,6 @@ void update_world3d(t_world *world, t_render *render)
 		}
 		i++;
 	}*/
-	update_occlusion(world, render);
 	update_entitycache(sdl, world, render);
 	if (!sdl->global_wireframe && !world->skybox.hidden)
 		render_entity(sdl, render, &world->skybox);

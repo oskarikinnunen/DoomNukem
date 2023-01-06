@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/28 16:58:28 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/06 19:35:27 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ void render_solid_triangle(t_sdlcontext *sdl, t_render *render)
 
 void render_buffer(t_sdlcontext *sdl, t_render *render)
 {
+	if (sdl->bitmask2 == true)
+		render_bitmask(sdl, render);
 	if (!render->wireframe && (render->map.data != NULL || render->img != NULL))
 		render_buffer_triangles(sdl, render);
 	//return;
