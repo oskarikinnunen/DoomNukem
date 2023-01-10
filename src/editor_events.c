@@ -81,7 +81,7 @@ t_gamereturn	editor_events(t_editor *ed)
 	while (SDL_PollEvent(&e))
 	{
 		toggle_keystates(&ed->hid, e);
-		mouse_event(e, &ed->hid.mouse);
+		game_mouse_event(e, &ed->hid.mouse);
 		if (e.type == SDL_KEYDOWN)
 		{
 			if (iskey(e, SDLK_ESCAPE))

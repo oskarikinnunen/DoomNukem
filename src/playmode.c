@@ -59,7 +59,7 @@ static int handleinput(t_hid_info	*hid)
 	updatemouse(&hid->mouse);
 	while (SDL_PollEvent(&e))
 	{
-		mouse_event(e, &hid->mouse);
+		game_mouse_event(e, &hid->mouse);
 		gr = key_events(e, hid);
 		if (gr != game_continue)
 			return (gr);

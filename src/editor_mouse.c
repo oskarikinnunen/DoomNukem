@@ -19,7 +19,7 @@ bool	mouse_clicked(t_mouse mouse, int button)
 	return (mouse.click_unhandled == true && mouse.click_button == button);
 }
 
-void	mouse_event(SDL_Event e, t_mouse *mouse)
+void	game_mouse_event(SDL_Event e, t_mouse *mouse)
 {
 	if (!mouse->relative)
 		SDL_GetMouseState(&mouse->pos.x, &mouse->pos.y);

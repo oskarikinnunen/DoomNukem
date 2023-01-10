@@ -223,6 +223,7 @@ void	load_rooms(t_world *world, t_sdlcontext *sdl)
 	l = world->roomlist;
 	while (l != NULL)
 	{
+		printf("loading room %s \n", r->name);
 		r = (t_room *)l->content;
 		*r = load_room(r->name);
 		startup_init_room(world, r);
@@ -389,6 +390,7 @@ void	load_cache_from_list(t_world *world, t_list *l)
 	while (l != NULL)
 	{
 		list_entity = l->content;
+		printf("loading entity %i to world \n", list_entity->id);
 		world_entity = spawn_entity(world);
 		ft_memcpy(world_entity, list_entity, sizeof(t_entity));
 		l = l->next;
@@ -402,24 +404,29 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 
 	ft_bzero(&world, sizeof(t_world));
 	world.sdl = sdl;
+	printf("LOADING WORLD \n");
 	world.guns = load_chunk(filename, "GUNS", sizeof(t_gun));
+	printf("LOADED GUNS \n");
 	world.debugconsole = init_debugconsole();
 	world.entitycache = init_entitycache(1024);
 	
 	t_list	*entitylist = load_chunk(filename, "ENT_", sizeof(t_entity));
+	printf("LOADED ENTITIES \n");
 	load_cache_from_list(&world, entitylist);
 	for_all_entities(&world, init_entity);
 
 	world.debug_gui = ft_memalloc(sizeof(t_autogui));
 
 	world.roomlist = load_chunk(filename, "RMNM", sizeof(t_room));
+	printf("loaded roomlist \n");
 	load_rooms(&world, sdl);
-	
+	printf("LOADED ROOMS \n");
 	init_guns(&world, sdl);
 	load_walltextures(&world, *sdl);
 	ft_bzero(&world.skybox, sizeof(t_entity));
 	world.skybox.obj = get_object_by_name(*sdl, "cube");
 	world.skybox.obj->materials[0].img = get_image_by_name(*sdl, "grid_d.png");
+	printf("LOADED SKYBOX \n");
 	//scale_skybox_uvs(world.skybox.obj);
 	world.skybox.transform.scale = vector3_mul(vector3_one(), 3000.0f);
 	world.skybox.transform.position = (t_vector3){1500.0f, 1500.0f, 1495.0f};

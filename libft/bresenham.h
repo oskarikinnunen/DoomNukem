@@ -13,6 +13,7 @@
 #ifndef BRESENHAM_H
 # define BRESENHAM_H
 
+# include <inttypes.h>
 # include "../include/vectors.h"
 
 typedef struct s_bresenham //CHANGE TO USE Uu_int32_t32

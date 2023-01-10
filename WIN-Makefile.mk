@@ -97,33 +97,23 @@ OBJ= $(SRC:.c=.o)
 #Compilation stuff:
 INCLUDE= -I$(INSTALLED_LIBS_DIR)/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
 CC= gcc
-CFLAGS= $(INCLUDE) -g -finline-functions -O2 #-march=native
-
+CFLAGS= $(INCLUDE) -g -finline-functions -O2 -mwindows#-march=native
+C_INCLUDE_PATH=/mingw/local/include
+C_INCLUDE_PATH+=/mingw/msys/1.0/local/include
 UNAME= $(shell uname)
-ifeq ($(UNAME), Darwin)
-override CFLAGS += '-D GL_SILENCE_DEPRECATION'
-LIBS= $(LIBFT) -lm -framework OpenGL `$(INSTALLED_LIBS_DIR)/bin/sdl2-config --cflags --libs` -L$(INSTALLED_LIBS_DIR)/lib -lSDL2_ttf
-AUTOGEN =
-else ifeq ($(UNAME), Linux)
-LIBS =  $(LIBFT) -lm -lGL `$(INSTALLED_LIBS_DIR)/bin/sdl2-config --cflags --libs` -L$(INSTALLED_LIBS_DIR)/lib -lSDL2_ttf
+ifeq ($(UNAME), MINGW32_NT-6.2)
+LIBS =  $(LIBFT) -lm  -lSDL2 -L/local/lib -lSDL2_ttf #-lGL
 AUTOGEN = ./autogen.sh &&
-else ifeq ($(UNAME), MINGW32_NT-6.2)
-windows:
-	@echo "Compiling for windows, running make with the 'WIN-Makefile.mk'"
-	$(MAKE) -f WIN-Makefile.mk
-#LIBS =  $(LIBFT) -lm -lGL `$(INSTALLED_LIBS_DIR)/bin/sdl2-config --cflags --libs` -L$(INSTALLED_LIBS_DIR)/lib -lSDL2_ttf
-#AUTOGEN = ./autogen.sh &&
 else
 warning:
-	@echo "Compilation for platform $(UNAME) not supported."
+	@echo "This makefile is designed to work only on Windows, under mingw; Compilation for platform $(UNAME) not supported."
 	exit 1
 endif
 
+#$(SDL2)
 
-mingw: $(FREETYPE) $(SDL2_TTF) $(LUA) $(LIBFT) $(OBJ)
-	echo "hello"
-
-all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(LUA) $(LIBFT) $(OBJ)
+all: $(FREETYPE) $(SDL2_TTF) $(LUA) $(LIBFT) $(OBJ)
+	@echo "compiled.."
 	$(CC) $(OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LUA)
 
 $(OBJ): include/*.h Makefile
@@ -150,33 +140,28 @@ $(LUA):
 	cd $(LUAFOLDER) && make generic && make local
 
 $(SDL2_DIR)/unpacked:
-	cd $(LIBS_DIR) && tar -xf SDL2-2.0.8.tar.gz
+	cd $(LIBS_DIR) && 7z.exe x SDL2-2.0.8.tar.gz -so | 7z x -aoa -si -ttar -o.
 	cd $(SDL2_DIR) && touch unpacked
 
 $(FREETYPE_DIR)/unpacked:
-	cd $(LIBS_DIR) && tar -xf freetype-2.9.tar.gz
+	cd $(LIBS_DIR) && 7z.exe x freetype-2.9.tar.gz -so | 7z x -aoa -si -ttar -o.
 	cd $(FREETYPE_DIR) && touch unpacked
 
 $(SDL2_TTF_DIR)/unpacked:
-	cd $(LIBS_DIR) && tar -xf SDL2_ttf-2.0.15.tar.gz
+	cd $(LIBS_DIR) && 7z.exe x SDL2_ttf-2.0.15.tar.gz -so | 7z x -aoa -si -ttar -o.
 	cd $(SDL2_TTF_DIR) && touch unpacked
 
 
 $(SDL2_DIR)/ready_to_build: $(SDL2_DIR)/unpacked
-	cd $(SDL2_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR) SDL_AUDIODRIVER=pulseaudio && touch ready_to_build
+	cd $(SDL2_DIR) && ./configure && touch ready_to_build
 
 $(FREETYPE_DIR)/ready_to_build: $(FREETYPE_DIR)/unpacked
-	cd $(FREETYPE_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR) && touch ready_to_build
+	cd $(FREETYPE_DIR) && ./configure && touch ready_to_build
 
 # On Linux autogen.sh will be executed in SDL2_TTF_DIR before running configure and make install
 # On Linux pkg-config overrides prefixes with default path so we change the PKG_CONFIG_PATH
 $(SDL2_TTF_DIR)/ready_to_build: $(SDL2_TTF_DIR)/unpacked
-	cd $(SDL2_TTF_DIR) && $(AUTOGEN) ./configure	\
-	--prefix=$(PWD)/$(INSTALLED_LIBS_DIR)	\
-	--with-ft-prefix=$(PWD)/$(INSTALLED_LIBS_DIR)	\
-	--with-sdl-prefix=$(PWD)/$(INSTALLED_LIBS_DIR)	\
-	PKG_CONFIG_PATH=$(PWD)/$(INSTALLED_LIBS_DIR)/lib/pkgconfig	\
-	&& touch ready_to_build
+	cd $(SDL2_TTF_DIR) && $(AUTOGEN) ./configure && touch ready_to_build
 
 $(SDL2): $(SDL2_DIR)/ready_to_build
 	cd $(SDL2_DIR) && make && make install

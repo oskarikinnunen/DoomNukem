@@ -16,9 +16,9 @@
 #include "objects.h"
 
 #ifdef __APPLE__
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
+	#include <OpenGL/gl.h>
+//#else
+//	#include <GL/gl.h>
 #endif
 
 typedef enum e_screenmode
@@ -33,6 +33,7 @@ static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 {
 	const char	*platform;
 
+	printf("starting lua conf\n");
 	load_lua_conf(sdl);
 	SDL_DisplayMode	mode;
 	sdl->resolution_scaling = 1.0f;
@@ -41,7 +42,11 @@ static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 		|| SDL_Init(SDL_INIT_EVENTS) < 0 \
 		|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0 \
 		|| TTF_Init() < 0)
-		error_log(EC_SDL_INIT);
+		{
+			printf("SDL_INIT failed! \n");
+			error_log(EC_SDL_INIT);
+		}
+		
 	if (screenmode == screenmode_borderless && SDL_GetCurrentDisplayMode(0, &mode) == 0)
 	{
 		sdl->window_w = mode.w;
@@ -62,7 +67,7 @@ static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 	}
 	sdl->window = SDL_CreateWindow("DoomNukem",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		sdl->window_w, sdl->window_h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+		sdl->window_w, sdl->window_h, SDL_WINDOW_SHOWN);
 	if (sdl->window == NULL)
 		error_log(EC_SDL_CREATEWINDOW);
 	if (screenmode == screenmode_borderless)
@@ -89,7 +94,7 @@ static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 	t_object *o = get_object_by_name(*sdl, "cyborg");
 	parseanim(o, "walk");
 	/* create context here, call gl clear in render start, glbegin in drawtriangles etc */
-	SDL_GLContext glc = SDL_GL_CreateContext(sdl->window);
+	//SDL_GLContext glc = SDL_GL_CreateContext(sdl->window);
 	/*glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 	glEnable(GL_DEPTH_TEST);
@@ -109,7 +114,7 @@ static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 	glEnd();
 	SDL_GL_SwapWindow(sdl->window);
 	SDL_Delay(10000);*/
-	printf("OPENGL RENDERER: '%s' \n", glGetString(GL_RENDERER));
+	//printf("OPENGL RENDERER: '%s' \n", glGetString(GL_RENDERER));
 }
 
 void	quit_game(t_sdlcontext *sdl)
@@ -133,6 +138,7 @@ int	main(int argc, char **argv)
 	}
 	create_sdl_context(&sdl, screenmode);
 	gr = game_switchmode;
+	printf("GOT TO AFTER SDL CONTEXT! \n");
 	while (gr == game_switchmode)
 	{
 		

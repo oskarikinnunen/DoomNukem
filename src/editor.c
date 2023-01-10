@@ -32,6 +32,7 @@ int	editorloop(t_sdlcontext sdl)
 
 	ed.gamereturn = game_continue;
 	ed.render = init_render(sdl, &ed.world);
+	printf("Initialized render in editorloop \n");
 	player_init(&ed.player, &sdl);
 	ed.player.transform.position = (t_vector3){1000, 1000, 250};
 	ed.player.gun->disabled = true;
@@ -39,6 +40,7 @@ int	editorloop(t_sdlcontext sdl)
 	ed.position = (t_vector3){500.0f, 500.0f, 200.0f};*/
 	ed.tool = NULL;
 	//set_font_size(&sdl, 0);
+	printf("starting game loop! \n");
 	while (ed.gamereturn == game_continue)
 	{
 		update_deltatime(&ed.clock);

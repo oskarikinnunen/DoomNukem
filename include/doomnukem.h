@@ -13,12 +13,14 @@
 #ifndef DOOMNUKEM_H
 # define DOOMNUKEM_H
 
+# include <windows.h>
 # include "libft.h"
 # include "error_log.h"
 # include "limits.h" //TODO: remove mby? just define INT_MAX yourself
 # include <math.h>
 # include <fcntl.h>
 # include <stdbool.h>
+# include <stdio.h>
 # include "physics.h"//DEPRECATED UPDATED TO COLLISION.H
 # include "animation.h" //PLAYER USES THIS, MOVE PLAYER TO SEPARATE HEADER
 # include "room.h"
@@ -147,7 +149,7 @@ void			force_mouselock(t_hid_info *hid);
 /* EDITOR_MOUSE.C */
 t_point			screentogridspace(t_point point);
 t_quaternion	transformed_vector3(t_transform transform, t_vector3 v);//TODO: vectors.h
-void			mouse_event(SDL_Event e, t_mouse *mouse);//TODO: input.h
+void			game_mouse_event(SDL_Event e, t_mouse *mouse);//TODO: input.h
 
 /* SPACECONVERSIONS.C */
 t_point vector3_to_screenspace(t_render r, t_vector3 vec, t_sdlcontext sdl);//TODO: vectors.h

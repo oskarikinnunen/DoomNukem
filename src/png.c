@@ -13,7 +13,7 @@
 
 #include "png.h"
 #include "doomnukem.h"
-
+#include <unistd.h>
 
 static uint32_t rev_bytes (uint32_t bytes)
 {
@@ -30,6 +30,35 @@ static uint32_t rev_bytes (uint32_t bytes)
 		i += 8;
 	}
 	return (result);
+}
+
+typedef	struct s_rgb
+{
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
+	uint8_t a;
+} t_rgb;
+
+typedef struct s_color
+{
+	union cdata_u
+	{
+		t_rgb		rgb;
+		uint32_t	color;
+	} dat;
+}	t_color;
+
+static uint32_t	flip_channels2(uint32_t clr)
+{
+	t_color		result;
+	t_color		orig;
+	orig.dat.color = clr;
+	result.dat.rgb.r = orig.dat.rgb.b;
+	result.dat.rgb.g = orig.dat.rgb.g;
+	result.dat.rgb.b = orig.dat.rgb.r;
+	result.dat.rgb.a = orig.dat.rgb.a;
+	return (result.dat.color);
 }
 
 
@@ -122,30 +151,47 @@ void	pngtosimpleimg(t_pngdata *png, t_img *img) //dis bad, make return t_img ins
 	free(png->palette.plte); // check if palette exists?
 }
 
+#define _WINDOWS_
 //TODO: generate placeholder image if the image requested here didn't exist
 t_img	pngparse(char *filename)
 {
 	t_pngdata	png;
 	int			fd;
-	int			len;
+	ssize_t		len;
 	uint8_t		*ptr;
 	uint8_t		buf[1000000]; //TODO: this is bad
 	t_img		result;
 
-	fd = open(filename, O_RDONLY);
+	fd = _open(filename, O_RDONLY | O_BINARY);
 	if (fd < 0)
 		error_log(EC_OPEN);
-	len = read(fd, buf, sizeof(uint8_t) * 1000000);
+	#ifdef _WINDOWS_
+		len = _read(fd, buf, sizeof(uint8_t) * 1000000);
+	#else
+		len = read(fd, buf, sizeof(uint8_t) * 1000000);
+	#endif
 	ft_bzero(&png, sizeof(t_pngdata));
 	ptr = buf;
-	while (ft_strcmp(++ptr, "IHDR") != 0 && len > 0)
+	printf("buf: '%s' \n len is : %i \n", buf, len);
+	while (ft_strcmp(++ptr, "IHDR") != 0 /*&& len > 0*/)
 		len--;
 	ptr += 4;
+	//#ifndef _WINDOWS_
+	//printf("len after IHDR is %i \n", len);
+	
+	//png.width = rev_bytes(*(uint32_t *)ptr);
+	//png.height = rev_bytes(*(uint32_t *)(ptr + 4));
 	png.width = rev_bytes(*(uint32_t *)ptr);
 	png.height = rev_bytes(*(uint32_t *)(ptr + 4));
+
+	//#else
+	//png.width = rev_bytes(rev_bytes(*(uint32_t *)ptr));
+	//png.height = rev_bytes(rev_bytes(*(uint32_t *)(ptr + 4)));
+	printf("windows image header read; img size %i x %i \n", png.width, png.height);
+	//#endif
 	if (png.width >= 165 || png.height >= 165)
 	{
-		printf("images with size over ~165 pixels are unsupported, pls fix the png reader! (image was %s , assumed size %ix%i\n", filename, png.width, png.height);
+		printf("images with size over ~165 pixels are unsupported, pls fix the png reader! (image was %s , assumed size %i x %i\n", filename, png.width, png.height);
 		exit(0);
 	}
 	ptr += 8;

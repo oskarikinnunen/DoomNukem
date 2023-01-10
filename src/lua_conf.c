@@ -36,6 +36,7 @@ void	load_images(lua_State *lua, t_sdlcontext *sdl)
 	i = 1;
 	while (i <= sdl->imagecount)
 	{
+		printf("loading image %i \n", i);
 		sprintf(indexer, "eval=images[%i]", i);
 		luaL_dostring(lua, indexer);
 		lua_getglobal(lua, "eval");

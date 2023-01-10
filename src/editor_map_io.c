@@ -76,7 +76,7 @@ void	save_chunk(char *filename, char *chunkname, t_list *content)
 	int			fd;
 
 	l = content;
-	fd = fileopen(filename, O_RDWR | O_APPEND);
+	fd = fileopen(filename, O_RDWR | O_APPEND | O_BINARY);
 	written = 0;
 	write(fd, chunkname, CHUNKSIZE);
 	while (l != NULL)
@@ -97,15 +97,17 @@ t_list *load_chunk(char *filename, char *chunkname, size_t size)
 {
 	int		fd;
 	int		br;
+	int		total_br;
 	char	buf[CHUNKSIZE + 1];
 	t_list	*result;
 	int		i;
 
-	fd = open(filename, O_RDONLY, 0666);
+	fd = _open(filename, O_RDONLY | O_BINARY, 0666);
 	if (fd == -1)
 		return (NULL);
 	ft_bzero(buf, CHUNKSIZE + 1);
-	br = read(fd, buf, CHUNKSIZE);
+	br = _read(fd, buf, CHUNKSIZE);
+	total_br = br;
 	while (br > 0)
 	{
 		if (ft_strcmp(chunkname, buf) == 0)
@@ -115,8 +117,10 @@ t_list *load_chunk(char *filename, char *chunkname, size_t size)
 			close(fd);
 			return (result);
 		}
+		total_br += br;
 		br = read(fd, buf, CHUNKSIZE);
 	}
+	printf("total bytes read: %i \n", total_br);
 	close(fd);
 	return (NULL);
 }
