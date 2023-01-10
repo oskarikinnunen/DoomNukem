@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/05 18:14:28 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/10 15:34:26 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,15 @@ int	editorloop(t_sdlcontext sdl)
 		update_deltatime(&ed.world.clock);
 		ed.gamereturn = editor_events(&ed);
 		bake_lights(&sdl.render, &ed.world);
-		if (!ed.player.locked)
-			moveplayer(&ed.player, &ed.hid.input, ed.clock, &ed.world);
+		/* if (!ed.player.locked)
+			moveplayer(&ed.player, &ed.hid.input, ed.clock, &ed.world); */
 		update_render(&sdl.render, &ed.player);
 		screen_blank(sdl);
 		
 		render_start(&sdl.render);
 		update_world3d(&ed.world, &sdl.render);
+		if (!ed.player.locked)
+			moveplayer(&ed.player, &ed.hid.input, ed.clock, &ed.world);
 		update_editor_toolbar(&ed, &ed.toolbar_gui);
 		if (ed.tool != NULL)
 		{

@@ -12,6 +12,7 @@ typedef struct s_player
 	t_anim			jump;
 	float			height;
 	struct s_gun	*gun;
+	float			collision_radius;
 }	t_player;
 
 #endif
