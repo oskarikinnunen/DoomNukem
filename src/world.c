@@ -57,21 +57,25 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 	found = 0;
 	while (found < world->entitycache.existing_entitycount)
 	{
-		ent = &world->entitycache.entities[i];
+		ent = world->entitycache.sorted_entities[i];
 		if (ent->status != es_free)
 		{
-			if (ent->status == es_active && !ent->hidden && is_entity_culled(world, render, ent) == false)
+			if (ent->status == es_active && !ent->hidden)
 			{
-				render_entity(sdl, render, ent);
+				if (sdl->bitmask2 == true)
+				{
+					memcpy(sdl->window_surface->pixels, sdl->surface->pixels, sizeof(uint32_t) * sdl->window_w * sdl->window_h);
+					SDL_UpdateWindowSurface(sdl->window);
+					usleep(1000000);
+				}
+				if (is_entity_culled(world, render, ent) == false)
+					render_entity(sdl, render, ent);
 			}
 			found++;
 		}
 		i++;
 	}
 }
-
-#define MAX(x, y) (((x) > (y)) ? (x) : (y))
-#define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
 /*
 right = 8
@@ -90,18 +94,6 @@ left = 3
 0 0 0 1 1 1 1 1 0 0 0 0 0 0 0 0
 */
 
-static uint16_t mask_x(int x, int left_x, int right_x)
-{
-	const uint16_t	row = ~0;
-	return(((row << MAX(0, left_x - x))& ~(row << MAX(0, right_x - x))));
-}
-
-/*
-function coverage(x, left, right)
-return (~0 >> max(0, left - x))
-& ~(~0 >> max(0, right - x))
-*/
-
 static void bitmask_to_pixels(t_sdlcontext *sdl)
 {
 	if (sdl->bitmask1 == true)
@@ -113,10 +105,16 @@ static void bitmask_to_pixels(t_sdlcontext *sdl)
 	{
 		for (int x = 0; x < sdl->window_w; x++)
 		{
-			if ((sdl->bitmask.bitmask[(y / 8) * sdl->bitmask.bitmask_chunks.x + (x / 16)] >> ((y % 8) * 16) + (x % 16) & 1) == 0)
+			if (sdl->zbuffer[y * sdl->window_w + x] > 1.0f)
 				continue;
-			clr = INT_MAX;
 			float w = sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0;
+			if (sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0 > 9999.0f)
+			{
+				w = sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max1;
+				if ((sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].mask >> ((((y % 8)) * 8) + (7 - (x % 8))) & 1) == 0)
+					continue;
+			}
+			clr = INT_MAX;
 			w = w / max_w;
 			uint8_t p = 255 - ft_clamp(w * 255.0f, 0, 255);
 			Uint32 alpha = clr & 0xFF000000;
@@ -128,6 +126,9 @@ static void bitmask_to_pixels(t_sdlcontext *sdl)
 		}
 	}
 }
+
+/*
+
 void insertionSort(t_entity arr[], int n)
 {
     int i, key, j;
@@ -142,6 +143,7 @@ void insertionSort(t_entity arr[], int n)
         arr[j + 1] = key;
     }
 }
+*/
 static void sort_entitycache(t_world *world, t_vector3 location)
 {
 	int			i;
@@ -149,22 +151,28 @@ static void sort_entitycache(t_world *world, t_vector3 location)
 	int			j;
 	int			found;
 	t_entity	*ent;
+	int e;
 
 	i = 0;
 	found = 0;
-	while (found < world->entitycache.existing_entitycount && 0) // disabled this cache isnt in use remember
+	while (found < world->entitycache.existing_entitycount) //this cache isnt in use remember
 	{
 		ent = world->entitycache.sorted_entities[i];
+		key = ent;
 		if (ent->status != es_free)
 		{
-			key = ent;
 			j = i - 1;
-			while (j >= 0 && world->entitycache.sorted_entities[i]->status != es_free && vector3_dist(world->entitycache.sorted_entities[i]->transform.position, location) < vector3_dist(key->transform.position, location))
+			while (j >= 0 && world->entitycache.sorted_entities[j]->occlusion.z_dist[1] > key->occlusion.z_dist[1])
 			{
-				
+				if (ent->status != es_free)
+				{
+					world->entitycache.sorted_entities[j + 1] = world->entitycache.sorted_entities[j];
+				}
+				j--;
 			}
 			found++;
 		}
+		world->entitycache.sorted_entities[j + 1] = key;
 		i++;
 	}
 }
@@ -192,7 +200,8 @@ void update_world3d(t_world *world, t_render *render)
 		}
 		i++;
 	}*/
-	sort_entitycache()
+	update_frustrum_culling(world, sdl, render);
+	sort_entitycache(world, render->camera.position);
 	update_entitycache(sdl, world, render);
 	if (!sdl->global_wireframe && !world->skybox.hidden)
 		render_entity(sdl, render, &world->skybox);

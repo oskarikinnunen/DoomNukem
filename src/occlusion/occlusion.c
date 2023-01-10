@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 14:40:03 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/06 22:03:50 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/10 12:28:43 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,14 +139,10 @@ void default_entity_occlusion_settings(t_entity *e, t_world *world)
 {
 	e->occlusion.is_backface_cull = true;
 	e->occlusion.is_occluded = false;
-	e->occlusion.occlude = true;
-	e->occlusion.cull = true;
 }
 
 void default_floor_occlusion_settings(t_meshtri *f, t_world *world)
 {
-	f->entity->occlusion.cull = true;
-	f->entity->occlusion.occlude = false;
 	f->entity->occlusion.is_backface_cull = false;
 	f->entity->occlusion.is_occluded = false;
 }
@@ -156,34 +152,25 @@ void default_wall_occlusion_settings(t_wall *w, t_world *world)
 {
 	w->entity->occlusion.is_backface_cull = false;
 	w->entity->occlusion.is_occluded = false;
-	w->entity->occlusion.occlude = true;
-	w->entity->occlusion.cull = true;
 }
 
 bool is_entity_culled(struct s_world *world, t_render *render, t_entity *entity)
 {
+	uint32_t clr;
+
 	if (render->occlusion.occlusion == false)
 		return(false);
-	if (is_entity_frustrum_culled(*world->sdl, render, entity) == false)
+	if (entity->occlusion.is_occluded == false)
 	{
-		if (is_entity_peripheral_culled(*world->sdl, render, entity) == false)
+		entity->occlusion.is_occluded = is_entity_bitmask_culled(world->sdl, render, entity);
+		if (render->occlusion.cull_box == true)
 		{
-			if (is_entity_bitmask_culled(world->sdl, render, entity) == false)
-			{
-				if (render->occlusion.cull_box == true)
-					draw_wireframe(*world->sdl, render, entity, CLR_GREEN);
-				return(false);
-			}
+			if (entity->occlusion.is_occluded == true)
+				clr = CLR_RED;
 			else
-			{
-				if (render->occlusion.cull_box == true)
-						draw_wireframe(*world->sdl, render, entity, CLR_RED);
-				render->rs.occlusion_cull_amount++;
-				return(true);
-			}
+				clr = CLR_GREEN;
+			draw_wireframe(*world->sdl, render, entity, clr);
 		}
 	}
-	else
-		return(true);
-	return (false);
+	return(entity->occlusion.is_occluded);
 }

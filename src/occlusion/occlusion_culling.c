@@ -77,6 +77,8 @@ void calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity)
 	t_box		b;
 	int			i;
 
+	render->worldspace_ptri_count = 0;
+	render->screenspace_ptri_count = 0;
 	if (entity->obj->bounds.type == bt_plane)
 	{
 		b = get_entity_box_transformed(entity);
@@ -92,6 +94,9 @@ void calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity)
 		t.p[0] = vector3_to_quaternion(b.v[0]);
 		t.p[1] = vector3_to_quaternion(b.v[1]);
 		t.p[2] = vector3_to_quaternion(b.v[3]);
+		t.t[0] = vector2_to_texture((t_vector2){0, 0});
+		t.t[1] = vector2_to_texture((t_vector2){0, 1});
+		t.t[2] = vector2_to_texture((t_vector2){1, 1});
 		triangle_to_projection(sdl, render, t);
 	}
 	else if (entity->obj->bounds.type == bt_box)
@@ -112,6 +117,9 @@ void calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity)
 			t.p[0] = vector3_to_quaternion(b.v[i]);
 			t.p[1] = vector3_to_quaternion(b.v[(i + 1) % 4]);
 			t.p[2] = vector3_to_quaternion(b.v[((i + 1) % 4) + 4]);
+			t.t[0] = vector2_to_texture((t_vector2){0, 0});
+			t.t[1] = vector2_to_texture((t_vector2){0, 1});
+			t.t[2] = vector2_to_texture((t_vector2){1, 1});
 			triangle_to_projection(sdl, render, t);
 			i++;
 		}
@@ -151,18 +159,12 @@ bool is_entity_bitmask_culled(t_sdlcontext *sdl, t_render *render, t_entity *ent
 	t_square	s;
 	const __uint128_t max = ~0;
 
-	render->worldspace_ptri_count = 0;
-	render->screenspace_ptri_count = 0;
-	calculate_triangles(*sdl, render, entity);
-	get_min_max_from_triangles(&s.min, &s.max, render->screenspace_ptris, render->screenspace_ptri_count);
-	float w = vector3_dist(vector3_add(entity->obj->bounds.origin, entity->transform.position), render->camera.position);
+	s = entity->occlusion.box;
+	float w = entity->occlusion.z_dist[1];
 	for (int y = s.min.y; y < s.max.y; y += 8)
 	{
 		for (int x = s.min.x; x < s.max.x; x += 8)
 		{
-		//	printf("x %d y %d\n", x, y);
-		//	if (sdl->bitmask.bitmask[(y / 8) * sdl->bitmask.chunk_size.x + (x / 16)] != max)
-		//		return(false);
 			if (w < sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0)
 				return(false);
 		}

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 13:54:56 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/03 14:58:11 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/10 12:45:39 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,23 @@ typedef struct s_rectangle
 
 typedef struct s_square //TODO: maybe rectangle?
 {
-	t_vector2 min;
-	t_vector2 max;
+	t_point min;
+	t_point max;
 }	t_square;
+
+typedef struct	s_triangle
+{
+	t_quaternion	p[3];
+	t_texture		t[3];
+	uint32_t		clr;
+}	t_triangle;
+
+typedef struct s_point_triangle
+{
+	t_point			p[3];
+	t_texture		t[3];
+	uint32_t		clr;
+}	t_point_triangle;
 
 typedef struct s_edge
 {

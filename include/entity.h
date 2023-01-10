@@ -107,13 +107,12 @@ typedef struct s_entitycache
 }	t_entitycache;
 
 /* OCCLUSION FOLDER */
-void update_peripheral_culling(t_sdlcontext sdl, t_render *render, t_entity *entity);
-void update_occlusion_culling(t_sdlcontext sdl, t_render *render, t_entity *entity);
+void render_bitmask_row(int ax, int bx, int aw, int bw, int y, t_sdlcontext *sdl);//test case for rendering bitmask straight from rendering
+
+void update_frustrum_culling(struct s_world *world, t_sdlcontext *sdl, t_render *render);
 
 bool is_entity_culled(struct s_world *world, t_render *render, t_entity *entity);
 bool is_entity_frustrum_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
-bool is_entity_peripheral_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
-bool is_entity_occlusion_culled(struct s_world *world, t_render *render, t_entity *cull);
 bool is_entity_bitmask_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 
 void	calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity);
@@ -122,7 +121,6 @@ int		calculate_tris_from_square(t_square s, t_entity *ent, t_render *render);
 /* RENDERING */
 void	render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 void	draw_wireframe(t_sdlcontext sdl, t_render *render, t_entity *e, uint32_t clr);
-void	draw_edges(t_sdlcontext sdl, t_render *render, t_entity *e, uint32_t clr);
 void	render_worldspace(t_render *render, t_entity *entity);
 void	render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 

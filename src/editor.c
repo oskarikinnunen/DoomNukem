@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/06 16:13:12 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/10 09:58:28 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ int	editorloop(t_sdlcontext sdl)
 	ed.gamereturn = game_continue;
 	ed.render = init_render(sdl, &ed.world);
 	player_init(&ed.player, &sdl, &ed.world);
-	sdl.bitmask.bitmask = malloc(sizeof(__uint128_t) * ((sdl.window_h * sdl.window_w) / 128));
 	sdl.bitmask.tile = malloc(sizeof(t_tile) * ((sdl.window_h * sdl.window_w) / 64));
 	sdl.bitmask.bitmask_chunks.x = sdl.window_w / 16;
 	sdl.bitmask.bitmask_chunks.y = sdl.window_h / 8;

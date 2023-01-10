@@ -89,20 +89,6 @@ typedef struct s_audio
 	t_audiosample		sample[10];
 }	t_audio;
 
-typedef struct	s_triangle
-{
-	t_quaternion	p[3];
-	t_texture		t[3];
-	uint32_t		clr;
-}	t_triangle;
-
-typedef struct s_point_triangle
-{
-	t_point			p[3];
-	t_texture		t[3];
-	uint32_t		clr;
-}	t_point_triangle;
-
 typedef struct s_render_statistics
 {
 	bool		statistics; // turns on, off
@@ -256,7 +242,7 @@ void	join_text_to_surface(SDL_Surface *dest, SDL_Surface *src, t_point pos, uint
 void	join_text_boxed_to_surface(t_sdlcontext *sdl, SDL_Surface *src, t_point pos, t_point padding);
 
 /*occlusion*/
-void	get_min_max_from_triangles(t_vector2 *min, t_vector2 *max, t_point_triangle *t, int count);
+void	set_square_from_triangles(t_occlusion *occl, t_point_triangle *t, int count);
 void	render_bitmask(t_sdlcontext *sdl, t_render *render);
 
 /*Render helper*/
