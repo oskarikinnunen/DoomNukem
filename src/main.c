@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/27 11:19:43 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/09 16:16:15 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "png.h"
 #include "game_lua.h"
 #include "objects.h"
-
+#include "file_io.h"
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else
@@ -96,6 +96,9 @@ static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 	//t_object *o = get_object_by_name(*sdl, "cyborg");
 	//parseanim(o, "walk");
 	/* create context here, call gl clear in render start, glbegin in drawtriangles etc */
+
+	//save_filecontent("test.world", "assets/objects/barrel.obj");
+	
 	SDL_GLContext glc = SDL_GL_CreateContext(sdl->window);
 	t_point	drawablesize;
 	SDL_GL_GetDrawableSize(sdl->window, &drawablesize.x, &drawablesize.y);

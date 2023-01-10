@@ -183,6 +183,7 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 
 	obj = entity->obj;
 	entity->map = malloc(sizeof(t_map) * entity->obj->material_count);
+	
 	if (obj->uv_count == 0)
 	{
 		free(entity->map);
@@ -274,11 +275,12 @@ void start_lightbake(t_render *render, t_world *world)
 	uint32_t time_start;
 	uint32_t time_end;
 	uint32_t time;
+	//uint8_t yes : 2;
 
 	world->lights_count = 1;
 	world->lights[0].origin = world->player->transform.position;
 	world->lights[0].radius = 250.0f;
-	world->lights[0].shadows = false;
+	world->lights[0].shadows = true;
 	for_all_entities(world, create_lightmap_for_entity);
 	i = 0;
 	while (i < world->lights_count)
@@ -299,6 +301,11 @@ void start_lightbake(t_render *render, t_world *world)
 	/*time_end = SDL_GetTicks();
 	time = time_end - time_start;*/
 	printf("lighting start tick: %i\n", SDL_GetTicks());
+}
+
+void	save_entity_lightmap(t_entity *entity)
+{
+	//entity->map.
 }
 
 void dynamic_light(t_entity *entity, t_world *world)

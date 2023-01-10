@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/03 15:50:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/09 17:12:38 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -646,15 +646,10 @@ void	gui_string_edit(char *str, t_autogui	*gui)
 	else
 		sprintf(bstr, "\xE6 %s\xE4", str);
 	done = false;
-	/*if (blink_status == 0)
-		sprintf(bstr, "\xE6 %s\x5C", str);
-	if (blink_status == 1)
-		sprintf(bstr, "\xE6 %s\x7C", str);
-	if (blink_status == 2)
-		sprintf(bstr, "\xE6 %s\x2F", str);
-	if (blink_status == 3)
-		sprintf(bstr, "\xE6 %s-", str);*/
-	orig = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
+	if (ft_strlen(str) != 0)
+		orig = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
+	else
+		orig = print_text_boxed(gui->sdl, " ", gui_currentpos(gui));
 	rect = empty_rect();
 	if (gui_colored_button(bstr, gui, AMBER_4))
 	{
@@ -674,7 +669,8 @@ void	gui_string_edit(char *str, t_autogui	*gui)
 				ft_bzero(bstr, 40);
 				sprintf(bstr, "\xE6 %s ", str);
 				rect = print_text_boxed(gui->sdl, bstr, orig.position);
-				join_surfaces(gui->sdl->window_surface, gui->sdl->ui_surface);
+				//join_surfaces(gui->sdl->window_surface, gui->sdl->ui_surface);
+				ft_memcpy(gui->sdl->window_surface->pixels, gui->sdl->surface->pixels, gui->sdl->window_w * gui->sdl->window_h * sizeof(uint32_t));
 				SDL_UpdateWindowSurface(gui->sdl->window);
 				if (e.type == SDL_MOUSEBUTTONDOWN
 					|| (e.type == SDL_KEYDOWN && (e.key.keysym.sym == SDLK_RETURN ||

@@ -186,6 +186,7 @@ typedef struct s_sdlcontext
 	struct s_object			*objects;
 	int						ps1_tri_div;
 	bool					global_wireframe;
+	bool					render_grid;
 	bool					lighting_toggled;
 	uint32_t				objectcount;
 	t_font					font;

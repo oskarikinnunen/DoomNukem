@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 14:52:25 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/05 20:27:35 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/09 16:52:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	int from = 0;
 	int	to = 1;
 	t_point cur;
-	if (ed->clock.prev_time < prev_changetime + 1000)
+	if (ed->world.clock.prev_time < prev_changetime + 1000)
 	{
 		i = -5;
 		while (i < 6)

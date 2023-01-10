@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gun_tool.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:49:59 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/21 17:10:43 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/09 16:53:04 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ void	gun_tool_update(t_editor *ed, t_sdlcontext *sdl)
 		ed->hid.input.aim = dat->gun_aim;
 		gui_end(gui);
 		ed->player.locked = true;
-		moveplayer(&ed->player, &ed->hid.input, ed->clock);
+		moveplayer(&ed->player, &ed->hid.input, ed->world.clock);
 	}
 	if (!dat->recoilgui.hidden)
 	{

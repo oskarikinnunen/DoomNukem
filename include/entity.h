@@ -72,12 +72,19 @@ typedef enum e_prefabtype
 	pft_eventtrigger
 }	t_prefabtype;
 
-/*typedef struct s_prefab
+typedef struct s_prefab
 {
-	t_object		object_name[64];
+	t_object		*object;
+	char			object_name[64];
 	t_prefabtype	prefabtype;
-	uint16_t		prefab_id;
-}	t_prefab;*/
+}	t_prefab;
+
+/*
+	//assign_prefabs()
+	draw prefab_menu
+		for light
+
+*/
 
 typedef struct s_gun
 {

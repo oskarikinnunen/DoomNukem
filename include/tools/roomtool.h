@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:42:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/06 21:00:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/10 15:50:21 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ typedef struct s_roomtooldata
 	t_wall			wall;
 	t_wall			*ed_wall;
 	t_vector2		*held_edge;
+	t_vector2		*temp_edges;
+	uint32_t		temp_height;
 	bool			room_should_recalculate;
 	t_floorcalc		fc;
 }	t_roomtooldata;

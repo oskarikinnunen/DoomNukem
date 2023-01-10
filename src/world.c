@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/06 22:06:28 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/10 12:53:30 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,8 @@ void update_world3d(t_world *world, t_render *render)
 		world->ceiling_toggle = !world->ceiling_toggle;
 		toggle_ceilings(world);
 	}
+	if (gui_shortcut_button("Toggle grids:", 'G', world->debug_gui))
+		world->sdl->render_grid = !world->sdl->render_grid;
 	if (gui_labeled_float_slider("Audio max:", &world->sdl->audio.max_volume, 0.01f, world->debug_gui))
 		update_maxvolume(&world->sdl->audio);
 	if (gui_button("Test audio", world->debug_gui))
@@ -152,6 +154,8 @@ void update_world3d(t_world *world, t_render *render)
 void	init_entity(t_entity *entity, t_world *world)
 {
 	entity->obj = get_object_by_name(*world->sdl, entity->object_name);
+	entity->lightmap = NULL;
+	entity->map = NULL; //TODO: load maps here
 }
 
 void	scale_skybox_uvs(t_object *obj)
@@ -164,32 +168,6 @@ void	scale_skybox_uvs(t_object *obj)
 		obj->uvs[i] = vector2_mul(obj->uvs[i], 10.0f);
 		i++;
 	}
-}
-
-/*int	fileopen(char *filename, int flags)
-{
-	int	fd;
-
-	fd = open(filename, flags, 0666);
-	if (fd == -1)
-		error_log(EC_WRITE);
-	return (fd);
-}*/
-
-static void load_walltextures(t_world *world, t_sdlcontext sdl) //TODO: Deprecated
-{
-	t_list		*l;
-	t_wall		*wall;
-	t_material	*mat;
-
-	/*l = world->wall_list;
-	while (l != NULL)
-	{
-		wall = (t_wall *)l->content;
-		mat = &wall->object.materials[0];
-		mat->img = get_image_by_name(sdl, mat->texturename);
-		l = l->next;
-	}*/
 }
 
 void	spawn_npc(t_world *world, char *objectname, t_vector3 position, t_sdlcontext *sdl)
@@ -236,14 +214,13 @@ t_room	load_room(char *filename)
 	return (result);
 }
 
-void	load_room_new(char *filename, t_room *room)
+void	load_room_new(char	*worldname, char *filename, t_room *room)
 {
-	t_list	*temp;
-	int		fd;
+	t_list			*temp;
+	int				fd;
 
-	fd = fileopen(filename, O_RDONLY);
-	//ft_bzero(&result, sizeof(t_room));
-	//ft_strcpy(result.name, filename);
+	fd = load_filecontent_fd(worldname, filename);
+	//load_filecontent()
 	temp = load_chunk(filename, "WALL", sizeof(t_wall));
 	room->walls = list_to_ptr(temp, &room->wallcount);
 	listdel(&temp);
@@ -253,6 +230,8 @@ void	load_room_new(char *filename, t_room *room)
 	temp = load_chunk(filename, "EDGE", sizeof(t_vector2));
 	room->edges = list_to_ptr(temp, &room->edgecount);
 	listdel(&temp);
+	close(fd);
+	remove(filename);
 }
 
 static void	startup_init_room(t_world *world, t_room *r)
@@ -288,7 +267,7 @@ static void	startup_init_room(t_world *world, t_room *r)
 	}
 }
 
-void	load_rooms(t_world *world, t_sdlcontext *sdl)
+void	load_rooms(t_world *world, char *worldname, t_sdlcontext *sdl)
 {
 	t_list	*l;
 	t_room	*r;
@@ -299,13 +278,7 @@ void	load_rooms(t_world *world, t_sdlcontext *sdl)
 	while (l != NULL)
 	{
 		r = (t_room *)l->content;
-		//temp = *r;
-		//*r = load_room(r->name);
-		load_room_new(r->name, r);
-		//ft_strcpy(r->floortex, temp.floortex);
-		//r->height = temp.height; //TODO: remove these and bzero all room pointers before loading room so all other values come from the list room
-		//r->ceiling_height = temp.ceiling_height;
-		
+		load_room_new(worldname, r->name, r);
 		startup_init_room(world, r);
 		l = l->next;
 	}
@@ -495,39 +468,55 @@ void	load_cache_from_list(t_world *world, t_list *l)
 	
 }
 
+void	init_skybox(t_world *world)
+{
+	ft_bzero(&world->skybox, sizeof(t_entity));
+	world->skybox.obj = get_object_by_name(*world->sdl, "cube");
+	world->skybox.obj->materials[0].img = get_image_by_name(*world->sdl, "grid_d.cng");
+	world->skybox.transform.scale = vector3_mul(vector3_one(), 300.0f);
+	world->skybox.transform.position = (t_vector3){1500.0f, 1500.0f, 1497.5f};
+}
+
+char	*full_worldpath(char *name)
+{
+	static char	full[128];
+
+	ft_bzero(full, sizeof(full));
+	ft_strcat(full, "worlds/");
+	ft_strcat(full, name);
+	return (full);
+}
+
+char	*worldname(char	*filename)
+{
+	char	*occurence;
+
+	occurence = ft_strstr(filename, "worlds/");
+	if (occurence != NULL)
+		return(occurence + sizeof("worlds"));
+	return (filename);
+}
+
 t_world	load_world(char *filename, t_sdlcontext *sdl)
 {
 	t_world	world;
 
 	ft_bzero(&world, sizeof(t_world));
+	ft_strcpy(world.name, worldname(filename));
 	world.sdl = sdl;
 	world.guns = load_chunk(filename, "GUNS", sizeof(t_gun));
 	world.debugconsole = init_debugconsole();
 	world.entitycache = init_entitycache(1024);
-	
 	t_list	*entitylist = load_chunk(filename, "ENT_", sizeof(t_entity));
 	load_cache_from_list(&world, entitylist);
 	for_all_entities(&world, init_entity);
-
-	world.debug_gui = ft_memalloc(sizeof(t_autogui));
+	world.debug_gui = ft_memalloc(sizeof(t_autogui)); //Y tho?
 	world.roomlist = load_chunk(filename, "RMNM", sizeof(t_room));
-	load_rooms(&world, sdl);
-	
+	load_rooms(&world, filename, sdl);
 	init_guns(&world, sdl);
-	load_walltextures(&world, *sdl);
-	ft_bzero(&world.skybox, sizeof(t_entity));
-	world.skybox.obj = get_object_by_name(*sdl, "cube");
-	world.skybox.obj->materials[0].img = get_image_by_name(*sdl, "grid_d.cng");
-	//scale_skybox_uvs(world.skybox.obj);
-	world.skybox.transform.scale = vector3_mul(vector3_one(), 300.0f);
-	world.skybox.transform.position = (t_vector3){1500.0f, 1500.0f, 1497.5f};
-	//spawn_npc(&world, "cyborg", (t_vector3){500.0f, 500.0f, 0.0f}, &sdl);
-	//world.npcpool[0].destination = (t_vector3){200.0f, 200.0f, 0.0f};
+	init_skybox(&world);
 	ft_bzero(&world.lighting, sizeof(t_lighting));
 	world.lighting.ambient_light = 20;
-	//raycast_new()
-	//for_all_entities(&world, create_lightmap_for_entity);
-	//for_all_entities(&world, create_map_for_entity);
 	return (world);
 }
 
@@ -604,10 +593,12 @@ t_list	*entitycache_to_list(t_entitycache *cache)
 	return (entitylist);
 }
 
-void	save_world(char *filename, t_world world)
+void	save_world(char *namename, t_world world)
 {
-	int	fd;
+	int		fd;
+	char	*filename;
 
+	filename = full_worldpath(namename);
 	fd = fileopen(filename, O_RDWR | O_CREAT | O_TRUNC); //Empty the file or create a new one if it doesn't exist
 	close(fd);
 	printf("Saving world\n");
@@ -621,11 +612,15 @@ void	save_world(char *filename, t_world world)
 	r = world.roomlist;
 	//TODO: 
 	save_chunk(filename, "RMNM", world.roomlist);
+	save_filecontent(filename, "assets/images/something.png");
+	//load_filecontent()
+	//load_filecontent_fd()
 	while (r != NULL)
 	{
 		save_room(*(t_room *)r->content);
+		save_filecontent(filename, (*(t_room *)r->content).name);
+		remove((*(t_room *)r->content).name);
 		r = r->next;
 	}
 	
-	//close(fd);
 }

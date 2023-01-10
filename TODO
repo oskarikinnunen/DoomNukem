@@ -10,12 +10,11 @@ entity
 
 Level editor
 	notes
+	save lightmap to file
+	raycasting for createmode (removing the old raycast) !!
 	find/fix segfaults (protect > 32 edges)
-	grid view
 	(snap split walls)
 	copy split area wall textures
-	raycasting for createmode (removing the old raycast) !!
-	dont calculate lightmaps ever plz
 
 load/save different world (file selector)
 	single file

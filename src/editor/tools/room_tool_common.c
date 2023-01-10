@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:53:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/06 21:43:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/09 19:04:06 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,7 +239,7 @@ void highlight_room(t_editor *ed, t_sdlcontext *sdl, t_room *room, uint32_t colo
 		ws = (t_vector3){room->edges[i].x, room->edges[i].y, room->height};
 		if (color == AMBER_3)
 			rendergrid(&ed->world, ws, 10, CLR_GRAY);
-		else
+		else if (sdl->render_grid)
 			rendergrid(&ed->world, ws, 10, CLR_BLACKGRAY);
 		i++;
 	}
@@ -257,7 +257,14 @@ void highlight_room(t_editor *ed, t_sdlcontext *sdl, t_room *room, uint32_t colo
 			float zl = room->height + w.z_offset;
 			float zh = room->height + w.z_offset + w.height;
 			
-			//if (joined)
+			if (is_joined(*w.edgeline.start, room, &ed->world)
+				&& is_joined(*w.edgeline.end, room, &ed->world))
+			{
+				render_gizmo3d(sdl, vector3_add(v2tov3(*w.edgeline.start),(t_vector3){.z = zl}), 2, CLR_GREEN);
+				render_gizmo3d(sdl, vector3_add(v2tov3(*w.edgeline.end),(t_vector3){.z = zl}), 2, CLR_GREEN);
+				render_gizmo3d(sdl, vector3_add(v2tov3(*w.edgeline.start),(t_vector3){.z = zh}), 2, CLR_GREEN);
+				render_gizmo3d(sdl, vector3_add(v2tov3(*w.edgeline.end),(t_vector3){.z = zh}), 2, CLR_GREEN);
+			}
 			render_ray(sdl,
 				vector3_add(v2tov3(*w.edgeline.start),(t_vector3){.z = zh}),
 				vector3_add(v2tov3(*w.edgeline.end),(t_vector3){.z = zh}));

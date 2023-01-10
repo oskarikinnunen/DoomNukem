@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/05 20:51:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/09 17:38:41 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@ struct s_autogui;
 
 typedef struct s_world
 {
+	char				name[32];
 	t_player			*player;
 	t_clock				clock;
 	t_debugconsole		debugconsole;
@@ -114,7 +115,6 @@ typedef struct s_world
 	bool				lighting_baked;
 	t_list				*objectmetadatalist; //Move to sdl, this is only used when objects are initialized
 	t_npc				npcpool[128];
-	//t_list				*wall_list;
 	t_list				*roomlist;
 	t_entitycache		entitycache;
 	t_entity			skybox;

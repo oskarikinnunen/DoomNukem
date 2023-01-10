@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/06 21:39:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/09 17:38:58 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ typedef struct s_editor
 {
 	t_world				world;
 	t_autogui			toolbar_gui;
-	t_clock				clock;
+//	t_clock				clock;
 	t_hid_info			hid;
 	t_player			player;
 	t_gamereturn		gamereturn;
@@ -109,6 +109,7 @@ struct	s_mouse;
 
 void				update_editor_toolbar(t_editor *ed, t_autogui *toolbar);
 t_gamereturn		editor_events(t_editor *ed);
+void				editor_load_and_init_world(t_editor *ed, char	*worldname, t_sdlcontext *sdl);
 void				move_editor(t_editor *ed);
 void				savemap(t_editor *ed, char *filename);
 bool				object_lookedat(t_editor *ed, t_sdlcontext sdl, t_object *obj);
