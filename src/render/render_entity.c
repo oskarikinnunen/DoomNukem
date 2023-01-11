@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_entity.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/06 19:14:28 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/11 10:53:05 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,51 +15,6 @@
 #include "bresenham.h"
 #include "objects.h"
 #include "vectors.h"
-
-//TODO: Legacy occlusion using deprecated after occlusion gets updated
-void clipped(t_render *render, t_sdlcontext sdl)
-{
-	int i = 0;
-	int start = 0;
-	int end = 0;
-
-	t_triangle	triangles[200];
-	t_triangle	clipped[2];
-	while (i < render->occ_calc_tri_count)
-	{
-		triangles[end++] = render->occ_calc_tris[i];
-		int nnewtriangles = 1;
-		for (int p = 0; p < 4; p++)
-		{
-			int ntristoadd = 0;
-			while (nnewtriangles > 0)
-			{
-				t_triangle test;
-				test = triangles[start++];
-				nnewtriangles--;
-				switch (p)
-				{
-				case 0: ntristoadd = clip_triangle_against_plane((t_vector3){0.0f, 0.0f, 0.0f}, (t_vector3){0.0f, 1.0f, 0.0f}, test, clipped); break;
-				case 1: ntristoadd = clip_triangle_against_plane((t_vector3){0.0f, (float)(sdl.window_h * sdl.resolution_scaling) - 1.0f, 0.0f}, (t_vector3){0.0f, -1.0f, 0.0f}, test, clipped); break;
-				case 2: ntristoadd = clip_triangle_against_plane((t_vector3){0.0f, 0.0f, 0.0f}, (t_vector3){1.0f, 0.0f, 0.0f}, test, clipped); break;
-				case 3: ntristoadd = clip_triangle_against_plane((t_vector3){(float)(sdl.window_w * sdl.resolution_scaling) *  - 1.0f, 0.0f, 0.0f}, (t_vector3){-1.0f, 0.0f, 0.0f}, test, clipped); break;
-				}
-				for (int w = 0; w < ntristoadd; w++)
-				{
-					triangles[end++] = clipped[w];
-				}
-			}
-			nnewtriangles = end - start;
-		}
-		while (start < end)
-		{
-			render->occ_draw_tris[render->occ_tri_count++] = triangles[start++];
-		}
-		start = 0;
-		end = 0;
-		i++;
-	}
-}
 
 static t_quaternion quaternion_to_screenspace(t_mat4x4 matproj, t_quaternion q, t_sdlcontext sdl)
 {
@@ -98,7 +53,6 @@ void render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 {
 	render_worldspace(render, entity);
 	render_quaternions(sdl, render, entity);
-	render->rs.render_count++;
 }
 
 

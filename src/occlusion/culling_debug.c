@@ -3,92 +3,97 @@
 /*                                                        :::      ::::::::   */
 /*   culling_debug.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 14:59:10 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/06 19:41:55 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/11 10:25:34 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-void get_min_max_from_triangles(t_vector2 *min, t_vector2 *max, t_triangle *t, int count)
+void set_square_from_triangles(t_occlusion *occl, t_point_triangle *t, int count)
 {
-	t_vector3	v;
+	t_square	*s;
+	t_point		v;
+	float		dist;
 	int			i;
 
-	max->x = -1000000000;
-	max->y = -1000000000;
-	min->x = 1000000000;
-	min->y = 1000000000;
+	s = &occl->box;
+	s->max.x = -1000000000;
+	s->max.y = -1000000000;
+	s->min.x = 1000000000;
+	s->min.y = 1000000000;
+	occl->z_dist[0] = -100000.0f;
+	occl->z_dist[1] = 100000.0f;
 	i = 0;
 	while (i < count)
 	{
 		for (int j = 0; j < 3; j++)
 		{
-			v = t[i].p[j].v;
-			if (v.x < min->x)
-				min->x = v.x;
-			if (v.x > max->x)
-				max->x = v.x;
-			if (v.y < min->y)
-				min->y = v.y;
-			if (v.y > max->y)
-				max->y = v.y;
+			v = t[i].p[j];
+			if (v.x < s->min.x)
+				s->min.x = v.x;
+			if (v.x > s->max.x)
+				s->max.x = v.x;
+			if (v.y < s->min.y)
+				s->min.y = v.y;
+			if (v.y > s->max.y)
+				s->max.y = v.y;
+			dist = 1.0f / t[i].t[j].w;
+			if (dist > occl->z_dist[0])
+				occl->z_dist[0] = dist;
+			if (dist < occl->z_dist[1])
+				occl->z_dist[1] = dist;
 		}
 		i++;
 	}
 }
 
-int calculate_tris_from_square(t_square s, t_entity *ent, t_render *render)
-{
-	t_triangle *t;
-
-	if (ent->obj->bounds.type == bt_box)
-	{
-		t = render->occ_draw_tris;
-		t[0].p[0].v = (t_vector3){.x = s.max.x, .y = s.max.y};
-		t[0].p[1].v = (t_vector3){.x = s.max.x, .y = s.min.y};
-		t[0].p[2].v = (t_vector3){.x = s.min.x, .y = s.max.y};
-		t[1].p[0].v = t[0].p[1].v;
-		t[1].p[1].v = t[0].p[2].v;
-		t[1].p[2].v = (t_vector3){.x = s.min.x, .y = s.min.y};
-		render->occ_tri_count = 2;
-		return(2);
-	}
-	return(render->occ_tri_count);
-}
-
-void draw_wireframe(t_sdlcontext sdl, t_render *render, t_entity *e, uint32_t clr)
+void draw_wireframe(t_sdlcontext sdl, t_entity *e, uint32_t clr)
 {
 	t_square	s;
 	int			i;
 
-	render->occ_tri_count = 0;
-	render->occ_calc_tri_count = 0;
-	calculate_triangles(sdl, render, e);
-	i = 0;
-	get_min_max_from_triangles(&s.min, &s.max, render->occ_draw_tris, render->occ_tri_count);
-	calculate_tris_from_square(s, e, render);
-	while (i < render->occ_tri_count)
-	{
-		drawline(sdl, (t_point){render->occ_draw_tris[i].p[0].v.x, render->occ_draw_tris[i].p[0].v.y}, (t_point){render->occ_draw_tris[i].p[1].v.x, render->occ_draw_tris[i].p[1].v.y}, clr);
-		drawline(sdl, (t_point){render->occ_draw_tris[i].p[2].v.x, render->occ_draw_tris[i].p[2].v.y}, (t_point){render->occ_draw_tris[i].p[1].v.x, render->occ_draw_tris[i].p[1].v.y}, clr);
-		drawline(sdl, (t_point){render->occ_draw_tris[i].p[0].v.x, render->occ_draw_tris[i].p[0].v.y}, (t_point){render->occ_draw_tris[i].p[2].v.x, render->occ_draw_tris[i].p[2].v.y}, clr);
-		i++;
-	}
+	if (e->obj->bounds.type != bt_box)
+		return;
+	s = e->occlusion.box;
+	drawline(sdl, (t_point){s.max.x, s.max.y}, (t_point){s.min.x, s.max.y}, clr);
+	drawline(sdl, (t_point){s.min.x, s.max.y}, (t_point){s.min.x, s.min.y}, clr);
+	drawline(sdl, (t_point){s.min.x, s.min.y}, (t_point){s.max.x, s.min.y}, clr);
+	drawline(sdl, (t_point){s.max.x, s.min.y}, (t_point){s.max.x, s.max.y}, clr);
 }
 
-void draw_edges(t_sdlcontext sdl, t_render *render, t_entity *e, uint32_t clr)
+void bitmask_to_pixels(t_sdlcontext *sdl)
 {
-	t_occlusion o;
-	int			i;
+	if (sdl->render.occlusion.draw_occlusion == false)
+		return;
+	uint32_t	clr;
 
-	o = e->occlusion;
-	i = 0;
-	while (i < o.occluder_count)
+	float max_w = sdl->bitmask.max_dist;
+	for (int y = 0; y < sdl->window_h; y++)
 	{
-		drawline(sdl, (t_point){o.occluder[i].vector[0].x, o.occluder[i].vector[0].y}, (t_point){o.occluder[i].vector[1].x, o.occluder[i].vector[1].y}, clr);
-		i++;
+		for (int x = 0; x < sdl->window_w; x++)
+		{
+			if (sdl->zbuffer[y * sdl->window_w + x] > 1.0f)
+				continue;
+			float w = sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0;
+			if (sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0 - 500.0f > max_w)
+			{
+				w = sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max1;
+				if ((sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].mask >> ((((y % 8)) * 8) + (7 - (x % 8))) & 1) == 0)
+					continue;
+			}
+			clr = INT_MAX;
+			w = (max_w - w) / max_w;
+			w = ft_flerp(0.2f, 0.8f, w);
+			uint8_t p = ft_clamp(w * 255.0f, 0, 255);
+			Uint32 alpha = clr & 0xFF000000;
+			Uint32 red = ((clr & 0x00FF0000) * p) >> 8;
+			Uint32 green = ((clr & 0x0000FF00) * p) >> 8;
+			Uint32 blue = ((clr & 0x000000FF) * p) >> 8;
+			clr = flip_channels(alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF));
+			((uint32_t *)sdl->surface->pixels)[sdl->window_w * y + x] = clr;
+		}
 	}
 }

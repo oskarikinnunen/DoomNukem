@@ -1,4 +1,4 @@
-/* ************************************************************************** */
+	/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
@@ -52,17 +52,55 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 	int			found;
 	t_entity	*ent;
 
+	
 	i = 0;
 	found = 0;
 	while (found < world->entitycache.existing_entitycount)
 	{
-		ent = &world->entitycache.entities[i];
+		ent = world->entitycache.sorted_entities[i];
 		if (ent->status != es_free)
 		{
 			if (ent->status == es_active && !ent->hidden)
-				render_entity(sdl, render, ent);
+			{
+				if (is_entity_culled(sdl, render, ent) == false)
+					render_entity(sdl, render, ent);
+			}
 			found++;
 		}
+		i++;
+	}
+	sdl->render.occlusion.slow_render = false;
+}
+
+static void sort_entitycache(t_world *world, t_vector3 location)
+{
+	int			i;
+	t_entity	*key;
+	int			j;
+	int			found;
+	t_entity	*ent;
+	int e;
+
+	i = 0;
+	found = 0;
+	while (found < world->entitycache.existing_entitycount)
+	{
+		ent = world->entitycache.sorted_entities[i];
+		key = ent;
+		if (ent->status != es_free)
+		{
+			j = i - 1;
+			while (j >= 0 && world->entitycache.sorted_entities[j]->occlusion.z_dist[1] > key->occlusion.z_dist[1])
+			{
+				if (ent->status != es_free)
+				{
+					world->entitycache.sorted_entities[j + 1] = world->entitycache.sorted_entities[j];
+				}
+				j--;
+			}
+			found++;
+		}
+		world->entitycache.sorted_entities[j + 1] = key;
 		i++;
 	}
 }
@@ -74,7 +112,7 @@ void update_world3d(t_world *world, t_render *render)
 	t_wall			wall;
 	t_sdlcontext	*sdl;
 	int				i;
-	
+
 	sdl = world->sdl;
 	ft_bzero(&render->rs, sizeof(t_render_statistics));
 	/*update_npcs(world);
@@ -90,9 +128,13 @@ void update_world3d(t_world *world, t_render *render)
 		}
 		i++;
 	}*/
+	update_frustrum_culling(world, sdl, render);
+	clear_occlusion_buffer(sdl);
+	sort_entitycache(world, render->camera.position);
 	update_entitycache(sdl, world, render);
 	if (!sdl->global_wireframe && !world->skybox.hidden)
 		render_entity(sdl, render, &world->skybox);
+	bitmask_to_pixels(sdl);
 	rescale_surface(sdl);
 	gui_start(world->debug_gui);
 	gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);
@@ -143,6 +185,14 @@ void update_world3d(t_world *world, t_render *render)
 	gui_labeled_int_slider("PS1 tri div:", &sdl->ps1_tri_div, 2.0f, world->debug_gui);
 	if (gui_shortcut_button("Toggle Skybox", 'H', world->debug_gui))
 		world->skybox.hidden = !world->skybox.hidden;
+	if (gui_shortcut_button("Draw Occlusion Buffer", 'Y', world->debug_gui))
+		sdl->render.occlusion.draw_occlusion = !sdl->render.occlusion.draw_occlusion;
+	if (gui_shortcut_button("Toggle Occlusion", 'O', world->debug_gui))
+		render->occlusion.occlusion = !render->occlusion.occlusion;
+	if (gui_shortcut_button("Toggle Occlusion boxes", 'P', world->debug_gui))
+		render->occlusion.occluder_box = !render->occlusion.occluder_box;
+	if (gui_shortcut_button("Render Next Frame Slow", 'U', world->debug_gui))
+		sdl->render.occlusion.slow_render = true;
 	if (gui_shortcut_button("Bake lighting", 'b', world->debug_gui))
 		bake_lighting(render, world);
 	if (gui_shortcut_button("Bake lighting (new)", 'v', world->debug_gui))
@@ -156,6 +206,7 @@ void	init_entity(t_entity *entity, t_world *world)
 	entity->obj = get_object_by_name(*world->sdl, entity->object_name);
 	entity->lightmap = NULL;
 	entity->map = NULL; //TODO: load maps here
+	default_entity_occlusion_settings(entity, NULL);
 }
 
 void	scale_skybox_uvs(t_object *obj)
@@ -206,6 +257,10 @@ t_room	load_room(char *filename)
 	listdel(&temp);
 	temp = load_chunk(filename, "FLOR", sizeof(t_meshtri));
 	result.floors = list_to_ptr(temp, &result.floorcount);
+	listdel(&temp);
+
+	temp = load_chunk(filename, "EDGE", sizeof(t_vector2));
+	result.edges = list_to_ptr(temp, &result.edgecount);
 	listdel(&temp);
 
 	temp = load_chunk(filename, "EDGE", sizeof(t_vector2));
@@ -330,11 +385,13 @@ t_entitycache	init_entitycache(uint32_t cachesize)
 	ft_bzero(&cache, sizeof(t_entitycache));
 	cache.alloc_count = cachesize;
 	cache.entities = ft_memalloc(cache.alloc_count * sizeof(t_entity));
+	cache.sorted_entities = ft_memalloc(cache.alloc_count * sizeof(t_entity *));
 	cache.existing_entitycount = 0;
 	i = 0;
 	while (i < cache.alloc_count)
 	{
 		cache.entities[i].id = i;
+		cache.sorted_entities[i] = &cache.entities[i];
 		i++;
 	}
 	return (cache);
@@ -504,6 +561,7 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 	ft_bzero(&world, sizeof(t_world));
 	ft_strcpy(world.name, worldname(filename));
 	world.sdl = sdl;
+	t_vector2 v;
 	world.guns = load_chunk(filename, "GUNS", sizeof(t_gun));
 	world.debugconsole = init_debugconsole();
 	world.entitycache = init_entitycache(1024);

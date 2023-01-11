@@ -1,6 +1,6 @@
 ﻿resolution_width = 1280
-resolution_height = 720
---[[images =
+resolution_height = 768
+images =
 {
 	"entitytool.png",
 	"linetool.png",

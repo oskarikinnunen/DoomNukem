@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/09 17:38:41 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/11 10:33:57 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,13 +234,14 @@ void	*list_find(t_list *head, void *match, size_t content_size);
 void	list_remove(t_list **head, void *match, size_t content_size);
 
 /* OCCLUSION.C */
-void	update_occlusion(t_sdlcontext sdl, t_render *render);
+void	update_occlusion(struct s_world *world, t_render *render);
 
 //settings
 void	default_entity_occlusion_settings(t_entity *e, t_world *world);
 void	default_floor_occlusion_settings(t_meshtri *f, t_world *world);
 void	default_wall_occlusion_settings(t_wall *w, t_world *world);
 
+void	update_object_bounds(t_object *obj);
 void	update_entity_bounds(t_entity *e);
 void	update_floor_bounds(t_meshtri *f);
 void	update_wall_bounds(t_wall *w);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   moveplayer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/03 13:31:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/11 10:39:48 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,5 +192,5 @@ void	moveplayer(t_player *player, t_input *input, t_clock clock)
 	move_vector = vector3_mul(move_vector, clock.delta * MOVESPEED);
 	player->speed = move_vector;
 	player->transform.position = vector3_add(player->transform.position, move_vector);
-	player->transform.position.z = ft_clampf(player->transform.position.z, player->height, 1000.0f);
+	//player->transform.position.z = ft_clampf(player->transform.position.z, player->height, 1000.0f);
 }

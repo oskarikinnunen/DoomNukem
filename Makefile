@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
+#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/01/05 18:08:31 by okinnune         ###   ########.fr        #
+#    Updated: 2023/01/11 10:32:15 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,10 +31,7 @@ FMOD = $(FMOD_DIR)/copied
 LIBFT = libft/libft.a
 
 LUAFOLDER= lua-5.3.6
-LUA= $(LUAFOLDER)/install/lib/liblua.a #TODO: find out real name!
-
-LUAFOLDER= lua-5.3.6
-LUA= $(LUAFOLDER)/install/lib/liblua.a #TODO: find out real name!
+LUA= $(LUAFOLDER)/install/lib/liblua.a
 
 #Source files:
 SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
@@ -80,9 +77,9 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		audio_music.c \
 		occlusion/occlusion.c \
 		occlusion/frustrum_culling.c \
-		occlusion/peripheral_culling.c \
 		occlusion/occlusion_culling.c \
 		occlusion/culling_debug.c \
+		occlusion/bitmask_culling.c \
 		surface_tools.c \
 		colors.c \
 		render/render_entity.c \

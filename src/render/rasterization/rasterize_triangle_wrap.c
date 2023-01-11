@@ -51,6 +51,7 @@ static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 		int ax =  p[2].x + (step[1] * (float)(p[1].y - y));
 		t_step[2] = calc_step_texture(t, 1.0f / (ax - x));
 		t[0] = t[1];
+		render_bitmask_row(x, ax, 1.0f / t[1].w, 1.0f / t[2].w, y, sdl);
 		while(x <= ax)
 		{
 			if (t[0].w > sdl->zbuffer[x + y * sdl->window_w])
@@ -105,9 +106,8 @@ static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 		x = p[1].x + (step[0] * (float)(y - p[1].y));
 		int ax =  p[2].x + (step[1] * (float)(y - p[1].y));
 		t_step[2] = calc_step_texture2(t, (float)(ax - x));
-		t[0].u = t[1].u;
-		t[0].v = t[1].v;
-		t[0].w = t[1].w;
+		t[0] = t[1];
+		render_bitmask_row(x, ax, 1.0f / t[1].w, 1.0f / t[2].w, y, sdl);
 		while(x <= ax)
 		{
 			if (t[0].w > sdl->zbuffer[x + y * sdl->window_w])

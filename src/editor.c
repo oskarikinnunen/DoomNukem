@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/10 12:17:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/11 10:39:15 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,12 @@ int	editorloop(t_sdlcontext sdl)
 	
 	ed.tool = NULL;
 	sdl.lighting_toggled = false;
-
+	
+	sdl.bitmask.tile = malloc(sizeof(t_tile) * ((sdl.window_h * sdl.window_w) / 64));
+	sdl.bitmask.bitmask_chunks.x = sdl.window_w / 16;
+	sdl.bitmask.bitmask_chunks.y = sdl.window_h / 8;
+	sdl.bitmask.tile_chunks.x = sdl.window_w / 8;
+	sdl.bitmask.tile_chunks.y = sdl.window_h / 8;
 	//spawn_basic_entity()
 
 	//ed.world.sdl->render = 

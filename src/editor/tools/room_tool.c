@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/10 16:05:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/11 11:02:22 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 #include "editor_tools.h"
 #include "doomnukem.h"
 #include "objects.h"
+
+void	recalculate_joined_rooms(t_world *world, t_room *room);
 
 static void	init_roomwalls_shallow(t_world *world, t_room *room)
 {
@@ -189,9 +191,8 @@ static bool illegalwall_move(t_wall *wall, t_room *room)
 	}
 	return (false);
 }
- //TODO: call default_wall_occlusion_settings(&room->walls[i], world);
 
-#include "syscall.h"
+//#include "syscall.h"
 
 static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 {
@@ -406,7 +407,7 @@ bool	is_connected(t_vector2 *edge, t_room *room)
 	int	i;
 
 	i = 0;
-	while (i < room->wallcount)
+	while (i < room->edgecount)
 	{
 		
 		if (room->walls[i].connection && (
