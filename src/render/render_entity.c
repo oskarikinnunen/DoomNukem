@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/06 16:24:44 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/11 08:42:27 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ void render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 {
 	render_worldspace(render, entity);
 	render_quaternions(sdl, render, entity);
-	render->rs.render_count++;
 }
 
 void render_ray(t_sdlcontext sdl, t_render render, t_vector3 from, t_vector3 to)

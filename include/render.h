@@ -104,7 +104,8 @@ typedef struct s_debug_occlusion
 {
 	bool		occlusion; // turns on, off
 	bool		occluder_box; // turns on occluder boxes blue;
-	bool		cull_box;	// turns on cull boxes green not occluded, red occluded;
+	bool		draw_occlusion;
+	bool		slow_render;
 }	t_debug_occlusion;
 
 typedef struct s_camera
@@ -173,8 +174,6 @@ typedef struct s_sdlcontext
 	uint32_t				window_h;
 	t_point					screensize;
 	t_bitmask				bitmask;
-	bool	bitmask1; //temp remove
-	bool	bitmask2; //temp remove
 }	t_sdlcontext;
 
 void	alloc_image(t_img *img, int width, int height);

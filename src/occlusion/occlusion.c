@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 14:40:03 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/10 12:28:43 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/11 09:47:09 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,7 +154,7 @@ void default_wall_occlusion_settings(t_wall *w, t_world *world)
 	w->entity->occlusion.is_occluded = false;
 }
 
-bool is_entity_culled(struct s_world *world, t_render *render, t_entity *entity)
+bool is_entity_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 {
 	uint32_t clr;
 
@@ -162,14 +162,20 @@ bool is_entity_culled(struct s_world *world, t_render *render, t_entity *entity)
 		return(false);
 	if (entity->occlusion.is_occluded == false)
 	{
-		entity->occlusion.is_occluded = is_entity_bitmask_culled(world->sdl, render, entity);
-		if (render->occlusion.cull_box == true)
+		entity->occlusion.is_occluded = is_entity_occlusion_culled(sdl, render, entity);
+		if (render->occlusion.occluder_box == true)
 		{
 			if (entity->occlusion.is_occluded == true)
 				clr = CLR_RED;
 			else
 				clr = CLR_GREEN;
-			draw_wireframe(*world->sdl, render, entity, clr);
+			draw_wireframe(*sdl, entity, clr);
+		}
+		if (sdl->render.occlusion.slow_render == true)
+		{
+			memcpy(sdl->window_surface->pixels, sdl->surface->pixels, sizeof(uint32_t) * sdl->window_w * sdl->window_h);
+			SDL_UpdateWindowSurface(sdl->window);
+			usleep(100000);
 		}
 	}
 	return(entity->occlusion.is_occluded);

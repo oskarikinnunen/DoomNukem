@@ -62,45 +62,23 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 		{
 			if (ent->status == es_active && !ent->hidden)
 			{
-				if (sdl->bitmask2 == true)
-				{
-					memcpy(sdl->window_surface->pixels, sdl->surface->pixels, sizeof(uint32_t) * sdl->window_w * sdl->window_h);
-					SDL_UpdateWindowSurface(sdl->window);
-					usleep(1000000);
-				}
-				if (is_entity_culled(world, render, ent) == false)
+				if (is_entity_culled(sdl, render, ent) == false)
 					render_entity(sdl, render, ent);
 			}
 			found++;
 		}
 		i++;
 	}
+	sdl->render.occlusion.slow_render = false;
 }
-
-/*
-right = 8
-1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
-0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1
-1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0
-
-left = 3
-1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
-0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1
-
-&
-1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0
-0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1
-
-0 0 0 1 1 1 1 1 0 0 0 0 0 0 0 0
-*/
 
 static void bitmask_to_pixels(t_sdlcontext *sdl)
 {
-	if (sdl->bitmask1 == true)
+	if (sdl->render.occlusion.draw_occlusion == false)
 		return;
 	uint32_t	clr;
 
-	float max_w = 5000.0f;
+	float max_w = sdl->bitmask.max_dist;
 	for (int y = 0; y < sdl->window_h; y++)
 	{
 		for (int x = 0; x < sdl->window_w; x++)
@@ -108,15 +86,16 @@ static void bitmask_to_pixels(t_sdlcontext *sdl)
 			if (sdl->zbuffer[y * sdl->window_w + x] > 1.0f)
 				continue;
 			float w = sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0;
-			if (sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0 > 9999.0f)
+			if (sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0 - 500.0f > max_w)
 			{
 				w = sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max1;
 				if ((sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].mask >> ((((y % 8)) * 8) + (7 - (x % 8))) & 1) == 0)
 					continue;
 			}
 			clr = INT_MAX;
-			w = w / max_w;
-			uint8_t p = 255 - ft_clamp(w * 255.0f, 0, 255);
+			w = (max_w - w) / max_w;
+			w = ft_flerp(0.2f, 0.8f, w);
+			uint8_t p = ft_clamp(w * 255.0f, 0, 255);
 			Uint32 alpha = clr & 0xFF000000;
 			Uint32 red = ((clr & 0x00FF0000) * p) >> 8;
 			Uint32 green = ((clr & 0x0000FF00) * p) >> 8;
@@ -127,23 +106,6 @@ static void bitmask_to_pixels(t_sdlcontext *sdl)
 	}
 }
 
-/*
-
-void insertionSort(t_entity arr[], int n)
-{
-    int i, key, j;
-    for (i = 1; i < n; i++) {
-        key = arr[i];
-        j = i - 1;
-
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j = j - 1;
-        }
-        arr[j + 1] = key;
-    }
-}
-*/
 static void sort_entitycache(t_world *world, t_vector3 location)
 {
 	int			i;
@@ -155,7 +117,7 @@ static void sort_entitycache(t_world *world, t_vector3 location)
 
 	i = 0;
 	found = 0;
-	while (found < world->entitycache.existing_entitycount) //this cache isnt in use remember
+	while (found < world->entitycache.existing_entitycount)
 	{
 		ent = world->entitycache.sorted_entities[i];
 		key = ent;
@@ -174,6 +136,20 @@ static void sort_entitycache(t_world *world, t_vector3 location)
 		}
 		world->entitycache.sorted_entities[j + 1] = key;
 		i++;
+	}
+}
+
+void clear_occlusion_buffer(t_sdlcontext *sdl)
+{
+	t_tile	temp;
+
+	bzero(&temp, sizeof(t_tile));
+	temp.mask = 0;
+	temp.max0 = sdl->bitmask.max_dist + 1000.0f;
+	temp.max1 = 0;
+	for (int i = 0; i < ((sdl->window_h * sdl->window_w) / 64); i++)
+	{
+		sdl->bitmask.tile[i] = temp;
 	}
 }
 
@@ -201,6 +177,7 @@ void update_world3d(t_world *world, t_render *render)
 		i++;
 	}*/
 	update_frustrum_culling(world, sdl, render);
+	clear_occlusion_buffer(sdl);
 	sort_entitycache(world, render->camera.position);
 	update_entitycache(sdl, world, render);
 	if (!sdl->global_wireframe && !world->skybox.hidden)
@@ -227,6 +204,14 @@ void update_world3d(t_world *world, t_render *render)
 	gui_labeled_int_slider("PS1 tri div:", &sdl->ps1_tri_div, 2.0f, world->debug_gui);
 	if (gui_shortcut_button("Toggle Skybox", 'H', world->debug_gui))
 		world->skybox.hidden = !world->skybox.hidden;
+	if (gui_shortcut_button("Draw Occlusion Buffer", 'Y', world->debug_gui))
+		sdl->render.occlusion.draw_occlusion = !sdl->render.occlusion.draw_occlusion;
+	if (gui_shortcut_button("Toggle Occlusion", 'O', world->debug_gui))
+		render->occlusion.occlusion = !render->occlusion.occlusion;
+	if (gui_shortcut_button("Toggle Occlusion boxes", 'P', world->debug_gui))
+		render->occlusion.occluder_box = !render->occlusion.occluder_box;
+	if (gui_shortcut_button("Render Next Frame Slow", 'U', world->debug_gui))
+		sdl->render.occlusion.slow_render = true;
 	if (gui_shortcut_button("Bake lighting", 'b', world->debug_gui))
 		bake_lighting(render, world);
 	if (gui_shortcut_button("Bake lighting (new)", 'v', world->debug_gui))

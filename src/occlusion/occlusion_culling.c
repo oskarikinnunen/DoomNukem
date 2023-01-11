@@ -79,24 +79,20 @@ void calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity)
 
 	render->worldspace_ptri_count = 0;
 	render->screenspace_ptri_count = 0;
+	t.t[0] = vector2_to_texture((t_vector2){0, 0});
+	t.t[1] = vector2_to_texture((t_vector2){0, 1});
+	t.t[2] = vector2_to_texture((t_vector2){1, 1});
+	t.clr = CLR_BLUE;
 	if (entity->obj->bounds.type == bt_plane)
 	{
 		b = get_entity_box_transformed(entity);
 		t.p[0] = vector3_to_quaternion(b.v[0]);
 		t.p[1] = vector3_to_quaternion(b.v[2]);
 		t.p[2] = vector3_to_quaternion(b.v[3]);
-		t.t[0] = vector2_to_texture((t_vector2){0, 0});
-		t.t[1] = vector2_to_texture((t_vector2){0, 1});
-		t.t[2] = vector2_to_texture((t_vector2){1, 1});
-		t.clr = CLR_BLUE;
 		triangle_to_projection(sdl, render, t);
-		t.clr = CLR_PRPL;
 		t.p[0] = vector3_to_quaternion(b.v[0]);
 		t.p[1] = vector3_to_quaternion(b.v[1]);
 		t.p[2] = vector3_to_quaternion(b.v[3]);
-		t.t[0] = vector2_to_texture((t_vector2){0, 0});
-		t.t[1] = vector2_to_texture((t_vector2){0, 1});
-		t.t[2] = vector2_to_texture((t_vector2){1, 1});
 		triangle_to_projection(sdl, render, t);
 	}
 	else if (entity->obj->bounds.type == bt_box)
@@ -108,21 +104,29 @@ void calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity)
 			t.p[0] = vector3_to_quaternion(b.v[i]);
 			t.p[1] = vector3_to_quaternion(b.v[i + 4]);
 			t.p[2] = vector3_to_quaternion(b.v[((i + 1) % 4) + 4]);
-			t.t[0] = vector2_to_texture((t_vector2){0, 0});
-			t.t[1] = vector2_to_texture((t_vector2){0, 1});
-			t.t[2] = vector2_to_texture((t_vector2){1, 1});
-			t.clr = CLR_BLUE;
 			triangle_to_projection(sdl, render, t);
-			t.clr = CLR_PRPL;
 			t.p[0] = vector3_to_quaternion(b.v[i]);
 			t.p[1] = vector3_to_quaternion(b.v[(i + 1) % 4]);
 			t.p[2] = vector3_to_quaternion(b.v[((i + 1) % 4) + 4]);
-			t.t[0] = vector2_to_texture((t_vector2){0, 0});
-			t.t[1] = vector2_to_texture((t_vector2){0, 1});
-			t.t[2] = vector2_to_texture((t_vector2){1, 1});
 			triangle_to_projection(sdl, render, t);
 			i++;
 		}
+		t.p[0] = vector3_to_quaternion(b.v[0]);
+		t.p[1] = vector3_to_quaternion(b.v[1]);
+		t.p[2] = vector3_to_quaternion(b.v[2]);
+		triangle_to_projection(sdl, render, t);
+		t.p[0] = vector3_to_quaternion(b.v[0]);
+		t.p[1] = vector3_to_quaternion(b.v[2]);
+		t.p[2] = vector3_to_quaternion(b.v[3]);
+		triangle_to_projection(sdl, render, t);
+		t.p[0] = vector3_to_quaternion(b.v[4]);
+		t.p[1] = vector3_to_quaternion(b.v[5]);
+		t.p[2] = vector3_to_quaternion(b.v[6]);
+		triangle_to_projection(sdl, render, t);
+		t.p[0] = vector3_to_quaternion(b.v[4]);
+		t.p[1] = vector3_to_quaternion(b.v[6]);
+		t.p[2] = vector3_to_quaternion(b.v[7]);
+		triangle_to_projection(sdl, render, t);
 	}
 	else if (entity->obj->bounds.type == bt_ignore)
 	{
@@ -143,10 +147,6 @@ void calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity)
 		while (i < entity->obj->face_count)
 		{
 			t = (t_triangle){render->q[entity->obj->faces[i].v_indices[0] - 1], render->q[entity->obj->faces[i].v_indices[1] - 1], render->q[entity->obj->faces[i].v_indices[2] - 1]};
-			t.t[0] = vector2_to_texture((t_vector2){0, 0});
-			t.t[1] = vector2_to_texture((t_vector2){0, 1});
-			t.t[2] = vector2_to_texture((t_vector2){1, 1});
-			t.clr = CLR_BLUE;
 			triangle_to_projection(sdl, render, t);
 			i++;
 		}
@@ -154,7 +154,7 @@ void calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity)
 	clipped_point_triangle(render, sdl);
 }
 
-bool is_entity_bitmask_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity)
+bool is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 {
 	t_square	s;
 	const __uint128_t max = ~0;

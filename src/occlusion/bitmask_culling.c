@@ -34,7 +34,7 @@ static t_tile update_tile(float aw, t_tile tile, uint64_t res)
 	return (tile);
 }
 
-void render_bitmask_row(int ax, int bx, int aw, int bw, int y, t_sdlcontext *sdl)
+void render_bitmask_row(int ax, int bx, float aw, float bw, int y, t_sdlcontext *sdl)
 {
 	int chunk = (y / 8) * (sdl->bitmask.bitmask_chunks.x) + (ax / 16);
 	int end_chunk = (y / 8) * (sdl->bitmask.bitmask_chunks.x) + (bx / 16);

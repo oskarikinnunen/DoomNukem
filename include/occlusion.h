@@ -24,6 +24,7 @@ typedef struct s_bitmask
 	t_point				bitmask_chunks; //amount of bitmask chunks in x and y axis
 	t_point				tile_chunks; //amount of tile chunks in x and y axis
 	t_tile				*tile;
+	float				max_dist;
 }	t_bitmask;
 
 uint16_t mask_x(int x, int left_x, int right_x);
