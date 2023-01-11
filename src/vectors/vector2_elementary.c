@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector2_elementary.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 11:28:15 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/13 12:05:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/11 20:44:43 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ t_vector2	vector2_sub(t_vector2 first, t_vector2 second)
 	return (result);
 }
 
-t_vector2	vector2_add_xyz(t_vector2 vec, float add)
+t_vector2	vector2_add_xy(t_vector2 vec, float add)
 {
 	t_vector2	result;
 
