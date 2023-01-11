@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lua_conf.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 10:39:34 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/11 14:27:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,6 +207,15 @@ void	load_resolution(lua_State *lua, t_sdlcontext *sdl)
 		sdl->window_w = 720;
 	}
 	sdl->screensize = (t_point) {sdl->window_w, sdl->window_h};
+}
+
+void	load_assets(t_sdlcontext *sdl)
+{
+	load_all_images(sdl);
+	load_all_objects(sdl);
+	load_fonts(&sdl->font);
+	load_audio(&sdl->audio);
+	objects_init(sdl);
 }
 
 void	load_lua_conf(t_sdlcontext *sdl)

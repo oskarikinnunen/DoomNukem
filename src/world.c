@@ -55,11 +55,11 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 	
 	i = 0;
 	found = 0;
-	printf("looking for %i existing entities", world->entitycache.existing_entitycount);
+	//printf("looking for %i existing entities", world->entitycache.existing_entitycount);
 	while (found < world->entitycache.existing_entitycount
 		/*&& i < world->entitycache.alloc_count*/)
 	{
-		printf("ent %i\n", i);
+		//printf("ent %i\n", i);
 		ent = &world->entitycache.entities[i];
 		if (ent->status != es_free)
 		{
@@ -69,7 +69,7 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 					render_entity(sdl, render, ent);
 			}
 			found++;
-			printf("found %i nth entity \n", found);
+			//printf("found %i nth entity \n", found);
 		}
 		i++;
 	}
@@ -120,19 +120,8 @@ void update_world3d(t_world *world, t_render *render)
 
 	sdl = world->sdl;
 	ft_bzero(&render->rs, sizeof(t_render_statistics));
-	/*update_npcs(world);
-	i = 0;
-	while (i < 128)
-	{
-		if (world->npcpool[i].active)
-		{
-			t_npc npc = world->npcpool[i];
-			t_vector3 dir = vector3_sub(world->npcpool[i].entity->transform.position, world->npcpool[i].destination);
-			render_ray(*sdl, *render, npc.entity->transform.position, npc.destination);
-			render_entity(*sdl, render, &world->npcpool[i].entity);
-		}
-		i++;
-	}*/
+	if (!world->player->gun->disabled)
+		render_entity(world->sdl, &world->sdl->render, &world->player->gun->entity);
 	update_frustrum_culling(world, sdl, render);
 	clear_occlusion_buffer(sdl);
 	sort_entitycache(world, render->camera.position);
@@ -145,7 +134,6 @@ void update_world3d(t_world *world, t_render *render)
 	gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);
 	gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);
 	gui_labeled_int("Entity count:", world->entitycache.existing_entitycount, world->debug_gui);
-	gui_labeled_float_slider("Resolution scale:", &world->sdl->resolution_scaling, 0.01f, world->debug_gui);
 	if (gui_shortcut_button("Toggle ceilings:", 'J', world->debug_gui))
 	{
 		world->ceiling_toggle = !world->ceiling_toggle;
@@ -178,10 +166,6 @@ void update_world3d(t_world *world, t_render *render)
 		
 	}
 	world->sdl->audio.max_volume = ft_clampf(world->sdl->audio.max_volume, 0.25f, 1.0f);
-	world->sdl->resolution_scaling = ft_clampf(world->sdl->resolution_scaling, 0.25f, 1.0f);
-	t_point	res;
-	res = point_fmul(sdl->screensize, sdl->resolution_scaling);
-	gui_labeled_point("3D Resolution:", res, world->debug_gui);
 	if (gui_shortcut_button("Toggle rendering:", 'R', world->debug_gui))
 		world->sdl->global_wireframe = !world->sdl->global_wireframe;
 	if (gui_shortcut_button("Toggle Lighting", 'L', world->debug_gui))

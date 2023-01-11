@@ -6,11 +6,16 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/07 01:54:00 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/08 15:00:24 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/11 15:58:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vectors.h"
+
+int			int_snap(int i, int interval)
+{
+	
+}
 
 t_vector2	vector2_snap(t_vector2 vec, int interval)
 {

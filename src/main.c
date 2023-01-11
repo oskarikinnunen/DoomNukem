@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 10:39:40 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/11 17:31:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,109 +21,81 @@
 #include <GL/gl.h>
 #endif
 
-typedef enum e_screenmode
+void	free_sdl_stuff(t_sdlcontext *sdl)
 {
-	screenmode_windowed,
-	screenmode_borderless,
-	screenmode_fullscreen
-}	t_screenmode;
+	if (sdl->zbuffer != NULL)
+		free(sdl->zbuffer);
+	if (sdl->surface != NULL)
+		SDL_FreeSurface(sdl->surface);
+	if (sdl->ui_surface != NULL)
+		SDL_FreeSurface(sdl->ui_surface);
+	if (sdl->window_surface != NULL)
+		SDL_FreeSurface(sdl->window_surface);
+	if (sdl->window != NULL)
+		SDL_DestroyWindow(sdl->window);
+	free_render(sdl->render);
+	if (sdl->bitmask.tile != NULL)
+		free(sdl->bitmask.tile);
+}
 
-
-static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
+void	alloc_occlusion(t_sdlcontext *sdl)
 {
-	const char	*platform;
+	sdl->bitmask.tile = ft_memalloc(sizeof(t_tile) * ((sdl->window_h * sdl->window_w) / 64)); //TODO: free
+	sdl->bitmask.bitmask_chunks.x = sdl->window_w / 16;
+	sdl->bitmask.bitmask_chunks.y = sdl->window_h / 8;
+	sdl->bitmask.tile_chunks.x = sdl->window_w / 8;
+	sdl->bitmask.tile_chunks.y = sdl->window_h / 8;
+}
 
-	ft_bzero(sdl, sizeof(t_sdlcontext));
-	printf("load lua conf start\n");
-	load_lua_conf(sdl);
-	printf("load lua conf end\n");
-	SDL_DisplayMode	mode;
-	sdl->resolution_scaling = 1.0f;
-	if (SDL_Init(SDL_INIT_VIDEO) < 0 \
-		|| SDL_Init(SDL_INIT_EVENTS) < 0 \
-		|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0 \
-		|| TTF_Init() < 0)
-		error_log(EC_SDL_INIT);
-	if (screenmode == screenmode_borderless && SDL_GetCurrentDisplayMode(1, &mode) == 0)
+void	create_sdl_window(t_sdlcontext *sdl, t_screenmode mode)
+{
+	SDL_DisplayMode DMode;
+
+	SDL_GetCurrentDisplayMode(0, &DMode);
+	if (DMode.w != sdl->window_w || DMode.h != sdl->window_h)
+		mode = screenmode_windowed;
+	sdl->window_w =	ft_clamp(sdl->window_w, 0, DMode.w);
+	sdl->window_h =	ft_clamp(sdl->window_h, 0, DMode.h);
+	sdl->screensize = (t_point) {sdl->window_w, sdl->window_h};
+	if (mode != screenmode_fullscreen)
 	{
-		sdl->window_w = mode.w;
-		sdl->window_h = mode.h;
-		sdl->screensize = (t_point) {sdl->window_w, sdl->window_h};
-		sdl->resolution_scaling = 0.5f;
-		float hdpi;
-		float vdpi;
-		SDL_GetDisplayDPI(0, NULL, &hdpi, &vdpi);
-		printf("dpi %f %f \n", hdpi, vdpi);
-		printf("mode res %i %i \n", mode.w, mode.h);
+		sdl->window = SDL_CreateWindow("DoomNukem",
+			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+			sdl->window_w, sdl->window_h, SDL_WINDOW_SHOWN);
 	}
-	platform = SDL_GetPlatform();
-	printf("platform: %s\n", platform);
-	if (ft_strequ(platform, "Mac OS X"))
-		sdl->platform = os_mac;
-	else if (ft_strequ(platform, "Linux"))
-		sdl->platform = os_linux;
-	else
+	if (mode == screenmode_fullscreen)
 	{
-		sdl->platform = os_unsupported;
-		printf("platform %s not supported\n", platform);
+		sdl->window = SDL_CreateWindow("DoomNukem",
+			0, 0,
+			sdl->window_w, sdl->window_h, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN);
 	}
-	sdl->window = SDL_CreateWindow("DoomNukem",
-		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		sdl->window_w, sdl->window_h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS);
 	if (sdl->window == NULL)
 		error_log(EC_SDL_CREATEWINDOW);
-	if (screenmode == screenmode_borderless)
-	{
-		SDL_SetWindowBordered(sdl->window, SDL_FALSE);
-		SDL_SetWindowPosition(sdl->window, 0, 0);
-	}
-		
 	sdl->window_surface = SDL_GetWindowSurface(sdl->window);
 	if (sdl->window_surface == NULL)
 		error_log(EC_SDL_GETWINDOW_SURFACE);
+}
 
+void	set_sdl_settings(t_sdlcontext *sdl)
+{
+	t_graphicprefs	prefs;
+
+	free_sdl_stuff(sdl);
+	ft_bzero(sdl, sizeof(sdl));
+	prefs = load_graphicsprefs(); //TODO: load before this and just pass prefs set_sdl_settings
+	sdl->window_w = prefs.resolution_x;
+	sdl->window_h = prefs.resolution_y;
+	sdl->resolution_scaling = ft_clampf(prefs.resolutionscale, 0.25f, 1.0f);
+	create_sdl_window(sdl, prefs.screenmode);
 	sdl->surface = SDL_CreateRGBSurfaceWithFormat(SDL_SWSURFACE, sdl->window_w, sdl->window_h, 32, SDL_PIXELFORMAT_ARGB8888);
 	if (sdl->surface == NULL)
 		error_log(EC_SDL_CREATERGBSURFACE);
 	sdl->ui_surface = SDL_CreateRGBSurfaceWithFormat(SDL_SWSURFACE, sdl->window_w, sdl->window_h, 32, SDL_PIXELFORMAT_ARGB8888);
 	if (sdl->ui_surface == NULL)
 		error_log(EC_SDL_CREATERGBSURFACE);
-	load_fonts(&sdl->font);
-	load_audio(&sdl->audio);
-
-	sdl->zbuffer = malloc(sdl->window_w * sdl->window_h * sizeof(float));
-	objects_init(sdl);
-	//t_object *o = get_object_by_name(*sdl, "cyborg");
-	//parseanim(o, "walk");
-	/* create context here, call gl clear in render start, glbegin in drawtriangles etc */
-
-	//save_filecontent("test.world", "assets/objects/barrel.obj");
-	
-	SDL_GLContext glc = SDL_GL_CreateContext(sdl->window);
-	t_point	drawablesize;
-	SDL_GL_GetDrawableSize(sdl->window, &drawablesize.x, &drawablesize.y);
-	printf("gl draw size %i %i \n", drawablesize.x, drawablesize.y);
-	//exit(0);
-	/*glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity();
-	glEnable(GL_DEPTH_TEST);
-
-	//glBegin( GL_QUADS );
-	
-	glBegin(GL_TRIANGLES);
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glVertex3f( -0.5f, -0.5f, 0.2f);
-	glVertex3f( 0.5f, -0.5f, 0.5f);
-	glVertex3f( 0.5f, 0.5f, 1.0f);
-	glColor3f(1.0f, 1.0f, 0.0f);
-	glVertex3f( -0.6f, -0.6f, 2.0f);
-	glVertex3f( 0.5f, -0.6f, 2.0f);
-	glVertex3f( 0.1f, 0.3f, -2.0f);
-	//glVertex2f( -0.5f, 0.5f );
-	glEnd();
-	SDL_GL_SwapWindow(sdl->window);
-	SDL_Delay(10000);*/
-	printf("OPENGL RENDERER: '%s' \n", glGetString(GL_RENDERER));
+	sdl->zbuffer = ft_memalloc(sdl->window_w * sdl->window_h * sizeof(float));
+	alloc_occlusion(sdl);
+	sdl->render = init_render(*sdl);
 }
 
 void	quit_game(t_sdlcontext *sdl)
@@ -133,27 +105,36 @@ void	quit_game(t_sdlcontext *sdl)
 	exit(0);
 }
 
+void	create_sdlcontext(t_sdlcontext	*sdl)
+{
+	ft_bzero(sdl, sizeof(t_sdlcontext));
+	if (SDL_Init(SDL_INIT_VIDEO) < 0 \
+		|| SDL_Init(SDL_INIT_EVENTS) < 0 \
+		|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0 \
+		|| TTF_Init() < 0)
+		error_log(EC_SDL_INIT);
+	set_sdl_settings(sdl);
+	load_assets(sdl);
+}
+
+void	checkargs(int argc, char **argv)
+{
+	if (argc == 2 && ft_strcmp(argv[1], "-reset") == 0)
+		reset_graphics_prefs();
+}
+
 int	main(int argc, char **argv)
 {
 	t_sdlcontext	sdl;
 	t_gamereturn	gr;
-	t_screenmode	screenmode; //TODO: make a struct for this that also contains other data, such as screen index
 
-	screenmode = screenmode_windowed;
-	printf("args %i \n", argc);
-	if (argc > 1 && ft_strcmp(argv[1], "-borderless") == 0)
-	{
-		screenmode = screenmode_borderless;
-	}
-	create_sdl_context(&sdl, screenmode);
+	checkargs(argc, argv);
+	create_sdlcontext(&sdl);
 	gr = game_switchmode;
 	while (gr == game_switchmode)
 	{
-		
-		//printf("%s\ngamereturn after editor %i \n", CLEARSCREEN, gr);
 		gr = editorloop(sdl); // quit & exit is handled inside the loop
 		gr = playmode(sdl); // quit & exit is handled inside the loop
-		//printf("%s\ngamereturn after playmode %i \n", CLEARSCREEN, gr);
 	}
 	//shouldn't get here?
 	return (0);

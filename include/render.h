@@ -153,6 +153,21 @@ typedef struct s_audio
 	t_audiosample		music[5];
 }	t_audio;
 
+typedef enum e_screenmode
+{
+	screenmode_windowed,
+	screenmode_borderless,
+	screenmode_fullscreen
+}	t_screenmode;
+
+typedef struct s_graphicprefs //Intermediate struct used for loading settings from a configuration file
+{
+	t_screenmode	screenmode;
+	int32_t		resolution_x;
+	int32_t		resolution_y;
+	float			resolutionscale;
+}	t_graphicprefs;
+
 typedef struct s_sdlcontext
 {
 	SDL_Window				*window;
@@ -181,6 +196,11 @@ typedef struct s_sdlcontext
 	t_bitmask				bitmask;
 }	t_sdlcontext;
 
+void			save_graphics_prefs(t_sdlcontext *sdl);
+t_graphicprefs	get_prefs_from_sdl(t_sdlcontext *sdl);
+t_graphicprefs	load_graphicsprefs();
+void			reset_graphics_prefs();
+void			set_sdl_settings(t_sdlcontext *sdl);
 void	alloc_image(t_img *img, int width, int height);
 t_img	*get_image_by_index(t_sdlcontext sdl, int index); //TODO: add comments
 t_img	*get_image_by_name(t_sdlcontext sdl, char *name);
@@ -202,7 +222,7 @@ void	draw_rectangle_raster(t_sdlcontext sdl, t_rectangle rect, uint32_t clr);
 void	draw_triangle(t_sdlcontext *sdl, t_point p1, t_point p2, t_point p3, uint32_t clr);
 
 /* INIT_RENDER.C */
-t_render	init_render(t_sdlcontext sdl, struct s_world *world);
+t_render	init_render(t_sdlcontext sdl);
 void		free_render(t_render render);
 void		render_start(t_render *render);
 
