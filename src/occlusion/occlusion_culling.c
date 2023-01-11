@@ -154,6 +154,20 @@ void calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity)
 	clipped_point_triangle(render, sdl);
 }
 
+void clear_occlusion_buffer(t_sdlcontext *sdl)
+{
+	t_tile	temp;
+
+	bzero(&temp, sizeof(t_tile));
+	temp.mask = 0;
+	temp.max0 = sdl->bitmask.max_dist + 1000.0f;
+	temp.max1 = 0;
+	for (int i = 0; i < ((sdl->window_h * sdl->window_w) / 64); i++)
+	{
+		sdl->bitmask.tile[i] = temp;
+	}
+}
+
 bool is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 {
 	t_square	s;

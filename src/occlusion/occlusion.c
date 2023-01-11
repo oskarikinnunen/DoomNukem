@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 14:40:03 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/11 09:47:09 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/11 10:30:22 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,6 @@ void update_entity_bounds(t_entity *e)
 	obj->bounds.type = bt_box;
 }
 
-//no occlusion for floors/ceilings yet
 void update_floor_bounds(t_meshtri *f)
 {
 	f->entity->obj->bounds.origin = vector3_lerp(vector3_lerp(f->entity->obj->vertices[0], f->entity->obj->vertices[1], 0.5f), f->entity->obj->vertices[2], 0.5f);
@@ -147,7 +146,6 @@ void default_floor_occlusion_settings(t_meshtri *f, t_world *world)
 	f->entity->occlusion.is_occluded = false;
 }
 
-//id is not set here, because the current id system takes the id from combining all the lists and calculating their length. and walls get added, in groups, so get_id doesn't update accordingly
 void default_wall_occlusion_settings(t_wall *w, t_world *world)
 {
 	w->entity->occlusion.is_backface_cull = false;

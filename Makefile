@@ -6,7 +6,7 @@
 #    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/01/11 06:36:00 by vlaine           ###   ########.fr        #
+#    Updated: 2023/01/11 10:24:24 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -72,7 +72,6 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		audio.c \
 		occlusion/occlusion.c \
 		occlusion/frustrum_culling.c \
-		occlusion/peripheral_culling.c \
 		occlusion/occlusion_culling.c \
 		occlusion/culling_debug.c \
 		occlusion/bitmask_culling.c \

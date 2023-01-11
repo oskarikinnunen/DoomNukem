@@ -115,10 +115,14 @@ bool is_entity_frustrum_culled(t_sdlcontext *sdl, t_render *render, t_entity *en
 bool is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 
 void	calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity);
+void	clear_occlusion_buffer(t_sdlcontext *sdl);
+
+//Debug occl
+void	draw_wireframe(t_sdlcontext sdl, t_entity *e, uint32_t clr);
+void	bitmask_to_pixels(t_sdlcontext *sdl);
 
 /* RENDERING */
 void	render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity);
-void	draw_wireframe(t_sdlcontext sdl, t_entity *e, uint32_t clr);
 void	render_worldspace(t_render *render, t_entity *entity);
 void	render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 

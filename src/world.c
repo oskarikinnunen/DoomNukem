@@ -72,40 +72,6 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 	sdl->render.occlusion.slow_render = false;
 }
 
-static void bitmask_to_pixels(t_sdlcontext *sdl)
-{
-	if (sdl->render.occlusion.draw_occlusion == false)
-		return;
-	uint32_t	clr;
-
-	float max_w = sdl->bitmask.max_dist;
-	for (int y = 0; y < sdl->window_h; y++)
-	{
-		for (int x = 0; x < sdl->window_w; x++)
-		{
-			if (sdl->zbuffer[y * sdl->window_w + x] > 1.0f)
-				continue;
-			float w = sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0;
-			if (sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0 - 500.0f > max_w)
-			{
-				w = sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max1;
-				if ((sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].mask >> ((((y % 8)) * 8) + (7 - (x % 8))) & 1) == 0)
-					continue;
-			}
-			clr = INT_MAX;
-			w = (max_w - w) / max_w;
-			w = ft_flerp(0.2f, 0.8f, w);
-			uint8_t p = ft_clamp(w * 255.0f, 0, 255);
-			Uint32 alpha = clr & 0xFF000000;
-			Uint32 red = ((clr & 0x00FF0000) * p) >> 8;
-			Uint32 green = ((clr & 0x0000FF00) * p) >> 8;
-			Uint32 blue = ((clr & 0x000000FF) * p) >> 8;
-			clr = flip_channels(alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF));
-			((uint32_t *)sdl->surface->pixels)[sdl->window_w * y + x] = clr;
-		}
-	}
-}
-
 static void sort_entitycache(t_world *world, t_vector3 location)
 {
 	int			i;
@@ -136,20 +102,6 @@ static void sort_entitycache(t_world *world, t_vector3 location)
 		}
 		world->entitycache.sorted_entities[j + 1] = key;
 		i++;
-	}
-}
-
-void clear_occlusion_buffer(t_sdlcontext *sdl)
-{
-	t_tile	temp;
-
-	bzero(&temp, sizeof(t_tile));
-	temp.mask = 0;
-	temp.max0 = sdl->bitmask.max_dist + 1000.0f;
-	temp.max1 = 0;
-	for (int i = 0; i < ((sdl->window_h * sdl->window_w) / 64); i++)
-	{
-		sdl->bitmask.tile[i] = temp;
 	}
 }
 
