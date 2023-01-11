@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_entity.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/11 10:53:05 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/11 13:29:41 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,6 +200,7 @@ void render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to)
 	drawline(*sdl, vector2_to_point(l.start), vector2_to_point(l.end), sdl->render.gizmocolor);
 }
 
+//DEPRECATED, USE render_gizmo3d/render_gizmo2d INSTEAD
 void render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size)
 {
 	drawcircle(sdl, vector3_to_screenspace(pos, sdl), size, render.gizmocolor);

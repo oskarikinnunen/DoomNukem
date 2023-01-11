@@ -22,7 +22,7 @@ void update_frustrum_culling(struct s_world *world, t_sdlcontext *sdl, t_render 
 	sdl->bitmask.max_dist = 0.0f;
 	i = 0;
 	found = 0;
-	while (found < world->entitycache.existing_entitycount)
+	while (found < world->entitycache.existing_entitycount && i < world->entitycache.alloc_count)
 	{
 		ent = world->entitycache.sorted_entities[i];
 		if (ent->status != es_free)

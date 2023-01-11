@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   culling_debug.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 14:59:10 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/11 10:25:34 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/11 12:35:20 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,8 @@ void draw_wireframe(t_sdlcontext sdl, t_entity *e, uint32_t clr)
 	t_square	s;
 	int			i;
 
-	if (e->obj->bounds.type != bt_box)
-		return;
+	//if (e->obj->bounds.type != bt_box)
+	//	return;
 	s = e->occlusion.box;
 	drawline(sdl, (t_point){s.max.x, s.max.y}, (t_point){s.min.x, s.max.y}, clr);
 	drawline(sdl, (t_point){s.min.x, s.max.y}, (t_point){s.min.x, s.min.y}, clr);

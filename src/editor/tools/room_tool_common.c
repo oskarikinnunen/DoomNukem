@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool_common.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:53:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 10:46:48 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/11 13:33:30 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,16 +175,6 @@ void highlight_room_edgelines(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 	//while (i < )
 }
 
-static t_vector3 vector3_snap(t_vector3 vec, int mod)
-{
-	float	z;
-
-	z = vec.z;
-	vec = v2tov3(vector2_snap(v3tov2(vec), mod));
-	vec.z = z;
-	return (vec);
-}
-
 void rendergrid(t_world *world, t_vector3 position, int size, uint32_t color)
 {
 	t_point		p;
@@ -256,7 +246,6 @@ void highlight_room(t_editor *ed, t_sdlcontext *sdl, t_room *room, uint32_t colo
 		{
 			float zl = room->height + w.z_offset;
 			float zh = room->height + w.z_offset + w.height;
-			
 			if (is_joined(*w.edgeline.start, room, &ed->world)
 				&& is_joined(*w.edgeline.end, room, &ed->world))
 			{

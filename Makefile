@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
+#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/01/11 10:32:15 by vlaine           ###   ########.fr        #
+#    Updated: 2023/01/11 12:29:45 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -96,7 +96,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		render/render_helper.c \
 		render/flip_channel.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
-		vector3_complex.c vector3_complex2.c \
+		vector3_complex.c vector3_complex2.c vector3_more.c \
 		vector2_elementary.c vector2_shorthands.c \
 		vector2_complex.c vector2_clamp.c \
 		vector2_more.c \

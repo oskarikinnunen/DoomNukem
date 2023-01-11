@@ -158,7 +158,6 @@ void clear_occlusion_buffer(t_sdlcontext *sdl)
 {
 	t_tile	temp;
 
-	bzero(&temp, sizeof(t_tile));
 	temp.mask = 0;
 	temp.max0 = sdl->bitmask.max_dist + 1000.0f;
 	temp.max1 = 0;

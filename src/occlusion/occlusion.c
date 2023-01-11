@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   occlusion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 14:40:03 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/11 10:52:03 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/11 13:03:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,10 +124,17 @@ void update_wall_bounds(t_wall *w)
 	obj = w->entity->obj;
 	start = *w->edgeline.start;
 	end = *w->edgeline.end;
-	obj->bounds.box.v[0] = (t_vector3){start.x, start.y, 0.0f};
+
+	int	i = 0;
+	while (i < 4)
+	{
+		obj->bounds.box.v[i] = obj->vertices[i];
+		i++;
+	}
+	/*obj->bounds.box.v[0] = (t_vector3){start.x, start.y, 0.0f};
 	obj->bounds.box.v[1] = (t_vector3){end.x, end.y, 0.0f};
 	obj->bounds.box.v[2] = (t_vector3){start.x, start.y, w->height};
-	obj->bounds.box.v[3] = (t_vector3){end.x, end.y, w->height};
+	obj->bounds.box.v[3] = (t_vector3){end.x, end.y, w->height};*/
 	bzero(&obj->bounds.box.v[4], sizeof(t_vector3) * 4);
 	obj->bounds.origin = vector3_lerp(obj->bounds.box.v[0], obj->bounds.box.v[3], 0.5f);
 	obj->bounds.radius = get_wall_radius(obj->bounds);

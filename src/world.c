@@ -55,9 +55,12 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 	
 	i = 0;
 	found = 0;
-	while (found < world->entitycache.existing_entitycount)
+	printf("looking for %i existing entities", world->entitycache.existing_entitycount);
+	while (found < world->entitycache.existing_entitycount
+		/*&& i < world->entitycache.alloc_count*/)
 	{
-		ent = world->entitycache.sorted_entities[i];
+		printf("ent %i\n", i);
+		ent = &world->entitycache.entities[i];
 		if (ent->status != es_free)
 		{
 			if (ent->status == es_active && !ent->hidden)
@@ -66,6 +69,7 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 					render_entity(sdl, render, ent);
 			}
 			found++;
+			printf("found %i nth entity \n", found);
 		}
 		i++;
 	}
@@ -83,7 +87,8 @@ static void sort_entitycache(t_world *world, t_vector3 location)
 
 	i = 0;
 	found = 0;
-	while (found < world->entitycache.existing_entitycount)
+	return ;
+	while (found < world->entitycache.existing_entitycount && i < world->entitycache.alloc_count - 1)
 	{
 		ent = world->entitycache.sorted_entities[i];
 		key = ent;
@@ -408,6 +413,7 @@ void		destroy_entity(t_world *world, t_entity *ent)
 	if (cache->existing_entitycount == 0)
 		error_log(EC_MALLOC);
 	cache->existing_entitycount--;
+	printf("%i entities exist after remove \n", cache->existing_entitycount);
 }
 
 /*void		erase_entity(t_entitycache *cache, uint16_t entity_id)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 11:02:22 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/11 13:47:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,9 +85,13 @@ t_room	*add_room_to_world(t_world *world, t_room *room)
 	list_push(&world->roomlist, worldroom, sizeof(t_room));
 	free(worldroom);
 	worldroom = list_findlast(world->roomlist);
-	
+	char	*id;
 	//construct_edges(worldroom);
+	
 	init_roomwalls(world, worldroom);
+	id = ft_itoa(worldroom->walls[0].entity->id);
+	ft_strcat(worldroom->name, id);
+	free(id);
 	//init_roomwalls(world, worldroom);
 	return (worldroom);
 	//free(room->walls);
@@ -194,6 +198,32 @@ static bool illegalwall_move(t_wall *wall, t_room *room)
 
 //#include "syscall.h"
 
+t_vector3	createmode_raycast(t_editor *ed, t_roomtooldata	*dat)
+{
+	t_vector3		result;
+	t_ray			ray;
+	t_raycastinfo	info;
+
+	ray.origin = ed->player.transform.position;
+	ray.dir = ed->player.lookdir;
+	if (dat->room->edgecount == 0)
+	{	
+		if (dat->raycastinfo.hit_entity != NULL)
+			result = vector3_snap(dat->raycastinfo.hit_pos, 10);
+		else
+		{
+			raycast_plane(ray, &info, 0.0f);
+			result = vector3_snap(info.hit_pos, 10);
+		}
+	}
+	else
+	{
+		raycast_plane(ray, &info, dat->room->height);
+		result = vector3_snap(info.hit_pos, 10);
+	}
+	return (result);
+}
+
 static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 {
 	t_wall			*cur;
@@ -203,9 +233,10 @@ static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	t_autogui		*gui;
 
 	cur = &dat->wall;
-	//rc = raycast_DEPRECATED(ed);
-	rc = dat->raycastinfo.hit_pos;
-	snap = vector2_snap((t_vector2){rc.x, rc.y}, 10);
+	rc = createmode_raycast(ed, dat);
+	snap = v3tov2(rc);
+	if (dat->room->edgecount == 0)
+		dat->room->height = rc.z;
 	gui = &dat->newroom_gui;
 	gui_start(gui);
 	if (dat->room->wallcount == 0)
@@ -215,11 +246,7 @@ static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	else
 		gui_emptyvertical(20, gui);
 	gui_end(gui);
-	if (dat->room->edgecount == 0)
-	{
-		dat->room->height = rc.z;
-		dat->room->height = vector2_snap((t_vector2){dat->room->height, 0.0f}, 10).x;
-	}
+	
 	cur->edgeline.end = &snap;
 	bool placelast = false;
 	if ((ed->hid.keystate >> KEYS_SHIFTMASK) & 1 && dat->room->wallcount > 1)
@@ -911,7 +938,7 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		t_room	temp;
 		ft_bzero(&temp, sizeof(t_room));
 		temp.edges = ft_memalloc(sizeof(t_vector2) * 32);
-		ft_memcpy(temp.edges, dat->room->edges, sizeof(t_vector2) * 32);
+		ft_memcpy(temp.edges, dat->room->edges, sizeof(t_vector2) * dat->room->edgecount);
 		temp.edgecount = dat->room->edgecount;
 		remove_room(&ed->world, dat->room);
 		recalculate_joined_rooms(&ed->world, &temp);
@@ -1486,7 +1513,10 @@ void	room_tool_update(t_editor *ed, t_sdlcontext *sdl)
 	dat = (t_roomtooldata *)ed->tool->tooldata;
 	ray.origin = ed->player.transform.position;
 	ray.dir = ed->player.lookdir;
-	raycast_new(ray, &dat->raycastinfo, &ed->world); //TODO: filter so this only hits rigid geometry
+	if (!raycast_new(ray, &dat->raycastinfo, &ed->world) && dat->rtm == rtm_create)
+	{
+		raycast_plane(ray, &dat->raycastinfo, 0.0f);
+	}
 	t_list	*l;
 
 	l = ed->world.roomlist;

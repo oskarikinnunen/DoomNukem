@@ -45,6 +45,38 @@ typedef struct s_wall
 	t_vector2	uv_offset;
 }	t_wall;
 
+/*
+	IDLE:
+	get random path	thats near current pos (in random interval)
+	if (shot at || seeplayer || hearplayer)
+	{
+		lastseenpos = playerpos //Or APPROX player pos, if not directly seen
+		gotoalert
+	}
+		
+*/
+
+// ALERT:
+/*	if !seeplayer && nopath
+	{
+		if (reached lastseenpos)
+			move to random pos near current pos
+		else
+			path = path to lastseenpos
+	}
+	if seeplayer
+		shoot
+	if seeplayer && highhealth
+		strafe around
+	if seeplayer && lowhealth
+		path = path away from player
+	if curtime - lastseenplayertime	> threshold
+		gotoidle
+*/
+
+//[2][0][0][0][0][3]
+
+
 typedef struct s_room //TODO: rewrite rooms/walls so rooms have t_vector2 edges and walls have pointers to those
 {
 	char			name[32];

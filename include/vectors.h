@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vectors.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 10:35:54 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/11 11:42:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,6 +151,9 @@ float		vector3_dot(t_vector3 first, t_vector3 second);
 
 //returns true if both vectors are identical
 bool		vector3_cmp(t_vector3 first, t_vector3 second);
+
+
+t_vector3	vector3_snap(t_vector3 vec, int interval);
 
 //returns vector3 multiplied by vector 'v1' and vector 'v2'
 t_vector3	vector3_mul_vector3(t_vector3 v1, t_vector3 v2);
