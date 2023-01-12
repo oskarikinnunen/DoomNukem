@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/12 11:26:49 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/12 14:26:02 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,9 +110,10 @@ typedef struct s_world
 	struct s_autogui	*debug_gui;
 	t_sdlcontext		*sdl;
 	t_list				*guns;
+	t_list				*prefabs;
 	t_lighting			lighting;
 	uint32_t			lights_count;
-	t_pointlight		lights[100];
+	t_pointlight		lights[128];
 	bool				lighting_baked;
 	t_list				*objectmetadatalist; //Move to sdl, this is only used when objects are initialized
 	t_npc				npcpool[128];

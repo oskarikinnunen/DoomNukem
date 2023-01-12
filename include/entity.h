@@ -36,14 +36,22 @@ typedef enum s_entitystatus
 	uint16_t	root_id;
 }	t_entityroot;*/
 
+/*
+	audiosource->update(entity, prefab.data)
+	npc->update(entity, prefab.data)
+
+
+*/
+
 typedef struct s_entity
 {
 	t_transform		transform;
 	bool			ignore_raycasts;
 	bool			rigid;
 	bool			hidden;
-	uint32_t		object_index;
 	char			object_name[64];
+	struct s_prefab	*prefab;
+	char			prefab_name[64];
 	t_entitystatus	status;
 	uint16_t		id;
 	t_bound			z_bound;
@@ -65,6 +73,7 @@ typedef struct s_entity
 typedef enum e_prefabtype
 {
 	//pft_pickup,
+	pft_none,
 	pft_interactable,
 	pft_light,
 	pft_npc,
@@ -72,11 +81,22 @@ typedef enum e_prefabtype
 	pft_eventtrigger
 }	t_prefabtype;
 
+
+/*
+	prefab_1file
+		prefab struct
+		t_light chunk
+*/
+
 typedef struct s_prefab
 {
 	t_object		*object;
+	t_transform		offset;
 	char			object_name[64];
+	char			prefab_name[64];
 	t_prefabtype	prefabtype;
+	bool			hidden;
+	void			*data;
 }	t_prefab;
 
 /*

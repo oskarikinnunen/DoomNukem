@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/12 11:48:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/12 16:22:36 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -259,6 +259,7 @@ int	editorloop(t_sdlcontext sdl)
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 		update_audio(&ed.world);
+		//play_localsound()
 	}
 	editor_save_prefs(&ed);
 	save_graphics_prefs(&sdl);

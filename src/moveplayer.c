@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   moveplayer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 10:39:48 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/12 13:39:01 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,6 +173,56 @@ void	updateguntransform(t_input *input, t_clock *clock, t_player *player)
 	gun->entity.transform.rotation.z = fmovetowards(gun->entity.transform.rotation.z, zturn, 0.0004f * clock->delta);
 	player->transform.rotation.y += gun->view_anim.lerp * clock->delta * gun->viewrecoil.y; //Separate view jump animation that is longer than gun jump animation?
 }
+
+/*
+	boxcollider
+		objects, this is line and z collider combined
+	linecollider
+		walls
+	zcollider
+		floors/ceiling
+*/
+
+/*
+	collision pseudocode
+
+	vector3 curpos;
+	newplayerpos = curpos + movevector;
+	newplayerpos = get_new_pos_from_collision(player, newplayerpos, world); //Checks line collision and clamps position
+																			//to the interpolated position between
+																			//curpos and newplayerpos (aka it does the glide thingy)
+	if (!collision(player, newplayerpos, world) //check collision again,
+	{											// exactly like get_new_pos_from_collision but just return true/false if we hit a line
+												//, so if the glide position still collides, we don't move the player at all
+		curpos = newplayerpos;
+	}
+
+*/
+
+//get_z_position(t_world *world, t_vector3 pos, float radius, float height)
+//{
+	/*
+	z = 0.0f;
+
+	while roomfloors
+		if pointintriangle || collides with floor edgelines
+		 && share_z_space(playercollider, floor)
+			min_z = ft_maxf(z, room.height)
+	while roomramps
+		if (pointintriangle || collides with ramp edgelines)
+		{
+			get point in ramp (basicly uv step, maybe just raycast?)
+			if (share_z_space(ramp, point.z))
+				min_z = ft_maxf(z, point.z)
+		}
+	while boxcolliders
+		while col.triangles
+		if pointintriangle || collides with floor edgelines
+		 && share_z_space(playercollider, floor)
+			min_z = ft_maxf(z, room.height)
+	
+	*/
+//}
 
 void	moveplayer(t_player *player, t_input *input, t_clock clock)
 {

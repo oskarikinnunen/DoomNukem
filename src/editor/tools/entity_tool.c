@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/12 11:47:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/12 16:20:25 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -308,6 +308,159 @@ void	entity_tool_raycast(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 		raycast_plane(ray, &dat->info, 0.0f);
 }
 
+void	list_prefabs(t_prefab_editor *pe, t_world *world)
+{
+	t_list		*l;
+	t_prefab	*fab;
+	t_autogui	*gui;
+
+	gui = &pe->prefab_select;
+	l = world->prefabs;
+	while (l != NULL)
+	{
+		fab = l->content;
+		if (gui_highlighted_button_if(fab->prefab_name, gui, pe->prefab == fab))
+		{
+			pe->prefab = fab;
+		}
+			
+		l = l->next;
+	}
+}
+
+void	select_prefab_type(t_prefab_editor *pe)
+{
+	t_autogui	*gui;
+
+	gui = &pe->prefab_modify;
+	gui_label("Prefab type:", gui);
+	if (gui_highlighted_button_if("None", gui, pe->prefab->prefabtype == pft_none))
+		pe->prefab->prefabtype = pft_none;
+	if (gui_highlighted_button_if("Light", gui, pe->prefab->prefabtype == pft_light))
+	{
+		pe->prefab->prefabtype = pft_light;
+		if (pe->prefab->data != NULL)
+		{
+			free(pe->prefab->data);
+			pe->prefab->data = NULL;
+		}
+		pe->prefab->data = ft_memalloc(sizeof(t_pointlight)); //TODO: protect
+		t_pointlight	*pl;
+		pl = pe->prefab->data;
+		pl->radius = 100.0f;
+		pl->shadows = true;
+	}
+		
+	if (gui_highlighted_button_if("Audio", gui, pe->prefab->prefabtype == pft_audiosource))
+		pe->prefab->prefabtype = pft_audiosource;
+	if (gui_highlighted_button_if("Interactable", gui, pe->prefab->prefabtype == pft_interactable))
+		pe->prefab->prefabtype = pft_interactable;
+}
+
+void	edit_prefab_subtype(t_prefab_editor *pe)
+{
+	t_autogui	*gui;
+
+	gui = &pe->subtype_gui;
+	if (pe->prefab->prefabtype == pft_light)
+	{
+		t_pointlight	*light;
+		light = pe->prefab->data;
+
+		gui_start(gui);
+		gui_labeled_float_slider("Light radius:", &light->radius, 2.0f, gui);
+		gui_end(gui);
+		gui->sdl->render.gizmocolor = AMBER_2;
+		render_ball(gui->sdl, pe->preview_entity.transform.position, light->radius, AMBER_3);
+	}
+}
+
+void	entity_tool_edit_prefab(t_editor *ed, t_entitytooldata *dat)
+{
+	t_sdlcontext	*sdl;
+	t_autogui		*gui;
+	t_prefab_editor	*pe;
+
+	pe = &dat->prefab_editor;
+	gui = &pe->prefab_modify;
+	sdl = gui->sdl;
+	if (pe->prefab != NULL)
+	{
+		ed->world.sdl->global_wireframe = true;
+		if (!pe->view_lock)
+			pe->preview_entity.transform.position = dat->info.hit_pos;
+		pe->preview_entity.obj = pe->prefab->object;
+		pe->preview_entity.hidden = pe->prefab->hidden;
+		pe->preview_entity.transform.scale = vector3_one();
+		rendergrid(&ed->world, dat->info.hit_pos, 5, CLR_DARKGRAY);
+		ed->world.sdl->global_wireframe = false;
+		if (!pe->preview_entity.hidden)
+			render_entity(sdl, &sdl->render, &pe->preview_entity);
+		highlight_entity(sdl, &pe->preview_entity, AMBER_3);
+		ed->world.sdl->global_wireframe = true;
+
+		gui_start(gui);
+		gui_label("Object:", gui);
+		if (pe->prefab->object != NULL)
+			gui_label(pe->prefab->object->name, gui);
+		gui_labeled_bool_edit("Lock view", &pe->view_lock, gui);
+		if (gui_highlighted_button_if("Select object", gui, !pe->object_select.hidden))
+			pe->object_select.hidden = !pe->object_select.hidden;
+		gui_labeled_bool_edit("Hide object", &pe->prefab->hidden, gui);
+		gui_preset_transform(&pe->prefab->offset, gui);
+		select_prefab_type(pe);
+		gui_end(gui);
+
+		if (pe->prefab->prefabtype != pft_none)
+			edit_prefab_subtype(pe);
+		//TODO: split
+		gui = &pe->object_select;
+		gui_start(gui);
+		int			i;
+		t_object	*obj;
+
+		i = 0;
+		if (gui_highlighted_button_if("No object", gui, pe->prefab->object == NULL))
+			pe->prefab->object = NULL;
+
+		while (i < ed->world.sdl->objectcount)
+		{
+			obj = &ed->world.sdl->objects[i];
+			if (gui_highlighted_button_if(obj->name, gui, obj == pe->prefab->object))
+				pe->prefab->object = obj;
+			i++;
+		}
+		gui_end(gui);
+		
+	} else {
+		ed->world.sdl->global_wireframe = false;
+	}
+}
+
+void	entity_tool_prefab(t_editor *ed, t_entitytooldata *dat)
+{
+	t_sdlcontext	*sdl;
+	t_autogui		*gui;
+
+	gui = &dat->prefab_editor.prefab_select;
+	sdl = ed->world.sdl;
+	gui_start(gui);
+	list_prefabs(&dat->prefab_editor, &ed->world);
+	if (gui_button("Add new prefab", gui))
+	{
+		t_prefab	fab;
+		ft_bzero(&fab, sizeof(fab));
+		ft_strcpy(fab.object_name, "cube.obj");
+		ft_strcpy(fab.prefab_name, "cubeprefab");
+		fab.object = get_object_by_name(*sdl, fab.object_name);
+		fab.offset.scale = vector3_one();
+		list_push(&ed->world.prefabs, &fab, sizeof(fab));
+	}
+	gui_end(gui);
+	entity_tool_edit_prefab(ed, dat);
+	
+}
+
 void	entity_tool_update(t_editor *ed, t_sdlcontext *sdl)
 {
 	t_entitytooldata	*dat;
@@ -316,7 +469,8 @@ void	entity_tool_update(t_editor *ed, t_sdlcontext *sdl)
 	dat = (t_entitytooldata *)ed->tool->tooldata;
 	entity_tool_raycast(ed, sdl, dat);
 	//entity_tool_list(ed, sdl, dat);
-	entity_tool_place(ed, sdl, dat);
+	entity_tool_prefab(ed, dat);
+	//entity_tool_place(ed, sdl, dat);
 	entity_tool_modify(ed, sdl, dat);
 }
 
@@ -325,29 +479,10 @@ void	entity_tool_init(t_editor *ed, t_sdlcontext *sdl)
 	t_entitytooldata	*dat;
 
 	dat = ed->tool->tooldata;
-	if (dat->objectgui.gui.sdl == NULL)
-	{
-		dat->objectgui.gui = init_gui(sdl, &ed->hid, &ed->player, (t_point) {20, 40}, "Place new entity");
-		dat->objectgui.gui.minimum_size.x = 140;
-		dat->objectgui.gui.rect.size.x = dat->objectgui.gui.minimum_size.x;
-		dat->objectgui.autoclose = false;
-	}
-	if (dat->entitygui.sdl == NULL)
-	{
-		dat->entitygui = init_gui(sdl, &ed->hid, &ed->player, (t_point) {20, 40}, "Edit entity");
-		dat->entitygui.minimum_size.x = 300;
-		dat->entitygui.minimum_size.y = 200;
-		dat->entitygui.rect.position = point_sub(sdl->screensize, dat->entitygui.minimum_size);
-		dat->entitygui.rect.position.y = 0;
-		//dat->entitygui.rect.size.y = 220;
-	}
-	if (dat->worldgui.sdl == NULL)
-	{
-		dat->worldgui = init_gui(sdl, &ed->hid, &ed->player, (t_point) {200, 40}, "World entities");
-		dat->worldgui.minimum_size.x = 300;
-		dat->worldgui.minimum_size.y = 450;
-		dat->worldgui.rect.size = dat->worldgui.minimum_size;
-	}
+	entitytool_entitygui_init(ed, sdl, dat);
+	entitytool_worldgui_init(ed, sdl, dat);
+	entitytool_prefabgui_init(ed, sdl, dat);
+	entitytool_objectgui_init(ed, sdl, dat);
 }
 
 t_tool	*get_entity_tool()

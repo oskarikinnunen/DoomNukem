@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 14:09:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/12 12:38:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1511,6 +1511,7 @@ void	room_tool_update(t_editor *ed, t_sdlcontext *sdl)
 	dat = (t_roomtooldata *)ed->tool->tooldata;
 	ray.origin = ed->player.transform.position;
 	ray.dir = ed->player.lookdir;
+	ft_bzero(&dat->raycastinfo, sizeof(t_raycastinfo));
 	if (!raycast_new(ray, &dat->raycastinfo, &ed->world) && dat->rtm == rtm_create)
 	{
 		raycast_plane(ray, &dat->raycastinfo, 0.0f);

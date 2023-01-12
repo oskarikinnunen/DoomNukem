@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/12 11:15:23 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/12 14:57:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ static void gui_limitrect(t_autogui *gui)
 
 void	gui_start(t_autogui *gui)
 {
+	if (gui->sdl == NULL)
+		return ;
 	if (!gui->hidden)
 	{
 		//draw_rectangle_filled(*gui->sdl, gui->rect, CLR_DARKGRAY);
@@ -165,7 +167,7 @@ void	gui_end(t_autogui *gui)
 	t_rectangle	dragcorner;
 	t_rectangle	dragbar;
 
-	if (gui->hidden)
+	if (gui->hidden || gui->sdl == NULL)
 		return ;
 	dragbar = gui->rect;
 	dragbar.size.y = 32;
@@ -707,6 +709,14 @@ bool	gui_highlighted_button(char *str, t_autogui *gui) //TODO, DRAWRECTANGLE AMB
 	drawrectangle(*gui->sdl, br.rect, AMBER_3);
 	gui_layout(gui, br.rect);
 	return (br.clicked);
+}
+
+bool	gui_highlighted_button_if(char *str, t_autogui *gui, bool condition)
+{
+	if (condition)
+		return (gui_highlighted_button(str, gui));
+	else
+		return (gui_button(str, gui));
 }
 
 bool	gui_labeled_bool(char *str, bool b, t_autogui *gui)

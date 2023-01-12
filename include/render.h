@@ -144,6 +144,31 @@ typedef struct s_audiosample
 	float			volume;
 }	t_audiosample;
 
+/*
+	entity
+		->loadcomponent
+
+	prefab
+
+	audiosource
+	npc
+	interactable
+
+
+
+*/
+
+typedef struct s_audiosource
+{
+	t_entity		*entity;
+	t_audiosample	*sample;
+	uint16_t		entity_id;
+	char			samplename[64];
+	float			volume;
+	bool			loop;
+	bool			playing;
+}	t_audiosource;
+
 typedef struct s_audio
 {
 	FMOD_SYSTEM			*system;
@@ -231,6 +256,7 @@ void		render_start(t_render *render);
 void				render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size);
 void				render_gizmo3d(t_sdlcontext *sdl, t_vector3 pos, int size, uint32_t color);
 void				render_gizmo2d(t_sdlcontext *sdl, t_vector2 pos, int size, uint32_t color);
+void				render_ball(t_sdlcontext *sdl, t_vector3 pos, float size, uint32_t clr);
 void				render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to);
 int					triangle_clipagainstplane(t_vector3 plane_p, t_vector3 plane_n, t_triangle *in_tri, t_triangle out_tri[2]);
 void				draw_screen_to_worldspace_ray(t_sdlcontext sdl, t_render render, t_point origin, t_vector2 angle);

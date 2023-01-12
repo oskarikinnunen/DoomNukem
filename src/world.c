@@ -139,25 +139,7 @@ void update_world3d(t_world *world, t_render *render)
 		update_maxvolume(&world->sdl->audio);
 	if (gui_button("Test audio", world->debug_gui))
 	{
-		static bool	statement = true;
-
-		if (statement)
-		{
-			//pause_music(&sdl->audio, statement);
-			//pause_audio(&sdl->audio, statement);
-			//play_worldsound(&sdl->audio, "bubbles.wav", &world->entitycache.entities[0].transform.position);
-			play_localsound(&sdl->audio, "pistol1.wav");
-			statement = false;
-		}
-		else
-		{
-			//pause_music(&sdl->audio, statement);
-			//pause_audio(&sdl->audio, statement);
-			//play_worldsound(&sdl->audio, "bubbles.wav", &world->entitycache.entities[0].transform.position);
-			play_localsound(&sdl->audio, "bubbles.wav");
-			statement = true;
-		}
-		
+		play_localsound(&sdl->audio, "pistol1.wav");
 	}
 	world->sdl->audio.max_volume = ft_clampf(world->sdl->audio.max_volume, 0.25f, 1.0f);
 	if (gui_shortcut_button("Toggle rendering:", 'R', world->debug_gui))
