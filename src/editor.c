@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 10:39:15 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/12 11:26:24 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "render.h"
 #include "objects.h"
 #include "entity.h"
+#include "navigation.h"
 
 
 char	*world_fullpath(char	*filename)
@@ -117,15 +118,11 @@ int	editorloop(t_sdlcontext sdl)
 	sdl.lighting_toggled = true;
 	ed.gamereturn = game_continue;
 	sdl.render = init_render(sdl, &ed.world);
+	sdl.bitmask = init_bitmask(&sdl);
 	
 	ed.tool = NULL;
 	sdl.lighting_toggled = false;
 	
-	sdl.bitmask.tile = malloc(sizeof(t_tile) * ((sdl.window_h * sdl.window_w) / 64));
-	sdl.bitmask.bitmask_chunks.x = sdl.window_w / 16;
-	sdl.bitmask.bitmask_chunks.y = sdl.window_h / 8;
-	sdl.bitmask.tile_chunks.x = sdl.window_w / 8;
-	sdl.bitmask.tile_chunks.y = sdl.window_h / 8;
 	//spawn_basic_entity()
 
 	//ed.world.sdl->render = 
@@ -142,6 +139,10 @@ int	editorloop(t_sdlcontext sdl)
 		screen_blank(sdl);
 		
 		render_start(&sdl.render);
+		update_frustrum_culling(&ed.world, &sdl, &sdl.render);
+		clear_occlusion_buffer(&sdl);
+		if (!ed.player.gun->disabled)
+			render_entity(&sdl, &sdl.render, &ed.player.gun->entity);
 		update_world3d(&ed.world, &sdl.render);
 		update_editor_toolbar(&ed, &ed.toolbar_gui);
 		if (ed.tool != NULL)
@@ -154,8 +155,6 @@ int	editorloop(t_sdlcontext sdl)
 		print_text(&sdl, fps, (t_point){sdl.window_w - 80, 10});
 		drawcircle(sdl, point_div(sdl.screensize, 2), 4, CLR_BLUE);
 		free(fps);
-		if (!ed.player.gun->disabled)
-			render_entity(&sdl, &sdl.render, &ed.player.gun->entity);
 		update_debugconsole(&ed.world.debugconsole, &sdl, ed.world.clock.delta);
 		
 		//rescale_surface(&sdl);

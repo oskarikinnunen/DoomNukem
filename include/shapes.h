@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shapes.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 13:54:56 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 11:36:55 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/12 09:07:12 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,12 @@ typedef struct s_square //TODO: maybe rectangle?
 	t_point min;
 	t_point max;
 }	t_square;
+
+typedef struct s_v2rectangle
+{
+	t_vector2	min;
+	t_vector2	max;
+}	t_v2rectangle;
 
 typedef struct	s_triangle
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   occlusion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 14:40:03 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/11 13:03:08 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/12 10:00:31 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,27 +88,6 @@ void update_object_bounds(t_object *obj)
 	obj->bounds.type = bt_box;
 }
 
-void update_entity_bounds(t_entity *e)
-{
-	t_object	*obj;
-	t_vector3	max;
-	t_vector3	min;
-
-	obj = e->obj;
-	set_bounding_box(&max, &min, obj->vertices, obj->vertice_count);
-	obj->bounds.origin = vector3_lerp(max, min, 0.5f);
-	obj->bounds.radius = get_box_sphere_radius(obj->bounds.origin, max, min);
-	obj->bounds.box.v[0] = (t_vector3){.x = max.x, .y = max.y, min.z};
-	obj->bounds.box.v[1] = (t_vector3){.x = max.x, .y = min.y, min.z};
-	obj->bounds.box.v[2] = (t_vector3){.x = min.x, .y = min.y, min.z};
-	obj->bounds.box.v[3] = (t_vector3){.x = min.x, .y = max.y, min.z};
-	obj->bounds.box.v[4] = (t_vector3){.x = max.x, .y = max.y, max.z};
-	obj->bounds.box.v[5] = (t_vector3){.x = max.x, .y = min.y, max.z};
-	obj->bounds.box.v[6] = (t_vector3){.x = min.x, .y = min.y, max.z};
-	obj->bounds.box.v[7] = (t_vector3){.x = min.x, .y = max.y, max.z};
-	obj->bounds.type = bt_box;
-}
-
 void update_floor_bounds(t_meshtri *f)
 {
 	f->entity->obj->bounds.origin = vector3_lerp(vector3_lerp(f->entity->obj->vertices[0], f->entity->obj->vertices[1], 0.5f), f->entity->obj->vertices[2], 0.5f);
@@ -159,9 +138,21 @@ void default_wall_occlusion_settings(t_wall *w, t_world *world)
 	w->entity->occlusion.is_occluded = false;
 }
 
+t_bitmask	init_bitmask(t_sdlcontext *sdl)
+{
+	t_bitmask	bitmask;
+	
+	bitmask.tile = malloc(sizeof(t_tile) * ((sdl->window_h * sdl->window_w) / 64));
+	bitmask.bitmask_chunks.x = sdl->window_w / 16;
+	bitmask.bitmask_chunks.y = sdl->window_h / 8;
+	bitmask.tile_chunks.x = sdl->window_w / 8;
+	bitmask.tile_chunks.y = sdl->window_h / 8;
+	return(bitmask);
+}
+
 bool is_entity_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 {
-	uint32_t clr;
+	uint32_t	clr;
 
 	if (render->occlusion.occlusion == false)
 		return(false);
@@ -173,8 +164,11 @@ bool is_entity_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 			if (entity->occlusion.is_occluded == true)
 				clr = CLR_RED;
 			else
+			{
+				draw_wireframe(*sdl, entity->occlusion.clip, CLR_TURQ);
 				clr = CLR_GREEN;
-			draw_wireframe(*sdl, entity, clr);
+			}
+			draw_wireframe(*sdl, entity->occlusion.box, clr);
 		}
 		if (sdl->render.occlusion.slow_render == true)
 		{

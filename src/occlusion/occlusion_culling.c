@@ -79,6 +79,10 @@ void calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity)
 
 	render->worldspace_ptri_count = 0;
 	render->screenspace_ptri_count = 0;
+	render->screen_edge.max.x = (float)(sdl.window_w * sdl.resolution_scaling) - 1.0f;
+	render->screen_edge.max.y = (float)(sdl.window_h * sdl.resolution_scaling) - 1.0f;
+	render->screen_edge.min.x = 0.0f;
+	render->screen_edge.min.y = 0.0f;
 	t.t[0] = vector2_to_texture((t_vector2){0, 0});
 	t.t[1] = vector2_to_texture((t_vector2){0, 1});
 	t.t[2] = vector2_to_texture((t_vector2){1, 1});
@@ -171,16 +175,48 @@ bool is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *e
 {
 	t_square	s;
 	const __uint128_t max = ~0;
+	float w;
+	int y;
+	int x;
 
 	s = entity->occlusion.box;
-	float w = entity->occlusion.z_dist[1];
-	for (int y = s.min.y; y < s.max.y; y += 8)
+	w = entity->occlusion.z_dist[1];
+	entity->occlusion.is_occluded = true;
+	entity->occlusion.clip.max.x = 0;
+	entity->occlusion.clip.max.y = 0;
+	entity->occlusion.clip.min.x = sdl->window_w - 1;
+	entity->occlusion.clip.min.y = sdl->window_h - 1;
+	y = s.min.y;
+	while (y < s.max.y)
 	{
-		for (int x = s.min.x; x < s.max.x; x += 8)
+		x = s.min.x;
+		while (x < s.max.x)
 		{
 			if (w < sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0)
-				return(false);
+			{	
+				entity->occlusion.is_occluded = false;
+				if (entity->occlusion.clip.max.x < x)
+					entity->occlusion.clip.max.x = x;
+				if (entity->occlusion.clip.max.y < y)
+					entity->occlusion.clip.max.y = y;
+				if (entity->occlusion.clip.min.x > x)
+					entity->occlusion.clip.min.x = x;
+				if (entity->occlusion.clip.min.y > y)
+					entity->occlusion.clip.min.y = y;
+			}
+			x++;
 		}
+		y++;
 	}
-	return (true);
+	/*
+	render->screen_edge.max.x = (float)(sdl->window_w * sdl->resolution_scaling) - 1.0f;
+	render->screen_edge.max.y = (float)(sdl->window_h * sdl->resolution_scaling) - 1.0f;
+	render->screen_edge.min.x = (float)0 * sdl->resolution_scaling;
+	render->screen_edge.min.y = (float)0 * sdl->resolution_scaling;
+	*/
+	entity->occlusion.clip.max.x = ft_clamp(entity->occlusion.clip.max.x, 0, (sdl->window_w * sdl->resolution_scaling) - 1);
+	entity->occlusion.clip.max.y = ft_clamp(entity->occlusion.clip.max.y, 0, (sdl->window_h * sdl->resolution_scaling) - 1);
+	entity->occlusion.clip.min.x = ft_clamp(entity->occlusion.clip.min.x, 0, (sdl->window_w * sdl->resolution_scaling) - 1);
+	entity->occlusion.clip.min.y = ft_clamp(entity->occlusion.clip.min.y, 0, (sdl->window_h * sdl->resolution_scaling) - 1);
+	return (entity->occlusion.is_occluded); // unnecessary to return anything
 }

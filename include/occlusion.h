@@ -6,7 +6,8 @@
 
 typedef struct s_occlusion
 {
-	t_square			box;//legacy
+	t_square			box;
+	t_square			clip;
 	float				z_dist[2];
 	bool				is_backface_cull;
 	bool				is_occluded;

@@ -336,10 +336,10 @@ void clipped_point_triangle(t_render *render, t_sdlcontext sdl)
 				nnewtriangles--;
 				switch (p)
 				{
-				case 0: ntristoadd = point_clip_triangle_against_plane((t_vector2){0.0f, 0.0f}, (t_vector2){0.0f, 1.0f}, test, clipped); break;
-				case 1: ntristoadd = point_clip_triangle_against_plane((t_vector2){0.0f, (float)(sdl.window_h * sdl.resolution_scaling) - 1.0f}, (t_vector2){0.0f, -1.0f}, test, clipped); break;
-				case 2: ntristoadd = point_clip_triangle_against_plane((t_vector2){0.0f, 0.0f}, (t_vector2){1.0f, 0.0f}, test, clipped); break;
-				case 3: ntristoadd = point_clip_triangle_against_plane((t_vector2){(float)(sdl.window_w * sdl.resolution_scaling) - 1.0f, 0.0f}, (t_vector2){-1.0f, 0.0f}, test, clipped); break;
+				case 0: ntristoadd = point_clip_triangle_against_plane(render->screen_edge.min, (t_vector2){0.0f, 1.0f}, test, clipped); break;
+				case 1: ntristoadd = point_clip_triangle_against_plane(render->screen_edge.max, (t_vector2){0.0f, -1.0f}, test, clipped); break;
+				case 2: ntristoadd = point_clip_triangle_against_plane(render->screen_edge.min, (t_vector2){1.0f, 0.0f}, test, clipped); break;
+				case 3: ntristoadd = point_clip_triangle_against_plane(render->screen_edge.max, (t_vector2){-1.0f, 0.0f}, test, clipped); break;
 				}
 				for (int w = 0; w < ntristoadd; w++)
 				{

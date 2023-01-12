@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 10:33:57 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/12 11:26:49 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include "player.h"
 # include "input.h"
 # include "debug.h"
+# include "navigation.h"
 
 # define PI	3.14159265359
 # define FULLRAD M_PI * 2.0
@@ -242,7 +243,6 @@ void	default_floor_occlusion_settings(t_meshtri *f, t_world *world);
 void	default_wall_occlusion_settings(t_wall *w, t_world *world);
 
 void	update_object_bounds(t_object *obj);
-void	update_entity_bounds(t_entity *e);
 void	update_floor_bounds(t_meshtri *f);
 void	update_wall_bounds(t_wall *w);
 

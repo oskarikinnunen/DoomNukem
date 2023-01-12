@@ -130,6 +130,7 @@ typedef struct s_render
 	t_map				map;
 	uint32_t			dynamic_light;
 	t_rend_lightmode	lightmode;
+	t_v2rectangle		screen_edge;
 	/*bool				is_wrap;
 	bool				dynamic_light;*/
 	//struct s_sdlcontext	*sdl;
@@ -251,7 +252,9 @@ int		clip_triangle_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangl
 int		point_clip_triangle_against_plane(t_vector2 plane_p, t_vector2 plane_n, t_point_triangle in_tri, t_point_triangle out_tri[2]);
 int		clip_triangle_against_occluder_plane(t_vector2 plane_p, t_vector2 plane_n, t_point_triangle in_tri, t_point_triangle out_tri[2]);
 //bitmask
-int	clip_bitmask_triangle_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
+int			clip_bitmask_triangle_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]); //TODO: Implement this with gpu rendering
+t_bitmask	init_bitmask(t_sdlcontext *sdl);
+
 /* SURFACE TOOLS */
 
 void	join_surfaces(SDL_Surface *dest, SDL_Surface *src);

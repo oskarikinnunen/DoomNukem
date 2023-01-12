@@ -127,8 +127,6 @@ void update_world3d(t_world *world, t_render *render)
 		}
 		i++;
 	}*/
-	update_frustrum_culling(world, sdl, render);
-	clear_occlusion_buffer(sdl);
 	sort_entitycache(world, render->camera.position);
 	update_entitycache(sdl, world, render);
 	if (!sdl->global_wireframe && !world->skybox.hidden)

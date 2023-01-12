@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   culling_debug.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 14:59:10 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/11 12:35:20 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/12 11:10:11 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,14 +50,11 @@ void set_square_from_triangles(t_occlusion *occl, t_point_triangle *t, int count
 	}
 }
 
-void draw_wireframe(t_sdlcontext sdl, t_entity *e, uint32_t clr)
+void draw_wireframe(t_sdlcontext sdl, t_square s, uint32_t clr)
 {
-	t_square	s;
-	int			i;
 
-	//if (e->obj->bounds.type != bt_box)
+//	if (e->obj->bounds.type != bt_box)
 	//	return;
-	s = e->occlusion.box;
 	drawline(sdl, (t_point){s.max.x, s.max.y}, (t_point){s.min.x, s.max.y}, clr);
 	drawline(sdl, (t_point){s.min.x, s.max.y}, (t_point){s.min.x, s.min.y}, clr);
 	drawline(sdl, (t_point){s.min.x, s.min.y}, (t_point){s.max.x, s.min.y}, clr);

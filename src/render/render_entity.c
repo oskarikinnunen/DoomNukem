@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_entity.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/11 13:29:41 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/12 11:06:52 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,24 @@ uint32_t shade(uint32_t clr, float norm)
 
 void render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 {
+	render->worldspace_ptri_count = 0;
+	render->screenspace_ptri_count = 0;
+
+	if (point_cmp(entity->occlusion.clip.max, point_zero()) && point_cmp(entity->occlusion.clip.min, point_zero()))
+	{
+		render->screen_edge.max.x = (float)(sdl->window_w * sdl->resolution_scaling) - 1.0f;
+		render->screen_edge.max.y = (float)(sdl->window_h * sdl->resolution_scaling) - 1.0f;
+		render->screen_edge.min.x = (float)0 * sdl->resolution_scaling;
+		render->screen_edge.min.y = (float)0 * sdl->resolution_scaling;
+	}
+	else
+	{
+		render->screen_edge.max.x = entity->occlusion.clip.max.x;
+		render->screen_edge.max.y = entity->occlusion.clip.max.y;
+		render->screen_edge.min.x = entity->occlusion.clip.min.x;
+		render->screen_edge.min.y = entity->occlusion.clip.min.y;
+
+	}
 	render_worldspace(render, entity);
 	render_quaternions(sdl, render, entity);
 }

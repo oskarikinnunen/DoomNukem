@@ -126,7 +126,7 @@ void	calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity);
 void	clear_occlusion_buffer(t_sdlcontext *sdl);
 
 //Debug occl
-void	draw_wireframe(t_sdlcontext sdl, t_entity *e, uint32_t clr);
+void	draw_wireframe(t_sdlcontext sdl, t_square s, uint32_t clr);
 void	bitmask_to_pixels(t_sdlcontext *sdl);
 
 /* RENDERING */
