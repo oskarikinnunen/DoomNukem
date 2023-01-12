@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/12 11:48:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/12 13:50:31 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ typedef struct s_editorprefs
 	Fullscreen
 	borderless
 	windowed
-
 */
 
 void	editor_load_prefs(t_editor *ed, t_sdlcontext *sdl)
@@ -229,6 +228,61 @@ int	editorloop(t_sdlcontext sdl)
 	ed.graphics_gui.hidden = true;
 	ed.gamereturn = game_continue;
 	sdl.lighting_toggled = false;
+	t_world *world = &ed.world;
+	int			i;
+	int			found;
+	t_entity	*ent;
+
+	
+	i = 0;
+	found = 0;
+	world->node_amount = 0;
+	while (found < world->entitycache.existing_entitycount)
+	{
+		ent = world->entitycache.sorted_entities[i];
+		if (ent->status != es_free)
+		{
+			if (ent->status == es_active && !ent->hidden)
+			{
+				if (ent->obj->bounds.type == bt_ignore)
+				{
+					memcpy(world->navmesh[world->node_amount].vertex, ent->obj->vertices, sizeof(t_vector3) * 3);
+					world->navmesh[world->node_amount].mid_point = vector3_div(vector3_add(vector3_add(world->navmesh[world->node_amount].vertex[0], world->navmesh[world->node_amount].vertex[1]), world->navmesh[world->node_amount].vertex[2]), 3.0f);
+					world->node_amount++;
+				}
+			}
+			found++;
+		}
+		i++;
+	}
+	for (int i = 0; i < world->node_amount; i++)
+	{
+		//setup cell
+		world->navmesh[i].neighbors = 0;
+		for (int j = 0; j < 3; j++)
+		{
+			t_vector3 start = world->navmesh[i].vertex[j];
+			t_vector3 end = world->navmesh[i].vertex[(j + 1) % 3];
+			for (int i1 = 0; i1 < world->node_amount; i1++)
+			{
+				if (i == i1)
+					continue;
+				int count = 0;
+				for (int j1 = 0; j1 < 3; j1++)
+				{
+					if (vector3_cmp(start, world->navmesh[i1].vertex[j1]))
+						count++;
+					if (vector3_cmp(end, world->navmesh[i1].vertex[j1]))
+						count++;
+				}
+				if (count == 2)
+				{
+					world->navmesh[i].neighbors_id[world->navmesh[i].neighbors++] = i1;
+				}
+			}
+		}
+		printf("neighbors amount %d\n", world->navmesh[i].neighbors);
+	}
 	while (ed.gamereturn == game_continue)
 	{
 		update_deltatime(&ed.world.clock);
@@ -238,6 +292,11 @@ int	editorloop(t_sdlcontext sdl)
 			moveplayer(&ed.player, &ed.hid.input, ed.world.clock);
 		update_render(&sdl.render, &ed.player);
 		screen_blank(sdl);
+		if (1)
+		{
+			sdl.render.camera.position = (t_vector3){1906.271973, 2584.340820, 54.927448};
+			sdl.render.camera.lookdir = (t_vector3){-0.925771, 0.359714, -0.116424};
+		}
 		render_start(&sdl.render);
 		update_frustrum_culling(&ed.world, &sdl, &sdl.render);
 		clear_occlusion_buffer(&sdl);

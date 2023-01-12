@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 15:36:10 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/12 09:03:24 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/12 13:47:53 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,13 @@ void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 			tritransformed.t[0] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[0] - 1]);
 			tritransformed.t[1] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[1] - 1]);
 			tritransformed.t[2] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[2] - 1]);
+		}
+		for (int i = 0; i < 3; i++)
+		{
+			tritransformed.t[i].u = fabsf(tritransformed.t[i].u);
+			tritransformed.t[i].v = fabsf(tritransformed.t[i].v);
+			tritransformed.t[i].w = fabsf(tritransformed.t[i].w);
+			//print_texture(tritransformed.t[0]);
 		}
 		tritransformed.clr = obj->materials[obj->faces[index].materialindex].kd;
 		if (!is_triangle_backface(tritransformed, render))

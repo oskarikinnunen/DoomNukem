@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/11 10:53:51 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/12 13:08:53 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 void render_buffer_triangles(t_sdlcontext *sdl, t_render *render)
 {
+	render->debug_temp = -1;
 	int index;
 
 	index = 0;
@@ -80,6 +81,7 @@ void render_buffer(t_sdlcontext *sdl, t_render *render)
 	if (!render->wireframe && (render->map.data != NULL || render->img != NULL) && !sdl->global_wireframe)
 		render_buffer_triangles(sdl, render);
 	//return;
+	render_buffer_triangle_wireframes(sdl, render);
 	if (render->wireframe/* || sdl->global_wireframe*/)
 		render_buffer_triangle_wireframes(sdl, render);
 	/*if (render->img == NULL)

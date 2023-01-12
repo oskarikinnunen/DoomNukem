@@ -134,6 +134,7 @@ typedef struct s_render
 	/*bool				is_wrap;
 	bool				dynamic_light;*/
 	//struct s_sdlcontext	*sdl;
+	int					debug_temp;
 }	t_render;
 
 typedef struct s_audiosample
@@ -288,7 +289,7 @@ void	render_bitmask(t_sdlcontext *sdl, t_render *render);
 /*Render helper*/
 t_point_triangle	wf_tri(t_point_triangle in, float scaling);
 t_texture			calc_step_texture(t_texture *t, float delta);
-void				calc_points_step(float x_step[2], t_texture t_step[2], t_point *p, t_texture *t, float delta);
+void				calc_points_step(float *x_step, t_texture *t_step, t_point *p, t_texture *t, float delta);
 void				sort_point_uv_tri(t_point *p, t_texture *t);
 void				sort_polygon_tri(t_point *p2, t_vector2 *t, t_vector3 *p3);
 void				sort_point_tri(t_point *p2, float *w);

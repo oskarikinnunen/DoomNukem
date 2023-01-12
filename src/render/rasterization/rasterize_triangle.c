@@ -7,10 +7,14 @@ static uint32_t sample_img(t_render *render, t_texture t)
 	uint32_t	xsample;
 	uint32_t	ysample;
 
+	xsample = t.u * (render->map.img_size.x);
+	ysample = t.v * (render->map.img_size.y);
+
+	/*
 	xsample = (t.u / t.w) * (render->map.img_size.x);
 	ysample = (t.v / t.w) * (render->map.img_size.y);
 
-	/*if (xsample >= render->map.size.x || xsample < 0 || ysample < 0 || ysample >= render->map.size.y)
+if (xsample >= render->map.size.x || xsample < 0 || ysample < 0 || ysample >= render->map.size.y)
 	{
 		printf("xsample %i", xsample);
 		printf("ysample %i \n", ysample);
@@ -32,13 +36,13 @@ static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 
 	p = triangle.p;
 	t = triangle.t;
-	calc_points_step(step, t_step, p, t, 1.0f / ((float)(p[1].y - p[0].y)));
+	calc_points_step(step, t_step, p, t, p[1].y - p[0].y);
 	y = p[1].y;
 	while (y >= p[0].y)
 	{
 		x = p[1].x + (step[0] * (float)(p[1].y - y));
 		int ax =  p[2].x + (step[1] * (float)(p[1].y - y));
-		t_step[2] = calc_step_texture(t, 1.0f / (float)(ax - x));
+		t_step[2] = calc_step_texture(t, (float)(ax - x));
 		t[0].u = t[1].u;
 		t[0].v = t[1].v;
 		t[0].w = t[1].w;
@@ -56,18 +60,18 @@ static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] =
 					sample_img(render, t[0]);
 			}
-			t[0].u += t_step[2].u;
-			t[0].v += t_step[2].v;
-			t[0].w += t_step[2].w;
+			t[0].u += t_step[0].u;
+			t[0].v += t_step[0].v;
+			t[0].w += t_step[0].w;
 			x++;
 		}
-		t[1].u += t_step[0].u;
-		t[1].v += t_step[0].v;
-		t[1].w += t_step[0].w;
+		t[1].u += t_step[1].u;
+		t[1].v += t_step[1].v;
+		t[1].w += t_step[1].w;
 
-		t[2].u += t_step[1].u;
-		t[2].v += t_step[1].v;
-		t[2].w += t_step[1].w;
+		t[2].u += t_step[2].u;
+		t[2].v += t_step[2].v;
+		t[2].w += t_step[2].w;
 		y--;
 	}
 }
@@ -93,18 +97,18 @@ static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 
 	p = triangle.p;
 	t = triangle.t;
-	calc_points_step(step, t_step, p, t, 1.0f/((float)(p[0].y - p[1].y)));
+	calc_points_step(step, t_step, p, t,p[0].y - p[1].y);
 	y = p[1].y;
 	while (y <= p[0].y)
 	{
 		x = p[1].x + (step[0] * (float)(y - p[1].y));
 		int ax =  p[2].x + (step[1] * (float)(y - p[1].y));
-		t_step[2] = calc_step_texture2(t, (float)(ax - x));
+		t_step[2] = calc_step_texture(t, (float)(ax - x));
 		t[0].u = t[1].u;
 		t[0].v = t[1].v;
 		t[0].w = t[1].w;
 		render_bitmask_row(x, ax, 1.0f / t[1].w, 1.0f / t[2].w, y, sdl);
-		while(x < ax)
+		while(x <= ax)
 		{
 			if (t[0].w > sdl->zbuffer[x + y * sdl->window_w])
 			{
@@ -112,18 +116,18 @@ static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] =
 					sample_img(render, t[0]);
 			}
-			t[0].u += t_step[2].u;
-			t[0].v += t_step[2].v;
-			t[0].w += t_step[2].w;
+			t[0].u += t_step[0].u;
+			t[0].v += t_step[0].v;
+			t[0].w += t_step[0].w;
 			x++;
 		}
-		t[1].u += t_step[0].u;
-		t[1].v += t_step[0].v;
-		t[1].w += t_step[0].w;
+		t[1].u += t_step[1].u;
+		t[1].v += t_step[1].v;
+		t[1].w += t_step[1].w;
 
-		t[2].u += t_step[1].u;
-		t[2].v += t_step[1].v;
-		t[2].w += t_step[1].w;
+		t[2].u += t_step[2].u;
+		t[2].v += t_step[2].v;
+		t[2].w += t_step[2].w;
 		y++;
 	}
 }
