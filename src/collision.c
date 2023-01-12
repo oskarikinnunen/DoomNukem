@@ -6,13 +6,282 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/05 13:48:43 by raho              #+#    #+#             */
-/*   Updated: 2023/01/11 23:12:30 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/13 01:31:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "collision.h"
 
+static bool	linepoint(t_vector2 start, t_vector2 end, t_vector2 point)
+{
+	float	distance1;
+	float	distance2;
+	float	line_len;
+	float	buffer;
+
+	distance1 = vector2_dist(point, start);
+	distance2 = vector2_dist(point, end);
+	line_len = vector2_dist(start, end);
+	buffer = 0.1f;
+	if ((distance1 + distance2) >= (line_len - buffer) && (distance1 + distance2) <= (line_len + buffer))
+		return (true);
+	return (false);
+}
+
+static bool	pointcircle(t_vector2 point, t_vector2 circle, float radius)
+{
+	t_vector2	delta;
+	
+	delta = vector2_sub(circle, point);
+	if (vector2_dot(delta, delta) <= radius * radius)
+		return (true);
+	return (false);
+}
+
+t_collision	calculate_new_pos(t_vector2 delta, float radius)
+{
+	t_collision	result;
+	float		dist;
+	
+	dist = vector2_magnitude(delta);
+	result.normal = vector2_mul(delta, (1.0f / dist));
+	result.depth = radius - dist;
+	return (result);
+}
+
+bool	linecircle(t_line line, t_vector2 circle, float radius, t_collision *collision)
+{
+	float		wall_len;
+	float		dot;
+	t_vector2	closest;
+	t_vector2	delta;
+	float		dist;
+
+	if (pointcircle(line.start, circle, radius))
+	{
+		*collision = calculate_new_pos(vector2_sub(circle, line.start), radius);
+			return (true);
+	}
+	if (pointcircle(line.end, circle, radius))
+	{
+		*collision = calculate_new_pos(vector2_sub(circle, line.end), radius);
+			return (true);
+	}
+	wall_len = vector2_dist(line.start, line.end);
+	/* dot = vector2_dot((t_vector2){(potential_pos.x - wall_line->start->x), (wall_line->end->x - wall_line->start->x)}, \
+			(t_vector2){(potential_pos.y - wall_line->start->y), (wall_line->end->y - wall_line->start->y)}) / \
+			(wall_len * wall_len); */ //didnt work so had to write it open below
+	dot = (((circle.x - line.start.x) * (line.end.x - line.start.x)) + \
+		((circle.y - line.start.y) * (line.end.y - line.start.y))) / (wall_len * wall_len);
+	closest.x = line.start.x + (dot * (line.end.x - line.start.x));
+	closest.y = line.start.y + (dot * (line.end.y - line.start.y));
+	if (linepoint(line.start, line.end, closest))
+	{
+		if (pointcircle(closest, circle, radius))
+		{
+			*collision = calculate_new_pos(vector2_sub(circle, closest), radius);
+			return (true);
+		}
+	}
+	return (false);
+}
+
+bool	lineline(t_line first, t_line second, t_vector2 *collision_point)
+{
+	float	a;
+	float	b;
+	
+	
+	a = (((second.end.x - second.start.x) * (first.start.y - second.start.y)) - \
+		((second.end.y - second.start.y) * (first.start.x - second.start.x))) / \
+		(((second.end.y - second.start.y) * (first.end.x - first.start.x)) - \
+		((second.end.x - second.start.x) * (first.end.y - first.start.y)));
+	
+	b = (((first.end.x - first.start.x) * (first.start.y - second.start.y)) - \
+		((first.end.y - first.start.y) * (first.start.x - second.start.x))) / \
+		(((second.end.y - second.start.y) * (first.end.x - first.start.x)) - \
+		((second.end.x - second.start.x) * (first.end.y - first.start.y)));
+
+	if (a >= 0 && a <= 1 && b >= 0 && b <= 1)
+	{
+		collision_point->x = first.start.x + (a * (first.end.x - first.start.x));
+		collision_point->y = first.start.y + (a * (first.end.y - first.start.y));
+		return (true);
+	}
+	return (false);
+}
+
+bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, t_vector3 *new_pos)
+{
+	t_list		*l;
+	t_room		*room;
+	int			index;
+
+	player->collision_radius = 15;
+	l = world->roomlist;
+	while (l != NULL)
+	{
+		room = l->content;
+		if (room != NULL)
+		{
+			index = 0;
+			while (index < room->wallcount)
+			{
+				//printf("potential_pos.z: %f\n", potential_pos.z);
+				//room->walls[index].entity->obj->vertices[0].z
+				//render_ray(world->sdl, player->transform.position, room->walls[index].entity->obj->vertices[0]);
+				/* world->sdl->render.gizmocolor = CLR_RED;
+				render_ray(world->sdl, vector3_add(player->transform.position, player->lookdir), room->walls[index].entity->obj->vertices[0]);
+				render_gizmo3d(world->sdl, room->walls[index].entity->obj->vertices[0], 5, CLR_RED);
+				render_gizmo3d(world->sdl, room->walls[index].entity->obj->vertices[1], 5, CLR_RED);
+				render_gizmo3d(world->sdl, room->walls[index].entity->obj->vertices[2], 10, CLR_BLUE);
+				render_gizmo3d(world->sdl, room->walls[index].entity->obj->vertices[3], 10, CLR_BLUE); */
+				if (!room->walls[index].entity->hidden && \
+					(potential_pos.z > room->walls[index].entity->obj->vertices[0].z &&
+					potential_pos.z < room->walls[index].entity->obj->vertices[2].z * 1.2f))
+				{
+					t_collision	collision;
+					if (linecircle((t_line){*room->walls[index].edgeline.start, *room->walls[index].edgeline.end}, \
+							(t_vector2){potential_pos.x, potential_pos.y}, player->collision_radius, &collision))
+					{
+						*new_pos = vector3_add(potential_pos, vector2_to_vector3(vector2_mul(collision.normal, collision.depth)));
+						//printf("potential_pos: %f, %f, %f\n", new_pos->x, new_pos->y, new_pos->z);
+						return (true);
+					}
+				}
+				index++;
+			}
+		}
+		l = l->next;
+	}
+	//printf("collision false\n");
+	return (false);
+}
+
+
+// alaiwan disk/segment collision
+// t_vector2	closest_point_on_segment(t_vector2 point, t_line line)
+// {
+// 	t_vector2	tangent;
+// 	t_vector2	normalized_tangent;
+// 	t_vector2	relative_position;
+
+// 	tangent = vector2_sub(line.end, line.start);
+	
+// 	if (vector2_dot(vector2_sub(point, line.start), tangent) <= 0)
+// 		return (line.start);
+	
+// 	if (vector2_dot(vector2_sub(point, line.end), tangent) >= 0)
+// 		return (line.end);
+
+// 	normalized_tangent = vector2_normalise(tangent);
+// 	relative_position = vector2_sub(point, line.start);
+// 	return (vector2_add(line.start, \
+// 			vector2_multiply(normalized_tangent, \
+// 			vector2_multiply(normalized_tangent, relative_position))));
+	
+// }
+
+// bool	collide_circle_with_line(t_vector2 circle, t_line line, float radius, t_collision *collision)
+// {
+// 	t_vector2	delta;
+// 	float		distance;
+// 	float		length;
+
+// 	delta = closest_point_on_segment(circle, line);
+// 	distance = vector2_dist(circle, delta);
+
+// 	if ((distance * distance) > (radius * radius))
+// 		return (false);
+
+// 	length = vector2_magnitude(delta);
+// 	//printf("collision delta length: %f	depth: %f\n", length, radius - length);
+// 	collision->depth = radius - length;
+// 	collision->normal = vector2_mul(delta, (1.0f / distance));
+// 	return (true);
+// }
+
+// bool	collide_circle_with_lines(t_world *world, t_player *player, t_vector3 potential_pos, t_collision *collision)
+// {
+// 	t_list		*l;
+// 	t_room		*room;
+// 	int			index;
+// 	t_collision	deepest;
+
+// 	ft_bzero(&deepest, sizeof(t_collision));
+// 	l = world->roomlist;
+// 	while (l != NULL)
+// 	{
+// 		room = l->content;
+// 		if (room != NULL)
+// 		{
+// 			index = 0;
+// 			while (index < room->wallcount)
+// 			{
+// 				if (!room->walls[index].entity->hidden && \
+// 					(potential_pos.z > room->walls[index].entity->obj->vertices[0].z &&
+// 					potential_pos.z < room->walls[index].entity->obj->vertices[2].z * 1.2f))
+// 				{
+// 					if (collide_circle_with_line((t_vector2){potential_pos.x, potential_pos.y}, \
+// 							(t_line){*room->walls[index].edgeline.start, *room->walls[index].edgeline.end}, \
+// 							player->collision_radius, collision))
+// 					{
+// 						printf("collided with a line - saving deepest.depth\n");
+// 						printf("collision->depth: %f	collision_normal: %f, %f\n", collision->depth, collision->normal.x, collision->normal.y);
+// 						if (collision->depth < deepest.depth)
+// 						{
+// 							deepest.depth = collision->depth;
+// 							deepest.normal = collision->normal;
+// 						}
+// 						printf("deepest->depth: %f	deepest_normal: %f, %f\n", deepest.depth, deepest.normal.x, deepest.normal.y);
+// 					}
+// 				}
+// 				index++;
+// 			}
+// 		}
+// 		l = l->next;
+// 	}
+// 	if (deepest.depth != 0)
+// 		return (true);
+// 	return (false);			
+// }
+
+// bool	alaiwan_collision(t_world *world, t_player *player, t_vector3 potential_pos, t_vector3 *new_pos)
+// {
+// 	t_collision	collision;
+
+// 	player->collision_radius = 15;
+// 	if (collide_circle_with_lines(world, player, potential_pos, &collision))
+// 	{
+// 		printf("collided with at least one of the lines - saving new_pos\n");
+// 		*new_pos = vector3_add(*potential_pos, vector2_to_vector3(vector2_mul(collision.normal, collision.depth)));
+// 		return (true);
+// 	}
+// 	printf("no collision\n");
+// 	return (false);
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ericleong collision
 // t_vector2	ericleong_closestpointonline(t_vector2 point, t_line line)
 // {
 // 	float		a1;
@@ -144,168 +413,4 @@
 // 		}
 // 	}
 // 	return (false);
-// }
-
-
-static bool	linepoint(t_vector2 start, t_vector2 end, t_vector2 point)
-{
-	float	distance1;
-	float	distance2;
-	float	line_len;
-	float	buffer;
-
-	distance1 = vector2_dist(point, start);
-	distance2 = vector2_dist(point, end);
-	line_len = vector2_dist(start, end);
-	buffer = 0.1f;
-	if ((distance1 + distance2) >= (line_len - buffer) && (distance1 + distance2) <= (line_len + buffer))
-		return (true);
-	return (false);
-}
-
-static bool	pointcircle(t_vector2 point, t_vector2 circle, float radius)
-{
-	if (vector2_dist(point, circle) <= radius)
-		return (true);
-	return (false);
-}
-
-bool	linecircle(t_line line, t_vector2 circle, float radius, t_vector2 *closest_collision_point)
-{
-	float		wall_len;
-	float		dot;
-	t_vector2	closest;
-
-	/* if (pointcircle(line.start, circle, radius) || pointcircle(line.end, circle, radius))
-		return (true); */ // by quitting this soon, we dont get the closest point
-	wall_len = vector2_dist(line.start, line.end);
-	/* dot = vector2_dot((t_vector2){(potential_pos.x - wall_line->start->x), (wall_line->end->x - wall_line->start->x)}, \
-			(t_vector2){(potential_pos.y - wall_line->start->y), (wall_line->end->y - wall_line->start->y)}) / \
-			(wall_len * wall_len); */ //didnt work so had to write it open below
-	dot = (((circle.x - line.start.x) * (line.end.x - line.start.x)) + \
-		((circle.y - line.start.y) * (line.end.y - line.start.y))) / (wall_len * wall_len);
-	closest.x = line.start.x + (dot * (line.end.x - line.start.x));
-	closest.y = line.start.y + (dot * (line.end.y - line.start.y));
-	if (linepoint(line.start, line.end, closest))
-	{
-		if (vector2_dist(closest, circle) <= radius)
-		{
-			*closest_collision_point = closest;
-			return (true);
-		}
-	}
-	return (false);
-}
-
-bool	lineline(t_line first, t_line second, t_vector2 *collision_point)
-{
-	float	a;
-	float	b;
-	
-	
-	a = (((second.end.x - second.start.x) * (first.start.y - second.start.y)) - \
-		((second.end.y - second.start.y) * (first.start.x - second.start.x))) / \
-		(((second.end.y - second.start.y) * (first.end.x - first.start.x)) - \
-		((second.end.x - second.start.x) * (first.end.y - first.start.y)));
-	
-	b = (((first.end.x - first.start.x) * (first.start.y - second.start.y)) - \
-		((first.end.y - first.start.y) * (first.start.x - second.start.x))) / \
-		(((second.end.y - second.start.y) * (first.end.x - first.start.x)) - \
-		((second.end.x - second.start.x) * (first.end.y - first.start.y)));
-
-	if (a >= 0 && a <= 1 && b >= 0 && b <= 1)
-	{
-		collision_point->x = first.start.x + (a * (first.end.x - first.start.x));
-		collision_point->y = first.start.y + (a * (first.end.y - first.start.y));
-		return (true);
-	}
-	return (false);
-}
-
-t_vector2	closest_point_on_segment(t_vector2 point, t_line line)
-{
-	
-}
-
-bool	collide_circle_with_line(t_vector2 circle, t_line line, float radius, t_collision *collision)
-{
-	float	delta;
-	
-
-	delta = vector2_dist(circle, closest_point_on_segment(circle, line));
-	if ((delta * delta) > (radius * radius))
-		return (false);
-	
-}
-
-bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, t_vector3 *new_pos)
-{
-	t_list		*l;
-	t_room		*room;
-	int			index;
-
-	player->collision_radius = 15;
-	l = world->roomlist;
-	while (l != NULL)
-	{
-		room = l->content;
-		if (room != NULL)
-		{
-			index = 0;
-			while (index < room->wallcount)
-			{
-				//printf("potential_pos.z: %f\n", potential_pos.z);
-				//room->walls[index].entity->obj->vertices[0].z
-				//render_ray(world->sdl, player->transform.position, room->walls[index].entity->obj->vertices[0]);
-				/* world->sdl->render.gizmocolor = CLR_RED;
-				render_ray(world->sdl, vector3_add(player->transform.position, player->lookdir), room->walls[index].entity->obj->vertices[0]);
-				render_gizmo3d(world->sdl, room->walls[index].entity->obj->vertices[0], 5, CLR_RED);
-				render_gizmo3d(world->sdl, room->walls[index].entity->obj->vertices[1], 5, CLR_RED);
-				render_gizmo3d(world->sdl, room->walls[index].entity->obj->vertices[2], 10, CLR_BLUE);
-				render_gizmo3d(world->sdl, room->walls[index].entity->obj->vertices[3], 10, CLR_BLUE); */
-				if (!room->walls[index].entity->hidden && \
-					(potential_pos.z > room->walls[index].entity->obj->vertices[0].z &&
-					potential_pos.z < room->walls[index].entity->obj->vertices[2].z * 1.2f))
-				{
-					/* t_vector2	closest;
-					if (linecircle((t_line){*room->walls[index].edgeline.start, *room->walls[index].edgeline.end}, \
-							(t_vector2){potential_pos.x, potential_pos.y}, player->collision_radius, &closest))
-					{
-						render_gizmo3d(world->sdl, (t_vector3){closest.x, closest.y, player->transform.position.z}, 10, CLR_GREEN);
-						printf("collision true\n");
-						return (true);
-					} */
-					t_collision	collision;
-					if (collide_circle_with_line((t_vector2){potential_pos.x, potential_pos.y}, \
-							(t_line){*room->walls[index].edgeline.start, *room->walls[index].edgeline.end}, \
-							player->collision_radius, &collision))
-					{
-						
-					}
-				}
-				index++;
-			}
-		}
-		l = l->next;
-	}
-	//printf("collision false\n");
-	return (false);
-}
-
-// if (pointcircle(*wall_line->start, (t_vector2){potential_pos.x, potential_pos.y}, radius) || \
-// 		pointcircle(*wall_line->end, (t_vector2){potential_pos.x, potential_pos.y}, radius))
-// 	return (true);
-// wall_len = vector2_dist(*wall_line->start, *wall_line->end);
-// /* dot = vector2_dot((t_vector2){(potential_pos.x - wall_line->start->x), (wall_line->end->x - wall_line->start->x)}, \
-// 		(t_vector2){(potential_pos.y - wall_line->start->y), (wall_line->end->y - wall_line->start->y)}) / \
-// 		(wall_len * wall_len); */ //didnt work so had to write it open below
-// dot = (((potential_pos.x - wall_line->start->x) * (wall_line->end->x - wall_line->start->x)) + \
-// 		((potential_pos.y - wall_line->start->y) * (wall_line->end->y - wall_line->start->y))) / \
-// 		(wall_len * wall_len);
-// closest.x = wall_line->start->x + (dot * (wall_line->end->x - wall_line->start->x));
-// closest.y = wall_line->start->y + (dot * (wall_line->end->y - wall_line->start->y));
-// if (linepoint(*wall_line->start, *wall_line->end, closest))
-// {
-// 	if (vector2_dist(closest, (t_vector2){potential_pos.x, potential_pos.y}) <= radius)
-// 		return (true);
 // }

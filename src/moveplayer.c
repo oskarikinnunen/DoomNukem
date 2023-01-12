@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 20:44:52 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/13 01:26:23 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,8 +209,24 @@ void	moveplayer(t_player *player, t_input *input, t_clock clock, t_world *world)
 	player->speed = move_vector;
 	potential_pos = vector3_add(potential_pos, move_vector);
 	potential_pos.z = ft_clampf(potential_pos.z, player->height, 1000.0f);
-	if (check_collision(world, player, potential_pos, &new_pos))
-		;//player->transform.position = new_pos;
+
+	/* if (check_collision(world, player, potential_pos, &new_pos))
+	{
+		t_vector3	save;
+		save = new_pos;
+		if (!check_collision(world, player, new_pos, &new_pos))
+			player->transform.position = save;
+	}
 	else
-		player->transform.position = potential_pos;
+		player->transform.position = potential_pos; */
+
+	new_pos = potential_pos;
+	for (int i = 0; i < 5; i++)
+	{
+		if (!check_collision(world, player, new_pos, &new_pos))
+			break;
+		i++;
+	}
+	player->transform.position = new_pos;
+	
 }
