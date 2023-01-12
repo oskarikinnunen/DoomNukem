@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   init_render.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 10:52:10 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/11 16:36:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "objects.h"
 
-t_render	init_render(t_sdlcontext sdl, struct s_world *world)
+t_render	init_render(t_sdlcontext sdl)
 {
 	t_render	render;
 
@@ -33,7 +33,7 @@ t_render	init_render(t_sdlcontext sdl, struct s_world *world)
 	render.occlusion.occlusion = true;
 	render.occlusion.occluder_box = false;
 	render.occlusion.draw_occlusion = false;
-	render.world = world;
+	//render.world = world;
 	//render.sdl = &sdl;
 	return(render);
 }
@@ -53,7 +53,9 @@ void update_render(t_render *render, t_player *player)
 
 void	free_render(t_render render)
 {
-	free(render.worldspace_ptris);
-	free(render.screenspace_ptris);
+	if (render.worldspace_ptris != NULL)
+		free(render.worldspace_ptris);
+	if (render.screenspace_ptris != NULL)
+		free(render.screenspace_ptris);
 	free(render.q);
 }

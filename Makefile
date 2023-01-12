@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/01/11 12:29:45 by okinnune         ###   ########.fr        #
+#    Updated: 2023/01/11 14:54:50 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,6 +51,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		editor/editor_new_buttons.c \
 		editor/editor_instant_button.c \
 		editor/editor_raycast.c \
+		preferences/graphicsprefs.c \
 		debug/debugconsole.c \
 		playmode.c inputhelper.c \
 		walls.c file_open.c \

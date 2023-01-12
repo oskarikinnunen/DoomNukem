@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 13:47:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/11 14:09:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1056,20 +1056,18 @@ void	room_tool_init(t_editor *ed, t_sdlcontext *sdl)
 	if (dat->modroom_gui.sdl == NULL)
 	{
 		dat->modroom_gui = init_gui(sdl, &ed->hid, &ed->player, (t_point){20, sdl->screensize.y / 2}, "Edit room");
-		dat->modroom_gui.minimum_size.x = 130;
-		dat->modroom_gui.rect.size.x = 130;
+		dat->modroom_gui.minimum_size = (t_point) {240, 250};
+		dat->modroom_gui.rect.size = dat->modroom_gui.minimum_size;
 	}
 	if (dat->paint_gui.sdl == NULL)
 	{
 		dat->paint_gui = init_gui(sdl, &ed->hid, &ed->player, (t_point){20, 80}, "Paint rooms");
-		dat->modroom_gui.minimum_size = (t_point){130, 160};
-		dat->modroom_gui.rect.size = dat->modroom_gui.minimum_size;
 	}
 	if (dat->edge_gui.sdl == NULL)
 	{
 		dat->paint_gui = init_gui(sdl, &ed->hid, &ed->player, (t_point){60, 140}, "Edge");
-		dat->modroom_gui.minimum_size = (t_point){130, 160};
-		dat->modroom_gui.rect.size = dat->modroom_gui.minimum_size;
+		//dat->modroom_gui.minimum_size = (t_point){130, 160};
+		//dat->modroom_gui.rect.size = dat->modroom_gui.minimum_size;
 	}
 }
 
