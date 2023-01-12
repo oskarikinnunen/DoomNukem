@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 17:11:32 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/12 11:28:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,7 @@ void	screenmode_toggles(t_autogui *gui, t_graphicprefs *prefs)
 	}
 }
 
-void	update_editor_lateguis(t_editor *ed)
+void	update_editor_lateguis(t_editor *ed) //TODO: make this graphics_settings_gui
 {
 	t_autogui				*gui;
 	static	t_graphicprefs	prefs;
@@ -205,6 +205,19 @@ void	update_editor_lateguis(t_editor *ed)
 	gui_end(gui);
 }
 
+void	update_audio(t_world *world)
+{
+	t_vector3		nf;
+	t_sdlcontext	*sdl;
+	
+	sdl = world->sdl;
+	nf = world->player->lookdir;
+	nf = (t_vector3){-nf.x, -nf.y, 0.0f};
+	nf = vector3_normalise(nf);
+	FMOD_System_Set3DListenerAttributes(sdl->audio.system, 0, &world->player->transform.position, &((t_vector3){0}), &nf, &((t_vector3){.z = 1.0f}));
+	FMOD_System_Update(sdl->audio.system);
+}
+
 int	editorloop(t_sdlcontext sdl)
 {
 	t_editor	ed;
@@ -212,6 +225,7 @@ int	editorloop(t_sdlcontext sdl)
 
 	bzero(&ed, sizeof(t_editor));
 	editor_load_prefs(&ed, &sdl);
+	ed.graphics_gui.hidden = true;
 	ed.gamereturn = game_continue;
 	sdl.lighting_toggled = false;
 	while (ed.gamereturn == game_continue)
@@ -239,16 +253,7 @@ int	editorloop(t_sdlcontext sdl)
 		memcpy(sdl.window_surface->pixels, sdl.surface->pixels, sizeof(uint32_t) * sdl.window_w * sdl.window_h);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			error_log(EC_SDL_UPDATEWINDOWSURFACE);
-
-		if (audio == 0)
-		{
-			t_vector3	nf = ed.player.lookdir;
-
-			nf = (t_vector3){-nf.x, -nf.y, 0.0f};
-			nf = vector3_normalise(nf);
-			FMOD_System_Set3DListenerAttributes(sdl.audio.system, 0, &ed.player.transform.position, &((t_vector3){0}), &nf, &((t_vector3){.z = 1.0f}));
-			FMOD_System_Update(sdl.audio.system);
-		}
+		update_audio(&ed.world);
 	}
 	editor_save_prefs(&ed);
 	save_graphics_prefs(&sdl);

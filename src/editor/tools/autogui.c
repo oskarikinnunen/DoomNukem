@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 15:57:47 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/12 11:15:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,9 +237,9 @@ void	gui_end(t_autogui *gui)
 	}
 	gui_limitrect(gui);
 	//set_font_size(gui->sdl, 2);
-	char temp[128];
-	sprintf(temp, "size: %i %i min: %i %i\n", gui->rect.size.x, gui->rect.size.y, gui->minimum_size.x, gui->minimum_size.y);
-	print_text(gui->sdl, temp, gui->rect.position);
+	//char temp[128];
+	//sprintf(temp, "size: %i %i min: %i %i\n", gui->rect.size.x, gui->rect.size.y, gui->minimum_size.x, gui->minimum_size.y);
+	//print_text(gui->sdl, temp, gui->rect.position);
 	print_text_colored(gui->sdl, gui->title, point_add(gui->rect.position, (t_point){5, 5}), AMBER_3);
 	//set_font_size(gui->sdl, 0);
 }

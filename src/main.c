@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 17:31:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/12 11:23:34 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,8 +119,12 @@ void	create_sdlcontext(t_sdlcontext	*sdl)
 
 void	checkargs(int argc, char **argv)
 {
-	if (argc == 2 && ft_strcmp(argv[1], "-reset") == 0)
+	if (argc == 2 && ft_strcmp(argv[1], "-gfxreset") == 0)
 		reset_graphics_prefs();
+	if (argc == 2 && ft_strcmp(argv[1], "-mapreset") == 0)
+	{
+		
+	}
 }
 
 int	main(int argc, char **argv)

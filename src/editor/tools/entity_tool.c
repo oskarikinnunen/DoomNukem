@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 10:45:27 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/12 11:22:59 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,6 @@ void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 	objectgui_update(&dat->objectgui, &dat->ent);
 	if (dat->ent != NULL)
 	{
-		dat->entitygui.dock = &dat->objectgui.gui;
 		dat->entitygui.hidden = false;
 		gui_start(&dat->entitygui);
 		gui_preset_scale_and_rotate(&dat->ent->transform, &dat->entitygui);
@@ -178,8 +177,6 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 
 	if (dat->ent != NULL)
 		return ;
-
-
 	/*hover = NULL;
 	hover = selected_entity(ed, *sdl);
 	if (hover != NULL)
@@ -224,7 +221,7 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 			ent->transform.position.z -= ent->z_bound.min * ent->transform.scale.z;
 		}*/
 
-		if (gui_button("Delete", gui))
+		if (gui_shortcut_button("Delete", KEYS_DELETEMASK, gui))
 		{
 			destroy_entity(&ed->world, ent);
 			dat->sel_ent = NULL;
@@ -294,13 +291,10 @@ void	entity_tool_list(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 	gui_end(gui);
 }
 
-void	entity_tool_update(t_editor *ed, t_sdlcontext *sdl)
+void	entity_tool_raycast(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 {
-	t_entitytooldata	*dat;
-	t_entity			*collide;
 	t_ray				ray;
 
-	dat = (t_entitytooldata *)ed->tool->tooldata;
 	ray.origin = ed->player.transform.position;
 	ray.dir = ed->player.lookdir;//vector3_mul(ed->player.lookdir, 10000.f);
 
@@ -309,12 +303,18 @@ void	entity_tool_update(t_editor *ed, t_sdlcontext *sdl)
 		if (dat->info.hit_entity != NULL
 			&& !dat->info.hit_entity->rigid)
 			highlight_entity(sdl, dat->info.hit_entity, AMBER_4);
-		
-		/*sdl->render.gizmocolor = CLR_BLUE;
-		render_gizmo(*sdl, sdl->render, info.hit_entity->transform.position, info.distance / 1000.0f);*/
 	}
-	//t_rayc
+	else
+		raycast_plane(ray, &dat->info, 0.0f);
+}
 
+void	entity_tool_update(t_editor *ed, t_sdlcontext *sdl)
+{
+	t_entitytooldata	*dat;
+	t_entity			*collide;
+
+	dat = (t_entitytooldata *)ed->tool->tooldata;
+	entity_tool_raycast(ed, sdl, dat);
 	//entity_tool_list(ed, sdl, dat);
 	entity_tool_place(ed, sdl, dat);
 	entity_tool_modify(ed, sdl, dat);
@@ -336,7 +336,7 @@ void	entity_tool_init(t_editor *ed, t_sdlcontext *sdl)
 	{
 		dat->entitygui = init_gui(sdl, &ed->hid, &ed->player, (t_point) {20, 40}, "Edit entity");
 		dat->entitygui.minimum_size.x = 300;
-		dat->entitygui.minimum_size.y = 450;
+		dat->entitygui.minimum_size.y = 200;
 		//dat->entitygui.rect.size.y = 220;
 	}
 	if (dat->worldgui.sdl == NULL)
