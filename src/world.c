@@ -55,12 +55,10 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 	
 	i = 0;
 	found = 0;
-	printf("looking for %i existing entities", world->entitycache.existing_entitycount);
 	while (found < world->entitycache.existing_entitycount
 		/*&& i < world->entitycache.alloc_count*/)
 	{
-		printf("ent %i\n", i);
-		ent = &world->entitycache.entities[i];
+		ent = world->entitycache.sorted_entities[i];
 		if (ent->status != es_free)
 		{
 			if (ent->status == es_active && !ent->hidden)
@@ -69,7 +67,6 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 					render_entity(sdl, render, ent);
 			}
 			found++;
-			printf("found %i nth entity \n", found);
 		}
 		i++;
 	}
@@ -87,8 +84,7 @@ static void sort_entitycache(t_world *world, t_vector3 location)
 
 	i = 0;
 	found = 0;
-	return ;
-	while (found < world->entitycache.existing_entitycount && i < world->entitycache.alloc_count - 1)
+	while (found < world->entitycache.existing_entitycount)
 	{
 		ent = world->entitycache.sorted_entities[i];
 		key = ent;
@@ -98,14 +94,12 @@ static void sort_entitycache(t_world *world, t_vector3 location)
 			while (j >= 0 && world->entitycache.sorted_entities[j]->occlusion.z_dist[1] > key->occlusion.z_dist[1])
 			{
 				if (ent->status != es_free)
-				{
 					world->entitycache.sorted_entities[j + 1] = world->entitycache.sorted_entities[j];
-				}
 				j--;
 			}
 			found++;
+			world->entitycache.sorted_entities[j + 1] = key;
 		}
-		world->entitycache.sorted_entities[j + 1] = key;
 		i++;
 	}
 }
