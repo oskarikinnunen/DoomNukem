@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/05 18:46:41 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/13 02:44:04 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 #include "editor_tools.h"
 #include "doomnukem.h"
 #include "objects.h"
+
+void	recalculate_joined_rooms(t_world *world, t_room *room);
 
 static void	init_roomwalls_shallow(t_world *world, t_room *room)
 {
@@ -25,8 +27,8 @@ static void	init_roomwalls_shallow(t_world *world, t_room *room)
 	while (i < room->wallcount)
 	{
 		//room->walls[i].entity = raise_entity(world); //Copy saved entitys important values
-		if (room->walls[i].disabled)
-			room->walls[i].entity->hidden = true;
+		//if (room->walls[i].ceilingwall)
+		//	room->walls[i].entity->hidden = true;
 
 		/*room->walls[i].edgeline.start = &room->edges[i];
 		if (i != room->wallcount - 1)
@@ -70,21 +72,26 @@ t_room	*add_room_to_world(t_world *world, t_room *room)
 	snprintf(roomname, 64, "area(%i)", ft_listlen(world->roomlist));
 	ft_strcpy(room->name, roomname);
 	worldroom = ft_memalloc(sizeof(t_room));
+	ft_strcpy(worldroom->floortex, room->floortex);
 	//worldroom->wallcount = room->wallcount;
 	worldroom->walls = ft_memalloc(sizeof(t_wall) * 32); //DON'T ACTUALLY COPY ANY WALLS, JUST RECREATE THEM FROM EDGES
 	worldroom->edges = room->edges;
 	worldroom->edgecount = room->edgecount;
 	if (room->ceiling_height == 0)
-		room->ceiling_height = 100;
+		worldroom->ceiling_height = 100;
 	ft_strcpy(worldroom->name, room->name);
 	worldroom->height = room->height;
 	
 	list_push(&world->roomlist, worldroom, sizeof(t_room));
 	free(worldroom);
 	worldroom = list_findlast(world->roomlist);
-	
+	char	*id;
 	//construct_edges(worldroom);
+	
 	init_roomwalls(world, worldroom);
+	id = ft_itoa(worldroom->walls[0].entity->id);
+	ft_strcat(worldroom->name, id);
+	free(id);
 	//init_roomwalls(world, worldroom);
 	return (worldroom);
 	//free(room->walls);
@@ -188,7 +195,34 @@ static bool illegalwall_move(t_wall *wall, t_room *room)
 	}
 	return (false);
 }
- //TODO: call default_wall_occlusion_settings(&room->walls[i], world);
+
+//#include "syscall.h"
+
+t_vector3	createmode_raycast(t_editor *ed, t_roomtooldata	*dat)
+{
+	t_vector3		result;
+	t_ray			ray;
+	t_raycastinfo	info;
+
+	ray.origin = ed->player.transform.position;
+	ray.dir = ed->player.lookdir;
+	if (dat->room->edgecount == 0)
+	{	
+		if (dat->raycastinfo.hit_entity != NULL)
+			result = vector3_snap(dat->raycastinfo.hit_pos, 10);
+		else
+		{
+			raycast_plane(ray, &info, 0.0f);
+			result = vector3_snap(info.hit_pos, 10);
+		}
+	}
+	else
+	{
+		raycast_plane(ray, &info, dat->room->height);
+		result = vector3_snap(info.hit_pos, 10);
+	}
+	return (result);
+}
 
 static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 {
@@ -199,8 +233,10 @@ static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	t_autogui		*gui;
 
 	cur = &dat->wall;
-	rc = raycast_DEPRECATED(ed);
-	snap = vector2_snap((t_vector2){rc.x, rc.y}, 10);
+	rc = createmode_raycast(ed, dat);
+	snap = v3tov2(rc);
+	if (dat->room->edgecount == 0)
+		dat->room->height = rc.z;
 	gui = &dat->newroom_gui;
 	gui_start(gui);
 	if (dat->room->wallcount == 0)
@@ -210,8 +246,7 @@ static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	else
 		gui_emptyvertical(20, gui);
 	gui_end(gui);
-
-
+	
 	cur->edgeline.end = &snap;
 	bool placelast = false;
 	if ((ed->hid.keystate >> KEYS_SHIFTMASK) & 1 && dat->room->wallcount > 1)
@@ -275,9 +310,9 @@ static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 			return;
 		}
 	}
-	renderroom(ed, sdl, dat->room);
-	highlight_room(ed, sdl, *dat->room, CLR_RED);
-	render_snapgrid(ed, sdl, snap, false, false);
+	//renderroom(ed, sdl, dat->room);
+	highlight_room(ed, sdl, dat->room, CLR_RED);
+	render_gizmo3d(sdl, (t_vector3){snap.x, snap.y, dat->room->height}, 10, CLR_RED);
 }
 
 static void modifywallheights(t_room *room, int scrolldelta, t_world *world)
@@ -349,7 +384,7 @@ bool	edge_is_legal(t_vector2 *edge, t_room *room)
 	while (i < room->edgecount)
 	{
 		other = &room->edges[i];
-		if (other != edge && vector2_sqr_dist(*edge, *other) < 1000.0f)
+		if (other != edge && vector2_dist(*edge, *other) < 10.0f)
 			return (false);
 		i++;
 	}
@@ -399,7 +434,7 @@ bool	is_connected(t_vector2 *edge, t_room *room)
 	int	i;
 
 	i = 0;
-	while (i < room->wallcount)
+	while (i < room->edgecount)
 	{
 		
 		if (room->walls[i].connection && (
@@ -532,7 +567,7 @@ void	applyedgedrag(t_vector2 *edge, t_vector2 snap, t_room *room, t_world *world
 	while (l != NULL)
 	{
 		cur = l->content;
-		if (edge_exists(*edge, cur))
+		if (edge_exists(*edge, cur) && rooms_share_zspace(room, cur))
 		{
 			test = find_edge_match(*edge, cur);
 			temp = *test;
@@ -550,7 +585,7 @@ void	applyedgedrag(t_vector2 *edge, t_vector2 snap, t_room *room, t_world *world
 		while (l != NULL)
 		{
 			cur = l->content;
-			if (edge_exists(orig, cur))
+			if (edge_exists(orig, cur) && rooms_share_zspace(room, cur))
 			{
 				printf("exists in room %s \n", cur->name);
 				i = find_edge_match_index(orig, cur);
@@ -558,19 +593,6 @@ void	applyedgedrag(t_vector2 *edge, t_vector2 snap, t_room *room, t_world *world
 			}
 			l = l->next;
 		}
-	}
-}
-
-void	highlight_room_corners(t_editor *ed, t_sdlcontext *sdl, t_room *room)
-{
-	int	i;
-
-	i = 0;
-	sdl->render.gizmocolor = AMBER_0;
-	while (i < room->wallcount)
-	{
-		//render_gizmo(*sdl, sdl->render, vector2_to_vector3(room->walls[i].line.start), 5);
-		i++;
 	}
 }
 
@@ -616,6 +638,10 @@ static void	split_wall(t_wall *wall, t_room **room, t_world *world)
 		i++;
 	}
 	//room->walls = new_walls;
+	t_vector2 new_edge = vector2_lerp(*(*room)->walls[ni].edgeline.start, *(*room)->walls[ni].edgeline.end, 0.5f);
+	new_edge = vector2_snap(new_edge, 10);
+	if (edge_exists(new_edge, *room))
+		return ;
 	new_edges = ft_memalloc(sizeof(t_vector2) * 32);
 	i = 0;
 	while (i < (*room)->edgecount)
@@ -629,6 +655,7 @@ static void	split_wall(t_wall *wall, t_room **room, t_world *world)
 			printf("copied %i edges b4 \n", i + 1);
 			printf("new edges' index is %i \n", i + 1);
 			new_edges[i + 1] = vector2_lerp((*room)->edges[i], (*room)->edges[nxt], 0.5f);
+			new_edges[i + 1] = vector2_snap(new_edges[i + 1], 10);
 			ft_memcpy(new_edges + i + 2, (*room)->edges + i + 1, sizeof(t_vector2) * ((*room)->edgecount - i - 1));
 			printf("copied %i edges after \n", (*room)->edgecount - i - 1);
 			break ;
@@ -645,21 +672,24 @@ static void	split_wall(t_wall *wall, t_room **room, t_world *world)
 	init_roomwalls(world, *room);
 }
 
-static void split_similar_walls(t_wall *wall, t_world *world)
+static void split_similar_walls(t_wall *wall, t_room *room, t_world *world)
 {
 	t_list	*l;
-	t_room	*room;
+	t_room	*other;
 	t_wall	*similar;
+	t_wall	orig;
+
+	orig = *wall;
 
 	l = world->roomlist;
 	while (l != NULL)
 	{
-		room = l->content;
-		similar = find_wall(*wall, room);
-		if (similar != NULL)
+		other = l->content;
+		similar = find_wall(orig, other);
+		if (similar != NULL && rooms_share_zspace(room, other))
 		{
-			split_wall(similar, &room, world);
-			recalculate_joined_rooms(world, room);
+			split_wall(similar, &other, world);
+			recalculate_joined_rooms(world, other);
 		}
 		l = l->next;
 	}
@@ -684,10 +714,10 @@ static void walleditmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		applywallmesh(dat->ed_wall, dat->room, &ed->world);
 	if (gui_labeled_float_slider("UV offset y:", &dat->ed_wall->uv_offset.y, 1.0f, gui))
 		applywallmesh(dat->ed_wall, dat->room, &ed->world);
-	if (gui_shortcut_button("Split wall", 'X', gui))
+	if (gui_shortcut_button("Split wall", 'X', gui) && dat->ed_wall != NULL && dat->room != NULL)
 	{
 		//split_wall(dat->ed_wall, &dat->room, &ed->world);
-		split_similar_walls(dat->ed_wall, &ed->world);
+		split_similar_walls(dat->ed_wall, dat->room, &ed->world);
 		dat->ed_wall = NULL;
 		//dat->rtm = rtm_none;
 		return ;
@@ -868,8 +898,9 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	t_ray			plane_ray;
 	char			text[64] = { };
 
+	
 	gui = &dat->modroom_gui;
-	highlight_room(ed, &sdl, *dat->room, AMBER_3);
+	highlight_room(ed, &sdl, dat->room, AMBER_3);
 	if (dat->ed_wall != NULL)
 	{
 		walleditmode(ed, sdl, dat);
@@ -882,6 +913,7 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		rc = planecastinfo.hit_pos;
 		rc.x = vector2_snap((t_vector2){rc.x, rc.y}, 10).x;
 		rc.y = vector2_snap((t_vector2){rc.x, rc.y}, 10).y;
+		//rendergrid(&ed->world, planecastinfo.hit_pos, 10);
 	}
 	gui_start(gui);
 	gui_starthorizontal(gui);
@@ -893,14 +925,20 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	gui_labeled_int("Walls: ", dat->room->wallcount, gui);
 	if (gui_shortcut_button("Force floor", 'F', gui))
 		make_areas(&ed->world, dat->room);
-	if (gui_shortcut_button("Combine areas", 'C', gui)) //TODO: get working or disable before merge
-		dat->rtm = rtm_connect;
+	/*if (gui_shortcut_button("Copy area", 'C', gui)) //TODO: get working or disable before merge
+		dat->rtm = rtm_connect;*/
+	if (gui_shortcut_button("Move area", 'M', gui))
+	{
+		dat->rtm = rtm_move;
+		dat->temp_edges = NULL;
+		return ;
+	}
 	if (gui_shortcut_button("Delete", KEYS_DELETEMASK, gui))
 	{
 		t_room	temp;
 		ft_bzero(&temp, sizeof(t_room));
 		temp.edges = ft_memalloc(sizeof(t_vector2) * 32);
-		ft_memcpy(temp.edges, dat->room->edges, sizeof(t_vector2) * 32);
+		ft_memcpy(temp.edges, dat->room->edges, sizeof(t_vector2) * dat->room->edgecount);
 		temp.edgecount = dat->room->edgecount;
 		remove_room(&ed->world, dat->room);
 		recalculate_joined_rooms(&ed->world, &temp);
@@ -1019,20 +1057,18 @@ void	room_tool_init(t_editor *ed, t_sdlcontext *sdl)
 	if (dat->modroom_gui.sdl == NULL)
 	{
 		dat->modroom_gui = init_gui(sdl, &ed->hid, &ed->player, (t_point){20, sdl->screensize.y / 2}, "Edit room");
-		dat->modroom_gui.minimum_size.x = 130;
-		dat->modroom_gui.rect.size.x = 130;
+		dat->modroom_gui.minimum_size = (t_point) {240, 250};
+		dat->modroom_gui.rect.size = dat->modroom_gui.minimum_size;
 	}
 	if (dat->paint_gui.sdl == NULL)
 	{
 		dat->paint_gui = init_gui(sdl, &ed->hid, &ed->player, (t_point){20, 80}, "Paint rooms");
-		dat->modroom_gui.minimum_size = (t_point){130, 160};
-		dat->modroom_gui.rect.size = dat->modroom_gui.minimum_size;
 	}
 	if (dat->edge_gui.sdl == NULL)
 	{
 		dat->paint_gui = init_gui(sdl, &ed->hid, &ed->player, (t_point){60, 140}, "Edge");
-		dat->modroom_gui.minimum_size = (t_point){130, 160};
-		dat->modroom_gui.rect.size = dat->modroom_gui.minimum_size;
+		//dat->modroom_gui.minimum_size = (t_point){130, 160};
+		//dat->modroom_gui.rect.size = dat->modroom_gui.minimum_size;
 	}
 }
 
@@ -1055,6 +1091,7 @@ void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 		dat->room = ft_memalloc(sizeof(t_room));
 		dat->room->walls = ft_memalloc(sizeof(t_wall) * 32);
 		dat->room->edges = ft_memalloc(sizeof(t_vector2) * 32);
+		ft_strcpy(dat->room->floortex, "concrete02.cng");
 		ft_bzero(&dat->wall.edgeline, sizeof(t_edgeline));
 		dat->rtm = rtm_create;
 		force_mouselock(&ed->hid);
@@ -1088,20 +1125,17 @@ int		movetowards(int cur, int target)
 
 void	finish_partial_room(t_editor *ed, t_room	*room, t_roomtooldata *data)
 {
-	t_room	*orig;
+	t_room		*orig;
 	t_vector2	*og_start;
 	int			og_start_i;
 	t_vector2	*og_end;
 	int			og_end_i;
-
-
 	t_vector2	*edge_og_new;
 	int			ei;
-	int	i;
-	int	orig_wallcount;
+	int			i;
+	int			orig_wallcount;
 
 	orig = data->room;
-	
 	room->wallcount = 0;
 	edge_og_new = ft_memalloc(sizeof(t_vector2) * 32);
 	ei = 0;
@@ -1113,13 +1147,6 @@ void	finish_partial_room(t_editor *ed, t_room	*room, t_roomtooldata *data)
 	{
 		printf("found area start and end in other room \n");
 	}
-	/*if (og_start_i < og_end_i)
-	{
-		//target = 0;
-		i = room->edgecount - 1;
-		printf("FLIPPED CASE! only flip room->edges\n");
-		exit(0);
-	}*/
 	i = 0;
 	while (i < room->edgecount)
 	{
@@ -1159,24 +1186,17 @@ void	finish_partial_room(t_editor *ed, t_room	*room, t_roomtooldata *data)
 			break ;
 	}
 	//TODO: check if both rooms are legal, and have >= 3 edges
+	t_wall	*temp_walls = orig->walls;
 	free_walls(orig, &ed->world);
 	orig->edges = edge_og_new;
 	orig->edgecount = ei;
 	orig->wallcount = ei;
 	i = 0;
-	/*while (i < orig->wallcount)
-	{
-		orig->walls[i].height = 100;
-		i++;
-	}*/
-	
 	free_floor(&ed->world, orig);
 	init_roomwalls(&ed->world, orig);
-	
 	room = add_room_to_world(&ed->world, room);
 	room->height = orig->height;
 	room->ceiling_height = orig->ceiling_height;
-
 	init_roomwalls(&ed->world, orig);
 	init_roomwalls(&ed->world, room);
 	make_areas(&ed->world, orig);
@@ -1275,12 +1295,13 @@ t_room	*find_entity_room(t_world *world, t_entity *ent)
 
 void	room_tool_combine(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 {
+	return ;
 	static	t_room	*other;
 
 	other = find_entity_room(&ed->world, dat->raycastinfo.hit_entity);
 	if (other != NULL && other != dat->room)
 	{
-		highlight_room(ed, ed->world.sdl, *other, CLR_GREEN);
+		highlight_room(ed, ed->world.sdl, other, CLR_GREEN);
 		if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 		{
 			t_room	newroom;
@@ -1291,8 +1312,6 @@ void	room_tool_combine(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 			world_room->height = dat->room->height;
 			init_roomwalls(&ed->world, world_room);
 			make_areas(&ed->world, world_room);
-			//remove_room(&ed->world, dat->room);
-			//remove_room(&ed->world, other);
 			dat->room = NULL;
 			dat->rtm = rtm_none;
 		}
@@ -1329,7 +1348,7 @@ void	room_tool_split(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 		sdl->render.gizmocolor = CLR_RED;
 		if (new_room->edgecount > 0)
 			sdl->render.gizmocolor = CLR_GREEN;
-		render_gizmo(*sdl, sdl->render, vector3_add(vector2_to_vector3(*edge), (t_vector3){.z = dat->room->height}), 10);
+		render_gizmo(*sdl, sdl->render, vector3_add(v2tov3(*edge), (t_vector3){.z = dat->room->height}), 10);
 	}
 	sdl->render.gizmocolor = AMBER_4;
 	render_gizmo(*sdl, sdl->render, rc, 7);
@@ -1339,7 +1358,7 @@ void	room_tool_split(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	if (new_room->edgecount > 0)
 	{
 
-		from = vector2_to_vector3(new_room->edges[new_room->edgecount - 1]);
+		from = v2tov3(new_room->edges[new_room->edgecount - 1]);
 		from.z = dat->room->height;
 		to = rc;
 		render_ray(sdl, from, to);
@@ -1352,8 +1371,8 @@ void	room_tool_split(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	{
 		if (i < new_room->edgecount - 1)
 		{
-			from = vector2_to_vector3(new_room->edges[i]);
-			to = vector2_to_vector3(new_room->edges[i + 1]);
+			from = v2tov3(new_room->edges[i]);
+			to = v2tov3(new_room->edges[i + 1]);
 			from.z = dat->room->height;
 			to.z = dat->room->height;
 			render_ray(sdl, from, to);
@@ -1397,6 +1416,93 @@ void	room_tool_split(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	}
 }
 
+t_vector3	room_center(t_room *room)
+{
+	int			i;
+	t_vector3	center;
+
+	i = 0;
+	center = vector3_zero();
+	while (i < room->edgecount)
+	{
+		center = vector3_add(center, v2tov3(room->edges[i]));
+		i++;
+	}
+	center = vector3_div(center, room->edgecount);
+}
+
+t_room	*copy_room(t_room *original)
+{
+	t_room	*room = ft_memalloc(sizeof(t_room));
+
+	room->edges = ft_memdup(original->edges, sizeof(t_vector2) * 32);
+	room->edgecount = original->edgecount;
+	room->height = original->height;
+	room->ceiling_height = original->ceiling_height;
+	//room->walls = ft_memdup(original->edges, sizeof(t_vector2) * 32);
+	return (room);
+}
+
+void	room_tool_move(t_editor *ed, t_roomtooldata *dat)
+{
+	t_raycastinfo	planecastinfo;
+	t_ray			planeray;
+	int				i;
+	
+	if (dat->temp_edges == NULL)
+	{
+		dat->temp_edges = ft_memdup(dat->room->edges, sizeof(t_vector2) * 32);
+		dat->temp_height = dat->room->height;
+	}
+
+	planeray.origin = ed->player.transform.position;
+	planeray.dir = ed->player.lookdir;
+
+	raycast_plane(planeray, &planecastinfo, dat->room->height);
+
+	highlight_room(ed, ed->world.sdl, dat->room, AMBER_3);
+	//rendergrid(&ed->world, planecastinfo.hit_pos, 30);
+	i = 0;
+	t_vector3	diff = vector3_sub(planecastinfo.hit_pos, room_center(dat->room));
+	render_gizmo3d(ed->world.sdl, planecastinfo.hit_pos, 10, CLR_RED);
+	if (ed->hid.mouse.scroll_delta != 0)
+	{
+		dat->room->height += ed->hid.mouse.scroll_delta * 10;
+		dat->room->height = ft_clamp(dat->room->height, 0, 400);
+	}
+	while (i < dat->room->edgecount)
+	{
+		dat->room->edges[i] = vector2_add(dat->room->edges[i], v3tov2(diff));
+		dat->room->edges[i] = vector2_snap(dat->room->edges[i], 10);
+		i++;
+	}
+	t_autogui *gui = &dat->modroom_gui;
+	gui_start(gui);
+	if (gui_shortcut_button("Copy room", 'C', gui))
+	{
+		t_room	*room = copy_room(dat->room);
+		t_room *newr = add_room_to_world(&ed->world, room);
+		dat->room = newr;
+		return ;
+	}
+	gui_end(gui);
+	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
+	{
+		init_roomwalls(&ed->world, dat->room);
+		make_areas(&ed->world, dat->room);
+		dat->rtm = rtm_modify;
+	}
+
+	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
+	{
+		ft_memcpy(dat->room->edges, dat->temp_edges, sizeof(t_vector2) * 32);
+		free(dat->temp_edges);
+		dat->temp_edges = NULL;
+		dat->room->height = dat->temp_height;
+		dat->rtm = rtm_modify;
+	}
+}
+
 void	room_tool_update(t_editor *ed, t_sdlcontext *sdl)
 {
 	t_roomtooldata	*dat;
@@ -1406,24 +1512,25 @@ void	room_tool_update(t_editor *ed, t_sdlcontext *sdl)
 	dat = (t_roomtooldata *)ed->tool->tooldata;
 	ray.origin = ed->player.transform.position;
 	ray.dir = ed->player.lookdir;
-	raycast_new(ray, &dat->raycastinfo, &ed->world); //TODO: filter so this only hits rigid geometry
-
-
+	if (!raycast_new(ray, &dat->raycastinfo, &ed->world) && dat->rtm == rtm_create)
+	{
+		raycast_plane(ray, &dat->raycastinfo, 0.0f);
+	}
 	t_list	*l;
 
 	l = ed->world.roomlist;
 	while (l != NULL)
 	{
-		highlight_room(ed, sdl, *(t_room *)l->content, AMBER_1);
+		highlight_room(ed, sdl, (t_room *)l->content, AMBER_1);
 		l = l->next;
 	}
-	if (dat->rtm != rtm_connect && dat->rtm != rtm_paint)
+	if (dat->rtm == rtm_none)
 	{
 		t_room	*hover;
 		hover = selectedroom(ed, *sdl);
 		if (hover != dat->room && hover != NULL) //AND SHIFT NOT PRESSED
 		{
-			highlight_room(ed, sdl, *hover, AMBER_2);
+			highlight_room(ed, sdl, hover, AMBER_2);
 			print_text_boxed(sdl, hover->name, point_div(sdl->screensize, 2));
 			if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 			{
@@ -1440,6 +1547,10 @@ void	room_tool_update(t_editor *ed, t_sdlcontext *sdl)
 	}
 	update_maingui(ed, sdl, dat);
 
+	if (dat->rtm == rtm_move && dat->room != NULL)
+	{
+		room_tool_move(ed, dat);
+	}
 	if (dat->rtm == rtm_modify && dat->room != NULL)
 		modifymode(ed, *sdl, dat);
 	if (dat->rtm == rtm_split && dat->room != NULL)

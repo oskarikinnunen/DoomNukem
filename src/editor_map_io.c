@@ -3,26 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   editor_map_io.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 08:57:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/10 11:14:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "filechunks.h"
+#include "file_io.h"
 #include "editor_tools.h"
-
-static int	fileopen(char *filename, int flags)
-{
-	int	fd;
-
-	fd = open(filename, flags, 0666);
-	if (fd == -1)
-		error_log(EC_WRITE);
-	return (fd);
-}
 
 int		find_chunk_count(int fd)
 {
@@ -121,7 +112,110 @@ t_list *load_chunk(char *filename, char *chunkname, size_t size)
 	return (NULL);
 }
 
-void	save_editordata(t_editor *ed) //TODO: deprecated
+int		ft_fileread(int fd, t_filecontent *f)
 {
+	char buf[300000]; //TODO: make fancier version
+
+	f->length = read(fd, buf, 300000);
+	f->content = ft_memdup(buf, f->length);
+	return (f->length);
+}
+
+int		ft_nfileread(int fd, t_filecontent *f, size_t size)
+{
+	char buf[300000];
+
+	f->length = read(fd, buf, size);
+	f->content = ft_memdup(buf, size);
+	return (f->length);
+}
+
+uint64_t	read_len(int fd)
+{
+	uint64_t	res;
+	char		clen[8];
+	int			i;
+
+	read(fd, clen, 8);
+	res = *(uint64_t *)clen;
+	return (res);
+}
+
+t_filecontent	load_filecontent(char	*worldname, char	*fc_name)
+{
+	int				fd;
+	t_filecontent	fc;
+	int				rbytes;
+	char			buf[CHUNKSIZE + 1];
+
+	ft_bzero(&fc, sizeof(t_filecontent));
+	fd = open(worldname, O_RDONLY);
+	if (fd == -1)
+		return (fc);
+	rbytes = read(fd, buf, CHUNKSIZE);
+	while (rbytes > 0)
+	{
+		if (ft_strncmp(buf, "FCNK", 4) == 0)
+		{
+			read(fd, fc.name, 128);
+			if (ft_strcmp(fc.name, fc_name) == 0)
+			{
+				fc.length = read_len(fd);
+				fc.content = malloc(fc.length);
+				read(fd, fc.content, fc.length);
+				return (fc);
+			}
+		}
+		rbytes = read(fd, buf, CHUNKSIZE);
+	}
+}
+
+int load_filecontent_fd(char	*worldname, char *fcname)
+{
+	t_filecontent	fc;
+	int				fd;
+
+	fc = load_filecontent(worldname, fcname);
+	fd = open(fcname, O_CREAT | O_RDWR | O_APPEND, 0666);
+	write(fd, fc.content, fc.length);
+	return (fd);
+}
+
+char	*uint64_to_char(uint64_t	u64)
+{
+	static char	size[8];
+	size[0] = u64 & 0xFF;
+	size[1] = u64 >> 8 & 0xFF;
+	size[2] = u64 >> 16 & 0xFF;
+	size[3] = u64 >> 24 & 0xFF;
+	size[4] = u64 >> 32 & 0xFF;
+	size[5] = u64 >> 40 & 0xFF;
+	size[6] = u64 >> 48 & 0xFF;
+	size[7] = u64 >> 56 & 0xFF;
+	return (size);
+}
+
+void	save_filecontent(char	*worldname, char *filename)
+{
+	int				fd;
+	void			*temp;
+	t_filecontent	fc;
 	
+	fd = open(filename, O_RDONLY, 0666);
+	if (fd == -1)
+		return ;
+	ft_fileread(fd, &fc);
+	ft_strcpy(fc.name, filename);
+	close(fd);
+	printf("file read '%s' \n", fc.content);
+	fd = open(worldname, O_RDWR | O_APPEND, 0666);
+	if (fd == -1)
+		return ;
+	write(fd, "FCNK", 4);
+	write(fd, fc.name, sizeof(char) * 128);
+	write(fd, uint64_to_char(fc.length), 8);
+	write(fd, fc.content, sizeof(char) * fc.length);
+	write(fd, "PADD", fc.length % 4);
+	close(fd);
+	//load_filecontent(worldname, filename);
 }

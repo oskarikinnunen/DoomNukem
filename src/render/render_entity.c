@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/05 15:43:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/12 12:02:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,51 +15,6 @@
 #include "bresenham.h"
 #include "objects.h"
 #include "vectors.h"
-
-//TODO: Legacy occlusion using deprecated after occlusion gets updated
-void clipped(t_render *render, t_sdlcontext sdl)
-{
-	int i = 0;
-	int start = 0;
-	int end = 0;
-
-	t_triangle	triangles[200];
-	t_triangle	clipped[2];
-	while (i < render->occ_calc_tri_count)
-	{
-		triangles[end++] = render->occ_calc_tris[i];
-		int nnewtriangles = 1;
-		for (int p = 0; p < 4; p++)
-		{
-			int ntristoadd = 0;
-			while (nnewtriangles > 0)
-			{
-				t_triangle test;
-				test = triangles[start++];
-				nnewtriangles--;
-				switch (p)
-				{
-				case 0: ntristoadd = clip_triangle_against_plane((t_vector3){0.0f, 0.0f, 0.0f}, (t_vector3){0.0f, 1.0f, 0.0f}, test, clipped); break;
-				case 1: ntristoadd = clip_triangle_against_plane((t_vector3){0.0f, (float)(sdl.window_h * sdl.resolution_scaling) - 1.0f, 0.0f}, (t_vector3){0.0f, -1.0f, 0.0f}, test, clipped); break;
-				case 2: ntristoadd = clip_triangle_against_plane((t_vector3){0.0f, 0.0f, 0.0f}, (t_vector3){1.0f, 0.0f, 0.0f}, test, clipped); break;
-				case 3: ntristoadd = clip_triangle_against_plane((t_vector3){(float)(sdl.window_w * sdl.resolution_scaling) *  - 1.0f, 0.0f, 0.0f}, (t_vector3){-1.0f, 0.0f, 0.0f}, test, clipped); break;
-				}
-				for (int w = 0; w < ntristoadd; w++)
-				{
-					triangles[end++] = clipped[w];
-				}
-			}
-			nnewtriangles = end - start;
-		}
-		while (start < end)
-		{
-			render->occ_draw_tris[render->occ_tri_count++] = triangles[start++];
-		}
-		start = 0;
-		end = 0;
-		i++;
-	}
-}
 
 static t_quaternion quaternion_to_screenspace(t_mat4x4 matproj, t_quaternion q, t_sdlcontext sdl)
 {
@@ -96,16 +51,171 @@ uint32_t shade(uint32_t clr, float norm)
 
 void render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 {
+	render->worldspace_ptri_count = 0;
+	render->screenspace_ptri_count = 0;
+
+	if ((point_cmp(entity->occlusion.clip.max, point_zero()) && point_cmp(entity->occlusion.clip.min, point_zero()))
+		|| !render->occlusion.occlusion)
+	{
+		render->screen_edge.max.x = (float)(sdl->window_w * sdl->resolution_scaling) - 1.0f;
+		render->screen_edge.max.y = (float)(sdl->window_h * sdl->resolution_scaling) - 1.0f;
+		render->screen_edge.min = vector2_zero();
+	}
+	else
+	{
+		render->screen_edge.min = point_to_vector2(entity->occlusion.clip.min);
+		render->screen_edge.max = point_to_vector2(entity->occlusion.clip.max);
+	}
 	render_worldspace(render, entity);
 	render_quaternions(sdl, render, entity);
-	render->rs.render_count++;
+}
+
+
+static t_vector2 proj_quaternion_to_screenspace(t_sdlcontext *sdl, t_quaternion proj_q)
+{
+	proj_q.v = vector3_div(proj_q.v, proj_q.w);
+	proj_q.v = vector3_negative(proj_q.v);
+	t_vector3 voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
+	proj_q.v = vector3_add(proj_q.v, voffsetview);
+	proj_q.v.x *= 0.5f * (float)sdl->window_w;
+	proj_q.v.y *= 0.5f * (float)sdl->window_h;
+	return ((t_vector2){proj_q.v.x, proj_q.v.y});
+}
+
+typedef struct quatline
+{
+	t_quaternion	start;
+	t_quaternion	end;
+}	t_quatline;
+
+t_vector3 pplane()
+{
+	return ((t_vector3){.z = 0.1f});
+}
+
+t_vector3 nplane()
+{
+	return ((t_vector3){.z = 0.1f});
+}
+
+bool	clip_line_against_lineplane(t_line *line, t_line plane)
+{
+	float	fdist1;
+	float	fdist2;
+	float	lerp;
+	t_line temp;
+
+
+	temp.start = plane.end;
+	temp.end = plane.start;
+
+	//plane = temp;
+
+	fdist1 = vector2_fdist_to_plane(line->start, plane.start, plane.end);
+	fdist2 = vector2_fdist_to_plane(line->end, plane.start, plane.end);
+	if (fdist1 < 0.0f && fdist2 < 0.0f)
+		return (false);
+	if (fdist1 < 0.0f || fdist2 < 0.0f)
+	{
+		if (fdist1 < 0.0f)
+		{
+			lerp = vector2_line_intersect_plane(plane.start, plane.end, line->start, line->end);
+			line->start = vector2_lerp(line->start, line->end, lerp);
+		}
+		else
+		{
+			lerp = vector2_line_intersect_plane(plane.start, plane.end, line->end, line->start);
+			line->end = vector2_lerp(line->end, line->start, lerp);
+		}
+	}
+	return (true);
+}
+
+bool	clip_quatline_to_zplane(t_quatline *ql)
+{
+	t_vector3		pp;
+	t_vector3		pn;
+	float			lerp;
+	float			fdist1;
+	float			fdist2;
+
+	pp = (t_vector3){.z = 0.1f};
+	pn = (t_vector3){.z = 1.0f};
+	fdist1 = vector3_fdist_to_plane(ql->start.v, pn, pp);
+	fdist2 = vector3_fdist_to_plane(ql->end.v, pn, pp);
+	if (fdist1 < 0.0f && fdist2 < 0.0f)
+		return (false);
+	if (fdist1 < 0.0f || fdist2 < 0.0f)
+	{
+		if (fdist1 < 0.0f)
+		{
+			lerp = line_intersect_plane(pp, pn, ql->start.v, ql->end.v);
+			ql->start = lerp_quaternion(ql->start, ql->end, lerp);
+		}
+		else
+		{
+			lerp = line_intersect_plane(pp, pn, ql->end.v, ql->start.v);
+			ql->end = lerp_quaternion(ql->end, ql->start, lerp);
+		}
+	}
+	return (true);
+}
+
+static t_line newline(t_vector2 start, t_vector2 end)
+{
+	t_line	l;
+	l.start = start;
+	l.end = end;
+	return (l);
 }
 
 void render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to)
 {
-	drawline(*sdl, vector3_to_screenspace(from, *sdl), vector3_to_screenspace(to, *sdl), sdl->render.gizmocolor);
+	t_quaternion	q1;
+	t_quaternion	q2;
+	t_line			l;
+
+	q1 = vector3_to_quaternion(from);
+	q2 = vector3_to_quaternion(to);
+	q1 = quaternion_mul_matrix(sdl->render.camera.matworld, q1);
+	q2 = quaternion_mul_matrix(sdl->render.camera.matworld, q2);
+	q1 = quaternion_mul_matrix(sdl->render.camera.matview, q1);
+	q2 = quaternion_mul_matrix(sdl->render.camera.matview, q2);
+	q1 = quaternion_mul_matrix(sdl->render.camera.matproj, q1);
+	q2 = quaternion_mul_matrix(sdl->render.camera.matproj, q2);
+	t_quatline ql;
+	ql.start = q1;
+	ql.end = q2;
+	//if (vector3_fdist_to_plane(ql.start.v, nplane(), pplane()) < 0.0f
+	//	&& vector3_fdist_to_plane(ql.end.v, nplane(), pplane()) < 0.0f)
+	//	return ;
+	if (!clip_quatline_to_zplane(&ql))
+		return ;
+	l.start = proj_quaternion_to_screenspace(sdl, ql.start);
+	l.end = proj_quaternion_to_screenspace(sdl, ql.end);
+	t_line plane1, plane2, plane3, plane4;
+	/*
+	//TODO: this doesn't currently clip against screen borders
+	plane1 = newline((t_vector2){0.0f, 0.0f}, (t_vector2){0.0f, 1.0f});
+	plane2 = newline((t_vector2){0.0f, (float)(sdl->window_h) - 1.0f}, (t_vector2){0.0f, -1.0f});
+	plane3 = newline((t_vector2){0.0f, 0.0f}, (t_vector2){1.0f, 0.0f});
+	plane4 = newline((t_vector2){(float)(sdl->window_w) - 1.0f, 0.0f}, (t_vector2){-1.0f, 0.0f});
+	if (!clip_line_against_lineplane(&l, plane1))
+		return ;
+	if (!clip_line_against_lineplane(&l, plane2))
+		return ;
+	if (!clip_line_against_lineplane(&l, plane3))
+		return ;
+	if (!clip_line_against_lineplane(&l, plane4))
+		return ;
+	if (l.start.x < 0.0f || l.end.x > sdl->window_w)
+	{
+		printf("line start: %f %f end: %f %f \n", l.start.x, l.start.y, l.end.x, l.end.y);
+	}*/
+	drawline(*sdl, vector2_to_point(l.start), vector2_to_point(l.end), sdl->render.gizmocolor);
 }
 
+//DEPRECATED, USE render_gizmo3d/render_gizmo2d INSTEAD
 void render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size)
 {
 	drawcircle(sdl, vector3_to_screenspace(pos, sdl), size, render.gizmocolor);
@@ -119,7 +229,7 @@ void render_gizmo3d(t_sdlcontext *sdl, t_vector3 pos, int size, uint32_t color)
 void render_gizmo2d(t_sdlcontext *sdl, t_vector2 pos, int size, uint32_t color)
 {
 	drawcircle(*sdl,
-		vector3_to_screenspace(vector2_to_vector3(pos), *sdl), size, color);
+		vector3_to_screenspace(v2tov3(pos), *sdl), size, color);
 }
 
 static t_vector3 lookdirection2(t_vector2 angle)

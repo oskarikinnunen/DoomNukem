@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 12:32:25 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/08 13:43:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/11 12:43:48 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,7 @@ t_list	*ptr_to_list(void	*src, uint32_t len, size_t size)
 }
 
 //Returns a mallocated and NULL terminated array of list contents.
+
 void	*list_to_ptr(t_list *source, uint32_t *set_length)
 {
 	t_list	*l;

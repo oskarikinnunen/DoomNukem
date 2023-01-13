@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/12 22:46:23 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/13 02:40:07 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,6 +154,9 @@ float		vector3_dot(t_vector3 first, t_vector3 second);
 
 //returns true if both vectors are identical
 bool		vector3_cmp(t_vector3 first, t_vector3 second);
+
+
+t_vector3	vector3_snap(t_vector3 vec, int interval);
 
 //returns vector3 multiplied by vector 'v1' and vector 'v2'
 t_vector3	vector3_mul_vector3(t_vector3 v1, t_vector3 v2);
@@ -337,7 +340,9 @@ float	radtodeg(float rad);
 
 t_quaternion	vector3_to_quaternion(t_vector3 v);
 
-t_vector3		vector2_to_vector3(t_vector2 vec);
+t_vector3		v2tov3(t_vector2 vec);
+
+t_vector2		v3tov2(t_vector3 vec);
 
 //Returns t_vector2 'vec' casted to t_point. (Shorthand for '*(t_point *)&vec').
 t_point			vector2_to_point(t_vector2 vec);

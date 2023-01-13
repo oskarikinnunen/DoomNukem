@@ -7,8 +7,9 @@
 
 typedef struct s_loadtooldata
 {
-	char	**world_strings;
-	int		world_count;
+	t_autogui	gui;
+	char		**world_strings;
+	int			world_count;
 }	t_loadtooldata;
 
 void	allocate_worldstrings(t_loadtooldata	*dat, char	*path)
@@ -35,6 +36,22 @@ void	allocate_worldstrings(t_loadtooldata	*dat, char	*path)
 	printf("allocced space for %i worlds \n", i);
 }
 
+void	load_tool_free(t_loadtooldata *dat)
+{
+	int	i;
+
+	i = 0;
+	if (dat->world_count != 0)
+	{
+		while (i < dat->world_count)
+		{
+			free(dat->world_strings[i]);
+			i++;
+		}
+		free(dat->world_strings);
+	}
+}
+
 void	load_tool_init(t_editor *ed, t_sdlcontext *sdl)
 {
 	t_loadtooldata	*dat;
@@ -53,7 +70,7 @@ void	load_tool_init(t_editor *ed, t_sdlcontext *sdl)
 		dfile = readdir(d);
 		while (dfile != NULL)
 		{
-			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".world") != NULL)
+			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".world\0") != NULL)
 			{
 				dat->world_strings[i] = ft_strnew(32);
 				ft_strcpy(dat->world_strings[i], dfile->d_name);
@@ -67,10 +84,41 @@ void	load_tool_init(t_editor *ed, t_sdlcontext *sdl)
 		}
 		closedir(d);
 	}
+	if (dat->gui.sdl == NULL)
+	{
+		dat->gui = init_gui(ed->world.sdl, &ed->hid, &ed->player, (t_point){200, 200}, "Load/Save levels");
+		dat->gui.rect.size = dat->gui.minimum_size;
+		dat->gui.rect.size.y = 400;
+	}
 }
 
 void	load_tool_update(t_editor *ed, t_sdlcontext *sdl)
 {
+	t_loadtooldata	*dat;
+	t_autogui		*gui;
+	static char		name[32];
+	int				i;
+
+	dat = ed->tool->tooldata;
+	gui = &dat->gui;
+	i = 0;
+	gui_start(gui);
+	gui_string_edit(ed->world.name, gui);
+	if (gui_button("Save current world", gui))
+	{
+		save_world(ed->world.name, ed->world);
+		load_tool_init(ed, sdl);
+	}
+	gui_emptyvertical(10, gui);
+	gui_label("Load:", gui);
+	while (i < dat->world_count)
+	{
+		if (ft_strcmp(dat->world_strings[i], ed->world.name) != 0 &&
+			gui_button(dat->world_strings[i], gui))
+			editor_load_and_init_world(ed, dat->world_strings[i], ed->world.sdl);
+		i++;
+	}
+	gui_end(gui);
 
 }
 

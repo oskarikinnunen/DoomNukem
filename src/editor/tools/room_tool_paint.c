@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 14:52:25 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/04 18:26:49 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/09 16:52:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,47 @@ int		get_image_index(t_sdlcontext *sdl, t_img *img, int prev)
 		i++;
 	}
 	return (prev);
+}
+
+t_room	*get_floor_room(t_world *world, t_entity *entity)
+{
+	t_list	*l;
+	t_room	*r;
+	int		i;
+
+	l = world->roomlist;
+	r = NULL;
+	while (l != NULL)
+	{
+		r = l->content;
+		i = 0;
+		while (i < r->floorcount)
+		{
+			if (entity == r->floors[i].entity)
+				return (r);
+			i++;
+		}
+		l = l->next;
+	}
+	return (NULL);
+}
+
+void	apply_floortexture(t_world *world, t_room *room, char *texname)
+{
+	int			i;
+	t_meshtri	*floor;
+
+	i = 0;
+	ft_strcpy(room->floortex, texname); //TODO: strncpy
+	while (i < room->floorcount)
+	{
+		floor = &room->floors[i];
+		if (floor->entity->obj != NULL)
+		{
+			floor->entity->obj->materials->img = get_image_by_name(*world->sdl, room->floortex);
+		}
+		i++;
+	}
 }
 
 void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
@@ -76,7 +117,7 @@ void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	int from = 0;
 	int	to = 1;
 	t_point cur;
-	if (ed->clock.prev_time < prev_changetime + 1000)
+	if (ed->world.clock.prev_time < prev_changetime + 1000)
 	{
 		i = -5;
 		while (i < 6)
@@ -117,10 +158,14 @@ void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 		ent->obj->materials->img != tex && tex != NULL
 		&& ent->obj != NULL)
 	{
-		printf("applying tex \n");
 		ent->obj->materials->img = tex;
-		create_lightmap_for_entity(ent, &ed->world);
-		create_map_for_entity(ent, &ed->world);
+		t_room	*fr = get_floor_room(&ed->world, ent);
+		if (fr != NULL)
+		{
+			apply_floortexture(&ed->world, fr, tex->name);
+		}
+		//create_lightmap_for_entity(ent, &ed->world);
+		//create_map_for_entity(ent, &ed->world);
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
 		dat->rtm = rtm_none;

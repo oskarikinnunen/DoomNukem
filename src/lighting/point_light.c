@@ -57,7 +57,7 @@ void calculate_pointlight_step(t_pointlight *pointlight, t_world *world, t_rende
 		ent = l.entities[i];
 		j = ent->lightmap->progress;
 		//printf("entity light %i \n", i);
-		while (timecur - timestart < 5 && j < ent->obj->face_count)
+		while (timecur - timestart < 15 && j < ent->obj->face_count)
 		{
 			if (j == ent->lightmap->progress/* || ent->obj->faces[j].materialindex != ent->obj->faces[j - 1].materialindex*/)
 			{

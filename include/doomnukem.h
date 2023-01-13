@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/12 23:21:55 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/13 02:39:56 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include "player.h"
 # include "input.h"
 # include "debug.h"
+# include "navigation.h"
 
 # define PI	3.14159265359
 # define FULLRAD M_PI * 2.0
@@ -102,6 +103,7 @@ struct s_autogui;
 
 typedef struct s_world
 {
+	char				name[32];
 	t_player			*player;
 	t_clock				clock;
 	t_debugconsole		debugconsole;
@@ -114,16 +116,17 @@ typedef struct s_world
 	bool				lighting_baked;
 	t_list				*objectmetadatalist; //Move to sdl, this is only used when objects are initialized
 	t_npc				npcpool[128];
-	//t_list				*wall_list;
 	t_list				*roomlist;
 	t_entitycache		entitycache;
 	t_entity			skybox;
+	bool				ceiling_toggle;
 }	t_world;
 
 t_vector2	flipped_uv(t_vector2 og);
 void		for_all_active_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *world));
 void		for_all_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *world));
 void		update_world3d(t_world *world, t_render *render);
+void		toggle_ceilings(t_world *world);
 t_world		load_world(char *filename, t_sdlcontext *sdl);
 void		destroy_entity(t_world *world, t_entity *ent);
 t_entity	*spawn_entity(t_world	*world);
@@ -237,14 +240,14 @@ void	*list_find(t_list *head, void *match, size_t content_size);
 void	list_remove(t_list **head, void *match, size_t content_size);
 
 /* OCCLUSION.C */
-void	update_occlusion(t_sdlcontext sdl, t_render *render);
+void	update_occlusion(struct s_world *world, t_render *render);
 
 //settings
 void	default_entity_occlusion_settings(t_entity *e, t_world *world);
 void	default_floor_occlusion_settings(t_meshtri *f, t_world *world);
 void	default_wall_occlusion_settings(t_wall *w, t_world *world);
 
-void	update_entity_bounds(t_entity *e);
+void	update_object_bounds(t_object *obj);
 void	update_floor_bounds(t_meshtri *f);
 void	update_wall_bounds(t_wall *w);
 

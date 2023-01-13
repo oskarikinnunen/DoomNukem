@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   roomtool.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:42:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/04 20:28:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/11 10:36:04 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ typedef enum e_roomtoolmode
 	rtm_none,
 	rtm_create,
 	rtm_modify,
+	rtm_move,
 	rtm_split,
 	rtm_paint,
 	rtm_connect
@@ -42,13 +43,15 @@ typedef struct s_roomtooldata
 	t_wall			wall;
 	t_wall			*ed_wall;
 	t_vector2		*held_edge;
+	t_vector2		*temp_edges;
+	uint32_t		temp_height;
 	bool			room_should_recalculate;
 	t_floorcalc		fc;
 }	t_roomtooldata;
 
 bool		isconnect(t_vector2 v2, t_room *room);
 t_vector2	vector2_flipxy(t_vector2 vec);
-void		highlight_room(t_editor *ed, t_sdlcontext *sdl, t_room room, uint32_t color);
+void		highlight_room(t_editor *ed, t_sdlcontext *sdl, t_room *room, uint32_t color);
 //void		highlight_roomwalls(t_editor *ed, t_sdlcontext sdl, t_room room, uint32_t color);
 t_meshtri	*selectedfloor(t_editor *ed, t_sdlcontext sdl, t_room *room);
 t_wall		*selectedwall(t_editor *ed, t_sdlcontext sdl, t_room *room);

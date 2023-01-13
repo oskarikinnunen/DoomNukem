@@ -7,6 +7,7 @@
 # include "shapes.h"
 # include "objects.h" // only one function is using currently can be moved to doomnukem.h if needed
 # include "lighting.h"
+# include "occlusion.h"
 
 # include "fmod.h"
 
@@ -15,6 +16,7 @@
 # define CLR_BLUE 255
 # define CLR_GRAY 4868682
 # define CLR_DARKGRAY 0x292929
+# define CLR_BLACKGRAY 0x1a1a1a
 # define CLR_GREEN 3002977
 # define CLR_RED 0xFF2919
 # define AMBER_0 0x551501
@@ -73,20 +75,6 @@ typedef struct s_font
 	char				*text;
 }	t_font;
 
-typedef struct	s_triangle
-{
-	t_quaternion	p[3];
-	t_texture		t[3];
-	uint32_t		clr;
-}	t_triangle;
-
-typedef struct s_point_triangle
-{
-	t_point			p[3];
-	t_texture		t[3];
-	uint32_t		clr;
-}	t_point_triangle;
-
 typedef struct s_render_statistics
 {
 	bool		statistics; // turns on, off
@@ -102,7 +90,8 @@ typedef struct s_debug_occlusion
 {
 	bool		occlusion; // turns on, off
 	bool		occluder_box; // turns on occluder boxes blue;
-	bool		cull_box;	// turns on cull boxes green not occluded, red occluded;
+	bool		draw_occlusion;
+	bool		slow_render;
 }	t_debug_occlusion;
 
 typedef struct s_camera
@@ -126,14 +115,10 @@ typedef enum e_rend_lightmode
 typedef struct s_render
 {
 	t_camera			camera;
-	t_triangle			*occ_draw_tris;
-	t_triangle			*occ_calc_tris;
 	t_point_triangle	*worldspace_ptris;
 	t_point_triangle	*screenspace_ptris;
 	uint32_t			worldspace_ptri_count;
 	uint32_t			screenspace_ptri_count;
-	uint32_t			occ_tri_count;
-	uint32_t			occ_calc_tri_count;
 	t_img				*img;
 	t_img				*debug_img;
 	t_quaternion		*q;
@@ -145,6 +130,7 @@ typedef struct s_render
 	t_map				map;
 	uint32_t			dynamic_light;
 	t_rend_lightmode	lightmode;
+	t_v2rectangle		screen_edge;
 	/*bool				is_wrap;
 	bool				dynamic_light;*/
 	//struct s_sdlcontext	*sdl;
@@ -168,6 +154,21 @@ typedef struct s_audio
 	t_audiosample		music[5];
 }	t_audio;
 
+typedef enum e_screenmode
+{
+	screenmode_windowed,
+	screenmode_borderless,
+	screenmode_fullscreen
+}	t_screenmode;
+
+typedef struct s_graphicprefs //Intermediate struct used for loading settings from a configuration file
+{
+	t_screenmode	screenmode;
+	int32_t		resolution_x;
+	int32_t		resolution_y;
+	float			resolutionscale;
+}	t_graphicprefs;
+
 typedef struct s_sdlcontext
 {
 	SDL_Window				*window;
@@ -185,6 +186,7 @@ typedef struct s_sdlcontext
 	struct s_object			*objects;
 	int						ps1_tri_div;
 	bool					global_wireframe;
+	bool					render_grid;
 	bool					lighting_toggled;
 	uint32_t				objectcount;
 	t_font					font;
@@ -192,8 +194,14 @@ typedef struct s_sdlcontext
 	uint32_t				window_w;
 	uint32_t				window_h;
 	t_point					screensize;
+	t_bitmask				bitmask;
 }	t_sdlcontext;
 
+void			save_graphics_prefs(t_sdlcontext *sdl);
+t_graphicprefs	get_prefs_from_sdl(t_sdlcontext *sdl);
+t_graphicprefs	load_graphicsprefs();
+void			reset_graphics_prefs();
+void			set_sdl_settings(t_sdlcontext *sdl);
 void	alloc_image(t_img *img, int width, int height);
 t_img	*get_image_by_index(t_sdlcontext sdl, int index); //TODO: add comments
 t_img	*get_image_by_name(t_sdlcontext sdl, char *name);
@@ -215,7 +223,7 @@ void	draw_rectangle_raster(t_sdlcontext sdl, t_rectangle rect, uint32_t clr);
 void	draw_triangle(t_sdlcontext *sdl, t_point p1, t_point p2, t_point p3, uint32_t clr);
 
 /* INIT_RENDER.C */
-t_render	init_render(t_sdlcontext sdl, struct s_world *world);
+t_render	init_render(t_sdlcontext sdl);
 void		free_render(t_render render);
 void		render_start(t_render *render);
 
@@ -230,7 +238,7 @@ void				clipped_point_triangle(t_render *render, t_sdlcontext sdl);
 void				render_buffer(t_sdlcontext *sdl, t_render *render);
 t_triangle			triangle_to_viewspace(t_triangle tritransformed, t_mat4x4 matview);
 t_point_triangle	triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_triangle clipped, t_sdlcontext sdl);
-
+bool				is_triangle_backface(t_triangle tritransformed, t_render *render);
 /* RASTERIZER */
 void				render_triangle_lit(t_sdlcontext *sdl, t_render *render, int index);
 void				render_triangle_uv(t_lighting l, t_triangle_polygon triangle);
@@ -260,11 +268,12 @@ void	change_music(t_audio *audio, const char *name);
 void	pause_music(t_audio *audio, bool pause);
 void	stop_music(t_audio *audio);
 
-int		clip_triangle_against_occluder_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
 int		clip_triangle_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
-void	clipped(t_render *render, t_sdlcontext sdl);
-
 int		point_clip_triangle_against_plane(t_vector2 plane_p, t_vector2 plane_n, t_point_triangle in_tri, t_point_triangle out_tri[2]);
+int		clip_triangle_against_occluder_plane(t_vector2 plane_p, t_vector2 plane_n, t_point_triangle in_tri, t_point_triangle out_tri[2]);
+//bitmask
+int			clip_bitmask_triangle_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]); //TODO: Implement this with gpu rendering
+t_bitmask	init_bitmask(t_sdlcontext *sdl);
 
 /* SURFACE TOOLS */
 
@@ -273,7 +282,8 @@ void	join_text_to_surface(SDL_Surface *dest, SDL_Surface *src, t_point pos, uint
 void	join_text_boxed_to_surface(t_sdlcontext *sdl, SDL_Surface *src, t_point pos, t_point padding);
 
 /*occlusion*/
-void get_min_max_from_triangles(t_vector2 *min, t_vector2 *max, t_triangle *t, int count);
+void	set_square_from_triangles(t_occlusion *occl, t_point_triangle *t, int count);
+void	render_bitmask(t_sdlcontext *sdl, t_render *render);
 
 /*Render helper*/
 t_point_triangle	wf_tri(t_point_triangle in, float scaling);
@@ -281,6 +291,7 @@ t_texture			calc_step_texture(t_texture *t, float delta);
 void				calc_points_step(float x_step[2], t_texture t_step[2], t_point *p, t_texture *t, float delta);
 void				sort_point_uv_tri(t_point *p, t_texture *t);
 void				sort_polygon_tri(t_point *p2, t_vector2 *t, t_vector3 *p3);
+void				sort_point_tri(t_point *p2, float *w);
 void				ft_swap(void * a, void * b, size_t len);
 t_point_triangle	ps1(t_point_triangle in, int div);
 uint32_t			flip_channels(uint32_t clr);

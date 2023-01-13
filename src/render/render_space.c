@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_space.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 15:36:10 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/05 16:16:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/12 09:03:24 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ static t_vector3 normal_calc(t_triangle tritransformed)
 	return (normal);
 }
 
-static bool is_triangle_backface(t_triangle tritransformed, t_render *render)
+bool is_triangle_backface(t_triangle tritransformed, t_render *render)
 {
 	t_vector3	normal;	
 	t_vector3	vcameraray;
@@ -115,8 +115,6 @@ void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 	int				index;
 
 	obj = entity->obj;
-	render->worldspace_ptri_count = 0;
-	render->screenspace_ptri_count = 0;
 
 	index = 0;
 	while (index < obj->face_count)

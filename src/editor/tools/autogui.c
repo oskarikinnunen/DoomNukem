@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/03 15:50:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/12 11:15:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,11 @@ void	gui_start(t_autogui *gui)
 	gui->overdraw = 0;
 	gui->offset.y = 32 + 5; //TODO: autogui_start
 	gui->offset.x = 5;
-	gui_limitrect(gui);
+	if (gui->rect.size.x < gui->minimum_size.x)
+		gui->rect.size.x = gui->minimum_size.x;
+	if (gui->rect.size.y < gui->minimum_size.y)
+		gui->rect.size.y = gui->minimum_size.y;
+	//gui_limitrect(gui);
 	gui->x_maxdrawn = 0;
 }
 
@@ -207,7 +211,6 @@ void	gui_end(t_autogui *gui)
 			gui->rect.size = point_sub(point_add(gui->hid->mouse.pos, point_div(dragcorner.size, 2)), gui->rect.position);
 		}
 	}
-	
 	if (gui->hid->mouse.held == 0)
 	{
 		gui->move_held = false;
@@ -223,7 +226,7 @@ void	gui_end(t_autogui *gui)
 	{
 		gui->scroll.y = 0;
 		gui->scrollable = false;
-		gui->minimum_size.y = gui->offset.y + 32;
+		//gui->minimum_size.y = gui->offset.y + 32;
 		gui->rect.size.y = gui->offset.y + 32;
 	}
 	if (gui->scrollable)
@@ -232,7 +235,11 @@ void	gui_end(t_autogui *gui)
 		update_scrollbar(gui);
 		gui->scroll.y = ft_clamp(gui->scroll.y, -gui->overdraw, 0);
 	}
+	gui_limitrect(gui);
 	//set_font_size(gui->sdl, 2);
+	//char temp[128];
+	//sprintf(temp, "size: %i %i min: %i %i\n", gui->rect.size.x, gui->rect.size.y, gui->minimum_size.x, gui->minimum_size.y);
+	//print_text(gui->sdl, temp, gui->rect.position);
 	print_text_colored(gui->sdl, gui->title, point_add(gui->rect.position, (t_point){5, 5}), AMBER_3);
 	//set_font_size(gui->sdl, 0);
 }
@@ -646,15 +653,10 @@ void	gui_string_edit(char *str, t_autogui	*gui)
 	else
 		sprintf(bstr, "\xE6 %s\xE4", str);
 	done = false;
-	/*if (blink_status == 0)
-		sprintf(bstr, "\xE6 %s\x5C", str);
-	if (blink_status == 1)
-		sprintf(bstr, "\xE6 %s\x7C", str);
-	if (blink_status == 2)
-		sprintf(bstr, "\xE6 %s\x2F", str);
-	if (blink_status == 3)
-		sprintf(bstr, "\xE6 %s-", str);*/
-	orig = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
+	if (ft_strlen(str) != 0)
+		orig = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
+	else
+		orig = print_text_boxed(gui->sdl, " ", gui_currentpos(gui));
 	rect = empty_rect();
 	if (gui_colored_button(bstr, gui, AMBER_4))
 	{
@@ -674,7 +676,8 @@ void	gui_string_edit(char *str, t_autogui	*gui)
 				ft_bzero(bstr, 40);
 				sprintf(bstr, "\xE6 %s ", str);
 				rect = print_text_boxed(gui->sdl, bstr, orig.position);
-				join_surfaces(gui->sdl->window_surface, gui->sdl->ui_surface);
+				//join_surfaces(gui->sdl->window_surface, gui->sdl->ui_surface);
+				ft_memcpy(gui->sdl->window_surface->pixels, gui->sdl->surface->pixels, gui->sdl->window_w * gui->sdl->window_h * sizeof(uint32_t));
 				SDL_UpdateWindowSurface(gui->sdl->window);
 				if (e.type == SDL_MOUSEBUTTONDOWN
 					|| (e.type == SDL_KEYDOWN && (e.key.keysym.sym == SDLK_RETURN ||
@@ -821,14 +824,11 @@ bool	gui_int_slider(int *i, float mul, t_autogui *gui)
 				mousepos = gui->hid->mouse.pos;
 				force_mouselock(gui->hid);
 				gui->hid->mouse.pos = mousepos;
-				gui->hid->mouse.safe_delta = true;
-				gui->player->locked = true;
-				gui->locking_player = true;
+				gui->hid->mouse.dragging_ui = true;
 			}
-			if (gui->hid->mouse.relative && gui->locking_player)
+			if (gui->hid->mouse.held == MOUSE_LEFT)
 			{
-				//add += gui->hid->mouse.delta.x;
-				add = gui->hid->mouse.delta.x;
+				add = (float)gui->hid->mouse.delta.x;
 				if (add != 0)
 					modified = true;
 			}
@@ -846,8 +846,10 @@ bool	gui_int_slider(int *i, float mul, t_autogui *gui)
 
 bool	gui_labeled_int_slider(char *str, int *i, float mul, t_autogui *gui)
 {
+	bool	modified = false;
 	gui_starthorizontal(gui);
 	gui_label(str, gui);
-	gui_int_slider(i, mul, gui);
+	modified = gui_int_slider(i, mul, gui);
 	gui_endhorizontal(gui);
+	return (modified);
 }

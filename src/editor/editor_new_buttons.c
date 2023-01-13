@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_new_buttons.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 14:34:40 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/05 16:26:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/11 10:44:57 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,11 @@ static void changetool(t_editor *ed, t_sdlcontext *sdl, t_tool *newtool)
 	return (0);
 }*/
 
-void	update_editor_toolbar(t_editor *ed, t_autogui *toolbar)
+void    update_editor_toolbar(t_editor *ed, t_autogui *toolbar)
 {
 	SDL_Event	e;
 	toolbar->rect.size.y = 60;
-	toolbar->rect.size.x = 420;
+	toolbar->rect.size.x = 540;
 	gui_start(toolbar);
 	gui_starthorizontal(toolbar);
 	if (gui_button("[1]Rooms", toolbar) || ed->hid.keystate >> KEYS_1MASK & 1)
@@ -50,11 +50,10 @@ void	update_editor_toolbar(t_editor *ed, t_autogui *toolbar)
 		changetool(ed, toolbar->sdl, get_gun_tool());
 	if (gui_button("[4]NPCs", toolbar) || ed->hid.keystate >> KEYS_4MASK & 1)
 		changetool(ed, toolbar->sdl, get_npc_tool());
-	/*if (gui_shortcut_button("Load/Save", 'L', toolbar))
-		changetool(ed, toolbar->sdl, get_load_tool());*/
+	if (gui_shortcut_button("Load/Save", 'I', toolbar))
+		changetool(ed, toolbar->sdl, get_load_tool());
 	if (gui_shortcut_button("No tool", 't', toolbar))
 		ed->tool = NULL;
 	gui_endhorizontal(toolbar);
 	gui_end(toolbar);
 }
-

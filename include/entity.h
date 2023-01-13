@@ -72,12 +72,19 @@ typedef enum e_prefabtype
 	pft_eventtrigger
 }	t_prefabtype;
 
-/*typedef struct s_prefab
+typedef struct s_prefab
 {
-	t_object		object_name[64];
+	t_object		*object;
+	char			object_name[64];
 	t_prefabtype	prefabtype;
-	uint16_t		prefab_id;
-}	t_prefab;*/
+}	t_prefab;
+
+/*
+	//assign_prefabs()
+	draw prefab_menu
+		for light
+
+*/
 
 typedef struct s_gun
 {
@@ -104,25 +111,27 @@ typedef struct s_entitycache
 	t_entity	*entities;
 	uint32_t	existing_entitycount;
 	uint32_t	alloc_count;
+	t_entity	**sorted_entities;
 }	t_entitycache;
 
-/* OCCLUSION FOLDER */
-void update_peripheral_culling(t_sdlcontext sdl, t_render *render, t_entity *entity);
-void update_occlusion_culling(t_sdlcontext sdl, t_render *render, t_entity *entity);
+/* OCCLUSION*/
+void render_bitmask_row(int ax, int bx, float aw, float bw, int y, t_sdlcontext *sdl);
+void update_frustrum_culling(struct s_world *world, t_sdlcontext *sdl, t_render *render);
 
-bool is_entity_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
-bool is_entity_frustrum_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
-bool is_entity_peripheral_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
-bool is_entity_occlusion_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
+bool is_entity_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity);
+bool is_entity_frustrum_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity);
+bool is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 
 void	calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity);
-int		calculate_tris_from_square(t_square s, t_entity *ent, t_render *render);
+void	clear_occlusion_buffer(t_sdlcontext *sdl);
+
+//Debug occl
+void	draw_wireframe(t_sdlcontext sdl, t_square s, uint32_t clr);
+void	bitmask_to_pixels(t_sdlcontext *sdl);
 
 /* RENDERING */
 void	highlight_entity(t_sdlcontext *sdl, t_entity *entity, uint32_t color);
 void	render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity);
-void	draw_wireframe(t_sdlcontext sdl, t_render *render, t_entity *e, uint32_t clr);
-void	draw_edges(t_sdlcontext sdl, t_render *render, t_entity *e, uint32_t clr);
 void	render_worldspace(t_render *render, t_entity *entity);
 void	render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 
