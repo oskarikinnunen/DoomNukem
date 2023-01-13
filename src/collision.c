@@ -6,14 +6,14 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/05 13:48:43 by raho              #+#    #+#             */
-/*   Updated: 2023/01/13 01:31:49 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/13 02:35:10 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "collision.h"
 
-static bool	linepoint(t_vector2 start, t_vector2 end, t_vector2 point)
+bool	linepoint(t_vector2 start, t_vector2 end, t_vector2 point)
 {
 	float	distance1;
 	float	distance2;
@@ -24,12 +24,13 @@ static bool	linepoint(t_vector2 start, t_vector2 end, t_vector2 point)
 	distance2 = vector2_dist(point, end);
 	line_len = vector2_dist(start, end);
 	buffer = 0.1f;
-	if ((distance1 + distance2) >= (line_len - buffer) && (distance1 + distance2) <= (line_len + buffer))
+	if ((distance1 + distance2) >= (line_len - buffer) && \
+			(distance1 + distance2) <= (line_len + buffer))
 		return (true);
 	return (false);
 }
 
-static bool	pointcircle(t_vector2 point, t_vector2 circle, float radius)
+bool	pointcircle(t_vector2 point, t_vector2 circle, float radius)
 {
 	t_vector2	delta;
 	
@@ -37,17 +38,6 @@ static bool	pointcircle(t_vector2 point, t_vector2 circle, float radius)
 	if (vector2_dot(delta, delta) <= radius * radius)
 		return (true);
 	return (false);
-}
-
-t_collision	calculate_new_pos(t_vector2 delta, float radius)
-{
-	t_collision	result;
-	float		dist;
-	
-	dist = vector2_magnitude(delta);
-	result.normal = vector2_mul(delta, (1.0f / dist));
-	result.depth = radius - dist;
-	return (result);
 }
 
 bool	linecircle(t_line line, t_vector2 circle, float radius, t_collision *collision)
@@ -61,19 +51,17 @@ bool	linecircle(t_line line, t_vector2 circle, float radius, t_collision *collis
 	if (pointcircle(line.start, circle, radius))
 	{
 		*collision = calculate_new_pos(vector2_sub(circle, line.start), radius);
-			return (true);
+		return (true);
 	}
 	if (pointcircle(line.end, circle, radius))
 	{
 		*collision = calculate_new_pos(vector2_sub(circle, line.end), radius);
-			return (true);
+		return (true);
 	}
 	wall_len = vector2_dist(line.start, line.end);
-	/* dot = vector2_dot((t_vector2){(potential_pos.x - wall_line->start->x), (wall_line->end->x - wall_line->start->x)}, \
-			(t_vector2){(potential_pos.y - wall_line->start->y), (wall_line->end->y - wall_line->start->y)}) / \
-			(wall_len * wall_len); */ //didnt work so had to write it open below
 	dot = (((circle.x - line.start.x) * (line.end.x - line.start.x)) + \
-		((circle.y - line.start.y) * (line.end.y - line.start.y))) / (wall_len * wall_len);
+			((circle.y - line.start.y) * (line.end.y - line.start.y))) / \
+			(wall_len * wall_len);
 	closest.x = line.start.x + (dot * (line.end.x - line.start.x));
 	closest.y = line.start.y + (dot * (line.end.y - line.start.y));
 	if (linepoint(line.start, line.end, closest))
@@ -92,12 +80,11 @@ bool	lineline(t_line first, t_line second, t_vector2 *collision_point)
 	float	a;
 	float	b;
 	
-	
 	a = (((second.end.x - second.start.x) * (first.start.y - second.start.y)) - \
 		((second.end.y - second.start.y) * (first.start.x - second.start.x))) / \
 		(((second.end.y - second.start.y) * (first.end.x - first.start.x)) - \
 		((second.end.x - second.start.x) * (first.end.y - first.start.y)));
-	
+		
 	b = (((first.end.x - first.start.x) * (first.start.y - second.start.y)) - \
 		((first.end.y - first.start.y) * (first.start.x - second.start.x))) / \
 		(((second.end.y - second.start.y) * (first.end.x - first.start.x)) - \
@@ -112,11 +99,23 @@ bool	lineline(t_line first, t_line second, t_vector2 *collision_point)
 	return (false);
 }
 
+t_collision	calculate_new_pos(t_vector2 delta, float radius)
+{
+	t_collision	result;
+	float		dist;
+	
+	dist = vector2_magnitude(delta);
+	result.normal = vector2_mul(delta, (1.0f / dist));
+	result.depth = radius - dist;
+	return (result);
+}
+
 bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, t_vector3 *new_pos)
 {
 	t_list		*l;
 	t_room		*room;
 	int			index;
+	t_collision	collision;
 
 	player->collision_radius = 15;
 	l = world->roomlist;
@@ -128,25 +127,14 @@ bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, 
 			index = 0;
 			while (index < room->wallcount)
 			{
-				//printf("potential_pos.z: %f\n", potential_pos.z);
-				//room->walls[index].entity->obj->vertices[0].z
-				//render_ray(world->sdl, player->transform.position, room->walls[index].entity->obj->vertices[0]);
-				/* world->sdl->render.gizmocolor = CLR_RED;
-				render_ray(world->sdl, vector3_add(player->transform.position, player->lookdir), room->walls[index].entity->obj->vertices[0]);
-				render_gizmo3d(world->sdl, room->walls[index].entity->obj->vertices[0], 5, CLR_RED);
-				render_gizmo3d(world->sdl, room->walls[index].entity->obj->vertices[1], 5, CLR_RED);
-				render_gizmo3d(world->sdl, room->walls[index].entity->obj->vertices[2], 10, CLR_BLUE);
-				render_gizmo3d(world->sdl, room->walls[index].entity->obj->vertices[3], 10, CLR_BLUE); */
 				if (!room->walls[index].entity->hidden && \
 					(potential_pos.z > room->walls[index].entity->obj->vertices[0].z &&
 					potential_pos.z < room->walls[index].entity->obj->vertices[2].z * 1.2f))
 				{
-					t_collision	collision;
 					if (linecircle((t_line){*room->walls[index].edgeline.start, *room->walls[index].edgeline.end}, \
 							(t_vector2){potential_pos.x, potential_pos.y}, player->collision_radius, &collision))
 					{
-						*new_pos = vector3_add(potential_pos, vector2_to_vector3(vector2_mul(collision.normal, collision.depth)));
-						//printf("potential_pos: %f, %f, %f\n", new_pos->x, new_pos->y, new_pos->z);
+						*new_pos = vector3_add(potential_pos, vector2_to_vector3(vector2_mul(collision.normal, collision.depth + 1)));
 						return (true);
 					}
 				}
@@ -155,7 +143,6 @@ bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, 
 		}
 		l = l->next;
 	}
-	//printf("collision false\n");
 	return (false);
 }
 
@@ -247,7 +234,7 @@ bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, 
 // 	return (false);			
 // }
 
-// bool	alaiwan_collision(t_world *world, t_player *player, t_vector3 potential_pos, t_vector3 *new_pos)
+//bool	alaiwan_collision(t_world *world, t_player *player, t_vector3 potential_pos, t_vector3 *new_pos)
 // {
 // 	t_collision	collision;
 
