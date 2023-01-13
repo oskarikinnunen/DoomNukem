@@ -204,9 +204,9 @@ bool is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *e
 				if (entity->occlusion.clip.min.y > y)
 					entity->occlusion.clip.min.y = y;
 			}
-			x++;
+			x += 8;
 		}
-		y++;
+		y += 8;
 	}
 	/*
 	render->screen_edge.max.x = (float)(sdl->window_w * sdl->resolution_scaling) - 1.0f;
