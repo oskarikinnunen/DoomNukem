@@ -208,12 +208,7 @@ bool is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *e
 		}
 		y += 8;
 	}
-	/*
-	render->screen_edge.max.x = (float)(sdl->window_w * sdl->resolution_scaling) - 1.0f;
-	render->screen_edge.max.y = (float)(sdl->window_h * sdl->resolution_scaling) - 1.0f;
-	render->screen_edge.min.x = (float)0 * sdl->resolution_scaling;
-	render->screen_edge.min.y = (float)0 * sdl->resolution_scaling;
-	*/
+
 	entity->occlusion.clip.max.x = ft_clamp(entity->occlusion.clip.max.x, 0, (sdl->window_w * sdl->resolution_scaling) - 1);
 	entity->occlusion.clip.max.y = ft_clamp(entity->occlusion.clip.max.y, 0, (sdl->window_h * sdl->resolution_scaling) - 1);
 	entity->occlusion.clip.min.x = ft_clamp(entity->occlusion.clip.min.x, 0, (sdl->window_w * sdl->resolution_scaling) - 1);
