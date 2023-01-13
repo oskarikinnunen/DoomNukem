@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/01/12 13:52:47 by okinnune         ###   ########.fr        #
+#    Updated: 2023/01/13 05:49:50 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -56,7 +56,9 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		debug/debugconsole.c \
 		playmode.c inputhelper.c \
 		walls.c file_open.c \
-		moveplayer.c errors.c \
+		moveplayer.c \
+		collision.c \
+		errors.c \
 		physics.c \
 		perfgraph.c \
 		png.c lua_conf.c list_helper.c \

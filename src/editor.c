@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/12 16:22:36 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/13 05:50:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,7 +235,7 @@ int	editorloop(t_sdlcontext sdl)
 		ed.gamereturn = editor_events(&ed);
 		bake_lights(&sdl.render, &ed.world);
 		if (!ed.player.locked)
-			moveplayer(&ed.player, &ed.hid.input, ed.world.clock);
+			moveplayer(&ed.player, &ed.hid.input, ed.world.clock, &ed.world);
 		update_render(&sdl.render, &ed.player);
 		screen_blank(sdl);
 		render_start(&sdl.render);

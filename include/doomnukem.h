@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/12 14:26:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/13 05:49:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,7 +191,12 @@ void	player_init(t_player *player, t_sdlcontext *sdl, t_world *world);
 void	update_render(t_render *render, t_player *player);
 
 /* MOVEPLAYER.C */
-void	moveplayer(t_player *player, t_input *input, t_clock clock);
+void	moveplayer(t_player *player, t_input *input, t_clock clock, t_world *world);
+
+/* COLLISION */
+bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, t_vector3 *newpos);
+bool	alaiwan_collision(t_world *world, t_player *player, t_vector3 potential_pos, t_vector3 *new_pos);
+
 
 /* ERRORS.C */
 void	error_log(int error_code);

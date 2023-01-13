@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vectors.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 11:42:49 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/13 02:40:07 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,9 @@ t_vector2	vector2_snap(t_vector2 vec, int interval);
 
 //returns vector 'vec' multiplied by 'mul'
 t_vector2	vector2_mul(t_vector2 vec, float mul);
+
+//returns vector 'first' multiplied by 'second'
+t_vector2	vector2_multiply(t_vector2 first, t_vector2 second);
 
 //returns vector 'vec' divided by 'div'
 t_vector2	vector2_div(t_vector2 vec, float div);

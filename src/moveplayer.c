@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/12 13:39:01 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/13 05:50:51 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,14 +223,14 @@ void	updateguntransform(t_input *input, t_clock *clock, t_player *player)
 	
 	*/
 //}
-
-void	moveplayer(t_player *player, t_input *input, t_clock clock)
+void	moveplayer(t_player *player, t_input *input, t_clock clock, t_world *world)
 {
 	t_vector3	move_vector;
-	t_vector3	potential_pos; //Unused right now, will be used when collision is reimplemented
+	t_vector3	potential_pos;
+	t_vector3	new_pos;
 	float		angle;
 
-	updateguntransform(input, &clock, player);
+	/* updateguntransform(input, &clock, player);
 	if (player->locked)
 		return ;
 	move_vector = vector3_zero();
@@ -242,5 +242,33 @@ void	moveplayer(t_player *player, t_input *input, t_clock clock)
 	move_vector = vector3_mul(move_vector, clock.delta * MOVESPEED);
 	player->speed = move_vector;
 	player->transform.position = vector3_add(player->transform.position, move_vector);
-	//player->transform.position.z = ft_clampf(player->transform.position.z, player->height, 1000.0f);
+	player->transform.position.z = ft_clampf(player->transform.position.z, player->height, 1000.0f); */
+
+	potential_pos = player->transform.position;
+	updateguntransform(input, &clock, player);
+	if (player->locked)
+		return ;
+	move_vector = vector3_zero();
+	t_vector2 delta_angle = vector2_mul(input->turn, clock.delta);
+	player->transform.rotation = vector3_sub(player->transform.rotation, (t_vector3){delta_angle.x, delta_angle.y, 0.0f}); //TODO: this
+	player->transform.rotation.y = ft_clampf(player->transform.rotation.y, -RAD90 * 0.99f, RAD90 * 0.99f);
+	player->lookdir = lookdirection((t_vector2){player->transform.rotation.x, player->transform.rotation.y});
+	move_vector = player_movementvector(*input, *player);
+	move_vector = vector3_mul(move_vector, clock.delta * MOVESPEED);
+	player->speed = move_vector;
+	potential_pos = vector3_add(potential_pos, move_vector);
+	potential_pos.z = ft_clampf(potential_pos.z, player->height, 1000.0f);
+
+	new_pos = potential_pos;
+	int i;
+	i = 0;
+	while (i < 5)
+	{
+		if (!check_collision(world, player, new_pos, &new_pos))
+			break;
+		i++;
+	}
+	if (i < 5)
+		player->transform.position = new_pos;
+	
 }

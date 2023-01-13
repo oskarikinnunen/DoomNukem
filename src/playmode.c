@@ -94,7 +94,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 		update_deltatime(&game.world.clock);
 		gr = handleinput(&game.hid);
 
-		moveplayer(&game.player, &game.hid.input, game.clock);
+		moveplayer(&game.player, &game.hid.input, game.clock, &game.world);
 		update_render(&render, &game.player);
 		screen_blank(sdl); //Combine with render_start?
 		render_start(&render);
