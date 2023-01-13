@@ -6,12 +6,23 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/05 13:48:43 by raho              #+#    #+#             */
-/*   Updated: 2023/01/13 02:35:10 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/13 02:47:14 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "collision.h"
+
+t_collision	calculate_new_pos(t_vector2 delta, float radius)
+{
+	t_collision	result;
+	float		dist;
+	
+	dist = vector2_magnitude(delta);
+	result.normal = vector2_mul(delta, (1.0f / dist));
+	result.depth = radius - dist;
+	return (result);
+}
 
 bool	linepoint(t_vector2 start, t_vector2 end, t_vector2 point)
 {
@@ -99,17 +110,6 @@ bool	lineline(t_line first, t_line second, t_vector2 *collision_point)
 	return (false);
 }
 
-t_collision	calculate_new_pos(t_vector2 delta, float radius)
-{
-	t_collision	result;
-	float		dist;
-	
-	dist = vector2_magnitude(delta);
-	result.normal = vector2_mul(delta, (1.0f / dist));
-	result.depth = radius - dist;
-	return (result);
-}
-
 bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, t_vector3 *new_pos)
 {
 	t_list		*l;
@@ -134,7 +134,7 @@ bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, 
 					if (linecircle((t_line){*room->walls[index].edgeline.start, *room->walls[index].edgeline.end}, \
 							(t_vector2){potential_pos.x, potential_pos.y}, player->collision_radius, &collision))
 					{
-						*new_pos = vector3_add(potential_pos, vector2_to_vector3(vector2_mul(collision.normal, collision.depth + 1)));
+						*new_pos = vector3_add(potential_pos, v2tov3(vector2_mul(collision.normal, collision.depth + 1)));
 						return (true);
 					}
 				}
