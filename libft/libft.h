@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 17:57:33 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/24 13:49:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/14 19:56:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ float			ft_maxf(float f1, float f2);
 float			ft_clampf(float val, float min, float max);
 float			ft_flerp(float from, float to, float delta);
 double			ft_degtorad(double angle);
+float			ft_fmovetowards(float f1, float f2, float delta);
 
 /* lists */
 typedef struct s_list

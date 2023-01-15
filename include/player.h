@@ -6,6 +6,7 @@
 typedef struct s_player
 {
 	t_transform		transform;
+	bool			noclip;
 	bool			locked;
 	t_vector3		speed; //read-only player speed used for animations etc
 	t_vector3		lookdir;
@@ -13,6 +14,7 @@ typedef struct s_player
 	float			height;
 	struct s_gun	*gun;
 	float			collision_radius;
+	
 }	t_player;
 
 #endif

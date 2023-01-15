@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/13 02:44:04 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/15 17:18:29 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -920,6 +920,10 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	gui_label("Modifying: ", gui);
 	gui_label(dat->room->name, gui);
 	gui_endhorizontal(gui);
+	if (gui_labeled_bool_edit("Open: ", &dat->room->open_area, gui))
+	{
+		init_roomwalls(&ed->world, dat->room);
+	}
 	gui_labeled_bool("Legal: ", isroomlegal(&ed->world, dat->room), gui);
 	gui_labeled_int("Edges: ", dat->room->edgecount, gui);
 	gui_labeled_int("Walls: ", dat->room->wallcount, gui);
@@ -1512,6 +1516,7 @@ void	room_tool_update(t_editor *ed, t_sdlcontext *sdl)
 	dat = (t_roomtooldata *)ed->tool->tooldata;
 	ray.origin = ed->player.transform.position;
 	ray.dir = ed->player.lookdir;
+	ft_bzero(&dat->raycastinfo, sizeof(t_raycastinfo));
 	if (!raycast_new(ray, &dat->raycastinfo, &ed->world) && dat->rtm == rtm_create)
 	{
 		raycast_plane(ray, &dat->raycastinfo, 0.0f);

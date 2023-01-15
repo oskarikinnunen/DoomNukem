@@ -109,6 +109,17 @@ void	load_tool_update(t_editor *ed, t_sdlcontext *sdl)
 		save_world(ed->world.name, ed->world);
 		load_tool_init(ed, sdl);
 	}
+	if (gui_button("Save backup", gui))
+	{
+		char tempname[32];
+		ft_bzero(tempname, sizeof(tempname));
+		ft_strcpy(tempname, ed->world.name);
+		char *ext = ft_strstr(tempname, ".world");
+		*ext = '\0';
+		ft_strcat(tempname, "_bu.world");
+		save_world(tempname, ed->world);
+		load_tool_init(ed, sdl);
+	}
 	gui_emptyvertical(10, gui);
 	gui_label("Load:", gui);
 	while (i < dat->world_count)

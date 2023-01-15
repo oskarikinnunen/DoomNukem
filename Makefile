@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
+#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/01/13 15:42:16 by vlaine           ###   ########.fr        #
+#    Updated: 2023/01/15 17:42:28 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,6 +38,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		editor.c editor_mouse.c editor_events.c \
 		editor_map_io.c	\
 		editor/tools/entity_tool.c \
+		editor/tools/entity_tool_gui_inits.c \
 		editor/tools/wall_tool_rooms.c \
 		editor/tools/npc_tool.c \
 		editor/tools/load_tool.c \
@@ -63,6 +64,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		png.c lua_conf.c list_helper.c \
 		spaceconversions.c \
 		entity/entity_animate.c \
+		entity/component_init.c \
 		obj_parser/obj_parse.c \
 		obj_parser/obj_parse_vertex.c \
 		obj_parser/obj_parse_faces.c \

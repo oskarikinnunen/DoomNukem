@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/12 12:02:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/13 10:33:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ uint32_t shade(uint32_t clr, float norm)
 	final += (uint32_t)((clr >> 16 & 0xFF) * mul) << 16;
 	return (final);
 }
+
+
 
 void render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 {
@@ -167,6 +169,59 @@ static t_line newline(t_vector2 start, t_vector2 end)
 	l.start = start;
 	l.end = end;
 	return (l);
+}
+
+#define RCRCL_SIDES 16
+
+void	render_ball(t_sdlcontext *sdl, t_vector3 pos, float size, uint32_t clr)
+{
+	t_vector3	edges[RCRCL_SIDES + 1];
+	int		i;
+	float	angl;
+
+	i = 0;
+	angl = 0.0f;
+	sdl->render.gizmocolor = clr;
+	//X/Y
+	while (i < RCRCL_SIDES + 1)
+	{
+		edges[i].x = pos.x + (sinf(angl) * size);
+		edges[i].y = pos.y + (cosf(angl) * size);
+		edges[i].z = pos.z;
+
+		if (i >= 1)
+		{
+			render_ray(sdl, edges[i - 1], edges[i]);
+		}
+		angl += FULLRAD / RCRCL_SIDES;
+		i++;
+	}
+	//Y/Z
+	i = 0;
+	angl = 0.0f;
+	while (i < RCRCL_SIDES + 1)
+	{
+		edges[i].x = pos.x;
+		edges[i].y = pos.y + (cosf(angl) * size);
+		edges[i].z = pos.z - (sinf(angl) * size);
+		if (i >= 1)
+			render_ray(sdl, edges[i - 1], edges[i]);
+		angl += FULLRAD / RCRCL_SIDES;
+		i++;
+	}
+	//X/Z
+	i = 0;
+	angl = 0.0f;
+	while (i < RCRCL_SIDES + 1)
+	{
+		edges[i].x = pos.x + (sinf(angl) * size);
+		edges[i].y = pos.y;
+		edges[i].z = pos.z + (cosf(angl) * size);
+		if (i >= 1)
+			render_ray(sdl, edges[i - 1], edges[i]);
+		angl += FULLRAD / RCRCL_SIDES;
+		i++;
+	}
 }
 
 void render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to)

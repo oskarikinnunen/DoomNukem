@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_raycast.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 18:03:40 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 10:45:03 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/15 17:25:12 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,8 +247,8 @@ bool raycast_plane(t_ray r, t_raycastinfo *info, float plane_z)
 	internal_info.distance = 100000.0f; //TODO: inf?
 	r.dir = vector3_normalise(r.dir);
 	tri.a = (t_vector3){.z = plane_z};
-	tri.b = (t_vector3){10000.0f, 0.0f, plane_z};
-	tri.c = (t_vector3){0.0f, 10000.0f, plane_z};
+	tri.b = (t_vector3){50000.0f, 0.0f, plane_z};
+	tri.c = (t_vector3){0.0f, 50000.0f, plane_z};
 	if (raycast_tri(r, tri, &internal_info.distance))
 	{
 		internal_info.hit_pos =
