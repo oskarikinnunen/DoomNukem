@@ -174,7 +174,6 @@ void clear_occlusion_buffer(t_sdlcontext *sdl)
 bool is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 {
 	t_square	s;
-	const __uint128_t max = ~0;
 	float w;
 	int y;
 	int x;

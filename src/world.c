@@ -46,6 +46,80 @@ void	update_npcs(t_world *world)
 	}
 }
 
+t_vector3 pathfind(t_world *world, uint32_t start, uint32_t end)
+{
+	t_navnode	openlist[1000];
+	uint32_t	o_amount;
+	uint32_t	lowest_f;
+	int	i;
+
+	bzero(openlist, sizeof(t_navnode) * 1000);
+	openlist[start] = world->navmesh[start];
+	openlist[start].valid = true;
+	//printf("start %d, end %d\n\n", start, end);
+	o_amount = 1;
+	while (o_amount > 0)
+	{
+		uint32_t found = 0;
+		i = 0;
+		while (found < o_amount)
+		{
+			if (openlist[i].valid == true)
+			{
+				if (found == 0 || openlist[i].f < openlist[lowest_f].f)
+					lowest_f = i;
+				found++;
+			}
+			i++;
+			if (i > 999)
+			{
+				printf("buffer overflow pathfind\n");
+				exit(0);
+			}
+		}
+		if (lowest_f == end)
+		{
+			int e;
+			e = openlist[end].parent;
+			t_vector3 tempe;
+
+			//printf("e %d\n", end);
+			while (e != start)
+			{
+				//printf("e %d\n", e);
+				tempe = openlist[e].mid_point;
+				e = openlist[e].parent;
+			}
+			//printf("e %d\n", e);
+			//printf("found goal!\n");
+			return(tempe);
+		}
+		openlist[lowest_f].valid = false;
+		openlist[lowest_f].visited = true;
+		o_amount--;
+		i = 0;
+		while (i < openlist[lowest_f].neighbors)
+		{
+			uint32_t id;
+			id = openlist[lowest_f].neighbors_id[i];
+			if (openlist[id].visited == false)
+			{
+				openlist[id] = world->navmesh[id];
+				openlist[id].g = vector3_dist(openlist[id].mid_point, world->navmesh[start].mid_point); // should be amount of parents to start
+				openlist[id].h = vector3_dist(openlist[id].mid_point, world->navmesh[end].mid_point);
+				openlist[id].f = openlist[id].g + openlist[id].h;
+				openlist[id].valid = true;
+				openlist[id].parent = lowest_f;
+				o_amount++;
+			}
+			i++;
+		}
+		//printf("o amount %d %d\n", o_amount, lowest_f);
+	}
+	printf("goal not found\n");
+	exit(0);
+}
+
 void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 {
 	int			i;
@@ -55,6 +129,7 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 	
 	i = 0;
 	found = 0;
+	bool test = false;
 	while (found < world->entitycache.existing_entitycount
 		/*&& i < world->entitycache.alloc_count*/)
 	{
@@ -63,6 +138,26 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 		{
 			if (ent->status == es_active && !ent->hidden)
 			{
+				if (ent->obj->bounds.type == bt_box && render->occlusion.occlusion == false)
+				{
+					int e = 1;
+					test = true;
+					int closest_point = 0;
+					float dist;
+					dist = vector3_dist(world->navmesh[0].mid_point, ent->transform.position);
+					while (e < world->node_amount)
+					{
+						if (dist > vector3_dist(world->navmesh[e].mid_point, ent->transform.position))
+						{
+							dist = vector3_dist(world->navmesh[e].mid_point, ent->transform.position);
+							closest_point = e;
+						}
+						e++;
+					}
+					e = closest_point;
+					t_vector3 tempe = pathfind(world, e, world->node_amount - 1);
+					ent->transform.position = vector3_lerp(ent->transform.position, tempe, 5.0f / vector3_dist(ent->transform.position, tempe));
+				}
 				if (is_entity_culled(sdl, render, ent) == false)
 					render_entity(sdl, render, ent);
 			}
