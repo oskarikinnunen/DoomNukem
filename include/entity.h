@@ -29,19 +29,30 @@ typedef enum s_entitystatus
 	es_active
 }	t_entitystatus;
 
-/*typedef struct s_entityroot
+typedef enum e_componenttype
 {
-	t_entity	*entity;
-	uint16_t	entity_id;
-	uint16_t	root_id;
-}	t_entityroot;*/
+	pft_none,
+	pft_interactable,
+	pft_light,
+	pft_npc,
+	pft_audiosource,
+	pft_eventtrigger
+}	t_component_type;
 
-/*
-	audiosource->update(entity, prefab.data)
-	npc->update(entity, prefab.data)
+typedef struct s_interactable
+{
+	float	radius;
+	t_anim	anim;
+}	t_interactable;
 
-
-*/
+typedef struct s_component
+{
+	t_component_type	type;
+	size_t				data_size;
+	void				(*update)(struct s_entity *,struct s_world	*);
+	void				(*ui_update)(struct s_entity *,struct s_world	*);
+	void				*data;
+}	t_component;
 
 typedef struct s_entity
 {
@@ -50,8 +61,7 @@ typedef struct s_entity
 	bool			rigid;
 	bool			hidden;
 	char			object_name[64];
-	struct s_prefab	*prefab;
-	char			prefab_name[64];
+	t_component		component;
 	t_entitystatus	status;
 	uint16_t		id;
 	t_bound			z_bound;
@@ -64,39 +74,15 @@ typedef struct s_entity
 	//uint16_t		root_id;
 }	t_entity;
 
-/*typedef enum s_audiosource
-{
-	t_entity	*entity;
-	uint16_t	entity_id;
-}	t_audiosource;*/
-
-typedef enum e_prefabtype
-{
-	//pft_pickup,
-	pft_none,
-	pft_interactable,
-	pft_light,
-	pft_npc,
-	pft_audiosource,
-	pft_eventtrigger
-}	t_prefabtype;
-
-
-/*
-	prefab_1file
-		prefab struct
-		t_light chunk
-*/
-
 typedef struct s_prefab
 {
-	t_object		*object;
-	t_transform		offset;
-	char			object_name[64];
-	char			prefab_name[64];
-	t_prefabtype	prefabtype;
-	bool			hidden;
-	void			*data;
+	t_object			*object;
+	t_transform			offset;
+	char				object_name[64];
+	char				prefab_name[64];
+	t_component_type	prefabtype;
+	bool				hidden;
+	void				*data;
 }	t_prefab;
 
 /*
@@ -133,6 +119,8 @@ typedef struct s_entitycache
 	uint32_t	alloc_count;
 	t_entity	**sorted_entities;
 }	t_entitycache;
+
+void	component_init(t_entity	*entity);
 
 /* OCCLUSION*/
 void render_bitmask_row(int ax, int bx, float aw, float bw, int y, t_sdlcontext *sdl);

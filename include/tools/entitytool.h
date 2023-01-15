@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 15:28:31 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/12 15:37:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/13 08:14:10 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,19 @@ typedef struct s_prefab_editor
 	bool			view_lock;
 }	t_prefab_editor;
 
+typedef struct s_entityeditor
+{
+	t_autogui		gui;
+	t_autogui		component_gui;
+	bool			transform_toggle;
+	bool			component_toggle;
+}	t_entityeditor;
+
 typedef struct s_entitytooldata
 {
 	t_autogui		worldgui;
-	t_autogui		entitygui;
+	t_entityeditor	entityeditor;
+	//t_autogui		entitygui;
 	t_objectgui		objectgui;
 	t_prefab_editor	prefab_editor;
 	t_entity		*ent;

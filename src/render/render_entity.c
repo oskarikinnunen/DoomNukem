@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/12 16:20:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/13 10:33:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ uint32_t shade(uint32_t clr, float norm)
 	final += (uint32_t)((clr >> 16 & 0xFF) * mul) << 16;
 	return (final);
 }
+
+
 
 void render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 {

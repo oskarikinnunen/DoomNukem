@@ -15,38 +15,7 @@
 #include "objects.h"
 #include "editor_tools.h"
 
-void	update_npcs(t_world *world)
-{
-	int	i;
-
-	i = 0;
-	//is_entity_occlusion_culled()
-	while (i < 128)
-	{
-		if (world->npcpool[i].active)
-		{
-			//if (world.npcpool->entity.animation.active)
-			t_npc *cur;
-			cur = &world->npcpool[i];
-			t_vector3 dir = vector3_sub(cur->destination, cur->entity->transform.position);
-			cur->entity->transform.position = vector3_movetowards(cur->entity->transform.position, dir, world->clock.delta * MOVESPEED * 0.25f);
-			cur->entity->transform.rotation.x = vector2_anglebetween((t_vector2){cur->entity->transform.position.x, cur->entity->transform.position.y},
-														(t_vector2){cur->destination.x, cur->destination.y});
-			if (vector3_cmp(cur->destination, cur->entity->transform.position))
-			{
-				if (cur->destination.x == 200.0f)
-					cur->destination = (t_vector3) {500.0f, 500.0f, 0.0f};
-				else
-					cur->destination = (t_vector3) {200.0f, 200.0f, 0.0f};
-			}
-			update_anim(&(cur->entity->animation), world->clock.delta);
-			//update_entity_bounds(cur->entity);
-		}
-		i++;
-	}
-}
-
-void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
+void	lateupdate_entitycache(t_sdlcontext *sdl, t_world *world)
 {
 	int			i;
 	int			found;
@@ -61,11 +30,37 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 		ent = world->entitycache.sorted_entities[i];
 		if (ent->status != es_free)
 		{
+			if(ent->component.ui_update != NULL)
+				ent->component.ui_update(ent, world);
+			found++;
+		}
+		i++;
+	}
+}
+
+void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
+{
+	int			i;
+	int			found;
+	t_entity	*ent;
+
+	
+	i = 0;
+	found = 0;
+
+	while (found < world->entitycache.existing_entitycount
+		/*&& i < world->entitycache.alloc_count*/)
+	{
+		ent = world->entitycache.sorted_entities[i];
+		if (ent->status != es_free)
+		{
 			if (ent->status == es_active && !ent->hidden)
 			{
 				if (is_entity_culled(sdl, render, ent) == false)
 					render_entity(sdl, render, ent);
 			}
+			if(ent->component.update != NULL)
+				ent->component.update(ent, world);
 			found++;
 		}
 		i++;
@@ -114,7 +109,7 @@ void update_world3d(t_world *world, t_render *render)
 
 	sdl = world->sdl;
 	ft_bzero(&render->rs, sizeof(t_render_statistics));
-	if (!world->player->gun->disabled)
+	if (world->player != NULL && world->player->gun != NULL && !world->player->gun->disabled)
 		render_entity(world->sdl, &world->sdl->render, &world->player->gun->entity);
 	update_frustrum_culling(world, sdl, render);
 	clear_occlusion_buffer(sdl);
@@ -124,7 +119,13 @@ void update_world3d(t_world *world, t_render *render)
 		render_entity(sdl, render, &world->skybox);
 	bitmask_to_pixels(sdl);
 	rescale_surface(sdl);
+
+	lateupdate_entitycache(sdl, world);
 	gui_start(world->debug_gui);
+	if (gui_button("music action", world->debug_gui))
+		change_music(sdl, "music_arp1_action.wav");
+	if (gui_button("music calm", world->debug_gui))
+		change_music(sdl, "music_arp1_ambient.wav");
 	gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);
 	gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);
 	gui_labeled_int("Entity count:", world->entitycache.existing_entitycount, world->debug_gui);
@@ -135,19 +136,12 @@ void update_world3d(t_world *world, t_render *render)
 	}
 	if (gui_shortcut_button("Toggle grids:", 'G', world->debug_gui))
 		world->sdl->render_grid = !world->sdl->render_grid;
-	if (gui_labeled_float_slider("Audio max:", &world->sdl->audio.max_volume, 0.01f, world->debug_gui))
-		update_maxvolume(&world->sdl->audio);
-	if (gui_button("Test audio", world->debug_gui))
-	{
-		play_localsound(&sdl->audio, "pistol1.wav");
-	}
-	world->sdl->audio.max_volume = ft_clampf(world->sdl->audio.max_volume, 0.25f, 1.0f);
+	gui_labeled_bool_edit("Noclip:", &world->player->noclip, world->debug_gui);
 	if (gui_shortcut_button("Toggle rendering:", 'R', world->debug_gui))
 		world->sdl->global_wireframe = !world->sdl->global_wireframe;
 	if (gui_shortcut_button("Toggle Lighting", 'L', world->debug_gui))
 		sdl->lighting_toggled = !sdl->lighting_toggled;
 	//gui_labeled_bool_edit("Lighting:", &world->sdl->lighting_toggled, world->debug_gui);
-	gui_labeled_int_slider("PS1 tri div:", &sdl->ps1_tri_div, 2.0f, world->debug_gui);
 	if (gui_shortcut_button("Toggle Skybox", 'H', world->debug_gui))
 		world->skybox.hidden = !world->skybox.hidden;
 	if (gui_shortcut_button("Draw Occlusion Buffer", 'Y', world->debug_gui))
@@ -158,19 +152,35 @@ void update_world3d(t_world *world, t_render *render)
 		render->occlusion.occluder_box = !render->occlusion.occluder_box;
 	if (gui_shortcut_button("Render Next Frame Slow", 'U', world->debug_gui))
 		sdl->render.occlusion.slow_render = true;
-	if (gui_shortcut_button("Bake lighting", 'b', world->debug_gui))
-		bake_lighting(render, world);
-	if (gui_shortcut_button("Bake lighting (new)", 'v', world->debug_gui))
+	if (gui_shortcut_button("Bake lighting (new)", 'b', world->debug_gui))
 		start_lightbake(&world->sdl->render, world);
 	sdl->ps1_tri_div = ft_clamp(sdl->ps1_tri_div, 1, 4);
 	gui_end(world->debug_gui);
 }
+
+/*static void load_componentdata(t_world *world)
+{
+
+}*/
 
 void	init_entity(t_entity *entity, t_world *world)
 {
 	entity->obj = get_object_by_name(*world->sdl, entity->object_name);
 	entity->lightmap = NULL;
 	entity->map = NULL; //TODO: load maps here
+	//entity->component.data = NULL;
+	if (entity->component.type != pft_none)
+	{
+		component_init(entity);
+		if (entity->component.type == pft_audiosource)
+		{
+			t_audiosource	*source;
+			source = entity->component.data;
+			if (source == NULL)
+				error_log(EC_MALLOC);
+			source->sample = get_sample(world->sdl, source->sample.name);
+		}
+	}
 	default_entity_occlusion_settings(entity, NULL);
 }
 
@@ -184,28 +194,6 @@ void	scale_skybox_uvs(t_object *obj)
 		obj->uvs[i] = vector2_mul(obj->uvs[i], 10.0f);
 		i++;
 	}
-}
-
-void	spawn_npc(t_world *world, char *objectname, t_vector3 position, t_sdlcontext *sdl)
-{
-	/*int	i;
-
-	i = 0;
-	while (i < 128)
-	{
-		if (!world->npcpool[i].active)
-		{
-			world->npcpool[i].active = true;
-			world->npcpool[i].entity->obj = get_object_by_name(*sdl, objectname);
-			world->npcpool[i].entity->transform.position = position;
-			entity_start_anim(world->npcpool[i].entity, "walk");
-			world->npcpool[i].entity->transform.scale = vector3_one();
-			update_entity_bounds(world->npcpool[i].entity);
-			default_entity_occlusion_settings(world->npcpool[i].entity, world);
-			return ;
-		}
-		i++;
-	}*/
 }
 
 t_room	load_room(char *filename)
@@ -476,14 +464,53 @@ void	for_all_active_entities(t_world	*world, void	(*func)(t_entity *ent, t_world
 
 #include "editor_tools.h"
 
-void	load_cache_from_list(t_world *world, t_list *l)
+void	load_component(t_entity	*entity, char	*filename)
+{
+	t_list	*temp;
+	int		fd;
+	char	*str;
+	char	comp_filename[64];
+
+	str = ft_itoa(entity->id);
+	ft_strcpy(comp_filename, str);
+	free(str);
+	ft_strcat(comp_filename, ".comp");
+	fd = load_filecontent_fd(filename, comp_filename);
+	if (fd != -1)
+	{
+		close(fd);
+		temp = load_chunk(comp_filename, "COMP", entity->component.data_size);
+		if (temp != NULL && temp->content != NULL)
+		{
+			printf("found component \n");
+			entity->component.data = temp->content;
+		}
+		remove(comp_filename);
+	}
+}
+
+void	load_cache_from_list(char *filename, t_world *world, t_list *l)
 {
 	t_entity	*list_entity;
 	t_entity	*world_entity;
+	char		comp_filename[64];
+	char		*str;
 
 	while (l != NULL)
 	{
 		list_entity = l->content;
+		if (list_entity->component.type != pft_none)
+		{
+			load_component(list_entity, filename);
+			if (list_entity->component.type == pft_light)
+			{
+				//t_pointlight	*pl;
+				//pl = list_entity->component.data;
+				//printf("loaded light with radius %f \n", pl->radius);
+			}
+		}
+		//list_entity
+		//load_filecontent(filename, "")
 		world_entity = spawn_entity(world);
 		ft_memcpy(world_entity, list_entity, sizeof(t_entity));
 		l = l->next;
@@ -532,7 +559,7 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 	world.debugconsole = init_debugconsole();
 	world.entitycache = init_entitycache(1024);
 	t_list	*entitylist = load_chunk(filename, "ENT_", sizeof(t_entity));
-	load_cache_from_list(&world, entitylist);
+	load_cache_from_list(filename, &world, entitylist);
 	for_all_entities(&world, init_entity);
 	world.debug_gui = ft_memalloc(sizeof(t_autogui)); //Y tho?
 	world.roomlist = load_chunk(filename, "RMNM", sizeof(t_room));
@@ -592,6 +619,15 @@ void	save_room(t_room room)
 	close(fd);
 }
 
+/*
+	cache
+		list
+
+			saveentity
+
+
+*/
+
 t_list	*entitycache_to_list(t_entitycache *cache)
 {
 	int				i;
@@ -608,6 +644,8 @@ t_list	*entitycache_to_list(t_entitycache *cache)
 		{
 			//printf("found %i \n", found);
 			cache->entities[i].id = found;
+			//cache->entities[i].component.data = NULL;
+			//cache->entities[i].component.type = pft_none; //TODO: save component to file with entity id
 			//printf("entitylist null status before push %i \n", entitylist == NULL);
 			list_push(&entitylist, &cache->entities[i], sizeof(t_entity));
 			found++;
@@ -615,6 +653,45 @@ t_list	*entitycache_to_list(t_entitycache *cache)
 		i++;
 	}
 	return (entitylist);
+}
+
+
+
+void	save_entities(char *filename, t_list	*entitylist)
+{
+	t_list		*l;
+	t_list		temp;
+	t_entity	*ent;
+	char		componentfilename[64];
+
+	l = entitylist;
+	temp.next = NULL;
+	while (l != NULL)
+	{
+		ent = l->content;
+		if (ent->component.type != pft_none)
+		{
+			temp.content = ent->component.data;
+			temp.content_size = ent->component.data_size;
+			char	*str;
+			int		fd;
+			str = ft_itoa(ent->id);
+			ft_strcpy(componentfilename, str);
+			free(str);
+			ft_strcat(componentfilename, ".comp");
+			fd = fileopen(componentfilename, O_RDWR | O_CREAT | O_TRUNC);
+			close(fd);
+			printf("saving component to file %s \n", componentfilename);
+			save_chunk(componentfilename, "COMP", &temp);
+			save_filecontent(filename, componentfilename);
+			remove(componentfilename);
+			//TODO: remove .comp
+			ent->component.data = NULL;
+			//ent->component.type = pft_none;
+		}
+		l = l->next;
+	}
+	save_chunk(filename, "ENT_", entitylist);
 }
 
 void	save_world(char *namename, t_world world)
@@ -627,8 +704,7 @@ void	save_world(char *namename, t_world world)
 	close(fd);
 	printf("Saving world\n");
 	t_list	*entitylist = entitycache_to_list(&world.entitycache);
-	printf("Entitycache converted to list\n");
-	save_chunk(filename, "ENT_", entitylist);
+	save_entities(filename, entitylist);
 	//TODO: free the dumb list
 
 	printf("Saving rooms\n");

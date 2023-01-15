@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/13 05:49:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/13 14:09:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,17 +110,12 @@ typedef struct s_world
 	struct s_autogui	*debug_gui;
 	t_sdlcontext		*sdl;
 	t_list				*guns;
-	t_list				*prefabs;
+	t_list				*prefabs; //TODO: move to editor
 	t_lighting			lighting;
-	uint32_t			lights_count;
-	t_pointlight		lights[128];
-	bool				lighting_baked;
-	t_list				*objectmetadatalist; //Move to sdl, this is only used when objects are initialized
-	t_npc				npcpool[128];
 	t_list				*roomlist;
 	t_entitycache		entitycache;
 	t_entity			skybox;
-	bool				ceiling_toggle;
+	bool				ceiling_toggle; //TODO: move to editor
 }	t_world;
 
 t_vector2	flipped_uv(t_vector2 og);
@@ -191,7 +186,7 @@ void	player_init(t_player *player, t_sdlcontext *sdl, t_world *world);
 void	update_render(t_render *render, t_player *player);
 
 /* MOVEPLAYER.C */
-void	moveplayer(t_player *player, t_input *input, t_clock clock, t_world *world);
+void	moveplayer(t_player *player, t_input *input, t_world *world);
 
 /* COLLISION */
 bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, t_vector3 *newpos);

@@ -139,9 +139,7 @@ typedef struct s_render
 typedef struct s_audiosample
 {
 	FMOD_SOUND		*sound;
-	FMOD_CHANNEL	*channel;
 	char			name[64];
-	float			volume;
 }	t_audiosample;
 
 /*
@@ -160,23 +158,42 @@ typedef struct s_audiosample
 
 typedef struct s_audiosource
 {
-	t_entity		*entity;
-	t_audiosample	*sample;
-	uint16_t		entity_id;
-	char			samplename[64];
+	t_audiosample	sample;
+	FMOD_CHANNEL	*channel;
+	float			range;
 	float			volume;
-	bool			loop;
-	bool			playing;
+	float			reverb;
+	bool			play_always;
+	bool			queue_play;
+	bool			queue_stop;
+	int				random_delay_min;
+	int				random_delay_max;
+	float			_realrange;
+	uint32_t		_nextstart;
 }	t_audiosource;
+
+typedef struct s_music_control
+{
+	t_audiosample	nextsong;
+	bool			active;
+	bool			lastfade;
+	float			fade;
+}	t_music_control;
 
 typedef struct s_audio
 {
 	FMOD_SYSTEM			*system;
-	float				max_volume;
+	float				sfx_volume;
+	float				music_volume;
+	t_audiosample		*samples;
 	uint32_t			samplecount;
-	t_audiosample		sample[10];
-	uint32_t			musiccount;
-	t_audiosample		music[5];
+	t_music_control		music_control;
+	t_audiosample		*music;
+	uint32_t			music_count;
+	FMOD_CHANNEL		*music_channel;
+	//FMOD_CHANNEL		*music_channel2;
+	/*uint32_t			musiccount;
+	t_audiosample		music[5];*/
 }	t_audio;
 
 typedef enum e_screenmode
@@ -192,15 +209,21 @@ typedef struct s_graphicprefs //Intermediate struct used for loading settings fr
 	int32_t		resolution_x;
 	int32_t		resolution_y;
 	float			resolutionscale;
+	float			volume;
 }	t_graphicprefs;
+
+/*typedef struct s_renderthreadinfo
+{
+	//t_rectangle	bounds
+}	t_renderthreadinfo;*/
 
 typedef struct s_sdlcontext
 {
 	SDL_Window				*window;
 	SDL_Surface				*window_surface;
 	SDL_Surface				*surface;
-	SDL_Surface				*ui_surface;
-	SDL_Surface				*testsurf;
+	SDL_Surface				*ui_surface; //Not needed?
+	uint32_t				*scaling_buffer;
 	t_render				render;
 	t_platform				platform;
 	float					*zbuffer;
@@ -211,6 +234,7 @@ typedef struct s_sdlcontext
 	struct s_object			*objects;
 	int						ps1_tri_div;
 	bool					global_wireframe;
+	bool					blend;
 	bool					render_grid;
 	bool					lighting_toggled;
 	uint32_t				objectcount;
@@ -273,24 +297,27 @@ void				render_triangle_dynamic(t_sdlcontext *sdl, t_render *render, int index);
 
 /* AUDIO TOOLS */
 
-int		check_channel_status(FMOD_CHANNEL *channel);
-int		find_sound(t_audio *audio, const char *name);
-int		find_music(t_audio *audio, const char *name);
-void	update_maxvolume(t_audio *audio);
+int				check_channel_status(FMOD_CHANNEL *channel);
+t_audiosample	get_sample(t_sdlcontext *sdl, const char *name);
+t_audiosample	get_music(t_sdlcontext *sdl, const char *name);
+void			update_maxvolume(t_audio *audio);
 
 /* AUDIO */
 
 void	load_audio(t_audio *audio);
 void	pause_audio(t_audio *audio, bool pause);
 void	close_audio(t_audio *audio);
+void	play_music(t_sdlcontext *sdl, char *musicname);
+void	change_music(t_sdlcontext *sdl, char *musicname);
 
-void	play_localsound(t_audio *audio, const char *name);
-void	play_worldsound(t_audio *audio, const char *name, t_vector3 *pos);
+
+void	audiosource_start(t_sdlcontext *sdl, t_audiosource	*source, t_vector3 *pos); //TODO: remove pos?
+//void	play_localsound(t_audio *audio, const char *name); //DEPRECATED
+//void	play_worldsound(t_audio *audio, const char *name, t_vector3 *pos);
 void	pause_sound(t_audio *audio, const char *name, bool pause);
-void	pause_all_sounds(t_audio *audio, bool pause);
+//void	pause_all_sounds(t_audio *audio, bool pause);
 
-void	play_music(t_audio *audio, const char *name);
-void	change_music(t_audio *audio, const char *name);
+
 void	pause_music(t_audio *audio, bool pause);
 void	stop_music(t_audio *audio);
 

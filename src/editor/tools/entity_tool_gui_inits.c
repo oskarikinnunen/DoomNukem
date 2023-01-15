@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/12 13:48:51 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/12 15:44:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/14 19:35:22 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,26 @@
 
 void	entitytool_entitygui_init(t_editor	*ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 {
-	if (dat->entitygui.sdl == NULL)
+	t_autogui	*gui;
+	
+	gui = &dat->entityeditor.gui;
+	if (gui->sdl == NULL)
 	{
-		dat->entitygui = init_gui(sdl, &ed->hid, &ed->player, (t_point) {20, 40}, "Edit entity");
-		dat->entitygui.minimum_size.x = 300;
-		dat->entitygui.minimum_size.y = 200;
-		dat->entitygui.rect.position = point_sub(sdl->screensize, dat->entitygui.minimum_size);
-		dat->entitygui.rect.position.y = 0;
+		*gui = init_gui(sdl, &ed->hid, &ed->player, (t_point) {20, 40}, "Edit entity");
+		gui->minimum_size.x = 300;
+		gui->minimum_size.y = 200;
+		//gui->rect.position = point_div(sdl->screensize, 2);
+		//gui->rect.position.y = 0;
+	}
+	gui = &dat->entityeditor.component_gui;
+	if (gui->sdl == NULL)
+	{
+		*gui = init_gui(sdl, &ed->hid, &ed->player, (t_point) {20, 40}, "Edit component");
+		gui->minimum_size.x = 300;
+		gui->minimum_size.y = 200;
+		gui->rect.position = point_sub(sdl->screensize, gui->minimum_size);
+		gui->rect.position.y = 0;
+		gui->dock = &dat->entityeditor.gui;
 	}
 }
 

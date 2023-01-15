@@ -103,6 +103,11 @@ static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 	y = p[1].y;
 	while (y <= p[0].y)
 	{
+		/*if (y % 2 == sdl->blend)
+		{
+			y++;
+			continue;
+		}*/
 		x = p[1].x + (step[0] * (float)(y - p[1].y));
 		int ax =  p[2].x + (step[1] * (float)(y - p[1].y));
 		t_step[2] = calc_step_texture2(t, (float)(ax - x));

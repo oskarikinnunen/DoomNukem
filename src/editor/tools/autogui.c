@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/12 14:57:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/13 07:44:26 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -317,7 +317,7 @@ void	gui_endhorizontal(t_autogui *gui)
 {
 	gui->agl = agl_vertical;
 	gui->offset.x = 0;
-	gui->offset.y += 34;
+	gui->offset.y += 20;
 }
 
 //Internal function, rename with a better name

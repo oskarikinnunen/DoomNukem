@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/13 05:50:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/13 10:55:51 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,19 @@ void	updateguntransform(t_input *input, t_clock *clock, t_player *player)
 	//neutralpos = gun->entity.transform.location;
 	if (input->shoot && gun->readytoshoot)
 	{
+		/*
+		t_particle shootparticle;
+		particle.sprite = fire.png;
+		particle.lifetime = 30;
+		spawn_particle(t_world *world, particle)
+			spawn_entity
+			assigns object
+			world.particlecount++;
+			world.particles[particlecount] = new particle
+			
+		
+		
+		*/
 		//particle_start(gunpos, player.)
 		start_anim(&gun->shoot_anim, anim_forwards);
 		start_anim(&gun->view_anim, anim_forwards);
@@ -223,52 +236,42 @@ void	updateguntransform(t_input *input, t_clock *clock, t_player *player)
 	
 	*/
 //}
-void	moveplayer(t_player *player, t_input *input, t_clock clock, t_world *world)
+
+static void noclip_movement(t_player *player, t_vector3 move_vector, t_world *world)
 {
-	t_vector3	move_vector;
+	player->transform.position = vector3_add(player->transform.position, move_vector);
+}
+
+static void collision_movement(t_player *player, t_vector3 move_vector, t_world *world)
+{
 	t_vector3	potential_pos;
 	t_vector3	new_pos;
+
+	potential_pos = vector3_add(player->transform.position, move_vector);
+	potential_pos.z = ft_clampf(potential_pos.z, player->height, 1000.0f);
+	new_pos = potential_pos;
+	if (!check_collision(world, player, new_pos, &new_pos))
+		player->transform.position = new_pos;
+}
+
+void	moveplayer(t_player *player, t_input *input, t_world *world)
+{
+	t_vector3	move_vector;
 	float		angle;
 
-	/* updateguntransform(input, &clock, player);
+	updateguntransform(input, &world->clock, player);
 	if (player->locked)
 		return ;
 	move_vector = vector3_zero();
-	t_vector2 delta_angle = vector2_mul(input->turn, clock.delta);
-	player->transform.rotation = vector3_sub(player->transform.rotation, (t_vector3){delta_angle.x, delta_angle.y, 0.0f}); //TODO: this
+	t_vector2 delta_angle = vector2_mul(input->turn, world->clock.delta);
+	player->transform.rotation = vector3_sub(player->transform.rotation, (t_vector3){delta_angle.x, delta_angle.y, 0.0f});
 	player->transform.rotation.y = ft_clampf(player->transform.rotation.y, -RAD90 * 0.99f, RAD90 * 0.99f);
 	player->lookdir = lookdirection((t_vector2){player->transform.rotation.x, player->transform.rotation.y});
 	move_vector = player_movementvector(*input, *player);
-	move_vector = vector3_mul(move_vector, clock.delta * MOVESPEED);
+	move_vector = vector3_mul(move_vector, world->clock.delta * MOVESPEED);
 	player->speed = move_vector;
-	player->transform.position = vector3_add(player->transform.position, move_vector);
-	player->transform.position.z = ft_clampf(player->transform.position.z, player->height, 1000.0f); */
-
-	potential_pos = player->transform.position;
-	updateguntransform(input, &clock, player);
-	if (player->locked)
-		return ;
-	move_vector = vector3_zero();
-	t_vector2 delta_angle = vector2_mul(input->turn, clock.delta);
-	player->transform.rotation = vector3_sub(player->transform.rotation, (t_vector3){delta_angle.x, delta_angle.y, 0.0f}); //TODO: this
-	player->transform.rotation.y = ft_clampf(player->transform.rotation.y, -RAD90 * 0.99f, RAD90 * 0.99f);
-	player->lookdir = lookdirection((t_vector2){player->transform.rotation.x, player->transform.rotation.y});
-	move_vector = player_movementvector(*input, *player);
-	move_vector = vector3_mul(move_vector, clock.delta * MOVESPEED);
-	player->speed = move_vector;
-	potential_pos = vector3_add(potential_pos, move_vector);
-	potential_pos.z = ft_clampf(potential_pos.z, player->height, 1000.0f);
-
-	new_pos = potential_pos;
-	int i;
-	i = 0;
-	while (i < 5)
-	{
-		if (!check_collision(world, player, new_pos, &new_pos))
-			break;
-		i++;
-	}
-	if (i < 5)
-		player->transform.position = new_pos;
-	
+	if (player->noclip)
+		noclip_movement(player, move_vector, world);
+	else
+		collision_movement(player, move_vector, world);
 }

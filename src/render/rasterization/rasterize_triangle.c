@@ -43,14 +43,11 @@ static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 		t[0].v = t[1].v;
 		t[0].w = t[1].w;
 		render_bitmask_row(x, ax, 1.0f / t[1].w, 1.0f / t[2].w, y, sdl);
+		int startx = x;
 		while(x <= ax)
 		{
-			/*if (t[0].w < FOG && t[0].w > sdl->zbuffer[x + y * sdl->window_w])
-			{
-				sdl->zbuffer[x + y * sdl->window_w] = t[0].w;
-				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] = 1;
-			}
-			else */if (t[0].w > sdl->zbuffer[x + y * sdl->window_w])
+			
+			if (t[0].w > sdl->zbuffer[x + y * sdl->window_w])
 			{
 				sdl->zbuffer[x + y * sdl->window_w] = t[0].w;
 				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] =

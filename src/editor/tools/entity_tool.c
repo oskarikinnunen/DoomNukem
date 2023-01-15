@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/12 16:20:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/15 04:09:02 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,24 +100,6 @@ t_entity *selected_entity(t_editor *ed, t_sdlcontext sdl)
 	return (NULL);
 }
 
-static void	entity_tool_lazyinit(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
-{
-	if (dat->objectgui.gui.sdl == NULL)
-	{
-		dat->objectgui.gui = init_gui(sdl, &ed->hid, &ed->player, (t_point) {20, 40}, "Place new entity");
-		dat->objectgui.gui.minimum_size.x = 140;
-		dat->objectgui.gui.rect.size.x = dat->objectgui.gui.minimum_size.x;
-		dat->objectgui.autoclose = false;
-	}
-	if (dat->entitygui.sdl == NULL)
-	{
-		dat->entitygui = init_gui(sdl, &ed->hid, &ed->player, (t_point) {20, 40}, "Edit entity");
-		dat->entitygui.minimum_size.x = 300;
-		dat->entitygui.minimum_size.y = 550;
-		dat->entitygui.rect.size.y = 550;
-	}
-}
-
 static int find_object_index(t_sdlcontext *sdl, t_entity *ent)
 {
 	int	i;
@@ -139,11 +121,11 @@ void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 	objectgui_update(&dat->objectgui, &dat->ent);
 	if (dat->ent != NULL)
 	{
-		dat->entitygui.hidden = false;
+		/*dat->entitygui.hidden = false;
 		gui_start(&dat->entitygui);
 		gui_preset_scale_and_rotate(&dat->ent->transform, &dat->entitygui);
 		gui_labeled_int("Object triangles: ", dat->ent->obj->face_count, &dat->entitygui);
-		gui_end(&dat->entitygui);
+		gui_end(&dat->entitygui);*/
 		findbounds(dat->ent);
 		dat->ent->transform.position = dat->info.hit_pos;
 		//dat->ent->transform.position = raycast(ed);//vector3_movetowards(ent->transform.position, dir, ed->clock.delta * 1.0f);
@@ -169,6 +151,148 @@ void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 	}
 }
 
+static void gui_component(t_entity *entity, t_autogui *gui)
+{
+	if (entity->component.type == pft_light)
+	{
+		t_pointlight	*light;
+		light = entity->component.data;
+
+		gui_start(gui);
+		gui_labeled_float_slider("Light radius:", &light->radius, 2.0f, gui);
+		gui_labeled_bool_edit("Ignore self:", &light->ignoreself, gui);
+		gui_end(gui);
+		gui->sdl->render.gizmocolor = AMBER_2;
+		render_ball(gui->sdl, entity->transform.position, light->radius, AMBER_3);
+	}
+	if (entity->component.type == pft_interactable)
+	{
+		t_interactable	*inter;
+		inter = entity->component.data;
+
+		gui_start(gui);
+		gui_labeled_float_slider("Radius:", &inter->radius, 2.0f, gui);
+		gui_end(gui);
+		gui->sdl->render.gizmocolor = AMBER_2;
+		//render_ball(gui->sdl, entity->transform.position, light->radius, AMBER_3);
+	}
+	if (entity->component.type == pft_audiosource)
+	{
+		t_audiosource	*source;
+		source = entity->component.data;
+		static bool	toggle_select;
+
+		gui_start(gui);
+		gui_starthorizontal(gui);
+		gui_label("Sample: ", gui);
+		gui_label(source->sample.name, gui);
+		gui_endhorizontal(gui);
+		if (gui_highlighted_button_if("Select audio", gui, toggle_select))
+			toggle_select = !toggle_select;
+		if (toggle_select)
+		{
+			int	i;
+			t_audiosample	sample;
+			i = 0;
+			gui->offset.x = 15;
+			while (i < gui->sdl->audio.samplecount)
+			{
+				sample = gui->sdl->audio.samples[i];
+				if (gui_button(sample.name, gui))
+				{
+					source->queue_stop = true;
+					source->sample = sample;
+				}
+				i++;
+			}
+			gui->offset.x = 0;
+		}
+		gui_labeled_bool_edit("Play always", &source->play_always, gui);
+		gui_labeled_float_slider("Volume", &source->volume, 0.1f, gui);
+		source->volume = ft_clampf(source->volume, 0.0f, 1.0f);
+		gui_labeled_float_slider("Range", &source->range, 0.5f, gui);
+		gui_labeled_int_slider("Random delay(min)", &source->random_delay_min, 0.5f, gui);
+		gui_labeled_int_slider("Random delay(max)", &source->random_delay_max, 0.5f, gui);
+		source->random_delay_min = ft_clamp(source->random_delay_min, 0, source->random_delay_max);
+		source->random_delay_max = ft_clamp(source->random_delay_max, source->random_delay_min, 2000);
+		source->range = ft_clampf(source->range, 2.5f, 1000.0f);
+		if (gui_button("Play audio", gui))
+		{
+			source->queue_play = true;
+			//audiosource_start(gui->sdl, source, &entity->transform.position);
+		}
+		gui_end(gui);
+		render_ball(gui->sdl, entity->transform.position, source->range * 1.0f, CLR_BLUE);
+		//render_ball(gui->sdl, entity->transform.position, light->radius, AMBER_3);
+	}
+}
+
+static void gui_entitymode(t_entity *entity, t_autogui *gui)
+{
+	gui->offset.x = 20;
+	gui_label("Component type:", gui);
+	if (gui_highlighted_button_if("None", gui, entity->component.type == pft_none))
+	{
+		entity->component.type = pft_none;
+		component_init(entity);
+	}
+		
+	if (gui_highlighted_button_if("Light", gui, entity->component.type == pft_light))
+	{
+		entity->component.type = pft_light;
+		if (entity->component.data != NULL)
+		{
+			free(entity->component.data);
+			entity->component.data = NULL;
+		}
+		entity->component.data = ft_memalloc(sizeof(t_pointlight)); //TODO: protect
+		entity->component.data_size = sizeof(t_pointlight);
+		t_pointlight	*pl;
+		pl = entity->component.data;
+		pl->radius = 100.0f;
+		pl->shadows = true;
+		component_init(entity);
+	}
+	if (gui_highlighted_button_if("Audio", gui, entity->component.type == pft_audiosource))
+	{
+		entity->component.type = pft_audiosource;
+		if (entity->component.data != NULL)
+		{
+			free(entity->component.data);
+			entity->component.data = NULL;
+		}
+		entity->component.data = ft_memalloc(sizeof(t_audiosource));
+		entity->component.data_size = sizeof(t_audiosource);
+		t_audiosource	*source;
+		source = entity->component.data;
+		source->sample = get_sample(gui->sdl, "bubbles.wav");
+		source->volume = 1.0f;
+		source->range = 0.75f;
+		source->channel = NULL;
+		//entity->component.data = ft_memalloc(sizeof(t_audio)); //TODO: protect
+		//entity->component.data_size = sizeof(t_pointlight);
+		//t_pointlight	*pl;
+		component_init(entity);
+	}
+		
+	if (gui_highlighted_button_if("Interactable", gui, entity->component.type == pft_interactable))
+	{
+		entity->component.type = pft_interactable;
+		if (entity->component.data != NULL)
+		{
+			free(entity->component.data);
+			entity->component.data = NULL;
+		}
+		entity->component.data = ft_memalloc(sizeof(t_interactable)); //TODO: protect
+		entity->component.data_size = sizeof(t_interactable);
+		t_interactable	*inter;
+		inter = entity->component.data;
+		inter->radius = 100.0f;
+		component_init(entity);
+	}
+	gui->offset.x = 0;
+}
+
 void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 {
 	//t_entity	*hover;
@@ -177,17 +301,6 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 
 	if (dat->ent != NULL)
 		return ;
-	/*hover = NULL;
-	hover = selected_entity(ed, *sdl);
-	if (hover != NULL)
-	{
-		sdl->render.wireframe = true;
-		sdl->render.gizmocolor = AMBER_1;
-		render_entity(sdl, &sdl->render, hover);
-		sdl->render.wireframe = false;
-		if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
-			dat->sel_ent = hover;
-	}*/
 	if (dat->info.hit_entity != NULL &&
 		!dat->info.hit_entity->rigid && mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 	{
@@ -196,31 +309,47 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 	}
 	if (dat->sel_ent != NULL)
 	{
-		gui = &dat->entitygui;
+		gui = &dat->entityeditor.gui;
 		ent = dat->sel_ent;
-		sdl->render.wireframe = true;
-		sdl->render.gizmocolor = AMBER_3;
-		render_entity(sdl, &sdl->render, ent);
-		sdl->render.wireframe = false;
-
+		highlight_entity(sdl, ent, AMBER_3);
 		gui_start(gui);
-		gui_preset_transform(&ent->transform, gui);
-		gui_emptyvertical(15, gui);
+		char *idstr;
+		idstr = ft_itoa(ent->id);
+		gui_starthorizontal(gui);
+		gui_label("ID: ", gui);
+		gui_label(idstr, gui);
+		free(idstr);
+		gui_endhorizontal(gui);
+		
+		if (gui_highlighted_button_if("Edit transform", gui, dat->entityeditor.transform_toggle))
+			dat->entityeditor.transform_toggle = !dat->entityeditor.transform_toggle;
+		if (dat->entityeditor.transform_toggle)
+		{
+			gui_preset_transform(&ent->transform, gui);
+			gui_emptyvertical(15, gui);
+			if (gui_button("Reset rotation", gui))
+				ent->transform.rotation = vector3_zero();
+			if (gui_button("Reset scale", gui))
+				ent->transform.scale = vector3_one();
+		}
 		if (ent->lightmap != NULL)
 		{
 			gui_labeled_bool_edit("Dynamic lighting: ", &ent->lightmap->dynamic, gui);
 			gui_labeled_int("Cur light: ", ent->lightmap->dynamic_data, gui);
 		}
-		if (gui_button("Reset rotation", gui))
-			ent->transform.rotation = vector3_zero();
-		if (gui_button("Reset scale", gui))
-			ent->transform.scale = vector3_one();
-		/*if (gui_button("Snap to floor", gui))
+		if (gui_highlighted_button_if("Edit component", gui, dat->entityeditor.component_toggle))
+			dat->entityeditor.component_toggle = !dat->entityeditor.component_toggle;
+		if (dat->entityeditor.component_toggle)
 		{
-			ent->transform.position.z = 0;
-			ent->transform.position.z -= ent->z_bound.min * ent->transform.scale.z;
-		}*/
-
+			gui_entitymode(ent, gui);
+			if (ent->component.type != pft_none)
+			{
+				gui_start(&dat->entityeditor.component_gui);
+				gui_component(ent, &dat->entityeditor.component_gui);
+				gui_end(&dat->entityeditor.component_gui);
+			}
+		}
+			
 		if (gui_shortcut_button("Delete", KEYS_DELETEMASK, gui))
 		{
 			destroy_entity(&ed->world, ent);
@@ -235,7 +364,7 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 			ent->ignore_raycasts = true;
 			return ;
 		}
-		if ((ed->hid.mouse.held == 0 || !ed->hid.mouse.relative) || dat->entitygui.locking_player)
+		if ((ed->hid.mouse.held == 0 || !ed->hid.mouse.relative) || gui->locking_player)
 		{
 			ent->ignore_raycasts = false;
 			dat->grabbing = false;
@@ -328,35 +457,6 @@ void	list_prefabs(t_prefab_editor *pe, t_world *world)
 	}
 }
 
-void	select_prefab_type(t_prefab_editor *pe)
-{
-	t_autogui	*gui;
-
-	gui = &pe->prefab_modify;
-	gui_label("Prefab type:", gui);
-	if (gui_highlighted_button_if("None", gui, pe->prefab->prefabtype == pft_none))
-		pe->prefab->prefabtype = pft_none;
-	if (gui_highlighted_button_if("Light", gui, pe->prefab->prefabtype == pft_light))
-	{
-		pe->prefab->prefabtype = pft_light;
-		if (pe->prefab->data != NULL)
-		{
-			free(pe->prefab->data);
-			pe->prefab->data = NULL;
-		}
-		pe->prefab->data = ft_memalloc(sizeof(t_pointlight)); //TODO: protect
-		t_pointlight	*pl;
-		pl = pe->prefab->data;
-		pl->radius = 100.0f;
-		pl->shadows = true;
-	}
-		
-	if (gui_highlighted_button_if("Audio", gui, pe->prefab->prefabtype == pft_audiosource))
-		pe->prefab->prefabtype = pft_audiosource;
-	if (gui_highlighted_button_if("Interactable", gui, pe->prefab->prefabtype == pft_interactable))
-		pe->prefab->prefabtype = pft_interactable;
-}
-
 void	edit_prefab_subtype(t_prefab_editor *pe)
 {
 	t_autogui	*gui;
@@ -408,7 +508,7 @@ void	entity_tool_edit_prefab(t_editor *ed, t_entitytooldata *dat)
 			pe->object_select.hidden = !pe->object_select.hidden;
 		gui_labeled_bool_edit("Hide object", &pe->prefab->hidden, gui);
 		gui_preset_transform(&pe->prefab->offset, gui);
-		select_prefab_type(pe);
+		//select_prefab_type(pe);
 		gui_end(gui);
 
 		if (pe->prefab->prefabtype != pft_none)
@@ -469,8 +569,8 @@ void	entity_tool_update(t_editor *ed, t_sdlcontext *sdl)
 	dat = (t_entitytooldata *)ed->tool->tooldata;
 	entity_tool_raycast(ed, sdl, dat);
 	//entity_tool_list(ed, sdl, dat);
-	entity_tool_prefab(ed, dat);
-	//entity_tool_place(ed, sdl, dat);
+	//entity_tool_prefab(ed, dat);
+	entity_tool_place(ed, sdl, dat);
 	entity_tool_modify(ed, sdl, dat);
 }
 
