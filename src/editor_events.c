@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/02 16:33:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/11 15:25:25 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,6 @@ t_gamereturn	editor_events(t_editor *ed)
 					exit(0);
 				return (game_exit);
 			}
-				
 			if (iskey(e, SDLK_TAB))
 			{
 				ed->hid.mouse.relative = !ed->hid.mouse.relative;
@@ -127,10 +126,12 @@ t_gamereturn	editor_events(t_editor *ed)
 			else if (((ed->hid.keystate >> KEYS_SHIFTMASK) & 1)
 				&& iskey(e, SDLK_RETURN))
 				return(game_switchmode);
-			if (iskey(e, SDLK_F2))
-				ed->world.debug_gui->hidden = !ed->world.debug_gui->hidden;
 			if (iskey(e, SDLK_F1))
 				ed->toolbar_gui.hidden = !ed->toolbar_gui.hidden;
+			if (iskey(e, SDLK_F2))
+				ed->world.debug_gui->hidden = !ed->world.debug_gui->hidden;
+			if (iskey(e, SDLK_F3))
+				ed->graphics_gui.hidden = !ed->graphics_gui.hidden;
 		}
 		if (e.type == SDL_CONTROLLERBUTTONDOWN)
 		{

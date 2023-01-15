@@ -29,12 +29,30 @@ typedef enum s_entitystatus
 	es_active
 }	t_entitystatus;
 
-/*typedef struct s_entityroot
+typedef enum e_componenttype
 {
-	t_entity	*entity;
-	uint16_t	entity_id;
-	uint16_t	root_id;
-}	t_entityroot;*/
+	pft_none,
+	pft_interactable,
+	pft_light,
+	pft_npc,
+	pft_audiosource,
+	pft_eventtrigger
+}	t_component_type;
+
+typedef struct s_interactable
+{
+	float	radius;
+	t_anim	anim;
+}	t_interactable;
+
+typedef struct s_component
+{
+	t_component_type	type;
+	size_t				data_size;
+	void				(*update)(struct s_entity *,struct s_world	*);
+	void				(*ui_update)(struct s_entity *,struct s_world	*);
+	void				*data;
+}	t_component;
 
 typedef struct s_entity
 {
@@ -42,8 +60,8 @@ typedef struct s_entity
 	bool			ignore_raycasts;
 	bool			rigid;
 	bool			hidden;
-	uint32_t		object_index;
 	char			object_name[64];
+	t_component		component;
 	t_entitystatus	status;
 	uint16_t		id;
 	t_bound			z_bound;
@@ -56,27 +74,15 @@ typedef struct s_entity
 	//uint16_t		root_id;
 }	t_entity;
 
-/*typedef enum s_audiosource
-{
-	t_entity	*entity;
-	uint16_t	entity_id;
-}	t_audiosource;*/
-
-typedef enum e_prefabtype
-{
-	//pft_pickup,
-	pft_interactable,
-	pft_light,
-	pft_npc,
-	pft_audiosource,
-	pft_eventtrigger
-}	t_prefabtype;
-
 typedef struct s_prefab
 {
-	t_object		*object;
-	char			object_name[64];
-	t_prefabtype	prefabtype;
+	t_object			*object;
+	t_transform			offset;
+	char				object_name[64];
+	char				prefab_name[64];
+	t_component_type	prefabtype;
+	bool				hidden;
+	void				*data;
 }	t_prefab;
 
 /*
@@ -111,25 +117,29 @@ typedef struct s_entitycache
 	t_entity	*entities;
 	uint32_t	existing_entitycount;
 	uint32_t	alloc_count;
+	t_entity	**sorted_entities;
 }	t_entitycache;
 
-/* OCCLUSION FOLDER */
-void update_peripheral_culling(t_sdlcontext sdl, t_render *render, t_entity *entity);
-void update_occlusion_culling(t_sdlcontext sdl, t_render *render, t_entity *entity);
+void	component_init(t_entity	*entity);
 
-bool is_entity_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
-bool is_entity_frustrum_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
-bool is_entity_peripheral_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
-bool is_entity_occlusion_culled(t_sdlcontext sdl, t_render *render, t_entity *entity);
+/* OCCLUSION*/
+void render_bitmask_row(int ax, int bx, float aw, float bw, int y, t_sdlcontext *sdl);
+void update_frustrum_culling(struct s_world *world, t_sdlcontext *sdl, t_render *render);
+
+bool is_entity_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity);
+bool is_entity_frustrum_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity);
+bool is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 
 void	calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity);
-int		calculate_tris_from_square(t_square s, t_entity *ent, t_render *render);
+void	clear_occlusion_buffer(t_sdlcontext *sdl);
+
+//Debug occl
+void	draw_wireframe(t_sdlcontext sdl, t_square s, uint32_t clr);
+void	bitmask_to_pixels(t_sdlcontext *sdl);
 
 /* RENDERING */
 void	highlight_entity(t_sdlcontext *sdl, t_entity *entity, uint32_t color);
 void	render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity);
-void	draw_wireframe(t_sdlcontext sdl, t_render *render, t_entity *e, uint32_t clr);
-void	draw_edges(t_sdlcontext sdl, t_render *render, t_entity *e, uint32_t clr);
 void	render_worldspace(t_render *render, t_entity *entity);
 void	render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/09 17:12:38 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/15 17:56:53 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ static void gui_limitrect(t_autogui *gui)
 
 void	gui_start(t_autogui *gui)
 {
+	if (gui->sdl == NULL)
+		return ;
 	if (!gui->hidden)
 	{
 		//draw_rectangle_filled(*gui->sdl, gui->rect, CLR_DARKGRAY);
@@ -67,7 +69,11 @@ void	gui_start(t_autogui *gui)
 	gui->overdraw = 0;
 	gui->offset.y = 32 + 5; //TODO: autogui_start
 	gui->offset.x = 5;
-	gui_limitrect(gui);
+	if (gui->rect.size.x < gui->minimum_size.x)
+		gui->rect.size.x = gui->minimum_size.x;
+	if (gui->rect.size.y < gui->minimum_size.y)
+		gui->rect.size.y = gui->minimum_size.y;
+	//gui_limitrect(gui);
 	gui->x_maxdrawn = 0;
 }
 
@@ -161,7 +167,7 @@ void	gui_end(t_autogui *gui)
 	t_rectangle	dragcorner;
 	t_rectangle	dragbar;
 
-	if (gui->hidden)
+	if (gui->hidden || gui->sdl == NULL)
 		return ;
 	dragbar = gui->rect;
 	dragbar.size.y = 32;
@@ -207,7 +213,6 @@ void	gui_end(t_autogui *gui)
 			gui->rect.size = point_sub(point_add(gui->hid->mouse.pos, point_div(dragcorner.size, 2)), gui->rect.position);
 		}
 	}
-	
 	if (gui->hid->mouse.held == 0)
 	{
 		gui->move_held = false;
@@ -223,7 +228,7 @@ void	gui_end(t_autogui *gui)
 	{
 		gui->scroll.y = 0;
 		gui->scrollable = false;
-		gui->minimum_size.y = gui->offset.y + 32;
+		//gui->minimum_size.y = gui->offset.y + 32;
 		gui->rect.size.y = gui->offset.y + 32;
 	}
 	if (gui->scrollable)
@@ -232,7 +237,11 @@ void	gui_end(t_autogui *gui)
 		update_scrollbar(gui);
 		gui->scroll.y = ft_clamp(gui->scroll.y, -gui->overdraw, 0);
 	}
+	gui_limitrect(gui);
 	//set_font_size(gui->sdl, 2);
+	//char temp[128];
+	//sprintf(temp, "size: %i %i min: %i %i\n", gui->rect.size.x, gui->rect.size.y, gui->minimum_size.x, gui->minimum_size.y);
+	//print_text(gui->sdl, temp, gui->rect.position);
 	print_text_colored(gui->sdl, gui->title, point_add(gui->rect.position, (t_point){5, 5}), AMBER_3);
 	//set_font_size(gui->sdl, 0);
 }
@@ -308,7 +317,7 @@ void	gui_endhorizontal(t_autogui *gui)
 {
 	gui->agl = agl_vertical;
 	gui->offset.x = 0;
-	gui->offset.y += 34;
+	gui->offset.y += 20;
 }
 
 //Internal function, rename with a better name
@@ -702,6 +711,14 @@ bool	gui_highlighted_button(char *str, t_autogui *gui) //TODO, DRAWRECTANGLE AMB
 	return (br.clicked);
 }
 
+bool	gui_highlighted_button_if(char *str, t_autogui *gui, bool condition)
+{
+	if (condition)
+		return (gui_highlighted_button(str, gui));
+	else
+		return (gui_button(str, gui));
+}
+
 bool	gui_labeled_bool(char *str, bool b, t_autogui *gui)
 {
 	char	tstr[12] = "true";
@@ -717,21 +734,31 @@ bool	gui_labeled_bool(char *str, bool b, t_autogui *gui)
 
 bool	gui_labeled_bool_edit(char *str, bool *b, t_autogui *gui)
 {
+	bool	modified = false;
+
 	gui_starthorizontal(gui);
 	gui_label(str, gui);
 	if (*b)
 	{
 		gui_highlighted_button("True", gui);
 		if (gui_button("False", gui))
+		{
 			*b = false;
+			modified = true;
+		}
+			
 	}
 	else
 	{
 		if (gui_button("True", gui))
+		{
 			*b = true;
+			modified = true;
+		}
 		gui_highlighted_button("False", gui);
 	}
 	gui_endhorizontal(gui);
+	return (modified);
 }
 
 bool	gui_bool_edit(bool *b, t_autogui *gui)
@@ -817,14 +844,11 @@ bool	gui_int_slider(int *i, float mul, t_autogui *gui)
 				mousepos = gui->hid->mouse.pos;
 				force_mouselock(gui->hid);
 				gui->hid->mouse.pos = mousepos;
-				gui->hid->mouse.safe_delta = true;
-				gui->player->locked = true;
-				gui->locking_player = true;
+				gui->hid->mouse.dragging_ui = true;
 			}
-			if (gui->hid->mouse.relative && gui->locking_player)
+			if (gui->hid->mouse.held == MOUSE_LEFT)
 			{
-				//add += gui->hid->mouse.delta.x;
-				add = gui->hid->mouse.delta.x;
+				add = (float)gui->hid->mouse.delta.x;
 				if (add != 0)
 					modified = true;
 			}
@@ -842,8 +866,10 @@ bool	gui_int_slider(int *i, float mul, t_autogui *gui)
 
 bool	gui_labeled_int_slider(char *str, int *i, float mul, t_autogui *gui)
 {
+	bool	modified = false;
 	gui_starthorizontal(gui);
 	gui_label(str, gui);
-	gui_int_slider(i, mul, gui);
+	modified = gui_int_slider(i, mul, gui);
 	gui_endhorizontal(gui);
+	return (modified);
 }

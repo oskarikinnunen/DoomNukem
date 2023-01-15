@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 13:42:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/02 17:30:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/14 19:25:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,13 @@ t_img	*get_image_by_index(t_sdlcontext sdl, int index)
 t_img	*get_image_by_name(t_sdlcontext sdl, char *name) //TODO: return pointer, this is wasteful use of memory especially when used for all of the objects
 {
 	int		i;
+	char	correct_name[64];
 	char	fullpath[256];
 
 	i = 0;
+	ft_strcpy(correct_name, name);
+	if (ft_strstr(name, ".cng") == NULL)
+		ft_strcat(correct_name, ".cng");
 	/*if (ft_strncmp(name, IMGPATH, sizeof(IMGPATH) - 1) != 0)
 		sprintf(fullpath, "%s%s", IMGPATH, name);
 	else
@@ -73,7 +77,7 @@ t_img	*get_image_by_name(t_sdlcontext sdl, char *name) //TODO: return pointer, t
 	while (i < sdl.texturecount && sdl.textures != NULL)
 	{
 		//printf("image name %s \n", sdl.images[i].name);
-		if (ft_strcmp(sdl.textures[i].name, name) == 0)
+		if (ft_strcmp(sdl.textures[i].name, correct_name) == 0)
 			return (&sdl.textures[i]);
 		i++;
 	}

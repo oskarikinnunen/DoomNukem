@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/02 17:30:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/14 18:19:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,66 +133,12 @@ void	load_all_images(t_sdlcontext *sdl)
 
 void	load_images(lua_State *lua, t_sdlcontext *sdl)
 {
-	char	imagename[256];
-	char	indexer[256];
-	int		i;
-
 	load_all_images(sdl);
-	return ;
-	lua_getglobal(lua, "images");
-	sdl->texturecount = lua_rawlen(lua, -1);
-	if (sdl->texturecount == 0)
-	{
-		printf("no images in settings.lua \n");
-		return ;
-	}
-	sdl->textures = ft_memalloc(sizeof(t_img) * sdl->texturecount);
-	if (sdl->textures == NULL)
-		error_log(EC_MALLOC);
-	i = 1;
-	while (i <= sdl->texturecount)
-	{
-		printf("loading image %i \n", i);
-		sprintf(indexer, "eval=images[%i]", i);
-		luaL_dostring(lua, indexer);
-		lua_getglobal(lua, "eval");
-		sprintf(imagename, "%s%s", IMGPATH, lua_tostring(lua, -1));
-		sdl->textures[i - 1] = pngparse(imagename);
-		i++;
-	}
 }
 
 void	load_objects(lua_State *lua, t_sdlcontext *sdl)
 {
-	char	objectname[256];
-	char	indexer[256];
-	int		i;
-
 	load_all_objects(sdl);
-	printf("load object done \n");
-	//exit(0);
-	return ;
-	lua_getglobal(lua, "objects");
-	sdl->objectcount = lua_rawlen(lua, -1);
-	if (sdl->objectcount == 0)
-	{
-		printf("no objects in settings.lua \n");
-		return ;
-	}
-	sdl->objects = ft_memalloc(sizeof(t_object) * sdl->objectcount);
-	if (sdl->objects == NULL)
-		error_log(EC_MALLOC);
-	i = 1;
-	while (i <= sdl->objectcount)
-	{
-		sprintf(indexer, "eval=objects[%i]", i);
-		luaL_dostring(lua, indexer);
-		lua_getglobal(lua, "eval");
-		sprintf(objectname, "%s%s", OBJPATH, lua_tostring(lua, -1));
-		sdl->objects[i - 1] = objparse(objectname);
-		ft_strcpy(sdl->objects[i - 1].name, lua_tostring(lua, -1));
-		i++;
-	}
 }
 
 void	load_resolution(lua_State *lua, t_sdlcontext *sdl)
@@ -208,6 +154,15 @@ void	load_resolution(lua_State *lua, t_sdlcontext *sdl)
 		sdl->window_w = 720;
 	}
 	sdl->screensize = (t_point) {sdl->window_w, sdl->window_h};
+}
+
+void	load_assets(t_sdlcontext *sdl)
+{
+	load_all_images(sdl);
+	load_all_objects(sdl);
+	load_fonts(&sdl->font);
+	load_audio(&sdl->audio);
+	objects_init(sdl);
 }
 
 void	load_lua_conf(t_sdlcontext *sdl)

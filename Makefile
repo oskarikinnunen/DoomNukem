@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/01/05 18:08:31 by okinnune         ###   ########.fr        #
+#    Updated: 2023/01/15 17:42:28 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,16 +31,14 @@ FMOD = $(FMOD_DIR)/copied
 LIBFT = libft/libft.a
 
 LUAFOLDER= lua-5.3.6
-LUA= $(LUAFOLDER)/install/lib/liblua.a #TODO: find out real name!
-
-LUAFOLDER= lua-5.3.6
-LUA= $(LUAFOLDER)/install/lib/liblua.a #TODO: find out real name!
+LUA= $(LUAFOLDER)/install/lib/liblua.a
 
 #Source files:
 SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		editor.c editor_mouse.c editor_events.c \
 		editor_map_io.c	\
 		editor/tools/entity_tool.c \
+		editor/tools/entity_tool_gui_inits.c \
 		editor/tools/wall_tool_rooms.c \
 		editor/tools/npc_tool.c \
 		editor/tools/load_tool.c \
@@ -54,15 +52,19 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		editor/editor_new_buttons.c \
 		editor/editor_instant_button.c \
 		editor/editor_raycast.c \
+		preferences/graphicsprefs.c \
 		debug/debugconsole.c \
 		playmode.c inputhelper.c \
 		walls.c file_open.c \
-		moveplayer.c errors.c \
+		moveplayer.c \
+		collision.c \
+		errors.c \
 		physics.c \
 		perfgraph.c \
 		png.c lua_conf.c list_helper.c \
 		spaceconversions.c \
 		entity/entity_animate.c \
+		entity/component_init.c \
 		obj_parser/obj_parse.c \
 		obj_parser/obj_parse_vertex.c \
 		obj_parser/obj_parse_faces.c \
@@ -80,9 +82,9 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		audio_music.c \
 		occlusion/occlusion.c \
 		occlusion/frustrum_culling.c \
-		occlusion/peripheral_culling.c \
 		occlusion/occlusion_culling.c \
 		occlusion/culling_debug.c \
+		occlusion/bitmask_culling.c \
 		surface_tools.c \
 		colors.c \
 		render/render_entity.c \
@@ -99,7 +101,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		render/render_helper.c \
 		render/flip_channel.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
-		vector3_complex.c vector3_complex2.c \
+		vector3_complex.c vector3_complex2.c vector3_more.c \
 		vector2_elementary.c vector2_shorthands.c \
 		vector2_complex.c vector2_clamp.c \
 		vector2_more.c \

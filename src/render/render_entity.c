@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/06 19:14:28 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/13 10:33:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,51 +15,6 @@
 #include "bresenham.h"
 #include "objects.h"
 #include "vectors.h"
-
-//TODO: Legacy occlusion using deprecated after occlusion gets updated
-void clipped(t_render *render, t_sdlcontext sdl)
-{
-	int i = 0;
-	int start = 0;
-	int end = 0;
-
-	t_triangle	triangles[200];
-	t_triangle	clipped[2];
-	while (i < render->occ_calc_tri_count)
-	{
-		triangles[end++] = render->occ_calc_tris[i];
-		int nnewtriangles = 1;
-		for (int p = 0; p < 4; p++)
-		{
-			int ntristoadd = 0;
-			while (nnewtriangles > 0)
-			{
-				t_triangle test;
-				test = triangles[start++];
-				nnewtriangles--;
-				switch (p)
-				{
-				case 0: ntristoadd = clip_triangle_against_plane((t_vector3){0.0f, 0.0f, 0.0f}, (t_vector3){0.0f, 1.0f, 0.0f}, test, clipped); break;
-				case 1: ntristoadd = clip_triangle_against_plane((t_vector3){0.0f, (float)(sdl.window_h * sdl.resolution_scaling) - 1.0f, 0.0f}, (t_vector3){0.0f, -1.0f, 0.0f}, test, clipped); break;
-				case 2: ntristoadd = clip_triangle_against_plane((t_vector3){0.0f, 0.0f, 0.0f}, (t_vector3){1.0f, 0.0f, 0.0f}, test, clipped); break;
-				case 3: ntristoadd = clip_triangle_against_plane((t_vector3){(float)(sdl.window_w * sdl.resolution_scaling) *  - 1.0f, 0.0f, 0.0f}, (t_vector3){-1.0f, 0.0f, 0.0f}, test, clipped); break;
-				}
-				for (int w = 0; w < ntristoadd; w++)
-				{
-					triangles[end++] = clipped[w];
-				}
-			}
-			nnewtriangles = end - start;
-		}
-		while (start < end)
-		{
-			render->occ_draw_tris[render->occ_tri_count++] = triangles[start++];
-		}
-		start = 0;
-		end = 0;
-		i++;
-	}
-}
 
 static t_quaternion quaternion_to_screenspace(t_mat4x4 matproj, t_quaternion q, t_sdlcontext sdl)
 {
@@ -94,11 +49,27 @@ uint32_t shade(uint32_t clr, float norm)
 	return (final);
 }
 
+
+
 void render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 {
+	render->worldspace_ptri_count = 0;
+	render->screenspace_ptri_count = 0;
+
+	if ((point_cmp(entity->occlusion.clip.max, point_zero()) && point_cmp(entity->occlusion.clip.min, point_zero()))
+		|| !render->occlusion.occlusion)
+	{
+		render->screen_edge.max.x = (float)(sdl->window_w * sdl->resolution_scaling) - 1.0f;
+		render->screen_edge.max.y = (float)(sdl->window_h * sdl->resolution_scaling) - 1.0f;
+		render->screen_edge.min = vector2_zero();
+	}
+	else
+	{
+		render->screen_edge.min = point_to_vector2(entity->occlusion.clip.min);
+		render->screen_edge.max = point_to_vector2(entity->occlusion.clip.max);
+	}
 	render_worldspace(render, entity);
 	render_quaternions(sdl, render, entity);
-	render->rs.render_count++;
 }
 
 
@@ -200,6 +171,59 @@ static t_line newline(t_vector2 start, t_vector2 end)
 	return (l);
 }
 
+#define RCRCL_SIDES 16
+
+void	render_ball(t_sdlcontext *sdl, t_vector3 pos, float size, uint32_t clr)
+{
+	t_vector3	edges[RCRCL_SIDES + 1];
+	int		i;
+	float	angl;
+
+	i = 0;
+	angl = 0.0f;
+	sdl->render.gizmocolor = clr;
+	//X/Y
+	while (i < RCRCL_SIDES + 1)
+	{
+		edges[i].x = pos.x + (sinf(angl) * size);
+		edges[i].y = pos.y + (cosf(angl) * size);
+		edges[i].z = pos.z;
+
+		if (i >= 1)
+		{
+			render_ray(sdl, edges[i - 1], edges[i]);
+		}
+		angl += FULLRAD / RCRCL_SIDES;
+		i++;
+	}
+	//Y/Z
+	i = 0;
+	angl = 0.0f;
+	while (i < RCRCL_SIDES + 1)
+	{
+		edges[i].x = pos.x;
+		edges[i].y = pos.y + (cosf(angl) * size);
+		edges[i].z = pos.z - (sinf(angl) * size);
+		if (i >= 1)
+			render_ray(sdl, edges[i - 1], edges[i]);
+		angl += FULLRAD / RCRCL_SIDES;
+		i++;
+	}
+	//X/Z
+	i = 0;
+	angl = 0.0f;
+	while (i < RCRCL_SIDES + 1)
+	{
+		edges[i].x = pos.x + (sinf(angl) * size);
+		edges[i].y = pos.y;
+		edges[i].z = pos.z + (cosf(angl) * size);
+		if (i >= 1)
+			render_ray(sdl, edges[i - 1], edges[i]);
+		angl += FULLRAD / RCRCL_SIDES;
+		i++;
+	}
+}
+
 void render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to)
 {
 	t_quaternion	q1;
@@ -246,6 +270,7 @@ void render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to)
 	drawline(*sdl, vector2_to_point(l.start), vector2_to_point(l.end), sdl->render.gizmocolor);
 }
 
+//DEPRECATED, USE render_gizmo3d/render_gizmo2d INSTEAD
 void render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size)
 {
 	drawcircle(sdl, vector3_to_screenspace(pos, sdl), size, render.gizmocolor);

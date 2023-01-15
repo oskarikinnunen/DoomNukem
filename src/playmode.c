@@ -79,7 +79,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 
 	//alloc_image(&pgraph.image, PERFGRAPH_SAMPLES + 1, PERFGRAPH_SAMPLES + 1);
 	gr = game_continue;
-	render = init_render(sdl, &game.world);
+	//render = init_render(sdl, &game.world);
 	game.world = load_world("world1", &sdl);
 	*(game.world.debug_gui) = init_gui(&sdl, &game.hid, &game.player, sdl.screensize, "Debugging menu (F2)");
 	game.world.debug_gui->rect.size.y = 120;
@@ -90,11 +90,10 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	initialize_controllers(&game.hid);
 	while (gr == game_continue)
 	{
-		update_deltatime(&game.clock);
+		update_deltatime(&game.clock); //TODO: remove game.clock and always use world clock
 		update_deltatime(&game.world.clock);
 		gr = handleinput(&game.hid);
-
-		moveplayer(&game.player, &game.hid.input, game.clock);
+		moveplayer(&game.player, &game.hid.input, &game.world);
 		update_render(&render, &game.player);
 		screen_blank(sdl); //Combine with render_start?
 		render_start(&render);

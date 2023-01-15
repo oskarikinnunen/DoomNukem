@@ -35,6 +35,8 @@ typedef struct s_pointlight
 	float		radius;
 	bool		shadows;
 	bool		done;
+	bool		ignoreself;
+	uint32_t	lastmovetime;
 }	t_pointlight;
 
 typedef struct s_lighting
@@ -47,6 +49,7 @@ typedef struct s_lighting
 	uint32_t			entities_count;
 	t_pointlight		*pointlight;
 	uint8_t				ambient_light;
+	bool				calculated;
 }	t_lighting;
 
 #endif

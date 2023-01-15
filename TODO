@@ -4,7 +4,8 @@ entity
 		+ decals
 		= map
 
-
+Remove lua dependency
+fix UIs
 
 
 

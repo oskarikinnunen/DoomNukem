@@ -20,58 +20,98 @@ static uint32_t sample_img(t_render *render, t_texture t)
 	return(render->map.data[ysample * render->map.size.x + xsample]);
 }
 
+typedef struct s_barycentric
+{
+	float	v1;
+	float	v2;
+	float	v3;
+	float	v4;
+	float	v5;
+	float	b1;
+	float	b2;
+	float	b3;
+}	t_barycentric;
+
+//	w1 = ((float)p[0].x * (float)(p[2].y - p[0].y) + (float)(y - p[0].y) * (float)(p[2].x - p[0].x) - (float)ax * (float)(p[2].y - p[0].y)) / (float)((float)(p[1].y - p[0].y) * (float)(p[2].x - p[0].x) - (float)(p[1].x - p[0].x) * (float)(p[2].y - p[0].y));
+//	w2 = (float)(y - p[0].y - w1 * (float)(p[1].y - p[0].y)) / (float)(p[2].y - p[0].y);
+
 static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_render *render)
 {
 	t_point			*p;
 	t_texture		*t;
 	float			step[2];
 	t_texture		t_step[3];
-	int				x;
+	int				ax;
+	int				bx;
 	int				y;
 	float			delta;
+	float			w1;
+	float			w2;
+	t_texture		t_temp;
+	t_texture		temp;
+	t_barycentric	bary;
 
 	p = triangle.p;
 	t = triangle.t;
-	calc_points_step(step, t_step, p, t, 1.0f / ((float)(p[1].y - p[0].y)));
+	delta = p[1].y - p[0].y;
+	step[0] = (p[0].x - p[1].x) / delta;
+	step[1] = (p[0].x - p[2].x) / delta;
+
+	bary.b1 = p[2].y - p[0].y;
+	bary.b2	= p[2].x - p[0].x;
+	bary.b3 = p[1].y - p[0].y;
+
+	bary.v1 = p[0].x * bary.b1;
+	bary.v2 = bary.b3 * bary.b2 - (float)(p[1].x - p[0].x) * bary.b1;
 	y = p[1].y;
 	while (y >= p[0].y)
 	{
-		x = p[1].x + (step[0] * (float)(p[1].y - y));
-		int ax =  p[2].x + (step[1] * (float)(p[1].y - y));
-		t_step[2] = calc_step_texture(t, 1.0f / (float)(ax - x));
-		t[0].u = t[1].u;
-		t[0].v = t[1].v;
-		t[0].w = t[1].w;
-		while(x <= ax)
-		{
-			/*if (t[0].w < FOG && t[0].w > sdl->zbuffer[x + y * sdl->window_w])
-			{
-				sdl->zbuffer[x + y * sdl->window_w] = t[0].w;
-				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] = 1;
-			}
-			else */if (t[0].w > sdl->zbuffer[x + y * sdl->window_w])
-			{
-				sdl->zbuffer[x + y * sdl->window_w] = t[0].w;
-				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] =
-					sample_img(render, t[0]);
-			}
-			t[0].u += t_step[2].u;
-			t[0].v += t_step[2].v;
-			t[0].w += t_step[2].w;
-			x++;
-		}
-		t[1].u += t_step[0].u;
-		t[1].v += t_step[0].v;
-		t[1].w += t_step[0].w;
+		delta = p[1].y - y;
+		ax = p[1].x + (step[0] * delta);
+		bx = p[2].x + (step[1] * delta);
+	
+		float b_temp = bary.v1 + (float)(y - p[0].y) * bary.b2;
+		w1 = (b_temp - ax * bary.b1) / bary.v2;
+		w2 = (float)(y - p[0].y - w1 * bary.b3) / bary.b1;
+		temp.u = ft_flerp(t[0].u, t[1].u, w1);
+		temp.u += ((t[2].u - t[0].u) * w2);
+		temp.v = ft_flerp(t[0].v, t[1].v, w1);
+		temp.v += ((t[2].v - t[0].v) * w2);
+		temp.w = ft_flerp(t[0].w, t[1].w, w1);
+		temp.w += ((t[2].w - t[0].w) * w2);
 
-		t[2].u += t_step[1].u;
-		t[2].v += t_step[1].v;
-		t[2].w += t_step[1].w;
+		w1 = (b_temp - bx * bary.b1) / bary.v2;
+		w2 = (float)(y - p[0].y - w1 * bary.b3) / bary.b1;
+		t_temp.u = ft_flerp(t[0].u, t[1].u, w1);
+		t_temp.u += ((t[2].u - t[0].u) * w2);
+		t_temp.v = ft_flerp(t[0].v, t[1].v, w1);
+		t_temp.v += ((t[2].v - t[0].v) * w2);
+		t_temp.w = ft_flerp(t[0].w, t[1].w, w1);
+		t_temp.w += ((t[2].w - t[0].w) * w2);
+
+		render_bitmask_row(ax, bx, 1.0f / temp.w, 1.0f / t_temp.w, y, sdl);
+		delta = bx - ax;
+		t_step[0].u = (t_temp.u - temp.u) / delta;
+		t_step[0].v = (t_temp.v - temp.v) / delta;
+		t_step[0].w = (t_temp.w - temp.w) / delta;
+		while(ax <= bx)
+		{
+			if (temp.w > sdl->zbuffer[ax + y * sdl->window_w])
+			{
+				sdl->zbuffer[ax + y * sdl->window_w] = temp.w;
+				((uint32_t *)sdl->surface->pixels)[ax + y * sdl->window_w] =
+					sample_img(render, temp);
+			}
+			temp.u += t_step[0].u;
+			temp.v += t_step[0].v;
+			temp.w += t_step[0].w;
+			ax++;
+		}
 		y--;
 	}
 }
 
-t_texture calc_step_texture2(t_texture *t, float delta)
+static t_texture calc_step_texture2(t_texture *t, float delta)
 {	
 	t_texture step;
 	step.u = (t[2].u - t[1].u) / delta;
@@ -80,51 +120,86 @@ t_texture calc_step_texture2(t_texture *t, float delta)
 	return(step);
 }
 
+#include <assert.h>
+
 static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle, t_render *render)
 {
 	t_point			*p;
 	t_texture		*t;
 	float			step[2];
 	t_texture		t_step[3];
-	int				x;
+	int				ax;
+	int				bx;
 	int				y;
 	float			delta;
+	float			w1;
+	float			w2;
+	t_texture		t_temp;
+	t_texture		temp;
+	t_barycentric	bary;
 
 	p = triangle.p;
 	t = triangle.t;
-	calc_points_step(step, t_step, p, t, 1.0f/((float)(p[0].y - p[1].y)));
+	delta = p[0].y - p[1].y;
+	step[0] = (p[0].x - p[1].x) / delta;
+	step[1] = (p[0].x - p[2].x) / delta;
+
+	bary.b1 = p[2].y - p[0].y;
+	bary.b2	= p[2].x - p[0].x;
+	bary.b3 = p[1].y - p[0].y;
+
+	bary.v1 = p[0].x * bary.b1;
+	bary.v2 = bary.b3 * bary.b2 - (float)(p[1].x - p[0].x) * bary.b1;
+
 	y = p[1].y;
 	while (y <= p[0].y)
 	{
-		x = p[1].x + (step[0] * (float)(y - p[1].y));
-		int ax =  p[2].x + (step[1] * (float)(y - p[1].y));
-		t_step[2] = calc_step_texture2(t, (float)(ax - x));
-		t[0].u = t[1].u;
-		t[0].v = t[1].v;
-		t[0].w = t[1].w;
-		while(x <= ax)
-		{
-			if (t[0].w > sdl->zbuffer[x + y * sdl->window_w])
-			{
-				sdl->zbuffer[x + y * sdl->window_w] = t[0].w;
-				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] =
-					sample_img(render, t[0]);
-			}
-			t[0].u += t_step[2].u;
-			t[0].v += t_step[2].v;
-			t[0].w += t_step[2].w;
-			x++;
-		}
-		t[1].u += t_step[0].u;
-		t[1].v += t_step[0].v;
-		t[1].w += t_step[0].w;
+		delta = y - p[1].y;
+		ax = p[1].x + (step[0] * delta);
+		bx = p[2].x + (step[1] * delta);
+	
+		float b_temp = bary.v1 + (float)(y - p[0].y) * bary.b2;
+		w1 = (b_temp - ax * bary.b1) / bary.v2;
+		w2 = (float)(y - p[0].y - w1 * bary.b3) / bary.b1;
+		temp.u = ft_flerp(t[0].u, t[1].u, w1);
+		temp.u += ((t[2].u - t[0].u) * w2);
+		temp.v = ft_flerp(t[0].v, t[1].v, w1);
+		temp.v += ((t[2].v - t[0].v) * w2);
+		temp.w = ft_flerp(t[0].w, t[1].w, w1);
+		temp.w += ((t[2].w - t[0].w) * w2);
 
-		t[2].u += t_step[1].u;
-		t[2].v += t_step[1].v;
-		t[2].w += t_step[1].w;
+		w1 = (b_temp - bx * bary.b1) / bary.v2;
+		w2 = (float)(y - p[0].y - w1 * bary.b3) / bary.b1;
+		t_temp.u = ft_flerp(t[0].u, t[1].u, w1);
+		t_temp.u += ((t[2].u - t[0].u) * w2);
+		t_temp.v = ft_flerp(t[0].v, t[1].v, w1);
+		t_temp.v += ((t[2].v - t[0].v) * w2);
+		t_temp.w = ft_flerp(t[0].w, t[1].w, w1);
+		t_temp.w += ((t[2].w - t[0].w) * w2);
+
+		render_bitmask_row(ax, bx, 1.0f / temp.w, 1.0f / t_temp.w, y, sdl);
+
+		delta = bx - ax;
+		t_step[0].u = (t_temp.u - temp.u) / delta;
+		t_step[0].v = (t_temp.v - temp.v) / delta;
+		t_step[0].w = (t_temp.w - temp.w) / delta;
+		while(ax <= bx)
+		{
+			if (temp.w > sdl->zbuffer[ax + y * sdl->window_w])
+			{
+				sdl->zbuffer[ax + y * sdl->window_w] = temp.w;
+				((uint32_t *)sdl->surface->pixels)[ax + y * sdl->window_w] =
+					sample_img(render, temp);
+			}
+			temp.u += t_step[0].u;
+			temp.v += t_step[0].v;
+			temp.w += t_step[0].w;
+			ax++;
+		}
 		y++;
 	}
 }
+
 
 /*
 creates two triangles from the given triangle one flat top and one flat bottom.

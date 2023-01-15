@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/09 17:38:41 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/15 17:28:55 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 # include "player.h"
 # include "input.h"
 # include "debug.h"
+# include "navigation.h"
 
 # define PI	3.14159265359
 # define FULLRAD M_PI * 2.0
@@ -50,7 +51,7 @@
 # define MOVESPEED 0.2f
 # define MAXMOVEMENTSPEED 0.08f
 # define ROTATESPEED 0.002f
-# define MOUSESPEED 0.0002f
+# define MOUSESPEED 0.002f
 
 # define TEXTBACKGROUND_BORDERPADDING 6
 
@@ -113,16 +114,12 @@ typedef struct s_world
 	struct s_autogui	*debug_gui;
 	t_sdlcontext		*sdl;
 	t_list				*guns;
+	t_list				*prefabs; //TODO: move to editor
 	t_lighting			lighting;
-	uint32_t			lights_count;
-	t_pointlight		lights[100];
-	bool				lighting_baked;
-	t_list				*objectmetadatalist; //Move to sdl, this is only used when objects are initialized
-	t_npc				npcpool[128];
 	t_list				*roomlist;
 	t_entitycache		entitycache;
 	t_entity			skybox;
-	bool				ceiling_toggle;
+	bool				ceiling_toggle; //TODO: move to editor
 }	t_world;
 
 t_vector2	flipped_uv(t_vector2 og);
@@ -193,7 +190,12 @@ void	player_init(t_player *player, t_sdlcontext *sdl, t_world *world);
 void	update_render(t_render *render, t_player *player);
 
 /* MOVEPLAYER.C */
-void	moveplayer(t_player *player, t_input *input, t_clock clock);
+void	moveplayer(t_player *player, t_input *input, t_world *world);
+
+/* COLLISION */
+bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, t_vector3 *newpos);
+bool	alaiwan_collision(t_world *world, t_player *player, t_vector3 potential_pos, t_vector3 *new_pos);
+
 
 /* ERRORS.C */
 void	error_log(int error_code);
@@ -238,14 +240,14 @@ void	*list_find(t_list *head, void *match, size_t content_size);
 void	list_remove(t_list **head, void *match, size_t content_size);
 
 /* OCCLUSION.C */
-void	update_occlusion(t_sdlcontext sdl, t_render *render);
+void	update_occlusion(struct s_world *world, t_render *render);
 
 //settings
 void	default_entity_occlusion_settings(t_entity *e, t_world *world);
 void	default_floor_occlusion_settings(t_meshtri *f, t_world *world);
 void	default_wall_occlusion_settings(t_wall *w, t_world *world);
 
-void	update_entity_bounds(t_entity *e);
+void	update_object_bounds(t_object *obj);
 void	update_floor_bounds(t_meshtri *f);
 void	update_wall_bounds(t_wall *w);
 

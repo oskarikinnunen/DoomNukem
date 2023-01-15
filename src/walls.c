@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/06 16:04:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/15 17:12:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,10 @@ void	clamp_wall_areaheight(t_wall *wall, t_room *room, t_world *world)
 	l = world->roomlist;
 	wall->entity->hidden = false;
 	wall->ceilingwall = false;
-	wall->height = room->ceiling_height;
+	if (room->open_area)
+		wall->height = 0;
+	else
+		wall->height = room->ceiling_height;
 	wall->z_offset = 0;
 	while (l != NULL)
 	{
@@ -172,6 +175,8 @@ void	applywallmesh(t_wall *wall, t_room *room, t_world *world)
 		/*wall->entity->obj->uvs[1] = flipped_uv(wall->entity->obj->uvs[1]);
 		wall->entity->obj->uvs[2] = flipped_uv(wall->entity->obj->uvs[2]);
 		wall->entity->obj->uvs[3] = flipped_uv(wall->entity->obj->uvs[3]);*/
+		update_wall_bounds(wall);
+		default_wall_occlusion_settings(wall, NULL);
 	}
 }
 
@@ -245,6 +250,8 @@ void	init_room_meshes(t_room *room, t_sdlcontext *sdl, t_world *world)
 		//room->floors[i].entity = raise_entity(world);
 		room->floors[i].entity->obj = object_tri(sdl);
 		applytrimesh(room->floors[i], room->floors[i].entity->obj);
+		default_floor_occlusion_settings(&room->floors[i], NULL);
+		update_floor_bounds(&room->floors[i]);
 		/*room->walls[i].entity->transform.position = vector3_zero();
 		room->walls[i].entity->transform.scale = vector3_one();
 		room->walls[i].entity->obj = object_plane(sdl);

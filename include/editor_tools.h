@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/09 17:38:58 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/12 14:36:41 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ typedef struct s_editor
 {
 	t_world				world;
 	t_autogui			toolbar_gui;
+	t_autogui			graphics_gui;
 //	t_clock				clock;
 	t_hid_info			hid;
 	t_player			player;
@@ -146,6 +147,7 @@ bool	gui_shortcut_button(char *str, int alpha_or_keymask, t_autogui *gui);
 
 bool	gui_imagebutton(t_img	*img, t_autogui *gui);
 bool	gui_highlighted_button(char *str, t_autogui *gui);
+bool	gui_highlighted_button_if(char *str, t_autogui *gui, bool condition);
 
 //TODO: document
 void				gui_string_edit(char *str, t_autogui	*gui);

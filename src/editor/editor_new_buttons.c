@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_new_buttons.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 14:34:40 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/09 18:13:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/11 10:44:57 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static void changetool(t_editor *ed, t_sdlcontext *sdl, t_tool *newtool)
 	return (0);
 }*/
 
-void	update_editor_toolbar(t_editor *ed, t_autogui *toolbar)
+void    update_editor_toolbar(t_editor *ed, t_autogui *toolbar)
 {
 	SDL_Event	e;
 	toolbar->rect.size.y = 60;
@@ -57,4 +57,3 @@ void	update_editor_toolbar(t_editor *ed, t_autogui *toolbar)
 	gui_endhorizontal(toolbar);
 	gui_end(toolbar);
 }
-

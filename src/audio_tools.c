@@ -3,42 +3,46 @@
 /*                                                        :::      ::::::::   */
 /*   audio_tools.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/27 11:14:16 by raho              #+#    #+#             */
-/*   Updated: 2023/01/03 13:54:49 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/14 20:23:21 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
 #include "doomnukem.h"
 
-int	find_sound(t_audio *audio, const char *name)
+t_audiosample	get_music(t_sdlcontext *sdl, const char *name)
 {
-	int	index;
+	int				i;
+	t_audiosample	error;
 
-	index = 0;
-	while (index < audio->samplecount)
+	i = 0;
+	while (i < sdl->audio.music_count)
 	{
-		if (ft_strequ(audio->sample[index].name, name))
-			return (index);
-		index++;
+		if (ft_strequ(sdl->audio.music[i].name, name))
+			return (sdl->audio.music[i]);
+		i++;
 	}
-	return (-1);
+	ft_bzero(&error, sizeof(t_audiosample));
+	return (error);
 }
 
-int	find_music(t_audio *audio, const char *name)
+t_audiosample	get_sample(t_sdlcontext *sdl, const char *name)
 {
-	int	index;
+	int	i;
+	t_audiosample	error;
 
-	index = 0;
-	while (index < audio->musiccount)
+	i = 0;
+	while (i < sdl->audio.samplecount)
 	{
-		if (ft_strequ(audio->music[index].name, name))
-			return (index);
-		index++;
+		if (ft_strequ(sdl->audio.samples[i].name, name))
+			return (sdl->audio.samples[i]);
+		i++;
 	}
-	return (-1);
+	ft_bzero(&error, sizeof(t_audiosample));
+	return (error);
 }
 
 //TODO: sometimes channel is invalid when the sound is done playing but the address still stays on the pointer. 
@@ -50,9 +54,4 @@ int	check_channel_status(FMOD_CHANNEL *channel)
 	if (FMOD_Channel_IsPlaying(channel, &isplaying) != FMOD_OK)
 		error_log(EC_FMOD_CHANNELISPLAYING);
 	return (isplaying);
-}
-
-void	update_maxvolume(t_audio *audio)
-{
-	audio->max_volume = ft_clampf(audio->max_volume, 0.0f, 1.0f);
 }
