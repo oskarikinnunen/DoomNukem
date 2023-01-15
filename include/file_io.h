@@ -15,6 +15,7 @@
 
 # include "libft.h"
 # include "editor_tools.h"
+# include <dirent.h>
 
 typedef struct s_filecontent
 {
@@ -22,6 +23,8 @@ typedef struct s_filecontent
 	uint64_t	length;
 	void		*content;
 }	t_filecontent;
+
+bool	file_has_extension(struct dirent	*dfile, char *extension);
 
 void	save_entitylist(t_list *entitylist, char *filename);
 t_list	*load_chunk(char *filename, char *chunkname, size_t size);

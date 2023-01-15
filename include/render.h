@@ -1,15 +1,14 @@
 #ifndef RENDER_H
 # define RENDER_H
 
-# define WINDOWS
-# ifdef	WINDOWS
-	# define SDL_MAIN_HANDLED
-	# include "SDL2/SDL.h"
-	# include "SDL2/SDL_ttf.h"
-# else
-	# include "../libs/installed_libs/include/SDL2/SDL.h" //TODO: make this work without relative path?
-	# include "../libs/installed_libs/include/SDL2/SDL_ttf.h"
-# endif
+//# ifdef	WINDOWS
+//	# define SDL_MAIN_HANDLED
+//	# include "SDL2/SDL.h"
+//	# include "SDL2/SDL_ttf.h"
+//# else
+# include "../libs/installed_libs/include/SDL2/SDL.h" //TODO: make this work without relative path?
+# include "../libs/installed_libs/include/SDL2/SDL_ttf.h"
+//# endif
 
 
 # include "vectors.h"

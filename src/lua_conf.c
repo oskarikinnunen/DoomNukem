@@ -16,7 +16,19 @@
 #include "doomnukem.h"
 #include "objects.h"
 #include "png.h"
-#include <dirent.h>
+#include "file_io.h"
+
+#ifdef WINDOWS
+bool	file_has_extension(struct dirent	*dfile, char *extension)
+{
+	return (ft_strstr(dfile->d_name, extension) != NULL);
+}
+#else
+bool	file_has_extension(struct dirent	*dfile, char *extension)
+{
+	return (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, extension) != NULL);
+}
+#endif
 
 void	allocate_object_count(t_sdlcontext *sdl)
 {
@@ -32,7 +44,7 @@ void	allocate_object_count(t_sdlcontext *sdl)
 		dfile = readdir(d);
 		while (dfile != NULL)
 		{
-			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".obj") != NULL)
+			if (file_has_extension(dfile, ".obj"))
 				i++;
 			dfile = readdir(d);
 		}
@@ -59,7 +71,7 @@ void	load_all_objects(t_sdlcontext *sdl)
 		dfile = readdir(d);
 		while (dfile != NULL)
 		{
-			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".obj") != NULL)
+			if (file_has_extension(dfile, ".obj"))
 			{
 				snprintf(fullpath, 512, "%s/%s", path, dfile->d_name);
 				sdl->objects[i] = objparse(fullpath);
@@ -88,7 +100,7 @@ void	allocate_image_count(t_sdlcontext *sdl)
 		dfile = readdir(d);
 		while (dfile != NULL)
 		{
-			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".cng") != NULL)
+			if (file_has_extension(dfile, ".cng"))
 				i++;
 			dfile = readdir(d);
 		}
@@ -116,7 +128,7 @@ void	load_all_images(t_sdlcontext *sdl)
 		dfile = readdir(d);
 		while (dfile != NULL)
 		{
-			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".cng") != NULL)
+			if (file_has_extension(dfile, ".cng"))
 			{
 				snprintf(fullpath, 512, "%s/%s", path, dfile->d_name);
 				sdl->textures[i] = pngparse(fullpath);

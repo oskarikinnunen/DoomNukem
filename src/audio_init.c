@@ -12,18 +12,18 @@
 
 #include "render.h"
 #include "doomnukem.h"
+#include "file_io.h"
 
-#include <dirent.h>
-
-bool is_sample(char	*audioname)
+bool is_sample(struct dirent	*dfile)
 {
-	return (ft_strstr(audioname, ".wav") != NULL
-		|| ft_strstr(audioname, ".mp3") != NULL);
+	return (file_has_extension(dfile, ".wav")
+		|| file_has_extension(dfile, ".mp3"));
 }
 
-bool is_music(char *audioname)
+bool is_music(struct dirent	*dfile)
 {
-	return (ft_strstr(audioname, "music") != NULL);
+	return (is_sample(dfile) &&
+		ft_strstr(dfile->d_name, "music") != NULL);
 }
 
 static void allocate_sample_count(t_audio *audio)
@@ -42,10 +42,9 @@ static void allocate_sample_count(t_audio *audio)
 		dfile = readdir(d);
 		while (dfile != NULL)
 		{
-			if (dfile->d_type == DT_REG
-				&& is_sample(dfile->d_name))
+			if (is_sample(dfile))
 			{
-				if (is_music(dfile->d_name))
+				if (is_music(dfile))
 					m_i++;
 				else
 					s_i++;
@@ -80,15 +79,14 @@ static void load_samples(t_audio *audio)
 		dfile = readdir(d);
 		while (dfile != NULL)
 		{
-			if (dfile->d_type == DT_REG
-				&& is_sample(dfile->d_name))
+			if (is_sample(dfile))
 			{
 				ft_strcpy(fullpath, path);
 				ft_strcat(fullpath, "/");
 				ft_strcat(fullpath, dfile->d_name);
 				printf("loading audio sample %s \n", fullpath);
 				int	mask = FMOD_3D | FMOD_LOOP_OFF;
-				if (!is_music(dfile->d_name))
+				if (!is_music(dfile))
 				{
 					bool looped = ft_strstr(dfile->d_name, "loop") != NULL;
 					if (looped)

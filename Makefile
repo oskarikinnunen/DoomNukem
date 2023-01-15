@@ -133,7 +133,7 @@ AUTOGEN =
 else ifeq ($(UNAME), Linux)
 LIBS =  $(LIBFT) -lm -lGL -L$(INSTALLED_LIBS_DIR)/lib -lSDL2 -lSDL2_ttf -L$(INSTALLED_LIBS_DIR)/lib -lfmod -lfmodL
 AUTOGEN = ./autogen.sh &&
-else ifeq ($(UNAME), MINGW32_NT-6.2)
+else ifeq ($(UNAME), MINGW64_NT-10.0-19045)
 windows:
 	@echo "Compiling for windows, running make with the 'WIN-Makefile.mk'"
 	$(MAKE) -f WIN-Makefile.mk

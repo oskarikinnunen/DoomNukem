@@ -1,0 +1,8 @@
+install msys according to this: https://www.msys2.org/
+pacman -S p7zip
+//pacman -S automake1.16 //prolly not used??
+pacman -S msys/libtool
+pacman -S msys/autoconf
+pacman -S msys/automake-wrapper
+pacman -S msys2-runtime //mby not needed?
+pacman -S msys2-runtime-devel

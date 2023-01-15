@@ -135,6 +135,25 @@ void	checkargs(int argc, char **argv)
 	}
 }
 
+#ifdef WINDOWS
+int	WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+{
+	t_sdlcontext	sdl;
+	t_gamereturn	gr;
+
+	//checkargs(argc, argv);
+	create_sdlcontext(&sdl);
+	gr = game_switchmode;
+	printf("GOT TO AFTER SDL CONTEXT! \n");
+	while (gr == game_switchmode)
+	{
+		gr = editorloop(sdl); // quit & exit is handled inside the loop
+		gr = playmode(sdl); // quit & exit is handled inside the loop
+	}
+	//shouldn't get here?
+	return (0);
+}
+#else
 int	main(int argc, char **argv)
 {
 	t_sdlcontext	sdl;
@@ -152,4 +171,5 @@ int	main(int argc, char **argv)
 	//shouldn't get here?
 	return (0);
 }
+#endif
 

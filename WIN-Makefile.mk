@@ -123,14 +123,16 @@ OBJ= $(SRC:.c=.o)
 INCLUDE= -I$(INSTALLED_LIBS_DIR)/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include \
 			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
 CC= gcc
-CFLAGS= $(INCLUDE) -g -finline-functions -O2 -mwindows -D__CYGWIN32__#-march=native
-C_INCLUDE_PATH=/mingw/local/include
-C_INCLUDE_PATH+=/mingw/msys/1.0/local/include
+CFLAGS= $(INCLUDE) -g -finline-functions -O2 -lmingw64 -mwindows -Wl,--subsystem,windows -municode -DWINDOWS#-D__CYGWIN32__#-march=native
+C_INCLUDE_PATH=/ucrt64/include
+#C_INCLUDE_PATH+=/mingw/msys/1.0/local/include
 UNAME= $(shell uname)
-ifeq ($(UNAME), MINGW32_NT-6.2)
+PWD = $(shell pwd)
+WPATH= $(shell cygpath -w $(PWD))
+ifeq ($(UNAME), MINGW64_NT-10.0-19045)
 LIBS =  $(LIBFT) -lm  -lSDL2 -L/local/lib -lSDL2_ttf -L$(INSTALLED_LIBS_DIR)/lib \
- 		"C:\MinGW\msys\1.0\home\RedGlass\DoomNukem\libs\installed_libs\lib\fmod_vc.lib" \
-		"C:\MinGW\msys\1.0\home\RedGlass\DoomNukem\libs\installed_libs\lib\fmodL_vc.lib"
+ 		"$(WPATH)\libs\installed_libs\lib\FMOD\fmod_vc.lib" \
+		"$(WPATH)\libs\installed_libs\lib\FMOD\fmodL_vc.lib"
 AUTOGEN = ./autogen.sh &&
 else
 warning:
@@ -139,12 +141,32 @@ warning:
 endif
 
 #$(SDL2)
-
-all: $(FREETYPE) $(SDL2_TTF) $(FMOD) $(LUA) $(LIBFT) $(OBJ)
+#all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(FMOD) $(LUA) $(LIBFT) $(OBJ)
+all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(FMOD) $(LUA) $(LIBFT) $(OBJ) dllcopy
 	@echo "compiled.."
-	$(CC) $(OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LUA) 
+	$(CC) $(OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LUA)
 
 $(OBJ): include/*.h Makefile
+
+dllcopy:
+	cp libs/installed_libs/bin/libfreetype-6.dll libfreetype-6.dll
+	cp libs/installed_libs/bin/SDL2.dll SDL2.dll
+	cp libs/installed_libs/bin/SDL2_ttf.dll SDL2_ttf.dll
+	cp $(FMOD_DIR)/fmodL.dll fmodL.dll
+	cp $(FMOD_DIR)/fmod.dll fmod.dll
+
+build: all
+	rm -rf build
+	mkdir build
+	cp $(NAME) build/$(NAME)
+	cp -r worlds build/worlds
+	cp -r assets build/assets
+	cp libfreetype-6.dll build/libfreetype-6.dll
+	cp SDL2.dll build/SDL2.dll
+	cp SDL2_ttf.dll build/SDL2_ttf.dll
+	cp fmodL.dll build/fmodL.dll
+	cp fmod.dll build/fmod.dll
+	cp zlib1.dll build/zlib1.dll
 
 clean:
 	rm -f $(OBJ)
@@ -155,7 +177,8 @@ $(LIBFT):
 	make -C libft
 
 clean-libs:
-	rm -rf $(INSTALLED_LIBS_DIR)
+	rm -rf $(INSTALLED_LIBS_DIR)/bin
+	rm -rf $(INSTALLED_LIBS_DIR)/share
 
 re-libs: clean-libs $(SDL2) $(FREETYPE) $(SDL2_TTF)
 
@@ -179,28 +202,33 @@ $(FMOD):
 	touch $(FMOD)
 
 $(SDL2_DIR)/unpacked:
-	cd $(LIBS_DIR) && 7z.exe x SDL2-2.0.8.tar.gz -so | 7z x -aoa -si -ttar -o.
+	cd $(LIBS_DIR) && 7z x SDL2-2.0.8.tar.gz -so | 7z x -aoa -si -ttar -o.
 	cd $(SDL2_DIR) && touch unpacked
 
 $(FREETYPE_DIR)/unpacked:
-	cd $(LIBS_DIR) && 7z.exe x freetype-2.9.tar.gz -so | 7z x -aoa -si -ttar -o.
+	cd $(LIBS_DIR) && 7z x freetype-2.9.tar.gz -so | 7z x -aoa -si -ttar -o.
 	cd $(FREETYPE_DIR) && touch unpacked
 
 $(SDL2_TTF_DIR)/unpacked:
-	cd $(LIBS_DIR) && 7z.exe x SDL2_ttf-2.0.15.tar.gz -so | 7z x -aoa -si -ttar -o.
+	cd $(LIBS_DIR) && 7z x SDL2_ttf-2.0.15.tar.gz -so | 7z x -aoa -si -ttar -o.
 	cd $(SDL2_TTF_DIR) && touch unpacked
 
 
 $(SDL2_DIR)/ready_to_build: $(SDL2_DIR)/unpacked
-	cd $(SDL2_DIR) && ./configure && touch ready_to_build
+	cd $(SDL2_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR) && touch ready_to_build
 
 $(FREETYPE_DIR)/ready_to_build: $(FREETYPE_DIR)/unpacked
-	cd $(FREETYPE_DIR) && ./configure && touch ready_to_build
+	cd $(FREETYPE_DIR) && ./configure --prefix=$(PWD)/$(INSTALLED_LIBS_DIR) && touch ready_to_build
 
 # On Linux autogen.sh will be executed in SDL2_TTF_DIR before running configure and make install
 # On Linux pkg-config overrides prefixes with default path so we change the PKG_CONFIG_PATH
 $(SDL2_TTF_DIR)/ready_to_build: $(SDL2_TTF_DIR)/unpacked
-	cd $(SDL2_TTF_DIR) && $(AUTOGEN) ./configure && touch ready_to_build
+	cd $(SDL2_TTF_DIR) && $(AUTOGEN) ./configure	\
+	--prefix=$(PWD)/$(INSTALLED_LIBS_DIR)	\
+	--with-ft-prefix=$(PWD)/$(INSTALLED_LIBS_DIR)	\
+	--with-sdl-prefix=$(PWD)/$(INSTALLED_LIBS_DIR)	\
+	PKG_CONFIG_PATH=$(PWD)/$(INSTALLED_LIBS_DIR)/lib/pkgconfig	\
+	&& touch ready_to_build
 
 $(SDL2): $(SDL2_DIR)/ready_to_build
 	cd $(SDL2_DIR) && make && make install

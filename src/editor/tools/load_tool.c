@@ -25,7 +25,7 @@ void	allocate_worldstrings(t_loadtooldata	*dat, char	*path)
 		dfile = readdir(d);
 		while (dfile != NULL)
 		{
-			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".world") != NULL)
+			if (/*dfile->d_type == DT_REG && */ft_strstr(dfile->d_name, ".world") != NULL)
 				i++;
 			dfile = readdir(d);
 		}
@@ -70,7 +70,7 @@ void	load_tool_init(t_editor *ed, t_sdlcontext *sdl)
 		dfile = readdir(d);
 		while (dfile != NULL)
 		{
-			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".world\0") != NULL)
+			if (/*dfile->d_type == DT_REG && */ft_strstr(dfile->d_name, ".world\0") != NULL)
 			{
 				dat->world_strings[i] = ft_strnew(32);
 				ft_strcpy(dat->world_strings[i], dfile->d_name);
