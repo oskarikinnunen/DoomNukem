@@ -1,6 +1,6 @@
 ﻿resolution_width = 1280
 resolution_height = 720
-images =
+--[[images =
 {
 	"entitytool.png",
 	"linetool.png",
@@ -20,7 +20,16 @@ images =
 	"stone02.png",
 	"stone11.png",
 	"concrete02.png",
-	"wood02.png"
+	"wood02.png",
+	"Transformer-Texture.png",
+	"gl.png",
+	"barrel.png",
+	"concrete.png",
+	"concretebench.png",
+	"rustymetal.png",
+	"scifi_barrel.png",
+	"trash.png",
+	"Keyboard.png"
 }
 objects =
 {
@@ -32,5 +41,13 @@ objects =
 	"Pistol_1.obj",
 	"Shotgun.obj",
 	"Smg.obj",
-	"Revolver.obj"
+	"Revolver.obj",
+	"Transformer.obj",
+	"grenadelauncher.obj",
+	"barrel.obj",
+	"trashcan.obj",
+	"bench.obj",
+	"trash.obj",
+	"untitled.obj"
 }
+--]]

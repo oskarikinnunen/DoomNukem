@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   object_init.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 19:50:18 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 09:04:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/22 10:27:53 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,13 +77,14 @@ void	objects_init(t_sdlcontext *sdl)
 		printf("\ngetting image for object %s \n", object->name);
 		while (m_i < object->material_count)
 		{
-			if (ft_strcmp(object->materials[m_i].texturename, "") != 0)
+			//if (ft_strcmp(object->materials[m_i].texturename, "") != 0)
 				object->materials[m_i].img = get_image_by_name(*sdl, object->materials[m_i].texturename);
-			else
+			/*else
 			{
 				printf("set null image, kd was %i\n", object->materials[m_i].kd & 0xFF);
 				object->materials[m_i].img = NULL;
-			}
+			}*/
+			
 			m_i++;
 		}
 		i++;

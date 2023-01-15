@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vectors.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 17:12:10 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/06 16:06:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,9 @@ float		vector2_magnitude(t_vector2 vec);
 
 //returns the squared magnitude of the vector 'vec'
 float		vector2_sqr_magnitude(t_vector2 vec);
+
+//return the approximate distance between vectors 'first' and 'second'
+float		vector2_sqr_dist(t_vector2 first, t_vector2 second);
 
 //returns distance between first and second vector
 float		vector2_dist(t_vector2 first, t_vector2 second);
@@ -139,6 +142,9 @@ float		vector3_sqr_magnitude(t_vector3 vec);
 
 //returns distance between first and second vector
 float		vector3_dist(t_vector3 first, t_vector3 second);
+
+//returns distance between first and second vector, but different //TODO: better explanation
+float	vector3_sqr_dist(t_vector3 first, t_vector3 second);
 
 //returns dot product of vector 'first' and vector 'second'
 float		vector3_dot(t_vector3 first, t_vector3 second);
@@ -233,6 +239,15 @@ int			point_dot(t_point first, t_point second);
 //returns true if both points are identical
 bool		point_cmp(t_point first, t_point second);
 
+//returns the squared magnitude of the point 'point'
+float		point_sqr_fmagnitude(t_point point);
+
+//returns distance between first and second point
+float		point_fdist(t_point first, t_point second);
+
+//returns dot product of point 'first' and point 'second'
+float		point_fdot(t_point first, t_point second);
+
 //returns point lerped;
 t_point lerp_point(t_point from, t_point to, float delta);
 
@@ -319,7 +334,9 @@ float	radtodeg(float rad);
 
 t_quaternion	vector3_to_quaternion(t_vector3 v);
 
-t_vector3		vector2_to_vector3(t_vector2 vec);
+t_vector3		v2tov3(t_vector2 vec);
+
+t_vector2		v3tov2(t_vector3 vec);
 
 //Returns t_vector2 'vec' casted to t_point. (Shorthand for '*(t_point *)&vec').
 t_point			vector2_to_point(t_vector2 vec);
@@ -329,5 +346,14 @@ t_vector2		point_to_vector2(t_point point);
 
 //Returns static str for given vector3
 char			*vector_string(t_vector3 vec);
+
+t_texture		vector2_to_texture(t_vector2 v);
+
+typedef struct s_ray
+{
+	t_vector3 origin;
+	t_vector3 dir;
+}	t_ray;
+
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 12:16:23 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/09 17:38:41 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,11 @@
 # define DOOMNUKEM_H
 
 # include <windows.h>
+# include "fmod.h"
+# include "fmod_common.h"
 # include "libft.h"
 # include "error_log.h"
-# include "limits.h" //TODO: remove mby? just define INT_MAX yourself
+# include "limits.h"
 # include <math.h>
 # include <fcntl.h>
 # include <stdbool.h>
@@ -104,29 +106,42 @@ struct s_autogui;
 
 typedef struct s_world
 {
+	char				name[32];
+	t_player			*player;
 	t_clock				clock;
 	t_debugconsole		debugconsole;
 	struct s_autogui	*debug_gui;
 	t_sdlcontext		*sdl;
 	t_list				*guns;
+	t_lighting			lighting;
+	uint32_t			lights_count;
+	t_pointlight		lights[100];
+	bool				lighting_baked;
 	t_list				*objectmetadatalist; //Move to sdl, this is only used when objects are initialized
 	t_npc				npcpool[128];
-	//t_list				*wall_list;
 	t_list				*roomlist;
 	t_entitycache		entitycache;
 	t_entity			skybox;
+	bool				ceiling_toggle;
 }	t_world;
 
 t_vector2	flipped_uv(t_vector2 og);
 void		for_all_active_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *world));
+void		for_all_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *world));
 void		update_world3d(t_world *world, t_render *render);
+void		toggle_ceilings(t_world *world);
 t_world		load_world(char *filename, t_sdlcontext *sdl);
 void		destroy_entity(t_world *world, t_entity *ent);
 t_entity	*spawn_entity(t_world	*world);
 t_entity	*spawn_basic_entity(t_world *world, char *objectname, t_vector3 position);
+void		entity_assign_object(t_world *world, t_entity *entity, t_object *obj);
 void		save_world(char *filename, t_world world);
+
+//TODO: move to room.h
 void		init_roomwalls(t_world *world, t_room *room);
+t_wall		*find_wall(t_wall wall, t_room *room);
 void		free_floor(t_world *world, t_room *room);
+void		free_walls(t_room *room, t_world *world);
 
 typedef struct s_game
 {
@@ -152,7 +167,7 @@ t_quaternion	transformed_vector3(t_transform transform, t_vector3 v);//TODO: vec
 void			game_mouse_event(SDL_Event e, t_mouse *mouse);//TODO: input.h
 
 /* SPACECONVERSIONS.C */
-t_point vector3_to_screenspace(t_render r, t_vector3 vec, t_sdlcontext sdl);//TODO: vectors.h
+t_point vector3_to_screenspace(t_vector3 vec, t_sdlcontext sdl);
 
 /* EDITOR_MAP_IO.C */
 t_list	*loadmap(char *filename);
@@ -174,7 +189,7 @@ int		controller_events(SDL_Event e, t_hid_info *hid);
 int		playmode(t_sdlcontext sdl);
 
 /* PLAYER.C */
-void	player_init(t_player *player, t_sdlcontext *sdl);
+void	player_init(t_player *player, t_sdlcontext *sdl, t_world *world);
 void	update_render(t_render *render, t_player *player);
 
 /* MOVEPLAYER.C */
@@ -191,6 +206,9 @@ void	quit_game(t_sdlcontext *sdl);
 void	load_fonts(t_font *font);
 
 void	draw_black_background(t_sdlcontext *sdl, t_point pos, t_point size);
+
+//TEMP, TODO: move
+t_line	line_shorten(t_line line);
 
 /* TEXT.C */
 
@@ -231,10 +249,24 @@ void	update_entity_bounds(t_entity *e);
 void	update_floor_bounds(t_meshtri *f);
 void	update_wall_bounds(t_wall *w);
 
+void	free_roomwalls(t_world *world, t_room *room);
 
-//TODO: temp for occlusion
-int32_t		get_id(t_world *world);
+void	set_nullentities(t_wall **ptr, int count);
 
+//TODO: temp for lights
+void	start_lightbake(t_render *render, t_world *world);
+void	bake_lights(t_render *render, t_world *world);
+
+
+uint8_t *smooth_lightmap(t_lightmap *lmap);
+
+void	bake_lighting(t_render *render, t_world *world);
+void	bake_lighting_shadows(t_render *render, t_world *world);
+void	render_entity_depth_buffer(t_sdlcontext sdl, t_render *render, t_entity *entity);
+void	update_arealights_for_entity(t_sdlcontext sdl, t_render *render, t_entity *entity);
+void	update_pointlight_for_entity(t_sdlcontext sdl, t_render *render, t_entity *entity);
+void	calculate_pointlight(t_pointlight *pointlight, t_world *world, t_render *render);
+void	calculate_pointlight_step(t_pointlight *pointlight, t_world *world, t_render *render);
 //
 
 #endif

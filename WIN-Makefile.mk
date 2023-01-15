@@ -25,6 +25,8 @@ SDL2_TTF = $(INSTALLED_LIBS_DIR)/lib/libSDL2_ttf.a
 FREETYPE = $(INSTALLED_LIBS_DIR)/lib/libfreetype.a
 LIBFT = libft/libft.a
 
+FMOD_DIR = $(INSTALLED_LIBS_DIR)/lib/FMOD
+FMOD = $(FMOD_DIR)/copied
 
 
 LUAFOLDER= lua-5.3.6
@@ -40,7 +42,11 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		editor/tools/entity_tool.c \
 		editor/tools/wall_tool_rooms.c \
 		editor/tools/npc_tool.c \
+		editor/tools/load_tool.c \
 		editor/tools/room_tool.c \
+		editor/tools/room_tool_connect.c \
+		editor/tools/room_tool_common.c \
+		editor/tools/room_tool_paint.c \
 		editor/tools/gun_tool.c \
 		editor/tools/tool_common_functions.c \
 		editor/tools/autogui.c \
@@ -52,7 +58,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		walls.c file_open.c \
 		moveplayer.c errors.c \
 		physics.c \
-		game_3d.c fill_triangle.c perfgraph.c \
+		perfgraph.c \
 		png.c lua_conf.c list_helper.c \
 		spaceconversions.c \
 		entity/entity_animate.c \
@@ -65,18 +71,32 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		object_init.c \
 		object_primitives.c \
 		world.c player.c \
-		init_render.c \
 		resolution_scaling.c \
 		controller.c \
-		audio.c \
+		audio_init.c \
+		audio_tools.c \
+		audio_sounds.c \
+		audio_music.c \
 		occlusion/occlusion.c \
 		occlusion/frustrum_culling.c \
 		occlusion/peripheral_culling.c \
 		occlusion/occlusion_culling.c \
 		occlusion/culling_debug.c \
-		render_clip.c \
 		surface_tools.c \
-		colors.c
+		colors.c \
+		render/render_entity.c \
+		render/render_clip.c \
+		render/render_triangle.c \
+		render/init_render.c \
+		render/render_space.c \
+		lighting/bake_lighting.c \
+		lighting/point_light.c \
+		render/rasterization/rasterize_triangle_wrap.c \
+		render/rasterization/rasterize_triangle.c \
+		render/rasterization/rasterize_triangle_uv.c \
+		render/rasterization/rasterize_triangle_dynamic.c \
+		render/render_helper.c \
+		render/flip_channel.c
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c \
 		vector2_elementary.c vector2_shorthands.c \
@@ -95,14 +115,17 @@ SRC+= $(VECTORSRC)
 OBJ= $(SRC:.c=.o)
 
 #Compilation stuff:
-INCLUDE= -I$(INSTALLED_LIBS_DIR)/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include #$(LIBFT)
+INCLUDE= -I$(INSTALLED_LIBS_DIR)/include/SDL2/ -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include \
+			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
 CC= gcc
-CFLAGS= $(INCLUDE) -g -finline-functions -O2 -mwindows#-march=native
+CFLAGS= $(INCLUDE) -g -finline-functions -O2 -mwindows -D__CYGWIN32__#-march=native
 C_INCLUDE_PATH=/mingw/local/include
 C_INCLUDE_PATH+=/mingw/msys/1.0/local/include
 UNAME= $(shell uname)
 ifeq ($(UNAME), MINGW32_NT-6.2)
-LIBS =  $(LIBFT) -lm  -lSDL2 -L/local/lib -lSDL2_ttf #-lGL
+LIBS =  $(LIBFT) -lm  -lSDL2 -L/local/lib -lSDL2_ttf -L$(INSTALLED_LIBS_DIR)/lib \
+ 		"C:\MinGW\msys\1.0\home\RedGlass\DoomNukem\libs\installed_libs\lib\fmod_vc.lib" \
+		"C:\MinGW\msys\1.0\home\RedGlass\DoomNukem\libs\installed_libs\lib\fmodL_vc.lib"
 AUTOGEN = ./autogen.sh &&
 else
 warning:
@@ -112,9 +135,9 @@ endif
 
 #$(SDL2)
 
-all: $(FREETYPE) $(SDL2_TTF) $(LUA) $(LIBFT) $(OBJ)
+all: $(FREETYPE) $(SDL2_TTF) $(FMOD) $(LUA) $(LIBFT) $(OBJ)
 	@echo "compiled.."
-	$(CC) $(OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LUA)
+	$(CC) $(OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LUA) 
 
 $(OBJ): include/*.h Makefile
 
@@ -138,6 +161,17 @@ re-lua: clean-lua $(LUA)
 
 $(LUA):
 	cd $(LUAFOLDER) && make generic && make local
+
+$(FMOD):
+	cp $(FMOD_DIR)/libfmod.dylib $(INSTALLED_LIBS_DIR)/lib/
+	cp $(FMOD_DIR)/libfmodL.dylib $(INSTALLED_LIBS_DIR)/lib/
+	cp $(FMOD_DIR)/libfmod.so $(INSTALLED_LIBS_DIR)/lib/
+	cp $(FMOD_DIR)/libfmod.so.13 $(INSTALLED_LIBS_DIR)/lib/
+	cp $(FMOD_DIR)/libfmod.so.13.11 $(INSTALLED_LIBS_DIR)/lib/
+	cp $(FMOD_DIR)/libfmodL.so $(INSTALLED_LIBS_DIR)/lib/
+	cp $(FMOD_DIR)/libfmodL.so.13 $(INSTALLED_LIBS_DIR)/lib/
+	cp $(FMOD_DIR)/libfmodL.so.13.11 $(INSTALLED_LIBS_DIR)/lib/
+	touch $(FMOD)
 
 $(SDL2_DIR)/unpacked:
 	cd $(LIBS_DIR) && 7z.exe x SDL2-2.0.8.tar.gz -so | 7z x -aoa -si -ttar -o.

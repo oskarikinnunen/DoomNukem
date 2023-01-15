@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   img.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 13:42:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/07 02:45:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/02 17:30:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,21 @@
 static t_img	*error_image()
 {
 	static t_img		err_img;
-	static	uint32_t	data[256];
+	static	uint32_t	data[32 * 32];
 	int					i;
 
 	if (err_img.size.x == 0 || err_img.size.y == 0)
 	{
-		err_img.size.x = 16;
-		err_img.size.y = 16;
-		err_img.length = 256;
+		err_img.size.x = 32;
+		err_img.size.y = 32;
+		err_img.length = 32 * 32;
 		ft_strcpy(err_img.name, "ERRORIMAGE");
 		i = 0;
-		while (i < 256)
+		while (i < 32 * 32)
 		{
 			if (i % 2 == 0)
 			{
-				data[i] = CLR_PRPL;
+				data[i] = flip_channels(AMBER_2);
 			}
 			i++;
 		}
@@ -46,10 +46,10 @@ t_img	*get_image_by_index(t_sdlcontext sdl, int index)
 	int		i;
 
 	i = 0;
-	while (i < sdl.imagecount && sdl.images != NULL)
+	while (i < sdl.texturecount && sdl.textures != NULL)
 	{
 		if (i == index)
-			return (&sdl.images[i]);
+			return (&sdl.textures[i]);
 		i++;
 	}
 	return (error_image()); //TODO: RETURN DEBUGIMAGE HERE
@@ -66,14 +66,15 @@ t_img	*get_image_by_name(t_sdlcontext sdl, char *name) //TODO: return pointer, t
 	char	fullpath[256];
 
 	i = 0;
-	if (ft_strncmp(name, IMGPATH, sizeof(IMGPATH) - 1) != 0)
+	/*if (ft_strncmp(name, IMGPATH, sizeof(IMGPATH) - 1) != 0)
 		sprintf(fullpath, "%s%s", IMGPATH, name);
 	else
-		ft_strcpy(fullpath, name);
-	while (i < sdl.imagecount && sdl.images != NULL)
+		ft_strcpy(fullpath, name);*/
+	while (i < sdl.texturecount && sdl.textures != NULL)
 	{
-		if (ft_strcmp(sdl.images[i].name, fullpath) == 0)
-			return (&sdl.images[i]);
+		//printf("image name %s \n", sdl.images[i].name);
+		if (ft_strcmp(sdl.textures[i].name, name) == 0)
+			return (&sdl.textures[i]);
 		i++;
 	}
 	return (error_image()); //TODO: RETURN DEBUGIMAGE HERE

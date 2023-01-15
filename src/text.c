@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   text.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 22:00:00 by raho              #+#    #+#             */
-/*   Updated: 2022/12/07 06:47:29 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/27 16:46:22 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,11 @@ t_rectangle	print_text_boxed(t_sdlcontext *sdl, const char *text, t_point pos)
 
 	surfacetext = TTF_RenderText_Blended(sdl->font.font, text, sdl->font.color);
 	if (!surfacetext)
-		error_log(EC_TTF_RENDERTEXTBLENDED);
+	{
+		return ((t_rectangle){0});
+		//error_log(EC_TTF_RENDERTEXTBLENDED);
+	}
+		
 	padding.x = 3;
 	padding.y = 3;
 	rect.size.x = surfacetext->w + padding.x * 2;
@@ -54,11 +58,15 @@ t_rectangle	print_text(t_sdlcontext *sdl, const char *text, t_point pos)
 
 	surfacetext = TTF_RenderText_Blended(sdl->font.font, text, sdl->font.color);
 	if (!surfacetext)
-		error_log(EC_TTF_RENDERTEXTBLENDED);
+	{
+		return ((t_rectangle){0});
+		//error_log(EC_TTF_RENDERTEXTBLENDED);
+	}
+		
 	rect.position = pos;
 	rect.size.x = surfacetext->w;
 	rect.size.y = surfacetext->h;
-	join_text_to_surface(sdl->ui_surface, surfacetext, pos, sdl->font.color.a);
+	join_text_to_surface(sdl->surface, surfacetext, pos, sdl->font.color.a);
 	SDL_FreeSurface(surfacetext);
 	return (rect);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   npc_tool.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 15:18:07 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 10:47:35 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/29 12:57:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,15 +77,15 @@ void	highlight_tri(t_editor *ed, t_sdlcontext sdl, t_npctooldata *dat, int32_t i
 	t.p[0] = transformed_vector3(dat->ent->transform, t.p[0].v);
 	t.p[1] = transformed_vector3(dat->ent->transform, t.p[1].v);
 	t.p[2] = transformed_vector3(dat->ent->transform, t.p[2].v);
-	t_point p1 = vector3_to_screenspace(ed->render, t.p[0].v, sdl);
-	t_point p2 = vector3_to_screenspace(ed->render, t.p[1].v, sdl);
+	t_point p1 = vector3_to_screenspace(t.p[0].v, sdl);
+	t_point p2 = vector3_to_screenspace(t.p[1].v, sdl);
 	drawcircle(sdl, p1, 10, CLR_GREEN);
 	drawline(sdl, p1, p2, CLR_BLUE);
-	p1 = vector3_to_screenspace(ed->render, t.p[1].v, sdl);
-	p2 = vector3_to_screenspace(ed->render, t.p[2].v, sdl);
+	p1 = vector3_to_screenspace(t.p[1].v, sdl);
+	p2 = vector3_to_screenspace(t.p[2].v, sdl);
 	drawline(sdl, p1, p2, CLR_BLUE);
-	p1 = vector3_to_screenspace(ed->render, t.p[2].v, sdl);
-	p2 = vector3_to_screenspace(ed->render, t.p[0].v, sdl);
+	p1 = vector3_to_screenspace(t.p[2].v, sdl);
+	p2 = vector3_to_screenspace(t.p[0].v, sdl);
 	drawline(sdl, p1, p2, CLR_BLUE);
 }
 
@@ -105,7 +105,7 @@ static void	render_vertexgizmo(t_editor *ed, t_sdlcontext sdl, t_entity *entity,
 	t_point		ss_vertex;
 
 	ws_vertex = transformed_vector3(entity->transform, *vertex).v;
-	ss_vertex = vector3_to_screenspace(ed->render, ws_vertex, sdl);
+	ss_vertex = vector3_to_screenspace(ws_vertex, sdl);
 	drawcircle(sdl, ss_vertex, 6, CLR_RED);
 }
 
@@ -127,17 +127,17 @@ int		xyz_magnitude(t_transform *t, t_vector3 vec, t_render *r, t_sdlcontext *sdl
 	t_point		ss_new;
 
 	ws_vertex = transformed_vector3(*t, vec).v;
-	ss_orig = vector3_to_screenspace(*r , ws_vertex, *sdl);
+	ss_orig = vector3_to_screenspace(ws_vertex, *sdl);
 	ws_vertex = transformed_vector3(*t, vector3_add(vec, (t_vector3){.x = 2.0f})).v;
-	ss_new = vector3_to_screenspace(*r , ws_vertex, *sdl);
+	ss_new = vector3_to_screenspace(ws_vertex, *sdl);
 	x = point_dist(ss_orig, ss_new);
 
 	ws_vertex = transformed_vector3(*t, vector3_add(vec, (t_vector3){.y = 2.0f})).v;
-	ss_new = vector3_to_screenspace(*r , ws_vertex, *sdl);
+	ss_new = vector3_to_screenspace(ws_vertex, *sdl);
 	y = point_dist(ss_orig, ss_new);
 
 	ws_vertex = transformed_vector3(*t, vector3_add(vec, (t_vector3){.z = 2.0f})).v;
-	ss_new = vector3_to_screenspace(*r , ws_vertex, *sdl);
+	ss_new = vector3_to_screenspace(ws_vertex, *sdl);
 	z = point_dist(ss_orig, ss_new);
 	return (ft_max(ft_max(x, y), z));
 }
@@ -152,16 +152,16 @@ void	render_vertexlines(t_editor *ed, t_sdlcontext sdl, t_npctooldata *dat)
 	t_point		col_rect[4];
 
 	ws_vertex = transformed_vector3(dat->ent->transform, *dat->col.start_vertex).v;
-	col_rect[0] = vector3_to_screenspace(ed->render, ws_vertex, sdl);
+	col_rect[0] = vector3_to_screenspace(ws_vertex, sdl);
 	ws_vertex = transformed_vector3(dat->ent->transform, *dat->col.end_vertex).v;
-	col_rect[2] = vector3_to_screenspace(ed->render, ws_vertex, sdl);
+	col_rect[2] = vector3_to_screenspace(ws_vertex, sdl);
 	drawline(sdl, col_rect[0], col_rect[2], CLR_RED);
 	//drawline(sdl, col_rect[1], col_rect[3], CLR_RED);
 	ss_vertex1 = point_sub(col_rect[0], col_rect[2]);
 	int			temp = ss_vertex1.x;
 	ss_vertex1.x = -ss_vertex1.y;
 	ss_vertex1.y = temp;
-	int	xyz = xyz_magnitude(&dat->ent->transform, *dat->col.start_vertex, &ed->render, &sdl);
+	int	xyz = xyz_magnitude(&dat->ent->transform, *dat->col.start_vertex, &sdl.render, &sdl);
 	normal = point_to_vector2(ss_vertex1);
 	normal = vector2_normalise(normal);
 	//Normal for start + pos x
@@ -188,10 +188,10 @@ void	render_collider(t_editor *ed, t_sdlcontext sdl, t_npctooldata *dat)
 	/*
 	if (dat->col.entity.obj != NULL)
 	{
-		ed->render.wireframe = true;
-		ed->render.gizmocolor = CLR_GREEN;
-		render_entity(sdl, &ed->render, &dat->col.entity);
-		ed->render.wireframe = false;
+		sdl->render.wireframe = true;
+		sdl->render.gizmocolor = CLR_GREEN;
+		render_entity(sdl, &sdl->render, &dat->col.entity);
+		sdl->render.wireframe = false;
 	}*/
 }
 
@@ -225,10 +225,10 @@ void	render_box_colliders(t_entity *ent, t_editor *ed, t_sdlcontext sdl)
 			box.transform.scale = bc.size;
 		}
 		box.transform.scale = bc.size;
-		ed->render.wireframe = true;
-		ed->render.gizmocolor = CLR_GREEN;
-		render_entity(sdl, &ed->render, &box);
-		ed->render.wireframe = false;
+		sdl.render.wireframe = true;
+		sdl.render.gizmocolor = CLR_GREEN;
+		render_entity(&sdl, &sdl.render, &box);
+		sdl.render.wireframe = false;
 		i++;
 	}
 }
@@ -361,8 +361,8 @@ void	npc_tool_update(t_editor *ed, t_sdlcontext *sdl)
 	dat = ed->tool->tooldata;
 	npc_tool_lazy_init(ed, sdl, dat);
 	//autoguitest(ed, sdl);
-	//ed->render.wireframe = true;
-	render_entity(*sdl, &ed->render, dat->ent);
+	//sdl->render.wireframe = true;
+	render_entity(sdl, &sdl->render, dat->ent);
 	maingui(ed, sdl, dat);
 	objectgui(ed, sdl, dat);
 	collidergui(ed, sdl, dat);

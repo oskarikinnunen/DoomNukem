@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   file_open.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 19:16:48 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 19:17:20 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/09 17:55:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,10 @@ int	fileopen(char *filename, int flags)
 
 	fd = open(filename, flags, 0666);
 	if (fd == -1)
-		error_log(EC_WRITE);
+	{
+		printf("FAILED TO OPEN FILE %s \n", filename);
+		//error_log(EC_WRITE);
+	}
+		
 	return (fd);
 }

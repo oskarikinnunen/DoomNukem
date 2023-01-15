@@ -6,6 +6,7 @@
 #include "objects.h"
 #include "occlusion.h"
 #include "render.h"
+#include "lighting.h"
 
 typedef struct s_bound
 {
@@ -38,7 +39,9 @@ typedef enum s_entitystatus
 typedef struct s_entity
 {
 	t_transform		transform;
-	bool			uneditable;
+	bool			ignore_raycasts;
+	bool			rigid;
+	bool			hidden;
 	uint32_t		object_index;
 	char			object_name[64];
 	t_entitystatus	status;
@@ -47,8 +50,41 @@ typedef struct s_entity
 	t_anim			animation;
 	t_object		*obj;
 	t_occlusion		occlusion;
+	t_vector2		max;
+	t_lightmap		*lightmap;
+	t_map			*map;
 	//uint16_t		root_id;
 }	t_entity;
+
+/*typedef enum s_audiosource
+{
+	t_entity	*entity;
+	uint16_t	entity_id;
+}	t_audiosource;*/
+
+typedef enum e_prefabtype
+{
+	//pft_pickup,
+	pft_interactable,
+	pft_light,
+	pft_npc,
+	pft_audiosource,
+	pft_eventtrigger
+}	t_prefabtype;
+
+typedef struct s_prefab
+{
+	t_object		*object;
+	char			object_name[64];
+	t_prefabtype	prefabtype;
+}	t_prefab;
+
+/*
+	//assign_prefabs()
+	draw prefab_menu
+		for light
+
+*/
 
 typedef struct s_gun
 {
@@ -90,8 +126,15 @@ void	calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity);
 int		calculate_tris_from_square(t_square s, t_entity *ent, t_render *render);
 
 /* RENDERING */
-void	render_entity(t_sdlcontext sdl, t_render *render, t_entity *entity);
+void	highlight_entity(t_sdlcontext *sdl, t_entity *entity, uint32_t color);
+void	render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 void	draw_wireframe(t_sdlcontext sdl, t_render *render, t_entity *e, uint32_t clr);
 void	draw_edges(t_sdlcontext sdl, t_render *render, t_entity *e, uint32_t clr);
+void	render_worldspace(t_render *render, t_entity *entity);
+void	render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity);
+
+void create_map_for_entity(t_entity *entity, struct s_world *world);
+void create_dynamic_map_for_entity(t_entity *entity, struct s_world *world);
+void create_lightmap_for_entity(t_entity *entity, struct s_world *world);
 
 #endif

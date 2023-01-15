@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 07:24:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/09 16:16:15 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "png.h"
 #include "game_lua.h"
 #include "objects.h"
-
+#include "file_io.h"
 #ifdef __APPLE__
 	#include <OpenGL/gl.h>
 //#else
@@ -33,26 +33,28 @@ static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 {
 	const char	*platform;
 
-	printf("starting lua conf\n");
+	ft_bzero(sdl, sizeof(t_sdlcontext));
+	printf("load lua conf start\n");
 	load_lua_conf(sdl);
+	printf("load lua conf end\n");
 	SDL_DisplayMode	mode;
 	sdl->resolution_scaling = 1.0f;
 	if (SDL_Init(SDL_INIT_VIDEO) < 0 \
-		|| SDL_Init(SDL_INIT_AUDIO) < 0 \
 		|| SDL_Init(SDL_INIT_EVENTS) < 0 \
 		|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0 \
 		|| TTF_Init() < 0)
-		{
-			printf("SDL_INIT failed! \n");
-			error_log(EC_SDL_INIT);
-		}
-		
-	if (screenmode == screenmode_borderless && SDL_GetCurrentDisplayMode(0, &mode) == 0)
+		error_log(EC_SDL_INIT);
+	if (screenmode == screenmode_borderless && SDL_GetCurrentDisplayMode(1, &mode) == 0)
 	{
 		sdl->window_w = mode.w;
 		sdl->window_h = mode.h;
 		sdl->screensize = (t_point) {sdl->window_w, sdl->window_h};
 		sdl->resolution_scaling = 0.5f;
+		float hdpi;
+		float vdpi;
+		SDL_GetDisplayDPI(0, NULL, &hdpi, &vdpi);
+		printf("dpi %f %f \n", hdpi, vdpi);
+		printf("mode res %i %i \n", mode.w, mode.h);
 	}
 	platform = SDL_GetPlatform();
 	printf("platform: %s\n", platform);
@@ -67,7 +69,7 @@ static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 	}
 	sdl->window = SDL_CreateWindow("DoomNukem",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		sdl->window_w, sdl->window_h, SDL_WINDOW_SHOWN);
+		sdl->window_w, sdl->window_h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS);
 	if (sdl->window == NULL)
 		error_log(EC_SDL_CREATEWINDOW);
 	if (screenmode == screenmode_borderless)
@@ -87,14 +89,21 @@ static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 	if (sdl->ui_surface == NULL)
 		error_log(EC_SDL_CREATERGBSURFACE);
 	load_fonts(&sdl->font);
-	load_audio(sdl);
+	load_audio(&sdl->audio);
 
 	sdl->zbuffer = malloc(sdl->window_w * sdl->window_h * sizeof(float));
 	objects_init(sdl);
-	t_object *o = get_object_by_name(*sdl, "cyborg");
-	parseanim(o, "walk");
+	//t_object *o = get_object_by_name(*sdl, "cyborg");
+	//parseanim(o, "walk");
 	/* create context here, call gl clear in render start, glbegin in drawtriangles etc */
-	//SDL_GLContext glc = SDL_GL_CreateContext(sdl->window);
+
+	//save_filecontent("test.world", "assets/objects/barrel.obj");
+	
+	SDL_GLContext glc = SDL_GL_CreateContext(sdl->window);
+	t_point	drawablesize;
+	SDL_GL_GetDrawableSize(sdl->window, &drawablesize.x, &drawablesize.y);
+	printf("gl draw size %i %i \n", drawablesize.x, drawablesize.y);
+	//exit(0);
 	/*glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 	glEnable(GL_DEPTH_TEST);
@@ -119,7 +128,7 @@ static void	create_sdl_context(t_sdlcontext *sdl, t_screenmode	screenmode)
 
 void	quit_game(t_sdlcontext *sdl)
 {
-	close_audio(sdl);
+	//close_audio(&sdl->audio);
 	SDL_Quit();
 	exit(0);
 }

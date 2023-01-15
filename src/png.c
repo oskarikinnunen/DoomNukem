@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   png.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:10:14 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 09:48:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/22 10:44:27 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ void	sample_ouroboros(t_img *orig) //samples the image into itself
 	newdata = ft_memalloc((orig->length) * sizeof(uint32_t));
 	sample = point_zero();
 	//orig->size.y -= 1;
-	while (sample.y < orig->size.y)
+	while (sample.y < orig->size.y - 1)
 	{
 		sample.x = 0;
 		while (sample.x < orig->size.x)
@@ -129,6 +129,7 @@ void	sample_ouroboros(t_img *orig) //samples the image into itself
 		sample.y++;
 	}
 	free(orig->data);
+	orig->size.y--;
 	orig->data = newdata;
 }
 
@@ -162,7 +163,7 @@ t_img	pngparse(char *filename)
 	uint8_t		buf[1000000]; //TODO: this is bad
 	t_img		result;
 
-	fd = _open(filename, O_RDONLY | O_BINARY);
+	fd = open(filename, O_RDONLY | O_BINARY);
 	if (fd < 0)
 		error_log(EC_OPEN);
 	#ifdef _WINDOWS_

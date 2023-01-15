@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   draw0.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 06:55:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/06 19:49:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
+#include "render.h"
 #include "bresenham.h"
 #include "shapes.h"
 #include "colors.h"
@@ -20,7 +21,7 @@ void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr)
 	if (pos.x < 0 || pos.x >= sdl.window_w - 2
 		|| pos.y < 0 || pos.y >= sdl.window_h - 2)
 		return ;
-	((uint32_t *)sdl.ui_surface->pixels)[pos.x + (pos.y * sdl.window_w)] = clr;
+	((uint32_t *)sdl.surface->pixels)[pos.x + (pos.y * sdl.window_w)] = clr;
 	//sdl.zbuffer[pos.x + (pos.y * sdl.window_w)] = 2.0f;
 }
 
@@ -36,7 +37,8 @@ void	draw_alpha(t_sdlcontext sdl, t_point pos, uint32_t clr)
 
 void	screen_blank(t_sdlcontext sdl)
 {
-	bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
+	//bzero(sdl.surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
+	//bzero(sdl.window_surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 	bzero(sdl.ui_surface->pixels, sizeof(uint32_t) * sdl.window_h * sdl.window_w);
 	bzero(sdl.zbuffer, sizeof(float) * sdl.window_h * sdl.window_w);
 }
@@ -110,6 +112,8 @@ void	draw_rectangle_filled(t_sdlcontext sdl, t_rectangle rect, uint32_t clr)
 	p = rect.position;
 
 	i = 0;
+	if (point_cmp(rect.size, point_zero()))
+		return ;
 	while (p.x < rect.position.x + rect.size.x)
 	{
 		p.y = rect.position.y;
@@ -171,7 +175,7 @@ void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale)
 			sample.x = ft_clamp(pixel.x * scalar.x, 0, img.size.x - 1);
 			sample.y = ft_clamp(pixel.y * scalar.y, 0, img.size.y - 1);
 			color = img.data[sample.x + (sample.y * img.size.x)];
-			draw(sdl, point_add(pos, pixel), color);
+			draw(sdl, point_add(pos, pixel), flip_channels(color));
 			pixel.x++;
 		}
 		pixel.y++;
@@ -184,8 +188,12 @@ void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr)
 
 	if ((from.x == to.x && from.y == to.y)|| from.x < 0 || to.x < 0 || from.x > sdl.window_w - 1 || to.x > sdl.window_w - 1 || from.y < 0 || to.y < 0 || from.y > sdl.window_h - 1 || to.y > sdl.window_h - 1)
 	{
-		return ;
+		//printf("line start: %i %i end: %i %i \n", from.x, from.y, to.x, to.y);
+		;//return ;
 	}
+	//point_dist()
+	if (from.x == to.x && from.y == to.y/* || point_dist(from, to) > 10000.0f*/)
+		return ;
 	populate_bresenham(&b, from, to);
 	draw(sdl, b.local, clr);
 	while (step_bresenham(&b) != 1)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   autogui.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 10:45:28 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/09 17:12:38 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,7 +178,7 @@ void	gui_end(t_autogui *gui)
 			drawrectangle(*gui->sdl, dragbar, AMBER_1);
 		if (gui->hid->mouse.held == MOUSE_LEFT && pointrectanglecollision(gui->hid->mouse.pos, dragbar) && !gui->hid->mouse.dragging_ui)
 		{
-			gui->hid->mouse.dragging_ui = true;
+			//gui->hid->mouse.dragging_ui = true;
 			gui->move_held = true;
 		}
 			
@@ -198,7 +198,7 @@ void	gui_end(t_autogui *gui)
 			draw_rect_tri(gui->sdl, dragcorner, AMBER_1);
 		if (gui->hid->mouse.held == MOUSE_LEFT && pointrectanglecollision(gui->hid->mouse.pos, dragcorner) && !gui->hid->mouse.dragging_ui)
 		{
-			gui->hid->mouse.dragging_ui = true;
+			//gui->hid->mouse.dragging_ui = true;
 			gui->drag_held = true;
 		}
 		if (gui->drag_held)
@@ -212,15 +212,12 @@ void	gui_end(t_autogui *gui)
 	{
 		gui->move_held = false;
 		gui->drag_held = false;
-		gui->hid->mouse.dragging_ui = false;
-		gui->scroll_held = false;
-		if (gui->locking_player)
+		if (gui->hid->mouse.dragging_ui)
 		{
-			gui->locking_player = false;
-			gui->player->locked = false;
-			gui->hid->mouse.safe_delta = false;
+			gui->hid->mouse.dragging_ui = false;
 			force_mouseunlock(gui->hid);
 		}
+		gui->scroll_held = false;
 	}
 	if (gui->offset.y < gui->rect.size.y)
 	{
@@ -311,7 +308,7 @@ void	gui_endhorizontal(t_autogui *gui)
 {
 	gui->agl = agl_vertical;
 	gui->offset.x = 0;
-	gui->offset.y += 20;
+	gui->offset.y += 34;
 }
 
 //Internal function, rename with a better name
@@ -327,6 +324,25 @@ static	void	gui_layout(t_autogui *gui, t_rectangle rect)
 			gui->overdraw += 20;
 		}
 		gui->offset.y += 20;
+	}
+	else
+		gui->offset.x += x;
+	if (gui->offset.x > gui->x_maxdrawn)
+		gui->x_maxdrawn = gui->offset.x;
+}
+
+static	void	gui_layout_big(t_autogui *gui, t_rectangle rect)
+{
+	int	x;
+
+	x = ft_max(rect.size.x + 10, gui->min_x);
+	if (gui->agl == agl_vertical)
+	{
+		if (!gui_shoulddraw(gui))
+		{
+			gui->overdraw += 34;
+		}
+		gui->offset.y += 34;
 	}
 	else
 		gui->offset.x += x;
@@ -421,16 +437,19 @@ bool	gui_float_slider(float	*f, float mul, t_autogui *gui)
 				mousepos = gui->hid->mouse.pos;
 				force_mouselock(gui->hid);
 				gui->hid->mouse.pos = mousepos;
-				gui->hid->mouse.safe_delta = true;
-				gui->player->locked = true;
-				gui->locking_player = true;
+				gui->hid->mouse.dragging_ui = true;
+				/*gui->player->locked = true;
+				gui->locking_player = true;*/
 			}
-			if (gui->hid->mouse.relative && gui->locking_player)
+			/*if (gui->hid->mouse.relative && gui->locking_player)
+			{*/
+			if (gui->hid->mouse.held == MOUSE_LEFT)
 			{
 				add += (float)gui->hid->mouse.delta.x * mul;
 				if (add != 0.0f)
 					modified = true;
 			}
+			//}
 			if ((gui->hid->keystate >> KEYS_SHIFTMASK) & 1)
 				add *= 2.0f;
 			if ((gui->hid->keystate >> KEYS_LALTMASK) & 1)
@@ -473,6 +492,25 @@ void	gui_vector3_slider(t_vector3 *vec, float mul, t_autogui *gui)
 	gui->min_x = temp_min_x;
 }
 
+static t_buttonreturn	autogui_internal_colored_button(char *str, t_autogui *gui, uint32_t color)
+{
+	t_buttonreturn	br;
+
+	br.rect = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
+	drawrectangle(*gui->sdl, br.rect, AMBER_2);
+	br.clicked = false;
+	if (pointrectanglecollision(gui->hid->mouse.pos, br.rect))
+	{
+		drawrectangle(*gui->sdl, br.rect, color);
+		if (mouse_clicked(gui->hid->mouse, MOUSE_LEFT))
+		{
+			br.clicked = true;
+			gui->hid->mouse.click_unhandled = false;
+		}
+	}
+	return (br);
+}
+
 static t_buttonreturn	autogui_internal_button(char *str, t_autogui *gui)
 {
 	t_buttonreturn	br;
@@ -492,6 +530,71 @@ static t_buttonreturn	autogui_internal_button(char *str, t_autogui *gui)
 	return (br);
 }
 
+bool	gui_colored_button(char *str, t_autogui *gui, uint32_t color)
+{
+	t_rectangle		rect;
+	t_buttonreturn	br;
+
+	br.rect = empty_rect();
+	br.clicked = false;
+	if (gui_shoulddraw(gui))
+	{
+		br = autogui_internal_colored_button(str, gui, color);
+	}
+	gui_layout(gui, br.rect);
+	return (br.clicked);
+}
+
+bool	gui_shortcut_button(char *str, int alpha_or_keymask, t_autogui *gui)
+{
+	t_rectangle		rect;
+	t_buttonreturn	br;
+	char			*str_s;
+
+	br.rect = empty_rect();
+	br.clicked = false;
+	str_s = ft_strnew(ft_strlen(str) + 4);
+	if (ft_isalpha(alpha_or_keymask))
+		snprintf(str_s, ft_strlen(str) + 4, "[%c]%s", alpha_or_keymask, str);
+	else
+		snprintf(str_s, ft_strlen(str) + 4, "[%s]", str);
+	if (gui_shoulddraw(gui))
+	{
+		br = autogui_internal_button(str_s, gui);
+	}
+	free(str_s);
+	gui_layout(gui, br.rect);
+	if (alpha_or_keymask < 32 && (gui->hid->keystate >> alpha_or_keymask) & 1) //Assumed keymask
+		br.clicked = true;
+	if (ft_isalpha(alpha_or_keymask) && check_alpha_key(gui->hid->alphakey_pressed, alpha_or_keymask))
+		br.clicked = true;
+	return (br.clicked);
+}
+
+bool	gui_imagebutton(t_img	*img, t_autogui *gui)
+{
+	t_rectangle		imgrect;
+	bool			ret;
+
+	imgrect = empty_rect();
+
+	ret = false;
+	if (gui_shoulddraw(gui))
+	{
+		draw_image(*gui->sdl, gui_currentpos(gui), *img, (t_point){32,32});
+		imgrect.size = (t_point){32,32};
+		imgrect.position = gui_currentpos(gui);
+		if (pointrectanglecollision(gui->hid->mouse.pos, imgrect))
+		{
+			print_text(gui->sdl, img->name, gui->hid->mouse.pos);
+			if (mouse_clicked(gui->hid->mouse, MOUSE_LEFT))
+				ret = true;
+		}
+	}
+	gui_layout_big(gui, imgrect);
+	return (ret);
+}
+
 bool	gui_button(char *str, t_autogui *gui)
 {
 	t_rectangle		rect;
@@ -505,6 +608,148 @@ bool	gui_button(char *str, t_autogui *gui)
 	}
 	gui_layout(gui, br.rect);
 	return (br.clicked);
+}
+
+bool	gui_hoverlabel(char *str, t_autogui *gui)
+{
+	t_rectangle	rect;
+	bool		hovered;
+
+	rect = empty_rect();
+	hovered = false;
+	if (gui_shoulddraw(gui))
+	{
+		rect = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
+		if (pointrectanglecollision(gui->hid->mouse.pos, rect))
+			hovered = true;
+	}
+	gui_layout(gui, rect);
+	return (hovered);
+}
+
+void	gui_string_edit(char *str, t_autogui	*gui)
+{
+	static bool	blink;
+	static int 	blinkframecounter;
+	SDL_Event	e;
+	bool		done;
+	t_rectangle	rect;
+	t_rectangle	orig;
+	t_point		start;
+	char		bstr[40] = {};
+
+	blinkframecounter++;
+	if (blinkframecounter % 25 == 0)
+		blink = !blink;
+	if (blink)
+		sprintf(bstr, "\xE6 %s ", str);
+	else
+		sprintf(bstr, "\xE6 %s\xE4", str);
+	done = false;
+	if (ft_strlen(str) != 0)
+		orig = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
+	else
+		orig = print_text_boxed(gui->sdl, " ", gui_currentpos(gui));
+	rect = empty_rect();
+	if (gui_colored_button(bstr, gui, AMBER_4))
+	{
+		SDL_StartTextInput();
+		while (!done)
+		{
+			while (SDL_PollEvent(&e) && !done)
+			{
+				draw_rectangle_filled(*gui->sdl, rect, 1);
+				if (e.type == SDL_TEXTINPUT && ft_strlen(str) < 31)
+				{
+					ft_strncat(str, e.text.text, 32);
+				}
+				if (e.type == SDL_KEYDOWN && iskey(e, SDLK_BACKSPACE))
+					str[ft_strlen(str) - 1] = '\0';
+				rect = empty_rect();
+				ft_bzero(bstr, 40);
+				sprintf(bstr, "\xE6 %s ", str);
+				rect = print_text_boxed(gui->sdl, bstr, orig.position);
+				//join_surfaces(gui->sdl->window_surface, gui->sdl->ui_surface);
+				ft_memcpy(gui->sdl->window_surface->pixels, gui->sdl->surface->pixels, gui->sdl->window_w * gui->sdl->window_h * sizeof(uint32_t));
+				SDL_UpdateWindowSurface(gui->sdl->window);
+				if (e.type == SDL_MOUSEBUTTONDOWN
+					|| (e.type == SDL_KEYDOWN && (e.key.keysym.sym == SDLK_RETURN ||
+											e.key.keysym.sym == SDLK_RETURN2 ||
+											e.key.keysym.sym == SDLK_ESCAPE)))
+				{
+					done = true;
+					break ;
+				}
+			}
+		}
+	}
+	SDL_StopTextInput();
+}
+
+bool	gui_highlighted_button(char *str, t_autogui *gui) //TODO, DRAWRECTANGLE AMBER3
+{
+	t_rectangle		rect;
+	t_buttonreturn	br;
+
+	br.rect = empty_rect();
+	br.clicked = false;
+	if (gui_shoulddraw(gui))
+	{
+		br = autogui_internal_button(str, gui);
+	}
+	drawrectangle(*gui->sdl, br.rect, AMBER_3);
+	gui_layout(gui, br.rect);
+	return (br.clicked);
+}
+
+bool	gui_labeled_bool(char *str, bool b, t_autogui *gui)
+{
+	char	tstr[12] = "true";
+	char	fstr[12] = "false";
+	gui_starthorizontal(gui);
+	gui_label(str, gui);
+	if (b)
+		gui_label(tstr, gui);
+	else
+		gui_label(fstr, gui);
+	gui_endhorizontal(gui);
+}
+
+bool	gui_labeled_bool_edit(char *str, bool *b, t_autogui *gui)
+{
+	gui_starthorizontal(gui);
+	gui_label(str, gui);
+	if (*b)
+	{
+		gui_highlighted_button("True", gui);
+		if (gui_button("False", gui))
+			*b = false;
+	}
+	else
+	{
+		if (gui_button("True", gui))
+			*b = true;
+		gui_highlighted_button("False", gui);
+	}
+	gui_endhorizontal(gui);
+}
+
+bool	gui_bool_edit(bool *b, t_autogui *gui)
+{
+	gui_starthorizontal(gui);
+	if (*b)
+	{
+		gui_highlighted_button("True", gui);
+		if (gui_button("False", gui))
+			*b = false;
+	}
+	else
+	{
+		if (gui_button("True", gui))
+			*b = true;
+		gui_highlighted_button("False", gui);
+	}
+	gui_endhorizontal(gui);
 }
 
 void gui_int(int i, t_autogui *gui)
@@ -579,10 +824,7 @@ bool	gui_int_slider(int *i, float mul, t_autogui *gui)
 			if (gui->hid->mouse.relative && gui->locking_player)
 			{
 				//add += gui->hid->mouse.delta.x;
-				if (gui->hid->mouse.delta.x > 0)
-					add = 1;
-				if (gui->hid->mouse.delta.x < 0)
-					add = -1;
+				add = gui->hid->mouse.delta.x;
 				if (add != 0)
 					modified = true;
 			}

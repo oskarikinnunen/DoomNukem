@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 11:54:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/10 15:08:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ t_entity *selected_entity(t_editor *ed, t_sdlcontext sdl)
 		entity = &cache->entities[i];
 		if (entity->status != es_free)
 		{
-			if (!entity->uneditable && entity_lookedat(ed, sdl, entity))
+			if (!entity->rigid && entity_lookedat(ed, sdl, entity))
 			{
 				return (entity);
 			}
@@ -113,6 +113,8 @@ static void	entity_tool_lazyinit(t_editor *ed, t_sdlcontext *sdl, t_entitytoolda
 	{
 		dat->entitygui = init_gui(sdl, &ed->hid, &ed->player, (t_point) {20, 40}, "Edit entity");
 		dat->entitygui.minimum_size.x = 300;
+		dat->entitygui.minimum_size.y = 550;
+		dat->entitygui.rect.size.y = 550;
 	}
 }
 
@@ -132,7 +134,7 @@ static int find_object_index(t_sdlcontext *sdl, t_entity *ent)
 
 void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 {
-	if (dat->sel_ent != NULL)
+	if (dat->sel_ent != NULL || vector3_cmp(dat->info.hit_pos, vector3_zero()))
 		return ;
 	objectgui_update(&dat->objectgui, &dat->ent);
 	if (dat->ent != NULL)
@@ -141,21 +143,24 @@ void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 		dat->entitygui.hidden = false;
 		gui_start(&dat->entitygui);
 		gui_preset_scale_and_rotate(&dat->ent->transform, &dat->entitygui);
+		gui_labeled_int("Object triangles: ", dat->ent->obj->face_count, &dat->entitygui);
 		gui_end(&dat->entitygui);
 		findbounds(dat->ent);
-		dat->ent->transform.position = raycast(ed);//vector3_movetowards(ent->transform.position, dir, ed->clock.delta * 1.0f);
+		dat->ent->transform.position = dat->info.hit_pos;
+		//dat->ent->transform.position = raycast(ed);//vector3_movetowards(ent->transform.position, dir, ed->clock.delta * 1.0f);
 		dat->ent->transform.position.z -= dat->ent->z_bound.min * dat->ent->transform.scale.z;
 		dat->ent->transform.rotation.x += ed->hid.mouse.scroll_delta * 0.25f;
-		ed->render.wireframe = true;
-		ed->render.gizmocolor = AMBER_3;
-		render_entity(*sdl, &ed->render, dat->ent);
-		ed->render.wireframe = false;
+		sdl->render.wireframe = true;
+		sdl->render.gizmocolor = AMBER_3;
+		render_entity(sdl, &sdl->render, dat->ent);
+		sdl->render.wireframe = false;
 	}
-	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT) && dat->ent != NULL)
+	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT) && ed->hid.mouse.relative && dat->ent != NULL)
 	{
 		t_entity *went = spawn_entity(&ed->world);
-		went->obj = dat->ent->obj;
-		ft_strcpy(went->object_name, dat->ent->object_name);
+		entity_assign_object(&ed->world, went, dat->ent->obj);
+		/*went->obj = dat->ent->obj;*/
+		ft_strcpy(went->object_name, dat->ent->object_name); //TODO: fix in world save or in assign object
 		went->transform = dat->ent->transform;
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT) && dat->ent != NULL)
@@ -167,44 +172,58 @@ void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 
 void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 {
-	t_entity	*hover;
+	//t_entity	*hover;
 	t_entity	*ent;
 	t_autogui	*gui;
 
 	if (dat->ent != NULL)
 		return ;
-	hover = NULL;
+
+
+	/*hover = NULL;
 	hover = selected_entity(ed, *sdl);
 	if (hover != NULL)
 	{
-		ed->render.wireframe = true;
-		ed->render.gizmocolor = AMBER_1;
-		render_entity(*sdl, &ed->render, hover);
-		ed->render.wireframe = false;
+		sdl->render.wireframe = true;
+		sdl->render.gizmocolor = AMBER_1;
+		render_entity(sdl, &sdl->render, hover);
+		sdl->render.wireframe = false;
 		if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 			dat->sel_ent = hover;
+	}*/
+	if (dat->info.hit_entity != NULL &&
+		!dat->info.hit_entity->rigid && mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
+	{
+		dat->sel_ent = dat->info.hit_entity;
+		//dat->sel_ent->ignore_raycasts = true;
 	}
 	if (dat->sel_ent != NULL)
 	{
 		gui = &dat->entitygui;
 		ent = dat->sel_ent;
-		ed->render.wireframe = true;
-		ed->render.gizmocolor = AMBER_3;
-		render_entity(*sdl, &ed->render, ent);
-		ed->render.wireframe = false;
+		sdl->render.wireframe = true;
+		sdl->render.gizmocolor = AMBER_3;
+		render_entity(sdl, &sdl->render, ent);
+		sdl->render.wireframe = false;
 
 		gui_start(gui);
 		gui_preset_transform(&ent->transform, gui);
 		gui_emptyvertical(15, gui);
+		if (ent->lightmap != NULL)
+		{
+			gui_labeled_bool_edit("Dynamic lighting: ", &ent->lightmap->dynamic, gui);
+			gui_labeled_int("Cur light: ", ent->lightmap->dynamic_data, gui);
+		}
 		if (gui_button("Reset rotation", gui))
 			ent->transform.rotation = vector3_zero();
 		if (gui_button("Reset scale", gui))
 			ent->transform.scale = vector3_one();
-		if (gui_button("Snap to floor", gui))
+		/*if (gui_button("Snap to floor", gui))
 		{
 			ent->transform.position.z = 0;
 			ent->transform.position.z -= ent->z_bound.min * ent->transform.scale.z;
-		}
+		}*/
+
 		if (gui_button("Delete", gui))
 		{
 			destroy_entity(&ed->world, ent);
@@ -213,15 +232,24 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 			return ;
 		}
 		gui_end(gui);
-		if (ent == hover && ed->hid.mouse.held == MOUSE_LEFT && ed->hid.mouse.relative)
-			dat->grabbing = true;
-		if ((ed->hid.mouse.held == 0 || !ed->hid.mouse.relative) || dat->entitygui.locking_player)
-			dat->grabbing = false;
-		if (dat->grabbing)
+		if (ent == dat->info.hit_entity && ed->hid.mouse.held == MOUSE_LEFT && ed->hid.mouse.relative)
 		{
-			ent->transform.position = raycast(ed);
-			ent->transform.position.z -= ent->z_bound.min * ent->transform.scale.z;
-			ent->transform.rotation.x += ed->hid.mouse.scroll_delta * 0.25f;
+			dat->grabbing = true;
+			ent->ignore_raycasts = true;
+			return ;
+		}
+		if ((ed->hid.mouse.held == 0 || !ed->hid.mouse.relative) || dat->entitygui.locking_player)
+		{
+			ent->ignore_raycasts = false;
+			dat->grabbing = false;
+			return ;
+		}
+			
+		if (dat->grabbing && !vector3_cmp(dat->info.hit_pos, vector3_zero()))
+		{
+			ent->transform.position = dat->info.hit_pos;
+			//ent->transform.position.z -= ent->z_bound.min * ent->transform.scale.z;
+			ent->transform.rotation.x += ed->hid.mouse.scroll_delta * ft_degtorad(5.0f);
 		}
 		if ((ed->hid.keystate >> KEYS_DELETEMASK) & 1)
 		{
@@ -230,18 +258,64 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 		}
 		if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
 		{
+			dat->sel_ent->ignore_raycasts = false;
 			dat->sel_ent = NULL;
 		}
 	}
+}
+
+void	entity_tool_list(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
+{
+	t_autogui		*gui = &dat->worldgui;
+	int				i = 0;
+	int				found = 0;
+	t_entitycache	*cache;
+	
+	gui_start(gui);
+	i = 0;
+	cache = &ed->world.entitycache;
+	while (i < cache->alloc_count)
+	{
+		t_entity	ent;
+		char		*str;
+
+		ent = cache->entities[i];
+		str = ft_itoa(ent.id);
+		gui_starthorizontal(gui);
+		gui_label(str, gui);
+		if (gui_hoverlabel("Show", gui))
+		{
+			highlight_entity(sdl, &ent, CLR_RED);
+		}
+		gui_endhorizontal(gui);
+		free(str);
+		i++;
+	}
+	gui_end(gui);
 }
 
 void	entity_tool_update(t_editor *ed, t_sdlcontext *sdl)
 {
 	t_entitytooldata	*dat;
 	t_entity			*collide;
+	t_ray				ray;
 
 	dat = (t_entitytooldata *)ed->tool->tooldata;
-	//entity_tool_lazyinit(ed, sdl, dat);
+	ray.origin = ed->player.transform.position;
+	ray.dir = ed->player.lookdir;//vector3_mul(ed->player.lookdir, 10000.f);
+
+	if (raycast_new(ray, &dat->info, &ed->world))
+	{
+		if (dat->info.hit_entity != NULL
+			&& !dat->info.hit_entity->rigid)
+			highlight_entity(sdl, dat->info.hit_entity, AMBER_4);
+		
+		/*sdl->render.gizmocolor = CLR_BLUE;
+		render_gizmo(*sdl, sdl->render, info.hit_entity->transform.position, info.distance / 1000.0f);*/
+	}
+	//t_rayc
+
+	//entity_tool_list(ed, sdl, dat);
 	entity_tool_place(ed, sdl, dat);
 	entity_tool_modify(ed, sdl, dat);
 }
@@ -262,7 +336,15 @@ void	entity_tool_init(t_editor *ed, t_sdlcontext *sdl)
 	{
 		dat->entitygui = init_gui(sdl, &ed->hid, &ed->player, (t_point) {20, 40}, "Edit entity");
 		dat->entitygui.minimum_size.x = 300;
-		dat->entitygui.rect.size.y = 220;
+		dat->entitygui.minimum_size.y = 450;
+		//dat->entitygui.rect.size.y = 220;
+	}
+	if (dat->worldgui.sdl == NULL)
+	{
+		dat->worldgui = init_gui(sdl, &ed->hid, &ed->player, (t_point) {200, 40}, "World entities");
+		dat->worldgui.minimum_size.x = 300;
+		dat->worldgui.minimum_size.y = 450;
+		dat->worldgui.rect.size = dat->worldgui.minimum_size;
 	}
 }
 

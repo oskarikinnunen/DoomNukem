@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_new_buttons.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 14:34:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 10:43:47 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/09 18:13:02 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static void changetool(t_editor *ed, t_sdlcontext *sdl, t_tool *newtool)
 		ed->tool->init(ed, sdl);
 }
 
-int		get_tool_index(t_editor *ed)
+/*int		get_tool_index(t_editor *ed)
 {
 	if (ed->tool == get_room_tool())
 		return (1);
@@ -33,13 +33,13 @@ int		get_tool_index(t_editor *ed)
 	if (ed->tool == get_npc_tool())
 		return (4);
 	return (0);
-}
+}*/
 
 void	update_editor_toolbar(t_editor *ed, t_autogui *toolbar)
 {
 	SDL_Event	e;
 	toolbar->rect.size.y = 60;
-	toolbar->rect.size.x = 324;
+	toolbar->rect.size.x = 540;
 	gui_start(toolbar);
 	gui_starthorizontal(toolbar);
 	if (gui_button("[1]Rooms", toolbar) || ed->hid.keystate >> KEYS_1MASK & 1)
@@ -50,6 +50,10 @@ void	update_editor_toolbar(t_editor *ed, t_autogui *toolbar)
 		changetool(ed, toolbar->sdl, get_gun_tool());
 	if (gui_button("[4]NPCs", toolbar) || ed->hid.keystate >> KEYS_4MASK & 1)
 		changetool(ed, toolbar->sdl, get_npc_tool());
+	if (gui_shortcut_button("Load/Save", 'I', toolbar))
+		changetool(ed, toolbar->sdl, get_load_tool());
+	if (gui_shortcut_button("No tool", 't', toolbar))
+		ed->tool = NULL;
 	gui_endhorizontal(toolbar);
 	gui_end(toolbar);
 }

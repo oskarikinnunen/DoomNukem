@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_tools.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/07 12:13:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/09 17:38:58 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "shapes.h"
 # include "render.h"
 # include "doomnukem.h"
+# include "collision.h"
 
 
 typedef enum e_point_tool_state
@@ -61,16 +62,26 @@ typedef struct s_autogui
 	bool				drag_held;
 }	t_autogui;
 
+typedef struct s_jointedge
+{
+	t_vector2	*edge;
+	//t_room		*room;
+	uint32_t	edge_id;
+	uint32_t	room_id;
+}	t_jointedge;
+
+//typedef struct t_
 
 typedef struct s_editor
 {
 	t_world				world;
 	t_autogui			toolbar_gui;
-	t_clock				clock;
+//	t_clock				clock;
 	t_hid_info			hid;
 	t_player			player;
 	t_gamereturn		gamereturn;
-	t_render			render;
+	bool				ceiling_toggle;
+	//t_render			render;
 	struct s_tool		*tool;
 }	t_editor;
 
@@ -98,6 +109,7 @@ struct	s_mouse;
 
 void				update_editor_toolbar(t_editor *ed, t_autogui *toolbar);
 t_gamereturn		editor_events(t_editor *ed);
+void				editor_load_and_init_world(t_editor *ed, char	*worldname, t_sdlcontext *sdl);
 void				move_editor(t_editor *ed);
 void				savemap(t_editor *ed, char *filename);
 bool				object_lookedat(t_editor *ed, t_sdlcontext sdl, t_object *obj);
@@ -130,7 +142,17 @@ void				gui_int(int i, t_autogui *gui);
 void				gui_point(t_point point, t_autogui *gui);
 //Draws a button with text 'str' on the gui, and returns true if the button was pressed
 bool				gui_button(char *str, t_autogui *gui);
+bool	gui_shortcut_button(char *str, int alpha_or_keymask, t_autogui *gui);
 
+bool	gui_imagebutton(t_img	*img, t_autogui *gui);
+bool	gui_highlighted_button(char *str, t_autogui *gui);
+
+//TODO: document
+void				gui_string_edit(char *str, t_autogui	*gui);
+//TODO: document
+bool				gui_bool_edit(bool *b, t_autogui *gui);
+
+bool				gui_labeled_bool(char *str, bool b, t_autogui *gui);
 //Draws an integer slider which allows modifying the integers value, returns true if the integer changed
 bool				gui_int_slider(int *i, float mul, t_autogui *gui);
 //Draws a float slider which allows modifying the floats value, returns true if the float changed
@@ -138,6 +160,8 @@ bool				gui_float_slider(float	*f, float mul, t_autogui *gui);
 //Draws a vector3 slider which allows modifying the vectors value, returns true if the vector changed
 void				gui_vector3_slider(t_vector3 *vec, float mul, t_autogui *gui);
 
+//TODO: document
+bool				gui_labeled_bool_edit(char *str, bool *b, t_autogui *gui);
 //Draws a label and an integer next to eachother
 void				gui_labeled_int(char *str, int i, t_autogui *gui);
 //Draws a label and a point next to eachother
@@ -148,6 +172,8 @@ bool				gui_labeled_float_slider(char *str, float *f, float mul, t_autogui *gui)
 bool				gui_labeled_int_slider(char *str, int *i, float mul, t_autogui *gui);
 //Draws a label and a modifiable vector slider next to eachother
 void				gui_labeled_vector3_slider(char *str, t_vector3 *vec, float mul, t_autogui *gui);
+
+bool				gui_hoverlabel(char *str, t_autogui *gui);
 
 void				gui_autosize(t_autogui *gui);
 
@@ -163,12 +189,27 @@ t_tool				*get_gun_tool();
 t_tool				*get_room_tool(void);
 t_tool				*get_entity_tool(void);
 t_tool				*get_npc_tool(void);
-t_vector3			raycast(t_editor *ed);
+t_tool				*get_load_tool(void);
+void				rendergrid(t_world *world, t_vector3 position, int size, uint32_t color);
+bool				rooms_share_zspace(t_room *room1, t_room *room2);
+t_vector3			raycast_DEPRECATED(t_editor *ed);
+
+typedef struct s_raycastinfo
+{
+	t_entity	*hit_entity;
+	t_vector3	hit_pos;
+	float		distance;
+}	t_raycastinfo;
+
+bool				raycast_new(t_ray r, t_raycastinfo *info, t_world *world);
+bool				raycast_plane(t_ray r, t_raycastinfo *info, float plane_z);
 bool				entity_lookedat(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
 bool				triangle_lookedat(t_render r, t_triangle tri, t_sdlcontext sdl);
 int32_t				entity_lookedat_triangle_index(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
 t_vector3			*entity_lookedat_vertex(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
 t_entity			*selected_entity(t_editor *ed, t_sdlcontext sdl);
+
+void			make_areas(t_world *world, t_room *room);
 
 /* TOOL_COMMON_FUNCTIONS.C */
 void				string_box(char *name, char *str, t_editor *ed, t_sdlcontext sdl, t_point pos);
