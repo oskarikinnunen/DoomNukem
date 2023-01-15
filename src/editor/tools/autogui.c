@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/13 07:44:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/15 17:19:20 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -734,21 +734,31 @@ bool	gui_labeled_bool(char *str, bool b, t_autogui *gui)
 
 bool	gui_labeled_bool_edit(char *str, bool *b, t_autogui *gui)
 {
+	bool	modified = false;
+
 	gui_starthorizontal(gui);
 	gui_label(str, gui);
 	if (*b)
 	{
 		gui_highlighted_button("True", gui);
 		if (gui_button("False", gui))
+		{
 			*b = false;
+			modified = true;
+		}
+			
 	}
 	else
 	{
 		if (gui_button("True", gui))
+		{
 			*b = true;
+			modified = true;
+		}
 		gui_highlighted_button("False", gui);
 	}
 	gui_endhorizontal(gui);
+	return (modified);
 }
 
 bool	gui_bool_edit(bool *b, t_autogui *gui)

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/13 14:09:08 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/15 17:28:55 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@
 # define MOVESPEED 0.2f
 # define MAXMOVEMENTSPEED 0.08f
 # define ROTATESPEED 0.002f
-# define MOUSESPEED 0.0002f
+# define MOUSESPEED 0.002f
 
 # define TEXTBACKGROUND_BORDERPADDING 6
 

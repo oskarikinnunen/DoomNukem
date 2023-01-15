@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/15 03:16:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/15 17:35:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ void	editor_load_and_init_world(t_editor *ed, char	*worldname, t_sdlcontext *sdl
 	ed->toolbar_gui = init_gui(sdl, &ed->hid, &ed->player, (t_point){5, 5}, "Toolbar (F1)");
 	ed->toolbar_gui.minimum_size = (t_point){165, 20};
 	ed->toolbar_gui.locked = true;
+	//ed->world.debug_gui
+	
 	
 	ed->graphics_gui = init_gui(sdl, &ed->hid, &ed->player, sdl->screensize, "Graphics (F3)");
 	ed->graphics_gui.minimum_size = (t_point){200, 200};
@@ -47,7 +49,12 @@ void	editor_load_and_init_world(t_editor *ed, char	*worldname, t_sdlcontext *sdl
 
 	player_init(&ed->player, sdl, &ed->world);
 	ed->player.gun->disabled = true;
+	ed->world.debug_gui->hidden = true;
+	ed->graphics_gui.hidden = true;
 	ed->world.player = &ed->player;
+	//update_debugconsole(&ed->world.debugconsole, sdl, ed->world.clock.delta);
+	//debugconsole_addmessage(&ed->world.debugconsole, "Loaded world");
+	//ed->world.debugconsole.
 }
 
 typedef struct s_editorprefs
@@ -270,8 +277,6 @@ int	editorloop(t_sdlcontext sdl)
 
 	bzero(&ed, sizeof(t_editor));
 	editor_load_prefs(&ed, &sdl);
-	ed.world.debug_gui->hidden = true;
-	ed.graphics_gui.hidden = true;
 	ed.gamereturn = game_continue;
 	ed.world.lighting.calculated = false;
 	play_music(&sdl, "music_arp1_ambient.wav");

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/13 10:55:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/15 17:27:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -263,7 +263,8 @@ void	moveplayer(t_player *player, t_input *input, t_world *world)
 	if (player->locked)
 		return ;
 	move_vector = vector3_zero();
-	t_vector2 delta_angle = vector2_mul(input->turn, world->clock.delta);
+	//t_vector2 delta_angle = vector2_mul(input->turn, world->clock.delta);
+	t_vector2 delta_angle = input->turn; //TODO: take world->clock delta into account only for joystick
 	player->transform.rotation = vector3_sub(player->transform.rotation, (t_vector3){delta_angle.x, delta_angle.y, 0.0f});
 	player->transform.rotation.y = ft_clampf(player->transform.rotation.y, -RAD90 * 0.99f, RAD90 * 0.99f);
 	player->lookdir = lookdirection((t_vector2){player->transform.rotation.x, player->transform.rotation.y});

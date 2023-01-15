@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/15 04:09:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/15 17:22:59 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -265,9 +265,9 @@ static void gui_entitymode(t_entity *entity, t_autogui *gui)
 		entity->component.data_size = sizeof(t_audiosource);
 		t_audiosource	*source;
 		source = entity->component.data;
-		source->sample = get_sample(gui->sdl, "bubbles.wav");
+		source->sample = get_sample(gui->sdl, "amb_dogbark1.wav");
 		source->volume = 1.0f;
-		source->range = 0.75f;
+		source->range = 80.0f;
 		source->channel = NULL;
 		//entity->component.data = ft_memalloc(sizeof(t_audio)); //TODO: protect
 		//entity->component.data_size = sizeof(t_pointlight);

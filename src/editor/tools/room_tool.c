@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/13 05:50:59 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/15 17:18:29 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -920,6 +920,10 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	gui_label("Modifying: ", gui);
 	gui_label(dat->room->name, gui);
 	gui_endhorizontal(gui);
+	if (gui_labeled_bool_edit("Open: ", &dat->room->open_area, gui))
+	{
+		init_roomwalls(&ed->world, dat->room);
+	}
 	gui_labeled_bool("Legal: ", isroomlegal(&ed->world, dat->room), gui);
 	gui_labeled_int("Edges: ", dat->room->edgecount, gui);
 	gui_labeled_int("Walls: ", dat->room->wallcount, gui);
