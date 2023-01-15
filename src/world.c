@@ -51,7 +51,8 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 	while (found < world->entitycache.existing_entitycount
 		/*&& i < world->entitycache.alloc_count*/)
 	{
-		ent = world->entitycache.sorted_entities[i];
+		//ent = world->entitycache.sorted_entities[i];
+		ent = &world->entitycache.entities[i];
 		if (ent->status != es_free)
 		{
 			if (ent->status == es_active && !ent->hidden)
@@ -328,8 +329,8 @@ t_debugconsole	init_debugconsole()
 	console.show_anim.framerate = 30;
 	console.show_anim.lastframe = 30 * 5;
 	console.hidden = true;
-	start_anim(&console.show_anim, anim_forwards);
-	debugconsole_addmessage(&console, "Initialized debugconsole!");
+	//start_anim(&console.show_anim, anim_forwards);
+	//debugconsole_addmessage(&console, "Initialized debugconsole!");
 	return (console);
 }
 

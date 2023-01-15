@@ -103,11 +103,18 @@ void	load_tool_update(t_editor *ed, t_sdlcontext *sdl)
 	gui = &dat->gui;
 	i = 0;
 	gui_start(gui);
+	gui_label("!Remember to manually write", gui);
+	gui_label("the '.world' suffix, sorry", gui);
+	gui_emptyvertical(20, gui);
+	gui_label("World name:", gui);
+	gui->offset.x = 20;
 	gui_string_edit(ed->world.name, gui);
+	gui->offset.x = 0;
 	if (gui_button("Save current world", gui))
 	{
 		save_world(ed->world.name, ed->world);
 		load_tool_init(ed, sdl);
+		debugconsole_addmessage(&ed->world.debugconsole, "Saved world!");
 	}
 	if (gui_button("Save backup", gui))
 	{
@@ -119,6 +126,7 @@ void	load_tool_update(t_editor *ed, t_sdlcontext *sdl)
 		ft_strcat(tempname, "_bu.world");
 		save_world(tempname, ed->world);
 		load_tool_init(ed, sdl);
+		debugconsole_addmessage(&ed->world.debugconsole, "Saved backup world!");
 	}
 	gui_emptyvertical(10, gui);
 	gui_label("Load:", gui);
