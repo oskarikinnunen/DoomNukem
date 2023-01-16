@@ -213,6 +213,7 @@ bool is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *e
 	}
 	entity->occlusion.clip.min = point_mul(entity->occlusion.clip.min, 8);
 	entity->occlusion.clip.max = point_mul(entity->occlusion.clip.max, 8);
+	entity->occlusion.clip.max = point_add_xy(entity->occlusion.clip.max, 8);
 	entity->occlusion.clip.max.x = ft_clamp(entity->occlusion.clip.max.x, 0, (sdl->window_w * sdl->resolution_scaling) - 1);
 	entity->occlusion.clip.max.y = ft_clamp(entity->occlusion.clip.max.y, 0, (sdl->window_h * sdl->resolution_scaling) - 1);
 	entity->occlusion.clip.min.x = ft_clamp(entity->occlusion.clip.min.x, 0, (sdl->window_w * sdl->resolution_scaling) - 1);
