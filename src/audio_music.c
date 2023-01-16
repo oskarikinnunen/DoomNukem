@@ -3,23 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   audio_music.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/27 11:27:24 by raho              #+#    #+#             */
-/*   Updated: 2023/01/03 13:53:40 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/15 02:51:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
 #include "doomnukem.h"
 
-void	change_music(t_audio *audio, const char *name)
-{
-	stop_music(audio);
-	play_music(audio, name);
-}
 
-void	stop_music(t_audio *audio)
+/*void	stop_music(t_audio *audio)
 {
 	int	index;
 	
@@ -75,4 +70,4 @@ void	play_music(t_audio *audio, const char *name)
 	}
 	else
 		printf("Couldn't find music: %s\n", name);
-}
+}*/

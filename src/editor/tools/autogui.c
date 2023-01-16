@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/12 11:15:23 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/15 17:56:53 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ static void gui_limitrect(t_autogui *gui)
 
 void	gui_start(t_autogui *gui)
 {
+	if (gui->sdl == NULL)
+		return ;
 	if (!gui->hidden)
 	{
 		//draw_rectangle_filled(*gui->sdl, gui->rect, CLR_DARKGRAY);
@@ -165,7 +167,7 @@ void	gui_end(t_autogui *gui)
 	t_rectangle	dragcorner;
 	t_rectangle	dragbar;
 
-	if (gui->hidden)
+	if (gui->hidden || gui->sdl == NULL)
 		return ;
 	dragbar = gui->rect;
 	dragbar.size.y = 32;
@@ -315,7 +317,7 @@ void	gui_endhorizontal(t_autogui *gui)
 {
 	gui->agl = agl_vertical;
 	gui->offset.x = 0;
-	gui->offset.y += 34;
+	gui->offset.y += 20;
 }
 
 //Internal function, rename with a better name
@@ -709,6 +711,14 @@ bool	gui_highlighted_button(char *str, t_autogui *gui) //TODO, DRAWRECTANGLE AMB
 	return (br.clicked);
 }
 
+bool	gui_highlighted_button_if(char *str, t_autogui *gui, bool condition)
+{
+	if (condition)
+		return (gui_highlighted_button(str, gui));
+	else
+		return (gui_button(str, gui));
+}
+
 bool	gui_labeled_bool(char *str, bool b, t_autogui *gui)
 {
 	char	tstr[12] = "true";
@@ -724,21 +734,31 @@ bool	gui_labeled_bool(char *str, bool b, t_autogui *gui)
 
 bool	gui_labeled_bool_edit(char *str, bool *b, t_autogui *gui)
 {
+	bool	modified = false;
+
 	gui_starthorizontal(gui);
 	gui_label(str, gui);
 	if (*b)
 	{
 		gui_highlighted_button("True", gui);
 		if (gui_button("False", gui))
+		{
 			*b = false;
+			modified = true;
+		}
+			
 	}
 	else
 	{
 		if (gui_button("True", gui))
+		{
 			*b = true;
+			modified = true;
+		}
 		gui_highlighted_button("False", gui);
 	}
 	gui_endhorizontal(gui);
+	return (modified);
 }
 
 bool	gui_bool_edit(bool *b, t_autogui *gui)

@@ -68,7 +68,8 @@ static void sample_img(t_lighting l, int x, int y, t_triangle_polygon t)
 	{
 		/*if (l.entities[o]->id == l.entity_id)
 			continue ;*/
-		if (l.entities[o]->hidden)
+		if (l.entities[o]->hidden
+			|| (l.pointlight->ignoreself && l.entities[o]->id == l.entity_id))
 			continue;
 		for (int p = 0; p < l.entities[o]->obj->face_count; p++)
 		{

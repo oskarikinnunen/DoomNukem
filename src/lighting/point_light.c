@@ -23,6 +23,8 @@ void calculate_pointlight_step(t_pointlight *pointlight, t_world *world, t_rende
         {
             if (ent->status == es_active && ent->obj->uv_count != 0)
             {
+				if (ent->lightmap == NULL)
+					create_lightmap_for_entity(ent, world);
 				l.triangles[index] = malloc(sizeof(t_triangle_polygon) * ent->obj->face_count);
 				l.entities[index] = ent;
 				l.entities[index]->lightmap->done = false;
@@ -34,7 +36,6 @@ void calculate_pointlight_step(t_pointlight *pointlight, t_world *world, t_rende
 						t_quaternion temp;
 						temp.v = ent->obj->vertices[ent->obj->faces[j].v_indices[e] - 1];
 						temp = transformed_vector3(ent->transform, temp.v);
-						temp = quaternion_mul_matrix(render->camera.matworld, temp);
 						l.triangles[index][j].p3[e] = temp.v;
 						l.triangles[index][j].uv[e] = ent->obj->uvs[ent->obj->faces[j].uv_indices[e] - 1];
 					}
@@ -99,19 +100,24 @@ void calculate_pointlight_step(t_pointlight *pointlight, t_world *world, t_rende
 		i++;
 		//timecur = SDL_GetTicks();
 	}
+	/*if (i == l.entities_count)
+		pointlight->done = true;*/
 	i = 0;
 	bool	done = true;
 	while (i < l.entities_count)
 	{
-		if (!l.entities[i]->lightmap->done)
+		if (l.entities[i]->lightmap != NULL && !l.entities[i]->lightmap->done)
 			done = false;
 		free(l.triangles[i]);
 		i++;
 	}
 	pointlight->done = done;
+	if (done == true)
+	{
+		printf("POINTLIGHT DONE!!\n");
+	}
 	free(l.triangles);
 	free(l.entities);
-
 }
 
 void calculate_pointlight(t_pointlight *pointlight, t_world *world, t_render *render)
@@ -144,7 +150,6 @@ void calculate_pointlight(t_pointlight *pointlight, t_world *world, t_render *re
 						t_quaternion temp;
 						temp.v = ent->obj->vertices[ent->obj->faces[j].v_indices[e] - 1];
 						temp = transformed_vector3(ent->transform, temp.v);
-						temp = quaternion_mul_matrix(render->camera.matworld, temp);
 						l.triangles[index][j].p3[e] = temp.v;
 						l.triangles[index][j].uv[e] = ent->obj->uvs[ent->obj->faces[j].uv_indices[e] - 1];
 					}

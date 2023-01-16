@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 13:13:26 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/16 17:48:51 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,19 @@ void	updateguntransform(t_input *input, t_clock *clock, t_player *player)
 	//neutralpos = gun->entity.transform.location;
 	if (input->shoot && gun->readytoshoot)
 	{
+		/*
+		t_particle shootparticle;
+		particle.sprite = fire.png;
+		particle.lifetime = 30;
+		spawn_particle(t_world *world, particle)
+			spawn_entity
+			assigns object
+			world.particlecount++;
+			world.particles[particlecount] = new particle
+			
+		
+		
+		*/
 		//particle_start(gunpos, player.)
 		start_anim(&gun->shoot_anim, anim_forwards);
 		start_anim(&gun->view_anim, anim_forwards);
@@ -174,51 +187,92 @@ void	updateguntransform(t_input *input, t_clock *clock, t_player *player)
 	player->transform.rotation.y += gun->view_anim.lerp * clock->delta * gun->viewrecoil.y; //Separate view jump animation that is longer than gun jump animation?
 }
 
-void	moveplayer(t_player *player, t_input *input, t_clock clock, t_world *world)
+/*
+	boxcollider
+		objects, this is line and z collider combined
+	linecollider
+		walls
+	zcollider
+		floors/ceiling
+*/
+
+/*
+	collision pseudocode
+
+	vector3 curpos;
+	newplayerpos = curpos + movevector;
+	newplayerpos = get_new_pos_from_collision(player, newplayerpos, world); //Checks line collision and clamps position
+																			//to the interpolated position between
+																			//curpos and newplayerpos (aka it does the glide thingy)
+	if (!collision(player, newplayerpos, world) //check collision again,
+	{											// exactly like get_new_pos_from_collision but just return true/false if we hit a line
+												//, so if the glide position still collides, we don't move the player at all
+		curpos = newplayerpos;
+	}
+
+*/
+
+//get_z_position(t_world *world, t_vector3 pos, float radius, float height)
+//{
+	/*
+	z = 0.0f;
+
+	while roomfloors
+		if pointintriangle || collides with floor edgelines
+		 && share_z_space(playercollider, floor)
+			min_z = ft_maxf(z, room.height)
+	while roomramps
+		if (pointintriangle || collides with ramp edgelines)
+		{
+			get point in ramp (basicly uv step, maybe just raycast?)
+			if (share_z_space(ramp, point.z))
+				min_z = ft_maxf(z, point.z)
+		}
+	while boxcolliders
+		while col.triangles
+		if pointintriangle || collides with floor edgelines
+		 && share_z_space(playercollider, floor)
+			min_z = ft_maxf(z, room.height)
+	
+	*/
+//}
+
+static void noclip_movement(t_player *player, t_vector3 move_vector, t_world *world)
 {
-	t_vector3	move_vector;
+	player->transform.position = vector3_add(player->transform.position, move_vector);
+}
+
+static void collision_movement(t_player *player, t_vector3 move_vector, t_world *world)
+{
 	t_vector3	potential_pos;
 	t_vector3	new_pos;
+
+	potential_pos = vector3_add(player->transform.position, move_vector);
+	potential_pos.z = ft_clampf(potential_pos.z, player->height, 1000.0f);
+	new_pos = potential_pos;
+	if (!check_collision(world, player, new_pos, &new_pos))
+		player->transform.position = new_pos;
+}
+
+void	moveplayer(t_player *player, t_input *input, t_world *world)
+{
+	t_vector3	move_vector;
 	float		angle;
 
-	/* updateguntransform(input, &clock, player);
+	updateguntransform(input, &world->clock, player);
 	if (player->locked)
 		return ;
 	move_vector = vector3_zero();
-	t_vector2 delta_angle = vector2_mul(input->turn, clock.delta);
-	player->transform.rotation = vector3_sub(player->transform.rotation, (t_vector3){delta_angle.x, delta_angle.y, 0.0f}); //TODO: this
+	//t_vector2 delta_angle = vector2_mul(input->turn, world->clock.delta);
+	t_vector2 delta_angle = input->turn; //TODO: take world->clock delta into account only for joystick
+	player->transform.rotation = vector3_sub(player->transform.rotation, (t_vector3){delta_angle.x, delta_angle.y, 0.0f});
 	player->transform.rotation.y = ft_clampf(player->transform.rotation.y, -RAD90 * 0.99f, RAD90 * 0.99f);
 	player->lookdir = lookdirection((t_vector2){player->transform.rotation.x, player->transform.rotation.y});
 	move_vector = player_movementvector(*input, *player);
-	move_vector = vector3_mul(move_vector, clock.delta * MOVESPEED);
+	move_vector = vector3_mul(move_vector, world->clock.delta * MOVESPEED);
 	player->speed = move_vector;
-	player->transform.position = vector3_add(player->transform.position, move_vector);
-	player->transform.position.z = ft_clampf(player->transform.position.z, player->height, 1000.0f); */
-
-	potential_pos = player->transform.position;
-	updateguntransform(input, &clock, player);
-	if (player->locked)
-		return ;
-	move_vector = vector3_zero();
-	t_vector2 delta_angle = vector2_mul(input->turn, clock.delta);
-	player->transform.rotation = vector3_sub(player->transform.rotation, (t_vector3){delta_angle.x, delta_angle.y, 0.0f}); //TODO: this
-	player->transform.rotation.y = ft_clampf(player->transform.rotation.y, -RAD90 * 0.99f, RAD90 * 0.99f);
-	player->lookdir = lookdirection((t_vector2){player->transform.rotation.x, player->transform.rotation.y});
-	move_vector = player_movementvector(*input, *player);
-	move_vector = vector3_mul(move_vector, clock.delta * MOVESPEED);
-	player->speed = move_vector;
-	potential_pos = vector3_add(potential_pos, move_vector);
-
-	new_pos = potential_pos;
-	int i;
-	i = 0;
-	while (i < 5)
-	{
-		if (!check_collision(world, player, new_pos, &new_pos))
-			break;
-		i++;
-	}
-	if (i < 5)
-		player->transform.position = new_pos;
-	
+	if (player->noclip)
+		noclip_movement(player, move_vector, world);
+	else
+		collision_movement(player, move_vector, world);
 }

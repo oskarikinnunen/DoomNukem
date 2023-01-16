@@ -85,6 +85,7 @@ typedef struct s_room //TODO: rewrite rooms/walls so rooms have t_vector2 edges 
 	t_meshtri		*floors;
 	t_meshtri		*ceilings;
 	char			floortex[64];
+	bool			open_area;
 	uint32_t		height;
 	uint32_t		ceiling_height;
 	uint32_t		edgecount;

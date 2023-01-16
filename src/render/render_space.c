@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 15:36:10 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/12 09:03:24 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/16 15:30:38 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,22 +15,20 @@
 void render_worldspace(t_render *render, t_entity *entity)
 {
 	t_object		*obj;
-	t_quaternion	temp;
 	int				index;
+	t_mat4x4		matworld;
 
 	obj = entity->obj;
-	if (obj == NULL)
+	if (obj == NULL)//TODO: Is this needed?
 		return;
+	matworld = make_transform_matrix(entity->transform);
 	index = 0;
 	while (index < obj->vertice_count)
 	{
-		temp.v = obj->vertices[index];
+		render->q[index] = vector3_to_quaternion(obj->vertices[index]);
 		if (entity->animation.active)
-		{
-			temp.v = vector3_add(entity->obj->o_anim.frames[entity->animation.frame].deltavertices[index].delta, temp.v);
-		}
-		render->q[index] = transformed_vector3(entity->transform, temp.v);
-		render->q[index] = quaternion_mul_matrix(render->camera.matworld, render->q[index]);
+			render->q[index].v = vector3_add(entity->obj->o_anim.frames[entity->animation.frame].deltavertices[index].delta, render->q[index].v);
+		render->q[index] = quaternion_mul_matrix(matworld, render->q[index]);
 		index++;
 	}
 }

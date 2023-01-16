@@ -6,7 +6,7 @@
 #    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/01/13 15:42:16 by vlaine           ###   ########.fr        #
+#    Updated: 2023/01/16 14:46:24 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,6 +38,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		editor.c editor_mouse.c editor_events.c \
 		editor_map_io.c	\
 		editor/tools/entity_tool.c \
+		editor/tools/entity_tool_gui_inits.c \
 		editor/tools/wall_tool_rooms.c \
 		editor/tools/npc_tool.c \
 		editor/tools/load_tool.c \
@@ -63,6 +64,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		png.c lua_conf.c list_helper.c \
 		spaceconversions.c \
 		entity/entity_animate.c \
+		entity/component_init.c \
 		obj_parser/obj_parse.c \
 		obj_parser/obj_parse_vertex.c \
 		obj_parser/obj_parse_faces.c \
@@ -108,6 +110,7 @@ VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		conversions.c vector3_complex3.c \
 		quaternion_shorthands.c quaternions.c \
 		matrix_shorthands.c matrix_rotations.c \
+		matrix_transform.c \
 		matrix_functions.c matrix_functions2.c \
 		debug_vectors.c point_more.c
 VECTORSRC= $(addprefix src/vectors/,$(VECTORSRCFILES))

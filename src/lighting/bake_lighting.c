@@ -147,9 +147,6 @@ uint8_t	average(t_point sample, t_lightmap *lmap, t_map *map)
 		}
 		subsample.y++;
 	}
-	//printf("hit %i \n", hit);
-	//if (hit == 0)
-	//    return (lmap->data[sample.x * lmap->size.x + sample.y]);
 	return ((uint8_t)(avg / hit));
 }
 
@@ -215,9 +212,13 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 					uint8_t light = average((t_point){j, e}, lightmap, entity->map);
 					//uint8_t light = //lightmap->data[e * entity->map[index].size.x + j];
 					Uint32 alpha = clr & 0xFF000000;
-					Uint32 red = ((clr & 0x00FF0000) * (uint8_t)(light * 0.4f)) >> 8;
+					//COLORED LIGHTING:
+					/*Uint32 red = ((clr & 0x00FF0000) * (uint8_t)(light * 0.4f)) >> 8;
 					Uint32 green = ((clr & 0x0000FF00) * (uint8_t)(light * 0.5f)) >> 8;
-					Uint32 blue = ((clr & 0x000000FF) * (uint8_t)(light * 0.9f)) >> 8;
+					Uint32 blue = ((clr & 0x000000FF) * (uint8_t)(light * 0.9f)) >> 8;*/
+					Uint32 red = ((clr & 0x00FF0000) * light) >> 8;
+					Uint32 green = ((clr & 0x0000FF00) * light) >> 8;
+					Uint32 blue = ((clr & 0x000000FF) * light) >> 8;
 					clr = flip_channels(alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF));
 					entity->map[index].data[e * entity->map[index].size.x + j] = clr;
 					/*light = light / 2;
@@ -275,28 +276,23 @@ void start_lightbake(t_render *render, t_world *world)
 	uint32_t time_start;
 	uint32_t time_end;
 	uint32_t time;
-	//uint8_t yes : 2;
 
-	world->lights_count = 1;
-	world->lights[0].origin = world->player->transform.position;
-	world->lights[0].radius = 250.0f;
-	world->lights[0].shadows = true;
-	for_all_entities(world, create_lightmap_for_entity);
-	i = 0;
-	while (i < world->lights_count)
-	{
-		world->lights[i].done = false;
-		i++;
-	}
-	world->lighting_baked = false;
+	//for_all_entities(world, create_lightmap_for_entity);
+	
+	//world->lighting.calculated = false;
 	// for_all_entities(world, create_map_for_entity);
 
-	/*i = 0;
-	while (i < world->lights_count)
+	i = 0;
+	while (i < world->entitycache.alloc_count)
 	{
-		calculate_pointlight(&world->lights[i], world, render);
+		ent = &world->entitycache.entities[i];
+		if (ent->component.type == pft_light)
+		{
+			t_pointlight *pointlight = ent->component.data;
+			pointlight->done = false;
+		}
 		i++;
-	}*/
+	}
 
 	/*time_end = SDL_GetTicks();
 	time = time_end - time_start;*/
@@ -310,24 +306,43 @@ void	save_entity_lightmap(t_entity *entity)
 
 void dynamic_light(t_entity *entity, t_world *world)
 {
-	uint8_t	light;
-	//world->lights[0].origin = world->player->transform.position;
-	/*if (entity->lightmap == NULL)
-		create_lightmap_for_entity(entity, world);*/
-	if (entity->lightmap != NULL && entity->lightmap->dynamic)
+	uint8_t			light;
+	t_vector3		pos;
+	t_entitycache	*cache;
+	t_pointlight	*plight;
+	int				i;
+
+	cache = &world->entitycache;
+	i = 0;
+	entity->lightmap->dynamic_data = world->lighting.ambient_light;
+	while (i < cache->alloc_count)
 	{
-		light = 0;
-		float dist = vector3_dist(entity->transform.position, world->lights[0].origin);
-		if (dist <= world->lights[0].radius /*&& l.drawnbuff[x + l.lightmap->size.x * y] == false*/)
+		if (cache->entities[i].component.type == pft_light)
 		{
-			dist = 1.0f - (dist / world->lights[0].radius);
-			light = ft_clamp((dist * 255), 0, 255);
+			plight = cache->entities[i].component.data;
+			if (entity->lightmap != NULL && entity->lightmap->dynamic && world->sdl->lighting_toggled)
+			{
+				light = 0;
+				pos = entity->transform.position;
+				if (entity->transform.parent != NULL);
+					pos = vector3_add(pos, entity->transform.parent->position);
+				float dist = vector3_dist(pos, cache->entities[i].transform.position);
+				if (dist <= plight->radius)
+				{
+					dist = 1.0f - (dist / plight->radius);
+					light = ft_clamp((dist * 255), 0, 255);
+				}
+				light = ft_clampf(light, world->lighting.ambient_light, 255);
+				entity->lightmap->dynamic_data = ft_max(entity->lightmap->dynamic_data, light);
+				//entity->lightmap->dynamic_data = 255 - entity->lightmap->dynamic_data;
+				//create_lightmap_for_entity(entity, world);
+				
+			}
 		}
-		entity->lightmap->dynamic_data = light;
-		//entity->lightmap->dynamic_data = 255 - entity->lightmap->dynamic_data;
-		//create_lightmap_for_entity(entity, world);
-		create_dynamic_map_for_entity(entity, world);
+		i++;
 	}
+	//create_lightmap_for_entity(entity, world);
+	create_dynamic_map_for_entity(entity, world);
 }
 
 void bake_lights(t_render *render, t_world *world)
@@ -335,93 +350,51 @@ void bake_lights(t_render *render, t_world *world)
 	int i;
 	i = 0;
 
-	for_all_active_entities(world, dynamic_light);
-	if (world->lighting_baked)
-		return;
+	if (!world->player->gun->entity.hidden)
+	{
+		t_entity	*g_ent;
+
+		g_ent = &world->player->gun->entity;
+		if (g_ent->lightmap == NULL)
+		{
+			create_lightmap_for_entity(g_ent, world);
+			create_map_for_entity(g_ent, world);
+			//create_dynamic_map_for_entity(g_ent, world);
+			world->player->gun->entity.lightmap->dynamic = true;
+		}
+		dynamic_light(&world->player->gun->entity, world);
+	}
+	//for_all_active_entities(world, dynamic_light);
 	i = 0;
-	while (i < world->lights_count)
+	t_entity	*lent;
+	while (i < world->entitycache.alloc_count)
+	{
+		lent = &world->entitycache.entities[i];
+		if (lent->component.type == pft_light)
+		{
+			t_pointlight	*pointlight = lent->component.data;
+			if (!pointlight->done)
+			{
+				//printf("update light \n");
+				pointlight->origin = lent->transform.position; //TODO: use origin as offset to pos
+				calculate_pointlight_step(pointlight, world, &world->sdl->render);
+			}
+		}
+		i++;
+	}
+	/*while (i < world->lights_count)
 	{
 		if (!world->lights[i].done)
 		{
 			calculate_pointlight_step(&world->lights[i], world, render);
 			if (i == world->lights_count - 1 && world->lights[i].done)
 			{
-				world->lighting_baked = true;
+				world->lighting.calculated = true;
 				printf("bake light done %i \n", SDL_GetTicks());
 				// for_all_entities(world, create_map_for_entity);
 			}
 			break;
 		}
 		i++;
-	}
-}
-
-void bake_lighting_shadows(t_render *render, t_world *world)
-{
-	int i;
-	t_entity *ent;
-	uint32_t time_start;
-	uint32_t time_end;
-	uint32_t time;
-
-	time_start = SDL_GetTicks();
-	for_all_entities(world, create_lightmap_for_entity);
-	// world->lights_count = 1;
-	// world->lights[0].origin = (t_vector3){500.0f, 500.0f, 50.0f};
-	world->lights_count++;
-
-	world->lights[world->lights_count - 1].origin = world->player->transform.position;
-	world->lights[world->lights_count - 1].radius = 250.0f;
-	world->lights[world->lights_count - 1].shadows = true;
-	/*world->lights[1].origin = (t_vector3){500.0f, 20.0f, 50.0f};
-	world->lights[1].radius = 500.0f;
-	world->lights[1].shadows = true;
-	world->lights[2].origin = (t_vector3){500.0f, 500.0f, 500.0f};
-	world->lights[2].radius = 5000.0f;
-	world->lights[2].shadows = true;*/
-	i = 0;
-	while (i < world->lights_count)
-	{
-		calculate_pointlight(&world->lights[i], world, render);
-		i++;
-	}
-
-	for_all_entities(world, create_map_for_entity);
-	time_end = SDL_GetTicks();
-	time = time_end - time_start;
-	printf("lighting took %i seconds, %i ticks \n", time / 1000, time);
-}
-
-void bake_lighting(t_render *render, t_world *world)
-{
-	int i;
-	t_entity *ent;
-	uint32_t time_start;
-	uint32_t time_end;
-	uint32_t time;
-
-	time_start = SDL_GetTicks();
-	for_all_entities(world, create_lightmap_for_entity);
-	world->lights_count++; // = 1;
-	// world->lights[0].origin = (t_vector3){500.0f, 500.0f, 50.0f};
-	world->lights[world->lights_count - 1].origin = world->player->transform.position;
-	world->lights[world->lights_count - 1].radius = 250.0f;
-	world->lights[world->lights_count - 1].shadows = false;
-	/*world->lights[1].origin = (t_vector3){500.0f, 20.0f, 50.0f};
-	world->lights[1].radius = 500.0f;
-	world->lights[1].shadows = false;
-	world->lights[2].origin = (t_vector3){500.0f, 500.0f, 500.0f};
-	world->lights[2].radius = 5000.0f;
-	world->lights[2].shadows = false;*/
-	i = 0;
-	while (i < world->lights_count)
-	{
-		calculate_pointlight(&world->lights[i], world, render);
-		i++;
-	}
-	for_all_entities(world, create_map_for_entity);
-	world->lighting_baked = true;
-	time_end = SDL_GetTicks();
-	time = time_end - time_start;
-	printf("lighting took %i seconds, %i ticks \n", 1000 / time, time);
+	}*/
 }

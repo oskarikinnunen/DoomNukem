@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/12 11:23:34 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/14 20:35:10 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ void	free_sdl_stuff(t_sdlcontext *sdl)
 	free_render(sdl->render);
 	if (sdl->bitmask.tile != NULL)
 		free(sdl->bitmask.tile);
+	if (sdl->scaling_buffer != NULL)
+		free(sdl->scaling_buffer);
 }
 
 void	alloc_occlusion(t_sdlcontext *sdl)
@@ -81,12 +83,15 @@ void	set_sdl_settings(t_sdlcontext *sdl)
 	t_graphicprefs	prefs;
 
 	free_sdl_stuff(sdl);
-	ft_bzero(sdl, sizeof(sdl));
+	ft_bzero(sdl, sizeof(sdl)); //WHY DOES THIS WORK... this resets asset pointers aswell??
 	prefs = load_graphicsprefs(); //TODO: load before this and just pass prefs set_sdl_settings
 	sdl->window_w = prefs.resolution_x;
 	sdl->window_h = prefs.resolution_y;
 	sdl->resolution_scaling = ft_clampf(prefs.resolutionscale, 0.25f, 1.0f);
+	sdl->audio.sfx_volume = prefs.volume;
+	printf("prefs volume was %f \n", prefs.volume);
 	create_sdl_window(sdl, prefs.screenmode);
+	
 	sdl->surface = SDL_CreateRGBSurfaceWithFormat(SDL_SWSURFACE, sdl->window_w, sdl->window_h, 32, SDL_PIXELFORMAT_ARGB8888);
 	if (sdl->surface == NULL)
 		error_log(EC_SDL_CREATERGBSURFACE);
@@ -94,6 +99,7 @@ void	set_sdl_settings(t_sdlcontext *sdl)
 	if (sdl->ui_surface == NULL)
 		error_log(EC_SDL_CREATERGBSURFACE);
 	sdl->zbuffer = ft_memalloc(sdl->window_w * sdl->window_h * sizeof(float));
+	sdl->scaling_buffer = ft_memalloc(sdl->window_w * sdl->window_w * sizeof(uint32_t));
 	alloc_occlusion(sdl);
 	sdl->render = init_render(*sdl);
 }
@@ -114,7 +120,9 @@ void	create_sdlcontext(t_sdlcontext	*sdl)
 		|| TTF_Init() < 0)
 		error_log(EC_SDL_INIT);
 	set_sdl_settings(sdl);
+	printf("audio volume %f \n", sdl->audio.sfx_volume);
 	load_assets(sdl);
+	printf("audio volume2 %f \n", sdl->audio.sfx_volume);
 }
 
 void	checkargs(int argc, char **argv)

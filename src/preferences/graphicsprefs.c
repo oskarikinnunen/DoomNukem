@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 14:37:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 16:17:59 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/14 20:35:10 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ t_graphicprefs defaultprefs()
 	prefs.resolution_x = 1280;
 	prefs.resolution_y = 720;
 	prefs.resolutionscale = 1.0f;
+	prefs.volume = 5.0f;
 	return (prefs);
 }
 
@@ -57,6 +58,7 @@ t_graphicprefs get_prefs_from_sdl(t_sdlcontext *sdl)
 	prefs.resolution_x = sdl->window_w;
 	prefs.resolution_y = sdl->window_h;
 	prefs.resolutionscale = sdl->resolution_scaling;
+	prefs.volume = sdl->audio.sfx_volume;
 	return (prefs);
 }
 
