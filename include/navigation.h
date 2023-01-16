@@ -15,6 +15,7 @@ typedef struct s_navnode
 	float		h;
 	bool		valid;
 	bool		visited;
+	bool		blocked;
 }	t_navnode;
 
 # endif

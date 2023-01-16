@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   moveplayer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/13 02:42:44 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/16 13:13:26 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,7 +208,6 @@ void	moveplayer(t_player *player, t_input *input, t_clock clock, t_world *world)
 	move_vector = vector3_mul(move_vector, clock.delta * MOVESPEED);
 	player->speed = move_vector;
 	potential_pos = vector3_add(potential_pos, move_vector);
-	potential_pos.z = ft_clampf(potential_pos.z, player->height, 1000.0f);
 
 	new_pos = potential_pos;
 	int i;

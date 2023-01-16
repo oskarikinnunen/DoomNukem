@@ -80,9 +80,10 @@ t_vector3 pathfind(t_world *world, uint32_t start, uint32_t end)
 		if (lowest_f == end)
 		{
 			int e;
-			e = openlist[end].parent;
+			e = end;
 			t_vector3 tempe;
 
+			tempe = openlist[e].mid_point;
 			//printf("e %d\n", end);
 			while (e != start)
 			{
@@ -102,7 +103,7 @@ t_vector3 pathfind(t_world *world, uint32_t start, uint32_t end)
 		{
 			uint32_t id;
 			id = openlist[lowest_f].neighbors_id[i];
-			if (openlist[id].visited == false)
+			if (openlist[id].visited == false && openlist[id].blocked == false)
 			{
 				openlist[id] = world->navmesh[id];
 				openlist[id].g = vector3_dist(openlist[id].mid_point, world->navmesh[start].mid_point); // should be amount of parents to start
