@@ -180,14 +180,16 @@ bool is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *e
 	chunk = entity->occlusion.box;
 	w = entity->occlusion.z_dist[1];
 	chunk.min.x = chunk.min.x / 8;
-	chunk.max.x = ceilf(chunk.max.x / 8.0f);
+	chunk.max.x = chunk.max.x / 8;
 	chunk.min.y = chunk.min.y / 8;
-	chunk.max.y = ceilf(chunk.max.y / 8.0f);
+	chunk.max.y = chunk.max.y / 8;
 	entity->occlusion.is_occluded = true;
 	entity->occlusion.clip.max.x = 0;
 	entity->occlusion.clip.max.y = 0;
 	entity->occlusion.clip.min.x = sdl->window_w;
 	entity->occlusion.clip.min.y = sdl->window_h;
+	//chunk.max.x += 8 - (chunk.max.x % 8);
+	//chunk.max.y += 8 - (chunk.max.y % 8);
 	y = chunk.min.y;
 	while (y <= chunk.max.y)
 	{
@@ -212,7 +214,7 @@ bool is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *e
 	}
 	entity->occlusion.clip.min = point_mul(entity->occlusion.clip.min, 8);
 	entity->occlusion.clip.max = point_mul(entity->occlusion.clip.max, 8);
-	entity->occlusion.clip.max = point_add_xy(entity->occlusion.clip.max, 8);
+	//entity->occlusion.clip.max = point_add_xy(entity->occlusion.clip.max, 8);
 	entity->occlusion.clip.max.x = ft_clamp(entity->occlusion.clip.max.x, 0, (sdl->window_w * sdl->resolution_scaling) - 1);
 	entity->occlusion.clip.max.y = ft_clamp(entity->occlusion.clip.max.y, 0, (sdl->window_h * sdl->resolution_scaling) - 1);
 	entity->occlusion.clip.min.x = ft_clamp(entity->occlusion.clip.min.x, 0, (sdl->window_w * sdl->resolution_scaling) - 1);

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 18:16:17 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/16 18:19:13 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -353,8 +353,8 @@ int	editorloop(t_sdlcontext sdl)
 		print_vector3(sdl.render.camera.position);
 		if (1)
 		{
-			sdl.render.camera.lookdir = (t_vector3){-0.454403, -0.420607, -0.785244};
-			sdl.render.camera.position = (t_vector3){1363.932617, 1907.666504, 88.293427};
+			sdl.render.camera.lookdir = (t_vector3){-0.375360, -0.447457, -0.811718};
+			sdl.render.camera.position = (t_vector3){1323.848022, 1828.826294, 178.493469};
 		}
 		screen_blank(sdl);
 		render_start(&sdl.render);
