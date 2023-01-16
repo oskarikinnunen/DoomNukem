@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/12 14:36:41 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/16 19:44:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,15 +62,11 @@ typedef struct s_autogui
 	bool				drag_held;
 }	t_autogui;
 
-typedef struct s_jointedge
+typedef struct s_editorprefs
 {
-	t_vector2	*edge;
-	//t_room		*room;
-	uint32_t	edge_id;
-	uint32_t	room_id;
-}	t_jointedge;
-
-//typedef struct t_
+	char		worldname[32];
+	t_vector3	playerpos;
+}	t_editorprefs;
 
 typedef struct s_editor
 {
@@ -111,8 +107,11 @@ struct	s_mouse;
 void				update_editor_toolbar(t_editor *ed, t_autogui *toolbar);
 t_gamereturn		editor_events(t_editor *ed);
 void				editor_load_and_init_world(t_editor *ed, char	*worldname, t_sdlcontext *sdl);
-void				move_editor(t_editor *ed);
-void				savemap(t_editor *ed, char *filename);
+
+/* EDITORPREFERENCES.C */
+void				editor_load_prefs(t_editor *ed, t_sdlcontext *sdl);
+void				editor_save_prefs(t_editor *ed);
+
 bool				object_lookedat(t_editor *ed, t_sdlcontext sdl, t_object *obj);
 void				objectgui_update(t_objectgui *ogui, t_entity **ent);
 
@@ -194,7 +193,6 @@ t_tool				*get_npc_tool(void);
 t_tool				*get_load_tool(void);
 void				rendergrid(t_world *world, t_vector3 position, int size, uint32_t color);
 bool				rooms_share_zspace(t_room *room1, t_room *room2);
-t_vector3			raycast_DEPRECATED(t_editor *ed);
 
 typedef struct s_raycastinfo
 {

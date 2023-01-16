@@ -30,8 +30,8 @@ void	lateupdate_entitycache(t_sdlcontext *sdl, t_world *world)
 		ent = world->entitycache.sorted_entities[i];
 		if (ent->status != es_free)
 		{
-			if(ent->component.ui_update != NULL)
-				ent->component.ui_update(ent, world);
+			if(ent->component.func_ui_update != NULL)
+				ent->component.func_ui_update(ent, world);
 			found++;
 		}
 		i++;
@@ -54,13 +54,13 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 		ent = world->entitycache.sorted_entities[i];
 		if (ent->status != es_free)
 		{
+			if(ent->component.func_update != NULL)
+				ent->component.func_update(ent, world);
 			if (ent->status == es_active && !ent->hidden)
 			{
 				if (is_entity_culled(sdl, render, ent) == false)
 					render_entity(sdl, render, ent);
 			}
-			if(ent->component.update != NULL)
-				ent->component.update(ent, world);
 			found++;
 		}
 		i++;
@@ -155,6 +155,7 @@ void update_world3d(t_world *world, t_render *render)
 			sdl->render.occlusion.slow_render = true;
 		if (gui_shortcut_button("Bake lighting (new)", 'b', world->debug_gui))
 			start_lightbake(&world->sdl->render, world);
+		gui_labeled_int_slider("Ps1 tri div: ", &sdl->ps1_tri_div, 0.2f, world->debug_gui);
 		sdl->ps1_tri_div = ft_clamp(sdl->ps1_tri_div, 1, 4);
 		gui_end(world->debug_gui);
 	}
@@ -168,22 +169,35 @@ void update_world3d(t_world *world, t_render *render)
 
 void	init_entity(t_entity *entity, t_world *world)
 {
+	t_componentdefinition	*defs;
+	int						i;
+
 	entity->obj = get_object_by_name(*world->sdl, entity->object_name);
 	entity->lightmap = NULL;
 	entity->map = NULL; //TODO: load maps here
-	//entity->component.data = NULL;
-	if (entity->component.type != pft_none)
+	defs = get_component_definitions();
+	i = 0;
+	while (ft_strlen(defs[i].name) > 0)
 	{
-		component_init(entity);
-		if (entity->component.type == pft_audiosource)
+		if (entity->component.type == defs[i].type)
 		{
-			t_audiosource	*source;
-			source = entity->component.data;
-			if (source == NULL)
-				error_log(EC_MALLOC);
-			source->sample = get_sample(world->sdl, source->sample.name);
+			if (defs[i].func_assign_component != NULL)
+				defs[i].func_assign_component(&entity->component);
+			else
+			{
+				printf("Component definition is missing func_assign_component"); //TODO: move this protection to get_component_defs
+				exit(0);
+			}
+			printf("loaded component %i/%s\n", entity->id, defs[i].name);
+			if (entity->component.func_loadassets != NULL)
+			{
+				printf("	loading asset for %i/%s\n", entity->id, defs[i].name);
+				entity->component.func_loadassets(entity, world);
+			}
 		}
+		i++;
 	}
+	//entity->component.data = NULL;
 	default_entity_occlusion_settings(entity, NULL);
 }
 
@@ -391,6 +405,7 @@ t_entity	*spawn_entity(t_world	*world)
 			cache->entities[i].transform.position = vector3_zero();
 			cache->entities[i].transform.scale = vector3_one();
 			cache->entities[i].id = i;
+			ft_bzero(&cache->entities[i].component, sizeof(t_component));
 			//cache->entities[i].transform.scale = vector3_zero();
 			cache->existing_entitycount++;
 			if (cache->existing_entitycount >= cache->alloc_count)
@@ -474,6 +489,7 @@ void	load_component(t_entity	*entity, char	*filename)
 	char	*str;
 	char	comp_filename[64];
 
+	printf("trying to load component\n");
 	str = ft_itoa(entity->id);
 	ft_strcpy(comp_filename, str);
 	free(str);

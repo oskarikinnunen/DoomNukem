@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:49:59 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/13 05:59:59 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/16 19:52:00 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	list_gun_presets(t_editor *ed, t_sdlcontext sdl, t_point pos)
 	{
 		gun = l->content;
 		ft_bzero(str, sizeof(str));
-		sprintf(str, "%s (model: %s)", gun->preset_name, gun->entity.object_name);
+		snprintf(str, 256, "%s (model: %s)", gun->preset_name, gun->entity.object_name);
 		if (instant_text_button(sdl, &ed->hid.mouse, str, point_add(pos, (t_point){10, i * 20})))
 		{
 			ed->player.gun = gun;
@@ -42,6 +42,7 @@ void	list_gun_presets(t_editor *ed, t_sdlcontext sdl, t_point pos)
 		l = l->next;
 	}
 }
+
 
 void	save_preset(t_editor *ed, t_sdlcontext sdl)
 {
@@ -56,7 +57,8 @@ void	save_preset(t_editor *ed, t_sdlcontext sdl)
 		if (ft_strcmp(gun->preset_name, ed->player.gun->preset_name) == 0)
 		{
 			gun = ed->player.gun;
-			sprintf(gun->preset_name, "%s(copy)", gun->preset_name);
+			ft_strcpy(gun->preset_name, "_copy");
+			//snprintf(gun->preset_name, 32, "%s(copy)", gun->preset_name);
 			list_push(&ed->world.guns, ed->player.gun, sizeof(t_gun));
 			/*sprintf(str, "Overwrote preset %s", gun->preset_name);
 			debugconsole_addmessage(&ed->world.debugconsole, str);*/
