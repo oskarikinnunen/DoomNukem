@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
+#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/01/15 17:42:28 by okinnune         ###   ########.fr        #
+#    Updated: 2023/01/16 14:46:24 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -110,6 +110,7 @@ VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		conversions.c vector3_complex3.c \
 		quaternion_shorthands.c quaternions.c \
 		matrix_shorthands.c matrix_rotations.c \
+		matrix_transform.c \
 		matrix_functions.c matrix_functions2.c \
 		debug_vectors.c point_more.c
 VECTORSRC= $(addprefix src/vectors/,$(VECTORSRCFILES))

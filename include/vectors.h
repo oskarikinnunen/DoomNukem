@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vectors.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/13 02:40:07 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/16 14:45:49 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,6 +182,14 @@ float	line_intersect_plane(t_vector3 plane_p, t_vector3 plane_n, t_vector3 start
 //returns linearly interpolated value between 'v1' and 'v2' using lerp (which should be in range 0.0 - 1.0f)
 t_vector3	vector3_lerp(t_vector3 v1, t_vector3 v2, float lerp);
 
+typedef struct s_transform
+{
+	t_vector3			position;
+	t_vector3			rotation;
+	t_vector3			scale;
+	struct s_transform	*parent;
+}	t_transform;
+
 typedef struct s_point
 {
 	int		x;
@@ -309,7 +317,13 @@ t_mat4x4 matrix_makerotationy(float fAngleRad);
 t_mat4x4 matrix_makerotationz(float fAngleRad);
 
 //matrix makes identity matrix and sets matrix[3][0] = 'x', matrix.m[3][1] = 'y', matrix.m[3][2] = 'z'
-t_mat4x4 matrix_maketranslation(float x, float y, float z);
+t_mat4x4 matrix_maketranslation(t_vector3 v);
+
+//returns matrix scale
+t_mat4x4 matrix_makescale(t_vector3 v);
+
+//returns transform matrix
+t_mat4x4 make_transform_matrix(t_transform transform);
 
 //returns matrix projection, fFovDegrees is player field of view in degrees, aspect ratio is float window height divided by window width, fnear is how close the camera clips and ffar is how far the camera clips 
 t_mat4x4 matrix_makeprojection(float fFovDegrees, float fAspectRatio, float fNear, float fFar);

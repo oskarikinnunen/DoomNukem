@@ -36,7 +36,6 @@ void calculate_pointlight_step(t_pointlight *pointlight, t_world *world, t_rende
 						t_quaternion temp;
 						temp.v = ent->obj->vertices[ent->obj->faces[j].v_indices[e] - 1];
 						temp = transformed_vector3(ent->transform, temp.v);
-						temp = quaternion_mul_matrix(render->camera.matworld, temp);
 						l.triangles[index][j].p3[e] = temp.v;
 						l.triangles[index][j].uv[e] = ent->obj->uvs[ent->obj->faces[j].uv_indices[e] - 1];
 					}
@@ -151,7 +150,6 @@ void calculate_pointlight(t_pointlight *pointlight, t_world *world, t_render *re
 						t_quaternion temp;
 						temp.v = ent->obj->vertices[ent->obj->faces[j].v_indices[e] - 1];
 						temp = transformed_vector3(ent->transform, temp.v);
-						temp = quaternion_mul_matrix(render->camera.matworld, temp);
 						l.triangles[index][j].p3[e] = temp.v;
 						l.triangles[index][j].uv[e] = ent->obj->uvs[ent->obj->faces[j].uv_indices[e] - 1];
 					}

@@ -51,8 +51,7 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 	while (found < world->entitycache.existing_entitycount
 		/*&& i < world->entitycache.alloc_count*/)
 	{
-		//ent = world->entitycache.sorted_entities[i];
-		ent = &world->entitycache.entities[i];
+		ent = world->entitycache.sorted_entities[i];
 		if (ent->status != es_free)
 		{
 			if (ent->status == es_active && !ent->hidden)
@@ -528,6 +527,7 @@ void	init_skybox(t_world *world)
 	world->skybox.obj = get_object_by_name(*world->sdl, "cube");
 	world->skybox.obj->materials[0].img = get_image_by_name(*world->sdl, "grid_d.cng");
 	world->skybox.transform.scale = vector3_mul(vector3_one(), 300.0f);
+	world->skybox.transform.rotation = vector3_zero();
 	world->skybox.transform.position = (t_vector3){1500.0f, 1500.0f, 1497.5f};
 }
 

@@ -14,14 +14,6 @@ typedef struct s_bound
 	float	max;
 }	t_bound;
 
-typedef struct s_transform
-{
-	t_vector3			position;
-	t_vector3			rotation;
-	t_vector3			scale;
-	struct s_transform	*parent;
-}	t_transform;
-
 typedef enum s_entitystatus
 {
 	es_free,

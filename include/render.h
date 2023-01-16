@@ -96,10 +96,7 @@ typedef struct s_debug_occlusion
 
 typedef struct s_camera
 {
-	t_vector3			vtarget;
-	t_mat4x4			matcamera;
 	t_mat4x4			matview;
-	t_mat4x4			matworld;
 	t_mat4x4			matproj;
 	t_vector3			position;
 	t_vector3			lookdir;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_raycast.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 18:03:40 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/15 17:25:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/16 15:08:35 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,6 @@ bool	triangle_lookedat(t_render r, t_triangle tri, t_sdlcontext sdl)
 	int			p_i;
 
 	c = r.camera;
-	tri.p[0] = quaternion_mul_matrix(c.matworld, tri.p[0]);
-	tri.p[1] = quaternion_mul_matrix(c.matworld, tri.p[1]);
-	tri.p[2] = quaternion_mul_matrix(c.matworld, tri.p[2]);
 	tri.p[0] = quaternion_mul_matrix(c.matview, tri.p[0]);
 	tri.p[1] = quaternion_mul_matrix(c.matview, tri.p[1]);
 	tri.p[2] = quaternion_mul_matrix(c.matview, tri.p[2]);

@@ -2,21 +2,21 @@
 
 static t_box get_entity_box_transformed(t_entity *e)
 {
-	t_vector3	temp;
-	t_box		box;
-	int			i;
-	int			max;
+	t_quaternion	temp;
+	t_box			box;
+	int				i;
+	int				max;
+	t_mat4x4		mattrans;
 
+	mattrans = make_transform_matrix(e->transform);
 	max = 8;
 	if (e->obj->bounds.type == bt_plane)
 		max = 4;
 	i = 0;
 	while (i < max)
 	{
-		temp = e->obj->bounds.box.v[i];
-		temp = vector3_mul_vector3(e->transform.scale, temp);
-		temp = vector3_add(e->transform.position, temp);
-		box.v[i] = temp;
+		temp = vector3_to_quaternion(e->obj->bounds.box.v[i]);
+		box.v[i] = quaternion_mul_matrix(mattrans, temp).v;
 		i++;
 	}
 	return(box);
@@ -33,7 +33,6 @@ static void triangle_to_projection(t_sdlcontext sdl, t_render *render, t_triangl
 	index = 0;
 	while(index < 3)
 	{
-		t.p[index] = quaternion_mul_matrix(render->camera.matworld, t.p[index]);
 		t.p[index] = quaternion_mul_matrix(render->camera.matview, t.p[index]);
 		index++;
 	}
@@ -134,17 +133,17 @@ void calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity)
 	}
 	else if (entity->obj->bounds.type == bt_ignore)
 	{
-		t_quaternion temp;
-	
+		t_quaternion	temp;
+		t_mat4x4		mattrans;
+		
+		mattrans = make_transform_matrix(entity->transform);
 		i = 0;
 		while (i < entity->obj->vertice_count)
 		{
-			temp.v = entity->obj->vertices[i];
+			render->q[i] = vector3_to_quaternion(entity->obj->vertices[i]);
 			if (entity->animation.active)
-			{
-				temp.v = vector3_add(entity->obj->o_anim.frames[entity->animation.frame].deltavertices[i].delta, temp.v); // hmm the walls are dancing
-			}
-			render->q[i] = transformed_vector3(entity->transform, temp.v);
+				render->q[i].v = vector3_add(entity->obj->o_anim.frames[entity->animation.frame].deltavertices[i].delta, render->q[i].v);
+			render->q[i] = quaternion_mul_matrix(mattrans, render->q[i]);
 			i++;
 		}
 		i = 0;
@@ -173,27 +172,31 @@ void clear_occlusion_buffer(t_sdlcontext *sdl)
 
 bool is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 {
-	t_square	s;
+	t_square	chunk;
 	const __uint128_t max = ~0;
 	float w;
 	int y;
 	int x;
 
-	s = entity->occlusion.box;
+	chunk = entity->occlusion.box;
 	w = entity->occlusion.z_dist[1];
+	chunk.min.x = chunk.min.x / 8;
+	chunk.max.x = ceilf(chunk.max.x / 8.0f);
+	chunk.min.y = chunk.min.y / 8;
+	chunk.max.y = ceilf(chunk.max.y / 8.0f);
 	entity->occlusion.is_occluded = true;
 	entity->occlusion.clip.max.x = 0;
 	entity->occlusion.clip.max.y = 0;
-	entity->occlusion.clip.min.x = sdl->window_w - 1;
-	entity->occlusion.clip.min.y = sdl->window_h - 1;
-	y = s.min.y;
-	while (y < s.max.y)
+	entity->occlusion.clip.min.x = sdl->window_w;
+	entity->occlusion.clip.min.y = sdl->window_h;
+	y = chunk.min.y;
+	while (y <= chunk.max.y)
 	{
-		x = s.min.x;
-		while (x < s.max.x)
+		x = chunk.min.x;
+		while (x <= chunk.max.x)
 		{
-			if (w < sdl->bitmask.tile[(y / 8) * sdl->bitmask.tile_chunks.x + (x / 8)].max0)
-			{	
+			if (w < sdl->bitmask.tile[y * sdl->bitmask.tile_chunks.x + x].max0)
+			{
 				entity->occlusion.is_occluded = false;
 				if (entity->occlusion.clip.max.x < x)
 					entity->occlusion.clip.max.x = x;
@@ -204,11 +207,12 @@ bool is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *e
 				if (entity->occlusion.clip.min.y > y)
 					entity->occlusion.clip.min.y = y;
 			}
-			x += 8;
+			x++;
 		}
-		y += 8;
+		y++;
 	}
-
+	entity->occlusion.clip.min = point_mul(entity->occlusion.clip.min, 8);
+	entity->occlusion.clip.max = point_mul(entity->occlusion.clip.max, 8);
 	entity->occlusion.clip.max.x = ft_clamp(entity->occlusion.clip.max.x, 0, (sdl->window_w * sdl->resolution_scaling) - 1);
 	entity->occlusion.clip.max.y = ft_clamp(entity->occlusion.clip.max.y, 0, (sdl->window_h * sdl->resolution_scaling) - 1);
 	entity->occlusion.clip.min.x = ft_clamp(entity->occlusion.clip.min.x, 0, (sdl->window_w * sdl->resolution_scaling) - 1);

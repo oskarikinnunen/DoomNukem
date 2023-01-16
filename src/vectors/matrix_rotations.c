@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 19:27:04 by vlaine            #+#    #+#             */
-/*   Updated: 2022/10/18 20:07:53 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/16 14:44:26 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,5 @@ t_mat4x4 matrix_makerotationz(float fAngleRad)
 	matrix.m[1][1] = cosf(fAngleRad);
 	matrix.m[2][2] = 1.0f;
 	matrix.m[3][3] = 1.0f;
-	return matrix;
-}
-
-t_mat4x4 matrix_maketranslation(float x, float y, float z)
-{
-	t_mat4x4 matrix = matrix_makeidentity();
-	matrix.m[3][0] = x;
-	matrix.m[3][1] = y;
-	matrix.m[3][2] = z;
 	return matrix;
 }

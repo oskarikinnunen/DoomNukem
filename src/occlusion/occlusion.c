@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 14:40:03 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/12 10:00:31 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/16 14:59:32 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void update_object_bounds(t_object *obj)
 
 void update_floor_bounds(t_meshtri *f)
 {
-	f->entity->obj->bounds.origin = vector3_lerp(vector3_lerp(f->entity->obj->vertices[0], f->entity->obj->vertices[1], 0.5f), f->entity->obj->vertices[2], 0.5f);
+	f->entity->obj->bounds.origin = vector3_div(vector3_add(vector3_add(f->entity->obj->vertices[0], f->entity->obj->vertices[1]), f->entity->obj->vertices[2]), 3.0f);
 	f->entity->obj->bounds.type = bt_ignore;
 }
 

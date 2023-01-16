@@ -2,16 +2,20 @@
 
 static uint32_t sample_img_dynamic(t_render *render, t_texture t)
 {
+	uint32_t	xsample;
+	uint32_t	ysample;
+/*
 	static uint8_t	x8b;
 	static uint8_t	y8b;
-	uint8_t	xsample;
-	uint8_t	ysample;
-
 	x8b = (t.u / t.w) * 255;
 	xsample = (x8b * (render->img->size.x - 1)) / 255;
 	y8b = (t.v / t.w) * 255;
 	ysample = (y8b * (render->img->size.y - 1)) / 255;
-
+*/
+	xsample = (t.u / t.w) * render->img->size.x;
+	xsample = xsample % render->img->size.x;
+	ysample = (t.v / t.w) * (render->img->size.y);
+	ysample = ysample % render->img->size.y;
 	return(flip_channels(render->img->data[(ysample * render->img->size.x) + xsample]));
 }
 

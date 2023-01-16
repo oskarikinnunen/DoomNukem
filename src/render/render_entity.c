@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_entity.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/13 10:33:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/16 15:09:15 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,8 +232,6 @@ void render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to)
 
 	q1 = vector3_to_quaternion(from);
 	q2 = vector3_to_quaternion(to);
-	q1 = quaternion_mul_matrix(sdl->render.camera.matworld, q1);
-	q2 = quaternion_mul_matrix(sdl->render.camera.matworld, q2);
 	q1 = quaternion_mul_matrix(sdl->render.camera.matview, q1);
 	q2 = quaternion_mul_matrix(sdl->render.camera.matview, q2);
 	q1 = quaternion_mul_matrix(sdl->render.camera.matproj, q1);

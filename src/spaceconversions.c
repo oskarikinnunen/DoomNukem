@@ -3,15 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   spaceconversions.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 13:31:43 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/06 16:49:36 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/16 15:25:54 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "vectors.h"
+
+/*
+t_quaternion quaternion_rotate_euler(t_vector3 original, t_vector3 eulers)
+{
+	t_quaternion	temp;
+	t_mat4x4		matrotation;
+
+	temp.v = original;
+	temp.w = 1.0f;
+	matrotation = matrix_makerotationy(eulers.y);
+	temp = quaternion_mul_matrix(matrotation, temp);
+	matrotation = matrix_makerotationz(eulers.x);
+	temp = quaternion_mul_matrix(matrotation, temp);
+	matrotation = matrix_makerotationx(eulers.z);
+	temp = quaternion_mul_matrix(matrotation, temp);
+	return (temp);
+}
+*/
+
 
 t_quaternion	transformed_vector3(t_transform transform, t_vector3 v)
 {
@@ -61,7 +80,6 @@ t_point vector3_to_screenspace(t_vector3 vec, t_sdlcontext sdl) //TODO: clip
 
 	c = sdl.render.camera;
 	proj_q = vector3_to_quaternion(vec);
-	proj_q = quaternion_mul_matrix(c.matworld, proj_q);
 	proj_q = quaternion_mul_matrix(c.matview, proj_q);
 	//clip
 	proj_q = quaternion_mul_matrix(c.matproj, proj_q);
