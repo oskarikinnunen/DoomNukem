@@ -703,7 +703,7 @@ void	save_entities(char *filename, t_list	*entitylist)
 			close(fd);
 			printf("saving component to file %s \n", componentfilename);
 			save_chunk(componentfilename, "COMP", &temp);
-			save_filecontent(filename, componentfilename);
+			pack_file(filename, componentfilename);
 			remove(componentfilename);
 			//TODO: remove .comp
 			ent->component.data = NULL;
@@ -732,13 +732,13 @@ void	save_world(char *namename, t_world world)
 	r = world.roomlist;
 	//TODO: 
 	save_chunk(filename, "RMNM", world.roomlist);
-	save_filecontent(filename, "assets/images/something.png");
+	pack_file(filename, "assets/images/something.png");
 	//load_filecontent()
 	//load_filecontent_fd()
 	while (r != NULL)
 	{
 		save_room(*(t_room *)r->content);
-		save_filecontent(filename, (*(t_room *)r->content).name);
+		pack_file(filename, (*(t_room *)r->content).name);
 		remove((*(t_room *)r->content).name);
 		r = r->next;
 	}

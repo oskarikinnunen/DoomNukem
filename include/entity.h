@@ -1,13 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   entity.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
+/*   Updated: 2023/01/16 23:45:04 by okinnune         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef ENTITY_H
 # define ENTITY_H
 
-#include "vectors.h"
-#include "animation.h"
-#include "objects.h"
-#include "occlusion.h"
-#include "render.h"
-#include "lighting.h"
-#include "components.h"
+# include "vectors.h"
+# include "animation.h"
+# include "objects.h"
+# include "occlusion.h"
+# include "render.h"
+# include "lighting.h"
+# include "components.h"
 
 typedef struct s_bound
 {
@@ -22,12 +34,16 @@ typedef enum s_entitystatus
 	es_active
 }	t_entitystatus;
 
+# define SAVESTRUCT
 typedef struct s_interactable
 {
-	float	radius;
-	t_anim	anim;
+	float		radius;
+	int			i32;
+	uint64_t	testint2;
+	t_anim		anim;
 }	t_interactable;
 
+# define SAVESTRUCT
 typedef struct s_entity
 {
 	t_transform		transform;
@@ -45,10 +61,9 @@ typedef struct s_entity
 	t_vector2		max;
 	t_lightmap		*lightmap;
 	t_map			*map;
-	//uint16_t		root_id;
 }	t_entity;
 
-typedef struct s_prefab //DEPRECATED
+typedef struct s_prefab
 {
 	t_object			*object;
 	t_transform			offset;
@@ -58,13 +73,6 @@ typedef struct s_prefab //DEPRECATED
 	bool				hidden;
 	void				*data;
 }	t_prefab;
-
-/*
-	//assign_prefabs()
-	draw prefab_menu
-		for light
-
-*/
 
 typedef struct s_gun
 {
@@ -98,12 +106,12 @@ void	entity_set_component(t_entity *entity, t_component_type type, struct s_worl
 
 
 /* OCCLUSION*/
-void render_bitmask_row(int ax, int bx, float aw, float bw, int y, t_sdlcontext *sdl);
-void update_frustrum_culling(struct s_world *world, t_sdlcontext *sdl, t_render *render);
+void	render_bitmask_row(int ax, int bx, float aw, float bw, int y, t_sdlcontext *sdl);
+void	update_frustrum_culling(struct s_world *world, t_sdlcontext *sdl, t_render *render);
 
-bool is_entity_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity);
-bool is_entity_frustrum_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity);
-bool is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity);
+bool	is_entity_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity);
+bool	is_entity_frustrum_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity);
+bool	is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 
 void	calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity);
 void	clear_occlusion_buffer(t_sdlcontext *sdl);
@@ -119,8 +127,8 @@ void	render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 void	render_worldspace(t_render *render, t_entity *entity);
 void	render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 
-void create_map_for_entity(t_entity *entity, struct s_world *world);
-void create_dynamic_map_for_entity(t_entity *entity, struct s_world *world);
-void create_lightmap_for_entity(t_entity *entity, struct s_world *world);
+void	create_map_for_entity(t_entity *entity, struct s_world *world);
+void	create_dynamic_map_for_entity(t_entity *entity, struct s_world *world);
+void	create_lightmap_for_entity(t_entity *entity, struct s_world *world);
 
-#endif
+# endif

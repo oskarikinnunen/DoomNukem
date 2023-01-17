@@ -1,0 +1,6 @@
+int
+	z
+t_noc
+	noc
+float
+	w

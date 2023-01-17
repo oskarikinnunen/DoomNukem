@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 16:56:41 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/09 16:31:24 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/17 02:02:00 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ t_list	*load_chunk(char *filename, char *chunkname, size_t size);
 void	save_chunk(char *filename, char *chunkname, t_list *content);
 
 
-void			save_filecontent(char	*worldname, char *filename);
+void			pack_file(char	*packname, char *filename);
+void			force_pack_file(char	*packname, char *filename);
 t_filecontent	load_filecontent(char	*worldname, char	*fc_name);
 //Loads a filecontent structure from a world file and writes it out to an actual file, returns an open fd
 int				load_filecontent_fd(char	*worldname, char *fcname);
@@ -36,5 +37,8 @@ int				load_filecontent_fd(char	*worldname, char *fcname);
 
 void	save_editordata(t_editor *ed);
 int		fileopen(char *filename, int flags);
+
+
+void	generate_struct_datas();
 
 #endif

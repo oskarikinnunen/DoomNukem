@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/14 20:35:10 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/16 22:35:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,7 @@ int	main(int argc, char **argv)
 	t_sdlcontext	sdl;
 	t_gamereturn	gr;
 
+	generate_struct_datas();
 	checkargs(argc, argv);
 	create_sdlcontext(&sdl);
 	gr = game_switchmode;

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/14 18:19:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/16 22:32:28 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 
 void	allocate_object_count(t_sdlcontext *sdl)
 {
-		DIR				*d;
+	DIR				*d;
 	struct dirent	*dfile;
 	char path		[256] = "assets/objects";
 	int				i;

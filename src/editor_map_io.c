@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 19:48:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/17 02:33:53 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,6 @@ t_list *load_chunk(char *filename, char *chunkname, size_t size)
 	{
 		if (ft_strcmp(chunkname, buf) == 0)
 		{
-			//printf("found chunk %s \n", buf); //TODO: don't remove, going to be used for logging
 			result = parse_chunk(fd, size);
 			close(fd);
 			return (result);
@@ -198,7 +197,7 @@ char	*uint64_to_char(uint64_t	u64)
 	return (size);
 }
 
-void	save_filecontent(char	*worldname, char *filename)
+void	pack_file(char	*packname, char *filename)
 {
 	int				fd;
 	void			*temp;
@@ -211,7 +210,7 @@ void	save_filecontent(char	*worldname, char *filename)
 	ft_strcpy(fc.name, filename);
 	close(fd);
 	printf("file read '%s' \n", (char *)fc.content);
-	fd = open(worldname, O_RDWR | O_APPEND, 0666);
+	fd = open(packname, O_RDWR | O_APPEND, 0666);
 	if (fd == -1)
 		return ;
 	write(fd, "FCNK", 4);
@@ -220,7 +219,30 @@ void	save_filecontent(char	*worldname, char *filename)
 	write(fd, fc.content, sizeof(char) * fc.length);
 	write(fd, "PADD", fc.length % 4);
 	close(fd);
-	//load_filecontent(worldname, filename);
+}
+
+void	force_pack_file(char	*packname, char *filename)
+{
+	int				fd;
+	void			*temp;
+	t_filecontent	fc;
+	
+	fd = open(filename, O_RDONLY, 0666);
+	if (fd == -1)
+		return ;
+	ft_fileread(fd, &fc);
+	ft_strcpy(fc.name, filename);
+	close(fd);
+	printf("file read '%s' \n", (char *)fc.content);
+	fd = open(packname, O_RDWR | O_APPEND, 0666);
+	if (fd == -1)
+		fd = open(packname, O_CREAT | O_RDWR | O_APPEND, 0666); //TODO: protect after this
+	write(fd, "FCNK", 4);
+	write(fd, fc.name, sizeof(char) * 128);
+	write(fd, uint64_to_char(fc.length), 8);
+	write(fd, fc.content, sizeof(char) * fc.length);
+	write(fd, "PADD", fc.length % 4);
+	close(fd);
 }
 
 #pragma GCC diagnostic pop

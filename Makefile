@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/01/16 20:32:16 by okinnune         ###   ########.fr        #
+#    Updated: 2023/01/17 02:12:56 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -65,6 +65,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		perfgraph.c \
 		png.c lua_conf.c list_helper.c \
 		spaceconversions.c \
+		structsaver/structsaver.c \
 		entity/entity_animate.c \
 		entity/component_init.c \
 		entity/components/component_definitions.c \
