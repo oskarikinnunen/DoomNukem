@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 01:12:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/17 01:30:01 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/17 11:22:10 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ typedef struct s_container
 {
 	int		z;
 	t_noc	noc;
+	int		z2;
+	int		z3;
 	float	w;
 }	t_container;
 

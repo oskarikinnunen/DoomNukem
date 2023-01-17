@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_raycast.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 18:03:40 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 15:08:35 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/17 12:41:44 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -275,6 +275,7 @@ bool raycast_new(t_ray r, t_raycastinfo *info, t_world *world)
 	internal_info.distance = 100000.0f; //TODO: inf?
 	r.dir = vector3_normalise(r.dir);
 	i = 0;
+	found = 0;
 	while (found < cache->existing_entitycount
 		&& i < cache->alloc_count)
 	{

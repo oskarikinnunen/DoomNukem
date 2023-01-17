@@ -2,5 +2,9 @@ int
 	z
 t_noc
 	noc
+int
+	z2
+int
+	z3
 float
 	w

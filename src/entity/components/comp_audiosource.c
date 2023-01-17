@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 22:24:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/17 11:50:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,34 @@
 #include "doomnukem.h"
 #include "editor_tools.h"
 
+/*
+uint32_t	starttime;
+uint32_t	lifetime;
+t_anim	particleanim;
+t_img	particleimages[16];
+*/
+
 void	comp_audiosource_update(t_entity *entity, t_world *world)
 {
 	t_audiosource	*source;
 	bool			isplaying;
 
+	t_anim	particleanim;
+	update_anim(&particleanim, world->clock.delta);
+	//entity->particleimages[particleanim.];
 	source = entity->component.data;
 	if (source == NULL || source->sample.sound == NULL)
 	{
 		return ;
 	}
+	
+	/*if (world->clock.prev_time > starttime + lifetime)
+	{
+		//free_object()
+		destroy_entity(world, entity);
+		return ;
+	}*/
+
 	isplaying = source_is_playing(source);
 	if (isplaying)
 	{
@@ -102,6 +120,7 @@ void	comp_audiosource_gui_edit(t_component *component, t_autogui *gui)
 	
 	if (source == NULL)
 	{
+		//start_anim()
 		gui_label("!NULL source", gui);
 		return ;
 	}

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:11:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/17 05:22:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/17 11:29:14 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -650,6 +650,7 @@ void	load_struct(char	*filename, char *structname, t_structanalyzer *old, t_stru
 
 void	generate_struct_datas()
 {
+	return ;
 	DIR				*d;
 	struct dirent	*dfile;
 	char path		[256] = "include/";
@@ -687,7 +688,7 @@ void	generate_struct_datas()
 	printf("new analysis: \n");
 	print_analysis(&new_analysis);
 	//force_save_chunk("testfile", "TEST", )
-	load_struct("", "t_container", &old_analysis, &new_analysis);
+	//load_struct("", "t_container", &old_analysis, &new_analysis);
 
 	t_container cont = (t_container){.w = 13.2f, .z = -10.0f};
 	exit(0);

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 17:49:44 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/17 11:59:41 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,9 +152,25 @@ void	updateguntransform(t_input *input, t_clock *clock, t_player *player)
 		
 		*/
 		//particle_start(gunpos, player.)
+		/*
+		spawn entity
+		component_add_particle(entity);
+		t_particle p = entity.component.data;
+		p.starttime = clock.prevtime
+		p.dir = 
+		ft_bzero(&particleanim, sizeof(particleanim));
+		particleanim.framerate = 8;
+		particleanim.lastframe = 16;
+		particleanim.mode = anim_forwards;
+		start_anim(&particleanim, anim_forwards);
+		*/
 		start_anim(&gun->shoot_anim, anim_forwards);
 		start_anim(&gun->view_anim, anim_forwards);
-		
+		//gun->entity.transform
+		//TODO: add localposition and position
+		//t_vector3 worldspace_position = transformed_vector3(gun->entity.transform, gun->entity.transform.position).v;
+
+		//make_transform_matrix()
 		gun->readytoshoot = false;
 		gun->lastshottime = clock->prev_time;
 	}

@@ -53,16 +53,8 @@ typedef struct s_wall
 		lastseenpos = playerpos //Or APPROX player pos, if not directly seen
 		gotoalert
 	}
-		
 */
 
-typedef struct s_npc
-{
-	t_vector3	lastseenpos;
-	bool		seeplayer;
-	uint32_t	lastseenplayertime;
-	//path
-}	t_npc_component;
 
 // ALERT:
 /*	if !seeplayer && nopath
@@ -81,6 +73,15 @@ typedef struct s_npc
 	if curtime - lastseenplayertime	> threshold
 		gotoidle
 */
+
+typedef struct s_npc
+{
+	t_vector3	lastseenpos;
+	bool		seeplayer;
+	uint32_t	lastseenplayertime;
+	//path
+}	t_npc_component;
+
 
 //[2][0][0][0][0][3]
 
