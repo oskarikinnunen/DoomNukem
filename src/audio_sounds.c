@@ -38,6 +38,7 @@ void	play_music(t_sdlcontext *sdl, char *musicname)
 	t_audiosample	sample;
 
 	sample = get_music(sdl, musicname);
+	return;//TODO: Remove just added to block backgoround music
 	if (sample.sound != NULL)
 	{
 		printf("found sample for music %s \n", musicname);

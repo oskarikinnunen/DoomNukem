@@ -28,7 +28,7 @@ bool pathfind(t_world *world, t_path *path)
 	//exit(0);
 	bzero(openlist, sizeof(t_navnode) * 1000);
 	path->end = get_target_node(world, path->target);
-	//ft_swap(&path->start, &path->end, sizeof(uint32_t));
+	ft_swap(&path->start, &path->end, sizeof(uint32_t));
 	openlist[path->start] = world->navmesh[path->start];
 	openlist[path->start].valid = true;
 	printf("start %d end %d\n", path->start, path->end);
@@ -67,6 +67,7 @@ bool pathfind(t_world *world, t_path *path)
 				e = openlist[e].parent;
 				i++;
 			}
+			path->path[i] = openlist[e];
 			print_vector3(openlist[e].mid_point);
 			printf("%d\n", i);
 			//exit(0);
