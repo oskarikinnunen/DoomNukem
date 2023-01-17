@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   roomtool.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:42:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 10:36:04 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/16 19:50:12 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,9 @@ void		highlight_room(t_editor *ed, t_sdlcontext *sdl, t_room *room, uint32_t col
 t_meshtri	*selectedfloor(t_editor *ed, t_sdlcontext sdl, t_room *room);
 t_wall		*selectedwall(t_editor *ed, t_sdlcontext sdl, t_room *room);
 t_room		*selectedroom(t_editor *ed, t_sdlcontext sdl);
+
+/*ROOM_TOOL_PAINT.C*/
+void		room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat);
 
 
 # endif

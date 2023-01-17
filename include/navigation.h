@@ -18,4 +18,13 @@ typedef struct s_navnode
 	bool		blocked;
 }	t_navnode;
 
+typedef struct s_path
+{
+	t_navnode	path[32];
+	uint32_t	ai;
+	uint32_t	bi;
+	uint32_t	start;
+	uint32_t	end;
+	t_vector3	target;
+}	t_path;
 # endif

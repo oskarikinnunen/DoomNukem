@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/15 17:22:59 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/16 21:27:40 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,84 +153,36 @@ void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 
 static void gui_component(t_entity *entity, t_autogui *gui)
 {
-	if (entity->component.type == pft_light)
+	gui_start(gui);
+	if (entity->component.func_gui_edit != NULL)
 	{
-		t_pointlight	*light;
-		light = entity->component.data;
-
-		gui_start(gui);
-		gui_labeled_float_slider("Light radius:", &light->radius, 2.0f, gui);
-		gui_labeled_bool_edit("Ignore self:", &light->ignoreself, gui);
-		gui_end(gui);
-		gui->sdl->render.gizmocolor = AMBER_2;
-		render_ball(gui->sdl, entity->transform.position, light->radius, AMBER_3);
+		entity->component.func_gui_edit(&entity->component, gui);
 	}
-	if (entity->component.type == pft_interactable)
+	else
 	{
-		t_interactable	*inter;
-		inter = entity->component.data;
-
-		gui_start(gui);
-		gui_labeled_float_slider("Radius:", &inter->radius, 2.0f, gui);
-		gui_end(gui);
-		gui->sdl->render.gizmocolor = AMBER_2;
-		//render_ball(gui->sdl, entity->transform.position, light->radius, AMBER_3);
+		gui_label("!Component doesn't have gui function", gui);
 	}
-	if (entity->component.type == pft_audiosource)
-	{
-		t_audiosource	*source;
-		source = entity->component.data;
-		static bool	toggle_select;
-
-		gui_start(gui);
-		gui_starthorizontal(gui);
-		gui_label("Sample: ", gui);
-		gui_label(source->sample.name, gui);
-		gui_endhorizontal(gui);
-		if (gui_highlighted_button_if("Select audio", gui, toggle_select))
-			toggle_select = !toggle_select;
-		if (toggle_select)
-		{
-			int	i;
-			t_audiosample	sample;
-			i = 0;
-			gui->offset.x = 15;
-			while (i < gui->sdl->audio.samplecount)
-			{
-				sample = gui->sdl->audio.samples[i];
-				if (gui_button(sample.name, gui))
-				{
-					source->queue_stop = true;
-					source->sample = sample;
-				}
-				i++;
-			}
-			gui->offset.x = 0;
-		}
-		gui_labeled_bool_edit("Play always", &source->play_always, gui);
-		gui_labeled_float_slider("Volume", &source->volume, 0.1f, gui);
-		source->volume = ft_clampf(source->volume, 0.0f, 1.0f);
-		gui_labeled_float_slider("Range", &source->range, 0.5f, gui);
-		gui_labeled_int_slider("Random delay(min)", &source->random_delay_min, 0.5f, gui);
-		gui_labeled_int_slider("Random delay(max)", &source->random_delay_max, 0.5f, gui);
-		source->random_delay_min = ft_clamp(source->random_delay_min, 0, source->random_delay_max);
-		source->random_delay_max = ft_clamp(source->random_delay_max, source->random_delay_min, 2000);
-		source->range = ft_clampf(source->range, 2.5f, 1000.0f);
-		if (gui_button("Play audio", gui))
-		{
-			source->queue_play = true;
-			//audiosource_start(gui->sdl, source, &entity->transform.position);
-		}
-		gui_end(gui);
-		render_ball(gui->sdl, entity->transform.position, source->range * 1.0f, CLR_BLUE);
-		//render_ball(gui->sdl, entity->transform.position, light->radius, AMBER_3);
-	}
+	gui_end(gui);
 }
 
-static void gui_entitymode(t_entity *entity, t_autogui *gui)
+static void gui_entitymode(t_entity *entity, t_autogui *gui, t_world *world)
 {
+	t_componentdefinition	*defs;
+	int						i;
 	gui->offset.x = 20;
-	gui_label("Component type:", gui);
+	defs = get_component_definitions();
+	i = 0;
+	while (ft_strlen(defs[i].name) > 0)
+	{
+		if (gui_highlighted_button_if(defs[i].name, gui,
+			entity->component.type == defs[i].type))
+		{
+			entity_set_component(entity, defs[i].type, world);
+		}
+		i++;
+	}
+	//if (entity->component.)
+	/*gui_label("Component type:", gui);
 	if (gui_highlighted_button_if("None", gui, entity->component.type == pft_none))
 	{
 		entity->component.type = pft_none;
@@ -255,24 +207,9 @@ static void gui_entitymode(t_entity *entity, t_autogui *gui)
 	}
 	if (gui_highlighted_button_if("Audio", gui, entity->component.type == pft_audiosource))
 	{
-		entity->component.type = pft_audiosource;
-		if (entity->component.data != NULL)
-		{
-			free(entity->component.data);
-			entity->component.data = NULL;
-		}
-		entity->component.data = ft_memalloc(sizeof(t_audiosource));
-		entity->component.data_size = sizeof(t_audiosource);
-		t_audiosource	*source;
-		source = entity->component.data;
-		source->sample = get_sample(gui->sdl, "amb_dogbark1.wav");
-		source->volume = 1.0f;
-		source->range = 80.0f;
-		source->channel = NULL;
-		//entity->component.data = ft_memalloc(sizeof(t_audio)); //TODO: protect
-		//entity->component.data_size = sizeof(t_pointlight);
-		//t_pointlight	*pl;
-		component_init(entity);
+		///*protected_free(entity->component.data);
+		//assign_component_audiosource(&entity->component);
+		//entity->component.func_allocate(entity, world);
 	}
 		
 	if (gui_highlighted_button_if("Interactable", gui, entity->component.type == pft_interactable))
@@ -289,7 +226,7 @@ static void gui_entitymode(t_entity *entity, t_autogui *gui)
 		inter = entity->component.data;
 		inter->radius = 100.0f;
 		component_init(entity);
-	}
+	}*/
 	gui->offset.x = 0;
 }
 
@@ -341,7 +278,7 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 			dat->entityeditor.component_toggle = !dat->entityeditor.component_toggle;
 		if (dat->entityeditor.component_toggle)
 		{
-			gui_entitymode(ent, gui);
+			gui_entitymode(ent, gui, &ed->world);
 			if (ent->component.type != pft_none)
 			{
 				gui_start(&dat->entityeditor.component_gui);

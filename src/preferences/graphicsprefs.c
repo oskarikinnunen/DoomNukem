@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 14:37:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/14 20:35:10 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/16 19:38:14 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,9 @@ void	reset_graphics_prefs()
 	free(pref_filename);
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
+
 void	apply_graphics_prefs(t_graphicprefs prefs)
 {
 	char			*prefpath;
@@ -123,6 +126,8 @@ void	save_graphics_prefs(t_sdlcontext *sdl)
 	SDL_free(prefpath);
 	free(pref_filename);
 }
+
+#pragma GCC diagnostic pop
 
 t_graphicprefs	load_graphicsprefs()
 {

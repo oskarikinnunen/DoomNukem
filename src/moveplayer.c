@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 17:48:51 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/17 14:20:16 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,18 +106,6 @@ float	fmovetowards(float f1, float f2, float delta)
 	}
 	return (result);
 }
-
-t_vector3	vector3_movetowards2(t_vector3 vec, t_vector3 to, float delta)
-{
-	t_vector3	result;
-
-	result.x = fmovetowards(vec.x, to.x, delta);
-	result.y = fmovetowards(vec.y, to.y, delta);
-	result.z = fmovetowards(vec.z, to.z, delta);
-	return (result);
-}
-
-
 
 void	updateguntransform(t_input *input, t_clock *clock, t_player *player)
 {

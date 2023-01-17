@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/13 08:58:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/16 19:48:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 #include "filechunks.h"
 #include "file_io.h"
 #include "editor_tools.h"
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
 
 int		find_chunk_count(int fd)
 {
@@ -207,7 +210,7 @@ void	save_filecontent(char	*worldname, char *filename)
 	ft_fileread(fd, &fc);
 	ft_strcpy(fc.name, filename);
 	close(fd);
-	printf("file read '%s' \n", fc.content);
+	printf("file read '%s' \n", (char *)fc.content);
 	fd = open(worldname, O_RDWR | O_APPEND, 0666);
 	if (fd == -1)
 		return ;
@@ -219,3 +222,5 @@ void	save_filecontent(char	*worldname, char *filename)
 	close(fd);
 	//load_filecontent(worldname, filename);
 }
+
+#pragma GCC diagnostic pop

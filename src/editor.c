@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 18:19:13 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/17 15:24:18 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,68 +57,12 @@ void	editor_load_and_init_world(t_editor *ed, char	*worldname, t_sdlcontext *sdl
 	//ed->world.debugconsole.
 }
 
-typedef struct s_editorprefs
-{
-	char		worldname[32];
-	t_vector3	playerpos;
-}	t_editorprefs;
-
 /*
 	Fullscreen
 	borderless
 	windowed
 
 */
-
-void	editor_load_prefs(t_editor *ed, t_sdlcontext *sdl)
-{
-	char			*prefpath;
-	char			*pref_filename;
-	t_editorprefs	prefs;
-	int				fd;
-	prefpath = SDL_GetPrefPath("temp", "stark");
-	pref_filename = ft_strnew(256);
-	ft_strcpy(pref_filename, prefpath);
-	ft_strcat(pref_filename, "editor.pref");
-	fd = open(pref_filename, O_RDONLY);
-	if (fd != -1)
-	{
-		read(fd, &prefs, sizeof(t_editorprefs));
-		ed->player.transform.position = prefs.playerpos;
-		editor_load_and_init_world(ed, prefs.worldname, sdl);
-		printf("loading prefs from '%s' , worldname %s \n", prefpath, prefs.worldname);
-	}
-	else
-		editor_load_and_init_world(ed, "worlds/test123.world", sdl);
-	SDL_free(prefpath);
-	free(pref_filename);
-}
-
-void	editor_save_prefs(t_editor *ed)
-{
-	char			*prefpath;
-	char			*pref_filename;
-	t_editorprefs	prefs;
-	int				fd;
-	prefpath = SDL_GetPrefPath("temp", "stark");
-	ft_bzero(&prefs, sizeof(prefs));
-	
-	pref_filename = ft_strnew(256);
-	ft_strcpy(pref_filename, prefpath);
-	ft_strcat(pref_filename, "editor.pref");
-	fd = open(pref_filename, O_RDWR | O_CREAT | O_TRUNC, 0666);
-	if (fd != -1)
-	{
-		ft_strcpy(prefs.worldname, ed->world.name);
-		prefs.playerpos = ed->player.transform.position;
-		write(fd, &prefs, sizeof(prefs));
-		//editor_load_and_init_world(ed, prefs.worldname, sdl);
-		close(fd);
-		printf("saved prefs to '%s', worldname was %s \n", pref_filename, prefs.worldname);
-	}
-	SDL_free(prefpath);
-	free(pref_filename);
-}
 
 t_point	*get_resolutions()
 {
@@ -265,8 +209,8 @@ void	update_audio(t_world *world)
 		FMOD_Channel_SetVolume(sdl->audio.music_channel, sdl->audio.music_control.fade);
 		
 	}
-
-	FMOD_System_Set3DListenerAttributes(sdl->audio.system, 0, &world->player->transform.position, &((t_vector3){0}), &nf, &((t_vector3){.z = 1.0f}));
+	FMOD_System_Set3DListenerAttributes(sdl->audio.system, 0, (FMOD_VECTOR *)&world->player->transform.position,
+															&((FMOD_VECTOR){0}), (FMOD_VECTOR *)&nf, &((FMOD_VECTOR){.z = 1.0f}));
 	FMOD_System_Update(sdl->audio.system);
 }
 
@@ -349,12 +293,12 @@ int	editorloop(t_sdlcontext sdl)
 		if (!ed.player.locked)
 			moveplayer(&ed.player, &ed.hid.input, &ed.world);
 		update_render(&sdl.render, &ed.player);
-		print_vector3(sdl.render.camera.lookdir);
-		print_vector3(sdl.render.camera.position);
-		if (1)
+		//print_vector3(sdl.render.camera.lookdir);
+		//print_vector3(sdl.render.camera.position);
+		if (0)
 		{
-			sdl.render.camera.lookdir = (t_vector3){-0.375360, -0.447457, -0.811718};
-			sdl.render.camera.position = (t_vector3){1323.848022, 1828.826294, 178.493469};
+			sdl.render.camera.lookdir = (t_vector3){-0.604028, 0.055242, -0.795046};
+			sdl.render.camera.position = (t_vector3){1559.231812, 1055.679810, 294.330811};
 		}
 		screen_blank(sdl);
 		render_start(&sdl.render);

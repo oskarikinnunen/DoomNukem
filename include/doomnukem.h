@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 17:47:01 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/17 14:09:38 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,6 +180,12 @@ void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
 void	initialize_controllers(t_hid_info *hid);
 int		controller_events(SDL_Event e, t_hid_info *hid);
 
+/* GAME_RANDOM.C */
+//Generates a random number between 0 and UINT32_MAX
+uint32_t	game_random(t_world *world);
+//Generates a random number between min and max
+uint32_t	game_random_range(t_world *world, uint32_t min, uint32_t max);
+
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
 
@@ -189,6 +195,9 @@ void	update_render(t_render *render, t_player *player);
 
 /* MOVEPLAYER.C */
 void	moveplayer(t_player *player, t_input *input, t_world *world);
+
+/* NAVIGATION */
+bool pathfind(t_world *world, t_path *path);
 
 /* COLLISION */
 bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, t_vector3 *newpos);
@@ -200,6 +209,8 @@ void	error_log(int error_code);
 
 /* SDL */
 void	quit_game(t_sdlcontext *sdl);
+
+void	apply_graphics_prefs(t_graphicprefs prefs);
 
 /* FONT.C */
 

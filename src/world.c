@@ -30,87 +30,12 @@ void	lateupdate_entitycache(t_sdlcontext *sdl, t_world *world)
 		ent = world->entitycache.sorted_entities[i];
 		if (ent->status != es_free)
 		{
-			if(ent->component.ui_update != NULL)
-				ent->component.ui_update(ent, world);
+			if(ent->component.func_ui_update != NULL)
+				ent->component.func_ui_update(ent, world);
 			found++;
 		}
 		i++;
 	}
-}
-
-t_vector3 pathfind(t_world *world, uint32_t start, uint32_t end)
-{
-	t_navnode	openlist[1000];
-	uint32_t	o_amount;
-	uint32_t	lowest_f;
-	int	i;
-
-	bzero(openlist, sizeof(t_navnode) * 1000);
-	openlist[start] = world->navmesh[start];
-	openlist[start].valid = true;
-	//printf("start %d, end %d\n\n", start, end);
-	o_amount = 1;
-	while (o_amount > 0)
-	{
-		uint32_t found = 0;
-		i = 0;
-		while (found < o_amount)
-		{
-			if (openlist[i].valid == true)
-			{
-				if (found == 0 || openlist[i].f < openlist[lowest_f].f)
-					lowest_f = i;
-				found++;
-			}
-			i++;
-			if (i > 999)
-			{
-				printf("buffer overflow pathfind\n");
-				exit(0);
-			}
-		}
-		if (lowest_f == end)
-		{
-			int e;
-			e = end;
-			t_vector3 tempe;
-
-			tempe = openlist[e].mid_point;
-			//printf("e %d\n", end);
-			while (e != start)
-			{
-				//printf("e %d\n", e);
-				tempe = openlist[e].mid_point;
-				e = openlist[e].parent;
-			}
-			//printf("e %d\n", e);
-			//printf("found goal!\n");
-			return(tempe);
-		}
-		openlist[lowest_f].valid = false;
-		openlist[lowest_f].visited = true;
-		o_amount--;
-		i = 0;
-		while (i < openlist[lowest_f].neighbors)
-		{
-			uint32_t id;
-			id = openlist[lowest_f].neighbors_id[i];
-			if (openlist[id].visited == false && openlist[id].blocked == false)
-			{
-				openlist[id] = world->navmesh[id];
-				openlist[id].g = vector3_dist(openlist[id].mid_point, world->navmesh[start].mid_point); // should be amount of parents to start
-				openlist[id].h = vector3_dist(openlist[id].mid_point, world->navmesh[end].mid_point);
-				openlist[id].f = openlist[id].g + openlist[id].h;
-				openlist[id].valid = true;
-				openlist[id].parent = lowest_f;
-				o_amount++;
-			}
-			i++;
-		}
-		//printf("o amount %d %d\n", o_amount, lowest_f);
-	}
-	printf("goal not found\n");
-	exit(0);
 }
 
 void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
@@ -118,7 +43,7 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 	int			i;
 	int			found;
 	t_entity	*ent;
-
+	int		test1;
 	
 	i = 0;
 	found = 0;
@@ -127,14 +52,16 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 		/*&& i < world->entitycache.alloc_count*/)
 	{
 		ent = world->entitycache.sorted_entities[i];
+	//	ent = &world->entitycache.entities[i];
 		if (ent->status != es_free)
 		{
+			if(ent->component.func_update != NULL)
+				ent->component.func_update(ent, world);
 			if (ent->status == es_active && !ent->hidden)
 			{
-				if (ent->obj->bounds.type == bt_box && render->occlusion.occlusion == false)
+				if (ent->obj->bounds.type == bt_box && render->occlusion.occlusion == false && test == true && 0)
 				{
 					int e = 1;
-					test = true;
 					int closest_point = 0;
 					float dist;
 					dist = vector3_dist(world->navmesh[0].mid_point, ent->transform.position);
@@ -147,15 +74,32 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 						}
 						e++;
 					}
-					e = closest_point;
-					t_vector3 tempe = pathfind(world, e, world->node_amount - 1);
-					ent->transform.position = vector3_lerp(ent->transform.position, tempe, 5.0f / vector3_dist(ent->transform.position, tempe));
+
+				//t_vector3 tempe = pathfind(world, closest_point, test1);
+
+					//ent->transform.position = vector3_lerp(ent->transform.position, tempe, 5.0f / vector3_dist(ent->transform.position, tempe));
+				}
+				if (ent->obj->bounds.type == bt_box && render->occlusion.occlusion == false && 0)
+				{
+					test = true;
+					float dist;
+					int closest_point = 0;
+					int e = 1;
+					dist = vector3_dist(world->navmesh[0].mid_point, ent->transform.position);
+					while (e < world->node_amount)
+					{
+						if (dist > vector3_dist(world->navmesh[e].mid_point, ent->transform.position))
+						{
+							dist = vector3_dist(world->navmesh[e].mid_point, ent->transform.position);
+							closest_point = e;
+						}
+						e++;
+					}
+					test1 = closest_point;
 				}
 				if (is_entity_culled(sdl, render, ent) == false)
 					render_entity(sdl, render, ent);
 			}
-			if(ent->component.update != NULL)
-				ent->component.update(ent, world);
 			found++;
 		}
 		i++;
@@ -250,6 +194,7 @@ void update_world3d(t_world *world, t_render *render)
 			sdl->render.occlusion.slow_render = true;
 		if (gui_shortcut_button("Bake lighting (new)", 'b', world->debug_gui))
 			start_lightbake(&world->sdl->render, world);
+		gui_labeled_int_slider("Ps1 tri div: ", &sdl->ps1_tri_div, 0.2f, world->debug_gui);
 		sdl->ps1_tri_div = ft_clamp(sdl->ps1_tri_div, 1, 4);
 		gui_end(world->debug_gui);
 	}
@@ -263,22 +208,35 @@ void update_world3d(t_world *world, t_render *render)
 
 void	init_entity(t_entity *entity, t_world *world)
 {
+	t_componentdefinition	*defs;
+	int						i;
+
 	entity->obj = get_object_by_name(*world->sdl, entity->object_name);
 	entity->lightmap = NULL;
 	entity->map = NULL; //TODO: load maps here
-	//entity->component.data = NULL;
-	if (entity->component.type != pft_none)
+	defs = get_component_definitions();
+	i = 0;
+	while (ft_strlen(defs[i].name) > 0)
 	{
-		component_init(entity);
-		if (entity->component.type == pft_audiosource)
+		if (entity->component.type == defs[i].type)
 		{
-			t_audiosource	*source;
-			source = entity->component.data;
-			if (source == NULL)
-				error_log(EC_MALLOC);
-			source->sample = get_sample(world->sdl, source->sample.name);
+			if (defs[i].func_assign_component != NULL)
+				defs[i].func_assign_component(&entity->component);
+			else
+			{
+				printf("Component definition is missing func_assign_component"); //TODO: move this protection to get_component_defs
+				exit(0);
+			}
+			printf("loaded component %i/%s\n", entity->id, defs[i].name);
+			if (entity->component.func_loadassets != NULL)
+			{
+				printf("	loading asset for %i/%s\n", entity->id, defs[i].name);
+				entity->component.func_loadassets(entity, world);
+			}
 		}
+		i++;
 	}
+	//entity->component.data = NULL;
 	default_entity_occlusion_settings(entity, NULL);
 }
 
@@ -486,6 +444,7 @@ t_entity	*spawn_entity(t_world	*world)
 			cache->entities[i].transform.position = vector3_zero();
 			cache->entities[i].transform.scale = vector3_one();
 			cache->entities[i].id = i;
+			ft_bzero(&cache->entities[i].component, sizeof(t_component));
 			//cache->entities[i].transform.scale = vector3_zero();
 			cache->existing_entitycount++;
 			if (cache->existing_entitycount >= cache->alloc_count)
@@ -569,6 +528,7 @@ void	load_component(t_entity	*entity, char	*filename)
 	char	*str;
 	char	comp_filename[64];
 
+	printf("trying to load component\n");
 	str = ft_itoa(entity->id);
 	ft_strcpy(comp_filename, str);
 	free(str);

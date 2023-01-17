@@ -153,22 +153,6 @@ typedef struct s_audiosample
 
 */
 
-typedef struct s_audiosource
-{
-	t_audiosample	sample;
-	FMOD_CHANNEL	*channel;
-	float			range;
-	float			volume;
-	float			reverb;
-	bool			play_always;
-	bool			queue_play;
-	bool			queue_stop;
-	int				random_delay_min;
-	int				random_delay_max;
-	float			_realrange;
-	uint32_t		_nextstart;
-}	t_audiosource;
-
 typedef struct s_music_control
 {
 	t_audiosample	nextsong;
@@ -306,9 +290,6 @@ void	pause_audio(t_audio *audio, bool pause);
 void	close_audio(t_audio *audio);
 void	play_music(t_sdlcontext *sdl, char *musicname);
 void	change_music(t_sdlcontext *sdl, char *musicname);
-
-
-void	audiosource_start(t_sdlcontext *sdl, t_audiosource	*source, t_vector3 *pos); //TODO: remove pos?
 //void	play_localsound(t_audio *audio, const char *name); //DEPRECATED
 //void	play_worldsound(t_audio *audio, const char *name, t_vector3 *pos);
 void	pause_sound(t_audio *audio, const char *name, bool pause);

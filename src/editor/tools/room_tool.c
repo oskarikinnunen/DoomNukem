@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/15 17:18:29 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/16 19:49:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1079,13 +1079,6 @@ void	room_tool_init(t_editor *ed, t_sdlcontext *sdl)
 void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 {
 	t_autogui	*gui;
-	t_vector3	look;
-
-	look = raycast_DEPRECATED(ed);
-	t_point	p;
-
-	p.x = look.x;
-	p.y = look.y;
 
 	gui = &dat->maingui;
 	gui_start(gui);
@@ -1439,7 +1432,7 @@ t_room	*copy_room(t_room *original)
 {
 	t_room	*room = ft_memalloc(sizeof(t_room));
 
-	room->edges = ft_memdup(original->edges, sizeof(t_vector2) * 32);
+	room->edges = (t_vector2 *)ft_memdup(original->edges, sizeof(t_vector2) * 32);
 	room->edgecount = original->edgecount;
 	room->height = original->height;
 	room->ceiling_height = original->ceiling_height;
@@ -1455,7 +1448,7 @@ void	room_tool_move(t_editor *ed, t_roomtooldata *dat)
 	
 	if (dat->temp_edges == NULL)
 	{
-		dat->temp_edges = ft_memdup(dat->room->edges, sizeof(t_vector2) * 32);
+		dat->temp_edges = (t_vector2 *)ft_memdup(dat->room->edges, sizeof(t_vector2) * 32);
 		dat->temp_height = dat->room->height;
 	}
 

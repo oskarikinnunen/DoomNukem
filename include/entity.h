@@ -7,6 +7,7 @@
 #include "occlusion.h"
 #include "render.h"
 #include "lighting.h"
+#include "components.h"
 
 typedef struct s_bound
 {
@@ -21,30 +22,11 @@ typedef enum s_entitystatus
 	es_active
 }	t_entitystatus;
 
-typedef enum e_componenttype
-{
-	pft_none,
-	pft_interactable,
-	pft_light,
-	pft_npc,
-	pft_audiosource,
-	pft_eventtrigger
-}	t_component_type;
-
 typedef struct s_interactable
 {
 	float	radius;
 	t_anim	anim;
 }	t_interactable;
-
-typedef struct s_component
-{
-	t_component_type	type;
-	size_t				data_size;
-	void				(*update)(struct s_entity *,struct s_world	*);
-	void				(*ui_update)(struct s_entity *,struct s_world	*);
-	void				*data;
-}	t_component;
 
 typedef struct s_entity
 {
@@ -66,7 +48,7 @@ typedef struct s_entity
 	//uint16_t		root_id;
 }	t_entity;
 
-typedef struct s_prefab
+typedef struct s_prefab //DEPRECATED
 {
 	t_object			*object;
 	t_transform			offset;
@@ -112,7 +94,8 @@ typedef struct s_entitycache
 	t_entity	**sorted_entities;
 }	t_entitycache;
 
-void	component_init(t_entity	*entity);
+void	entity_set_component(t_entity *entity, t_component_type type, struct s_world *world);
+
 
 /* OCCLUSION*/
 void render_bitmask_row(int ax, int bx, float aw, float bw, int y, t_sdlcontext *sdl);
@@ -130,6 +113,7 @@ void	draw_wireframe(t_sdlcontext sdl, t_square s, uint32_t clr);
 void	bitmask_to_pixels(t_sdlcontext *sdl);
 
 /* RENDERING */
+void	draw_entity_icon(t_entity *entity, t_img *img, struct s_world *world);
 void	highlight_entity(t_sdlcontext *sdl, t_entity *entity, uint32_t color);
 void	render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 void	render_worldspace(t_render *render, t_entity *entity);

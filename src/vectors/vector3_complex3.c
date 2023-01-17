@@ -3,20 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   vector3_complex3.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:21:41 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/06 17:31:55 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/17 14:16:18 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vectors.h"
-
-t_vector3	vector3_movetowards(t_vector3 vec, t_vector3 dir, float delta)
-{
-	dir = vector3_clamp_magnitude(dir, delta);
-	return (vector3_add(vec, dir));
-}
 
 t_quaternion quaternion_rotate_euler(t_vector3 original, t_vector3 eulers)
 {

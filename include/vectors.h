@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 14:45:49 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/17 14:20:08 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ t_vector3	vector3_mul(t_vector3 vec, float mul);
 t_vector3	vector3_div(t_vector3 vec, float div);
 
 //returns vector 'vec' moved towards set 'direction' //TODO: explain delta
-t_vector3	vector3_movetowards(t_vector3 vec, t_vector3 direction, float delta);
+t_vector3	vector3_movetowards(t_vector3 vec, t_vector3 to, float delta);
 
 //returns the magnitude of the vector 'vec'
 float		vector3_magnitude(t_vector3 vec);

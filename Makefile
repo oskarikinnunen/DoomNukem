@@ -6,7 +6,7 @@
 #    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/01/16 14:46:24 by vlaine           ###   ########.fr        #
+#    Updated: 2023/01/17 13:59:22 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,6 +37,7 @@ LUA= $(LUAFOLDER)/install/lib/liblua.a
 SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		editor.c editor_mouse.c editor_events.c \
 		editor_map_io.c	\
+		editor/editor_preferences.c \
 		editor/tools/entity_tool.c \
 		editor/tools/entity_tool_gui_inits.c \
 		editor/tools/wall_tool_rooms.c \
@@ -54,6 +55,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		editor/editor_raycast.c \
 		preferences/graphicsprefs.c \
 		debug/debugconsole.c \
+		debug/debug_rendering.c \
 		playmode.c inputhelper.c \
 		walls.c file_open.c \
 		moveplayer.c \
@@ -65,11 +67,17 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		spaceconversions.c \
 		entity/entity_animate.c \
 		entity/component_init.c \
+		entity/components/component_definitions.c \
+		entity/components/comp_audiosource.c \
+		entity/components/comp_audiosource_tools.c \
+		entity/components/comp_npc.c \
+		entity/navigation/pathfind.c \
 		obj_parser/obj_parse.c \
 		obj_parser/obj_parse_vertex.c \
 		obj_parser/obj_parse_faces.c \
 		obj_parser/obj_parse_uvs.c \
 		obj_parser/obj_parse_anim.c\
+		game_random.c \
 		font.c text.c \
 		object_init.c \
 		object_primitives.c \
