@@ -45,9 +45,13 @@ static void	comp_npc_update(t_entity *entity, t_world *world)
 		{
 			render_gizmo3d(world->sdl, world->navmesh[i].line_point[e], 10.0f, CLR_TURQ);
 			world->sdl->render.gizmocolor = CLR_TURQ;
-			render_ray(world->sdl, world->navmesh[i].mid_point, world->navmesh[i].line_point[e]);
+			//render_ray(world->sdl, world->navmesh[i].mid_point, world->navmesh[i].line_point[e]);
 			world->sdl->render.gizmocolor = CLR_RED;
 			render_ray(world->sdl, world->navmesh[i].mid_point, world->navmesh[world->navmesh[i].neighbors_id[e]].mid_point);
+		}
+		for (int j = 0; j < 3; j++)
+		{
+			//render_ray(world->sdl, world->navmesh[i].vertex[j], world->navmesh[i].vertex[(j + 1) % 3]);
 		}
 	}
 	for (int i = source->path.ai; i < source->path.bi; i++)

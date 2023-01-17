@@ -48,6 +48,7 @@ bool pathfind(t_world *world, t_path *path)
 			i++;
 			if (i > 999)
 			{
+				return(false);
 				printf("buffer overflow pathfind, should never happen\n");
 				exit(0);
 			}

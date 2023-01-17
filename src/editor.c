@@ -254,6 +254,7 @@ int	editorloop(t_sdlcontext sdl)
 	{
 		//setup cell
 		world->navmesh[i].neighbors = 0;
+		world->navmesh[i].valid = true;
 		for (int j = 0; j < 3; j++)
 		{
 			t_vector3 start = world->navmesh[i].vertex[j];
@@ -284,6 +285,61 @@ int	editorloop(t_sdlcontext sdl)
 		}
 		printf("\n");
 	}
+	int node_count = world->node_amount;
+	for (int i = 0; i < world->node_amount; i++)
+	{
+		t_navnode temp;
+		t_triangle test;
+		temp = world->navmesh[i];
+		float dist;
+		dist = vector3_dist(world->navmesh[i].vertex[0], world->navmesh[i].vertex[1]);
+		int index = 0;
+		for (int j = 1; j < 3; j++)
+		{
+			if (dist < vector3_dist(world->navmesh[i].vertex[j], world->navmesh[i].vertex[(j + 1) % 3]))
+			{
+				dist = vector3_dist(world->navmesh[i].vertex[j], world->navmesh[i].vertex[(j + 1) % 3]);
+				index = j;
+			}
+		}
+		for (int j = 0; j < 3; j++)
+		{
+			test.p[j].v = world->navmesh[i].vertex[j];
+		}
+		t_vector3 plane_p = vector3_lerp(world->navmesh[i].vertex[index], world->navmesh[i].vertex[(index + 1) % 3], 0.5f);
+		t_vector3 plane_n = vector3_normalise(vector3_sub(world->navmesh[i].vertex[index], world->navmesh[i].vertex[(index + 1) % 3]));
+	
+		t_triangle out[4];
+		int count = 0;
+		count = clip_triangle_against_plane(plane_p, plane_n, test, out);
+		plane_n = vector3_negative(plane_n);
+		count += clip_triangle_against_plane(plane_p, plane_n, test, &out[count]);
+		for (int i1 = 0; i1 < count; i1++)
+		{
+			world->navmesh[node_count].neighbors = 0;
+			for (int i2 = 0; i2 < count; i2++)
+			{
+				if (i2 == i1)
+					continue;
+				world->navmesh[node_count].neighbors_id[world->navmesh[node_count].neighbors++] = node_count + i2;
+			}
+			for (int j = 0; j < temp.neighbors; j++)
+			{
+				world->navmesh[node_count].neighbors_id[world->navmesh[node_count].neighbors++] = temp.neighbors_id[j];
+			}
+			for (int j = 0; j < 3; j++)
+			{
+				world->navmesh[node_count].vertex[j] = out[i1].p[j].v;
+			}
+			world->navmesh[i].neighbors_id[world->navmesh[i].neighbors++] = node_count;
+			world->navmesh[node_count].mid_point = vector3_div(vector3_add(vector3_add(world->navmesh[node_count].vertex[0], world->navmesh[node_count].vertex[1]), world->navmesh[node_count].vertex[2]), 3.0f);
+			node_count++;
+		}
+		//triangle_clipagainstplane(plane_p, plane_n, test, out);
+	}
+	world->node_amount = node_count;
+//	printf("node amount %d\n", world->node_amount);
+//	exit(0);
 	ed.world.lighting.calculated = false;
 	play_music(&sdl, "music_arp1_ambient.wav");
 	while (ed.gamereturn == game_continue)
