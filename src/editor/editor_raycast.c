@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 18:03:40 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/17 12:41:44 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/17 12:42:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,10 +209,8 @@ t_vector3_tri	worldspace_tri(t_entity *entity, int index)
 
 static bool raycast_entity(t_ray r, t_raycastinfo *info, t_entity *entity)
 {
-	t_vector3	result;
 	int			i;
 	bool		hit;
-	result = vector3_zero();
 	
 	i = 0;
 	hit = false;
