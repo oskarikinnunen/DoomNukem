@@ -272,6 +272,7 @@ int	editorloop(t_sdlcontext sdl)
 				}
 				if (count == 2)
 				{
+					world->navmesh[i].line_point[world->navmesh[i].neighbors] = vector3_lerp(start, end, 0.5f);
 					world->navmesh[i].neighbors_id[world->navmesh[i].neighbors++] = i1;
 				}
 			}
