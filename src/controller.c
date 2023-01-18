@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   controller.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:36:01 by raho              #+#    #+#             */
-/*   Updated: 2022/11/28 18:12:18 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/18 06:38:58 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
- 
+#include "movement_defs.h"
 
 // Set the value of the axis to 0 if it doesn't go over the deadzone limit.
 static float	dead_zone(float axis)
@@ -103,7 +103,6 @@ static void	button_release(SDL_ControllerButtonEvent cbutton, t_hid_info *hid)
 		c = 0;
 	else
 		c = 1;
-
 	if (cbutton.button == SDL_CONTROLLER_BUTTON_A)
 		hid->controller[c].a = false;
 	if (cbutton.button == SDL_CONTROLLER_BUTTON_B)

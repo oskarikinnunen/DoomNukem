@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:41 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 19:58:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/18 10:19:28 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ bool	source_is_playing(t_audiosource *source)
 
 void	_audiosource_start(t_sdlcontext *sdl, t_audiosource	*source, t_vector3 *pos)
 {
+	FMOD_Channel_SetPaused(source->channel, true);
 	if (FMOD_System_PlaySound(sdl->audio.system, source->sample.sound, NULL, true, &source->channel) != FMOD_OK)
 		error_log(EC_FMOD_SYSTEMPLAYSOUND);
 	//FMOD_Channel_SetReverbProperties()

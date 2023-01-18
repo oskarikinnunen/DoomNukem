@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 19:44:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/17 15:09:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,6 +203,7 @@ typedef struct s_raycastinfo
 
 bool				raycast_new(t_ray r, t_raycastinfo *info, t_world *world);
 bool				raycast_plane(t_ray r, t_raycastinfo *info, float plane_z);
+bool				raycast_entity(t_ray r, t_raycastinfo *info, t_entity *entity);
 bool				entity_lookedat(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
 bool				triangle_lookedat(t_render r, t_triangle tri, t_sdlcontext sdl);
 int32_t				entity_lookedat_triangle_index(t_editor *ed, t_sdlcontext sdl, t_entity *entity);

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 19:47:00 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/18 09:45:36 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ void	editor_load_and_init_world(t_editor *ed, char	*worldname, t_sdlcontext *sdl
 	ed->graphics_gui.minimum_size = (t_point){200, 200};
 	ed->graphics_gui.rect.position = point_div(sdl->screensize, 2);
 	//ed->graphics_gui.locked = true;
-
 	player_init(&ed->player, sdl, &ed->world);
 	ed->player.gun->disabled = true;
 	ed->world.debug_gui->hidden = true;

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 19:47:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/18 06:36:38 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,6 @@
 
 # define IMGPATH "assets/images/"
 # define OBJPATH "assets/objects/"
-
-// Playmode defines
-# define OVERHEADCAMSPEED 0.028f
-# define PLAYERRADIUS 16
-
-# define EDITOR_MOVESPEED 0.2f
-# define MOVESPEED 0.2f
-# define MAXMOVEMENTSPEED 0.08f
-# define ROTATESPEED 0.002f
-# define MOUSESPEED 0.002f
 
 # define TEXTBACKGROUND_BORDERPADDING 6
 

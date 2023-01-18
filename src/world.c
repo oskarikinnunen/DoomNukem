@@ -121,45 +121,43 @@ void update_world3d(t_world *world, t_render *render)
 	rescale_surface(sdl);
 
 	lateupdate_entitycache(sdl, world);
-	if (!world->debug_gui->hidden)
+	gui_start(world->debug_gui);
+	if (gui_button("music action", world->debug_gui))
+		change_music(sdl, "music_arp1_action.wav");
+	if (gui_button("music calm", world->debug_gui))
+		change_music(sdl, "music_arp1_ambient.wav");
+	gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);
+	gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);
+	gui_labeled_int("Entity count:", world->entitycache.existing_entitycount, world->debug_gui);
+	if (gui_shortcut_button("Toggle ceilings:", 'J', world->debug_gui))
 	{
-		gui_start(world->debug_gui);
-		if (gui_button("music action", world->debug_gui))
-			change_music(sdl, "music_arp1_action.wav");
-		if (gui_button("music calm", world->debug_gui))
-			change_music(sdl, "music_arp1_ambient.wav");
-		gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);
-		gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);
-		gui_labeled_int("Entity count:", world->entitycache.existing_entitycount, world->debug_gui);
-		if (gui_shortcut_button("Toggle ceilings:", 'J', world->debug_gui))
-		{
-			world->ceiling_toggle = !world->ceiling_toggle;
-			toggle_ceilings(world);
-		}
-		if (gui_shortcut_button("Toggle grids:", 'G', world->debug_gui))
-			world->sdl->render_grid = !world->sdl->render_grid;
-		gui_labeled_bool_edit("Noclip:", &world->player->noclip, world->debug_gui);
-		if (gui_shortcut_button("Toggle rendering:", 'R', world->debug_gui))
-			world->sdl->global_wireframe = !world->sdl->global_wireframe;
-		if (gui_shortcut_button("Toggle Lighting", 'L', world->debug_gui))
-			sdl->lighting_toggled = !sdl->lighting_toggled;
-		if (gui_shortcut_button("Toggle Skybox", 'H', world->debug_gui))
-			world->skybox.hidden = !world->skybox.hidden;
-		if (gui_shortcut_button("Draw Occlusion Buffer", 'Y', world->debug_gui))
-			sdl->render.occlusion.draw_occlusion = !sdl->render.occlusion.draw_occlusion;
-		if (gui_shortcut_button("Toggle Occlusion", 'O', world->debug_gui))
-			render->occlusion.occlusion = !render->occlusion.occlusion;
-		if (gui_shortcut_button("Toggle Occlusion boxes", 'P', world->debug_gui))
-			render->occlusion.occluder_box = !render->occlusion.occluder_box;
-		if (gui_shortcut_button("Render Next Frame Slow", 'U', world->debug_gui))
-			sdl->render.occlusion.slow_render = true;
-		if (gui_shortcut_button("Bake lighting (new)", 'b', world->debug_gui))
-			start_lightbake(&world->sdl->render, world);
-		gui_labeled_int_slider("Ps1 tri div: ", &sdl->ps1_tri_div, 0.2f, world->debug_gui);
-		sdl->ps1_tri_div = ft_clamp(sdl->ps1_tri_div, 1, 4);
-		gui_end(world->debug_gui);
+		world->ceiling_toggle = !world->ceiling_toggle;
+		toggle_ceilings(world);
 	}
-	
+	if (gui_shortcut_button("Toggle grids:", 'G', world->debug_gui))
+		world->sdl->render_grid = !world->sdl->render_grid;
+	if (gui_shortcut_button("Toggle noclip", 'F', world->debug_gui))
+		world->player->noclip = !world->player->noclip;
+	//gui_labeled_bool_edit("Noclip:", &world->player->noclip, world->debug_gui);
+	if (gui_shortcut_button("Toggle rendering:", 'R', world->debug_gui))
+		world->sdl->global_wireframe = !world->sdl->global_wireframe;
+	if (gui_shortcut_button("Toggle Lighting", 'L', world->debug_gui))
+		sdl->lighting_toggled = !sdl->lighting_toggled;
+	if (gui_shortcut_button("Toggle Skybox", 'H', world->debug_gui))
+		world->skybox.hidden = !world->skybox.hidden;
+	if (gui_shortcut_button("Draw Occlusion Buffer", 'Y', world->debug_gui))
+		sdl->render.occlusion.draw_occlusion = !sdl->render.occlusion.draw_occlusion;
+	if (gui_shortcut_button("Toggle Occlusion", 'O', world->debug_gui))
+		render->occlusion.occlusion = !render->occlusion.occlusion;
+	if (gui_shortcut_button("Toggle Occlusion boxes", 'P', world->debug_gui))
+		render->occlusion.occluder_box = !render->occlusion.occluder_box;
+	if (gui_shortcut_button("Render Next Frame Slow", 'U', world->debug_gui))
+		sdl->render.occlusion.slow_render = true;
+	if (gui_shortcut_button("Bake lighting (new)", 'b', world->debug_gui))
+		start_lightbake(&world->sdl->render, world);
+	gui_labeled_int_slider("Ps1 tri div: ", &sdl->ps1_tri_div, 0.2f, world->debug_gui);
+	sdl->ps1_tri_div = ft_clamp(sdl->ps1_tri_div, 1, 4);
+	gui_end(world->debug_gui);
 }
 
 /*static void load_componentdata(t_world *world)

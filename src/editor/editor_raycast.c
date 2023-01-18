@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 18:03:40 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/17 12:42:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/17 15:50:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,13 +154,6 @@ bool	object_lookedat(t_editor *ed, t_sdlcontext sdl, t_object *obj)
 //	w = distance of ray hit
 // disable inverse normal hitting by removing fabs
 
-typedef struct s_vector3_tri
-{
-	t_vector3	a;
-	t_vector3	b;
-	t_vector3	c;
-} t_vector3_tri;
-
 static bool raycast_tri(t_ray r, t_vector3_tri tri, float *dist)
 {
 	t_vector3	e1;
@@ -187,7 +180,6 @@ static bool raycast_tri(t_ray r, t_vector3_tri tri, float *dist)
 	{
 		*dist = result.z;
 	}
-		
 	return(result_bool);
 }
 
@@ -207,7 +199,7 @@ t_vector3_tri	worldspace_tri(t_entity *entity, int index)
 	return (tri);
 }
 
-static bool raycast_entity(t_ray r, t_raycastinfo *info, t_entity *entity)
+bool raycast_entity(t_ray r, t_raycastinfo *info, t_entity *entity)
 {
 	int			i;
 	bool		hit;
@@ -230,6 +222,19 @@ static bool raycast_entity(t_ray r, t_raycastinfo *info, t_entity *entity)
 		i++;
 	}
 	return (hit);
+}
+
+bool	vector_is_in_triangle(t_vector3 vec, t_vector3_tri tri)
+{
+	t_ray	ray;
+	t_raycastinfo	info;
+
+	ft_bzero(&info, sizeof(info));
+	ray.origin = vec;
+	ray.dir = (t_vector3){.z = -1.0f};
+	if (raycast_tri(ray, tri, &info.distance))
+		return (true);
+	return (false);
 }
 
 bool raycast_plane(t_ray r, t_raycastinfo *info, float plane_z)

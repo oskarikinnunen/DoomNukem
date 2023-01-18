@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 21:27:40 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/17 13:55:00 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -361,7 +361,7 @@ void	entity_tool_raycast(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 {
 	t_ray				ray;
 
-	ray.origin = ed->player.transform.position;
+	ray.origin = vector3_add(ed->player.transform.position, (t_vector3){.z = ed->player.height});
 	ray.dir = ed->player.lookdir;//vector3_mul(ed->player.lookdir, 10000.f);
 	bzero(&dat->info, sizeof(t_raycastinfo));
 	if (raycast_new(ray, &dat->info, &ed->world))

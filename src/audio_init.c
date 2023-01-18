@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/27 10:42:33 by raho              #+#    #+#             */
-/*   Updated: 2023/01/14 20:19:59 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/18 10:56:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,11 @@ static void load_samples(t_audio *audio)
 				{
 					bool looped = ft_strstr(dfile->d_name, "loop") != NULL;
 					if (looped)
+					{
 						mask = FMOD_3D | FMOD_LOOP_NORMAL;
+						printf("loading %s as looped 3d audio \n", dfile->d_name);
+					}
+						
 					if (FMOD_System_CreateSound(audio->system, fullpath, mask, NULL, &audio->samples[s_i].sound) != FMOD_OK)
 					{
 						error_log(EC_FMOD_SYSTEMCREATE);

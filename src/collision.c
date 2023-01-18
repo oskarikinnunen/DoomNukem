@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   collision.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/05 13:48:43 by raho              #+#    #+#             */
-/*   Updated: 2023/01/13 02:47:14 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/18 04:46:10 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,47 @@ bool	lineline(t_line first, t_line second, t_vector2 *collision_point)
 	return (false);
 }
 
+/*
+bool	rooms_share_zspace(t_room *room1, t_room *room2)
+{
+	bool	share = false;
+	if (room1->height < (room2->height + room2->ceiling_height)
+		&& room1->height >= room2->height)
+		share = true;
+	if (room2->height < (room1->height + room1->ceiling_height)
+		&& room2->height >= room1->height)
+		share = true;
+	return (share);
+}
+*/
+
+//Collider height which can be ignored aka stairs etc
+#define COL_STEP 30.0f
+
+bool	playerwall_stepthreshold(t_wall	*wall, t_player *player)
+{
+	float	topdist;
+
+	topdist = player->transform.position.z - wall->entity->obj->vertices[2].z;
+	//printf("topdist was %i \n", )
+	return (topdist < 0.0f && topdist > -COL_STEP);
+	//return (topdist < 0.0f && topdist > -50.0f);
+}
+
+bool	playerwall_share_z(t_wall	*wall, t_player *player)
+{
+	bool	share;
+
+	share = false;
+	if (wall->entity->obj->vertices[0].z < player->transform.position.z + player->height
+		&& wall->entity->obj->vertices[0].z >= player->transform.position.z)
+		share = true;
+	if (player->transform.position.z < wall->entity->obj->vertices[2].z
+		&& player->transform.position.z >= wall->entity->obj->vertices[0].z)
+		share = true;
+	return (share);
+}
+
 bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, t_vector3 *new_pos)
 {
 	t_list		*l;
@@ -128,8 +169,8 @@ bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, 
 			while (index < room->wallcount)
 			{
 				if (!room->walls[index].entity->hidden && \
-					(potential_pos.z > room->walls[index].entity->obj->vertices[0].z &&
-					potential_pos.z < room->walls[index].entity->obj->vertices[2].z * 1.2f))
+					(playerwall_share_z(&room->walls[index], player)
+					&& !playerwall_stepthreshold(&room->walls[index], player)))
 				{
 					if (linecircle((t_line){*room->walls[index].edgeline.start, *room->walls[index].edgeline.end}, \
 							(t_vector2){potential_pos.x, potential_pos.y}, player->collision_radius, &collision))

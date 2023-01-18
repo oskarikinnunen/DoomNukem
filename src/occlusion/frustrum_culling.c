@@ -27,7 +27,7 @@ void update_frustrum_culling(struct s_world *world, t_sdlcontext *sdl, t_render 
 		ent = world->entitycache.sorted_entities[i];
 		if (ent->status != es_free)
 		{
-			if (ent->status == es_active && !ent->hidden)
+			if (ent->status == es_active && !ent->hidden) //and object not null?
 				ent->occlusion.is_occluded = is_entity_frustrum_culled(sdl, render, ent);
 			found++;
 		}

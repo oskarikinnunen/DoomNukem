@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/17 11:50:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/18 10:32:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,6 @@ void	comp_audiosource_update(t_entity *entity, t_world *world)
 {
 	t_audiosource	*source;
 	bool			isplaying;
-
-	t_anim	particleanim;
-	update_anim(&particleanim, world->clock.delta);
 	//entity->particleimages[particleanim.];
 	source = entity->component.data;
 	if (source == NULL || source->sample.sound == NULL)
@@ -110,6 +107,7 @@ void	comp_audiosource_ui_update(t_entity *entity, t_world *world)
 	else
 		cur_img = audio_off_img;
 	draw_entity_icon(entity, cur_img, world);
+	render_ball(world->sdl, entity->transform.position, source->range * 1.0f, CLR_BLUE);
 }
 
 void	comp_audiosource_gui_edit(t_component *component, t_autogui *gui)
@@ -162,7 +160,6 @@ void	comp_audiosource_gui_edit(t_component *component, t_autogui *gui)
 		source->queue_play = true;
 		//audiosource_start(gui->sdl, source, &entity->transform.position);
 	}
-	//render_ball(gui->sdl, entity->transform.position, source->range * 1.0f, CLR_BLUE);
 }
 
 void	comp_audiosource_loadassets(t_entity *entity, t_world *world)

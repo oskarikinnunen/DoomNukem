@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 14:31:10 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 17:57:20 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/18 09:10:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,13 @@ t_gun	*debug_gun(t_player *player, t_sdlcontext *sdl, t_world *world)
 
 void	player_init(t_player *player, t_sdlcontext *sdl, t_world *world)
 {
+	//ft_bzero(player, sizeof(player));
 	//player->transform.position = (t_vector3) {500.0f, 500.0f, 500.0f};
 	//player->transform.rotation = (t_vector3){-RAD90, -RAD90 * 0.99f, 0.0f}; //TODO: implement transform for player
 	player->transform.scale = vector3_one();
 	player->transform.rotation = (t_vector3){-RAD90, -RAD90 * 0.99f, 0.0f};
 	player->jump.framerate = 30;
-	player->jump.lastframe = 15;
+	player->jump.lastframe = 18;
+	//player->jump.lerp = 
 	player->gun = debug_gun(player, sdl, world);
 }
