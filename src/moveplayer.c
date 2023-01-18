@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/18 12:01:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/18 12:21:02 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -383,14 +383,6 @@ void	moveplayer(t_player *player, t_input *input, t_world *world)
 	player->transform.rotation = vector3_sub(player->transform.rotation, (t_vector3){delta_angle.x, delta_angle.y, 0.0f});
 	player->transform.rotation.y = ft_clampf(player->transform.rotation.y, -RAD90 * 0.99f, RAD90 * 0.99f);
 	player->lookdir = lookdirection((t_vector2){player->transform.rotation.x, player->transform.rotation.y});
-	/*
-	old move vectors
-	move_vector = player_movementvector(*input, *player);
-	move_vector = vector3_mul(move_vector, world->clock.delta * MOVESPEED)
-	*/
-	/*
-		new movevectors
-	*/
 	move_vector = normalized_inputvector(*input, *player);
 	t_vector2 velxy;
 	velxy = vector2_add(v3tov2(player->velocity), vector2_mul(v3tov2(move_vector), PLAYER_ACCELERATION * world->clock.delta));
@@ -413,7 +405,7 @@ void	moveplayer(t_player *player, t_input *input, t_world *world)
 		static bool has_crouchjumped;
 		if (input->crouch)
 		{
-			if (!has_crouchjumped && !player->isgrounded)
+			if (!has_crouchjumped && !player->isgrounded && player->velocity.z >= 0)
 			{
 				player->velocity.z = 0.125f;
 				has_crouchjumped = true;
@@ -425,7 +417,6 @@ void	moveplayer(t_player *player, t_input *input, t_world *world)
 			player->height = ft_fmovetowards(player->height, PLAYER_HEIGHT, PLAYER_CROUCHSPEED * world->clock.delta);
 			has_crouchjumped = false;
 		}
-			
 		if (input->jump && player->isgrounded && world->clock.prev_time > player->lastjumptime + JUMP_DELAY)
 		{
 			printf("JUMP START! \n");

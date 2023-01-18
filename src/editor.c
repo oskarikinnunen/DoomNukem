@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/18 09:45:36 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/18 12:17:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ void	editor_load_and_init_world(t_editor *ed, char	*worldname, t_sdlcontext *sdl
 	ed->graphics_gui.minimum_size = (t_point){200, 200};
 	ed->graphics_gui.rect.position = point_div(sdl->screensize, 2);
 	//ed->graphics_gui.locked = true;
+	ed->player.noclip = true;
 	player_init(&ed->player, sdl, &ed->world);
 	ed->player.gun->disabled = true;
 	ed->world.debug_gui->hidden = true;
@@ -208,7 +209,9 @@ void	update_audio(t_world *world)
 		FMOD_Channel_SetVolume(sdl->audio.music_channel, sdl->audio.music_control.fade);
 		
 	}
-	FMOD_System_Set3DListenerAttributes(sdl->audio.system, 0, (FMOD_VECTOR *)&world->player->transform.position,
+	static t_vector3 headpos;
+	headpos = vector3_add(world->player->transform.position, (t_vector3){.z = world->player->height * 0.75f});
+	FMOD_System_Set3DListenerAttributes(sdl->audio.system, 0,(FMOD_VECTOR *)&headpos,
 															&((FMOD_VECTOR){0}), (FMOD_VECTOR *)&nf, &((FMOD_VECTOR){.z = 1.0f}));
 	FMOD_System_Update(sdl->audio.system);
 }

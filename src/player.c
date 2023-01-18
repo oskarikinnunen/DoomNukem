@@ -6,13 +6,14 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 14:31:10 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/18 09:10:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/18 12:12:55 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "objects.h"
 #include "entity.h"
 #include "doomnukem.h"
+#include "movement_defs.h"
 
 t_gun	*debug_gun(t_player *player, t_sdlcontext *sdl, t_world *world)
 {
@@ -52,6 +53,7 @@ void	player_init(t_player *player, t_sdlcontext *sdl, t_world *world)
 	player->transform.rotation = (t_vector3){-RAD90, -RAD90 * 0.99f, 0.0f};
 	player->jump.framerate = 30;
 	player->jump.lastframe = 18;
+	player->height = PLAYER_HEIGHT;
 	//player->jump.lerp = 
 	player->gun = debug_gun(player, sdl, world);
 }
