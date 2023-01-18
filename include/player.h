@@ -12,6 +12,7 @@ typedef struct s_player
 	t_vector3		velocity;
 	t_vector3		speed; //read-only player speed used for animations etc
 	t_vector3		lookdir;
+	t_vector3		headposition;
 	t_anim			jump;
 	uint32_t		lastjumptime;
 	float			height;

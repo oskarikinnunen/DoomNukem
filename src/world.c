@@ -135,7 +135,11 @@ void update_world3d(t_world *world, t_render *render)
 		toggle_ceilings(world);
 	}
 	if (gui_shortcut_button("Toggle grids:", 'G', world->debug_gui))
+	{
+		world->player->velocity.x += 15.0f;
 		world->sdl->render_grid = !world->sdl->render_grid;
+	}
+		
 	if (gui_shortcut_button("Toggle noclip", 'F', world->debug_gui))
 		world->player->noclip = !world->player->noclip;
 	//gui_labeled_bool_edit("Noclip:", &world->player->noclip, world->debug_gui);

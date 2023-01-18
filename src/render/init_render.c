@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/18 11:54:22 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/18 12:29:25 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	render_start(t_render *render)
 void update_render(t_render *render, t_player *player)
 {
 	render->camera.lookdir = player->lookdir;
-	render->camera.position = vector3_add((t_vector3){.z = player->height * 0.75f}, player->transform.position);
+	render->camera.position = player->headposition;
 }
 
 void	free_render(t_render render)

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/18 12:21:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/18 12:32:12 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -398,10 +398,6 @@ void	moveplayer(t_player *player, t_input *input, t_world *world)
 		noclip_movement(player, vector3_mul(move_vector, PLAYER_RUNSPEED * world->clock.delta), world);
 	else
 	{
-		/*if (player->isgrounded && input->shoot)
-		{
-			player->velocity.z = 2.0f;
-		}*/
 		static bool has_crouchjumped;
 		if (input->crouch)
 		{
@@ -419,7 +415,6 @@ void	moveplayer(t_player *player, t_input *input, t_world *world)
 		}
 		if (input->jump && player->isgrounded && world->clock.prev_time > player->lastjumptime + JUMP_DELAY)
 		{
-			printf("JUMP START! \n");
 			player->transform.position.z += 0.1f;
 			player->velocity.z = 0.15f;
 			start_anim(&player->jump, anim_forwards);
@@ -434,6 +429,7 @@ void	moveplayer(t_player *player, t_input *input, t_world *world)
 	damped = v3tov2(vector3_mul(player->velocity, 1.0f - (world->clock.delta * PLAYER_DECELERATION)));
 	player->velocity.x = damped.x;
 	player->velocity.y = damped.y;
+	player->headposition = vector3_add(player->transform.position, (t_vector3){.z = player->height * 0.75f});
 	/*player->velocity.x = ft_fmovetowards(player->velocity.x, 0.0f, world->clock.delta * 0.001f);
 	player->velocity.y = ft_fmovetowards(player->velocity.y, 0.0f, world->clock.delta * 0.001f);*/
 }
