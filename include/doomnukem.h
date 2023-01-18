@@ -198,6 +198,8 @@ void	moveplayer(t_player *player, t_input *input, t_world *world);
 
 /* NAVIGATION */
 bool pathfind(t_world *world, t_path *path);
+void	create_navmesh(t_world *world);
+void    show_navmesh(t_world *world);
 
 /* COLLISION */
 bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, t_vector3 *newpos);

@@ -72,6 +72,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		entity/components/comp_audiosource_tools.c \
 		entity/components/comp_npc.c \
 		entity/navigation/pathfind.c \
+		entity/navigation/navmesh.c \
 		obj_parser/obj_parse.c \
 		obj_parser/obj_parse_vertex.c \
 		obj_parser/obj_parse_faces.c \

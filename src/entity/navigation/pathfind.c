@@ -48,8 +48,9 @@ bool pathfind(t_world *world, t_path *path)
 			i++;
 			if (i > 999)
 			{
-				return(false);
-				printf("buffer overflow pathfind, should never happen\n");
+				///return(false);
+				printf("o_amount %d found %d\n", o_amount, found);
+				printf("buffer overflow pathfind, should never happen index is %d, node amount is %d\n", i, world->node_amount);
 				exit(0);
 			}
 		}
@@ -68,6 +69,7 @@ bool pathfind(t_world *world, t_path *path)
 				e = openlist[e].parent;
 				i++;
 			}
+			if (i != 32)
 			path->path[i] = openlist[e];
 			print_vector3(openlist[e].mid_point);
 			printf("%d\n", i);
@@ -84,7 +86,7 @@ bool pathfind(t_world *world, t_path *path)
 		{
 			uint32_t id;
 			id = openlist[lowest_f].neighbors_id[i];
-			if (openlist[id].visited == false && openlist[id].blocked == false)
+			if (openlist[id].visited == false && openlist[id].blocked == false && openlist[id].valid == false)
 			{
 				openlist[id] = world->navmesh[id];
 				openlist[id].g = vector3_dist(openlist[id].mid_point, world->navmesh[path->start].mid_point); // should be amount of parents to start

@@ -150,6 +150,7 @@ void update_world3d(t_world *world, t_render *render)
 	ft_bzero(&render->rs, sizeof(t_render_statistics));
 	if (world->player != NULL && world->player->gun != NULL && !world->player->gun->disabled)
 		render_entity(world->sdl, &world->sdl->render, &world->player->gun->entity);
+	show_navmesh(world);
 	update_frustrum_culling(world, sdl, render);
 	clear_occlusion_buffer(sdl);
 	sort_entitycache(world, render->camera.position);

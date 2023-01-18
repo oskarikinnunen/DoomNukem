@@ -28,39 +28,19 @@ static void	comp_npc_update(t_entity *entity, t_world *world)
 	if (source == NULL)
 		return;
 	printf("ai %d, b1 %d\n", source->path.ai, source->path.bi);
+//	destroy_entity(world, entity);
 	if (source->path.ai == source->path.bi)
 	{
 		source->path.target = world->player->transform.position;
 		source->path.start = get_target_node(world, entity->transform.position);
 		pathfind(world, &source->path);
 	}
-	//render_gizmo3d(world->sdl, source->path.path[source->path.bi].mid_point, 100.0f, CLR_RED)
-	//render_gizmo3d(world->sdl, source->path.target, 100.0f, CLR_RED);
-	uint32_t	clr = world->sdl->render.gizmocolor;
-	world->sdl->render.gizmocolor = CLR_RED;
-	for (int i = 0; i < world->node_amount; i++)
-	{
-		render_gizmo3d(world->sdl, world->navmesh[i].mid_point, 10.0f, CLR_BLUE);
-		for (int e = 0; e < world->navmesh[i].neighbors; e++)
-		{
-			render_gizmo3d(world->sdl, world->navmesh[i].line_point[e], 10.0f, CLR_TURQ);
-			world->sdl->render.gizmocolor = CLR_TURQ;
-			//render_ray(world->sdl, world->navmesh[i].mid_point, world->navmesh[i].line_point[e]);
-			world->sdl->render.gizmocolor = CLR_RED;
-			render_ray(world->sdl, world->navmesh[i].mid_point, world->navmesh[world->navmesh[i].neighbors_id[e]].mid_point);
-		}
-		for (int j = 0; j < 3; j++)
-		{
-			//render_ray(world->sdl, world->navmesh[i].vertex[j], world->navmesh[i].vertex[(j + 1) % 3]);
-		}
-	}
 	for (int i = source->path.ai; i < source->path.bi; i++)
 	{
 		render_gizmo3d(world->sdl, source->path.path[i].mid_point, 10.0f, CLR_PRPL);
 	}
 	render_gizmo3d(world->sdl, source->path.path[source->path.bi].mid_point, 10.0f, CLR_GREEN);
-	world->sdl->render.gizmocolor = clr;
-	//entity->transform.position = vector3_movetowards(entity->transform.position, source->path.path[source->path.ai].mid_point, world->clock.delta * source->movementspeed);
+//	entity->transform.position = vector3_movetowards(entity->transform.position, source->path.path[source->path.ai].mid_point, world->clock.delta * source->movementspeed);
 //	printf("%d %d.  ", source->path.ai, source->path.bi);
 	print_vector3(source->path.path[source->path.ai].mid_point);
 	print_vector3(entity->transform.position);
