@@ -11,7 +11,8 @@ typedef enum e_componenttype
 	COMP_INTERACTABLE,
 	COMP_LIGHT,
 	COMP_NPC,
-	COMP_AUDIOSOURCE
+	COMP_AUDIOSOURCE,
+	COMP_MECHASUIT
 }	t_componenttype;
 
 struct s_autogui;
@@ -33,7 +34,7 @@ typedef struct s_component
 
 typedef struct s_componentdefinition
 {
-	t_componenttype	type;
+	t_componenttype		type;
 	char				name[32];
 	void				(*func_assign_component)(t_component *component);
 }	t_componentdefinition;
@@ -65,12 +66,17 @@ typedef struct s_interactable
 	bool		interacted;
 }	t_interactable;
 
+typedef struct	s_mechasuit
+{
+	float	TESTVARIABLE;
+}	t_mechasuit;
 /*STRUCTDEF END, DONT REMOVE SINCE THE CREATECOMPONENT SCRIPT DEPENDS ON THIS*/
 
 /* AUDIOSOURCE FUNCTIONS */
 bool	source_is_playing(t_audiosource *source);
 void	assign_component_audiosource(t_component *component);
 void	assign_component_interactable(t_component *component);
+void	assign_component_mechasuit(t_component *component);
 /* ASSIGNFUNC END, DONT REMOVE SINCE THE CREATECOMPONENT SCRIPT DEPENDS ON THIS*/
 /* AUDIOSOURCE INTERNAL FUNCTIONS */
 void	_audiosource_start(t_sdlcontext *sdl, t_audiosource	*source, t_vector3 *pos);

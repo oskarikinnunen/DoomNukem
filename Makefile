@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/01/19 12:05:40 by okinnune         ###   ########.fr        #
+#    Updated: 2023/01/19 12:25:19 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -110,7 +110,8 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		render/rasterization/rasterize_triangle_uv.c \
 		render/rasterization/rasterize_triangle_dynamic.c \
 		render/render_helper.c \
-		render/flip_channel.c \ #.ENDSRC., CREATECOMPONENT SCRIPT DEPENDS ON THIS SO DONT REMOVE
+		render/flip_channel.c \
+		entity/components/comp_mechasuit.c #.ENDSRC. CREATECOMPONENT SCRIPT DEPENDS ON THIS SO DONT REMOVE
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c vector3_more.c \
 		vector2_elementary.c vector2_shorthands.c \

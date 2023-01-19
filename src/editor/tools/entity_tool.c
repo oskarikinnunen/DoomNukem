@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/19 11:08:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/19 12:30:13 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,6 +178,7 @@ static void gui_entitymode(t_entity *entity, t_autogui *gui, t_world *world)
 			entity->component.type == defs[i].type))
 		{
 			entity_set_component(entity, defs[i].type, world);
+			printf("set component to %s \n",defs[i].name);
 		}
 		i++;
 	}

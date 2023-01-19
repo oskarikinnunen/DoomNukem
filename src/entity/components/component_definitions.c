@@ -29,7 +29,9 @@ t_componentdefinition	*get_component_definitions()
 		(t_componentdefinition){.type = COMP_AUDIOSOURCE, .name = "Audiosource",
 			.func_assign_component = assign_component_audiosource},
 		(t_componentdefinition){.type = COMP_INTERACTABLE, .name = "Interactable",
-			.func_assign_component = assign_component_interactable}
+			.func_assign_component = assign_component_interactable},
+		(t_componentdefinition){.type = COMP_MECHASUIT, .name = "Mechasuit",
+			.func_assign_component = assign_component_mechasuit}
 	};
 	return (editables);
 }

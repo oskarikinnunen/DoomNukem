@@ -94,8 +94,8 @@ def createmakefile(componentname):
 	f = open('Makefile')
 	for line in f:
 		if "#.ENDSRC." in line:
-			newfile_lines.append(line.split("#.ENDSRC.")[0] + "\n")
-			newfile_lines.append("\t\tcomponents/comp_" + componentname + ".c " + makefile_marker + "\n")
+			newfile_lines.append(line.split(" #.ENDSRC.")[0] + "\n")
+			newfile_lines.append("\t\tentity/components/comp_" + componentname + ".c " + makefile_marker + "\n")
 		else:
 			newfile_lines.append(line)
 	f.close()

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 06:20:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/19 08:35:47 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/19 12:33:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,7 @@ void	assign_component_interactable(t_component *component)
 	component->func_allocate = comp_interactable_allocate;
 	component->func_update = comp_interactable_update;
 	component->func_ui_update = comp_interactable_ui_update;
+	component->func_gui_edit = NULL;
 	//spawn_entity
 	//addcomponent(pft_audiosource)
 }
