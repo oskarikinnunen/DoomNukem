@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_entity.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/16 15:09:15 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/19 06:52:26 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,6 +172,33 @@ static t_line newline(t_vector2 start, t_vector2 end)
 }
 
 #define RCRCL_SIDES 16
+
+void	render_capsule(t_sdlcontext *sdl, t_vector3 pos, float height, float radius, uint32_t clr)
+{
+	t_vector3	edges[RCRCL_SIDES + 1];
+	int		i;
+	float	angl;
+
+	i = 0;
+	angl = 0.0f;
+	sdl->render.gizmocolor = clr;
+	//X/Y
+	while (i < RCRCL_SIDES + 1)
+	{
+		edges[i].x = pos.x + (sinf(angl) * radius);
+		edges[i].y = pos.y + (cosf(angl) * radius);
+		edges[i].z = pos.z;
+
+		if (i >= 1)
+		{
+			render_ray(sdl, edges[i - 1], edges[i]);
+			render_ray(sdl, vector3_add(edges[i - 1],(t_vector3){.z = height}),
+				vector3_add((t_vector3){.z = height},edges[i]));
+		}
+		angl += FULLRAD / RCRCL_SIDES;
+		i++;
+	}
+}
 
 void	render_ball(t_sdlcontext *sdl, t_vector3 pos, float size, uint32_t clr)
 {

@@ -6,12 +6,13 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/05 13:48:43 by raho              #+#    #+#             */
-/*   Updated: 2023/01/18 04:46:10 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/19 04:50:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "collision.h"
+#include "movement_defs.h"
 
 t_collision	calculate_new_pos(t_vector2 delta, float radius)
 {
@@ -125,7 +126,6 @@ bool	rooms_share_zspace(t_room *room1, t_room *room2)
 */
 
 //Collider height which can be ignored aka stairs etc
-#define COL_STEP 30.0f
 
 bool	playerwall_stepthreshold(t_wall	*wall, t_player *player)
 {
@@ -149,6 +149,64 @@ bool	playerwall_share_z(t_wall	*wall, t_player *player)
 		&& player->transform.position.z >= wall->entity->obj->vertices[0].z)
 		share = true;
 	return (share);
+}
+
+bool	wall_capsule_stepthreshold(t_wall	*wall, t_characterphysics cp)
+{
+	float	topdist;
+
+	topdist = cp.position->z - wall->entity->obj->vertices[2].z;
+	return (topdist < 0.0f && topdist > -COL_STEP);
+}
+
+bool	wall_capsule_share_z(t_wall	*wall, t_characterphysics cp)
+{
+	bool	share;
+
+	share = false;
+	if (wall->entity->obj->vertices[0].z < cp.position->z + cp.height
+		&& wall->entity->obj->vertices[0].z >= cp.position->z)
+		share = true;
+	if (cp.position->z < wall->entity->obj->vertices[2].z
+		&& cp.position->z >= wall->entity->obj->vertices[0].z)
+		share = true;
+	return (share);
+}
+
+bool	check_collision_character(t_world *world, t_characterphysics cp, t_vector3 potential_pos, t_vector3 *new_pos)
+{
+	t_list		*l;
+	t_room		*room;
+	int			index;
+	t_collision	collision;
+
+	l = world->roomlist;
+	while (l != NULL)
+	{
+		room = l->content;
+		if (room != NULL)
+		{
+			index = 0;
+			while (index < room->wallcount)
+			{
+				if (!room->walls[index].entity->hidden && \
+					(wall_capsule_share_z(&room->walls[index], cp)
+					&& !wall_capsule_stepthreshold(&room->walls[index], cp)))
+				{
+					if (linecircle((t_line){*room->walls[index].edgeline.start, *room->walls[index].edgeline.end}, \
+							(t_vector2){potential_pos.x, potential_pos.y}, cp.radius, &collision))
+					{
+						room->walls[index].entity->obj->materials->img = get_image_by_name(*world->sdl, "barrel.cng");
+						*new_pos = vector3_add(potential_pos, v2tov3(vector2_mul(collision.normal, collision.depth + 1)));
+						return (true);
+					}
+				}
+				index++;
+			}
+		}
+		l = l->next;
+	}
+	return (false);
 }
 
 bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, t_vector3 *new_pos)

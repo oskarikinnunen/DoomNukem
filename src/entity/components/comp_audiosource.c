@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/18 10:32:23 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/19 10:21:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ void	comp_audiosource_ui_update(t_entity *entity, t_world *world)
 	else
 		cur_img = audio_off_img;
 	draw_entity_icon(entity, cur_img, world);
-	render_ball(world->sdl, entity->transform.position, source->range * 1.0f, CLR_BLUE);
+	//render_ball(world->sdl, entity->transform.position, source->range * 1.0f, CLR_BLUE);
 }
 
 void	comp_audiosource_gui_edit(t_component *component, t_autogui *gui)
@@ -171,13 +171,6 @@ void	comp_audiosource_loadassets(t_entity *entity, t_world *world)
 	source->sample = get_sample(world->sdl, source->sample.name);
 }
 
-/*typedef struct s_savedvalue
-{
-	//char	name[32];
-	uint32_t	id; //TODO: figure out how to iterate through all of these...
-	
-}	t_savedvalue,*/
-
 void	comp_audiosource_allocate(t_entity *entity, t_world *world)
 {
 	t_audiosource	*source;
@@ -199,6 +192,4 @@ void	assign_component_audiosource(t_component *component)
 	component->func_gui_edit = comp_audiosource_gui_edit;
 	component->func_ui_update = comp_audiosource_ui_update;
 	component->func_loadassets = comp_audiosource_loadassets;
-	//spawn_entity
-	//addcomponent(pft_audiosource)
 }

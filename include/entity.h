@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 23:45:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/19 11:30:34 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,15 +35,6 @@ typedef enum s_entitystatus
 }	t_entitystatus;
 
 # define SAVESTRUCT
-typedef struct s_interactable
-{
-	float		radius;
-	int			i32;
-	uint64_t	testint2;
-	t_anim		anim;
-}	t_interactable;
-
-# define SAVESTRUCT
 typedef struct s_entity
 {
 	t_transform		transform;
@@ -69,7 +60,7 @@ typedef struct s_prefab
 	t_transform			offset;
 	char				object_name[64];
 	char				prefab_name[64];
-	t_component_type	prefabtype;
+	t_componenttype	prefabtype;
 	bool				hidden;
 	void				*data;
 }	t_prefab;
@@ -102,7 +93,7 @@ typedef struct s_entitycache
 	t_entity	**sorted_entities;
 }	t_entitycache;
 
-void	entity_set_component(t_entity *entity, t_component_type type, struct s_world *world);
+void	entity_set_component(t_entity *entity, t_componenttype type, struct s_world *world);
 
 
 /* OCCLUSION*/

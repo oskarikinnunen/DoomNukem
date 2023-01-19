@@ -520,10 +520,10 @@ void	load_cache_from_list(char *filename, t_world *world, t_list *l)
 	while (l != NULL)
 	{
 		list_entity = l->content;
-		if (list_entity->component.type != pft_none)
+		if (list_entity->component.type != COMP_NONE)
 		{
 			load_component(list_entity, filename);
-			if (list_entity->component.type == pft_light)
+			if (list_entity->component.type == COMP_LIGHT)
 			{
 				//t_pointlight	*pl;
 				//pl = list_entity->component.data;
@@ -691,7 +691,7 @@ void	save_entities(char *filename, t_list	*entitylist)
 	while (l != NULL)
 	{
 		ent = l->content;
-		if (ent->component.type != pft_none)
+		if (ent->component.type != COMP_NONE)
 		{
 			temp.content = ent->component.data;
 			temp.content_size = ent->component.data_size;

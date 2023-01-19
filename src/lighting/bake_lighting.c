@@ -286,7 +286,7 @@ void start_lightbake(t_render *render, t_world *world)
 	while (i < world->entitycache.alloc_count)
 	{
 		ent = &world->entitycache.entities[i];
-		if (ent->component.type == pft_light)
+		if (ent->component.type == COMP_LIGHT)
 		{
 			t_pointlight *pointlight = ent->component.data;
 			pointlight->done = false;
@@ -317,7 +317,7 @@ void dynamic_light(t_entity *entity, t_world *world)
 	entity->lightmap->dynamic_data = world->lighting.ambient_light;
 	while (i < cache->alloc_count)
 	{
-		if (cache->entities[i].component.type == pft_light)
+		if (cache->entities[i].component.type == COMP_LIGHT)
 		{
 			plight = cache->entities[i].component.data;
 			if (entity->lightmap != NULL && entity->lightmap->dynamic && world->sdl->lighting_toggled)
@@ -370,7 +370,7 @@ void bake_lights(t_render *render, t_world *world)
 	while (i < world->entitycache.alloc_count)
 	{
 		lent = &world->entitycache.entities[i];
-		if (lent->component.type == pft_light)
+		if (lent->component.type == COMP_LIGHT)
 		{
 			t_pointlight	*pointlight = lent->component.data;
 			if (!pointlight->done)

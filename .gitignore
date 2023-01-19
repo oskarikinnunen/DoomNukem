@@ -18,6 +18,8 @@ libs/installed_libs/lib/*
 !libs/installed_libs/lib/FMOD/
 libs/installed_libs/lib/FMOD/copied
 
+.createcomponent_data/temp_*
+
 libft/libft.a
 libft/**.o
 lua-5.3.6/install/

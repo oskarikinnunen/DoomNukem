@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/17 13:55:00 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/19 11:08:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -279,7 +279,7 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 		if (dat->entityeditor.component_toggle)
 		{
 			gui_entitymode(ent, gui, &ed->world);
-			if (ent->component.type != pft_none)
+			if (ent->component.type != COMP_NONE)
 			{
 				gui_start(&dat->entityeditor.component_gui);
 				gui_component(ent, &dat->entityeditor.component_gui);
@@ -399,7 +399,7 @@ void	edit_prefab_subtype(t_prefab_editor *pe)
 	t_autogui	*gui;
 
 	gui = &pe->subtype_gui;
-	if (pe->prefab->prefabtype == pft_light)
+	if (pe->prefab->prefabtype == COMP_LIGHT)
 	{
 		t_pointlight	*light;
 		light = pe->prefab->data;
@@ -448,7 +448,7 @@ void	entity_tool_edit_prefab(t_editor *ed, t_entitytooldata *dat)
 		//select_prefab_type(pe);
 		gui_end(gui);
 
-		if (pe->prefab->prefabtype != pft_none)
+		if (pe->prefab->prefabtype != COMP_NONE)
 			edit_prefab_subtype(pe);
 		//TODO: split
 		gui = &pe->object_select;

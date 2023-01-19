@@ -6,51 +6,12 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:34:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 21:32:19 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/19 11:30:34 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "entity.h"
-
-void	comp_interactable_ui_update(t_entity *entity, t_world *world)
-{
-	t_interactable	*inter;
-
-	inter = entity->component.data;
-	if (inter == NULL)
-	{
-		render_ball(world->sdl, entity->transform.position, 20.0f, CLR_RED);
-		//TODO: error ball
-		return ;
-	}
-	render_ball(world->sdl, entity->transform.position, inter->radius, CLR_GREEN);
-	float dist = vector3_sqr_dist(entity->transform.position, world->player->transform.position);
-	if (dist < inter->radius * 100.0f && !entity->occlusion.is_occluded)
-		print_text_boxed(world->sdl, "[E] interact", point_div(world->sdl->screensize, 2));
-}
-
-void	comp_interactable_update(t_entity *entity, t_world *world)
-{
-	t_interactable	*inter;
-
-	inter = entity->component.data;
-	if (inter == NULL)
-	{
-		return ;
-	}
-	/*float dist = vector3_sqr_dist(entity->transform.position, world->player->transform.position);
-
-	if (dist < 2000.0f)
-		print_text_boxed(world->sdl, "[E] interact", point_div(world->sdl->screensize, 2));*/
-		
-	/*
-		vector3 sqrdist to player
-		printf
-	
-	
-	*/
-}
 
 void	comp_light_update(t_entity *entity, t_world *world)
 {
@@ -118,7 +79,7 @@ void	component_init(t_entity	*entity)
 	}*/
 }
 
-void	entity_set_component(t_entity *entity, t_component_type type, t_world *world)
+void	entity_set_component(t_entity *entity, t_componenttype type, t_world *world)
 {
 	t_componentdefinition	*defs;
 	int						i;
