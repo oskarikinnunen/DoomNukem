@@ -68,7 +68,8 @@ typedef struct s_interactable
 
 typedef struct	s_mechasuit
 {
-	float	TESTVARIABLE;
+	bool	in_use;
+	float	p_dist;
 }	t_mechasuit;
 /*STRUCTDEF END, DONT REMOVE SINCE THE CREATECOMPONENT SCRIPT DEPENDS ON THIS*/
 

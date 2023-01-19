@@ -54,6 +54,7 @@ typedef struct s_input
 	bool		run;
 	bool		shoot;
 	bool		aim;
+	bool		use;
 	t_vector2	turn;
 }	t_input;
 
@@ -93,6 +94,7 @@ typedef struct s_hid_info
 	t_input			input;
 }	t_hid_info;
 
+void	updateinput_new(t_input *input, t_hid_info info);
 void	updateinput(t_input *input, int keystate, t_mouse m, t_controller *controller);
 bool	iskey(SDL_Event e, int keycode);
 bool	check_alpha_key(uint32_t alphakeystate, char c);

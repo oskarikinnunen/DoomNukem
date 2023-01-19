@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/19 05:02:19 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/19 14:39:55 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ bool		check_alpha_key(uint32_t alphakeystate, char c)
 void		toggle_keystates(t_hid_info *hid, SDL_Event e)
 {
 	char	c;
+	//SDL_KE
 	if (e.type == SDL_KEYDOWN)
 	{
 		hid->keystate |= keyismoveleft(e) << KEYS_LEFTMASK;
@@ -44,8 +45,9 @@ void		toggle_keystates(t_hid_info *hid, SDL_Event e)
 		c = 'a';
 		while (c <= 'z')
 		{
+			if (hid->alphakeystate >> (c - 'a' & 1) == 0)
+				hid->alphakey_pressed |= iskey(e, c) << (c - 'a');
 			hid->alphakeystate |= iskey(e, c) << (c - 'a');
-			hid->alphakey_pressed |= iskey(e, c) << (c - 'a');
 			c++; //Not the language
 		}
 	}
@@ -141,6 +143,7 @@ t_gamereturn	editor_events(t_editor *ed)
 				return (game_exit);
 		}
 	}
-	updateinput(&ed->hid.input, ed->hid.keystate, ed->hid.mouse, ed->hid.controller);
+	//updateinput(&ed->hid.input, ed->hid.keystate, ed->hid.mouse, ed->hid.controller);
+	updateinput_new(&ed->hid.input, ed->hid);
 	return (game_continue);
 }

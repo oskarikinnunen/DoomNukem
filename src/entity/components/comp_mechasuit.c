@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/19 12:27:44 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/19 14:49:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,30 @@
 void	comp_mechasuit_update(t_entity *entity, t_world *world)
 {
 	t_mechasuit	*mechasuit;
+	float		qdist;
 
 	mechasuit = entity->component.data;
 	if (mechasuit == NULL)
 		return ;
+	if (world->player->input.use)
+		printf("pressed e??\n");
+	if (mechasuit->in_use && world->player->input.use)
+	{
+		printf("dismount??");
+		world->player->locked = false;
+		mechasuit->in_use = false;
+		world->player->input.use = false;
+	}
+	else
+	{
+		mechasuit->p_dist = vector3_sqr_dist(world->player->transform.position, entity->transform.position);
+		if (mechasuit->p_dist < 300.0f && world->player->input.use && !mechasuit->in_use)
+		{
+			world->player->locked = true;
+			mechasuit->in_use = true;
+			world->player->input.use = false;
+		}
+	}
 }
 
 /* Called once per frame after the 3D world has been drawn, use this to draw gizmos/rays/whatever*/
@@ -32,6 +52,15 @@ void	comp_mechasuit_ui_update(t_entity *entity, t_world *world)
 	mechasuit = entity->component.data;
 	if (mechasuit == NULL)
 		return ;
+	if (mechasuit->in_use)
+	{
+		print_text_boxed(world->sdl, "[E] Dismount", point_div(world->sdl->screensize, 2));
+	}
+	else if (mechasuit->p_dist < 300.0f)
+	{
+		print_text_boxed(world->sdl, "[E] Mount", point_div(world->sdl->screensize, 2));
+	}
+		
 }
 
 /* Used to edit component values */
