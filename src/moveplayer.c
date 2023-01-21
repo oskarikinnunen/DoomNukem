@@ -259,8 +259,5 @@ void	moveplayer(t_player *player, t_input *input, t_world *world)
 	move_vector = player_movementvector(*input, *player);
 	move_vector = vector3_mul(move_vector, world->clock.delta * MOVESPEED);
 	player->speed = move_vector;
-	if (player->noclip)
-		noclip_movement(player, move_vector, world);
-	else
-		collision_movement(player, move_vector, world);
+	noclip_movement(player, move_vector, world);
 }

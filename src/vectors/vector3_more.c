@@ -38,3 +38,17 @@ t_vector3	vector3_movetowards(t_vector3 vec, t_vector3 to, float delta)
 	result.z = ft_fmovetowards(vec.z, to.z, delta);
 	return (result);
 }
+
+t_vector3	vector3_abs(t_vector3 v)
+{
+	return((t_vector3){fabsf(v.x), fabsf(v.y), fabsf(v.z)});
+}
+
+bool		vector3_cmp_epsilon(t_vector3 v1, t_vector3 v2, float epsilon)
+{
+	t_vector3	temp;
+
+	temp = vector3_sub(v1, v2);
+	temp = vector3_abs(temp);
+	return (temp.x - epsilon <= 0.0f && temp.y - epsilon <= 0.0f && temp.z - epsilon <= 0.0f);
+}

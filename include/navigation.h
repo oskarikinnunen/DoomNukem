@@ -7,7 +7,8 @@ typedef struct s_navnode
 {
 	t_vector3	vertex[3];
 	t_vector3	mid_point;
-	t_vector3	line_point[3];
+	t_vector3	enter_point;
+	t_vector3	line_point[100];
 	uint32_t	neighbors;
 	uint32_t	neighbors_id[100];
 	uint32_t	parent;

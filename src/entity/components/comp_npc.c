@@ -24,6 +24,8 @@ static void	comp_npc_update(t_entity *entity, t_world *world)
 {
 	t_npc			*source;
 
+	//destroy_entity(world, entity);
+	//return;
 	source = entity->component.data;
 	if (source == NULL)
 		return;
@@ -38,8 +40,9 @@ static void	comp_npc_update(t_entity *entity, t_world *world)
 	for (int i = source->path.ai; i < source->path.bi; i++)
 	{
 		render_gizmo3d(world->sdl, source->path.path[i].mid_point, 10.0f, CLR_PRPL);
+		//render_gizmo3d(world->sdl, source->path.path[i].enter_point, 10.0f, CLR_GREEN);
 	}
-	render_gizmo3d(world->sdl, source->path.path[source->path.bi].mid_point, 10.0f, CLR_GREEN);
+	render_gizmo3d(world->sdl, source->path.path[source->path.bi].mid_point, 10.0f, CLR_RED);
 //	entity->transform.position = vector3_movetowards(entity->transform.position, source->path.path[source->path.ai].mid_point, world->clock.delta * source->movementspeed);
 //	printf("%d %d.  ", source->path.ai, source->path.bi);
 	print_vector3(source->path.path[source->path.ai].mid_point);
