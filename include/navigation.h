@@ -29,4 +29,11 @@ typedef struct s_path
 	uint32_t	end;
 	t_vector3	target;
 }	t_path;
+
+typedef struct s_navigation
+{
+	uint32_t	node_amount;
+	t_navnode	*navmesh;
+	uint32_t	malloc_size;
+}	t_navigation;
 # endif

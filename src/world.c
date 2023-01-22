@@ -64,12 +64,12 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 					int e = 1;
 					int closest_point = 0;
 					float dist;
-					dist = vector3_dist(world->navmesh[0].mid_point, ent->transform.position);
-					while (e < world->node_amount)
+					dist = vector3_dist(world->nav.navmesh[0].mid_point, ent->transform.position);
+					while (e < world->nav.node_amount)
 					{
-						if (dist > vector3_dist(world->navmesh[e].mid_point, ent->transform.position))
+						if (dist > vector3_dist(world->nav.navmesh[e].mid_point, ent->transform.position))
 						{
-							dist = vector3_dist(world->navmesh[e].mid_point, ent->transform.position);
+							dist = vector3_dist(world->nav.navmesh[e].mid_point, ent->transform.position);
 							closest_point = e;
 						}
 						e++;
@@ -85,12 +85,12 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 					float dist;
 					int closest_point = 0;
 					int e = 1;
-					dist = vector3_dist(world->navmesh[0].mid_point, ent->transform.position);
-					while (e < world->node_amount)
+					dist = vector3_dist(world->nav.navmesh[0].mid_point, ent->transform.position);
+					while (e < world->nav.node_amount)
 					{
-						if (dist > vector3_dist(world->navmesh[e].mid_point, ent->transform.position))
+						if (dist > vector3_dist(world->nav.navmesh[e].mid_point, ent->transform.position))
 						{
-							dist = vector3_dist(world->navmesh[e].mid_point, ent->transform.position);
+							dist = vector3_dist(world->nav.navmesh[e].mid_point, ent->transform.position);
 							closest_point = e;
 						}
 						e++;

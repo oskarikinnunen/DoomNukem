@@ -116,8 +116,7 @@ typedef struct s_world
 	t_entitycache		entitycache;
 	t_entity			skybox;
 	bool				ceiling_toggle;
-	t_navnode			navmesh[1000];
-	uint32_t			node_amount;
+	t_navigation		nav;
 }	t_world;
 
 t_vector2	flipped_uv(t_vector2 og);

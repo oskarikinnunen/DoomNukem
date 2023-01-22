@@ -7,12 +7,12 @@ static uint32_t get_target_node(t_world *world, t_vector3 target)
 	int e = 0;
 	int closest_point = 0;
 	float dist;
-	dist = vector3_dist(world->navmesh[0].mid_point, target);
-	while (e < world->node_amount)
+	dist = vector3_dist(world->nav.navmesh[0].mid_point, target);
+	while (e < world->nav.node_amount)
 	{
-		if (dist > vector3_dist(world->navmesh[e].mid_point, target))
+		if (dist > vector3_dist(world->nav.navmesh[e].mid_point, target))
 		{
-			dist = vector3_dist(world->navmesh[e].mid_point, target);
+			dist = vector3_dist(world->nav.navmesh[e].mid_point, target);
 			closest_point = e;
 		}
 		e++;

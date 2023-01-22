@@ -5,12 +5,12 @@ static uint32_t get_target_node(t_world *world, t_vector3 target)
 	int e = 0;
 	int closest_point = 0;
 	float dist;
-	dist = vector3_dist(world->navmesh[0].mid_point, target);
-	while (e < world->node_amount)
+	dist = vector3_dist(world->nav.navmesh[0].mid_point, target);
+	while (e < world->nav.node_amount)
 	{
-		if (dist > vector3_dist(world->navmesh[e].mid_point, target))
+		if (dist > vector3_dist(world->nav.navmesh[e].mid_point, target))
 		{
-			dist = vector3_dist(world->navmesh[e].mid_point, target);
+			dist = vector3_dist(world->nav.navmesh[e].mid_point, target);
 			closest_point = e;
 		}
 		e++;
@@ -29,7 +29,7 @@ bool pathfind(t_world *world, t_path *path)
 	bzero(openlist, sizeof(t_navnode) * 1000);
 	path->end = get_target_node(world, path->target);
 	ft_swap(&path->start, &path->end, sizeof(uint32_t));
-	openlist[path->start] = world->navmesh[path->start];
+	openlist[path->start] = world->nav.navmesh[path->start];
 	openlist[path->start].valid = true;
 	openlist[path->start].enter_point = openlist[path->start].mid_point;
 	//printf("start %d end %d\n", path->start, path->end);
@@ -51,7 +51,7 @@ bool pathfind(t_world *world, t_path *path)
 			{
 				///return(false);
 				printf("o_amount %d found %d\n", o_amount, found);
-				printf("buffer overflow pathfind, should never happen index is %d, node amount is %d\n", i, world->node_amount);
+				printf("buffer overflow pathfind, should never happen index is %d, node amount is %d\n", i, world->nav.node_amount);
 				exit(0);
 			}
 		}
@@ -94,10 +94,10 @@ bool pathfind(t_world *world, t_path *path)
 			id = openlist[lowest_f].neighbors_id[i];
 			if (openlist[id].visited == false && openlist[id].blocked == false && openlist[id].valid == false)
 			{
-				openlist[id] = world->navmesh[id];
+				openlist[id] = world->nav.navmesh[id];
 				openlist[id].g = openlist[lowest_f].g + 1.0f;
 				//vector3_dist(openlist[id].mid_point, world->navmesh[path->start].mid_point); // should be amount of parents to start
-				openlist[id].h = vector3_dist(openlist[id].mid_point, world->navmesh[path->end].mid_point);
+				openlist[id].h = vector3_dist(openlist[id].mid_point, world->nav.navmesh[path->end].mid_point);
 				openlist[id].f = openlist[id].g + openlist[id].h;
 				openlist[id].valid = true;
 				openlist[id].parent = lowest_f;
