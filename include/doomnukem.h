@@ -282,4 +282,16 @@ void	calculate_pointlight(t_pointlight *pointlight, t_world *world, t_render *re
 void	calculate_pointlight_step(t_pointlight *pointlight, t_world *world, t_render *render);
 //
 
+// NPC folder
+void	enemy_action(t_entity *entity, t_world *world);
+void	enemy_anim(t_entity *entity, t_world *world);
+void	enemy_movement(t_entity *entity, t_world *world);
+void	enemy_update(t_entity *entity, t_world *world);
+void	enemy_take_damage(t_entity *entity, t_world *world);
+
+void	civilian_action(t_entity *entity, t_world *world);
+void	civilian_anim(t_entity *entity, t_world *world);
+void	civilian_movement(t_entity *entity, t_world *world);
+void	civilian_update(t_entity *entity, t_world *world);
+void	civilian_take_damage(t_entity *entity, t_world *world);
 #endif

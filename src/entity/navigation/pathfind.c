@@ -32,7 +32,7 @@ bool pathfind(t_world *world, t_path *path)
 	openlist[path->start] = world->navmesh[path->start];
 	openlist[path->start].valid = true;
 	openlist[path->start].enter_point = openlist[path->start].mid_point;
-	printf("start %d end %d\n", path->start, path->end);
+	//printf("start %d end %d\n", path->start, path->end);
 	o_amount = 1;
 	while (o_amount > 0)
 	{
@@ -64,8 +64,8 @@ bool pathfind(t_world *world, t_path *path)
 			path->path[i] = openlist[e];
 			while (e != path->start && i < 32)
 			{
-				print_vector3(openlist[e].mid_point);
-				printf("%d\n", i);
+				//print_vector3(openlist[e].mid_point);
+				//printf("%d\n", i);
 				path->path[i] = openlist[e];
 				e = openlist[e].parent;
 				i++;
@@ -77,8 +77,8 @@ bool pathfind(t_world *world, t_path *path)
 			}
 			else
 				path->path[i - 1].enter_point = path->path[i - 1].mid_point;
-			print_vector3(openlist[e].mid_point);
-			printf("%d\n", i);
+			//print_vector3(openlist[e].mid_point);
+			//printf("%d\n", i);
 			//exit(0);
 			path->ai = 0;
 			path->bi = i;
@@ -95,7 +95,8 @@ bool pathfind(t_world *world, t_path *path)
 			if (openlist[id].visited == false && openlist[id].blocked == false && openlist[id].valid == false)
 			{
 				openlist[id] = world->navmesh[id];
-				openlist[id].g = vector3_dist(openlist[id].mid_point, world->navmesh[path->start].mid_point); // should be amount of parents to start
+				openlist[id].g = openlist[lowest_f].g + 1.0f;
+				//vector3_dist(openlist[id].mid_point, world->navmesh[path->start].mid_point); // should be amount of parents to start
 				openlist[id].h = vector3_dist(openlist[id].mid_point, world->navmesh[path->end].mid_point);
 				openlist[id].f = openlist[id].g + openlist[id].h;
 				openlist[id].valid = true;
@@ -108,6 +109,6 @@ bool pathfind(t_world *world, t_path *path)
 		//printf("o amount %d %d\n", o_amount, lowest_f);
 	}
 	printf("goal not found\n");
-	exit(0);
+	//exit(0);
 	return(false);
 }

@@ -103,6 +103,16 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		render/render_space.c \
 		lighting/bake_lighting.c \
 		lighting/point_light.c \
+		npc/civilian/civilian_action.c \
+		npc/civilian/civilian_anim.c \
+		npc/civilian/civilian_movement.c \
+		npc/civilian/civilian_update.c \
+		npc/civilian/civilian_take_damage.c \
+		npc/enemy/enemy_action.c \
+		npc/enemy/enemy_anim.c \
+		npc/enemy/enemy_movement.c \
+		npc/enemy/enemy_update.c \
+		npc/enemy/enemy_take_damage.c \
 		render/rasterization/rasterize_triangle_wrap.c \
 		render/rasterization/rasterize_triangle.c \
 		render/rasterization/rasterize_triangle_uv.c \

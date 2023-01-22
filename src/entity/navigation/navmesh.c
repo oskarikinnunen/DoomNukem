@@ -10,7 +10,6 @@ void	print_node(t_navnode n)
 	{
 		printf("%d\n", n.neighbors_id[i]);
 	}
-
 }
 
 void    show_navmesh(t_world *world)
@@ -19,35 +18,15 @@ void    show_navmesh(t_world *world)
 	world->sdl->render.gizmocolor = CLR_RED;
 	for (int i = 0; i < world->node_amount; i++)
 	{
-		render_gizmo3d(world->sdl, world->navmesh[i].mid_point, 10.0f, CLR_BLUE);
-		if (world->navmesh[i].neighbors > 10)
-		{
-
-			render_gizmo3d(world->sdl, world->navmesh[i].mid_point, 10.0f, CLR_RED);
-		}
-		if (i == 250)
-			render_gizmo3d(world->sdl, world->navmesh[i].mid_point, 10.0f, CLR_PRPL);
-		for (int e = 0; e < world->navmesh[i].neighbors; e++)
-		{
-			if (world->navmesh[i].neighbors > 3)
-				printf("%d\n", world->navmesh[i].neighbors_id[e]);
-			//render_gizmo3d(world->sdl, world->navmesh[i].line_point[e], 10.0f, CLR_TURQ);
-			world->sdl->render.gizmocolor = CLR_TURQ;
-		//	render_ray(world->sdl, world->navmesh[i].mid_point, world->navmesh[i].line_point[e]);
-			world->sdl->render.gizmocolor = CLR_RED;
-           // printf(" i %d e %d %d\n", i, e, world->navmesh[i].neighbors_id[e]);
-			render_ray(world->sdl, world->navmesh[i].mid_point, world->navmesh[world->navmesh[i].neighbors_id[e]].mid_point);
-		}
 		for (int j = 0; j < 3; j++)
 		{
-			world->sdl->render.gizmocolor = CLR_GREEN;
-			render_ray(world->sdl, world->navmesh[i].vertex[j], world->navmesh[i].vertex[(j + 1) % 3]);
+		//	world->sdl->render.gizmocolor = CLR_GREEN;
+			//render_ray(world->sdl, world->navmesh[i].vertex[j], world->navmesh[i].vertex[(j + 1) % 3]);
 		}
-		if (world->navmesh[i].neighbors > 10)
+		for (int e = 0; e < world->navmesh[i].neighbors; e++)
 		{
-			//render_gizmo3d(world->sdl, world->navmesh[i].mid_point, 10.0f, CLR_TURQ);
+			render_gizmo3d(world->sdl, world->navmesh[i].line_point[e], 10.0f, CLR_BLUE);
 		}
-	//	printf("\n\n");
 	}
 	world->sdl->render.gizmocolor = clr;
 }
@@ -57,12 +36,12 @@ int	line_laps_line(t_vector3 start1, t_vector3 end1, t_vector3 p)
 	float len;
 	float dist[2];
 
-	if (vector3_cmp_epsilon(p, start1, 0.0001f) || vector3_cmp_epsilon(p, end1, 0.0001f))
+	if (vector3_cmp_epsilon(p, start1, 0.001f) || vector3_cmp_epsilon(p, end1, 0.001f))
 		return(1);
 	len = vector3_dist(start1, end1);
 	dist[0] = vector3_dist(p, start1);
 	dist[1] = vector3_dist(p, end1);
-	if (dist[0] + dist[1] <= len + 0.00001f)
+	if (dist[0] + dist[1] <= len + 0.0001f) //0.00001f
 		return(2);
 	return(0);
 }
@@ -97,7 +76,7 @@ bool	is_triangle_degenerate(t_vector3 *p)
 		}
 		i++;
 	}
-	if (vector3_dist(p[(index + 2) % 3], p[index]) + vector3_dist(p[(index + 2) % 3], p[(index + 1) % 3]) == dist)
+	if (vector3_dist(p[(index + 2) % 3], p[index]) + vector3_dist(p[(index + 2) % 3], p[(index + 1) % 3]) <= dist + 0.0001f)
 		return(true);
 	return(false);
 }
@@ -142,7 +121,7 @@ void	create_navmesh(t_world *world)
                                 index = j;
                             }
                         }
-                        if (dist < 150.0f)
+                        if (dist < 250.0f)
                         {
                             for (int j = 0; j < 3; j++)
                             {
@@ -200,54 +179,10 @@ void	create_navmesh(t_world *world)
 				if (skip)
 					continue;
 				skip = false;
-				int count = 0;
 				for (int j1 = 0; j1 < 3; j1++)
 				{
 					if (line_overlaps_parallel_line(start, end, world->navmesh[i1].vertex[j1], world->navmesh[i1].vertex[(j1 + 1) % 3]))
 						skip = true;
-					t_vector3	temp_normal = vector3_normalise(vector3_sub(world->navmesh[i1].vertex[j1], world->navmesh[i1].vertex[(j1 + 1) % 3]));
-					if (vector3_dot(normal, temp_normal) > 0.99f || vector3_dot(vector3_negative(normal), temp_normal) > 0.99f)
-					{
-						float p_dist[2];
-						p_dist[0] = vector3_dist(start, world->navmesh[i1].vertex[j1]);
-						p_dist[1] = vector3_dist(end, world->navmesh[i1].vertex[j1]);
-						if (roundf(p_dist[0] + p_dist[1]) == temp_d)
-						{
-							if (vector3_cmp(start, world->navmesh[i1].vertex[j1]) || vector3_cmp(end, world->navmesh[i1].vertex[j1]))
-								count++;
-							else
-								count += 2;
-						}
-						p_dist[0] = vector3_dist(start, world->navmesh[i1].vertex[(j1 + 1) % 3]);
-						p_dist[1] = vector3_dist(end, world->navmesh[i1].vertex[(j1 + 1) % 3]);
-						if (roundf(p_dist[0] + p_dist[1]) == temp_d)
-						{
-							if (vector3_cmp(start, world->navmesh[i1].vertex[(j1 + 1) % 3]) || vector3_cmp(end, world->navmesh[i1].vertex[(j1 + 1) % 3]))
-								count++;
-							else
-								count += 2;
-						}
-						float temp_a;
-						temp_a = roundf(vector3_dist(world->navmesh[i1].vertex[j1], world->navmesh[i1].vertex[(j1 + 1) % 3]));
-						p_dist[0] = vector3_dist(start, world->navmesh[i1].vertex[j1]);
-						p_dist[1] = vector3_dist(end, world->navmesh[i1].vertex[j1]);
-						if (roundf(p_dist[0] + p_dist[1]) == temp_a)
-						{
-							if (vector3_cmp(start, world->navmesh[i1].vertex[j1]) || vector3_cmp(end, world->navmesh[i1].vertex[j1]))
-								count++;
-							else
-								count += 2;
-						}
-						p_dist[0] = vector3_dist(start, world->navmesh[i1].vertex[(j1 + 1) % 3]);
-						p_dist[1] = vector3_dist(end, world->navmesh[i1].vertex[(j1 + 1) % 3]);
-						if (roundf(p_dist[0] + p_dist[1]) == temp_a)
-						{
-							if (vector3_cmp(start, world->navmesh[i1].vertex[(j1 + 1) % 3]) || vector3_cmp(end, world->navmesh[i1].vertex[(j1 + 1) % 3]))
-								count++;
-							else
-								count += 2;
-						}
-					}
 				}
 				if (skip == true)
 				{
@@ -264,39 +199,6 @@ void	create_navmesh(t_world *world)
 		printf("\n");
 	//	print_vector3(world->navmesh[i].mid_point);
         i++;
-	}
-	printf("%d\n\n", world->node_amount);
-//	exit(0);
-	i = 0;
-	while (i < world->node_amount && 0)
-	{
-		for (int j = 0; j < world->navmesh[i].neighbors; j++)
-		{
-			int id_check = -1;
-			for (int j1 = 0; j1 < world->navmesh[world->navmesh[i].neighbors_id[j]].neighbors; j1++)
-			{
-				if (world->navmesh[world->navmesh[i].neighbors_id[j]].neighbors_id[j1] == i)
-				{
-					id_check == i;
-				}
-			}
-			if (id_check != i)
-			{
-				printf("i is %d i neighbor is \n", i);
-				for (int test1 = 0; test1 < world->navmesh[i].neighbors; test1++)
-				{
-					printf("og %d\n", world->navmesh[i].neighbors_id[test1]);
-				}
-				for (int test1 = 0; test1 < world->navmesh[world->navmesh[i].neighbors_id[j]].neighbors; test1++)
-				{
-					printf("fake %d\n", world->navmesh[world->navmesh[i].neighbors_id[j]].neighbors_id[test1]);
-				}
-				exit(0);
-				world->navmesh[world->navmesh[i].neighbors_id[j]].line_point[world->navmesh[world->navmesh[i].neighbors_id[j]].neighbors] = world->navmesh[i].line_point[i];
-				world->navmesh[world->navmesh[i].neighbors_id[j]].neighbors_id[world->navmesh[world->navmesh[i].neighbors_id[j]].neighbors++] = i;
-			}
-		}
-		i++;
 	}
 }
 
