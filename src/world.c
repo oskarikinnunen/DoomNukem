@@ -176,6 +176,11 @@ void update_world3d(t_world *world, t_render *render)
 			world->ceiling_toggle = !world->ceiling_toggle;
 			toggle_ceilings(world);
 		}
+		if (gui_shortcut_button("Show navmesh:", 'N', world->debug_gui))
+			world->nav.show_navmesh = !world->nav.show_navmesh;
+		gui_labeled_float_slider("Navigation node size: ", &world->nav.clip_size, 10.0f, world->debug_gui);
+		if (gui_shortcut_button("Create navmesh:", 'C', world->debug_gui))
+			create_navmesh(world);
 		if (gui_shortcut_button("Toggle grids:", 'G', world->debug_gui))
 			world->sdl->render_grid = !world->sdl->render_grid;
 		gui_labeled_bool_edit("Noclip:", &world->player->noclip, world->debug_gui);
@@ -189,7 +194,7 @@ void update_world3d(t_world *world, t_render *render)
 			sdl->render.occlusion.draw_occlusion = !sdl->render.occlusion.draw_occlusion;
 		if (gui_shortcut_button("Toggle Occlusion", 'O', world->debug_gui))
 			render->occlusion.occlusion = !render->occlusion.occlusion;
-		if (gui_shortcut_button("Toggle Occlusion boxes", 'P', world->debug_gui))
+		if (gui_shortcut_button("Show Occlusion boxes", 'P', world->debug_gui))
 			render->occlusion.occluder_box = !render->occlusion.occluder_box;
 		if (gui_shortcut_button("Render Next Frame Slow", 'U', world->debug_gui))
 			sdl->render.occlusion.slow_render = true;
@@ -628,6 +633,8 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 	init_skybox(&world);
 	ft_bzero(&world.lighting, sizeof(t_lighting));
 	world.lighting.ambient_light = 20;
+	world.nav.clip_size = 250.0f;
+	create_navmesh(&world);
 	return (world);
 }
 

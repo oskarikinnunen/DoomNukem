@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/17 15:24:18 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/23 07:40:38 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,9 +223,6 @@ int	editorloop(t_sdlcontext sdl)
 	editor_load_prefs(&ed, &sdl);
 	ed.gamereturn = game_continue;
 	sdl.lighting_toggled = false;
-	create_navmesh(&ed.world);
-//	printf("node amount %d\n", world->node_amount);
-//	exit(0);
 	ed.world.lighting.calculated = false;
 	play_music(&sdl, "music_arp1_ambient.wav");
 	while (ed.gamereturn == game_continue)
@@ -236,13 +233,6 @@ int	editorloop(t_sdlcontext sdl)
 		if (!ed.player.locked)
 			moveplayer(&ed.player, &ed.hid.input, &ed.world);
 		update_render(&sdl.render, &ed.player);
-		//print_vector3(sdl.render.camera.lookdir);
-		//print_vector3(sdl.render.camera.position);
-		if (0)
-		{
-			sdl.render.camera.lookdir = (t_vector3){-0.604028, 0.055242, -0.795046};
-			sdl.render.camera.position = (t_vector3){1559.231812, 1055.679810, 294.330811};
-		}
 		screen_blank(sdl);
 		render_start(&sdl.render);
 		update_frustrum_culling(&ed.world, &sdl, &sdl.render);

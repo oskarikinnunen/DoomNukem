@@ -18,10 +18,12 @@ typedef struct s_navnode
 	bool		valid;
 	bool		visited;
 	bool		blocked;
+	uint32_t	index;
 }	t_navnode;
 
 typedef struct s_path
 {
+	bool		valid_path;
 	t_navnode	path[32];
 	uint32_t	ai;
 	uint32_t	bi;
@@ -34,6 +36,9 @@ typedef struct s_navigation
 {
 	uint32_t	node_amount;
 	t_navnode	*navmesh;
+	t_navnode	*openlist;
 	uint32_t	malloc_size;
+	float		clip_size;
+	bool		show_navmesh;
 }	t_navigation;
 # endif

@@ -6,7 +6,7 @@
 #    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/01/17 13:59:22 by vlaine           ###   ########.fr        #
+#    Updated: 2023/01/23 06:51:44 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -71,8 +71,6 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		entity/components/comp_audiosource.c \
 		entity/components/comp_audiosource_tools.c \
 		entity/components/comp_npc.c \
-		entity/navigation/pathfind.c \
-		entity/navigation/navmesh.c \
 		obj_parser/obj_parse.c \
 		obj_parser/obj_parse_vertex.c \
 		obj_parser/obj_parse_faces.c \
@@ -113,6 +111,8 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		npc/enemy/enemy_movement.c \
 		npc/enemy/enemy_update.c \
 		npc/enemy/enemy_take_damage.c \
+		npc/navigation/pathfind.c \
+		npc/navigation/navmesh.c \
 		render/rasterization/rasterize_triangle_wrap.c \
 		render/rasterization/rasterize_triangle.c \
 		render/rasterization/rasterize_triangle_uv.c \

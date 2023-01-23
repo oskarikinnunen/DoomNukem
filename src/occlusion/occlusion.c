@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 14:40:03 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/16 14:59:32 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/23 04:41:41 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,21 @@ void update_object_bounds(t_object *obj)
 
 void update_floor_bounds(t_meshtri *f)
 {
+	float	dist;
+	int		i;
+
 	f->entity->obj->bounds.origin = vector3_div(vector3_add(vector3_add(f->entity->obj->vertices[0], f->entity->obj->vertices[1]), f->entity->obj->vertices[2]), 3.0f);
+	dist = vector3_dist(f->entity->obj->vertices[0], f->entity->obj->vertices[1]);
+	i = 1;
+	while (i < 3)
+	{
+		if (dist < vector3_dist(f->entity->obj->vertices[i], f->entity->obj->vertices[(i + 1) % 3]))
+		{
+			dist = vector3_dist(f->entity->obj->vertices[i], f->entity->obj->vertices[(i + 1) % 3]);
+		}
+		i++;
+	}
+	f->entity->obj->bounds.radius = dist;
 	f->entity->obj->bounds.type = bt_ignore;
 }
 

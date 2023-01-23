@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   audio_sounds.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/28 15:14:01 by raho              #+#    #+#             */
-/*   Updated: 2023/01/16 19:19:48 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/23 07:35:10 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ void	play_music(t_sdlcontext *sdl, char *musicname)
 	t_audiosample	sample;
 
 	sample = get_music(sdl, musicname);
-	return;//TODO: Remove just added to block backgoround music
 	if (sample.sound != NULL)
 	{
 		printf("found sample for music %s \n", musicname);

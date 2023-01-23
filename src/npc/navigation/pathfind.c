@@ -20,13 +20,13 @@ static uint32_t get_target_node(t_world *world, t_vector3 target)
 
 bool pathfind(t_world *world, t_path *path)
 {
-	t_navnode	openlist[1000];
+	t_navnode	*openlist;
 	uint32_t	o_amount;
 	uint32_t	lowest_f;
 	int	i;
 
-	//exit(0);
-	bzero(openlist, sizeof(t_navnode) * 1000);
+	openlist = world->nav.openlist;
+	ft_bzero(openlist, sizeof(t_navnode) * world->nav.node_amount);
 	path->end = get_target_node(world, path->target);
 	ft_swap(&path->start, &path->end, sizeof(uint32_t));
 	openlist[path->start] = world->nav.navmesh[path->start];
@@ -47,7 +47,7 @@ bool pathfind(t_world *world, t_path *path)
 				found++;
 			}
 			i++;
-			if (i > 999)
+			if (i > world->nav.node_amount)
 			{
 				///return(false);
 				printf("o_amount %d found %d\n", o_amount, found);
@@ -82,6 +82,7 @@ bool pathfind(t_world *world, t_path *path)
 			//exit(0);
 			path->ai = 0;
 			path->bi = i;
+			printf("valid path\n");
 			return(true);
 		}
 		openlist[lowest_f].valid = false;
