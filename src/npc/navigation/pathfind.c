@@ -54,7 +54,7 @@ bool pathfind(t_world *world, t_path *path)
 			{
 				///return(false);
 				printf("o_amount %d found %d\n", o_amount, found);
-				printf("buffer overflow pathfind, should never happen index is %d, node amount is %d\n", i, world->nav.node_amount);
+				printf("buffer overflow in pathfind, should never happen index is %d, node amount is %d\n", i, world->nav.node_amount);
 				exit(0);
 			}
 		}
@@ -80,7 +80,6 @@ bool pathfind(t_world *world, t_path *path)
 				path->path[i - 1].enter_point = path->path[i - 1].mid_point;
 			path->ai = 0;
 			path->bi = i;
-			printf("valid path\n");
 			return(true);
 		}
 		openlist[lowest_f].valid = false;
@@ -95,7 +94,6 @@ bool pathfind(t_world *world, t_path *path)
 			{
 				openlist[id] = world->nav.navmesh[id];
 				openlist[id].g = openlist[lowest_f].g + 1.0f;
-				//vector3_dist(openlist[id].mid_point, world->navmesh[start].mid_point); // should be amount of parents to start
 				openlist[id].h = vector3_dist(openlist[id].mid_point, world->nav.navmesh[end].mid_point);
 				openlist[id].f = openlist[id].g + openlist[id].h;
 				openlist[id].valid = true;
@@ -105,9 +103,6 @@ bool pathfind(t_world *world, t_path *path)
 			}
 			i++;
 		}
-		//printf("o amount %d %d\n", o_amount, lowest_f);
 	}
-	printf("goal not found\n");
-	//exit(0);
 	return(false);
 }

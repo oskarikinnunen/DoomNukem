@@ -304,14 +304,10 @@ void	create_navmesh(t_world *world)
 			check_neighbors(&world->nav, i, start, end);
 			j++;
 		}
-		printf("self id %d\n", world->nav.navmesh[i].index);
-		for (int i1 = 0; i1 < world->nav.navmesh[i].neighbors; i1++)
-		{
-			printf("%d\n", world->nav.navmesh[i].neighbors_id[i1]);
-		}
-		printf("\n");
         i++;
 	}
+	if (world->nav.openlist)
+		free(world->nav.openlist);
 	world->nav.openlist = ft_memalloc(world->nav.malloc_size * sizeof(t_navnode));
 	if (!world->nav.openlist)
 		error_log(EC_MALLOC);
