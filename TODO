@@ -4,12 +4,15 @@ entity
 		+ decals
 		= map
 
+
+
+
+
 Remove lua dependency
 fix UIs
 
-
-
 Level editor
+	open area shouldnt connect walls
 	notes
 	save lightmap to file
 	raycasting for createmode (removing the old raycast) !!
@@ -64,8 +67,6 @@ maybe / later:
 	snap toggle
 	ramps/stairs
 	connect areas (combine height)
-
-
 
 Preset editor (assign behaviour to an object)
 	audiosource

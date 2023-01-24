@@ -19,6 +19,7 @@ libs/installed_libs/lib/*
 libs/installed_libs/lib/FMOD/copied
 
 .createcomponent_data/temp_*
+.createcomponent_data/bu/*
 
 libft/libft.a
 libft/**.o

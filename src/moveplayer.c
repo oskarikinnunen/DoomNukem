@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/19 09:56:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/24 11:10:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,55 +18,6 @@
 #include "libft.h"
 #include "editor_tools.h"
 #include "movement_defs.h"
-#include <xmmintrin.h> // SSE
-
-//#include <glm/gtx/simd_vec4.hpp>
-//#include <pmmintrin.h> // SSE3
-//#include <nmmintrin.h> // SSE4.2
-//#include <immintrin.h> // AVX
-
-/* Previous working version before implementing updateinput */
-/*
-static t_vector3	player_movementvector(int32_t keystate, t_vector3 lookdir)
-{
-	t_vector3	movement;
-	t_vector3	forward;
-	float		speed;
-
-	movement = vector3_zero();
-	//forward.z = 0;
-	forward = vector3_mul_vector3(player->lookdir, (t_vector3){1.0f, 1.0f, 0.0f});
-	forward = vector3_normalise(forward);
-	if ((keystate >> KEYS_UPMASK) & 1) 
-		movement = vector3_add(movement, forward);
-	if ((keystate >> KEYS_DOWNMASK) & 1)
-		movement = vector3_sub(movement, forward);
-	if ((keystate >> KEYS_LEFTMASK) & 1)
-		movement = vector3_sub(movement,
-			vector3_crossproduct(forward, vector3_up()));
-	if ((keystate >> KEYS_RIGHTMASK) & 1)
-		movement = vector3_add(movement,
-			vector3_crossproduct(forward, vector3_up()));
-	speed = 1.0f + (float)((keystate >> KEYS_SHIFTMASK) & 1);
-	if ((keystate >> KEYS_CTRLMASK) & 1)
-	{
-		speed *= 0.5f;
-		player->height = 30.0f;
-	}
-	else
-		player->height = 60.0f;
-		
-	if (player->jump.active)
-		movement.z += cos(player->jump.lerp * 4.5f) * 1.8f;
-	else if (player->position.z > player->height && movement.z >= 0.0f)
-		movement.z -= 4.0f;
-	else if ((keystate >> KEYS_SPACEMASK) & 1 && !player->jump.active)
-		start_anim(&player->jump, anim_forwards);
-	movement = vector3_mul_vector3(movement, (t_vector3){speed, speed, 1.0f});
-	movement = vector3_clamp_magnitude(movement, speed);
-	return (movement);
-
-*/
 
 static t_vector3	normalized_inputvector(t_input input, t_player player)
 {
@@ -120,8 +71,6 @@ t_vector3	vector3_movetowards2(t_vector3 vec, t_vector3 to, float delta)
 	return (result);
 }
 
-
-
 void	updateguntransform(t_input *input, t_clock *clock, t_player *player)
 {
 	static float	lerp;
@@ -141,39 +90,11 @@ void	updateguntransform(t_input *input, t_clock *clock, t_player *player)
 	//neutralpos = gun->entity.transform.location;
 	if (input->shoot && gun->readytoshoot)
 	{
-		/*
-		t_particle shootparticle;
-		particle.sprite = fire.png;
-		particle.lifetime = 30;
-		spawn_particle(t_world *world, particle)
-			spawn_entity
-			assigns object
-			world.particlecount++;
-			world.particles[particlecount] = new particle
-			
-		
-		
-		*/
-		//particle_start(gunpos, player.)
-		/*
-		spawn entity
-		component_add_particle(entity);
-		t_particle p = entity.component.data;
-		p.starttime = clock.prevtime
-		p.dir = 
-		ft_bzero(&particleanim, sizeof(particleanim));
-		particleanim.framerate = 8;
-		particleanim.lastframe = 16;
-		particleanim.mode = anim_forwards;
-		start_anim(&particleanim, anim_forwards);
-		*/
 		start_anim(&gun->shoot_anim, anim_forwards);
 		start_anim(&gun->view_anim, anim_forwards);
 		//gun->entity.transform
 		//TODO: add localposition and position
 		//t_vector3 worldspace_position = transformed_vector3(gun->entity.transform, gun->entity.transform.position).v;
-
-		//make_transform_matrix()
 		gun->readytoshoot = false;
 		gun->lastshottime = clock->prev_time;
 	}

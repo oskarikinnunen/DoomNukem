@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 03:25:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/19 06:54:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/24 09:47:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,9 +110,7 @@ void apply_capsulephysics(t_characterphysics charp, t_world *world) //TODO: this
 		*charp.isgrounded = (charp.position->z <= floorz);
 	}
 	else
-	{
 		charp.position->z = ft_fmovetowards(charp.position->z, floorz, world->clock.delta * -GRAVITY * 0.5f);
-	}
 	if (*charp.isgrounded && charp.velocity->z != 0)
 	{
 		if (charp.landingtrigger != NULL)

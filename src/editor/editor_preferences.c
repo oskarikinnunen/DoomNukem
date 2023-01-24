@@ -19,6 +19,7 @@ void	editor_load_prefs(t_editor *ed, t_sdlcontext *sdl)
 	if (fd != -1)
 	{
 		read(fd, &prefs, sizeof(t_editorprefs));
+		close(fd);
 		ed->player.transform.position = prefs.playerpos;
 		editor_load_and_init_world(ed, prefs.worldname, sdl);
 		printf("loading prefs from '%s' , worldname %s \n", prefpath, prefs.worldname);

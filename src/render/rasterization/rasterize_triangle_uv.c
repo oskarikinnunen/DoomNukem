@@ -1,18 +1,18 @@
 #include "doomnukem.h"
 
-static t_vector3 texcoord_to_loc(t_vector3 *v, t_vector2 *t, t_vector2 p)
+static t_vector3 texcoord_to_loc(t_vector3 ws[3], t_vector2 uv[3], t_vector2 p)
 {
 	float       i;
 	float       s;
 	float       delta;
 
 	t_vector3   r;
-	i = 1.0f / ((t[1].x - t[0].x) * (t[2].y - t[0].y) - (t[1].y - t[0].y) * (t[2].x - t[0].x));
-	s = i * ((t[2].y - t[0].y) * (p.x - t[0].x) - (t[2].x - t[0].x) * (p.y - t[0].y));
-	delta = i * (-(t[1].y - t[0].y) * (p.x - t[0].x) + (t[1].x - t[0].x) * (p.y - t[0].y));
-	r.x = v[0].x + s * (v[1].x - v[0].x) + delta * (v[2].x - v[0].x);
-	r.y = v[0].y + s * (v[1].y - v[0].y) + delta * (v[2].y - v[0].y);
-	r.z = v[0].z + s * (v[1].z - v[0].z) + delta * (v[2].z - v[0].z);
+	i = 1.0f / ((uv[1].x - uv[0].x) * (uv[2].y - uv[0].y) - (uv[1].y - uv[0].y) * (uv[2].x - uv[0].x));
+	s = i * ((uv[2].y - uv[0].y) * (p.x - uv[0].x) - (uv[2].x - uv[0].x) * (p.y - uv[0].y));
+	delta = i * (-(uv[1].y - uv[0].y) * (p.x - uv[0].x) + (uv[1].x - uv[0].x) * (p.y - uv[0].y));
+	r.x = ws[0].x + s * (ws[1].x - ws[0].x) + delta * (ws[2].x - ws[0].x);
+	r.y = ws[0].y + s * (ws[1].y - ws[0].y) + delta * (ws[2].y - ws[0].y);
+	r.z = ws[0].z + s * (ws[1].z - ws[0].z) + delta * (ws[2].z - ws[0].z);
 	return r;
 }
 
@@ -49,7 +49,6 @@ static void sample_img(t_lighting l, int x, int y, t_triangle_polygon t)
 		//printf("light map data %i, ambient %i \n", l.lightmap->data[x + l.lightmap->size.x * y], l.ambient_light);
 		return ;
 	}
-		
 	ray.origin = texcoord_to_loc(t.p3, t.uv, (t_vector2){x/(float)l.lightmap->size.x, y/(float)l.lightmap->size.y});
 	if (l.pointlight->shadows == false)
 	{
@@ -177,7 +176,6 @@ void	render_triangle_uv(t_lighting l, t_triangle_polygon triangle)
 	uv_split.x = ft_flerp(triangle.uv[2].x, triangle.uv[0].x, lerp);
 	uv_split.y = ft_flerp(triangle.uv[2].y, triangle.uv[0].y, lerp);
 	p3_split = vector3_lerp(p3[2], p3[0], lerp);
-
 	if (p2_split.x < p2[1].x)
 	{
 		ft_swap(&p2[1], &p2_split, sizeof(t_point));

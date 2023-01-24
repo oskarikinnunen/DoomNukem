@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/05 13:48:43 by raho              #+#    #+#             */
-/*   Updated: 2023/01/19 04:50:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/24 10:14:38 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,8 +196,8 @@ bool	check_collision_character(t_world *world, t_characterphysics cp, t_vector3 
 					if (linecircle((t_line){*room->walls[index].edgeline.start, *room->walls[index].edgeline.end}, \
 							(t_vector2){potential_pos.x, potential_pos.y}, cp.radius, &collision))
 					{
-						room->walls[index].entity->obj->materials->img = get_image_by_name(*world->sdl, "barrel.cng");
-						*new_pos = vector3_add(potential_pos, v2tov3(vector2_mul(collision.normal, collision.depth + 1)));
+						//room->walls[index].entity->obj->materials->img = get_image_by_name(*world->sdl, "barrel.cng");
+						*new_pos = vector3_add(potential_pos, v2tov3(vector2_mul(collision.normal, collision.depth + 0.00001f * world->clock.delta)));
 						return (true);
 					}
 				}

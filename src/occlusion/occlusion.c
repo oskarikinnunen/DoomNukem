@@ -3,14 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   occlusion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 14:40:03 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/16 14:59:32 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/23 04:36:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
+
+/*static void get_bounding_box(t_object	*object)
+{
+	int	i;
+	t_vector3	min;
+	t_vector3	min;
+
+	i = 0;
+
+	while (i < object->vertice_count)
+	{
+
+	}
+}*/
 
 static void set_bounding_box(t_vector3 *max, t_vector3 *min, t_vector3 *vector, int count)
 {
@@ -90,7 +104,12 @@ void update_object_bounds(t_object *obj)
 
 void update_floor_bounds(t_meshtri *f)
 {
+	t_vector3	min;
+	t_vector3	max;
+
 	f->entity->obj->bounds.origin = vector3_div(vector3_add(vector3_add(f->entity->obj->vertices[0], f->entity->obj->vertices[1]), f->entity->obj->vertices[2]), 3.0f);
+	set_bounding_box(&max, &min, f->entity->obj->vertices, f->entity->obj->vertice_count);
+	f->entity->obj->bounds.radius = get_box_sphere_radius(f->entity->obj->bounds.origin, max, min);
 	f->entity->obj->bounds.type = bt_ignore;
 }
 

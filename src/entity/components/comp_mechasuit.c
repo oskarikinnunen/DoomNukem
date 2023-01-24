@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/19 14:49:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/23 07:01:10 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,15 +64,6 @@ void	comp_mechasuit_ui_update(t_entity *entity, t_world *world)
 }
 
 /* Used to edit component values */
-void	comp_mechasuit_gui_edit(t_component *component, t_autogui *gui)
-{
-	t_mechasuit	*mechasuit;
-	//entity->particleimages[particleanim.];
-	mechasuit = component->data;
-	gui_label("GUI for mechasuit not implemented", gui);
-	if (mechasuit == NULL)
-		return ;
-}
 
 /*	This is called during load_world, use only if your component
 	NEEDS to gather assets (sounds etc.) at this time.
@@ -105,7 +96,7 @@ void	assign_component_mechasuit(t_component *component)
 	component->data_size = sizeof(t_mechasuit);
 	component->func_allocate = comp_mechasuit_allocate;
 	component->func_update = comp_mechasuit_update;
-	component->func_gui_edit = comp_mechasuit_gui_edit;
+	component->func_gui_edit = NULL;
 	component->func_ui_update = comp_mechasuit_ui_update;
 	component->func_loadassets = comp_mechasuit_loadassets;
 }

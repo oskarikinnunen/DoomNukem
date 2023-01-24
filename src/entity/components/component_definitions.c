@@ -31,7 +31,13 @@ t_componentdefinition	*get_component_definitions()
 		(t_componentdefinition){.type = COMP_INTERACTABLE, .name = "Interactable",
 			.func_assign_component = assign_component_interactable},
 		(t_componentdefinition){.type = COMP_MECHASUIT, .name = "Mechasuit",
-			.func_assign_component = assign_component_mechasuit}
+			.func_assign_component = assign_component_mechasuit},
+		(t_componentdefinition){.type = COMP_WATERCOLLIDER, .name = "Watercollider",
+			.func_assign_component = assign_component_watercollider},
+		(t_componentdefinition){.type = COMP_LIGHT, .name = "Light",
+			.func_assign_component = assign_component_light},
+		(t_componentdefinition){.type = COMP_HEALTHPACK, .name = "Healthpack",
+			.func_assign_component = assign_component_healthpack}
 	};
 	return (editables);
 }

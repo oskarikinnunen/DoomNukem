@@ -18,7 +18,7 @@
 # define COL_STEP 15.0f
 //The speed player goes to crouch
 # define PLAYER_CROUCHSPEED 0.1f
-# define JUMP_DELAY 500
+# define JUMP_DELAY 400
 
 
 //# define MAXMOVEMENTSPEED 0.08f

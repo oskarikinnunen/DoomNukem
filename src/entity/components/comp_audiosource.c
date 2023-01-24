@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/19 10:21:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/23 07:02:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,11 +110,11 @@ void	comp_audiosource_ui_update(t_entity *entity, t_world *world)
 	//render_ball(world->sdl, entity->transform.position, source->range * 1.0f, CLR_BLUE);
 }
 
-void	comp_audiosource_gui_edit(t_component *component, t_autogui *gui)
+void	comp_audiosource_gui_edit(t_entity *entity, t_autogui *gui, t_world *world)
 {
 	t_audiosource	*source;
 	static bool		toggle_select;
-	source = component->data;
+	source = entity->component.data;
 	
 	if (source == NULL)
 	{

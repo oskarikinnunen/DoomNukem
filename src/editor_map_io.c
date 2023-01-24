@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/17 02:33:53 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/24 11:08:19 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,13 +97,21 @@ t_list *load_chunk(char *filename, char *chunkname, size_t size)
 
 	fd = open(filename, O_RDONLY, 0666);
 	if (fd == -1)
+	{
+		//printf("couldn't open file %s for chunk reading \n", filename);
 		return (NULL);
+	}
+	else
+	{
+		//printf("opened file %s for chunk %s reading \n", filename, chunkname);
+	}
 	ft_bzero(buf, CHUNKSIZE + 1);
 	br = read(fd, buf, CHUNKSIZE);
 	while (br > 0)
 	{
 		if (ft_strcmp(chunkname, buf) == 0)
 		{
+			//printf("found chunk %s \n", chunkname);
 			result = parse_chunk(fd, size);
 			close(fd);
 			return (result);
@@ -213,11 +221,14 @@ void	pack_file(char	*packname, char *filename)
 	fd = open(packname, O_RDWR | O_APPEND, 0666);
 	if (fd == -1)
 		return ;
-	write(fd, "FCNK", 4);
-	write(fd, fc.name, sizeof(char) * 128);
-	write(fd, uint64_to_char(fc.length), 8);
-	write(fd, fc.content, sizeof(char) * fc.length);
-	write(fd, "PADD", fc.length % 4);
+	size_t total = 0;
+	total += write(fd, "FCNK", 4);
+	total += write(fd, fc.name, sizeof(char) * 128);	
+	total += write(fd, uint64_to_char(fc.length), 8);
+	total += write(fd, fc.content, sizeof(char) * fc.length);
+	//TODO: ensure that this fits the 4 byte alignment of the chunk reader
+	//total += write(fd, "PADD", fc.length % 4);
+	//printf("wrote packed file content len %lu \n", total); 
 	close(fd);
 }
 

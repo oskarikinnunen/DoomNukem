@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/19 12:30:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/23 07:01:10 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,34 +72,6 @@ static void findbounds(t_entity *ent)
 	ent->z_bound = zbound;
 }
 
-t_entity *selected_entity(t_editor *ed, t_sdlcontext sdl)
-{
-	t_entitycache	*cache;
-	t_entity		*entity;
-	int				i;
-	int				found;
-
-	
-	cache = &ed->world.entitycache;
-	i = 0;
-	found = 0;
-	while (found < cache->existing_entitycount && i < cache->alloc_count)
-	{
-		entity = &cache->entities[i];
-		if (entity->status != es_free)
-		{
-			if (!entity->rigid && entity_lookedat(ed, sdl, entity))
-			{
-				return (entity);
-			}
-			found++;
-		}
-		i++;
-	}
-	//TODO: error log if found < existing_entitycount
-	return (NULL);
-}
-
 static int find_object_index(t_sdlcontext *sdl, t_entity *ent)
 {
 	int	i;
@@ -151,12 +123,12 @@ void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 	}
 }
 
-static void gui_component(t_entity *entity, t_autogui *gui)
+static void gui_component(t_entity *entity, t_autogui *gui, t_world *world)
 {
 	gui_start(gui);
 	if (entity->component.func_gui_edit != NULL)
 	{
-		entity->component.func_gui_edit(&entity->component, gui);
+		entity->component.func_gui_edit(entity, gui, world);
 	}
 	else
 	{
@@ -283,11 +255,10 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 			if (ent->component.type != COMP_NONE)
 			{
 				gui_start(&dat->entityeditor.component_gui);
-				gui_component(ent, &dat->entityeditor.component_gui);
+				gui_component(ent, &dat->entityeditor.component_gui, &ed->world);
 				gui_end(&dat->entityeditor.component_gui);
 			}
 		}
-			
 		if (gui_shortcut_button("Delete", KEYS_DELETEMASK, gui))
 		{
 			destroy_entity(&ed->world, ent);
@@ -296,7 +267,7 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 			return ;
 		}
 		gui_end(gui);
-		if (ent == dat->info.hit_entity && ed->hid.mouse.held == MOUSE_LEFT && ed->hid.mouse.relative)
+		if (ent == dat->info.hit_entity && ed->hid.mouse.held == MOUSE_LEFT && ed->hid.mouse.relative && !ed->world.player->locked)
 		{
 			dat->grabbing = true;
 			ent->ignore_raycasts = true;

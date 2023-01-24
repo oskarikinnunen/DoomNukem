@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wall_tool_rooms.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 10:50:55 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/23 04:37:37 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -768,6 +768,7 @@ void	makefloor_room(t_world *world, t_room *room)
 		mtri->uv[1] = vector2_div(mtri->uv[1], 100.0f);
 		mtri->uv[2] = vector2_div(mtri->uv[2], 100.0f);
 		applytrimesh(*mtri, mtri->entity->obj);
+		update_floor_bounds(mtri);
 		printf("uv 1: %f %f2: %f %f 3: %f %f\n", mtri->uv[0].x, mtri->uv[0].y, mtri->uv[1].x, mtri->uv[1].y, mtri->uv[2].x, mtri->uv[2].y);
 		//create_lightmap_for_entity(mtri->entity, world);
 		//create_map_for_entity(mtri->entity, world);

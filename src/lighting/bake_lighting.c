@@ -82,6 +82,7 @@ void create_dynamic_map_for_entity(t_entity *entity, struct s_world *world)
 		entity->map = NULL;
 	}
 	i = 0;
+	index = 0;
 	while (i < obj->face_count && obj->uv_count != 0)
 	{
 		index = obj->faces[i].materialindex;
@@ -364,6 +365,7 @@ void bake_lights(t_render *render, t_world *world)
 		}
 		dynamic_light(&world->player->gun->entity, world);
 	}
+	return ;
 	//for_all_active_entities(world, dynamic_light);
 	i = 0;
 	t_entity	*lent;
@@ -390,11 +392,137 @@ void bake_lights(t_render *render, t_world *world)
 			if (i == world->lights_count - 1 && world->lights[i].done)
 			{
 				world->lighting.calculated = true;
-				printf("bake light done %i \n", SDL_GetTicks());
+				printf("bake light done %i \n", S.DL_GetTicks());
 				// for_all_entities(world, create_map_for_entity);
 			}
 			break;
 		}
 		i++;
 	}*/
+}
+
+//light_recalculate(t_entity *light_ent, t_world *world)
+
+static void entity_set_ambient_lightmap(t_entity *entity)
+{
+
+}
+
+#include "collision.h"
+
+void	apply_wcoord_fromface(t_lightpoly *poly, t_face face, t_entity *entity) //TODO: t_face, t_entity, t_
+{
+	int					i;
+	static t_vector3	res[3];
+	t_vector3			vert;
+
+	i = 0;
+	while (i < 3)
+	{
+		vert = entity->obj->vertices[(face.v_indices[i] - 1)];
+		poly->world_coord[i] = transformed_vector3(entity->transform, vert).v;
+		/*vert = obj->vertices[face.v_indices[i] - 1];
+		res[i] = transformed_vector3(transform, vert).v;
+		i++;*/
+	}
+}
+
+static void entity_triangle_light(t_entity *entity, t_light *light)
+{
+	int			i;
+	t_lightpoly	poly;
+
+	i = 0;
+	poly.light = light;
+	poly.lmap = entity->lightmap;
+	//poly.
+	while (i < entity->obj->face_count)
+	{
+		t_face	face;
+		face = entity->obj->faces[i];
+		/*poly.world_coord = ws_fromface(entity->transform, face, entity->obj);
+		poly.world_coord[1] = ws_fromface(entity->transform, face, entity->obj)[1];
+		poly.world_coord[2] = ws_fromface(entity->transform, face, entity->obj)[2];*/
+		/*
+		tex coord
+		world coord
+		uv coord
+		*/
+
+		i++;
+	}
+}
+
+static void entity_calculate_lighting(t_entity *entity, t_world *world)
+{
+	int				i;
+	t_entitycache	*cache;
+	t_entity		*other_ent;
+	t_light			*light;
+	t_vector3		b_pos;
+
+	i = 0;
+	cache = &world->entitycache;
+	while (i < cache->alloc_count)
+	{
+		other_ent = &cache->entities[i];
+		if (other_ent->status == es_active && other_ent->component.type == COMP_LIGHT)
+		{
+			light = other_ent->component.data;
+			b_pos = transformed_vector3(entity->transform, vector3_zero()).v;
+			b_pos = vector3_add(b_pos, entity->obj->bounds.origin);
+
+			if (vector3_dist(b_pos, other_ent->transform.position)
+				< entity->obj->bounds.radius + light->radius)
+			{
+
+				/*uint8_t lval;
+				float dist = vector3_dist(other_ent->transform.position, b_pos);
+				if (dist <= light->radius)
+				{
+					dist = 1.0f - (dist / light->radius);
+					lval = ft_clamp((dist * 255), 0, 255);
+				}
+				lval = ft_clampf(lval, world->lighting.ambient_light, 255);
+				entity->lightmap->dynamic_data = ft_max(entity->lightmap->dynamic_data, lval);*/
+			}
+		}
+		i++;
+	}
+	create_dynamic_map_for_entity(entity, world);
+}
+
+void	recalculate_lighting(t_world *world)
+{
+	int				i;
+	int				found;
+	t_entitycache	*cache;
+	t_entity		*ent;
+
+	i = 0;
+	found = 0;
+	cache = &world->entitycache;
+	while (found < cache->existing_entitycount
+		&& i < cache->alloc_count)
+	{
+		ent = &cache->entities[i];
+		if (ent->status != es_free)
+		{
+			if	(ent->status == es_active && ent->obj != NULL && ent->lightmap == NULL)
+			{
+				create_lightmap_for_entity(ent, world);
+				create_map_for_entity(ent, world);
+				entity_calculate_lighting(ent, world);
+				//create_dynamic_map_for_entity(ent, world);
+			}
+			else
+				printf("entity %i has lightmap\n", ent->id);
+			found++;
+		}
+		i++;
+	}
+	/*
+	for all entities where lightmap == null
+		for all lights
+	*/
 }

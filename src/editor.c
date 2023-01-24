@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/18 12:29:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/23 03:48:59 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,7 +223,7 @@ int	editorloop(t_sdlcontext sdl)
 	editor_load_prefs(&ed, &sdl);
 	ed.gamereturn = game_continue;
 	ed.world.lighting.calculated = false;
-	play_music(&sdl, "music_arp1_ambient.wav");
+	//play_music(&sdl, "music_arp1_ambient.wav");
 	while (ed.gamereturn == game_continue)
 	{
 		update_deltatime(&ed.world.clock);

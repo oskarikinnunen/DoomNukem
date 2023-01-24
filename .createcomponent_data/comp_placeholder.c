@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/19 10:35:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/24 11:11:18 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,11 @@ void	comp_COMPONENTNAME_ui_update(t_entity *entity, t_world *world)
 }
 
 /* Used to edit component values */
-void	comp_COMPONENTNAME_gui_edit(t_component *component, t_autogui *gui)
+void	comp_COMPONENTNAME_gui_edit(t_entity *entity, t_autogui *gui, t_world *world)
 {
 	t_COMPONENTNAME	*COMPONENTNAME;
 	//entity->particleimages[particleanim.];
-	COMPONENTNAME = component->data;
+	COMPONENTNAME = entity->component.data;
 	gui_label("GUI for COMPONENTNAME not implemented", gui);
 	if (COMPONENTNAME == NULL)
 		return ;

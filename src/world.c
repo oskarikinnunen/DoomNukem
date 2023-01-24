@@ -158,7 +158,7 @@ void update_world3d(t_world *world, t_render *render)
 	if (gui_shortcut_button("Render Next Frame Slow", 'U', world->debug_gui))
 		sdl->render.occlusion.slow_render = true;
 	if (gui_shortcut_button("Bake lighting (new)", 'b', world->debug_gui))
-		start_lightbake(&world->sdl->render, world);
+		recalculate_lighting(world);
 	gui_labeled_int_slider("Ps1 tri div: ", &sdl->ps1_tri_div, 0.2f, world->debug_gui);
 	sdl->ps1_tri_div = ft_clamp(sdl->ps1_tri_div, 1, 4);
 	gui_end(world->debug_gui);
@@ -183,6 +183,7 @@ void	init_entity(t_entity *entity, t_world *world)
 	{
 		if (entity->component.type == defs[i].type)
 		{
+			//assign_component_none(&entity->component);
 			if (defs[i].func_assign_component != NULL)
 				defs[i].func_assign_component(&entity->component);
 			else
@@ -190,16 +191,19 @@ void	init_entity(t_entity *entity, t_world *world)
 				printf("Component definition is missing func_assign_component"); //TODO: move this protection to get_component_defs
 				exit(0);
 			}
-			printf("loaded component %i/%s\n", entity->id, defs[i].name);
+			//printf("loaded component %i/%s\n", entity->id, defs[i].name);
 			if (entity->component.func_loadassets != NULL)
 			{
-				printf("	loading asset for %i/%s\n", entity->id, defs[i].name);
+				//printf("	loading asset for %i/%s\n", entity->id, defs[i].name);
 				entity->component.func_loadassets(entity, world);
 			}
 		}
 		i++;
 	}
-	//entity->component.data = NULL;
+	/*entity->component.type = COMP_NONE;
+	entity->component.data = NULL;
+	entity_set_component(entity, COMP_NONE, world);*/
+	
 	default_entity_occlusion_settings(entity, NULL);
 }
 
@@ -523,12 +527,6 @@ void	load_cache_from_list(char *filename, t_world *world, t_list *l)
 		if (list_entity->component.type != COMP_NONE)
 		{
 			load_component(list_entity, filename);
-			if (list_entity->component.type == COMP_LIGHT)
-			{
-				//t_pointlight	*pl;
-				//pl = list_entity->component.data;
-				//printf("loaded light with radius %f \n", pl->radius);
-			}
 		}
 		//list_entity
 		//load_filecontent(filename, "")
@@ -581,6 +579,7 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 	world.debugconsole = init_debugconsole();
 	world.entitycache = init_entitycache(1024);
 	t_list	*entitylist = load_chunk(filename, "ENT_", sizeof(t_entity));
+	printf("loaded %i entities from worldfile. \n", ft_listlen(entitylist));
 	load_cache_from_list(filename, &world, entitylist);
 	for_all_entities(&world, init_entity);
 	world.debug_gui = ft_memalloc(sizeof(t_autogui)); //Y tho?

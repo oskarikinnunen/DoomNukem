@@ -6,25 +6,14 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:34:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/19 12:28:32 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/23 07:01:10 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "entity.h"
 
-void	comp_light_update(t_entity *entity, t_world *world)
-{
-	t_pointlight	*pointlight;
-
-	pointlight = entity->component.data;
-	if (pointlight == NULL)
-	{
-		return ;
-	}
-}
-
-void	comp_light_ui_update(t_entity *entity, t_world *world)
+/*void	comp_light_ui_update(t_entity *entity, t_world *world)
 {
 	static	t_img	*icon;
 	t_pointlight	*pointlight;
@@ -39,10 +28,10 @@ void	comp_light_ui_update(t_entity *entity, t_world *world)
 	}
 	draw_entity_icon(entity, icon, world);
 	//render_ball(world->sdl, entity->transform.position, pointlight->radius, AMBER_4);
-	/*float dist = vector3_sqr_dist(entity->transform.position, world->player->transform.position);
+	float dist = vector3_sqr_dist(entity->transform.position, world->player->transform.position);
 	if (dist < inter->radius * 100.0f && !entity->occlusion.is_occluded)
-		print_text_boxed(world->sdl, "[E] interact", point_div(world->sdl->screensize, 2));*/
-}
+		print_text_boxed(world->sdl, "[E] interact", point_div(world->sdl->screensize, 2));
+}*/
 
 void	component_empty_function_pointers(t_component	*component)
 {
@@ -51,6 +40,7 @@ void	component_empty_function_pointers(t_component	*component)
 	component->func_update = NULL;
 	component->func_ui_update = NULL;
 	component->func_gui_edit = NULL;
+	//render_gizmo2d()
 }
 
 void	component_init(t_entity	*entity)

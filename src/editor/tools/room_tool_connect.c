@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool_connect.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:52:00 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 10:47:04 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/24 10:45:18 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,9 @@ void    set_nullentities(t_wall **ptr, int count)
 		(*ptr)[i].entity = NULL;
 		i++;
 	}
+}
+
+void	room_tool_bucket()
+{
+	
 }

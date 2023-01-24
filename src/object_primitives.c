@@ -44,6 +44,7 @@ t_object	*object_tri(t_sdlcontext *sdl)
 	tri->vertice_count = 3;
 	tri->faces = ft_memalloc(sizeof(t_face) * 1);
 	tri->face_count = 1;
+	strcpy(tri->name, "meshtri");
 	if (tri->vertices == NULL || tri->faces == NULL)
 		error_log(EC_MALLOC);
 	tri->vertices[0] = (t_vector3){0.0f, 0.0f, 0.0f};

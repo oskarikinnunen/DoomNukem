@@ -10,6 +10,18 @@ typedef struct s_triangle_polygon //TODO: Renam this to light triangle or smt si
 	t_vector2	uv[3];
 }	t_triangle_polygon;
 
+struct s_lightmap;
+struct s_light;
+
+typedef struct s_lightpoly //TODO: Renam this to light triangle or smt similar
+{
+	t_point				tex_coord[3];
+	t_vector3			world_coord[3];
+	t_vector2			uv_coord[3];
+	struct s_lightmap	*lmap;
+	struct s_light		*light;
+}	t_lightpoly;
+
 typedef struct s_map
 {
 	uint32_t	*data;
