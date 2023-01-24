@@ -40,7 +40,7 @@ void render_bitmask_row(int ax, int bx, float aw, float bw, int y, t_sdlcontext 
 	int end_chunk = (y / 8) * (sdl->bitmask.bitmask_chunks.x) + (bx / 16);
 	int wchunk = chunk * 2;
 	float wstep = (bw - aw) / (float)(bx - ax);
-	wstep *= 8;
+	wstep *= 8.0f;
 	int row;
 	int x;
 	uint16_t res;
@@ -53,10 +53,10 @@ void render_bitmask_row(int ax, int bx, float aw, float bw, int y, t_sdlcontext 
 	while (chunk <= end_chunk)
 	{
 		res = mask_x(x, ax, bx);
-		sdl->bitmask.tile[wchunk] = update_tile(aw, sdl->bitmask.tile[wchunk], ((uint64_t)((res >> 8) & 0xFF)) << row);
+		sdl->bitmask.tile[wchunk] = update_tile(aw / 1.0f, sdl->bitmask.tile[wchunk], ((uint64_t)((res >> 8) & 0xFF)) << row);
 		wchunk++;
 		aw += wstep;
-		sdl->bitmask.tile[wchunk] = update_tile(aw, sdl->bitmask.tile[wchunk], ((uint64_t)(res & 0xFF)) << row);
+		sdl->bitmask.tile[wchunk] = update_tile(aw / 1.0f, sdl->bitmask.tile[wchunk], ((uint64_t)(res & 0xFF)) << row);
 		wchunk++;
 		aw += wstep;
 		x += 16;

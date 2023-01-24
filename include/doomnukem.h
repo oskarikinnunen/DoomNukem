@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/17 14:09:38 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/01/24 06:06:45 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -280,6 +280,9 @@ void	update_pointlight_for_entity(t_sdlcontext sdl, t_render *render, t_entity *
 void	calculate_pointlight(t_pointlight *pointlight, t_world *world, t_render *render);
 void	calculate_pointlight_step(t_pointlight *pointlight, t_world *world, t_render *render);
 //
+
+//Pathfind
+uint32_t get_nearest_target_node(t_world *world, t_vector3 target);
 
 // NPC folder
 void	enemy_action(t_entity *entity, t_world *world);

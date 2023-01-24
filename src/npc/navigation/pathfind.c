@@ -1,6 +1,6 @@
 #include "doomnukem.h"
 
-static uint32_t get_target_node(t_world *world, t_vector3 target)
+uint32_t get_nearest_target_node(t_world *world, t_vector3 target)
 {
 	int e = 0;
 	int closest_point = 0;
@@ -23,17 +23,20 @@ bool pathfind(t_world *world, t_path *path)
 	t_navnode	*openlist;
 	uint32_t	o_amount;
 	uint32_t	lowest_f;
+	uint32_t	start;
+	uint32_t	end;
 	int	i;
 
 	openlist = world->nav.openlist;
 	ft_bzero(openlist, sizeof(t_navnode) * world->nav.node_amount);
-	path->end = get_target_node(world, path->target);
-	ft_swap(&path->start, &path->end, sizeof(uint32_t));
-	openlist[path->start] = world->nav.navmesh[path->start];
-	openlist[path->start].valid = true;
-	openlist[path->start].enter_point = openlist[path->start].mid_point;
-	//printf("start %d end %d\n", path->start, path->end);
+	start = get_nearest_target_node(world, path->target);
+	end = path->start;
+	openlist[start] = world->nav.navmesh[start];
+	openlist[start].valid = true;
+	openlist[start].enter_point = openlist[start].mid_point;
 	o_amount = 1;
+	if (world->nav.node_amount == 0)
+		return(false);
 	while (o_amount > 0)
 	{
 		uint32_t found = 0;
@@ -55,17 +58,15 @@ bool pathfind(t_world *world, t_path *path)
 				exit(0);
 			}
 		}
-		if (lowest_f == path->end)
+		if (lowest_f == end)
 		{
 			int e, i;
 
 			i = 0;
-			e = path->end;
+			e = end;
 			path->path[i] = openlist[e];
-			while (e != path->start && i < 32)
+			while (e != start && i < 32)
 			{
-				//print_vector3(openlist[e].mid_point);
-				//printf("%d\n", i);
 				path->path[i] = openlist[e];
 				e = openlist[e].parent;
 				i++;
@@ -77,9 +78,6 @@ bool pathfind(t_world *world, t_path *path)
 			}
 			else
 				path->path[i - 1].enter_point = path->path[i - 1].mid_point;
-			//print_vector3(openlist[e].mid_point);
-			//printf("%d\n", i);
-			//exit(0);
 			path->ai = 0;
 			path->bi = i;
 			printf("valid path\n");
@@ -97,8 +95,8 @@ bool pathfind(t_world *world, t_path *path)
 			{
 				openlist[id] = world->nav.navmesh[id];
 				openlist[id].g = openlist[lowest_f].g + 1.0f;
-				//vector3_dist(openlist[id].mid_point, world->navmesh[path->start].mid_point); // should be amount of parents to start
-				openlist[id].h = vector3_dist(openlist[id].mid_point, world->nav.navmesh[path->end].mid_point);
+				//vector3_dist(openlist[id].mid_point, world->navmesh[start].mid_point); // should be amount of parents to start
+				openlist[id].h = vector3_dist(openlist[id].mid_point, world->nav.navmesh[end].mid_point);
 				openlist[id].f = openlist[id].g + openlist[id].h;
 				openlist[id].valid = true;
 				openlist[id].parent = lowest_f;

@@ -2,24 +2,6 @@
 #include "doomnukem.h"
 #include "editor_tools.h"
 
-static uint32_t get_target_node(t_world *world, t_vector3 target)
-{
-	int e = 0;
-	int closest_point = 0;
-	float dist;
-	dist = vector3_dist(world->nav.navmesh[0].mid_point, target);
-	while (e < world->nav.node_amount)
-	{
-		if (dist > vector3_dist(world->nav.navmesh[e].mid_point, target))
-		{
-			dist = vector3_dist(world->nav.navmesh[e].mid_point, target);
-			closest_point = e;
-		}
-		e++;
-	}
-	return(closest_point);
-}
-
 static void assign_npc_type(t_npc *source)
 {
 	if (!source)
@@ -138,7 +120,7 @@ static void	comp_npc_allocate(t_entity *entity, t_world *world)
 	source = entity->component.data;
 	bzero(entity->component.data, sizeof(t_npc));
 	source->movementspeed = 0.1f;
-	source->path.start = get_target_node(world, entity->transform.position);
+	source->path.start = get_nearest_target_node(world, entity->transform.position);
 	assign_npc_type(source);
 }
 

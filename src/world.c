@@ -59,44 +59,6 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 				ent->component.func_update(ent, world);
 			if (ent->status == es_active && !ent->hidden)
 			{
-				if (ent->obj->bounds.type == bt_box && render->occlusion.occlusion == false && test == true && 0)
-				{
-					int e = 1;
-					int closest_point = 0;
-					float dist;
-					dist = vector3_dist(world->nav.navmesh[0].mid_point, ent->transform.position);
-					while (e < world->nav.node_amount)
-					{
-						if (dist > vector3_dist(world->nav.navmesh[e].mid_point, ent->transform.position))
-						{
-							dist = vector3_dist(world->nav.navmesh[e].mid_point, ent->transform.position);
-							closest_point = e;
-						}
-						e++;
-					}
-
-				//t_vector3 tempe = pathfind(world, closest_point, test1);
-
-					//ent->transform.position = vector3_lerp(ent->transform.position, tempe, 5.0f / vector3_dist(ent->transform.position, tempe));
-				}
-				if (ent->obj->bounds.type == bt_box && render->occlusion.occlusion == false && 0)
-				{
-					test = true;
-					float dist;
-					int closest_point = 0;
-					int e = 1;
-					dist = vector3_dist(world->nav.navmesh[0].mid_point, ent->transform.position);
-					while (e < world->nav.node_amount)
-					{
-						if (dist > vector3_dist(world->nav.navmesh[e].mid_point, ent->transform.position))
-						{
-							dist = vector3_dist(world->nav.navmesh[e].mid_point, ent->transform.position);
-							closest_point = e;
-						}
-						e++;
-					}
-					test1 = closest_point;
-				}
 				if (is_entity_culled(sdl, render, ent) == false)
 					render_entity(sdl, render, ent);
 			}
