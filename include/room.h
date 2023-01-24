@@ -74,15 +74,6 @@ typedef struct s_wall
 		gotoidle
 */
 
-typedef struct s_npc
-{
-	t_vector3	lastseenpos;
-	bool		seeplayer;
-	uint32_t	lastseenplayertime;
-	//path
-}	t_npc_component;
-
-
 //[2][0][0][0][0][3]
 
 

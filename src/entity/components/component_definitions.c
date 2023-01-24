@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   component_definitions.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 20:11:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/19 11:08:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/24 06:45:45 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,9 @@ t_componentdefinition	*get_component_definitions()
 		(t_componentdefinition){.type = COMP_INTERACTABLE, .name = "Interactable",
 			.func_assign_component = assign_component_interactable},
 		(t_componentdefinition){.type = COMP_MECHASUIT, .name = "Mechasuit",
-			.func_assign_component = assign_component_mechasuit}
+			.func_assign_component = assign_component_mechasuit},
+		(t_componentdefinition){.type = COMP_NPC, .name = "NPC",
+			.func_assign_component = assign_component_npc}
 	};
 	return (editables);
 }

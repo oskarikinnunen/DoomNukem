@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
+#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/01/19 12:25:19 by okinnune         ###   ########.fr        #
+#    Updated: 2023/01/24 06:41:11 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -75,6 +75,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		physics/capsulephysics.c \
 		player/playermovement_normal.c \
 		player/playermovement_noclip.c \
+		entity/components/comp_npc.c \
 		obj_parser/obj_parse.c \
 		obj_parser/obj_parse_vertex.c \
 		obj_parser/obj_parse_faces.c \
@@ -105,6 +106,18 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		render/render_space.c \
 		lighting/bake_lighting.c \
 		lighting/point_light.c \
+		npc/civilian/civilian_action.c \
+		npc/civilian/civilian_anim.c \
+		npc/civilian/civilian_movement.c \
+		npc/civilian/civilian_update.c \
+		npc/civilian/civilian_take_damage.c \
+		npc/enemy/enemy_action.c \
+		npc/enemy/enemy_anim.c \
+		npc/enemy/enemy_movement.c \
+		npc/enemy/enemy_update.c \
+		npc/enemy/enemy_take_damage.c \
+		npc/navigation/pathfind.c \
+		npc/navigation/navmesh.c \
 		render/rasterization/rasterize_triangle_wrap.c \
 		render/rasterization/rasterize_triangle.c \
 		render/rasterization/rasterize_triangle_uv.c \

@@ -40,7 +40,7 @@ void render_bitmask_row(int ax, int bx, float aw, float bw, int y, t_sdlcontext 
 	int end_chunk = (y / 8) * (sdl->bitmask.bitmask_chunks.x) + (bx / 16);
 	int wchunk = chunk * 2;
 	float wstep = (bw - aw) / (float)(bx - ax);
-	wstep *= 8;
+	wstep *= 8.0f;
 	int row;
 	int x;
 	uint16_t res;
