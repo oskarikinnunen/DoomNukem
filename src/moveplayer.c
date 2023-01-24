@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/24 11:10:08 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/24 11:34:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,16 +58,6 @@ float	fmovetowards(float f1, float f2, float delta)
 		result -= delta;
 		result = ft_clampf(result, f2, f1);
 	}
-	return (result);
-}
-
-t_vector3	vector3_movetowards2(t_vector3 vec, t_vector3 to, float delta)
-{
-	t_vector3	result;
-
-	result.x = fmovetowards(vec.x, to.x, delta);
-	result.y = fmovetowards(vec.y, to.y, delta);
-	result.z = fmovetowards(vec.z, to.z, delta);
 	return (result);
 }
 

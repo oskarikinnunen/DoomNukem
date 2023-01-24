@@ -5,6 +5,8 @@
 	#include <inttypes.h>
 # endif
 
+#include "npc.h"
+
 typedef enum e_componenttype
 {
 	COMP_NONE,
@@ -26,7 +28,8 @@ typedef struct s_component
 {
 	t_componenttype		type;
 	size_t				data_size;
-	void				(*func_allocate)(struct s_entity *,struct s_world	*);
+	void				(*func_take_damage)(struct s_entity *,struct s_world *);
+	void				(*func_allocate)(struct s_entity *,struct s_world *);
 	void				(*func_loadassets)(struct s_entity *,struct s_world	*); //Only used if component needs to hold assets/pointer data, in which case you can implement the loading behaviour here
 	//void				(*func_gui_edit)(struct s_component *, struct s_autogui *gui); //TODO: s_entity *, world *, gui *
 	void				(*func_gui_edit)(struct s_entity *, struct s_autogui *gui, struct s_world *world); //TODO: s_entity *, world *, gui *
@@ -102,6 +105,9 @@ void	assign_component_healthpack(t_component *component);
 /* ASSIGNFUNC END, DONT REMOVE SINCE THE CREATECOMPONENT SCRIPT DEPENDS ON THIS*/
 /* AUDIOSOURCE INTERNAL FUNCTIONS */
 void	_audiosource_start(t_sdlcontext *sdl, t_audiosource	*source, t_vector3 *pos);
+
+/*NPC*/
+void	assign_component_npc(t_component *component);
 
 /* GENERIC COMPONENT FUNCTIONS*/
 t_componentdefinition	*get_component_definitions();

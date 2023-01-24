@@ -43,15 +43,16 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 	int			i;
 	int			found;
 	t_entity	*ent;
-
+	int		test1;
 	
 	i = 0;
 	found = 0;
-
+	bool test = false;
 	while (found < world->entitycache.existing_entitycount
 		/*&& i < world->entitycache.alloc_count*/)
 	{
 		ent = world->entitycache.sorted_entities[i];
+	//	ent = &world->entitycache.entities[i];
 		if (ent->status != es_free)
 		{
 			if(ent->component.func_update != NULL)
@@ -111,6 +112,7 @@ void update_world3d(t_world *world, t_render *render)
 	ft_bzero(&render->rs, sizeof(t_render_statistics));
 	if (world->player != NULL && world->player->gun != NULL && !world->player->gun->disabled)
 		render_entity(world->sdl, &world->sdl->render, &world->player->gun->entity);
+	show_navmesh(world);
 	update_frustrum_culling(world, sdl, render);
 	clear_occlusion_buffer(sdl);
 	sort_entitycache(world, render->camera.position);
@@ -143,6 +145,11 @@ void update_world3d(t_world *world, t_render *render)
 	if (gui_shortcut_button("Toggle noclip", 'F', world->debug_gui))
 		world->player->noclip = !world->player->noclip;
 	//gui_labeled_bool_edit("Noclip:", &world->player->noclip, world->debug_gui);
+	if (gui_shortcut_button("Show navmesh:", 'N', world->debug_gui))
+			world->nav.show_navmesh = !world->nav.show_navmesh;
+	gui_labeled_float_slider("Navigation node size: ", &world->nav.clip_size, 10.0f, world->debug_gui);
+	if (gui_shortcut_button("Create navmesh:", 'C', world->debug_gui))
+		create_navmesh(world);
 	if (gui_shortcut_button("Toggle rendering:", 'R', world->debug_gui))
 		world->sdl->global_wireframe = !world->sdl->global_wireframe;
 	if (gui_shortcut_button("Toggle Lighting", 'L', world->debug_gui))
@@ -589,6 +596,8 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 	init_skybox(&world);
 	ft_bzero(&world.lighting, sizeof(t_lighting));
 	world.lighting.ambient_light = 20;
+	world.nav.clip_size = 250.0f;
+	create_navmesh(&world);
 	return (world);
 }
 

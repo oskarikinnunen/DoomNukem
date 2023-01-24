@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 20:11:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/19 11:08:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/24 11:35:34 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,9 @@ t_componentdefinition	*get_component_definitions()
 		(t_componentdefinition){.type = COMP_LIGHT, .name = "Light",
 			.func_assign_component = assign_component_light},
 		(t_componentdefinition){.type = COMP_HEALTHPACK, .name = "Healthpack",
-			.func_assign_component = assign_component_healthpack}
+			.func_assign_component = assign_component_healthpack},
+		(t_componentdefinition){.type = COMP_NPC, .name = "NPC",
+			.func_assign_component = assign_component_npc}
 	};
 	return (editables);
 }

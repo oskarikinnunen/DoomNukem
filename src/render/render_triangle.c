@@ -79,7 +79,6 @@ void render_buffer(t_sdlcontext *sdl, t_render *render)
 {
 	if (!render->wireframe && (render->map.data != NULL || render->img != NULL) && !sdl->global_wireframe)
 		render_buffer_triangles(sdl, render);
-	//return;
 	if (render->wireframe/* || sdl->global_wireframe*/)
 		render_buffer_triangle_wireframes(sdl, render);
 	/*if (render->img == NULL)

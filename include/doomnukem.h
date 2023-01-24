@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/23 08:07:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/24 11:34:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,8 @@ typedef struct s_world
 	t_list				*roomlist;
 	t_entitycache		entitycache;
 	t_entity			skybox;
-	bool				ceiling_toggle; //TODO: move to editor
+	bool				ceiling_toggle;
+	t_navigation		nav;
 }	t_world;
 
 t_vector2	flipped_uv(t_vector2 og);
@@ -183,6 +184,11 @@ void	update_render(t_render *render, t_player *player);
 
 /* MOVEPLAYER.C */
 void	moveplayer(t_player *player, t_input *input, t_world *world);
+
+/* NAVIGATION */
+bool pathfind(t_world *world, t_path *path);
+void	create_navmesh(t_world *world);
+void    show_navmesh(t_world *world);
 
 /* COLLISION */
 bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, t_vector3 *newpos);
@@ -268,4 +274,19 @@ void	calculate_pointlight(t_pointlight *pointlight, t_world *world, t_render *re
 void	calculate_pointlight_step(t_pointlight *pointlight, t_world *world, t_render *render);
 //
 
+//Pathfind
+uint32_t get_nearest_target_node(t_world *world, t_vector3 target);
+
+// NPC folder
+void	enemy_action(t_entity *entity, t_world *world);
+void	enemy_anim(t_entity *entity, t_world *world);
+void	enemy_movement(t_entity *entity, t_world *world);
+void	enemy_update(t_entity *entity, t_world *world);
+void	enemy_take_damage(t_entity *entity, t_world *world);
+
+void	civilian_action(t_entity *entity, t_world *world);
+void	civilian_anim(t_entity *entity, t_world *world);
+void	civilian_movement(t_entity *entity, t_world *world);
+void	civilian_update(t_entity *entity, t_world *world);
+void	civilian_take_damage(t_entity *entity, t_world *world);
 #endif

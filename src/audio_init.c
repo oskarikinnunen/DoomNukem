@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/27 10:42:33 by raho              #+#    #+#             */
-/*   Updated: 2023/01/24 11:25:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/24 11:37:47 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,10 +87,7 @@ static void load_samples(t_audio *audio)
 				ft_strcpy(fullpath, path);
 				ft_strcat(fullpath, "/");
 				ft_strcat(fullpath, dfile->d_name);
-				// OLD LOGGING:
 				printf("loading audio sample %s \n", fullpath);
-				// NEW LOGGING:
-				log_addstrings((char **) {"loading audio sample ", fullpath, NULL});
 				int	mask = FMOD_3D | FMOD_LOOP_OFF;
 				if (!is_music(dfile->d_name))
 				{
