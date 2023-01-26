@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 03:25:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/24 09:47:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/26 14:31:27 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@ static bool	touches_edges(t_vector2 pos, float radius, t_meshtri *floor)
 	line2.end = v3tov2(floor->v[2]);
 	line3.start = v3tov2(floor->v[2]);
 	line3.end = v3tov2(floor->v[0]);
-	return (linecircle(line1, pos, radius, &unused_col)
-			|| linecircle(line2, pos, radius, &unused_col)
-			|| linecircle(line3, pos, radius, &unused_col));
+	return (col_linecircle(line1, pos, radius, &unused_col)
+			|| col_linecircle(line2, pos, radius, &unused_col)
+			|| col_linecircle(line3, pos, radius, &unused_col));
 }
 
 static bool	is_in_floor(t_characterphysics *cp, t_meshtri	*floor)

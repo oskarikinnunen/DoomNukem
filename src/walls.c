@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/15 17:12:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/26 14:28:53 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,10 +105,7 @@ void	clamp_wall_areaheight(t_wall *wall, t_room *room, t_world *world)
 	l = world->roomlist;
 	wall->entity->hidden = false;
 	wall->ceilingwall = false;
-	if (room->open_area)
-		wall->height = 0;
-	else
-		wall->height = room->ceiling_height;
+	wall->height = room->ceiling_height;
 	wall->z_offset = 0;
 	while (l != NULL)
 	{
@@ -166,6 +163,18 @@ void	applywallmesh(t_wall *wall, t_room *room, t_world *world)
 		wall->entity->obj->uvs[1] = (t_vector2){dist / 100.0f, 0.0f};
 		wall->entity->obj->uvs[2] = (t_vector2){0.0f, wall->height / 100.0f};
 		wall->entity->obj->uvs[3] = (t_vector2){dist / 100.0f, wall->height / 100.0f};
+		int i = 0;
+		while (i < 4)
+		{
+			wall->entity->obj->uvs[i].y += wall->entity->obj->vertices[0].z / 100.0f;
+			i++;
+		}
+		//wall->entity->obj->vertices[0]
+		/*
+			y is 
+		 * 
+		 * 
+		*/
 		wall->entity->obj->uvs[0] = vector2_add(wall->entity->obj->uvs[0], wall->uv_offset);
 		wall->entity->obj->uvs[1] = vector2_add(wall->entity->obj->uvs[1], wall->uv_offset);
 		wall->entity->obj->uvs[2] = vector2_add(wall->entity->obj->uvs[2], wall->uv_offset);
@@ -180,26 +189,25 @@ void	applywallmesh(t_wall *wall, t_room *room, t_world *world)
 	}
 }
 
-void	init_roomwalls(t_world *world, t_room *room)
+void	_room_initwalls(t_world *world, t_room *room)
 {
 	int			i;
 	t_entity	*ent;
 
 	i = 0;
 	room->wallcount = room->edgecount;
-	while (i < room->edgecount)
+	if (!room->floor_enabled && !room->loop)
+		room->wallcount--;
+	while (i < room->wallcount)
 	{
 		if (room->walls[i].entity == NULL)
 		{
 			room->walls[i].entity = spawn_entity(world); //Copy saved entitys important values
 			room->walls[i].entity->rigid = true;
 		}
-			
-		/*if (room->walls[i].disabled)
-			room->walls[i].entity->hidden = true;*/
 		room->walls[i].edgeline.start = &room->edges[i];
 		room->walls[i].edgeline.start_index = i;
-		if (i != room->wallcount - 1)
+		if (i != room->edgecount - 1)
 		{
 			room->walls[i].edgeline.end = &room->edges[i + 1];
 			room->walls[i].edgeline.end_index = i + 1;
@@ -227,6 +235,20 @@ void	init_roomwalls(t_world *world, t_room *room)
 		applywallmesh(&room->walls[i], room, world);
 		//update_wall_bounds(&room->walls[i]);
 		i++;
+	}
+}
+
+void	room_init(t_room *room, t_world *world)
+{
+	free_roomwalls(world, room);
+	free_floor(world, room);
+	if (room->walls_enabled)
+		_room_initwalls(world, room);
+	if (room->floor_enabled)
+	{
+		room_makefloor(world, room);
+		if (room->ceiling_enabled)
+			room_makeceilings(world, room);
 	}
 }
 

@@ -85,7 +85,11 @@ typedef struct s_room //TODO: rewrite rooms/walls so rooms have t_vector2 edges 
 	t_meshtri		*floors;
 	t_meshtri		*ceilings;
 	char			floortex[64];
-	bool			open_area;
+	bool			walls_enabled;
+	bool			floor_enabled;
+	bool			ceiling_enabled;
+	bool			loop;
+	//bool			open_area;
 	uint32_t		height;
 	uint32_t		ceiling_height;
 	uint32_t		edgecount;
@@ -98,8 +102,10 @@ void	assign_default_floor_area(t_room *room);
 
 struct s_world;
 
+void			room_init(t_room *room, struct s_world *world);
+
 bool			edge_exists(t_vector2 edge, t_room	*room);
-void			makefloor_room(struct s_world *world, t_room *room);
+void			_room_triangulate_floors(struct s_world *world, t_room *room);
 t_room			*add_room_to_world(struct s_world *world, t_room *room);
 void			applywallmesh(t_wall *wall, t_room *room, struct s_world *world);
 void			applytrimesh(t_meshtri tri, t_object *obj);

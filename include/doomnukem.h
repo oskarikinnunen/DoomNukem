@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/24 11:34:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/26 11:12:18 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ void		entity_assign_object(t_world *world, t_entity *entity, t_object *obj);
 void		save_world(char *filename, t_world world);
 
 //TODO: move to room.h
-void		init_roomwalls(t_world *world, t_room *room);
+void		_room_initwalls(t_world *world, t_room *room);
 t_wall		*find_wall(t_wall wall, t_room *room);
 void		free_floor(t_world *world, t_room *room);
 void		free_walls(t_room *room, t_world *world);

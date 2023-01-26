@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/19 14:39:55 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/26 10:57:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ void		toggle_keystates(t_hid_info *hid, SDL_Event e)
 		hid->keystate |= iskey(e, SDLK_2) << KEYS_2MASK;
 		hid->keystate |= iskey(e, SDLK_3) << KEYS_3MASK;
 		hid->keystate |= iskey(e, SDLK_4) << KEYS_4MASK;
+		hid->keystate |= iskey(e, SDLK_RETURN) << KEYS_ENTERMASK;
 		//hid->keystate |= iskey(e, SDLK_v) << KEYS_VMASK;
 		c = 'a';
 		while (c <= 'z')
@@ -66,6 +67,7 @@ void		toggle_keystates(t_hid_info *hid, SDL_Event e)
 		hid->keystate &= ~(iskey(e, SDLK_2) << KEYS_2MASK);
 		hid->keystate &= ~(iskey(e, SDLK_3) << KEYS_3MASK);
 		hid->keystate &= ~(iskey(e, SDLK_4) << KEYS_4MASK);
+		hid->keystate &= ~(iskey(e, SDLK_RETURN) << KEYS_ENTERMASK);
 		//hid->keystate &= ~(iskey(e, SDLK_v) << KEYS_VMASK);
 		c = 'a';
 		while (c <= 'z')

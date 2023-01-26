@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 13:52:50 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/17 14:14:24 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/26 14:41:55 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,25 +118,4 @@ bool pointtrianglecollisionp (t_point point, t_point	t1, t_point	t2, t_point	t3)
     has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
 
     return !(has_neg && has_pos);
-}
-
-//TODO: no worky, look at https://www.jeffreythompson.org/collision-detection/line-circle.php and fix
-bool	linecirclecollision(t_line line, t_vector2 cp, float r) //CONTINUE FIXING HERE
-{
-	return	false;
-	/*float	start[2];
-	float	end[2];
-	float	dist;
-	float	dot;
-	
-	f2tov2(start, line.start);
-	f2tov2(end, line.end);
-	f2mul(start, TILESIZE); //Lines are in their grid positions so multiply by tilesize to get world coordinates
-	f2mul(end, TILESIZE);
-	dist = f2dist(start, end);
-	dot = (((cp[X]-start[X])*(end[X]-start[X])) + ((cp[Y]-start[Y])*(end[Y]-start[Y])) ) / pow(dist,2);
-	float x_dist = (start[X] + (dot * (end[X]-start[X]))) - cp[X];
-	float y_dist = (start[Y] + (dot * (end[Y]-start[Y]))) - cp[Y];
-	dist = sqrt((x_dist * x_dist) + (y_dist * y_dist));
-	return (dist <= r);*/
 }

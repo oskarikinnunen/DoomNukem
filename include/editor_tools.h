@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/17 15:09:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/26 12:34:55 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,7 +210,8 @@ int32_t				entity_lookedat_triangle_index(t_editor *ed, t_sdlcontext sdl, t_enti
 t_vector3			*entity_lookedat_vertex(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
 t_entity			*selected_entity(t_editor *ed, t_sdlcontext sdl);
 
-void			make_areas(t_world *world, t_room *room);
+void			room_makefloor(t_world *world, t_room *room);
+void			room_makeceilings(t_world *world, t_room *room);
 
 /* TOOL_COMMON_FUNCTIONS.C */
 void				string_box(char *name, char *str, t_editor *ed, t_sdlcontext sdl, t_point pos);

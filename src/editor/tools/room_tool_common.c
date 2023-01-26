@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:53:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 13:33:30 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/26 12:03:47 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -270,7 +270,7 @@ void highlight_room(t_editor *ed, t_sdlcontext *sdl, t_room *room, uint32_t colo
 		i++;
 	}
 	i = 0;
-	while (i < room->edgecount)
+	while (i < room->edgecount && room->floor_enabled)
 	{
 		t_vector3	ws;
 		t_vector3	ws2;
@@ -336,7 +336,7 @@ t_wall	*selectedwall(t_editor *ed, t_sdlcontext sdl, t_room *room)
 	return (NULL);
 }
 
-t_room *selectedroom(t_editor *ed, t_sdlcontext sdl)
+t_room *selectedroom(t_editor *ed, t_sdlcontext sdl) //TODO: deprecate
 {
 	t_list	*l;
 	t_room	*r;

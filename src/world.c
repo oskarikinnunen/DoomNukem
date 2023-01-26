@@ -123,52 +123,56 @@ void update_world3d(t_world *world, t_render *render)
 	rescale_surface(sdl);
 
 	lateupdate_entitycache(sdl, world);
-	gui_start(world->debug_gui);
-	if (gui_button("music action", world->debug_gui))
-		change_music(sdl, "music_arp1_action.wav");
-	if (gui_button("music calm", world->debug_gui))
-		change_music(sdl, "music_arp1_ambient.wav");
-	gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);
-	gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);
-	gui_labeled_int("Entity count:", world->entitycache.existing_entitycount, world->debug_gui);
-	if (gui_shortcut_button("Toggle ceilings:", 'J', world->debug_gui))
+	if (!world->debug_gui->hidden)
 	{
-		world->ceiling_toggle = !world->ceiling_toggle;
-		toggle_ceilings(world);
+		gui_start(world->debug_gui);
+		/*if (gui_button("music action", world->debug_gui))
+			change_music(sdl, "music_arp1_action.wav");
+		if (gui_button("music calm", world->debug_gui))
+			change_music(sdl, "music_arp1_ambient.wav");*/
+		gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);
+		gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);
+		gui_labeled_int("Entity count:", world->entitycache.existing_entitycount, world->debug_gui);
+		if (gui_shortcut_button("Toggle ceilings:", 'J', world->debug_gui))
+		{
+			world->ceiling_toggle = !world->ceiling_toggle;
+			toggle_ceilings(world);
+		}
+		if (gui_shortcut_button("Toggle grids:", 'G', world->debug_gui))
+		{
+			world->player->velocity.x += 15.0f;
+			world->sdl->render_grid = !world->sdl->render_grid;
+		}
+			
+		if (gui_shortcut_button("Toggle noclip", 'F', world->debug_gui))
+			world->player->noclip = !world->player->noclip;
+		//gui_labeled_bool_edit("Noclip:", &world->player->noclip, world->debug_gui);
+		if (gui_shortcut_button("Show navmesh:", 'N', world->debug_gui))
+				world->nav.show_navmesh = !world->nav.show_navmesh;
+		gui_labeled_float_slider("Navigation node size: ", &world->nav.clip_size, 10.0f, world->debug_gui);
+		if (gui_shortcut_button("Create navmesh:", 'C', world->debug_gui))
+			create_navmesh(world);
+		if (gui_shortcut_button("Toggle rendering:", 'R', world->debug_gui))
+			world->sdl->global_wireframe = !world->sdl->global_wireframe;
+		if (gui_shortcut_button("Toggle Lighting", 'L', world->debug_gui))
+			sdl->lighting_toggled = !sdl->lighting_toggled;
+		if (gui_shortcut_button("Toggle Skybox", 'H', world->debug_gui))
+			world->skybox.hidden = !world->skybox.hidden;
+		if (gui_shortcut_button("Draw Occlusion Buffer", 'Y', world->debug_gui))
+			sdl->render.occlusion.draw_occlusion = !sdl->render.occlusion.draw_occlusion;
+		if (gui_shortcut_button("Toggle Occlusion", 'O', world->debug_gui))
+			render->occlusion.occlusion = !render->occlusion.occlusion;
+		if (gui_shortcut_button("Toggle Occlusion boxes", 'P', world->debug_gui))
+			render->occlusion.occluder_box = !render->occlusion.occluder_box;
+		if (gui_shortcut_button("Render Next Frame Slow", 'U', world->debug_gui))
+			sdl->render.occlusion.slow_render = true;
+		if (gui_shortcut_button("Bake lighting (new)", 'b', world->debug_gui))
+			recalculate_lighting(world);
+		gui_labeled_int_slider("Ps1 tri div: ", &sdl->ps1_tri_div, 0.2f, world->debug_gui);
+		sdl->ps1_tri_div = ft_clamp(sdl->ps1_tri_div, 1, 4);
+		gui_end(world->debug_gui);
 	}
-	if (gui_shortcut_button("Toggle grids:", 'G', world->debug_gui))
-	{
-		world->player->velocity.x += 15.0f;
-		world->sdl->render_grid = !world->sdl->render_grid;
-	}
-		
-	if (gui_shortcut_button("Toggle noclip", 'F', world->debug_gui))
-		world->player->noclip = !world->player->noclip;
-	//gui_labeled_bool_edit("Noclip:", &world->player->noclip, world->debug_gui);
-	if (gui_shortcut_button("Show navmesh:", 'N', world->debug_gui))
-			world->nav.show_navmesh = !world->nav.show_navmesh;
-	gui_labeled_float_slider("Navigation node size: ", &world->nav.clip_size, 10.0f, world->debug_gui);
-	if (gui_shortcut_button("Create navmesh:", 'C', world->debug_gui))
-		create_navmesh(world);
-	if (gui_shortcut_button("Toggle rendering:", 'R', world->debug_gui))
-		world->sdl->global_wireframe = !world->sdl->global_wireframe;
-	if (gui_shortcut_button("Toggle Lighting", 'L', world->debug_gui))
-		sdl->lighting_toggled = !sdl->lighting_toggled;
-	if (gui_shortcut_button("Toggle Skybox", 'H', world->debug_gui))
-		world->skybox.hidden = !world->skybox.hidden;
-	if (gui_shortcut_button("Draw Occlusion Buffer", 'Y', world->debug_gui))
-		sdl->render.occlusion.draw_occlusion = !sdl->render.occlusion.draw_occlusion;
-	if (gui_shortcut_button("Toggle Occlusion", 'O', world->debug_gui))
-		render->occlusion.occlusion = !render->occlusion.occlusion;
-	if (gui_shortcut_button("Toggle Occlusion boxes", 'P', world->debug_gui))
-		render->occlusion.occluder_box = !render->occlusion.occluder_box;
-	if (gui_shortcut_button("Render Next Frame Slow", 'U', world->debug_gui))
-		sdl->render.occlusion.slow_render = true;
-	if (gui_shortcut_button("Bake lighting (new)", 'b', world->debug_gui))
-		recalculate_lighting(world);
-	gui_labeled_int_slider("Ps1 tri div: ", &sdl->ps1_tri_div, 0.2f, world->debug_gui);
-	sdl->ps1_tri_div = ft_clamp(sdl->ps1_tri_div, 1, 4);
-	gui_end(world->debug_gui);
+	
 }
 
 /*static void load_componentdata(t_world *world)
@@ -324,7 +328,7 @@ void	load_rooms(t_world *world, char *worldname, t_sdlcontext *sdl)
 	while (l != NULL)
 	{
 		r = (t_room *)l->content;
-		init_roomwalls(world, r);
+		_room_initwalls(world, r);
 		//make_areas(world, r);
 		l = l->next;
 	}
@@ -389,7 +393,10 @@ void		destroy_entity(t_world *world, t_entity *ent)
 	cache->entities[ent->id].status = es_free;
 	cache->entities[ent->id].obj = NULL;
 	if (cache->existing_entitycount == 0)
+	{
+		printf("Tried to remove entity -1\n");
 		error_log(EC_MALLOC);
+	}
 	cache->existing_entitycount--;
 	printf("%i entities exist after remove \n", cache->existing_entitycount);
 }

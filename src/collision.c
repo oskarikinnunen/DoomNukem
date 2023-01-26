@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/05 13:48:43 by raho              #+#    #+#             */
-/*   Updated: 2023/01/24 10:14:38 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/26 14:31:27 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,33 @@ bool	pointcircle(t_vector2 point, t_vector2 circle, float radius)
 	return (false);
 }
 
-bool	linecircle(t_line line, t_vector2 circle, float radius, t_collision *collision)
+bool	linecirclecollision(t_line line, t_vector2 circle, float radius)
+{
+	float		wall_len;
+	float		dot;
+	t_vector2	closest;
+	t_vector2	delta;
+	float		dist;
+
+	if (pointcircle(line.start, circle, radius))
+		return (true);
+	if (pointcircle(line.end, circle, radius))
+		return (true);
+	wall_len = vector2_dist(line.start, line.end);
+	dot = (((circle.x - line.start.x) * (line.end.x - line.start.x)) + \
+			((circle.y - line.start.y) * (line.end.y - line.start.y))) / \
+			(wall_len * wall_len);
+	closest.x = line.start.x + (dot * (line.end.x - line.start.x));
+	closest.y = line.start.y + (dot * (line.end.y - line.start.y));
+	if (linepoint(line.start, line.end, closest))
+	{
+		if (pointcircle(closest, circle, radius))
+			return (true);
+	}
+	return (false);
+}
+
+bool	col_linecircle(t_line line, t_vector2 circle, float radius, t_collision *collision)
 {
 	float		wall_len;
 	float		dot;
@@ -193,7 +219,7 @@ bool	check_collision_character(t_world *world, t_characterphysics cp, t_vector3 
 					(wall_capsule_share_z(&room->walls[index], cp)
 					&& !wall_capsule_stepthreshold(&room->walls[index], cp)))
 				{
-					if (linecircle((t_line){*room->walls[index].edgeline.start, *room->walls[index].edgeline.end}, \
+					if (col_linecircle((t_line){*room->walls[index].edgeline.start, *room->walls[index].edgeline.end}, \
 							(t_vector2){potential_pos.x, potential_pos.y}, cp.radius, &collision))
 					{
 						//room->walls[index].entity->obj->materials->img = get_image_by_name(*world->sdl, "barrel.cng");
@@ -230,7 +256,7 @@ bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, 
 					(playerwall_share_z(&room->walls[index], player)
 					&& !playerwall_stepthreshold(&room->walls[index], player)))
 				{
-					if (linecircle((t_line){*room->walls[index].edgeline.start, *room->walls[index].edgeline.end}, \
+					if (col_linecircle((t_line){*room->walls[index].edgeline.start, *room->walls[index].edgeline.end}, \
 							(t_vector2){potential_pos.x, potential_pos.y}, player->collision_radius, &collision))
 					{
 						*new_pos = vector3_add(potential_pos, v2tov3(vector2_mul(collision.normal, collision.depth + 1)));
