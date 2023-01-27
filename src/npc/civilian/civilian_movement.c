@@ -26,7 +26,7 @@ void    civilian_movement(t_entity *entity, t_world *world)
 	}
 	if (source->path.valid_path && (source->path.ai != source->path.bi || vector3_dist(entity->transform.position, source->path.path[source->path.bi].enter_point) > 5.0f))
 		entity->transform.position = vector3_lerp(entity->transform.position, source->path.path[source->path.ai].enter_point, 4.0f / vector3_dist(entity->transform.position, source->path.path[source->path.ai].enter_point));
-	if (vector3_dist(entity->transform.position, source->path.path[source->path.ai].enter_point) < 50.0f && source->path.ai < source->path.bi && source->path.valid_path)
+	if (vector3_dist(entity->transform.position, source->path.path[source->path.ai].enter_point) < 5.0f && source->path.ai < source->path.bi && source->path.valid_path)
 	{
 		source->path.ai++;
 		source->path.start = source->path.path[source->path.ai].index;

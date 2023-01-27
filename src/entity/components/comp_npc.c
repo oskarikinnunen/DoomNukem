@@ -67,11 +67,11 @@ static char *get_npc_type_name(int i)
 	return(NULL);
 }
 
-static void	comp_npc_gui_edit(t_component *component, t_autogui *gui)
+static void	comp_npc_gui_edit(t_entity *entity, t_autogui *gui, t_world *world)
 {
 	t_npc			*source;
 	static bool		toggle_select;
-	source = component->data;
+	source = (t_npc *)entity->component.data;
 	
 	if (source == NULL)
 	{

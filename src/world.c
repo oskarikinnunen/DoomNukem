@@ -148,6 +148,7 @@ void update_world3d(t_world *world, t_render *render)
 	if (gui_shortcut_button("Show navmesh:", 'N', world->debug_gui))
 			world->nav.show_navmesh = !world->nav.show_navmesh;
 	gui_labeled_float_slider("Navigation node size: ", &world->nav.clip_size, 10.0f, world->debug_gui);
+	gui_labeled_float_slider("Navigation neighbor max height: ", &world->nav.height, 10.0f, world->debug_gui);
 	if (gui_shortcut_button("Create navmesh:", 'C', world->debug_gui))
 		create_navmesh(world);
 	if (gui_shortcut_button("Toggle rendering:", 'R', world->debug_gui))
@@ -597,6 +598,7 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 	ft_bzero(&world.lighting, sizeof(t_lighting));
 	world.lighting.ambient_light = 20;
 	world.nav.clip_size = 250.0f;
+	world.nav.height = 100.0f;
 	create_navmesh(&world);
 	return (world);
 }

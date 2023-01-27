@@ -84,3 +84,17 @@ float vector2_fdist_to_plane(t_vector2 p, t_vector2 plane_n, t_vector2 plane_p)
 	t_vector2 n = vector2_normalise(p);
 	return (plane_n.x * p.x + plane_n.y * p.y - vector2_dot(plane_n, plane_p));
 }
+
+t_vector2	vector2_abs(t_vector2 v)
+{
+	return((t_vector2){fabsf(v.x), fabsf(v.y)});
+}
+
+bool		vector2_cmp_epsilon(t_vector2 v1, t_vector2 v2, float epsilon)
+{
+	t_vector2	temp;
+
+	temp = vector2_sub(v1, v2);
+	temp = vector2_abs(temp);
+	return (temp.x - epsilon <= 0.0f && temp.y - epsilon <= 0.0f);
+}
