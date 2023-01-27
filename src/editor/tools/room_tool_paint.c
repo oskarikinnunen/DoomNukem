@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 14:52:25 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/09 16:52:49 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/27 15:11:41 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,54 @@ void	apply_floortexture(t_world *world, t_room *room, char *texname)
 		}
 		i++;
 	}
+}
+
+static t_wall	*_room_get_wall_with_entity(t_room *room, t_entity *entitymatch)
+{
+	int	i;
+
+	i = 0;
+	while (i < room->wallcount)
+	{
+		if (room->walls[i].entity == entitymatch)
+			return (&room->walls[i]);
+		i++;
+	}
+	return (NULL);
+}
+
+static t_room	*_world_get_room_with_entity(t_world *world, t_entity *entitymatch)
+{
+	t_list	*l;
+	t_room	*room;
+
+	l = world->roomlist;
+	while (l != NULL)
+	{
+		room = l->content;
+		if (_room_get_wall_with_entity(room, entitymatch) != NULL)
+			return (room);
+		l = l->next;
+	}
+	return (NULL);
+}
+
+static t_wall	*_world_get_wall_with_entity(t_world *world, t_entity *entitymatch)
+{
+	t_list	*l;
+	t_room	*room;
+	t_wall	*found;
+
+	l = world->roomlist;
+	while (l != NULL)
+	{
+		room = l->content;
+		found = _room_get_wall_with_entity(room, entitymatch);
+		if (found != NULL)
+			return (found);
+		l = l->next;
+	}
+	return (NULL);
 }
 
 void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
@@ -158,12 +206,25 @@ void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 		ent->obj->materials->img != tex && tex != NULL
 		&& ent->obj != NULL)
 	{
-		ent->obj->materials->img = tex;
+		t_wall *wall;
+		wall = _world_get_wall_with_entity(&ed->world, ent);
+		if (wall != NULL)
+		{
+			ft_strcpy(wall->texname, tex->name);
+			t_room *associated_room = _world_get_room_with_entity(&ed->world, ent);
+			if (associated_room != NULL) //TODO: combine world_get_wall_with entity with get_room_with_entity, maybe just have separate raycast for rtm_paint
+			{
+				printf("initwalls called from rtm_paint\n");
+				room_init(associated_room, &ed->world);
+			}
+		}
+			
+		/*ent->obj->materials->img = tex;
 		t_room	*fr = get_floor_room(&ed->world, ent);
 		if (fr != NULL)
 		{
 			apply_floortexture(&ed->world, fr, tex->name);
-		}
+		}*/
 		//create_lightmap_for_entity(ent, &ed->world);
 		//create_map_for_entity(ent, &ed->world);
 	}

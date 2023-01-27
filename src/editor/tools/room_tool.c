@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/26 14:46:35 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/27 15:55:37 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,13 +58,15 @@ void remove_room(t_world *world, t_room *room)
 	free_floor(world, room);
 	list_remove(&world->roomlist, room, sizeof(t_room));
 }
-typedef struct s_edgesplit
-{
-	int			prev_index; //New edge is to be inserted after this one in room->edges
-	t_vector2	new_edge;
-}	t_edgesplit;
 
-t_room	*add_room_to_world(t_world *world, t_room *room)
+void	room_assign_unique_name(t_room *room, t_world *world)
+{
+	int	i;
+
+	//i = 
+}
+
+t_room	*world_add_room(t_world *world, t_room *room)
 {
 	int		i;
 	char	roomname[64];
@@ -92,7 +94,6 @@ t_room	*add_room_to_world(t_world *world, t_room *room)
 	list_push(&world->roomlist, worldroom, sizeof(t_room));
 	free(worldroom);
 	worldroom = list_findlast(world->roomlist);
-	char	*id;
 	//construct_edges(worldroom);
 	
 	//room_init(room, world);
@@ -281,14 +282,13 @@ bool	gui_roompresets(t_room *room, t_autogui *gui, t_world *world)
 static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 {
 	t_vector2		*edge;
-	t_vector3		rc;
-	t_vector2		snap;
+	t_vector3		cursor;
 	t_autogui		*gui;
 
-	rc = createmode_raycast(ed, dat);
-	snap = v3tov2(rc);
+	cursor = createmode_raycast(ed, dat);
 	if (dat->room->edgecount == 0)
-		dat->room->height = rc.z;
+		dat->room->height = cursor.z;
+	//closest_edge
 	gui = &dat->newroom_gui;
 	gui_start(gui);
 	if (dat->room->edgecount == 0)
@@ -309,7 +309,7 @@ static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	if ((ed->hid.keystate >> KEYS_ENTERMASK) & 1)
 	{
 		dat->rtm = rtm_modify;
-		dat->room = add_room_to_world(&ed->world, dat->room);
+		dat->room = world_add_room(&ed->world, dat->room);
 		//dat->room = list_findlast(ed->world.roomlist);
 		return ;
 	}
@@ -319,14 +319,14 @@ static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 		{
 			edge = &dat->room->edges[dat->room->edgecount];
 			dat->room->edgecount++;
-			*edge = snap;
+			*edge = v3tov2(cursor);
 		}
 		else
 		{
 			if ((ed->hid.keystate >> KEYS_SHIFTMASK) & 1)
 			{
 				dat->rtm = rtm_modify;
-				add_room_to_world(&ed->world, dat->room);
+				world_add_room(&ed->world, dat->room);
 				dat->room = list_findlast(ed->world.roomlist);
 				return ;
 			}
@@ -348,7 +348,12 @@ static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	}
 	//renderroom(ed, sdl, dat->room);
 	highlight_room(ed, sdl, dat->room, CLR_BLUE);
-	render_gizmo3d(sdl, (t_vector3){snap.x, snap.y, dat->room->height}, 10, CLR_RED);
+	if (is_joined(v3tov2(cursor), dat->room, &ed->world))
+		render_circle(ed->world.sdl, cursor, 5, CLR_GREEN);
+	else
+		render_circle(ed->world.sdl, cursor, 5, CLR_BLUE);
+	//render_gizmo3d(sdl, cursor, 10, CLR_RED);
+	//render_gizmo3d(sdl, (t_vector3){snap.x, snap.y, dat->room->height}, 10, CLR_RED);
 }
 
 static void modifywallheights(t_room *room, int scrolldelta, t_world *world)
@@ -484,7 +489,7 @@ t_vector2	*find_edge_match(t_vector2 start, t_room *room)
 	return (NULL);
 }
 
-int	find_edge_match_index(t_vector2 start, t_room *room)
+int	_room_find_edge_index(t_vector2 start, t_room *room)
 {
 	int	i;
 
@@ -527,200 +532,11 @@ void	recalculate_joined_rooms(t_world *world, t_room *room)
 	}
 }
 
-void	applyedgedrag_solo(t_vector2 *edge, t_vector2 snap, t_room *room, t_world *world)
-{
-	int				i;
-	t_vector2		temp;
-	t_vector2		*test;
-	t_room			*cur;
-	t_list			*l;
-	bool			legal;
-	t_vector2		orig;
-
-	orig = *edge;
-	if (vector2_cmp(*edge, snap))
-		return ;
-	legal = true;
-	l = world->roomlist;
-	while (l != NULL)
-	{
-		cur = l->content;
-		if (edge_exists(*edge, cur))
-		{
-			test = find_edge_match(*edge, cur);
-			temp = *test;
-			*test = snap;
-			if (!edge_is_legal(test, cur) || !isroomlegal(world, cur))
-				legal = false;
-			*test = temp;
-		}
-		l = l->next;
-	}
-
-	if (legal)
-	{
-		t_room	temp;
-		ft_bzero(&temp, sizeof(t_room));
-		temp.edges = ft_memalloc(sizeof(t_vector2) * 32);
-		ft_memcpy(temp.edges, room->edges, sizeof(t_vector2) * 32);
-		temp.edgecount = room->edgecount;
-		if (edge_exists(orig, room))
-		{
-			i = find_edge_match_index(orig, room);
-			room->edges[i] = snap;
-		}
-		//recalculate_joined_rooms(world, &temp);
-		free(temp.edges);
-	}
-}
-
-void	applyedgedrag(t_vector2 *edge, t_vector2 snap, t_room *room, t_world *world)
-{
-	int				i;
-	t_vector2		temp;
-	t_vector2		*test;
-	t_room			*cur;
-	t_list			*l;
-	bool			legal;
-	t_vector2		orig;
-
-	orig = *edge;
-	if (vector2_cmp(*edge, snap))
-		return ;
-	legal = true;
-	l = world->roomlist;
-	while (l != NULL)
-	{
-		cur = l->content;
-		if (edge_exists(*edge, cur) && rooms_share_zspace(room, cur))
-		{
-			test = find_edge_match(*edge, cur);
-			temp = *test;
-			*test = snap;
-			if (!edge_is_legal(test, cur) || !isroomlegal(world, cur))
-				legal = false;
-			*test = temp;
-		}
-		l = l->next;
-	}
-
-	if (legal)
-	{
-		l = world->roomlist;
-		while (l != NULL)
-		{
-			cur = l->content;
-			if (edge_exists(orig, cur) && rooms_share_zspace(room, cur))
-			{
-				printf("exists in room %s \n", cur->name);
-				i = find_edge_match_index(orig, cur);
-				cur->edges[i] = snap;
-				//room_init(cur, world);
-			}
-			l = l->next;
-		}
-	}
-}
-
 static int next_index(int cur, t_room *room)
 {
 	if (cur == room->edgecount - 1)
 		return (0);
 	return (cur + 1);
-}
-
-static void	split_wall(t_wall *wall, t_room **room, t_world *world)
-{
-	t_vector2	*new_edges;
-	t_wall		*new_walls;
-	//t_Wall		*cur;
-	
-	/*t_vector2	*start_edge;
-	t_vector2	*end_edge;*/
-	int	ni;
-	int	i;
-
-
-	new_walls = ft_memalloc(sizeof(t_wall) * 32);
-	i = 0;
-	while (i < (*room)->wallcount)
-	{
-		//cur = room->walls[i];
-		if (&(*room)->walls[i] == wall)
-		{
-			//printf("splitting wall %i -> %i")
-			int copybefore = ft_clamp(i, 0, 32);
-			ft_memcpy(new_walls, (*room)->walls, sizeof(t_wall) * copybefore);
-			printf("copied %i walls before new split wall \n", copybefore);
-			ni = i;
-			//new_walls[i].connection = false;
-			new_walls[i].height = (*room)->walls[i].height;
-			ft_strcpy(new_walls[i].texname, (*room)->walls[i].texname);
-			int copyafter = ft_clamp((*room)->wallcount - i, 0, 32);
-			ft_memcpy(new_walls + i + 1, (*room)->walls + i, sizeof(t_wall) * copyafter);
-			printf("copied %i walls after new split wall \n", copyafter);
-			break ;
-		}
-		i++;
-	}
-	//room->walls = new_walls;
-	t_vector2 new_edge = vector2_lerp(*(*room)->walls[ni].edgeline.start, *(*room)->walls[ni].edgeline.end, 0.5f);
-	new_edge = vector2_snap(new_edge, 10);
-	if (edge_exists(new_edge, *room))
-		return ;
-	new_edges = ft_memalloc(sizeof(t_vector2) * 32);
-	i = 0;
-	while (i < (*room)->edgecount)
-	{
-		int	nxt = next_index(i, *room);
-		if (&(*room)->edges[i] == (*room)->walls[ni].edgeline.start
-			&& &(*room)->edges[nxt] == (*room)->walls[ni].edgeline.end)
-		{
-			printf("%i edge is wallmatch \n", i);
-			ft_memcpy(new_edges, (*room)->edges, sizeof(t_vector2) * ft_clamp(i + 1, 0, 32));
-			printf("copied %i edges b4 \n", i + 1);
-			printf("new edges' index is %i \n", i + 1);
-			new_edges[i + 1] = vector2_lerp((*room)->edges[i], (*room)->edges[nxt], 0.5f);
-			new_edges[i + 1] = vector2_snap(new_edges[i + 1], 10);
-			ft_memcpy(new_edges + i + 2, (*room)->edges + i + 1, sizeof(t_vector2) * ((*room)->edgecount - i - 1));
-			printf("copied %i edges after \n", (*room)->edgecount - i - 1);
-			break ;
-		}
-		i++;
-	}
-	/*free_roomwalls(world, *room);
-	i = 0;
-	(*room)->edgecount++;
-	(*room)->wallcount++;
-	(*room)->edges = new_edges;
-	(*room)->walls = new_walls;*/
-	//set_nullentities(&(*room)->walls, (*room)->wallcount);
-	(*room)->edgecount++;
-	(*room)->edges = new_edges;
-	room_init(*room, world);
-}
-
-static void split_similar_walls(t_wall *wall, t_room *room, t_world *world)
-{
-	t_list	*l;
-	t_room	*other;
-	t_wall	*similar;
-	t_wall	orig;
-
-	orig = *wall;
-
-	l = world->roomlist;
-	while (l != NULL)
-	{
-		other = l->content;
-		similar = find_wall(orig, other);
-		if (similar != NULL && rooms_share_zspace(room, other))
-		{
-			split_wall(similar, &other, world);
-			recalculate_joined_rooms(world, other);
-		}
-		l = l->next;
-	}
 }
 
 static void walleditmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
@@ -742,14 +558,6 @@ static void walleditmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		applywallmesh(dat->ed_wall, dat->room, &ed->world);
 	if (gui_labeled_float_slider("UV offset y:", &dat->ed_wall->uv_offset.y, 1.0f, gui))
 		applywallmesh(dat->ed_wall, dat->room, &ed->world);
-	if (gui_shortcut_button("Split wall", 'X', gui) && dat->ed_wall != NULL && dat->room != NULL)
-	{
-		//split_wall(dat->ed_wall, &dat->room, &ed->world);
-		split_similar_walls(dat->ed_wall, dat->room, &ed->world);
-		dat->ed_wall = NULL;
-		//dat->rtm = rtm_none;
-		return ;
-	}
 	gui_end(gui);
 	/*dat->ed_wall->height += ed->hid.mouse.scroll_delta * 10;
 	dat->ed_wall->height = ft_clamp(dat->ed_wall->height, 10, 200);*/
@@ -757,51 +565,6 @@ static void walleditmode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		room_init(dat->room, &ed->world);
 	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
 		dat->ed_wall = NULL;
-}
-
-t_vector2	*closest_edge(t_room *room, t_vector3 rc)
-{
-	int			i;
-	t_vector2	*edge;
-	t_vector3	edge_3d;
-	float		prev_dist;
-	t_vector2	*looked;
-
-	i = 0;
-	looked = NULL;
-	prev_dist = 1001.0f;
-	while (i < room->edgecount)
-	{
-		edge = &room->edges[i];
-		edge_3d = (t_vector3){edge->x, edge->y, room->height};
-		if (vector3_sqr_dist(rc, edge_3d) < 1000.0f && vector3_sqr_dist(rc, edge_3d) < prev_dist)
-		{
-			looked = edge;
-			prev_dist = vector3_sqr_dist(rc, edge_3d);
-		}
-		i++;
-	}
-	return (looked);
-}
-
-t_vector2	*lookedat_edge(t_room *room, t_vector2 snap)
-{
-	int			i;
-	t_vector2	*edge;
-	float		prev_dist;
-	t_vector2	*looked;
-
-	i = 0;
-	looked = NULL;
-	prev_dist = 1001.0f;
-	while (i < room->edgecount)
-	{
-		edge = &room->edges[i];
-		if (vector2_sqr_dist(snap, *edge) < 1000.0f && vector2_sqr_dist(snap, *edge) < prev_dist)
-			looked = edge;
-		i++;
-	}
-	return (looked);
 }
 
 /*bool	room_joined(t_room *room1, t_room *room2)
@@ -848,46 +611,6 @@ void	recalculate_rooms(t_editor *ed, t_vector2 *edge)
 	}
 }
 
-void	remove_edge(t_world *world, t_room *room, t_vector2 *edge)
-{
-	t_list	*l;
-	t_room	*cur;
-	t_vector2	orig;
-
-	l = world->roomlist;
-	orig = *edge;
-	while (l != NULL)
-	{
-		cur = l->content;
-		int match = find_edge_match_index(orig, cur);
-		int	i = match;
-		if (i != -1)
-		{
-			while (i < cur->edgecount)
-			{
-				cur->edges[i] = cur->edges[next_index(i, cur)];
-				i++;
-			}
-			cur->edgecount--; //TODO: protect
-			i = match;
-			while (i < cur->edgecount)
-			{
-				ft_memcpy(cur->walls[next_index(i,cur)].texname, cur->walls[i].texname, sizeof(char [256]));
-				cur->walls[i].edgeline.start = &cur->edges[i];
-				cur->walls[i].edgeline.end = &cur->edges[next_index(i, cur)];
-				i++;
-			}
-			free_object(cur->walls[cur->wallcount - 1].entity->obj);
-			destroy_entity(world, cur->walls[cur->wallcount - 1].entity);
-			cur->wallcount--;
-			room_init(cur, world);
-			//make_areas(world, cur);
-			recalculate_joined_rooms(world, cur);
-		}
-		l = l->next;
-	}
-}
-
 t_vector2	*other_room_edge(t_editor *ed, t_roomtooldata *dat)
 {
 	t_list		*l;
@@ -918,9 +641,8 @@ t_vector3	edge3d(t_vector2 edge, t_room *room)
 
 void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 {
-	t_vector3		rc;
+	t_vector3		cursor;
 	t_wall			*look_wall;
-	t_vector2		snap;
 	t_autogui		*gui;
 	t_raycastinfo	planecastinfo;
 	t_ray			plane_ray;
@@ -938,9 +660,9 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	plane_ray.dir = ed->player.lookdir;
 	if (raycast_plane(plane_ray, &planecastinfo, dat->room->height))
 	{
-		rc = planecastinfo.hit_pos;
-		rc.x = vector2_snap((t_vector2){rc.x, rc.y}, 10).x;
-		rc.y = vector2_snap((t_vector2){rc.x, rc.y}, 10).y;
+		cursor = planecastinfo.hit_pos;
+		cursor.x = vector2_snap((t_vector2){cursor.x, cursor.y}, 10).x;
+		cursor.y = vector2_snap((t_vector2){cursor.x, cursor.y}, 10).y;
 		//rendergrid(&ed->world, planecastinfo.hit_pos, 10);
 	}
 	gui_start(gui);
@@ -965,16 +687,20 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		dat->temp_edges = NULL;
 		return ;
 	}
+	if (gui_button("Remove associated entities", gui))
+	{
+		room_remove_entities(dat->room, &ed->world);
+		return ;
+	}
 	if (gui_shortcut_button("Delete", KEYS_DELETEMASK, gui))
 	{
 		t_room	temp;
 		ft_bzero(&temp, sizeof(t_room));
-		temp.edges = ft_memalloc(sizeof(t_vector2) * 32);
+		//temp.edges = ft_memalloc(sizeof(t_vector2) * 32);
 		ft_memcpy(temp.edges, dat->room->edges, sizeof(t_vector2) * dat->room->edgecount);
 		temp.edgecount = dat->room->edgecount;
 		remove_room(&ed->world, dat->room);
 		recalculate_joined_rooms(&ed->world, &temp);
-		free(temp.edges);
 		dat->room = NULL;
 		dat->rtm = rtm_none;
 		gui_end(gui);
@@ -986,9 +712,11 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		return ;
 	}
 	gui_end(gui);
-	snap = vector2_snap((t_vector2){rc.x, rc.y}, 10);
+
 	look_wall = selectedwall(ed, sdl, dat->room);
-	t_vector2	*hover_edge = closest_edge(dat->room, rc);
+	t_vector2	*hover_edge = closest_edge(dat->room, cursor);
+	room_tool_node(cursor, dat, ed);
+	/*
 	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT) && hover_edge != NULL)
 		dat->held_edge = hover_edge;
 	if (hover_edge != NULL)
@@ -1023,6 +751,11 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 			dat->held_edge = NULL;
 		}
 		
+	}*/
+	if (dat->held_edge == NULL && hover_edge == NULL)
+	{
+		if (potentialnode(cursor, dat, ed))
+			;
 	}
 	/*if (ed->hid.mouse.held == 0 && dat->held_edge != NULL)
 	{
@@ -1107,7 +840,6 @@ void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	{
 		dat->room = ft_memalloc(sizeof(t_room));
 		dat->room->walls = ft_memalloc(sizeof(t_wall) * 32);
-		dat->room->edges = ft_memalloc(sizeof(t_vector2) * 32);
 		ft_strcpy(dat->room->floortex, "concrete02.cng");
 		ft_bzero(&dat->wall.edgeline, sizeof(t_edgeline));
 		dat->rtm = rtm_create;
@@ -1158,8 +890,8 @@ void	finish_partial_room(t_editor *ed, t_room	*room, t_roomtooldata *data)
 	ei = 0;
 	og_start = find_edge_match(room->edges[0], orig);
 	og_end = find_edge_match(room->edges[room->edgecount - 1], orig);
-	og_start_i = find_edge_match_index(*og_start, orig);
-	og_end_i = find_edge_match_index(*og_end, orig);
+	og_start_i = _room_find_edge_index(*og_start, orig);
+	og_end_i = _room_find_edge_index(*og_end, orig);
 	if (og_start != NULL && og_end != NULL)
 	{
 		printf("found area start and end in other room \n");
@@ -1172,9 +904,9 @@ void	finish_partial_room(t_editor *ed, t_room	*room, t_roomtooldata *data)
 		i++;
 		//printf("%i \n", i);
 	}
-	i = find_edge_match_index(room->edges[room->edgecount - 1], orig);
+	i = _room_find_edge_index(room->edges[room->edgecount - 1], orig);
 	int t_start = i;
-	int target = find_edge_match_index(room->edges[0], orig);
+	int target = _room_find_edge_index(room->edges[0], orig);
 	printf("adding edges from orig, range %i -> %i \n", i, target);
 	while (i != target)
 	{
@@ -1201,7 +933,7 @@ void	finish_partial_room(t_editor *ed, t_room	*room, t_roomtooldata *data)
 	orig->edgecount = ei;
 	i = 0;
 	room_init(orig, &ed->world);
-	room = add_room_to_world(&ed->world, room);
+	room = world_add_room(&ed->world, room);
 	room->height = orig->height;
 	room->ceiling_height = orig->ceiling_height;
 	room->floor_enabled = true;
@@ -1245,7 +977,7 @@ t_room	combined_room(t_room *room1, t_room *room2)
 	}
 
 	int	count = 0;
-	i = find_edge_match_index(last_common, room2);
+	i = _room_find_edge_index(last_common, room2);
 	while (count < room2->edgecount)
 	{
 		test.edgeline.start = &room2->edges[i];
@@ -1313,7 +1045,7 @@ void	room_tool_combine(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 		{
 			t_room	newroom;
 			newroom = combined_room(dat->room, other);
-			add_room_to_world(&ed->world, &newroom);
+			world_add_room(&ed->world, &newroom);
 			t_room	*world_room = list_findlast(ed->world.roomlist);
 			world_room->ceiling_height = dat->room->ceiling_height; //TODO: min/max
 			world_room->height = dat->room->height;
@@ -1347,7 +1079,7 @@ void	room_tool_split(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	//snap = raycast_DEPRECATED(ed);
 	//rc = planecastinfo.hit_pos;
 	
-	edge = lookedat_edge(dat->room, (t_vector2){rc.x, rc.y});
+	edge = closest_edge(dat->room, rc);
 	if (edge != NULL)
 	{
 		rc.x = edge->x;
@@ -1488,7 +1220,7 @@ void	room_tool_move(t_editor *ed, t_roomtooldata *dat)
 	if (gui_shortcut_button("Copy room", 'C', gui))
 	{
 		t_room	*room = copy_room(dat->room);
-		t_room *newr = add_room_to_world(&ed->world, room);
+		t_room *newr = world_add_room(&ed->world, room);
 		dat->room = newr;
 		return ;
 	}

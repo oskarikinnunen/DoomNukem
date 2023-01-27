@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/26 14:28:53 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/27 15:45:15 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,25 +217,23 @@ void	_room_initwalls(t_world *world, t_room *room)
 			room->walls[i].edgeline.end = &room->edges[0];
 			room->walls[i].edgeline.end_index = 0;
 		}
-		//printf("wall indexing = %i -> %i , last edge %i \n", room->walls[i].edgeline.start_index, room->walls[i].edgeline.end_index, room->edgecount - 1);
 		room->walls[i].entity->transform.position = vector3_zero();
 		room->walls[i].entity->transform.scale = vector3_one();
 		if (room->walls[i].entity->obj == NULL)
-		{
-			//printf("allocated object for wall , img name %s \n", room->walls[i].texname);
 			room->walls[i].entity->obj = object_plane(world->sdl);
-			if (strlen(room->walls[i].texname) != 0)
-			{
-				room->walls[i].entity->obj->materials->img = get_image_by_name(*world->sdl, room->walls[i].texname);
-				//printf("overriding image \n");
-			}
-				
-		}
+		if (strlen(room->walls[i].texname) != 0)
+			room->walls[i].entity->obj->materials->img = get_image_by_name(*world->sdl, room->walls[i].texname);
 		room->walls[i].height = room->ceiling_height;
 		applywallmesh(&room->walls[i], room, world);
 		//update_wall_bounds(&room->walls[i]);
 		i++;
 	}
+}
+
+void	room_remove_entities(t_room *room, t_world *world)
+{
+	free_roomwalls(world, room);
+	free_floor(world, room);
 }
 
 void	room_init(t_room *room, t_world *world)

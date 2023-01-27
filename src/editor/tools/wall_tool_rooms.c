@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/26 13:25:30 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/27 15:47:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -705,12 +705,20 @@ void	free_floor(t_world *world, t_room *room)
 	i = 0;
 	while (i < room->floorcount)
 	{
-		free_object(room->floors[i].entity->obj);
-		destroy_entity(world, room->floors[i].entity);
+		if (room->floors[i].entity != NULL)
+		{
+			if (room->floors[i].entity->obj != NULL )
+			{
+				free_object(room->floors[i].entity->obj);
+				room->floors[i].entity->obj = NULL;
+			}
+			destroy_entity(world, room->floors[i].entity);
+			room->floors[i].entity = NULL;
+		}
 		printf("freed floor %i \n", i);
 		i++;
 	}
-	room->floorcount = 0;
+	//room->floorcount = 0;
 }
 
 //void	apply_currentfloortexture(t_world *world, t_room *room, char *texname)
@@ -724,7 +732,7 @@ void	_room_triangulate_floors(t_world *world, t_room *room)
 
 	ft_bzero(&fc, sizeof(fc));
 	i = 0;
-	free_floor(world, room);
+	//free_floor(world, room);
 	while (i < room->edgecount)
 	{
 		fc.edges[fc.edgecount++] = room->edges[i];
@@ -769,7 +777,7 @@ void	_room_triangulate_floors(t_world *world, t_room *room)
 
 void	room_makefloor(t_world *world, t_room *room)
 {
-	free_floor(world, room);
+	//free_floor(world, room);
 	_room_triangulate_floors(world, room);
 }
 

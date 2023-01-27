@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:42:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 19:50:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/27 14:06:48 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,13 @@ t_room		*selectedroom(t_editor *ed, t_sdlcontext sdl);
 
 /*ROOM_TOOL_PAINT.C*/
 void		room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat);
+
+/* ROOM_TOOL_ADDNODE.C */
+bool	potentialnode(t_vector3 cursor, t_roomtooldata *dat, t_editor *ed);
+
+/* ROOM_TOOL_NODE.C */
+void		room_tool_node(t_vector3 cursor, t_roomtooldata *dat, t_editor *ed);
+t_vector2	*closest_edge(t_room *room, t_vector3 rc);
 
 
 # endif

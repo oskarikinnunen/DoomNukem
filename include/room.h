@@ -80,7 +80,8 @@ typedef struct s_wall
 typedef struct s_room //TODO: rewrite rooms/walls so rooms have t_vector2 edges and walls have pointers to those
 {
 	char			name[32];
-	t_vector2		*edges;
+	t_vector2		edges[32];
+	//t_vector2		*edges;
 	t_wall			*walls;
 	t_meshtri		*floors;
 	t_meshtri		*ceilings;
@@ -104,9 +105,11 @@ struct s_world;
 
 void			room_init(t_room *room, struct s_world *world);
 
+void			room_remove_entities(t_room *room, struct s_world *world);
+
 bool			edge_exists(t_vector2 edge, t_room	*room);
 void			_room_triangulate_floors(struct s_world *world, t_room *room);
-t_room			*add_room_to_world(struct s_world *world, t_room *room);
+t_room			*world_add_room(struct s_world *world, t_room *room);
 void			applywallmesh(t_wall *wall, t_room *room, struct s_world *world);
 void			applytrimesh(t_meshtri tri, t_object *obj);
 void			init_room_meshes(t_room *room, t_sdlcontext *sdl, struct s_world *world);

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:53:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/26 12:03:47 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/27 14:19:24 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,10 @@ void	toggle_ceilings(t_world *world)
 bool	rooms_share_zspace(t_room *room1, t_room *room2)
 {
 	bool	share = false;
-	if (room1->height < (room2->height + room2->ceiling_height)
+	if (room1->height <= (room2->height + room2->ceiling_height)
 		&& room1->height >= room2->height)
 		share = true;
-	if (room2->height < (room1->height + room1->ceiling_height)
+	if (room2->height <= (room1->height + room1->ceiling_height)
 		&& room2->height >= room1->height)
 		share = true;
 	return (share);

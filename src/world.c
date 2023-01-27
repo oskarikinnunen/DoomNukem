@@ -250,9 +250,9 @@ t_room	load_room(char *filename)
 	result.edges = list_to_ptr(temp, &result.edgecount);
 	listdel(&temp);
 
-	temp = load_chunk(filename, "EDGE", sizeof(t_vector2));
+	/*temp = load_chunk(filename, "EDGE", sizeof(t_vector2));
 	result.edges = list_to_ptr(temp, &result.edgecount);
-	listdel(&temp);
+	listdel(&temp);*/
 	return (result);
 }
 
@@ -321,14 +321,14 @@ void	load_rooms(t_world *world, char *worldname, t_sdlcontext *sdl)
 	{
 		r = (t_room *)l->content;
 		load_room_new(worldname, r->name, r);
-		startup_init_room(world, r);
+		//startup_init_room(world, r);
 		l = l->next;
 	}
 	l = world->roomlist;
 	while (l != NULL)
 	{
 		r = (t_room *)l->content;
-		_room_initwalls(world, r);
+		room_init(r, world);
 		//make_areas(world, r);
 		l = l->next;
 	}
@@ -604,7 +604,7 @@ t_world	load_world(char *filename, t_sdlcontext *sdl)
 	ft_bzero(&world.lighting, sizeof(t_lighting));
 	world.lighting.ambient_light = 20;
 	world.nav.clip_size = 250.0f;
-	create_navmesh(&world);
+	//create_navmesh(&world);
 	return (world);
 }
 
@@ -620,33 +620,12 @@ and loads them into world->roomlist from the files
 	*id = entity.id
 }*/
 
-void	prepare_saving(t_room *room)
-{
-	int	i;
-
-	i = 0;
-	while (i < room->wallcount)
-	{
-		room->walls[i].saved_entityid = room->walls[i].entity->id;
-		ft_strcpy(room->walls[i].texname, room->walls[i].entity->obj->materials[0].img->name);
-		i++;
-	}
-	i = 0;
-	while (i < room->floorcount)
-	{
-		room->floors[i].saved_entityid = room->floors[i].entity->id;
-		ft_strcpy(room->floors[i].texname, room->floors[i].entity->obj->materials[0].img->name);
-		i++;
-	}
-}
-
 void	save_room(t_room room)
 {
 	int		fd;
 
 	printf("saving room '%s' \n", room.name);
 	fd = fileopen(room.name, O_RDWR | O_CREAT | O_TRUNC); //Empty the file or create a new one if it doesn't exist
-	prepare_saving(&room);
 	t_list *walls_list = ptr_to_list(room.walls, room.wallcount, sizeof(t_wall));
 	save_chunk(room.name, "WALL", walls_list);
 	t_list *floorlist = ptr_to_list(room.floors, room.floorcount, sizeof(t_meshtri));
@@ -731,6 +710,20 @@ void	save_entities(char *filename, t_list	*entitylist)
 	save_chunk(filename, "ENT_", entitylist);
 }
 
+static void _world_remove_all_room_entities(t_world *world)
+{
+	t_list	*l;
+	t_room	*room;
+
+	l = world->roomlist;
+	while (l != NULL)
+	{
+		room = (t_room *)l->content;
+		room_remove_entities(room, world);
+		l = l->next;
+	}
+}
+
 void	save_world(char *namename, t_world world)
 {
 	int		fd;
@@ -740,24 +733,27 @@ void	save_world(char *namename, t_world world)
 	fd = fileopen(filename, O_RDWR | O_CREAT | O_TRUNC); //Empty the file or create a new one if it doesn't exist
 	close(fd);
 	printf("Saving world\n");
+	_world_remove_all_room_entities(&world);
 	t_list	*entitylist = entitycache_to_list(&world.entitycache);
 	save_entities(filename, entitylist);
 	//TODO: free the dumb list
 
 	printf("Saving rooms\n");
-	t_list	*r;
-	r = world.roomlist;
+	t_list	*l;
+	t_room	*room;
+	l = world.roomlist;
 	//TODO: 
 	save_chunk(filename, "RMNM", world.roomlist);
 	pack_file(filename, "assets/images/something.png");
 	//load_filecontent()
 	//load_filecontent_fd()
-	while (r != NULL)
+	while (l != NULL)
 	{
-		save_room(*(t_room *)r->content);
-		pack_file(filename, (*(t_room *)r->content).name);
-		remove((*(t_room *)r->content).name);
-		r = r->next;
+		room = (t_room *)l->content;
+		save_room(*room);
+		pack_file(filename, room->name);
+		remove(room->name);
+		l = l->next;
 	}
 	
 }
