@@ -6,13 +6,13 @@ void    civilian_movement(t_entity *entity, t_world *world)
 
 	source = entity->component.data;
 	if (source->path.start == source->path.end || !source->path.valid_path)
-		source->path.end = game_random_range(world, 0, world->nav.node_amount);
+		source->path.end = game_random_range(world, 0, world->nav.node_amount - 1);
 	if (source->path.ai == source->path.bi)
 	{
 		source->path.target = world->player->transform.position;
 		//source->path.start = get_nearest_target_node(world, entity->transform.position);
 		source->path.start = source->path.path[source->path.ai].index;
-		source->path.valid_path = pathfind(world, &source->path);
+		//source->path.valid_path = pathfind(world, &source->path);
 	}
 	if (world->nav.show_navmesh)
 	{

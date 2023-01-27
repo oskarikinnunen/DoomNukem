@@ -113,22 +113,19 @@ bool	clip_line_against_lineplane(t_line *line, t_line plane)
 
 	//plane = temp;
 
-	fdist1 = vector2_fdist_to_plane(line->start, plane.start, plane.end);
-	fdist2 = vector2_fdist_to_plane(line->end, plane.start, plane.end);
+	fdist1 = vector2_fdist_to_plane(line->start, plane.end, plane.start);
+	fdist2 = vector2_fdist_to_plane(line->end, plane.end, plane.start);
 	if (fdist1 < 0.0f && fdist2 < 0.0f)
 		return (false);
-	if (fdist1 < 0.0f || fdist2 < 0.0f)
+	if (fdist1 < 0.0f)
 	{
-		if (fdist1 < 0.0f)
-		{
-			lerp = vector2_line_intersect_plane(plane.start, plane.end, line->start, line->end);
-			line->start = vector2_lerp(line->start, line->end, lerp);
-		}
-		else
-		{
-			lerp = vector2_line_intersect_plane(plane.start, plane.end, line->end, line->start);
-			line->end = vector2_lerp(line->end, line->start, lerp);
-		}
+		lerp = vector2_line_intersect_plane(plane.start, plane.end, line->start, line->end);
+		line->start = vector2_lerp(line->start, line->end, lerp);
+	}
+	else if (fdist2 < 0.0f)
+	{
+		lerp = vector2_line_intersect_plane(plane.start, plane.end, line->start, line->end);
+		line->end = vector2_lerp(line->start, line->end, lerp);
 	}
 	return (true);
 }
@@ -274,8 +271,7 @@ void render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to)
 	l.start = proj_quaternion_to_screenspace(sdl, ql.start);
 	l.end = proj_quaternion_to_screenspace(sdl, ql.end);
 	t_line plane1, plane2, plane3, plane4;
-	/*
-	//TODO: this doesn't currently clip against screen borders
+	
 	plane1 = newline((t_vector2){0.0f, 0.0f}, (t_vector2){0.0f, 1.0f});
 	plane2 = newline((t_vector2){0.0f, (float)(sdl->window_h) - 1.0f}, (t_vector2){0.0f, -1.0f});
 	plane3 = newline((t_vector2){0.0f, 0.0f}, (t_vector2){1.0f, 0.0f});
@@ -291,7 +287,7 @@ void render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to)
 	if (l.start.x < 0.0f || l.end.x > sdl->window_w)
 	{
 		printf("line start: %f %f end: %f %f \n", l.start.x, l.start.y, l.end.x, l.end.y);
-	}*/
+	}
 	drawline(*sdl, vector2_to_point(l.start), vector2_to_point(l.end), sdl->render.gizmocolor);
 }
 
