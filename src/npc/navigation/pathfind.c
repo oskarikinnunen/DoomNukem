@@ -29,7 +29,7 @@ bool pathfind(t_world *world, t_path *path)
 
 	openlist = world->nav.openlist;
 	ft_bzero(openlist, sizeof(t_navnode) * world->nav.node_amount);
-	start = get_nearest_target_node(world, path->target);
+	start = path->end;
 	end = path->start;
 	openlist[start] = world->nav.navmesh[start];
 	openlist[start].valid = true;

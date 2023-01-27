@@ -186,7 +186,7 @@ void	update_render(t_render *render, t_player *player);
 void	moveplayer(t_player *player, t_input *input, t_world *world);
 
 /* NAVIGATION */
-bool pathfind(t_world *world, t_path *path);
+bool	pathfind(t_world *world, t_path *path);
 void	create_navmesh(t_world *world);
 void    show_navmesh(t_world *world);
 
