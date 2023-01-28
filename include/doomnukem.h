@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/24 11:34:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/28 15:03:28 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,11 @@ typedef enum e_gamereturn
 
 struct s_autogui;
 
+typedef struct s_log
+{
+	int	fd;
+}	t_log;
+
 typedef struct s_world
 {
 	char				name[32];
@@ -98,6 +103,7 @@ typedef struct s_world
 	t_clock				clock;
 	t_debugconsole		debugconsole;
 	struct s_autogui	*debug_gui;
+	t_log				log;
 	t_sdlcontext		*sdl;
 	t_list				*guns;
 	t_list				*prefabs; //TODO: move to editor
@@ -136,6 +142,9 @@ typedef struct s_game
 	t_cam_mode		cam_mode; //Unused but will be reimplemented?
 } t_game;
 
+/* LOG.C */
+int		init_log(void);
+
 /* EDITOR.C */
 int		editorloop(t_sdlcontext sdl);
 
@@ -143,7 +152,6 @@ int		editorloop(t_sdlcontext sdl);
 bool			iskey(SDL_Event e, int keycode);
 void			force_mouseunlock(t_hid_info *hid);
 void			force_mouselock(t_hid_info *hid);
-
 
 /* EDITOR_MOUSE.C */
 t_point			screentogridspace(t_point point);
