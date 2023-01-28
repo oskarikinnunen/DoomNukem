@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 22:35:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/28 17:16:30 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,6 @@ void	set_sdl_settings(t_sdlcontext *sdl)
 
 void	quit_game(t_sdlcontext *sdl)
 {
-	//close_audio(&sdl->audio);
 	SDL_Quit();
 	exit(0);
 }
@@ -118,7 +117,7 @@ void	create_sdlcontext(t_sdlcontext	*sdl)
 		|| SDL_Init(SDL_INIT_EVENTS) < 0 \
 		|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0 \
 		|| TTF_Init() < 0)
-		error_log(EC_SDL_INIT);
+		doomlog(LOGEC_SDL_INIT, fd, NULL);
 	set_sdl_settings(sdl);
 	printf("audio volume %f \n", sdl->audio.sfx_volume);
 	load_assets(sdl);
@@ -139,10 +138,12 @@ int	main(int argc, char **argv)
 {
 	t_sdlcontext	sdl;
 	t_gamereturn	gr;
+	t_doomlog		doomlog;
 
+	doomlog.fd = init_doomlog();
 	generate_struct_datas();
 	checkargs(argc, argv);
-	create_sdlcontext(&sdl);
+	create_sdlcontext(&sdl, doomlog);
 	gr = game_switchmode;
 	while (gr == game_switchmode)
 	{

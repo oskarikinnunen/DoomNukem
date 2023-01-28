@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/28 15:03:28 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/28 17:12:55 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define DOOMNUKEM_H
 
 # include "libft.h"
-# include "error_log.h"
+# include "doomlog.h"
 # include "limits.h" //TODO: remove mby? just define INT_MAX yourself
 # include <math.h>
 # include <fcntl.h>
@@ -91,10 +91,7 @@ typedef enum e_gamereturn
 
 struct s_autogui;
 
-typedef struct s_log
-{
-	int	fd;
-}	t_log;
+typedef struct s_log;
 
 typedef struct s_world
 {
@@ -103,7 +100,7 @@ typedef struct s_world
 	t_clock				clock;
 	t_debugconsole		debugconsole;
 	struct s_autogui	*debug_gui;
-	t_log				log;
+	t_doomlog			doomlog;
 	t_sdlcontext		*sdl;
 	t_list				*guns;
 	t_list				*prefabs; //TODO: move to editor
@@ -141,9 +138,6 @@ typedef struct s_game
 	t_player		player;
 	t_cam_mode		cam_mode; //Unused but will be reimplemented?
 } t_game;
-
-/* LOG.C */
-int		init_log(void);
 
 /* EDITOR.C */
 int		editorloop(t_sdlcontext sdl);
@@ -204,7 +198,7 @@ bool	alaiwan_collision(t_world *world, t_player *player, t_vector3 potential_pos
 
 
 /* ERRORS.C */
-void	error_log(int error_code);
+void	error_log(int error_code, int fd);
 
 /* SDL */
 void	quit_game(t_sdlcontext *sdl);
