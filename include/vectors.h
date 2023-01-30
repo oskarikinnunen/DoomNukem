@@ -17,6 +17,10 @@
 #include <stdbool.h>
 #include "libft.h"
 
+
+//returns true if v1 == v2 in the error range of epsilon
+bool	float_cmp_epsilon(float v1, float v2, float epsilon);
+
 /* t_vector2 functions */
 typedef struct s_vector2
 {
@@ -92,6 +96,12 @@ t_vector2	vector2_clamp_magnitude(t_vector2 vec, float max_magnitude);
 
 //returns float distance, to plane_p position and direction vector plane_n
 float vector2_fdist_to_plane(t_vector2 p, t_vector2 plane_n, t_vector2 plane_p);
+
+//returns vector 2 abs
+t_vector2	vector2_abs(t_vector2 v);
+
+//returns true if v1 == v2 in the error range of epsilon
+bool		vector2_cmp_epsilon(t_vector2 v1, t_vector2 v2, float epsilon);
 
 //returns float from 0 to 1 depending on where the line intersected plane. Pass t_vector3 plane_p location and t_vector3 plane_n normalised, currently function does normalise plane_n just in case, but it will be changed later.
 float	vector2_line_intersect_plane(t_vector2 plane_p, t_vector2 plane_n, t_vector2 start, t_vector2 end);

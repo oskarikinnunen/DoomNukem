@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/30 19:55:58 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/30 20:19:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -424,26 +424,3 @@ char	*worldname(char	*filename)
 		return(occurence + sizeof("worlds"));
 	return (filename);
 }
-
-
-/*
-TODO: 
-loadrooms function that gets filename strings for each room
-and loads them into world->roomlist from the files
-*/
-
-/*save_entity_id(t_entity *entity, uint16_t *id)
-{
-	*id = entity.id
-}*/
-
-
-
-/*
-	cache
-		list
-
-			saveentity
-
-
-*/

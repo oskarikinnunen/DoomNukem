@@ -49,8 +49,3 @@ float vector2_anglebetween(t_vector2 first, t_vector2 second)
 	}
 	return (atan2f(temp.y, temp.x));
 }
-
-t_vector2 vector2_abs(t_vector2 vec)
-{
-	return ((t_vector2){ft_absf(vec.x), ft_absf(vec.y)});
-}

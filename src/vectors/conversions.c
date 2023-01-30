@@ -98,3 +98,12 @@ t_texture	vector2_to_texture(t_vector2 v)
 	t.w = 1.0f;
 	return(t);
 }
+
+bool		float_cmp_epsilon(float v1, float v2, float epsilon)
+{
+	float	temp;
+
+	temp = v1 - v2;
+	temp = fabsf(temp);
+	return (temp - epsilon <= 0.0f);
+}

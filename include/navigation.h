@@ -40,5 +40,6 @@ typedef struct s_navigation
 	uint32_t	malloc_size;
 	float		clip_size;
 	bool		show_navmesh;
+	float		height;
 }	t_navigation;
 # endif
