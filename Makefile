@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/01/27 11:43:17 by okinnune         ###   ########.fr        #
+#    Updated: 2023/01/30 14:58:19 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,7 +36,9 @@ LUA= $(LUAFOLDER)/install/lib/liblua.a
 #Source files:
 SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		editor.c editor_mouse.c editor_events.c \
-		editor_map_io.c	\
+		file_ops/filechunks.c	\
+		file_ops/world_save.c	\
+		file_ops/world_load.c	\
 		editor/editor_preferences.c \
 		editor/tools/entity_tool.c \
 		editor/tools/entity_tool_gui_inits.c \

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 10:58:19 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/27 12:08:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/27 18:45:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ typedef struct s_nodeline
 	int		i;
 }	t_nodeline;
 
-t_line	linebetween(int i, t_room *room)
+t_line	linebetween(int i, t_area *room)
 {
 	int		next_i;
 	t_line	line;
@@ -65,11 +65,11 @@ static void draw_node_line(t_vector3 cursor, t_line l, t_sdlcontext *sdl)
 	render_ray3D(sdl, end, cursor, CLR_GREEN);
 }
 
-void	addnode(t_vector2 newnode, t_room *room, int node_i)
+void	addnode(t_vector2 newnode, t_area *room, int node_i)
 {
 	int	cpy_before;
 	int	cpy_after;
-	t_vector2	*new_edges;
+	t_vector2	*new_edges; //TODO: replace with t_vector2[32]
 	new_edges = ft_memalloc(sizeof(t_vector2) * 32);
 
 	cpy_before = ft_clamp(node_i + 1, 0, 32);
@@ -77,8 +77,7 @@ void	addnode(t_vector2 newnode, t_room *room, int node_i)
 	ft_memcpy(new_edges, room->edges, sizeof(t_vector2) * cpy_before);
 	new_edges[node_i + 1] = newnode;
 	ft_memcpy(new_edges + node_i + 2, room->edges + node_i + 1, sizeof(t_vector2) * cpy_after);
-	free(room->edges);
-	room->edges = new_edges;
+	ft_memcpy(room->edges, new_edges, sizeof(t_vector2 [32]));
 	room->edgecount++;
 	printf("copied %i edges before new edge \n", node_i - 1);
 }
@@ -100,6 +99,12 @@ bool	potentialnode(t_vector3 cursor, t_roomtooldata *dat, t_editor *ed)
 			draw_node_indicator(cursor, dat, &ed->world);
 			if (check_alpha_key(ed->hid.alphakey_pressed, 'e'))
 			{
+				/*
+					get cur index and next index,
+					find all rooms that have matching edges (in either order, cur->next or next->cur)
+						(and they share zspace with current room)
+						addnode(foundroom);
+				*/
 				addnode(v3tov2(cursor), dat->room, i);
 				room_init(dat->room, &ed->world);
 				printf("Add node %i!!\n", i);

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   editor_map_io.c                                    :+:      :+:    :+:   */
+/*   filechunks.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/24 11:08:19 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/30 17:06:34 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,11 @@ void	save_chunk(char *filename, char *chunkname, t_list *content)
 
 	l = content;
 	fd = fileopen(filename, O_RDWR | O_APPEND);
+	if (fd == -1)
+	{
+		printf("LOGW: FAILED TO SAVE CHUNK %s TO FILE %s\n", chunkname, filename);
+		return ;
+	}
 	written = 0;
 	write(fd, chunkname, CHUNKSIZE);
 	while (l != NULL)
@@ -78,13 +83,13 @@ void	save_chunk(char *filename, char *chunkname, t_list *content)
 		written += write(fd, l->content, l->content_size);
 		l = l->next;
 	}
-	//printf("wrote %i to file \n", written); //TODO: don't remove, going to be used for logging
 	if (written % CHUNKSIZE != 0) //No need for padding since struct size 'should be' always multiple of 4? (Compiler does padding for structs) TODO: research more, will this happen when compiling for other platforms?
 	{
 		//printf("pad size = %i \n", CHUNKSIZE - (written % CHUNKSIZE)); //TODO: don't remove, going to be used for logging
 		write(fd, "PADD", CHUNKSIZE - (written % CHUNKSIZE));
 	}
 	write(fd, "CEND", CHUNKSIZE);
+	close(fd);
 }
 
 t_list *load_chunk(char *filename, char *chunkname, size_t size)
@@ -217,7 +222,6 @@ void	pack_file(char	*packname, char *filename)
 	ft_fileread(fd, &fc);
 	ft_strcpy(fc.name, filename);
 	close(fd);
-	printf("file read '%s' \n", (char *)fc.content);
 	fd = open(packname, O_RDWR | O_APPEND, 0666);
 	if (fd == -1)
 		return ;
@@ -244,7 +248,6 @@ void	force_pack_file(char	*packname, char *filename)
 	ft_fileread(fd, &fc);
 	ft_strcpy(fc.name, filename);
 	close(fd);
-	printf("file read '%s' \n", (char *)fc.content);
 	fd = open(packname, O_RDWR | O_APPEND, 0666);
 	if (fd == -1)
 		fd = open(packname, O_CREAT | O_RDWR | O_APPEND, 0666); //TODO: protect after this

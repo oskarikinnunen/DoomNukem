@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/27 15:47:49 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/30 13:48:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -342,7 +342,7 @@ static	void removevalid (int *valid, int count, int ri)
 	int	i;
 
 	i = 0;
-	printf("removing ear: %i \n", valid[ri]);
+	//printf("removing ear: %i \n", valid[ri]);
 	while (i < count - 1)
 	{
 		if (i >= ri)
@@ -698,7 +698,7 @@ void	free_object(t_object *object)
 
 #include "doomnukem.h"
 
-void	free_floor(t_world *world, t_room *room)
+void	free_floor(t_world *world, t_area *room)
 {
 	int	i;
 
@@ -715,15 +715,35 @@ void	free_floor(t_world *world, t_room *room)
 			destroy_entity(world, room->floors[i].entity);
 			room->floors[i].entity = NULL;
 		}
-		printf("freed floor %i \n", i);
 		i++;
 	}
 	//room->floorcount = 0;
 }
 
+void	free_ceilings(t_world *world, t_area *room)
+{
+	int	i;
+
+	i = 0;
+	while (i < room->ceilingcount)
+	{
+		if (room->ceilings[i].entity != NULL)
+		{
+			if (room->ceilings[i].entity->obj != NULL )
+			{
+				free_object(room->ceilings[i].entity->obj);
+				room->ceilings[i].entity->obj = NULL;
+			}
+			destroy_entity(world, room->ceilings[i].entity);
+			room->ceilings[i].entity = NULL;
+		}
+		i++;
+	}
+}
+
 //void	apply_currentfloortexture(t_world *world, t_room *room, char *texname)
 
-void	_room_triangulate_floors(t_world *world, t_room *room)
+void	_room_triangulate_floors(t_world *world, t_area *room)
 {
 	t_floorcalc	fc;
 	t_wall		*w;
@@ -741,10 +761,8 @@ void	_room_triangulate_floors(t_world *world, t_room *room)
 	triangulate(&fc, 2);
 	if (fc.facecount == 0)
 		return ;
-	room->floors = ft_memalloc(sizeof(t_meshtri) * fc.facecount * 2); // Times 2 for ceilings
+	ft_bzero(room->floors, sizeof(room->floors));
 	room->floorcount = fc.facecount;
-	if (room->floors == NULL)
-		error_log(EC_MALLOC);
 	i = 0;
 	while (i < fc.facecount)
 	{
@@ -752,7 +770,7 @@ void	_room_triangulate_floors(t_world *world, t_room *room)
 		mtri->entity = spawn_entity(world);
 		mtri->entity->rigid = true;
 		mtri->entity->obj = object_tri(world->sdl);
-		mtri->entity->obj->materials->img = get_image_by_name(*world->sdl, room->floortex);
+		mtri->entity->obj->materials->img = get_image_by_name(*world->sdl, room->s_floortex.str);
 		mtri->v[0] = v2tov3(fc.edges[fc.faces[i].v_indices[0]]);
 		mtri->v[1] = v2tov3(fc.edges[fc.faces[i].v_indices[1]]);
 		mtri->v[2] = v2tov3(fc.edges[fc.faces[i].v_indices[2]]);
@@ -767,7 +785,7 @@ void	_room_triangulate_floors(t_world *world, t_room *room)
 		mtri->uv[2] = vector2_div(mtri->uv[2], 100.0f);
 		applytrimesh(*mtri, mtri->entity->obj);
 		update_floor_bounds(mtri);
-		printf("created floor %i \n", i);
+		
 		//printf("uv 1: %f %f2: %f %f 3: %f %f\n", mtri->uv[0].x, mtri->uv[0].y, mtri->uv[1].x, mtri->uv[1].y, mtri->uv[2].x, mtri->uv[2].y);
 		//create_lightmap_for_entity(mtri->entity, world);
 		//create_map_for_entity(mtri->entity, world);
@@ -775,13 +793,13 @@ void	_room_triangulate_floors(t_world *world, t_room *room)
 	}
 }
 
-void	room_makefloor(t_world *world, t_room *room)
+void	room_makefloor(t_world *world, t_area *room)
 {
 	//free_floor(world, room);
 	_room_triangulate_floors(world, room);
 }
 
-void	room_makeceilings(t_world *world, t_room *room)
+void	room_makeceilings(t_world *world, t_area *room)
 {
 	int			i;
 	t_meshtri	*mtri;
@@ -789,12 +807,11 @@ void	room_makeceilings(t_world *world, t_room *room)
 	i = 0;
 	while (i < room->floorcount)
 	{
-		mtri = &room->floors[room->floorcount + i];
+		mtri = &room->ceilings[i];
 		mtri->entity = spawn_entity(world);
 		mtri->entity->rigid = true;
 		mtri->entity->obj = object_tri(world->sdl);
-		printf("allocated ceiling object %i total index %i\n", i, room->floorcount - 1 + i);
-		mtri->entity->obj->materials->img = get_image_by_name(*world->sdl, room->floortex);
+		mtri->entity->obj->materials->img = get_image_by_name(*world->sdl, room->s_ceiltex.str);
 		mtri->v[0] = room->floors[i].v[0];
 		mtri->v[1] = room->floors[i].v[1];
 		mtri->v[2] = room->floors[i].v[2];
@@ -808,7 +825,7 @@ void	room_makeceilings(t_world *world, t_room *room)
 		update_floor_bounds(mtri);
 		i++;
 	}
-	room->floorcount += i;
+	room->ceilingcount = i;
 	
 	/*free_floor(world, room);
 	room->floors = ft_memalloc(sizeof(t_meshtri) * 1000);

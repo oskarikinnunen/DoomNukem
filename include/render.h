@@ -210,8 +210,10 @@ typedef struct s_sdlcontext
 	float					*zbuffer;
 	float					resolution_scaling;
 	SDL_Renderer			*renderer; //TODO: for testing remove.
-	t_img					*textures;
-	uint32_t				texturecount;
+	t_img					*images;
+	uint32_t				imagecount;
+	t_img					*env_textures;
+	uint32_t				env_texturecount;
 	struct s_object			*objects;
 	int						ps1_tri_div;
 	bool					global_wireframe;

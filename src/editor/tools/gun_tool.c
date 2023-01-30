@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:49:59 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 19:52:00 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/30 19:53:12 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	list_gun_presets(t_editor *ed, t_sdlcontext sdl, t_point pos)
 	{
 		gun = l->content;
 		ft_bzero(str, sizeof(str));
-		snprintf(str, 256, "%s (model: %s)", gun->preset_name, gun->entity.object_name);
+		snprintf(str, 256, "%s (model: %s)", gun->preset_name, gun->entity.object_name.str);
 		if (instant_text_button(sdl, &ed->hid.mouse, str, point_add(pos, (t_point){10, i * 20})))
 		{
 			ed->player.gun = gun;

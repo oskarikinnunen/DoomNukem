@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 11:37:18 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/27 14:35:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/27 18:45:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 	modify existing nodes in an area, or remove them
 */
 
-t_vector2	*closest_edge(t_room *room, t_vector3 rc)
+t_vector2	*closest_edge(t_area *room, t_vector3 rc)
 {
 	int			i;
 	t_vector2	*edge;
@@ -34,7 +34,7 @@ t_vector2	*closest_edge(t_room *room, t_vector3 rc)
 	{
 		edge = &room->edges[i];
 		edge_3d = (t_vector3){edge->x, edge->y, room->height};
-		if (vector3_sqr_dist(rc, edge_3d) < 1000.0f && vector3_sqr_dist(rc, edge_3d) < prev_dist)
+		if (vector3_sqr_dist(rc, edge_3d) < 500.0f && vector3_sqr_dist(rc, edge_3d) < prev_dist)
 		{
 			looked = edge;
 			prev_dist = vector3_sqr_dist(rc, edge_3d);
@@ -64,7 +64,7 @@ static void draw_node_indicator(t_vector3 cursor, t_roomtooldata *dat, t_editor 
 	//print_text_boxed(world->sdl, "[X] Remove", point_add(center, (t_point){0, 10}));
 }
 
-static t_vector2	*_room_find_edge(t_vector2 edge, t_room *room)
+static t_vector2	*_room_find_edge(t_vector2 edge, t_area *room)
 {
 	int	i;
 
@@ -78,7 +78,7 @@ static t_vector2	*_room_find_edge(t_vector2 edge, t_room *room)
 	return (NULL);
 }
 
-static int	_room_find_edge_index(t_vector2 edge, t_room *room)
+static int	_room_find_edge_index(t_vector2 edge, t_area *room)
 {
 	int	i;
 
@@ -92,17 +92,17 @@ static int	_room_find_edge_index(t_vector2 edge, t_room *room)
 	return (-1);
 }
 
-static int next_index(int cur, t_room *room)
+static int next_index(int cur, t_area *room)
 {
 	if (cur == room->edgecount - 1)
 		return (0);
 	return (cur + 1);
 }
 
-void	remove_edge(t_world *world, t_room *room, t_vector2 *edge)
+void	remove_edge(t_world *world, t_area *room, t_vector2 *edge)
 {
 	t_list	*l;
-	t_room	*cur;
+	t_area	*cur;
 	t_vector2	orig;
 
 	l = world->roomlist;
@@ -120,7 +120,8 @@ void	remove_edge(t_world *world, t_room *room, t_vector2 *edge)
 				i++;
 			}
 			cur->edgecount--; //TODO: protect
-			i = match;
+			room_remove_entities(cur, world);
+			/*i = match;
 			while (i < cur->edgecount)
 			{
 				ft_memcpy(cur->walls[next_index(i,cur)].texname, cur->walls[i].texname, sizeof(char [256]));
@@ -130,7 +131,7 @@ void	remove_edge(t_world *world, t_room *room, t_vector2 *edge)
 			}
 			free_object(cur->walls[cur->wallcount - 1].entity->obj);
 			destroy_entity(world, cur->walls[cur->wallcount - 1].entity);
-			cur->wallcount--;
+			cur->wallcount--;*/
 			room_init(cur, world);
 			//make_areas(world, cur);
 			recalculate_joined_rooms(world, cur);
@@ -143,7 +144,7 @@ void	remove_edge(t_world *world, t_room *room, t_vector2 *edge)
 static void	recalculate_rooms_with_edge(t_editor *ed, t_vector2 edge)
 {
 	t_list	*l;
-	t_room	*r;
+	t_area	*r;
 	int		i;
 
 	l = ed->world.roomlist;
@@ -159,12 +160,12 @@ static void	recalculate_rooms_with_edge(t_editor *ed, t_vector2 edge)
 	}
 }
 
-void	applyedgedrag_solo(t_vector2 *edge, t_vector2 snap, t_room *room, t_world *world)
+void	applyedgedrag_solo(t_vector2 *edge, t_vector2 snap, t_area *room, t_world *world)
 {
 	int				i;
 	t_vector2		temp;
 	t_vector2		*test;
-	t_room			*cur;
+	t_area			*cur;
 	t_list			*l;
 	bool			legal;
 	t_vector2		orig;
@@ -190,9 +191,8 @@ void	applyedgedrag_solo(t_vector2 *edge, t_vector2 snap, t_room *room, t_world *
 	}
 	if (legal)
 	{
-		t_room	temp;
-		ft_bzero(&temp, sizeof(t_room));
-		temp.edges = ft_memalloc(sizeof(t_vector2) * 32);
+		t_area	temp;
+		ft_bzero(&temp, sizeof(t_area));
 		ft_memcpy(temp.edges, room->edges, sizeof(t_vector2) * 32);
 		temp.edgecount = room->edgecount;
 		if (edge_exists(orig, room))
@@ -200,16 +200,15 @@ void	applyedgedrag_solo(t_vector2 *edge, t_vector2 snap, t_room *room, t_world *
 			i = _room_find_edge_index(orig, room);
 			room->edges[i] = snap;
 		}
-		free(temp.edges);
 	}
 }
 
-void	applyedgedrag(t_vector2 *edge, t_vector2 cursor, t_room *room, t_world *world)
+void	applyedgedrag(t_vector2 *edge, t_vector2 cursor, t_area *room, t_world *world)
 {
 	int				i;
 	t_vector2		temp;
 	t_vector2		*test;
-	t_room			*cur;
+	t_area			*cur;
 	t_list			*l;
 	bool			legal;
 	t_vector2		orig;

@@ -21,11 +21,11 @@ void	editor_load_prefs(t_editor *ed, t_sdlcontext *sdl)
 		read(fd, &prefs, sizeof(t_editorprefs));
 		close(fd);
 		ed->player.transform.position = prefs.playerpos;
-		editor_load_and_init_world(ed, prefs.worldname, sdl);
 		printf("loading prefs from '%s' , worldname %s \n", prefpath, prefs.worldname);
+		editor_load_world_args(ed, prefs.worldname, sdl, LOAD_ARG_FULL);
 	}
 	else
-		editor_load_and_init_world(ed, "worlds/test123.world", sdl);
+		editor_load_world_args(ed, "default", sdl, LOAD_ARG_FULL);
 	SDL_free(prefpath);
 	free(pref_filename);
 }

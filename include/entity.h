@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/19 11:30:34 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/30 19:59:12 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,22 +34,21 @@ typedef enum s_entitystatus
 	es_active
 }	t_entitystatus;
 
-# define SAVESTRUCT
+#include "gamestring.h"
 typedef struct s_entity
 {
+	t_gamestring	object_name;
 	t_transform		transform;
+	uint16_t		id;
 	bool			ignore_raycasts;
 	bool			rigid;
 	bool			hidden;
-	char			object_name[64];
 	t_component		component;
 	t_entitystatus	status;
-	uint16_t		id;
 	t_bound			z_bound;
 	t_anim			animation;
 	t_object		*obj;
 	t_occlusion		occlusion;
-	t_vector2		max;
 	t_lightmap		*lightmap;
 	t_map			*map;
 }	t_entity;

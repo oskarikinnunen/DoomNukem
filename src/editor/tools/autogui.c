@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/15 17:56:53 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/30 19:54:58 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,8 +256,8 @@ void	objectgui_update(t_objectgui *ogui, t_entity **ent)
 	gui_start(gui);
 	i = 0;
 	gui_label("Selected:", gui);
-	if (*ent != NULL && ft_strlen((*ent)->object_name) > 0)
-		gui_label((*ent)->object_name, gui);
+	if (*ent != NULL && ft_strlen((*ent)->object_name.str) > 0)
+		gui_label((*ent)->object_name.str, gui);
 	else
 		gui_emptyvertical(20, gui);
 	gui_emptyvertical(20, gui);
@@ -272,8 +272,9 @@ void	objectgui_update(t_objectgui *ogui, t_entity **ent)
 				(*ent) = ft_memalloc(sizeof(t_entity));
 				(*ent)->transform.scale = vector3_one();
 			}
-			(*ent)->obj = obj;
-			ft_strcpy((*ent)->object_name, obj->name);
+			//entity_assign_object(ogui)
+			(*ent)->obj = obj; //TODO: use entity_assign_object..
+			ft_strcpy((*ent)->object_name.str, obj->name);
 			if (ogui->autoclose)
 				gui->hidden = true;
 		}

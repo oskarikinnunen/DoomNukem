@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/05 13:48:43 by raho              #+#    #+#             */
-/*   Updated: 2023/01/26 14:31:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/27 18:45:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,7 +202,7 @@ bool	wall_capsule_share_z(t_wall	*wall, t_characterphysics cp)
 bool	check_collision_character(t_world *world, t_characterphysics cp, t_vector3 potential_pos, t_vector3 *new_pos)
 {
 	t_list		*l;
-	t_room		*room;
+	t_area		*room;
 	int			index;
 	t_collision	collision;
 
@@ -238,7 +238,7 @@ bool	check_collision_character(t_world *world, t_characterphysics cp, t_vector3 
 bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, t_vector3 *new_pos)
 {
 	t_list		*l;
-	t_room		*room;
+	t_area		*room;
 	int			index;
 	t_collision	collision;
 

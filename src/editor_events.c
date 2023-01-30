@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/26 10:57:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/30 17:04:01 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,11 @@ t_gamereturn	editor_events(t_editor *ed)
 				ed->world.debug_gui->hidden = !ed->world.debug_gui->hidden;
 			if (iskey(e, SDLK_F3))
 				ed->graphics_gui.hidden = !ed->graphics_gui.hidden;
+			if (iskey(e, SDLK_F5))
+			{
+				world_save_to_file(ed->world);
+				ed->world.lastsavetime = ed->world.clock.prev_time;
+			}
 		}
 		if (e.type == SDL_CONTROLLERBUTTONDOWN)
 		{

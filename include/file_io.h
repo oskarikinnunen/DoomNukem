@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 16:56:41 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/17 02:02:00 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/30 16:06:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,13 @@ typedef struct s_filecontent
 	uint64_t	length;
 	void		*content;
 }	t_filecontent;
+
+typedef enum e_load_arg
+{
+	LOAD_ARG_AMAP,
+	LOAD_ARG_AMAP_AND_BASIC,
+	LOAD_ARG_FULL
+}	t_load_arg;
 
 void	save_entitylist(t_list *entitylist, char *filename);
 t_list	*load_chunk(char *filename, char *chunkname, size_t size);
@@ -40,5 +47,9 @@ int		fileopen(char *filename, int flags);
 
 
 void	generate_struct_datas();
+/* World save/load */
+char	*world_filename(char *worldname, char *suffix);
+
+
 
 #endif
