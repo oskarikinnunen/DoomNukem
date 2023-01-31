@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 22:35:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/31 15:48:34 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,10 +72,10 @@ void	create_sdl_window(t_sdlcontext *sdl, t_screenmode mode)
 			sdl->window_w, sdl->window_h, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN);
 	}
 	if (sdl->window == NULL)
-		error_log(EC_SDL_CREATEWINDOW);
+		doomlog(LOGEC_SDL_CREATEWINDOW, NULL);
 	sdl->window_surface = SDL_GetWindowSurface(sdl->window);
 	if (sdl->window_surface == NULL)
-		error_log(EC_SDL_GETWINDOW_SURFACE);
+		doomlog(LOGEC_SDL_GETWINDOW_SURFACE, NULL);
 }
 
 void	set_sdl_settings(t_sdlcontext *sdl)
@@ -94,10 +94,10 @@ void	set_sdl_settings(t_sdlcontext *sdl)
 	
 	sdl->surface = SDL_CreateRGBSurfaceWithFormat(SDL_SWSURFACE, sdl->window_w, sdl->window_h, 32, SDL_PIXELFORMAT_ARGB8888);
 	if (sdl->surface == NULL)
-		error_log(EC_SDL_CREATERGBSURFACE);
+		doomlog(LOGEC_SDL_CREATERGBSURFACE, NULL);
 	sdl->ui_surface = SDL_CreateRGBSurfaceWithFormat(SDL_SWSURFACE, sdl->window_w, sdl->window_h, 32, SDL_PIXELFORMAT_ARGB8888);
 	if (sdl->ui_surface == NULL)
-		error_log(EC_SDL_CREATERGBSURFACE);
+		doomlog(LOGEC_SDL_CREATERGBSURFACE, NULL);
 	sdl->zbuffer = ft_memalloc(sdl->window_w * sdl->window_h * sizeof(float));
 	sdl->scaling_buffer = ft_memalloc(sdl->window_w * sdl->window_w * sizeof(uint32_t));
 	alloc_occlusion(sdl);
@@ -118,7 +118,7 @@ void	create_sdlcontext(t_sdlcontext	*sdl)
 		|| SDL_Init(SDL_INIT_EVENTS) < 0 \
 		|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0 \
 		|| TTF_Init() < 0)
-		error_log(EC_SDL_INIT);
+		doomlog(LOGEC_SDL_INIT, NULL);
 	set_sdl_settings(sdl);
 	printf("audio volume %f \n", sdl->audio.sfx_volume);
 	load_assets(sdl);

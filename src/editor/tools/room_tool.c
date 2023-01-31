@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 19:49:23 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/31 16:11:45 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ void ptr_add(void **ptr, uint32_t *len, size_t size, void *add)
 
 	newptr = ft_memalloc((*len + 1) * size);
 	if (newptr == NULL)
-		error_log(EC_MALLOC);
+		doomlog(LOGEC_MALLOC, NULL);
 	if (*ptr != NULL)
 	{
 		ft_memcpy(newptr, *ptr, *len * size);

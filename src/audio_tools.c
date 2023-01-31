@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   audio_tools.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/27 11:14:16 by raho              #+#    #+#             */
-/*   Updated: 2023/01/14 20:23:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/31 16:19:34 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,6 @@ int	check_channel_status(FMOD_CHANNEL *channel)
 
 	isplaying = 0;
 	if (FMOD_Channel_IsPlaying(channel, &isplaying) != FMOD_OK)
-		error_log(EC_FMOD_CHANNELISPLAYING);
+		doomlog(LOGEC_FMOD_CHANNELISPLAYING, NULL);
 	return (isplaying);
 }

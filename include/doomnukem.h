@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/28 15:03:28 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/31 13:52:48 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define DOOMNUKEM_H
 
 # include "libft.h"
-# include "error_log.h"
+# include "log.h"
 # include "limits.h" //TODO: remove mby? just define INT_MAX yourself
 # include <math.h>
 # include <fcntl.h>

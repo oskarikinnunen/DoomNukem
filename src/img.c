@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   img.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 13:42:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/14 19:25:08 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/31 15:49:29 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,5 +91,5 @@ void	alloc_image(t_img *img, int width, int height)
 	img->length = width * height;
 	img->data = ft_memalloc(img->length * sizeof(uint32_t));
 	if (img->data == NULL)
-		error_log(EC_MALLOC);
+		doomlog(LOGEC_MALLOC, NULL);
 }

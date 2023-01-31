@@ -390,7 +390,7 @@ void		destroy_entity(t_world *world, t_entity *ent)
 	cache->entities[ent->id].status = es_free;
 	cache->entities[ent->id].obj = NULL;
 	if (cache->existing_entitycount == 0)
-		error_log(EC_MALLOC);
+		doomlog(LOGEC_MALLOC, NULL);
 	cache->existing_entitycount--;
 	printf("%i entities exist after remove \n", cache->existing_entitycount);
 }
@@ -423,13 +423,13 @@ t_entity	*spawn_entity(t_world	*world)
 			//cache->entities[i].transform.scale = vector3_zero();
 			cache->existing_entitycount++;
 			if (cache->existing_entitycount >= cache->alloc_count)
-				error_log(EC_MALLOC);
+				doomlog(LOGEC_MALLOC, NULL);
 			return (&cache->entities[i]);
 		}
 		i++;
 	}
 	printf("ENTITYCACHE TOO SMALL, ABORT!");
-	error_log(EC_MALLOC);
+	doomlog(LOGEC_MALLOC, NULL);
 	return (NULL); //never gets here
 }
 

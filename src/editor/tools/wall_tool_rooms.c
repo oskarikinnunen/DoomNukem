@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wall_tool_rooms.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/23 04:37:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/31 16:11:09 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -745,7 +745,7 @@ void	makefloor_room(t_world *world, t_room *room)
 	room->floors = ft_memalloc(sizeof(t_meshtri) * fc.facecount);
 	room->floorcount = fc.facecount;
 	if (room->floors == NULL)
-		error_log(EC_MALLOC);
+		doomlog(LOGEC_MALLOC, NULL);
 	i = 0;
 	while (i < fc.facecount)
 	{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lua_conf.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 22:32:28 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/31 16:14:14 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,7 +183,7 @@ void	load_lua_conf(t_sdlcontext *sdl)
 	else
 	{
 		printf("LUA FILE NOT OK \n");
-		error_log(EC_SDL_INIT);
+		doomlog(LOGEC_SDL_INIT, NULL);
 	}
 	lua_close(lua);
 	return ;
