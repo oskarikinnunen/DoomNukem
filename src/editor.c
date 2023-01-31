@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/28 17:08:00 by raho             ###   ########.fr       */
+/*   Updated: 2023/01/24 11:34:18 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,7 +243,7 @@ int	editorloop(t_sdlcontext sdl)
 		update_editor_toolbar(&ed, &ed.toolbar_gui);
 		if (ed.tool != NULL)
 			ed.tool->update(&ed, &sdl);
-
+		
 		char *fps = ft_itoa(ed.world.clock.fps);
 		print_text(&sdl, fps, (t_point){sdl.window_w - 80, 10});
 		drawcircle(sdl, point_div(sdl.screensize, 2), 4, CLR_BLUE);
@@ -253,7 +253,7 @@ int	editorloop(t_sdlcontext sdl)
 		ed.hid.mouse.click_unhandled = false;
 		memcpy(sdl.window_surface->pixels, sdl.surface->pixels, sizeof(uint32_t) * sdl.window_w * sdl.window_h);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
-			doomlog(LOGEC_SDL_UPDATEWINDOWSURFACE, );
+			error_log(EC_SDL_UPDATEWINDOWSURFACE);
 		update_audio(&ed.world);
 		//play_localsound()
 	}
@@ -262,9 +262,6 @@ int	editorloop(t_sdlcontext sdl)
 	save_world(ed.world.name, ed.world);
 	free_render(sdl.render);
 	if (ed.gamereturn == game_exit)
-	{
-		close
 		quit_game(&sdl);
-	
 	return (ed.gamereturn);
 }

@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/01/28 17:13:14 by raho             ###   ########.fr        #
+#    Updated: 2023/01/28 14:59:49 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -61,7 +61,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		moveplayer.c \
 		collision.c \
 		errors.c \
-		doomlog.c \
+		log.c \
 		physics.c \
 		perfgraph.c \
 		png.c lua_conf.c list_helper.c \
