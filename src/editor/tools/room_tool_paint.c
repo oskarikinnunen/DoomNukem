@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 14:52:25 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/09 16:52:49 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/27 18:45:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,19 +20,19 @@ int		get_image_index(t_sdlcontext *sdl, t_img *img, int prev)
 	int	i;
 
 	i = 0;
-	while (i < sdl->texturecount)
+	while (i < sdl->env_texturecount)
 	{
-		if (&sdl->textures[i] == img)
+		if (&sdl->env_textures[i] == img)
 			return (i);
 		i++;
 	}
 	return (prev);
 }
 
-t_room	*get_floor_room(t_world *world, t_entity *entity)
+t_area	*get_floor_room(t_world *world, t_entity *entity)
 {
 	t_list	*l;
-	t_room	*r;
+	t_area	*r;
 	int		i;
 
 	l = world->roomlist;
@@ -52,22 +52,61 @@ t_room	*get_floor_room(t_world *world, t_entity *entity)
 	return (NULL);
 }
 
-void	apply_floortexture(t_world *world, t_room *room, char *texname)
+void	apply_floortexture(t_world *world, t_area *room, char *texname) //TODO: remove
 {
 	int			i;
 	t_meshtri	*floor;
 
 	i = 0;
-	ft_strcpy(room->floortex, texname); //TODO: strncpy
-	while (i < room->floorcount)
+	ft_strcpy(room->s_floortex.str, texname);
+}
+
+static t_wall	*_room_get_wall_with_entity(t_area *room, t_entity *entitymatch)
+{
+	int	i;
+
+	i = 0;
+	while (i < room->wallcount)
 	{
-		floor = &room->floors[i];
-		if (floor->entity->obj != NULL)
-		{
-			floor->entity->obj->materials->img = get_image_by_name(*world->sdl, room->floortex);
-		}
+		if (room->walls[i].entity == entitymatch)
+			return (&room->walls[i]);
 		i++;
 	}
+	return (NULL);
+}
+
+static t_area	*_world_get_room_with_entity(t_world *world, t_entity *entitymatch)
+{
+	t_list	*l;
+	t_area	*room;
+
+	l = world->roomlist;
+	while (l != NULL)
+	{
+		room = l->content;
+		if (_room_get_wall_with_entity(room, entitymatch) != NULL)
+			return (room);
+		l = l->next;
+	}
+	return (NULL);
+}
+
+static t_wall	*_world_get_wall_with_entity(t_world *world, t_entity *entitymatch)
+{
+	t_list	*l;
+	t_area	*room;
+	t_wall	*found;
+
+	l = world->roomlist;
+	while (l != NULL)
+	{
+		room = l->content;
+		found = _room_get_wall_with_entity(room, entitymatch);
+		if (found != NULL)
+			return (found);
+		l = l->next;
+	}
+	return (NULL);
 }
 
 void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
@@ -98,8 +137,8 @@ void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	else if (ed->hid.mouse.scroll_delta < 0)
 		delt = -1;
 	img_index += delt;
-	img_index = ft_clamp(img_index, 0, sdl->texturecount - 1);
-	tex = &sdl->textures[img_index];
+	img_index = ft_clamp(img_index, 0, sdl->env_texturecount - 1);
+	tex = &sdl->env_textures[img_index];
 	
 	if (img_index != prev_img_index)
 	{
@@ -125,9 +164,9 @@ void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 
 			cur = point_add(middle, point_mul((t_point){36, 0}, i));
 			cur.y = middle.y + (cos(i / 5.0f) * 164);
-			if (img_index + i >= 0 && img_index + i < sdl->texturecount)
+			if (img_index + i >= 0 && img_index + i < sdl->env_texturecount)
 			{
-				draw_image(*sdl, cur, sdl->textures[img_index + i], (t_point){32,32});
+				draw_image(*sdl, cur, sdl->env_textures[img_index + i], (t_point){32,32});
 			}
 			i++;
 		}
@@ -141,9 +180,9 @@ void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 		t_rectangle rect;
 		rect.position = cur;
 		rect.size = (t_point){32,32};
-		if (img_index + i >= 0 && img_index + i < sdl->texturecount)
+		if (img_index + i >= 0 && img_index + i < sdl->env_texturecount)
 		{
-			draw_image(*sdl, cur, sdl->textures[img_index + i], (t_point){32,32});
+			draw_image(*sdl, cur, sdl->env_textures[img_index + i], (t_point){32,32});
 			if (i == 0)
 				drawrectangle(*sdl, rect, AMBER_4);
 		}
@@ -158,12 +197,25 @@ void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 		ent->obj->materials->img != tex && tex != NULL
 		&& ent->obj != NULL)
 	{
-		ent->obj->materials->img = tex;
+		t_wall *wall;
+		wall = _world_get_wall_with_entity(&ed->world, ent);
+		if (wall != NULL)
+		{
+			ft_strcpy(wall->s_walltex.str, tex->name);
+			t_area *associated_room = _world_get_room_with_entity(&ed->world, ent);
+			if (associated_room != NULL) //TODO: combine world_get_wall_with entity with get_room_with_entity, maybe just have separate raycast for rtm_paint
+			{
+				printf("initwalls called from rtm_paint\n");
+				room_init(associated_room, &ed->world);
+			}
+		}
+			
+		/*ent->obj->materials->img = tex;
 		t_room	*fr = get_floor_room(&ed->world, ent);
 		if (fr != NULL)
 		{
 			apply_floortexture(&ed->world, fr, tex->name);
-		}
+		}*/
 		//create_lightmap_for_entity(ent, &ed->world);
 		//create_map_for_entity(ent, &ed->world);
 	}

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/01 14:25:58 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/01 20:33:51 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,17 +30,14 @@ char	*world_fullpath(char	*filename)
 	return	(fullname);
 }
 
-void	editor_load_and_init_world(t_editor *ed, char	*worldname, t_sdlcontext *sdl)
+void	editor_load_world_args(t_editor *ed, char	*worldname, t_sdlcontext *sdl, t_load_arg args)
 {
-	ed->world = load_world(world_fullpath(worldname), sdl);
+	ed->world = load_world_args(worldname, sdl, args);
 	*(ed->world.debug_gui) = init_gui(sdl, &ed->hid, &ed->player, sdl->screensize, "Debugging menu (F2)");
-	ed->world.debug_gui->minimum_size.y = 135;
-	ed->world.debug_gui->rect.position = sdl->screensize;
+	
 	ed->toolbar_gui = init_gui(sdl, &ed->hid, &ed->player, (t_point){5, 5}, "Toolbar (F1)");
 	ed->toolbar_gui.minimum_size = (t_point){165, 20};
 	ed->toolbar_gui.locked = true;
-	//ed->world.debug_gui
-	
 	
 	ed->graphics_gui = init_gui(sdl, &ed->hid, &ed->player, sdl->screensize, "Graphics (F3)");
 	ed->graphics_gui.minimum_size = (t_point){200, 200};
@@ -52,9 +49,27 @@ void	editor_load_and_init_world(t_editor *ed, char	*worldname, t_sdlcontext *sdl
 	ed->world.debug_gui->hidden = true;
 	ed->graphics_gui.hidden = true;
 	ed->world.player = &ed->player;
-	//update_debugconsole(&ed->world.debugconsole, sdl, ed->world.clock.delta);
-	//debugconsole_addmessage(&ed->world.debugconsole, "Loaded world");
-	//ed->world.debugconsole.
+}
+
+void	editor_load_world(t_editor *ed, char	*worldname, t_sdlcontext *sdl)
+{
+	ed->world = load_world(world_fullpath(worldname), sdl);
+	*(ed->world.debug_gui) = init_gui(sdl, &ed->hid, &ed->player, sdl->screensize, "Debugging menu (F2)");
+	
+	ed->toolbar_gui = init_gui(sdl, &ed->hid, &ed->player, (t_point){5, 5}, "Toolbar (F1)");
+	ed->toolbar_gui.minimum_size = (t_point){165, 20};
+	ed->toolbar_gui.locked = true;
+	
+	ed->graphics_gui = init_gui(sdl, &ed->hid, &ed->player, sdl->screensize, "Graphics (F3)");
+	ed->graphics_gui.minimum_size = (t_point){200, 200};
+	ed->graphics_gui.rect.position = point_div(sdl->screensize, 2);
+	//ed->graphics_gui.locked = true;
+	ed->player.noclip = true;
+	player_init(&ed->player, sdl, &ed->world);
+	ed->player.gun->disabled = true;
+	ed->world.debug_gui->hidden = true;
+	ed->graphics_gui.hidden = true;
+	ed->world.player = &ed->player;
 }
 
 /*
@@ -214,6 +229,51 @@ void	update_audio(t_world *world)
 	FMOD_System_Update(sdl->audio.system);
 }
 
+char	*seconds_since_last_save_str(t_world *world)
+{
+	static char str[128];
+	uint32_t	time_m;
+	uint32_t	time_s;
+	char		*temp;
+
+	time_s = world->clock.prev_time - world->lastsavetime;
+	time_s = time_s / 1000;
+	time_m = 0;
+	if (world->lastsavetime == 0)
+		ft_strcpy(str, "Loaded ");
+	else
+		ft_strcpy(str, "Saved  ");
+	if (time_s > 60)
+	{
+		time_m = floorf((float)time_s / 60.0f);
+		temp = ft_itoa(time_m);
+		ft_strcat(str, temp);
+		free(temp);
+		ft_strcat(str, "m ");
+	}
+	temp = ft_itoa(time_s - (time_m * 60));
+	ft_strcat(str, temp);
+	free(temp);
+	ft_strcat(str, "s ago");
+	return (str);
+}
+
+void	draw_level_info(t_sdlcontext *sdl, t_world *world)
+{
+	static t_point real_c;
+	char	*time_str;
+
+	if (real_c.x == 0)
+	{
+		real_c = print_text_boxed(sdl, world->name, (t_point){30, 0}).size;
+		real_c = point_sub(point_div(sdl->screensize, 2), real_c);
+		real_c.y = sdl->screensize.y - 30;
+	}
+	print_text_boxed(sdl, world->name, real_c);
+	time_str = seconds_since_last_save_str(world);
+	print_text_boxed(sdl, time_str, point_add(real_c, (t_point){0, 15}));
+}
+
 int	editorloop(t_sdlcontext sdl)
 {
 	t_editor	ed;
@@ -248,6 +308,7 @@ int	editorloop(t_sdlcontext sdl)
 		print_text(&sdl, fps, (t_point){sdl.window_w - 80, 10});
 		drawcircle(sdl, point_div(sdl.screensize, 2), 4, CLR_BLUE);
 		free(fps);
+		draw_level_info(&sdl, &ed.world);
 		update_editor_lateguis(&ed);
 		update_debugconsole(&ed.world.debugconsole, &sdl, ed.world.clock.delta);
 		ed.hid.mouse.click_unhandled = false;
@@ -259,7 +320,8 @@ int	editorloop(t_sdlcontext sdl)
 	}
 	editor_save_prefs(&ed);
 	save_graphics_prefs(&sdl);
-	save_world(ed.world.name, ed.world);
+	//save_world(ed.world.name, ed.world);
+	world_save_to_file(ed.world);
 	free_render(sdl.render);
 	if (ed.gamereturn == game_exit)
 		quit_game(&sdl);

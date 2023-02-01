@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/17 15:09:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/30 16:12:36 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,9 @@ struct	s_mouse;
 
 void				update_editor_toolbar(t_editor *ed, t_autogui *toolbar);
 t_gamereturn		editor_events(t_editor *ed);
-void				editor_load_and_init_world(t_editor *ed, char	*worldname, t_sdlcontext *sdl);
+void				editor_load_world(t_editor *ed, char	*worldname, t_sdlcontext *sdl);
+enum	e_load_arg;
+void				editor_load_world_args(t_editor *ed, char	*worldname, t_sdlcontext *sdl, enum e_load_arg args);
 
 /* EDITORPREFERENCES.C */
 void				editor_load_prefs(t_editor *ed, t_sdlcontext *sdl);
@@ -192,7 +194,7 @@ t_tool				*get_entity_tool(void);
 t_tool				*get_npc_tool(void);
 t_tool				*get_load_tool(void);
 void				rendergrid(t_world *world, t_vector3 position, int size, uint32_t color);
-bool				rooms_share_zspace(t_room *room1, t_room *room2);
+bool				rooms_share_zspace(t_area *room1, t_area *room2);
 
 typedef struct s_raycastinfo
 {
@@ -210,7 +212,8 @@ int32_t				entity_lookedat_triangle_index(t_editor *ed, t_sdlcontext sdl, t_enti
 t_vector3			*entity_lookedat_vertex(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
 t_entity			*selected_entity(t_editor *ed, t_sdlcontext sdl);
 
-void			make_areas(t_world *world, t_room *room);
+void			room_makefloor(t_world *world, t_area *room);
+void			room_makeceilings(t_world *world, t_area *room);
 
 /* TOOL_COMMON_FUNCTIONS.C */
 void				string_box(char *name, char *str, t_editor *ed, t_sdlcontext sdl, t_point pos);

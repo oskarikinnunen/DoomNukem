@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tool_common_functions.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 13:54:44 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 17:56:10 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/30 19:53:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,22 +142,4 @@ void	string_box(char *name, char *str, t_editor *ed, t_sdlcontext sdl, t_point p
 			}
 		}
 	}
-}
-
-t_object	*object_selector2(t_editor *ed, t_sdlcontext sdl, t_entity *original)
-{
-	int			i;
-	char	str[256] = { };
-
-	i = 0;
-	while (i < sdl.objectcount)
-	{
-		if (instant_text_button(sdl, &ed->hid.mouse, sdl.objects[i].name, (t_point){20, 200 + (i * 20)}))
-		{
-			ft_strcpy(original->object_name, sdl.objects[i].name);
-			return (&sdl.objects[i]);
-		}
-		i++;
-	}
-	return (original->obj);
 }

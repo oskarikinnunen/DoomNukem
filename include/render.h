@@ -210,8 +210,10 @@ typedef struct s_sdlcontext
 	float					*zbuffer;
 	float					resolution_scaling;
 	SDL_Renderer			*renderer; //TODO: for testing remove.
-	t_img					*textures;
-	uint32_t				texturecount;
+	t_img					*images;
+	uint32_t				imagecount;
+	t_img					*env_textures;
+	uint32_t				env_texturecount;
 	struct s_object			*objects;
 	int						ps1_tri_div;
 	bool					global_wireframe;
@@ -263,7 +265,9 @@ void				render_gizmo3d(t_sdlcontext *sdl, t_vector3 pos, int size, uint32_t colo
 void				render_gizmo2d(t_sdlcontext *sdl, t_vector2 pos, int size, uint32_t color);
 void				render_ball(t_sdlcontext *sdl, t_vector3 pos, float size, uint32_t clr);
 void				render_capsule(t_sdlcontext *sdl, t_vector3 pos, float height, float radius, uint32_t clr);
+void				render_circle(t_sdlcontext *sdl, t_vector3 pos, float radius, uint32_t clr);
 void				render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to);
+void				render_ray3D(t_sdlcontext *sdl, t_vector3 from, t_vector3 to, uint32_t clr);
 void				draw_screen_to_worldspace_ray(t_sdlcontext sdl, t_render render, t_point origin, t_vector2 angle);
 void				clipped_point_triangle(t_render *render, t_sdlcontext sdl);
 void				render_buffer(t_sdlcontext *sdl, t_render *render);

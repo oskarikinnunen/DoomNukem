@@ -6,13 +6,13 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:52:00 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/24 10:45:18 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/30 13:46:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tools/roomtool.h"
 
-void    free_roomwalls(t_world *world, t_room *room)
+void	free_roomwalls(t_world *world, t_area *room)
 {
 	int     i;
 	t_wall  *w;
@@ -21,13 +21,18 @@ void    free_roomwalls(t_world *world, t_room *room)
 	while (i < room->wallcount)
 	{
 		w = &room->walls[i];
-		destroy_entity(world, w->entity);
+		if (w->entity != NULL)
+		{
+			destroy_entity(world, w->entity);
+			w->entity = NULL;
+		}
 		i++;
 	}
-	free(room->walls);
+	//free(room->walls);
+	//room->wallcount = 0;
 }
 
-void    set_nullentities(t_wall **ptr, int count)
+void	set_nullentities(t_wall **ptr, int count)
 {
 	int i;
 

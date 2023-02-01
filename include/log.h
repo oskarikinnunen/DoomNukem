@@ -6,13 +6,12 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 20:21:24 by raho              #+#    #+#             */
-/*   Updated: 2023/01/31 15:40:39 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/01 20:18:08 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LOG_H
 # define LOG_H
-
 
 # define LOG_NORMAL 0
 # define LOG_WARNING 1
@@ -50,7 +49,13 @@
 /* code defines start with LOG */
 void	doomlog(int code, char *str);
 
-/* use this through doomlog() */
-void	errors(int error_code, int fd, char *str);
+/* example: doomlog_mul(LOG_NORMAL, (char *[32]){"parsed", s_itoa(i), "imagefiles", NULL}); */
+void	doomlog_mul(int code, char **str);
+
+/* don't use this manually, call doomlog() instead */
+void	error_codes(int ec, int fd);
+
+/* converts integer to a stack memory string */
+char *s_itoa(int i);
 
 #endif

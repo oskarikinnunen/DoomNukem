@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/31 16:14:14 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/01 20:33:46 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,32 @@ void	allocate_image_count(t_sdlcontext *sdl)
 		}
 		closedir(d);
 	}
-	sdl->texturecount = i;
-	printf("Found %i .cng files \n", sdl->objectcount);
-	sdl->textures = ft_memalloc(sizeof(t_img) * sdl->texturecount);
+	sdl->imagecount = i;
+	sdl->images = ft_memalloc(sizeof(t_img) * sdl->imagecount);
+}
+
+void	allocate_env_texturecount(t_sdlcontext *sdl)
+{
+	DIR				*d;
+	struct dirent	*dfile;
+	char path		[256] = "assets/images/env";
+	int				i;
+
+	d = opendir(path);
+	i = 0;
+	if (d)
+	{
+		dfile = readdir(d);
+		while (dfile != NULL)
+		{
+			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".cng") != NULL)
+				i++;
+			dfile = readdir(d);
+		}
+		closedir(d);
+	}
+	sdl->env_texturecount = i;
+	sdl->env_textures = ft_memalloc(sizeof(t_img) * sdl->env_texturecount);
 }
 
 void	load_all_images(t_sdlcontext *sdl)
@@ -119,8 +142,8 @@ void	load_all_images(t_sdlcontext *sdl)
 			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".cng") != NULL)
 			{
 				snprintf(fullpath, 512, "%s/%s", path, dfile->d_name);
-				sdl->textures[i] = pngparse(fullpath);
-				ft_strcpy(sdl->textures[i].name, dfile->d_name);
+				sdl->images[i] = pngparse(fullpath);
+				ft_strcpy(sdl->images[i].name, dfile->d_name);
 				printf("	parsed cpng file: %s \n", fullpath);
 				i++;
 			}
@@ -128,7 +151,39 @@ void	load_all_images(t_sdlcontext *sdl)
 		}
 		closedir(d);
 	}
-	printf("parsed %i imagefiles \n", i);
+	doomlog_mul(LOG_NORMAL, (char *[32]){"parsed", s_itoa(i), "imagefiles", NULL});
+}
+
+void	load_all_env_textures(t_sdlcontext *sdl)
+{
+	DIR				*d;
+	struct dirent	*dfile;
+	char path		[256] = "assets/images/env";
+	char fullpath	[512];
+	int				i;
+
+	printf("LOAD ENV_TEX! \n");
+	allocate_env_texturecount(sdl);
+	d = opendir(path);
+	i = 0;
+	if (d)
+	{
+		dfile = readdir(d);
+		while (dfile != NULL)
+		{
+			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".cng") != NULL)
+			{
+				snprintf(fullpath, 512, "%s/%s", path, dfile->d_name);
+				sdl->env_textures[i] = pngparse(fullpath);
+				ft_strcpy(sdl->env_textures[i].name, dfile->d_name);
+				printf("	parsed cpng file: %s \n", fullpath);
+				i++;
+			}
+			dfile = readdir(d);
+		}
+		closedir(d);
+	}
+	printf("parsed %i env_textures \n", i);
 }
 
 void	load_images(lua_State *lua, t_sdlcontext *sdl)
@@ -159,6 +214,7 @@ void	load_resolution(lua_State *lua, t_sdlcontext *sdl)
 void	load_assets(t_sdlcontext *sdl)
 {
 	load_all_images(sdl);
+	load_all_env_textures(sdl);
 	load_all_objects(sdl);
 	load_fonts(&sdl->font);
 	load_audio(&sdl->audio);

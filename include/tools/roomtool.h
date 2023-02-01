@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:42:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 19:50:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/27 18:45:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ typedef struct s_roomtooldata
 	t_autogui		newroom_gui;
 	t_autogui		paint_gui;
 	t_raycastinfo	raycastinfo;
-	t_room			*room;
+	t_area			*room;
 	t_wall			wall;
 	t_wall			*ed_wall;
 	t_vector2		*held_edge;
@@ -49,16 +49,23 @@ typedef struct s_roomtooldata
 	t_floorcalc		fc;
 }	t_roomtooldata;
 
-bool		isconnect(t_vector2 v2, t_room *room);
+bool		isconnect(t_vector2 v2, t_area *room);
 t_vector2	vector2_flipxy(t_vector2 vec);
-void		highlight_room(t_editor *ed, t_sdlcontext *sdl, t_room *room, uint32_t color);
+void		highlight_room(t_editor *ed, t_sdlcontext *sdl, t_area *room, uint32_t color);
 //void		highlight_roomwalls(t_editor *ed, t_sdlcontext sdl, t_room room, uint32_t color);
-t_meshtri	*selectedfloor(t_editor *ed, t_sdlcontext sdl, t_room *room);
-t_wall		*selectedwall(t_editor *ed, t_sdlcontext sdl, t_room *room);
-t_room		*selectedroom(t_editor *ed, t_sdlcontext sdl);
+t_meshtri	*selectedfloor(t_editor *ed, t_sdlcontext sdl, t_area *room);
+t_wall		*selectedwall(t_editor *ed, t_sdlcontext sdl, t_area *room);
+t_area		*selectedroom(t_editor *ed, t_sdlcontext sdl);
 
 /*ROOM_TOOL_PAINT.C*/
 void		room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat);
+
+/* ROOM_TOOL_ADDNODE.C */
+bool	potentialnode(t_vector3 cursor, t_roomtooldata *dat, t_editor *ed);
+
+/* ROOM_TOOL_NODE.C */
+void		room_tool_node(t_vector3 cursor, t_roomtooldata *dat, t_editor *ed);
+t_vector2	*closest_edge(t_area *room, t_vector3 rc);
 
 
 # endif

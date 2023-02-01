@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:53:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 13:33:30 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/27 18:45:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ t_vector2   vector2_flipxy(t_vector2 vec)
 	return ((t_vector2) {-vec.y, vec.x});
 }
 
-t_vector2 prev_edge(t_room *room, int i)
+t_vector2 prev_edge(t_area *room, int i)
 {
 	int	ni;
 
@@ -31,7 +31,7 @@ t_vector2 prev_edge(t_room *room, int i)
 void	toggle_ceilings(t_world *world)
 {
 	t_list	*l;
-	t_room	*r;
+	t_area	*r;
 	int		i;
 
 	l = world->roomlist;
@@ -52,19 +52,19 @@ void	toggle_ceilings(t_world *world)
 	}
 }
 
-bool	rooms_share_zspace(t_room *room1, t_room *room2)
+bool	rooms_share_zspace(t_area *room1, t_area *room2)
 {
 	bool	share = false;
-	if (room1->height < (room2->height + room2->ceiling_height)
+	if (room1->height <= (room2->height + room2->ceiling_height)
 		&& room1->height >= room2->height)
 		share = true;
-	if (room2->height < (room1->height + room1->ceiling_height)
+	if (room2->height <= (room1->height + room1->ceiling_height)
 		&& room2->height >= room1->height)
 		share = true;
 	return (share);
 }
 
-t_vector2 next_edge(t_room *room, int i)
+t_vector2 next_edge(t_area *room, int i)
 {
 	int	ni;
 
@@ -74,7 +74,7 @@ t_vector2 next_edge(t_room *room, int i)
 	return (room->edges[ni]);
 }
 
-bool	isconnect(t_vector2 v2, t_room *room)
+bool	isconnect(t_vector2 v2, t_area *room)
 {
 	int		i;
 	t_wall	w;
@@ -90,7 +90,7 @@ bool	isconnect(t_vector2 v2, t_room *room)
 	return (false);
 }
 
-void highlight_roomborders(t_editor *ed, t_sdlcontext *sdl, t_room *room)
+void highlight_roomborders(t_editor *ed, t_sdlcontext *sdl, t_area *room)
 {
 	int			i;
 	int			edgecount;
@@ -140,7 +140,7 @@ void highlight_roomborders(t_editor *ed, t_sdlcontext *sdl, t_room *room)
 	}*/
 }
 
-bool	edge_exists(t_vector2 edge, t_room	*room)
+bool	edge_exists(t_vector2 edge, t_area	*room)
 {
 	int	i;
 
@@ -167,7 +167,7 @@ void highlight_entity(t_sdlcontext *sdl, t_entity *entity, uint32_t color)
 	sdl->render.gizmocolor = temp;
 }
 
-void highlight_room_edgelines(t_editor *ed, t_sdlcontext *sdl, t_room *room)
+void highlight_room_edgelines(t_editor *ed, t_sdlcontext *sdl, t_area *room)
 {
 	int	i;
 
@@ -203,10 +203,10 @@ void rendergrid(t_world *world, t_vector3 position, int size, uint32_t color)
 	}
 }
 
-bool	is_joined(t_vector2 edge, t_room	*room, t_world *world)
+bool	is_joined(t_vector2 edge, t_area	*room, t_world *world)
 {
 	t_list	*l;
-	t_room	*other;
+	t_area	*other;
 	l = world->roomlist;
 	while (l != NULL)
 	{
@@ -218,7 +218,7 @@ bool	is_joined(t_vector2 edge, t_room	*room, t_world *world)
 	return (false);
 }
 
-void highlight_room(t_editor *ed, t_sdlcontext *sdl, t_room *room, uint32_t color)
+void highlight_room(t_editor *ed, t_sdlcontext *sdl, t_area *room, uint32_t color)
 {
 	int	i;
 
@@ -236,13 +236,13 @@ void highlight_room(t_editor *ed, t_sdlcontext *sdl, t_room *room, uint32_t colo
 	i = 0;
 	sdl->render.wireframe = true;
 	sdl->render.gizmocolor = color;
-	while (i < room->wallcount)
+	while (i < room->wallcount && room->walls_enabled)
 	{
 		t_wall	w;
 
 		w = room->walls[i];
 		//render_entity(sdl, &sdl->render, room->walls[i].entity);
-		if (w.edgeline.end != NULL && w.edgeline.start != NULL && !w.entity->hidden)
+		if (w.edgeline.end != NULL && w.edgeline.start != NULL)
 		{
 			float zl = room->height + w.z_offset;
 			float zh = room->height + w.z_offset + w.height;
@@ -270,7 +270,7 @@ void highlight_room(t_editor *ed, t_sdlcontext *sdl, t_room *room, uint32_t colo
 		i++;
 	}
 	i = 0;
-	while (i < room->edgecount)
+	while (i < room->edgecount - !room->loop/* && room->floor_enabled*/)
 	{
 		t_vector3	ws;
 		t_vector3	ws2;
@@ -289,67 +289,4 @@ void highlight_room(t_editor *ed, t_sdlcontext *sdl, t_room *room, uint32_t colo
 	}
 	sdl->render.wireframe = false;
 	highlight_roomborders(ed, sdl, room);
-}
-
-/*void highlight_roomwalls(t_editor *ed, t_sdlcontext sdl, t_room room, uint32_t color)
-{
-	int	i;
-
-	i = 0;
-	sdl->render.wireframe = true;
-	sdl->render.gizmocolor = color;
-	while (i < room.wallcount)
-	{
-		//printf("HIGHLIGHTING ROOM \n");
-		render_entity(&sdl, &sdl->render, room.walls[i].entity);
-		i++;
-	}
-	sdl->render.wireframe = false;
-}*/
-
-
-t_meshtri	*selectedfloor(t_editor *ed, t_sdlcontext sdl, t_room *room)
-{
-	int	i;
-
-	i = 0;
-	while (i < room->floorcount)
-	{
-		if (entity_lookedat(ed, sdl, room->floors[i].entity))
-			return (&room->floors[i]);
-		i++;
-	}
-	return (NULL);
-}
-
-t_wall	*selectedwall(t_editor *ed, t_sdlcontext sdl, t_room *room)
-{
-	int	i;
-
-	i = 0;
-	while (i < room->wallcount)
-	{
-		if (entity_lookedat(ed, sdl, room->walls[i].entity))
-			return (&room->walls[i]);
-		i++;
-	}
-	return (NULL);
-}
-
-t_room *selectedroom(t_editor *ed, t_sdlcontext sdl)
-{
-	t_list	*l;
-	t_room	*r;
-
-	l = ed->world.roomlist;
-	while (l != NULL)
-	{
-		r = (t_room *)l->content;
-		if (selectedwall(ed, sdl, r) != NULL)
-			return (r);
-		if (selectedfloor(ed, sdl, r) != NULL)
-			return (r);
-		l = l->next;
-	}
-	return (NULL);
 }

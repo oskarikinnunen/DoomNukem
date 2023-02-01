@@ -30,4 +30,4 @@ lua-5.3.6/src/luac
 mapfile1
 callgrind.out*
 DoomNukem
-log.txt
+doomlog.txt

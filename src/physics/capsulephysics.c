@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 03:25:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/24 09:47:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/27 18:45:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@ static bool	touches_edges(t_vector2 pos, float radius, t_meshtri *floor)
 	line2.end = v3tov2(floor->v[2]);
 	line3.start = v3tov2(floor->v[2]);
 	line3.end = v3tov2(floor->v[0]);
-	return (linecircle(line1, pos, radius, &unused_col)
-			|| linecircle(line2, pos, radius, &unused_col)
-			|| linecircle(line3, pos, radius, &unused_col));
+	return (col_linecircle(line1, pos, radius, &unused_col)
+			|| col_linecircle(line2, pos, radius, &unused_col)
+			|| col_linecircle(line3, pos, radius, &unused_col));
 }
 
 static bool	is_in_floor(t_characterphysics *cp, t_meshtri	*floor)
@@ -52,7 +52,7 @@ static bool	is_in_floor(t_characterphysics *cp, t_meshtri	*floor)
 static float	get_z_position(t_characterphysics *cp, t_world *world)
 {
 	t_list	*list;
-	t_room	*room;
+	t_area	*room;
 	int		i;
 	float	z;
 
@@ -61,7 +61,7 @@ static float	get_z_position(t_characterphysics *cp, t_world *world)
 	list = world->roomlist;
 	while(list != NULL)
 	{
-		room = (t_room *)list->content;
+		room = (t_area *)list->content;
 		i = 0;
 		while (i < room->floorcount)
 		{

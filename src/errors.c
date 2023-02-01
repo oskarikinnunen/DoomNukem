@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 15:53:51 by raho              #+#    #+#             */
-/*   Updated: 2023/02/01 14:29:29 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/01 20:37:09 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 ** before exiting. For now, SDL_Quit is only called when ESC is pressed.
 */
 
-static void	sdl_errors(int error_code, int fd, void (*f)(const char *, int))
+static void	sdl_errors(int error_code, int fd)
 {
 	if (error_code == LOGEC_SDL_INIT)
 		ft_putstr_fd("SDL_Init failed: ", fd);
@@ -38,85 +38,59 @@ static void	sdl_errors(int error_code, int fd, void (*f)(const char *, int))
 		ft_putstr_fd("TTF_OpenFont failed: ", fd);
 	if (error_code == LOGEC_TTF_RENDERTEXTBLENDED)
 		ft_putstr_fd("TTF_RenderText_Blended failed: ", fd);
-	f(SDL_GetError(), fd);
+	ft_putendl_fd(SDL_GetError(), fd);
 }
 
-static void	std_fnc_errors(int ec, int fd, void (*f)(const char *, int))
+static void	std_fnc_errors(int ec, int fd)
 {
 	if (ec == LOGEC_OPEN)
-		f("Open failed", fd);
+		ft_putendl_fd("Open failed", fd);
 	if (ec == LOGEC_CLOSE)
-		f("Close failed", fd);
+		ft_putendl_fd("Close failed", fd);
 	if (ec == LOGEC_WRITE)
-		f("Write failed", fd);
+		ft_putendl_fd("Write failed", fd);
 	if (ec == LOGEC_MALLOC)
-		f("Malloc failed", fd);
+		ft_putendl_fd("Malloc failed", fd);
 	if (ec == LOGEC_GETNEXTLINE)
-		f("get_next_line failed", fd);
+		ft_putendl_fd("get_next_line failed", fd);
 }
 
-static void	fmod_errors(int ec, int fd, void (*f)(const char *, int))
+static void	fmod_errors(int ec, int fd)
 {
 	if (ec == LOGEC_FMOD_SYSTEMCREATE)
-		f("FMOD_System_Create failed", fd);
+		ft_putendl_fd("FMOD_System_Create failed", fd);
 	if (ec == LOGEC_FMOD_SYSTEMINIT)
-		f("FMOD_System_Init failed", fd);
+		ft_putendl_fd("FMOD_System_Init failed", fd);
 	if (ec == LOGEC_FMOD_SYSTEMCLOSE)
-		f("FMOD_System_Close failed", fd);
+		ft_putendl_fd("FMOD_System_Close failed", fd);
 	if (ec == LOGEC_FMOD_SYSTEMRELEASE)
-		f("FMOD_System_Release failed", fd);
+		ft_putendl_fd("FMOD_System_Release failed", fd);
 	if (ec == LOGEC_FMOD_SYSTEMCREATESOUND)
-		f("FMOD_System_CreateSound failed", fd);
+		ft_putendl_fd("FMOD_System_CreateSound failed", fd);
 	if (ec == LOGEC_FMOD_SYSTEMPLAYSOUND)
-		f("FMOD_System_PlaySound failed", fd);
+		ft_putendl_fd("FMOD_System_PlaySound failed", fd);
 	if (ec == LOGEC_FMOD_CHANNELSETVOLUME)
-		f("FMOD_Channel_SetVolume failed", fd);
+		ft_putendl_fd("FMOD_Channel_SetVolume failed", fd);
 	if (ec == LOGEC_FMOD_CHANNELSETPAUSED)
-		f("FMOD_Channel_SetPaused failed", fd);
+		ft_putendl_fd("FMOD_Channel_SetPaused failed", fd);
 	if (ec == LOGEC_FMOD_CHANNELSET3DATTRIBUTES)
-		f("FMOD_Channel_Set3DAttributes failed", fd);
+		ft_putendl_fd("FMOD_Channel_Set3DAttributes failed", fd);
 	if (ec == LOGEC_FMOD_CHANNELISPLAYING)
-		f("FMOD_Channel_IsPlaying failed", fd);
+		ft_putendl_fd("FMOD_Channel_IsPlaying failed", fd);
 	if (ec == LOGEC_FMOD_CHANNELSTOP)
-		f("FMOD_Channel_Stop failed", fd);
+		ft_putendl_fd("FMOD_Channel_Stop failed", fd);
 	if (ec == LOGEC_FMOD_CHANNELGETCURRENTSOUND)
-		f("FMOD_Channel_GetCurrentSound failed", fd);
+		ft_putendl_fd("FMOD_Channel_GetCurrentSound failed", fd);
 }
 
-void	errors(int ec, int fd, char *str)
+void	error_codes(int ec, int fd)
 {
 	if (ec >= 2 && ec <= 20)
-	{
-		if (str)
-		{
-			sdl_errors(ec, fd, ft_putstr_fd);
-			ft_putstr_fd(" - ", fd);
-			ft_putendl_fd(str, fd);
-		}
-		else
-			sdl_errors(ec, fd, ft_putendl_fd);
-	}
-	if (ec >= 30 && ec <= 45)
-	{
-		if (str)
-		{
-			std_fnc_errors(ec, fd, ft_putstr_fd);
-			ft_putstr_fd(" - ", fd);
-			ft_putendl_fd(str, fd);
-		}
-		else
-			std_fnc_errors(ec, fd, ft_putendl_fd);
-	}
-	if (ec >= 50)
-	{
-		if (str)
-		{
-			fmod_errors(ec, fd, ft_putstr_fd);
-			ft_putstr_fd(" - ", fd);
-			ft_putendl_fd(str, fd);
-		}
-		else
-			fmod_errors(ec, fd, ft_putendl_fd);	
-	}
-	exit (1);
+		sdl_errors(ec, fd);
+	else if (ec >= 30 && ec <= 45)
+		std_fnc_errors(ec, fd);
+	else if (ec >= 50)
+		fmod_errors(ec, fd);
+	else
+		ft_putendl_fd("invalid log/error code", fd);
 }

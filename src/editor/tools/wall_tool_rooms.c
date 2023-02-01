@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/31 16:11:09 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/01 14:38:41 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -342,7 +342,7 @@ static	void removevalid (int *valid, int count, int ri)
 	int	i;
 
 	i = 0;
-	printf("removing ear: %i \n", valid[ri]);
+	//printf("removing ear: %i \n", valid[ri]);
 	while (i < count - 1)
 	{
 		if (i >= ri)
@@ -579,8 +579,8 @@ void	triangulate(t_floorcalc *fc, int valid_target)
 	i = 0;
 	fc->facecount = 0;
 	//checkroomnormal(fc);
-	printf("\nMAKING NEW FACES: \n");
-	printf("triangulating shape with %i edges\n", fc->edgecount);
+	//printf("\nMAKING NEW FACES: \n");
+	//printf("triangulating shape with %i edges\n", fc->edgecount);
 	while (validcount > valid_target)
 	{
 		//printf("try %i %i %i \n", valid[validcount - 1], valid[0], valid[1]);
@@ -617,7 +617,7 @@ void	triangulate(t_floorcalc *fc, int valid_target)
 			fc->faces[fc->facecount].v_indices[2] = valid[1];
 			//printf("connect %i %i %i \n", valid[validcount - 1], valid[0], valid[1]);
 			removevalid(valid, validcount--, 0);
-			printf("next valid = %i \n", valid[0]);
+			//printf("next valid = %i \n", valid[0]);
 			if (validcount == valid_target)
 			{
 				line1.start = fc->edges[valid[validcount - 1]];
@@ -625,15 +625,15 @@ void	triangulate(t_floorcalc *fc, int valid_target)
 				first = fc->edges[valid[validcount - 1]];
 				center = fc->edges[valid[0]];
 				second = fc->edges[valid[1]];
-				printf("next line would be %i->%i\n", valid[validcount - 1], valid[1]);
-				if (points_collide(fc, (t_vector2[3]){first,center,second}))
+				//printf("next line would be %i->%i\n", valid[validcount - 1], valid[1]);
+				/*if (points_collide(fc, (t_vector2[3]){first,center,second}))
 					printf("VALID 2 POINTS COLLIDE???\n");
 				if (!correctangle((t_vector2[3]){first,center,second}))
 					printf("Incorrect angle\n");
 				if (intersect(line_shorten(line1), fc->edges, fc->edgecount))
 				{
 					printf("Incorrect line??\n");
-				}
+				}*/
 			}
 			if (validcount <= lowest)
 				lowest = validcount;
@@ -641,18 +641,8 @@ void	triangulate(t_floorcalc *fc, int valid_target)
 		}
 		else
 		{
-			if (valid_target == 4)
-				printf("ear %i failed \n", valid[0]);
-			if (valid[0] == 2 && valid[1] == 5 && valid[validcount - 1] == 1 && validcount == 4)
-			{
-				printf("521?? \n");
-				if (!correctangle((t_vector2[3]){first,center,second}))
-				{
-					printf("521 failed because angle was incorrect?\n");
-				} else {
-					printf("521 failed because line intersected?\n");
-				}
-			}
+			/*if (valid_target == 4)
+				printf("ear %i failed \n", valid[0]);*/
 			if ((i >= 25000 && i < 50000) || (i >= 75000 && i < 100000))
 				shiftvalid(valid, validcount);
 			else
@@ -678,8 +668,7 @@ void	triangulate(t_floorcalc *fc, int valid_target)
 			i = 0;*/
 			//if (validcount > lowest)
 			fc->facecount = 0;
-			printf("iterated 100000 times, exiting \n");
-			printf("lowest validcount was %i \n", lowest);
+			doomlog(LOG_WARNING, "Couldn't create floor, too many iterations!");
 			return ;
 		}
 		if (attempts > fc->edgecount * 2)
@@ -689,7 +678,7 @@ void	triangulate(t_floorcalc *fc, int valid_target)
 		}
 			
 	}
-	printf("made %i faces \n", fc->facecount);
+	//printf("made %i faces \n", fc->facecount);
 }
 
 void	free_object(t_object *object)
@@ -708,23 +697,52 @@ void	free_object(t_object *object)
 
 #include "doomnukem.h"
 
-void	free_floor(t_world *world, t_room *room)
+void	free_floor(t_world *world, t_area *room)
 {
 	int	i;
 
 	i = 0;
 	while (i < room->floorcount)
 	{
-		free_object(room->floors[i].entity->obj);
-		destroy_entity(world, room->floors[i].entity);
+		if (room->floors[i].entity != NULL)
+		{
+			if (room->floors[i].entity->obj != NULL )
+			{
+				free_object(room->floors[i].entity->obj);
+				room->floors[i].entity->obj = NULL;
+			}
+			destroy_entity(world, room->floors[i].entity);
+			room->floors[i].entity = NULL;
+		}
 		i++;
 	}
-	room->floorcount = 0;
+	//room->floorcount = 0;
+}
+
+void	free_ceilings(t_world *world, t_area *room)
+{
+	int	i;
+
+	i = 0;
+	while (i < room->ceilingcount)
+	{
+		if (room->ceilings[i].entity != NULL)
+		{
+			if (room->ceilings[i].entity->obj != NULL )
+			{
+				free_object(room->ceilings[i].entity->obj);
+				room->ceilings[i].entity->obj = NULL;
+			}
+			destroy_entity(world, room->ceilings[i].entity);
+			room->ceilings[i].entity = NULL;
+		}
+		i++;
+	}
 }
 
 //void	apply_currentfloortexture(t_world *world, t_room *room, char *texname)
 
-void	makefloor_room(t_world *world, t_room *room)
+void	_room_triangulate_floors(t_world *world, t_area *room)
 {
 	t_floorcalc	fc;
 	t_wall		*w;
@@ -733,7 +751,7 @@ void	makefloor_room(t_world *world, t_room *room)
 
 	ft_bzero(&fc, sizeof(fc));
 	i = 0;
-	free_floor(world, room);
+	//free_floor(world, room);
 	while (i < room->edgecount)
 	{
 		fc.edges[fc.edgecount++] = room->edges[i];
@@ -742,19 +760,16 @@ void	makefloor_room(t_world *world, t_room *room)
 	triangulate(&fc, 2);
 	if (fc.facecount == 0)
 		return ;
-	room->floors = ft_memalloc(sizeof(t_meshtri) * fc.facecount);
+	ft_bzero(room->floors, sizeof(room->floors));
 	room->floorcount = fc.facecount;
-	if (room->floors == NULL)
-		doomlog(LOGEC_MALLOC, NULL);
 	i = 0;
 	while (i < fc.facecount)
 	{
 		mtri = &room->floors[i];
-		//ft_bzero(&mtri->entity, sizeof(t_entity));
 		mtri->entity = spawn_entity(world);
 		mtri->entity->rigid = true;
 		mtri->entity->obj = object_tri(world->sdl);
-		mtri->entity->obj->materials->img = get_image_by_name(*world->sdl, room->floortex);
+		mtri->entity->obj->materials->img = get_image_by_name(*world->sdl, room->s_floortex.str);
 		mtri->v[0] = v2tov3(fc.edges[fc.faces[i].v_indices[0]]);
 		mtri->v[1] = v2tov3(fc.edges[fc.faces[i].v_indices[1]]);
 		mtri->v[2] = v2tov3(fc.edges[fc.faces[i].v_indices[2]]);
@@ -769,21 +784,49 @@ void	makefloor_room(t_world *world, t_room *room)
 		mtri->uv[2] = vector2_div(mtri->uv[2], 100.0f);
 		applytrimesh(*mtri, mtri->entity->obj);
 		update_floor_bounds(mtri);
-		printf("uv 1: %f %f2: %f %f 3: %f %f\n", mtri->uv[0].x, mtri->uv[0].y, mtri->uv[1].x, mtri->uv[1].y, mtri->uv[2].x, mtri->uv[2].y);
+		
+		//printf("uv 1: %f %f2: %f %f 3: %f %f\n", mtri->uv[0].x, mtri->uv[0].y, mtri->uv[1].x, mtri->uv[1].y, mtri->uv[2].x, mtri->uv[2].y);
 		//create_lightmap_for_entity(mtri->entity, world);
 		//create_map_for_entity(mtri->entity, world);
-		
 		i++;
 	}
 }
 
-void	make_areas(t_world *world, t_room *room)
+void	room_makefloor(t_world *world, t_area *room)
 {
-	int	i;
+	//free_floor(world, room);
+	_room_triangulate_floors(world, room);
+}
+
+void	room_makeceilings(t_world *world, t_area *room)
+{
+	int			i;
+	t_meshtri	*mtri;
 
 	i = 0;
-	free_floor(world, room);
+	while (i < room->floorcount)
+	{
+		mtri = &room->ceilings[i];
+		mtri->entity = spawn_entity(world);
+		mtri->entity->rigid = true;
+		mtri->entity->obj = object_tri(world->sdl);
+		mtri->entity->obj->materials->img = get_image_by_name(*world->sdl, room->s_ceiltex.str);
+		mtri->v[0] = room->floors[i].v[0];
+		mtri->v[1] = room->floors[i].v[1];
+		mtri->v[2] = room->floors[i].v[2];
+		mtri->v[0].z += room->ceiling_height;
+		mtri->v[1].z += room->ceiling_height;
+		mtri->v[2].z += room->ceiling_height;
+		mtri->uv[0] = room->floors[i].uv[0];
+		mtri->uv[1] = room->floors[i].uv[1];
+		mtri->uv[2] = room->floors[i].uv[2];
+		applytrimesh(*mtri, mtri->entity->obj);
+		update_floor_bounds(mtri);
+		i++;
+	}
+	room->ceilingcount = i;
+	
+	/*free_floor(world, room);
 	room->floors = ft_memalloc(sizeof(t_meshtri) * 1000);
-	makefloor_room(world, room);
-	printf("made floors for %i areas \n", i);
+	_room_triangulate_floors(world, room);*/
 }

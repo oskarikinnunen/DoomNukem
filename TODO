@@ -4,21 +4,13 @@ entity
 		+ decals
 		= map
 
-
-
-
-
-Remove lua dependency
-fix UIs
-
 Level editor
-	open area shouldnt connect walls
+	!! Make icons for "[C]create node" "[X]delete node" and display accordingly
+	!! make area detailed booleans available from editor (dropdown)
 	notes
 	save lightmap to file
-	raycasting for createmode (removing the old raycast) !!
-	find/fix segfaults (protect > 32 edges)
-	(snap split walls)
-	copy split area wall textures
+	put edges/walls/floors in stack
+	snap edges in room_init
 
 load/save different world (file selector)
 	single file

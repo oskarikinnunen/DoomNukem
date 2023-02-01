@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/31 15:50:53 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/01 14:36:21 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 		t_entity *went = spawn_entity(&ed->world);
 		entity_assign_object(&ed->world, went, dat->ent->obj);
 		/*went->obj = dat->ent->obj;*/
-		ft_strcpy(went->object_name, dat->ent->object_name); //TODO: fix in world save or in assign object
+		//ft_strcpy(went->object_name, dat->ent->object_name); //TODO: fix in world save or in assign object
 		went->transform = dat->ent->transform;
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT) && dat->ent != NULL)
@@ -459,9 +459,9 @@ void	entity_tool_prefab(t_editor *ed, t_entitytooldata *dat)
 	{
 		t_prefab	fab;
 		ft_bzero(&fab, sizeof(fab));
-		ft_strcpy(fab.object_name, "cube.obj");
-		ft_strcpy(fab.prefab_name, "cubeprefab");
-		fab.object = get_object_by_name(*sdl, fab.object_name);
+		////ft_strcpy(fab.object_name, "cube.obj");
+		//ft_strcpy(fab.prefab_name, "cubeprefab");
+		//fab.object = get_object_by_name(*sdl, fab.object_name);
 		fab.offset.scale = vector3_one();
 		list_push(&ed->world.prefabs, &fab, sizeof(fab));
 	}

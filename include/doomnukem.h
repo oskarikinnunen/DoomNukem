@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/31 13:52:48 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/01 14:34:58 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ typedef struct s_world
 	t_entity			skybox;
 	bool				ceiling_toggle;
 	t_navigation		nav;
+	uint32_t			lastsavetime;
 }	t_world;
 
 t_vector2	flipped_uv(t_vector2 og);
@@ -120,18 +121,30 @@ void		for_all_active_entities(t_world	*world, void	(*func)(t_entity *ent, t_worl
 void		for_all_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *world));
 void		update_world3d(t_world *world, t_render *render);
 void		toggle_ceilings(t_world *world);
+
+
+enum e_load_arg;
+t_world		load_world_args(char *filename, t_sdlcontext *sdl, enum e_load_arg arg);
 t_world		load_world(char *filename, t_sdlcontext *sdl);
+
+
 void		destroy_entity(t_world *world, t_entity *ent);
 t_entity	*spawn_entity(t_world	*world);
 t_entity	*spawn_basic_entity(t_world *world, char *objectname, t_vector3 position);
 void		entity_assign_object(t_world *world, t_entity *entity, t_object *obj);
 void		save_world(char *filename, t_world world);
 
+
+void		world_save_to_file(t_world world);
+void		_world_sanitize_all_room_pointers(t_world *world);
+void		_world_init_rooms(t_world *world);
+
 //TODO: move to room.h
-void		init_roomwalls(t_world *world, t_room *room);
-t_wall		*find_wall(t_wall wall, t_room *room);
-void		free_floor(t_world *world, t_room *room);
-void		free_walls(t_room *room, t_world *world);
+void		_room_initwalls(t_world *world, t_area *room);
+t_wall		*find_wall(t_wall wall, t_area *room);
+void		free_floor(t_world *world, t_area *room);
+void		free_ceilings(t_world *world, t_area *room);
+void		free_walls(t_area *room, t_world *world);
 
 typedef struct s_game
 {
@@ -259,7 +272,7 @@ void	update_object_bounds(t_object *obj);
 void	update_floor_bounds(t_meshtri *f);
 void	update_wall_bounds(t_wall *w);
 
-void	free_roomwalls(t_world *world, t_room *room);
+void	free_roomwalls(t_world *world, t_area *room);
 
 void	set_nullentities(t_wall **ptr, int count);
 

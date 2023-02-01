@@ -26,12 +26,12 @@ static t_material	*trimat()
 	return (mat);
 }
 
-t_vector2 flipped_uv(t_vector2 og)
+t_vector2 flipped_uv(t_vector2 vec)
 {
 	t_vector2	uv;
 
-	uv.x = -og.y;
-	uv.y = og.x;
+	uv.x = -vec.y;
+	uv.y = vec.x;
 	return (uv);
 }
 

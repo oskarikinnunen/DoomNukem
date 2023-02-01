@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/19 06:52:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/27 11:33:59 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,6 +170,29 @@ static t_line newline(t_vector2 start, t_vector2 end)
 
 #define RCRCL_SIDES 16
 
+void	render_circle(t_sdlcontext *sdl, t_vector3 pos, float radius, uint32_t clr)
+{
+	t_vector3	edges[RCRCL_SIDES + 1];
+	int		i;
+	float	angl;
+
+	i = 0;
+	angl = 0.0f;
+	sdl->render.gizmocolor = clr;
+	//X/Y
+	while (i < RCRCL_SIDES + 1)
+	{
+		edges[i].x = pos.x + (sinf(angl) * radius);
+		edges[i].y = pos.y + (cosf(angl) * radius);
+		edges[i].z = pos.z;
+
+		if (i >= 1)
+			render_ray(sdl, edges[i - 1], edges[i]);
+		angl += FULLRAD / RCRCL_SIDES;
+		i++;
+	}
+}
+
 void	render_capsule(t_sdlcontext *sdl, t_vector3 pos, float height, float radius, uint32_t clr)
 {
 	t_vector3	edges[RCRCL_SIDES + 1];
@@ -289,6 +312,12 @@ void render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to)
 		printf("line start: %f %f end: %f %f \n", l.start.x, l.start.y, l.end.x, l.end.y);
 	}
 	drawline(*sdl, vector2_to_point(l.start), vector2_to_point(l.end), sdl->render.gizmocolor);
+}
+
+void render_ray3D(t_sdlcontext *sdl, t_vector3 from, t_vector3 to, uint32_t clr)
+{
+	sdl->render.gizmocolor = clr;
+	render_ray(sdl, from, to);
 }
 
 //DEPRECATED, USE render_gizmo3d/render_gizmo2d INSTEAD
