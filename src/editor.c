@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/31 16:22:09 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/01 14:25:58 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,7 +256,6 @@ int	editorloop(t_sdlcontext sdl)
 			doomlog(LOGEC_SDL_UPDATEWINDOWSURFACE, NULL);
 		update_audio(&ed.world);
 		//play_localsound()
-		doomlog(LOG_NORMAL, "TESTING LOGGING FUNCTIONALITY 1234567890");
 	}
 	editor_save_prefs(&ed);
 	save_graphics_prefs(&sdl);

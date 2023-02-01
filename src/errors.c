@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 15:53:51 by raho              #+#    #+#             */
-/*   Updated: 2023/01/31 16:29:06 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/01 14:29:29 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,11 +81,6 @@ static void	fmod_errors(int ec, int fd, void (*f)(const char *, int))
 		f("FMOD_Channel_Stop failed", fd);
 	if (ec == LOGEC_FMOD_CHANNELGETCURRENTSOUND)
 		f("FMOD_Channel_GetCurrentSound failed", fd);
-}
-
-void	choose_error(int ec, int fd, void (*f)(int, int, void(*f)))
-{
-	
 }
 
 void	errors(int ec, int fd, char *str)
