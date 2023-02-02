@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/02/01 16:09:45 by raho             ###   ########.fr        #
+#    Updated: 2023/02/02 15:24:10 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,7 @@ LUAFOLDER= lua-5.3.6
 LUA= $(LUAFOLDER)/install/lib/liblua.a
 
 #Source files:
-SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
+SRCFILES= main.c main2.c draw0.c img.c deltatime.c anim.c \
 		editor.c editor_mouse.c editor_events.c \
 		file_ops/filechunks.c	\
 		file_ops/world_save.c	\

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/01 20:37:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/02 15:24:40 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,7 @@ int	main(int argc, char **argv)
 	t_sdlcontext	sdl;
 	t_gamereturn	gr;
 
+	// call launcher with argv and it calls for doomnukem again
 	generate_struct_datas();
 	checkargs(argc, argv);
 	create_sdlcontext(&sdl);
