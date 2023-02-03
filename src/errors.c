@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 15:53:51 by raho              #+#    #+#             */
-/*   Updated: 2023/02/01 20:37:09 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/03 22:42:39 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,11 +85,11 @@ static void	fmod_errors(int ec, int fd)
 
 void	error_codes(int ec, int fd)
 {
-	if (ec >= 2 && ec <= 20)
+	if (ec >= 3 && ec <= 20)
 		sdl_errors(ec, fd);
 	else if (ec >= 30 && ec <= 45)
 		std_fnc_errors(ec, fd);
-	else if (ec >= 50)
+	else if (ec >= 50 && ec <= 70)
 		fmod_errors(ec, fd);
 	else
 		ft_putendl_fd("invalid log/error code", fd);

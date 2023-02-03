@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/02 15:24:40 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/03 23:04:57 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "game_lua.h"
 #include "objects.h"
 #include "file_io.h"
+#include <sys/wait.h>
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else
@@ -106,7 +107,6 @@ void	set_sdl_settings(t_sdlcontext *sdl)
 
 void	quit_game(t_sdlcontext *sdl)
 {
-	//close_audio(&sdl->audio);
 	SDL_Quit();
 	exit(0);
 }
@@ -135,22 +135,159 @@ void	checkargs(int argc, char **argv)
 	}
 }
 
+void	show_error_message(t_sdlcontext	*sdl)
+{
+	ft_bzero(sdl, sizeof(t_sdlcontext));
+	if (SDL_Init(SDL_INIT_VIDEO) < 0 \
+			|| SDL_Init(SDL_INIT_EVENTS) < 0 \
+			|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0 \
+			|| TTF_Init() < 0)
+	{
+		printf("game ran into an error and the parent process couldn't init sdl for the error message\n");
+		exit (1);
+	}
+	/* does this need to be protected for tiny window sizes? */
+	sdl->window = SDL_CreateWindow("Error",
+			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+			600, 300, SDL_WINDOW_SHOWN);
+	if (sdl->window == NULL)
+	{
+		printf("game ran into an error and the parent process couldn't create a window for the error message\n");
+		exit (1);
+	}
+	sdl->window_surface = SDL_GetWindowSurface(sdl->window);
+	if (sdl->window_surface == NULL)
+	{
+		printf("game ran into an error and the parent process couldn't create a surface for the error message window\n");
+		exit (1);
+	}
+	sdl->surface = SDL_CreateRGBSurfaceWithFormat(SDL_SWSURFACE, 600, 300, 32, SDL_PIXELFORMAT_ARGB8888);
+	if (sdl->surface == NULL)
+	{
+		printf("game ran into an error and the parent process couldn't create a RGB surface for the error message window\n");
+		exit (1);
+	}
+	load_fonts(&sdl->font);
+	t_hid_info	hid;
+	SDL_Event	event;
+	int			fd;
+	char		*line;
+	int			message_count;
+	char		**messages;
+	int			i;
+
+	fd = open("doomlog.txt", O_RDONLY);
+	if (fd == -1)
+	{
+		printf("game ran into an error and the parent process couldn't open the doomlog.txt for the error message\n");
+		exit (1);
+	}
+	message_count = 0;
+	line = NULL;
+	while (get_next_line(fd, &line))
+	{
+		if (line)
+		{
+			free(line);
+			line = NULL;
+		}
+		message_count++;	
+	}
+	if (close(fd) == -1)
+		printf("couldn't close the doomlog.txt from the parent process\n");
+	messages = (char **)malloc(sizeof(char *) * (message_count + 1));
+	if (messages == NULL)
+	{
+		printf("game ran into an error and the parent process's malloc for the error message failed\n");
+		exit (1);
+	}
+	fd = open("doomlog.txt", O_RDONLY);
+	if (fd == -1)
+	{
+		printf("game ran into an error and the parent process couldn't open the doomlog.txt for the error message\n");
+		exit (1);
+	}
+	i = 0;
+	while (get_next_line(fd, &line))
+	{
+		messages[i] = line;
+		i++;
+	}
+	messages[i] = NULL;
+	sdl->font.color = color32_to_sdlcolor(CLR_GREEN);
+	while (1)
+	{
+		hid.mouse.scroll_delta = 0; //Needs to be reset
+		hid.alphakey_pressed = 0; //Needs to be reset
+		SDL_GetRelativeMouseState(&hid.mouse.delta.x, &hid.mouse.delta.y);
+		while (SDL_PollEvent(&event))
+		{
+			mouse_event(event, &hid.mouse);
+			if ((event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE) || \
+					(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE))
+			{
+				printf("game ran into an error and the parent process showed the error message succesfully\n");
+				exit (0);
+			}
+			i = 0;
+			while (i < message_count)
+			{
+				print_text(sdl, messages[i], (t_point){10, (10 + i * 13)});
+				i++;
+			}
+			memcpy(sdl->window_surface->pixels, sdl->surface->pixels, sizeof(uint32_t) * 600 * 300);
+			if (SDL_UpdateWindowSurface(sdl->window) < 0)
+			{
+				printf("game ran into an error and the parent process couldn't update the window surface for the error message\n");
+				exit (1);
+			}
+		}
+	}
+}
+
 int	main(int argc, char **argv)
 {
 	t_sdlcontext	sdl;
 	t_gamereturn	gr;
 
-	// call launcher with argv and it calls for doomnukem again
-	generate_struct_datas();
-	checkargs(argc, argv);
-	create_sdlcontext(&sdl);
-	gr = game_switchmode;
-	while (gr == game_switchmode)
+	int	pid;
+	
+	pid = fork();
+	if (pid == -1)
 	{
-		gr = editorloop(sdl); // quit & exit is handled inside the loop
-		gr = playmode(sdl); // quit & exit is handled inside the loop
+		printf("fork failed\n");
+		return (1);
 	}
-	//shouldn't get here?
+	// child process is always pid 0
+	if (pid == 0)
+	{
+		generate_struct_datas();
+		checkargs(argc, argv);
+		create_sdlcontext(&sdl);
+		gr = game_switchmode;
+		while (gr == game_switchmode)
+		{
+			gr = editorloop(sdl); // quit & exit is handled inside the loop
+			gr = playmode(sdl); // quit & exit is handled inside the loop
+		}
+	}
+	// parent process
+	else
+	{
+		int	wait_status;
+		
+		wait(&wait_status);
+		if (WIFEXITED(wait_status))
+		{
+			printf("child process exited with status: %d\n", WEXITSTATUS(wait_status));
+			if (WEXITSTATUS(wait_status) != 0)
+			{
+				show_error_message(&sdl);
+				return (1);
+			}
+		}
+		else
+			printf("no exit status from the child process\n");
+	}
 	return (0);
 }
-

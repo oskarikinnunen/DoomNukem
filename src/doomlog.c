@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 14:59:55 by raho              #+#    #+#             */
-/*   Updated: 2023/02/01 20:36:04 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/03 22:52:21 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,37 @@ static void warning_message_mul(int fd, char **str)
 	}
 }
 
+static void	fatal_message(int fd, char *str)
+{
+	ft_putstr_fd("!!! ", fd);
+	ft_putstr_fd(str, fd);
+}
+
+static void	fatal_message_mul(int fd, char **str)
+{
+	int	index;
+
+	index = 0;
+	ft_putstr_fd("!!! ", fd);
+	ft_putstr_fd("!!! ", 2);
+	while (str[index] != NULL)
+	{
+		ft_putstr_fd(str[index], fd);
+		ft_putstr_fd(str[index], 2);
+		if (str[index + 1] == NULL)
+		{
+			ft_putchar_fd('\n', fd);
+			ft_putchar_fd('\n', 2);
+		}
+		else
+		{
+			ft_putchar_fd(' ', fd);
+			ft_putchar_fd(' ', 2);
+		}
+		index++;
+	}
+}
+
 static void	error_message(int code, int fd, char *str)
 {
 	ft_putstr_fd("!!! ", fd);
@@ -188,6 +219,11 @@ void	doomlog_mul(int code, char **str)
 		normal_message_mul(fd, str);
 	else if (code == LOG_WARNING)
 		warning_message_mul(fd, str);
+	else if (code == LOG_FATAL)
+	{
+		fatal_message_mul(fd, str);
+		exit (1);
+	}
 	else
 	{
 		error_message_mul(code, fd, str);
@@ -209,6 +245,11 @@ void	doomlog(int code, char *str)
 		ft_putendl_fd(str, fd);
 	else if (code == LOG_WARNING)
 		warning_message(fd, str);
+	else if (code == LOG_FATAL)
+	{
+		fatal_message(fd, str);
+		exit (1);
+	}
 	else
 	{
 		error_message(code, fd, str);

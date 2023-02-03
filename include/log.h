@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 20:21:24 by raho              #+#    #+#             */
-/*   Updated: 2023/02/01 20:18:08 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/03 22:42:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,20 @@
 
 # define LOG_NORMAL 0
 # define LOG_WARNING 1
-# define LOGEC_SDL_INIT 2
-# define LOGEC_SDL_CREATEWINDOW 3
-# define LOGEC_SDL_GETWINDOW_SURFACE 4
-# define LOGEC_SDL_CREATERGBSURFACE 5
-# define LOGEC_SDL_UPDATEWINDOWSURFACE 6
-# define LOGEC_SDL_SETRELATIVEMOUSEMODE 7
-# define LOGEC_SDL_GAMECONTROLLEROPEN 8
-# define LOGEC_SDL_JOYSTICKINSTANCEID 9
-# define LOGEC_SDL_OPENAUDIODEVICE 10
-# define LOGEC_SDL_LOADWAV 11
-# define LOGEC_SDL_QUEUEAUDIO 12
-# define LOGEC_TTF_OPENFONT 13
-# define LOGEC_TTF_RENDERTEXTBLENDED 14
+# define LOG_FATAL 2
+# define LOGEC_SDL_INIT 3
+# define LOGEC_SDL_CREATEWINDOW 4
+# define LOGEC_SDL_GETWINDOW_SURFACE 5
+# define LOGEC_SDL_CREATERGBSURFACE 6
+# define LOGEC_SDL_UPDATEWINDOWSURFACE 7
+# define LOGEC_SDL_SETRELATIVEMOUSEMODE 8
+# define LOGEC_SDL_GAMECONTROLLEROPEN 9
+# define LOGEC_SDL_JOYSTICKINSTANCEID 10
+# define LOGEC_SDL_OPENAUDIODEVICE 11
+# define LOGEC_SDL_LOADWAV 12
+# define LOGEC_SDL_QUEUEAUDIO 13
+# define LOGEC_TTF_OPENFONT 14
+# define LOGEC_TTF_RENDERTEXTBLENDED 15
 # define LOGEC_OPEN 30
 # define LOGEC_CLOSE 31
 # define LOGEC_WRITE 32
