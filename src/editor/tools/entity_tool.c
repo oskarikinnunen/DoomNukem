@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/30 19:52:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/01 14:36:21 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -507,7 +507,7 @@ t_tool	*get_entity_tool()
 	{
 		tool.tooldata = ft_memalloc(sizeof(t_entitytooldata));
 		if (tool.tooldata == NULL)
-			error_log(EC_MALLOC);
+			doomlog(LOGEC_MALLOC, NULL);
 		dat = (t_entitytooldata *)tool.tooldata;
 		dat->ent = NULL;
 	}

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/03 15:51:23 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/04 20:49:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ void ptr_add(void **ptr, uint32_t *len, size_t size, void *add)
 
 	newptr = ft_memalloc((*len + 1) * size);
 	if (newptr == NULL)
-		error_log(EC_MALLOC);
+		doomlog(LOGEC_MALLOC, NULL);
 	if (*ptr != NULL)
 	{
 		ft_memcpy(newptr, *ptr, *len * size);

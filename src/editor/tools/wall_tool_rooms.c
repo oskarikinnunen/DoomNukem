@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wall_tool_rooms.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/30 13:48:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/01 14:38:41 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -668,8 +668,7 @@ void	triangulate(t_floorcalc *fc, int valid_target)
 			i = 0;*/
 			//if (validcount > lowest)
 			fc->facecount = 0;
-			printf("iterated 100000 times, exiting \n");
-			printf("lowest validcount was %i \n", lowest);
+			doomlog(LOG_WARNING, "Couldn't create floor, too many iterations!");
 			return ;
 		}
 		if (attempts > fc->edgecount * 2)

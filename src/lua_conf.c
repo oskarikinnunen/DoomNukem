@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lua_conf.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/27 17:54:34 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/01 20:33:46 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@ void	load_all_images(t_sdlcontext *sdl)
 		}
 		closedir(d);
 	}
-	printf("parsed %i imagefiles \n", i);
+	doomlog_mul(LOG_NORMAL, (char *[32]){"parsed", s_itoa(i), "imagefiles", NULL});
 }
 
 void	load_all_env_textures(t_sdlcontext *sdl)
@@ -239,7 +239,7 @@ void	load_lua_conf(t_sdlcontext *sdl)
 	else
 	{
 		printf("LUA FILE NOT OK \n");
-		error_log(EC_SDL_INIT);
+		doomlog(LOGEC_SDL_INIT, NULL);
 	}
 	lua_close(lua);
 	return ;

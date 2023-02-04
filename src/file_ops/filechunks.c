@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   filechunks.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/30 17:06:34 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/01 14:36:52 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ t_list	*parse_chunk(int fd, size_t size)
 
 	buf = ft_memalloc(size);
 	if (buf == NULL)
-		error_log(EC_MALLOC);
+		doomlog(LOGEC_MALLOC, NULL);
 	count = find_chunk_count(fd);
 	count = (count * CHUNKSIZE) / size;
 	// printf("found %i chunks \n", count); //TODO: don't remove, going to be used when logging is implemented in the near future

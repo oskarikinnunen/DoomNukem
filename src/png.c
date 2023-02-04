@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   png.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:10:14 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/22 10:44:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/31 16:13:57 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ char	*readpalette(t_pngdata *png, uint8_t *ptr)
 
 	png->palette.plte = ft_memalloc(sizeof(uint32_t) * 2048);
 	if (png->palette.plte == NULL)
-		error_log(EC_MALLOC);
+		doomlog(LOGEC_MALLOC, NULL);
 	while (ft_strncmp(ptr, "PLTE", 4) != 0)
 		ptr++;
 	ptr += 4;
@@ -69,7 +69,7 @@ void	readdat(t_pngdata *png, uint8_t *ptr)
 	png->data = malloc(sizeof(uint8_t) * png->width * png->height);
 	//png->data[(png->width * png->height) - 1] = 0;
 	if (png->data == NULL)
-		error_log(EC_MALLOC);
+		doomlog(LOGEC_MALLOC, NULL);
 	count = 0;
 	while (count < (png->width * png->height) - 1
 			/*&& ft_strncmp(ptr, "tEXT", 4) != 0*/)
@@ -135,7 +135,7 @@ t_img	pngparse(char *filename)
 
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
-		error_log(EC_OPEN);
+		doomlog(LOGEC_OPEN, NULL);
 	len = read(fd, buf, sizeof(uint8_t) * 1000000);
 	ft_bzero(&png, sizeof(t_pngdata));
 	ptr = buf;

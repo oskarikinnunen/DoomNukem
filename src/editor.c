@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/31 11:42:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/04 20:49:38 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -314,7 +314,7 @@ int	editorloop(t_sdlcontext sdl)
 		ed.hid.mouse.click_unhandled = false;
 		memcpy(sdl.window_surface->pixels, sdl.surface->pixels, sizeof(uint32_t) * sdl.window_w * sdl.window_h);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
-			error_log(EC_SDL_UPDATEWINDOWSURFACE);
+			doomlog(LOGEC_SDL_UPDATEWINDOWSURFACE, NULL);
 		update_audio(&ed.world);
 		//play_localsound()
 	}

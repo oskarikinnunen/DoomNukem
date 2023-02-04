@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_audiosource.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/24 11:35:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/31 16:14:56 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,7 +167,7 @@ void	comp_audiosource_loadassets(t_entity *entity, t_world *world)
 	t_audiosource	*source;
 	source = entity->component.data;
 	if (source == NULL)
-		error_log(EC_MALLOC);
+		doomlog(LOGEC_MALLOC, NULL);
 	source->sample = get_sample(world->sdl, source->sample.name);
 }
 

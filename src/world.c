@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/31 11:16:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/04 20:49:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,10 +256,7 @@ void		destroy_entity(t_world *world, t_entity *ent)
 	cache->entities[ent->id].status = es_free;
 	cache->entities[ent->id].obj = NULL;
 	if (cache->existing_entitycount == 0)
-	{
-		printf("Tried to remove entity -1\n");
-		error_log(EC_MALLOC);
-	}
+		doomlog(LOGEC_MALLOC, "Tried to remove entity -1\n");
 	cache->existing_entitycount--;
 	//printf("%i entities exist after remove \n", cache->existing_entitycount);
 }
@@ -292,13 +289,13 @@ t_entity	*spawn_entity(t_world	*world)
 			//cache->entities[i].transform.scale = vector3_zero();
 			cache->existing_entitycount++;
 			if (cache->existing_entitycount >= cache->alloc_count)
-				error_log(EC_MALLOC);
+				doomlog(LOGEC_MALLOC, NULL);
 			return (&cache->entities[i]);
 		}
 		i++;
 	}
 	printf("ENTITYCACHE TOO SMALL, ABORT!");
-	error_log(EC_MALLOC);
+	doomlog(LOGEC_MALLOC, NULL);
 	return (NULL); //never gets here
 }
 
