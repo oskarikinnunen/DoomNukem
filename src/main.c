@@ -208,10 +208,19 @@ void	show_error_message(t_sdlcontext	*sdl)
 		exit (1);
 	}
 	i = 0;
-	while (get_next_line(fd, &line))
+
+	int gnl;
+	gnl = get_next_line(fd, &line);
+	if (gnl == -1)
+	{
+		printf("game ran into an error and the parent process couldn't read the doomlog.txt for the error message\n");
+		exit(1);
+	}
+	while (gnl)
 	{
 		messages[i] = line;
 		i++;
+		gnl = get_next_line(fd, &line);
 	}
 	messages[i] = NULL;
 	sdl->font.color = color32_to_sdlcolor(CLR_GREEN);
