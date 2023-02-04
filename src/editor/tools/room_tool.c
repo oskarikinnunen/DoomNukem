@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/27 18:58:49 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/03 15:51:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -287,7 +287,8 @@ static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 		gui_label("Shift + click to finish room", gui);
 	else
 		gui_emptyvertical(20, gui);
-	gui_roompresets(dat->room, gui, &ed->world);
+	if (gui_roompresets(dat->room, gui, &ed->world))
+		printf("after roompresets, edgecount is %i \n", dat->room->edgecount);
 	gui_end(gui);
 
 	dat->room->ceiling_height = 50;
@@ -305,6 +306,7 @@ static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 	{
+		printf("clicked, placing %inth edge \n", dat->room->edgecount);
 		if (!placelast)
 		{
 			edge = &dat->room->edges[dat->room->edgecount];
@@ -321,6 +323,7 @@ static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 				return ;
 			}
 		}
+		printf("clicked, placed %inth edge \n", dat->room->edgecount);
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
 	{
@@ -663,7 +666,7 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 	gui_labeled_int("Edges: ", dat->room->edgecount, gui);
 	gui_labeled_int("Walls: ", dat->room->wallcount, gui);
 	//linecirclecollision()
-	if (gui_shortcut_button("Force floor", 'F', gui))
+	if (gui_button("Force floor", gui))
 		room_makefloor(&ed->world, dat->room);
 	/*if (gui_shortcut_button("Copy area", 'C', gui)) //TODO: get working or disable before merge
 		dat->rtm = rtm_connect;*/

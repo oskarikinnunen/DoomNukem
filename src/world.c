@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/30 20:19:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/31 11:16:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -390,6 +390,12 @@ void	load_component(t_entity	*entity, char	*filename)
 		}
 		remove(comp_filename);
 	}
+}
+
+
+audiosource_preset1(t_audiosource source)
+{
+	source.range = 100.0f;
 }
 
 void	load_cache_from_list(char *filename, t_world *world, t_list *l)

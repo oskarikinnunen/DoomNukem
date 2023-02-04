@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 03:25:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/27 18:45:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/03 16:13:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,14 @@ static bool	touches_edges(t_vector2 pos, float radius, t_meshtri *floor)
 
 static bool	is_in_floor(t_characterphysics *cp, t_meshtri	*floor)
 {
-	t_ray r;
+	t_ray			r;
+	t_raycastinfo	info;
+
 	r.origin = vector3_add(*cp->position, (t_vector3){.z = 100.0f});
 	r.dir = (t_vector3){.z = -1.0f};
-	t_raycastinfo	info;
 	info.distance = 10000.0f;
+	if (!floor->entity)
+		return (false);
 	if (raycast_entity(r, &info, floor->entity)
 		|| touches_edges(v3tov2(*cp->position), cp->radius, floor))
 	{

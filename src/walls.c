@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/30 13:49:32 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/03 17:54:40 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,8 @@ void	clamp_wall_areaheight(t_wall *wall, t_area *room, t_world *world)
 				{
 					wall->z_offset = room->ceiling_height;
 					wall->height = (cur->height - room->height) + (cur->ceiling_height - room->ceiling_height);
+					if (other_w->height == wall->height && other_w->z_offset == wall->z_offset)
+						wall->entity->hidden = true;
 				}
 				else
 					wall->z_offset = (room->ceiling_height) - wall->height;

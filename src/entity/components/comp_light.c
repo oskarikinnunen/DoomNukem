@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/23 07:01:10 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/31 11:39:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	comp_light_update(t_entity *entity, t_world *world)
 	t_light	*light;
 
 	light = entity->component.data;
+	printf("my component is updating");
 	if (light == NULL)
 		return ;
 }

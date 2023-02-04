@@ -24,7 +24,6 @@ typedef struct s_player
 	float			height;
 	struct s_gun	*gun;
 	float			collision_radius;
-	
 }	t_player;
 
 struct s_world;
