@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/04 20:49:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/04 22:12:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -355,7 +355,7 @@ static void modifywallheights(t_area *room, int scrolldelta, t_world *world)
 
 	i = 0;
 	room->ceiling_height += scrolldelta * 10;
-	room->ceiling_height = ft_clamp(room->ceiling_height, 40, 500);
+	room->ceiling_height = ft_clamp(room->ceiling_height, 0, 2500);
 	room_init(room, world);
 	//make_areas(world, room);
 }

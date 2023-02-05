@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/02/03 14:17:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/04 20:51:41 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -318,7 +318,7 @@ void render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to)
 		return ;
 	if (l.start.x < 0.0f || l.end.x > sdl->window_w)
 	{
-		printf("line start: %f %f end: %f %f \n", l.start.x, l.start.y, l.end.x, l.end.y);
+		//printf("line start: %f %f end: %f %f \n", l.start.x, l.start.y, l.end.x, l.end.y);
 	}
 	drawline(*sdl, vector2_to_point(l.start), vector2_to_point(l.end), sdl->render.gizmocolor);
 }

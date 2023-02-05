@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 03:25:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/03 16:13:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/04 21:55:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,11 @@ static bool	touches_edges(t_vector2 pos, float radius, t_meshtri *floor)
 			|| col_linecircle(line3, pos, radius, &unused_col));
 }
 
+static bool	charphys_floor_share_z(t_characterphysics *cp, t_meshtri *floor)
+{
+	return (floor->v->z >= cp->position->z && floor->v->z <= cp->position->z + cp->height);
+}
+
 static bool	is_in_floor(t_characterphysics *cp, t_meshtri	*floor)
 {
 	t_ray			r;
@@ -44,8 +49,9 @@ static bool	is_in_floor(t_characterphysics *cp, t_meshtri	*floor)
 	info.distance = 10000.0f;
 	if (!floor->entity)
 		return (false);
-	if (raycast_entity(r, &info, floor->entity)
+	if ((raycast_entity(r, &info, floor->entity)
 		|| touches_edges(v3tov2(*cp->position), cp->radius, floor))
+		&& charphys_floor_share_z(cp, floor))
 	{
 		return (true);
 	}

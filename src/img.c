@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   img.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 13:42:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/01 14:35:20 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/04 20:58:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,13 @@ t_img	*get_image_by_name(t_sdlcontext sdl, char *name) //TODO: return pointer, t
 		//printf("image name %s \n", sdl.images[i].name);
 		if (ft_strcmp(sdl.images[i].name, correct_name) == 0)
 			return (&sdl.images[i]);
+		i++;
+	}
+	i = 0;
+	while (i < sdl.env_texturecount && sdl.env_textures != NULL)
+	{
+		if (ft_strcmp(sdl.env_textures[i].name, correct_name) == 0)
+			return (&sdl.env_textures[i]);
 		i++;
 	}
 	return (error_image()); //TODO: RETURN DEBUGIMAGE HERE
