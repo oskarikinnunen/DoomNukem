@@ -471,12 +471,12 @@ static void entity_calculate_lighting(t_entity *entity, t_world *world)
 			light = other_ent->component.data;
 			b_pos = transformed_vector3(entity->transform, vector3_zero()).v;
 			b_pos = vector3_add(b_pos, entity->obj->bounds.origin);
+			b_pos = vector3_add(b_pos, light->origin);
 
 			if (vector3_dist(b_pos, other_ent->transform.position)
 				< entity->obj->bounds.radius + light->radius)
 			{
-
-				/*uint8_t lval;
+				uint8_t lval;
 				float dist = vector3_dist(other_ent->transform.position, b_pos);
 				if (dist <= light->radius)
 				{
@@ -484,7 +484,7 @@ static void entity_calculate_lighting(t_entity *entity, t_world *world)
 					lval = ft_clamp((dist * 255), 0, 255);
 				}
 				lval = ft_clampf(lval, world->lighting.ambient_light, 255);
-				entity->lightmap->dynamic_data = ft_max(entity->lightmap->dynamic_data, lval);*/
+				entity->lightmap->dynamic_data = ft_max(entity->lightmap->dynamic_data, lval);
 			}
 		}
 		i++;
@@ -513,7 +513,7 @@ void	recalculate_lighting(t_world *world)
 				create_lightmap_for_entity(ent, world);
 				create_map_for_entity(ent, world);
 				entity_calculate_lighting(ent, world);
-				//create_dynamic_map_for_entity(ent, world);
+				create_dynamic_map_for_entity(ent, world);
 			}
 			else
 				printf("entity %i has lightmap\n", ent->id);

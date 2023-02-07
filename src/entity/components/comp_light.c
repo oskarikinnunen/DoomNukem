@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/31 11:39:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/07 11:41:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ void	comp_light_update(t_entity *entity, t_world *world)
 	t_light	*light;
 
 	light = entity->component.data;
-	printf("my component is updating");
 	if (light == NULL)
 		return ;
 }
@@ -74,6 +73,7 @@ void	comp_light_gui_edit(t_entity *entity, t_autogui *gui, t_world *world)
 	if (light == NULL)
 		return;
 	gui_labeled_float_slider("Radius: ", &light->radius, 0.1f, gui);
+	gui_labeled_vector3_slider("Offset:", &light->origin, 0.1f, gui);
 	render_ball(world->sdl, entity->transform.position, light->radius, AMBER_3);
 }
 /*	This is called during load_world, use only if your component
