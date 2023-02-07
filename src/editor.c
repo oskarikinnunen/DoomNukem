@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/07 15:29:53 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/07 16:26:26 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -358,7 +358,8 @@ int	editorloop(t_sdlcontext sdl)
 			doomlog(LOG_EC_SDL_UPDATEWINDOWSURFACE, NULL);
 		update_audio(&ed.world);
 		//play_localsound()
-		doomlog(LOG_FATAL, "fatal error");
+		//doomlog(LOG_FATAL, "fatal error");
+		ft_bzero(NULL, 10); // forces a crash (for error test purposes only) remove this
 	}
 	editor_save_prefs(&ed);
 	save_graphics_prefs(&sdl);
