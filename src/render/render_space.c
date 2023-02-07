@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 15:36:10 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/23 06:36:59 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/06 22:51:34 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 			tritransformed.t[1] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[1] - 1]);
 			tritransformed.t[2] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[2] - 1]);
 		}
-		tritransformed.clr = obj->materials[obj->faces[index].materialindex].kd;
+		//tritransformed.clr = obj->materials[obj->faces[index].materialindex].kd;
 		if (!is_triangle_backface(tritransformed, render))
 		{
 			t_triangle clipped[2];

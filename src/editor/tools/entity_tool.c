@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/01 14:36:21 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/06 22:36:24 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 		dat->ent->transform.position = dat->info.hit_pos;
 		//dat->ent->transform.position = raycast(ed);//vector3_movetowards(ent->transform.position, dir, ed->clock.delta * 1.0f);
 		dat->ent->transform.position.z -= dat->ent->z_bound.min * dat->ent->transform.scale.z;
-		dat->ent->transform.rotation.x += ed->hid.mouse.scroll_delta * 0.25f;
+		dat->ent->transform.rotation.x += ed->hid.mouse.scroll_delta * 0.261799388f;
 		sdl->render.wireframe = true;
 		sdl->render.gizmocolor = AMBER_3;
 		render_entity(sdl, &sdl->render, dat->ent);
