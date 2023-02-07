@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/07 12:14:58 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/07 15:29:53 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -305,6 +305,27 @@ int	editorloop(t_sdlcontext sdl)
 	doomlog(LOG_NORMAL, "messageeeesxxx");
 	doomlog(LOG_NORMAL, "messageeeesxxx");
 	doomlog(LOG_NORMAL, "messageeees");
+	doomlog(LOG_NORMAL, "messageeeesxxx");
+	doomlog(LOG_NORMAL, "messageeeesxxx");
+	doomlog(LOG_NORMAL, "messageeeesxxx");
+	doomlog(LOG_NORMAL, "messageeeesxxx");
+	doomlog(LOG_NORMAL, "messageeeesxxx");
+	doomlog(LOG_NORMAL, "messageeeesxxx");
+	doomlog(LOG_NORMAL, "messageeees");
+	doomlog(LOG_NORMAL, "messageeeesxxx");
+	doomlog(LOG_NORMAL, "messageeeesxxx");
+	doomlog(LOG_NORMAL, "messageeeesxxx");
+	doomlog(LOG_NORMAL, "messageeeesxxx");
+	doomlog(LOG_NORMAL, "messageeeesxxx");
+	doomlog(LOG_NORMAL, "messageeeesxxx");
+	doomlog(LOG_NORMAL, "messageeees");
+	doomlog(LOG_NORMAL, "messageeeesxxx");
+	doomlog(LOG_NORMAL, "messageeeesxxx");
+	doomlog(LOG_NORMAL, "messageeeesxxx");
+	doomlog(LOG_NORMAL, "messageeeesxxx");
+	doomlog(LOG_NORMAL, "messageeeesxxx");
+	doomlog(LOG_NORMAL, "messageeeesxxx");
+	doomlog(LOG_NORMAL, "messageeees");
 	while (ed.gamereturn == game_continue)
 	{
 		update_deltatime(&ed.world.clock);
@@ -334,9 +355,10 @@ int	editorloop(t_sdlcontext sdl)
 		ed.hid.mouse.click_unhandled = false;
 		memcpy(sdl.window_surface->pixels, sdl.surface->pixels, sizeof(uint32_t) * sdl.window_w * sdl.window_h);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
-			doomlog(LOGEC_SDL_UPDATEWINDOWSURFACE, NULL);
+			doomlog(LOG_EC_SDL_UPDATEWINDOWSURFACE, NULL);
 		update_audio(&ed.world);
 		//play_localsound()
+		doomlog(LOG_FATAL, "fatal error");
 	}
 	editor_save_prefs(&ed);
 	save_graphics_prefs(&sdl);

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 15:18:07 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/31 16:11:29 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/07 15:30:40 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -425,7 +425,7 @@ t_tool	*get_npc_tool()
 	{
 		tool.tooldata = ft_memalloc(sizeof(t_npctooldata));
 		if (tool.tooldata == NULL)
-			doomlog(LOGEC_MALLOC, NULL);
+			doomlog(LOG_EC_MALLOC, NULL);
 		dat = (t_npctooldata *)tool.tooldata;
 		/*dat->ent->transform.position = vector3_zero();
 		dat->ent->transform.scale = vector3_one();*/

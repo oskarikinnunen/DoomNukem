@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/01 14:36:27 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/07 15:31:05 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ void ptr_add(void **ptr, uint32_t *len, size_t size, void *add)
 
 	newptr = ft_memalloc((*len + 1) * size);
 	if (newptr == NULL)
-		doomlog(LOGEC_MALLOC, NULL);
+		doomlog(LOG_EC_MALLOC, NULL);
 	if (*ptr != NULL)
 	{
 		ft_memcpy(newptr, *ptr, *len * size);

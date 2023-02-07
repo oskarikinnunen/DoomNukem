@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/07 12:07:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/07 15:41:11 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -257,7 +257,7 @@ void		destroy_entity(t_world *world, t_entity *ent)
 	cache->entities[ent->id].status = es_free;
 	cache->entities[ent->id].obj = NULL;
 	if (cache->existing_entitycount == 0)
-		doomlog(LOGEC_MALLOC, "Tried to remove entity -1\n");
+		doomlog(LOG_EC_MALLOC, "Tried to remove entity -1\n");
 	cache->existing_entitycount--;
 	//printf("%i entities exist after remove \n", cache->existing_entitycount);
 }
@@ -290,13 +290,13 @@ t_entity	*spawn_entity(t_world	*world)
 			//cache->entities[i].transform.scale = vector3_zero();
 			cache->existing_entitycount++;
 			if (cache->existing_entitycount >= cache->alloc_count)
-				doomlog(LOGEC_MALLOC, NULL);
+				doomlog(LOG_EC_MALLOC, NULL);
 			return (&cache->entities[i]);
 		}
 		i++;
 	}
 	printf("ENTITYCACHE TOO SMALL, ABORT!");
-	doomlog(LOGEC_MALLOC, NULL);
+	doomlog(LOG_EC_MALLOC, NULL);
 	return (NULL); //never gets here
 }
 

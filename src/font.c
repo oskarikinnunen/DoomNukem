@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 22:00:00 by raho              #+#    #+#             */
-/*   Updated: 2023/02/03 23:04:49 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/07 15:40:37 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,16 +60,16 @@ void	load_fonts(t_font *font)
 
 	font->font_sizes[0] = TTF_OpenFont(font_file, 8); // last argument is font size
 	if (!font->font_sizes[0])
-		doomlog(LOGEC_TTF_OPENFONT, NULL);
+		doomlog(LOG_EC_TTF_OPENFONT, NULL);
 	font->font_sizes[1] = TTF_OpenFont(font_file, 30);
 	if (!font->font_sizes[1])
-		doomlog(LOGEC_TTF_OPENFONT, NULL);
+		doomlog(LOG_EC_TTF_OPENFONT, NULL);
 	font->font_sizes[2] = TTF_OpenFont(font_file, 35);
 	if (!font->font_sizes[2])
-		doomlog(LOGEC_TTF_OPENFONT, NULL);
+		doomlog(LOG_EC_TTF_OPENFONT, NULL);
 	font->font_sizes[3] = TTF_OpenFont(font_file, 100);
 	if (!font->font_sizes[3])
-		doomlog(LOGEC_TTF_OPENFONT, NULL);
+		doomlog(LOG_EC_TTF_OPENFONT, NULL);
 	font->font = font->font_sizes[0]; // initialize the font pointer to the smallest font
 	initialize_font_colors(font);
 	initialize_background_colors(font);

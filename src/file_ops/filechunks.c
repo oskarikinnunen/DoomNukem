@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/01 14:36:52 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/07 15:30:11 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ t_list	*parse_chunk(int fd, size_t size)
 
 	buf = ft_memalloc(size);
 	if (buf == NULL)
-		doomlog(LOGEC_MALLOC, NULL);
+		doomlog(LOG_EC_MALLOC, NULL);
 	count = find_chunk_count(fd);
 	count = (count * CHUNKSIZE) / size;
 	// printf("found %i chunks \n", count); //TODO: don't remove, going to be used when logging is implemented in the near future

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 13:42:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/01 14:35:20 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/07 15:29:44 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,5 +91,5 @@ void	alloc_image(t_img *img, int width, int height)
 	img->length = width * height;
 	img->data = ft_memalloc(img->length * sizeof(uint32_t));
 	if (img->data == NULL)
-		doomlog(LOGEC_MALLOC, NULL);
+		doomlog(LOG_EC_MALLOC, NULL);
 }

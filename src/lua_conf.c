@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/01 20:33:46 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/07 15:32:47 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,7 +239,7 @@ void	load_lua_conf(t_sdlcontext *sdl)
 	else
 	{
 		printf("LUA FILE NOT OK \n");
-		doomlog(LOGEC_SDL_INIT, NULL);
+		doomlog(LOG_EC_SDL_INIT, NULL);
 	}
 	lua_close(lua);
 	return ;

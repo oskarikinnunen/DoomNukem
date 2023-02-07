@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/07 12:14:19 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/07 16:23:25 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,10 @@ void	create_sdl_window(t_sdlcontext *sdl, t_screenmode mode)
 			sdl->window_w, sdl->window_h, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN);
 	}
 	if (sdl->window == NULL)
-		doomlog(LOGEC_SDL_CREATEWINDOW, NULL);
+		doomlog(LOG_EC_SDL_CREATEWINDOW, NULL);
 	sdl->window_surface = SDL_GetWindowSurface(sdl->window);
 	if (sdl->window_surface == NULL)
-		doomlog(LOGEC_SDL_GETWINDOW_SURFACE, NULL);
+		doomlog(LOG_EC_SDL_GETWINDOW_SURFACE, NULL);
 }
 
 void	set_sdl_settings(t_sdlcontext *sdl)
@@ -95,10 +95,10 @@ void	set_sdl_settings(t_sdlcontext *sdl)
 	
 	sdl->surface = SDL_CreateRGBSurfaceWithFormat(SDL_SWSURFACE, sdl->window_w, sdl->window_h, 32, SDL_PIXELFORMAT_ARGB8888);
 	if (sdl->surface == NULL)
-		doomlog(LOGEC_SDL_CREATERGBSURFACE, NULL);
+		doomlog(LOG_EC_SDL_CREATERGBSURFACE, NULL);
 	sdl->ui_surface = SDL_CreateRGBSurfaceWithFormat(SDL_SWSURFACE, sdl->window_w, sdl->window_h, 32, SDL_PIXELFORMAT_ARGB8888);
 	if (sdl->ui_surface == NULL)
-		doomlog(LOGEC_SDL_CREATERGBSURFACE, NULL);
+		doomlog(LOG_EC_SDL_CREATERGBSURFACE, NULL);
 	sdl->zbuffer = ft_memalloc(sdl->window_w * sdl->window_h * sizeof(float));
 	sdl->scaling_buffer = ft_memalloc(sdl->window_w * sdl->window_w * sizeof(uint32_t));
 	alloc_occlusion(sdl);
@@ -118,7 +118,7 @@ void	create_sdlcontext(t_sdlcontext	*sdl)
 		|| SDL_Init(SDL_INIT_EVENTS) < 0 \
 		|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0 \
 		|| TTF_Init() < 0)
-		doomlog(LOGEC_SDL_INIT, NULL);
+		doomlog(LOG_EC_SDL_INIT, NULL);
 	set_sdl_settings(sdl);
 	printf("audio volume %f \n", sdl->audio.sfx_volume);
 	load_assets(sdl);
@@ -135,7 +135,7 @@ void	checkargs(int argc, char **argv)
 	}
 }
 
-void	show_error_message(t_sdlcontext	*sdl)
+void	show_error_message(t_sdlcontext	*sdl, char *str)
 {
 	ft_bzero(sdl, sizeof(t_sdlcontext));
 	if (SDL_Init(SDL_INIT_VIDEO) < 0 \
@@ -143,7 +143,7 @@ void	show_error_message(t_sdlcontext	*sdl)
 			|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0 \
 			|| TTF_Init() < 0)
 	{
-		printf("game ran into an error and the parent process couldn't init sdl for the error message\n");
+		ft_putendl_fd("game ran into an error and the parent process couldn't init sdl for the error message", 2);
 		exit (1);
 	}
 	/* does this need to be protected for tiny window sizes? */
@@ -152,19 +152,19 @@ void	show_error_message(t_sdlcontext	*sdl)
 			600, 300, SDL_WINDOW_SHOWN);
 	if (sdl->window == NULL)
 	{
-		printf("game ran into an error and the parent process couldn't create a window for the error message\n");
+		ft_putendl_fd("game ran into an error and the parent process couldn't create a window for the error message", 2);
 		exit (1);
 	}
 	sdl->window_surface = SDL_GetWindowSurface(sdl->window);
 	if (sdl->window_surface == NULL)
 	{
-		printf("game ran into an error and the parent process couldn't create a surface for the error message window\n");
+		ft_putendl_fd("game ran into an error and the parent process couldn't create a surface for the error message window", 2);
 		exit (1);
 	}
 	sdl->surface = SDL_CreateRGBSurfaceWithFormat(SDL_SWSURFACE, 600, 300, 32, SDL_PIXELFORMAT_ARGB8888);
 	if (sdl->surface == NULL)
 	{
-		printf("game ran into an error and the parent process couldn't create a RGB surface for the error message window\n");
+		ft_putendl_fd("game ran into an error and the parent process couldn't create a RGB surface for the error message window", 2);
 		exit (1);
 	}
 	load_fonts(&sdl->font);
@@ -175,46 +175,59 @@ void	show_error_message(t_sdlcontext	*sdl)
 	int			message_count;
 	char		**messages;
 	int			i;
+	int			j;
 	static	int	scroll;
+	int			gnl;
 
 	fd = open("doomlog.txt", O_RDONLY);
 	if (fd == -1)
 	{
-		printf("game ran into an error and the parent process couldn't open the doomlog.txt for the error message\n");
+		ft_putendl_fd("game ran into an error and the parent process couldn't open the doomlog.txt for the error message", 2);
 		exit (1);
 	}
 	message_count = 0;
 	line = NULL;
-	while (get_next_line(fd, &line))
+	gnl = get_next_line(fd, &line);
+	if (gnl == -1)
+	{
+		ft_putendl_fd("game ran into an error and the parent process couldn't read the doomlog.txt for the error message", 2);
+		exit(1);
+	}
+	while (gnl)
 	{
 		if (line)
 		{
 			free(line);
 			line = NULL;
 		}
-		message_count++;	
+		message_count++;
+		gnl = get_next_line(fd, &line);
+	}
+	if (gnl == -1)
+	{
+		ft_putendl_fd("game ran into an error and the parent process couldn't read the doomlog.txt for the error message", 2);
+		exit(1);
 	}
 	if (close(fd) == -1)
-		printf("couldn't close the doomlog.txt from the parent process\n");
-	messages = (char **)malloc(sizeof(char *) * (message_count + 1));
+		ft_putendl_fd("couldn't close the doomlog.txt from the parent process", 2);
+	messages = (char **)malloc(sizeof(char *) * (message_count + 3));
 	if (messages == NULL)
 	{
-		printf("game ran into an error and the parent process's malloc for the error message failed\n");
+		ft_putendl_fd("game ran into an error and the parent process's malloc for the error message failed", 2);
 		exit (1);
 	}
 	fd = open("doomlog.txt", O_RDONLY);
 	if (fd == -1)
 	{
-		printf("game ran into an error and the parent process couldn't open the doomlog.txt for the error message\n");
+		ft_putendl_fd("game ran into an error and the parent process couldn't open the doomlog.txt for the error message", 2);
 		exit (1);
 	}
-	i = 0;
-
-	int gnl;
+	messages[0] = ft_strdup("GAME RAN INTO AN ERROR! DISPLAYING LOG ENTRIES FROM DOOMLOG.TXT:");
+	i = 1;
 	gnl = get_next_line(fd, &line);
 	if (gnl == -1)
 	{
-		printf("game ran into an error and the parent process couldn't read the doomlog.txt for the error message\n");
+		ft_putendl_fd("game ran into an error and the parent process couldn't read the doomlog.txt for the error message", 2);
 		exit(1);
 	}
 	while (gnl)
@@ -223,6 +236,12 @@ void	show_error_message(t_sdlcontext	*sdl)
 		i++;
 		gnl = get_next_line(fd, &line);
 	}
+	if (gnl == -1)
+	{
+		ft_putendl_fd("game ran into an error and the parent process couldn't read the doomlog.txt for the error message", 2);
+		exit(1);
+	}
+	messages[i++] = str;
 	messages[i] = NULL;
 	sdl->font.color = color32_to_sdlcolor(CLR_GREEN);
 	i = 0;
@@ -235,31 +254,88 @@ void	show_error_message(t_sdlcontext	*sdl)
 		{
 			ft_bzero(sdl->window_surface->pixels, sizeof(uint32_t) * 600 * 300);
 			ft_bzero(sdl->surface->pixels, sizeof(uint32_t) * 600 * 300);
-			//print_text(sdl, messages[], (t_point){10, (10 + (j - i) * 13)});
 			mouse_event(event, &hid.mouse);
 			if ((event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE) || \
 					(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE))
 			{
-				printf("game ran into an error and the parent process showed the error message succesfully\n");
+				ft_putendl_fd("game ran into an error and the parent process displayed the error message succesfully", 2);
 				exit (0);
 			}
-			printf("scroll d %i i = %i\n", hid.mouse.scroll_delta, i);
-			i += hid.mouse.scroll_delta; //clamp
-			int j = i;
-			while (j < message_count)
+			i = ft_clamp((i - hid.mouse.scroll_delta), 0, (message_count - 22 + 2));
+			j = i;
+			while (j < message_count + 3)
 			{
-				if (j >= 0 && j < message_count)
+				if (j >= 0 && j < message_count + 3)
 					print_text(sdl, messages[j], (t_point){10, (10 + (j - i) * 13)});
 				j++;
 			}
 			memcpy(sdl->window_surface->pixels, sdl->surface->pixels, sizeof(uint32_t) * 600 * 300);
 			if (SDL_UpdateWindowSurface(sdl->window) < 0)
 			{
-				printf("game ran into an error and the parent process couldn't update the window surface for the error message\n");
+				ft_putendl_fd("game ran into an error and the parent process couldn't update the window surface for the error message", 2);
 				exit (1);
 			}
 		}
 	}
+}
+
+char	*signal_name(int wait_status)
+{
+	static char	signal[16];
+
+	if (WTERMSIG(wait_status) == SIGSEGV)
+		ft_strcpy(signal, "SIGSEGV");
+	if (WTERMSIG(wait_status) == SIGBUS)
+		ft_strcpy(signal, "SIGSEGV");
+	if (WTERMSIG(wait_status) == SIGILL)
+		ft_strcpy(signal, "SIGILL");
+	if (WTERMSIG(wait_status) == SIGABRT)
+		ft_strcpy(signal, "SIGABRT");
+	if (WTERMSIG(wait_status) == SIGIOT)
+		ft_strcpy(signal, "SIGIOT");
+	if (WTERMSIG(wait_status) == SIGTRAP)
+		ft_strcpy(signal, "SIGTRAP");
+	if (WTERMSIG(wait_status) == SIGEMT)
+		ft_strcpy(signal, "SIGEMT");
+	if (WTERMSIG(wait_status) == SIGSYS)
+		ft_strcpy(signal, "SIGSYS");
+	return (signal);
+}
+
+char	*combine_strings(char **str)
+{
+	int		x;
+	int		y;
+	int		len;
+	char	*result;
+
+	len = 0;
+	y = 0;
+	while (str[y] != NULL)
+	{
+		x = 0;
+		while (str[y][x] != '\0')
+			x++;
+		len += x;
+		if (str[y + 1] != NULL)
+			len += 1;
+		y++;
+	}
+	result = ft_strnew(len);
+	if (result == NULL)
+		return (result);
+	y = 0;
+	x = 0;
+	while (str[y] != NULL)
+	{
+		ft_strcpy(&result[x], str[y]);
+		x += ft_strlen(str[y]);
+		result[x] = ' ';
+		x++;
+		y++;
+	}
+	result[len] = '\0';
+	return (result);
 }
 
 int	main(int argc, char **argv)
@@ -272,7 +348,7 @@ int	main(int argc, char **argv)
 	pid = fork();
 	if (pid == -1)
 	{
-		printf("fork failed\n");
+		ft_putendl_fd("fork failed", 2);
 		return (1);
 	}
 	// child process is always pid 0
@@ -294,20 +370,32 @@ int	main(int argc, char **argv)
 		int	wait_status;
 		
 		wait(&wait_status);
-		if (WIFEXITED(wait_status))
+		if (WIFSIGNALED(wait_status))
 		{
-			printf("child process exited with status: %d\n", WEXITSTATUS(wait_status));
+			ft_putendl_fd(combine_strings((char *[5]){"child process raised a signal that caused it to exit:", \
+												s_itoa(WTERMSIG(wait_status)), \
+												"-", signal_name(wait_status)}), 2);
+			show_error_message(&sdl, combine_strings((char *[5]){"child process raised a signal that caused it to exit:", \
+												s_itoa(WTERMSIG(wait_status)), \
+												"-", signal_name(wait_status)}));
+			return (1);
+		}
+		else if (WIFEXITED(wait_status))
+		{
+			ft_putendl_fd(combine_strings((char *[3]){"child process exited with status:", \
+												s_itoa(WEXITSTATUS(wait_status))}), 2);
 			if (WEXITSTATUS(wait_status) != 0)
 			{
-				show_error_message(&sdl);
+				show_error_message(&sdl, combine_strings((char *[3]){"child process exited with status:", \
+												s_itoa(WEXITSTATUS(wait_status))}));
 				return (1);
 			}
 		}
-		else {
-			printf("no exit status from the child process\n");
-			show_error_message(&sdl);
+		else
+		{
+			ft_putendl_fd("no exit signal or status from the child process", 2);
+			show_error_message(&sdl, "no exit signal or status from the child process");
 		}
-			
 	}
 	return (0);
 }

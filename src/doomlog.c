@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 14:59:55 by raho              #+#    #+#             */
-/*   Updated: 2023/02/03 22:52:21 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/07 15:54:56 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ static int	doomlog_fd(void)
 		if (fd == -1)
 		{
 			ft_putstr_fd("!!! doomlog.txt - ", 2);
-			error_codes(LOGEC_OPEN, 2);
+			error_codes(LOG_EC_OPEN, 2);
 			exit (1);
 		}
 		ft_putendl_fd("created/cleaned the log file succesfully", fd);
@@ -85,14 +85,14 @@ static int	doomlog_fd(void)
 		if (fd == -1)
 		{
 			ft_putstr_fd("!!! doomlog.txt - ", 2);
-			error_codes(LOGEC_OPEN, 2);
+			error_codes(LOG_EC_OPEN, 2);
 			exit (1);
 		}
 	}
 	return (fd);
 }
 
-static void	normal_message_mul(int fd, char **str)
+void	normal_message_mul(int fd, char **str)
 {
 	int	index;
 
@@ -231,7 +231,7 @@ void	doomlog_mul(int code, char **str)
 	}
 	if (close(fd) == -1)
 	{
-		error_message(LOGEC_CLOSE, fd, "log.txt");
+		error_message(LOG_EC_CLOSE, fd, "log.txt");
 		exit (1);
 	}
 }

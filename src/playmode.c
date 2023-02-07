@@ -107,7 +107,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 		join_surfaces(sdl.window_surface, sdl.surface);
 		join_surfaces(sdl.window_surface, sdl.ui_surface);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
-			doomlog(LOGEC_SDL_UPDATEWINDOWSURFACE, NULL);
+			doomlog(LOG_EC_SDL_UPDATEWINDOWSURFACE, NULL);
 		
 		
 	}
@@ -126,11 +126,11 @@ int playmode(t_sdlcontext sdl)
 	bzero(&game, sizeof(t_game));
 	//Locks mouse
 	if (SDL_SetRelativeMouseMode(SDL_TRUE) < 0)
-		doomlog(LOGEC_SDL_SETRELATIVEMOUSEMODE, NULL);
+		doomlog(LOG_EC_SDL_SETRELATIVEMOUSEMODE, NULL);
 	//Do game loop until exit or error
 	gr = gameloop(sdl, game);
 	//Unlocks mouse
 	if (SDL_SetRelativeMouseMode(SDL_FALSE) < 0)
-		doomlog(LOGEC_SDL_SETRELATIVEMOUSEMODE, NULL);
+		doomlog(LOG_EC_SDL_SETRELATIVEMOUSEMODE, NULL);
 	return (gr);
 }

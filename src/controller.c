@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:36:01 by raho              #+#    #+#             */
-/*   Updated: 2023/01/31 16:18:45 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/07 15:41:33 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,14 +152,14 @@ int	controller_events(SDL_Event e, t_hid_info *hid)
 					c = 0;
 				hid->controller[c].gamecontroller = SDL_GameControllerOpen(e.cdevice.which);
 				if (!hid->controller[c].gamecontroller)
-					doomlog(LOGEC_SDL_GAMECONTROLLEROPEN, NULL);
+					doomlog(LOG_EC_SDL_GAMECONTROLLEROPEN, NULL);
 				joystick_id = SDL_GameControllerGetJoystick(hid->controller[c].gamecontroller);
 				
 				// controller's action states could be updated here if needed
 				
 				hid->controller[c].instance_id = SDL_JoystickInstanceID(joystick_id);
 				if (hid->controller[c].instance_id < 0)
-					doomlog(LOGEC_SDL_JOYSTICKINSTANCEID, NULL);
+					doomlog(LOG_EC_SDL_JOYSTICKINSTANCEID, NULL);
 				else
 					hid->controller[c].connected = true;
 				printf("controller %i connected\n", (c + 1));
@@ -267,11 +267,11 @@ void	initialize_controllers(t_hid_info *hid)
 			{
 				hid->controller[index].gamecontroller = SDL_GameControllerOpen(index);
 				if (!hid->controller[index].gamecontroller)
-					doomlog(LOGEC_SDL_GAMECONTROLLEROPEN, NULL);
+					doomlog(LOG_EC_SDL_GAMECONTROLLEROPEN, NULL);
 				joystick_id = SDL_GameControllerGetJoystick(hid->controller[index].gamecontroller);
 				hid->controller[index].instance_id = SDL_JoystickInstanceID(joystick_id);
 				if (hid->controller[index].instance_id < 0)
-					doomlog(LOGEC_SDL_JOYSTICKINSTANCEID, NULL);
+					doomlog(LOG_EC_SDL_JOYSTICKINSTANCEID, NULL);
 				else
 					hid->controller[index].connected = true;
 				printf("controller %i connected\n", (index + 1));
