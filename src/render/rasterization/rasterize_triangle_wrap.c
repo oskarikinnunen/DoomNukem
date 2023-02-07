@@ -16,7 +16,7 @@ static uint32_t sample_img_dynamic(t_render *render, t_texture t)
 	xsample = xsample % render->img->size.x;
 	ysample = (t.v / t.w) * (render->img->size.y);
 	ysample = ysample % render->img->size.y;
-	return(flip_channels(render->img->data[(ysample * render->img->size.x) + xsample]));
+	return((render->img->data[(ysample * render->img->size.x) + xsample]));
 }
 
 static uint32_t sample_img_dynamic2(t_render *render, t_texture t)
@@ -31,7 +31,7 @@ static uint32_t sample_img_dynamic2(t_render *render, t_texture t)
 	y8b = (t.v * t.w) * 255;
 	ysample = (y8b * (render->img->size.y - 1)) / 255;
 
-	return(flip_channels(render->img->data[(ysample * render->img->size.x) + xsample]));
+	return((render->img->data[(ysample * render->img->size.x) + xsample]));
 }
 
 typedef struct s_barycentric

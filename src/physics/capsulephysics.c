@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 03:25:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/04 21:55:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/07 16:23:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,9 +85,14 @@ static float	get_z_position(t_characterphysics *cp, t_world *world)
 	return (z);
 }
 
-void apply_capsulephysics(t_characterphysics charp, t_world *world) //TODO: this takes only 2D velocity vector
+/*void capsule_move(t_characterhysics charp, t_world *world)
 {
-	t_vector3	potential_pos;
+	
+}*/
+
+void capsule_applygravity(t_characterphysics charp, t_world *world) //TODO: this takes only 2D velocity vector
+{
+	/*t_vector3	potential_pos;
 	t_vector3	new_pos;
 
 	potential_pos = vector3_add(*charp.position, vector3_mul(*charp.velocity, world->clock.delta));
@@ -100,7 +105,6 @@ void apply_capsulephysics(t_characterphysics charp, t_world *world) //TODO: this
 	float floorz = get_z_position(&charp, world);
 	if (floorz <= charp.position->z)
 	{
-		*charp.isgrounded = (charp.position->z <= floorz);
 		float target_z = floorz;
 		float gravityapply = 0.0012f;
 		float zveltarget;
@@ -127,8 +131,52 @@ void apply_capsulephysics(t_characterphysics charp, t_world *world) //TODO: this
 		if (charp.impactvelocity != NULL)
 			charp.impactvelocity->z = charp.velocity->z;
 		charp.velocity->z = 0.0f;
+	}*/
+	//*charp.isgrounded = (charp.position->z <= floorz);
+}
+
+void capsule_applygravity_new(t_characterphysics *charp, t_world *world) //TODO: this takes only 2D velocity vector
+{
+	t_vector3	potential_pos;
+	t_vector3	new_pos;
+
+	potential_pos = vector3_add(*charp->position, vector3_mul(charp->new_velocity, world->clock.delta));
+	new_pos = potential_pos;
+	int i = 0;
+	while (check_collision_character(world, *charp, new_pos, &new_pos) && i < 5)
+		i++;
+	if (!check_collision_character(world, *charp, new_pos, &new_pos))
+		*charp->position = new_pos;
+	float floorz = get_z_position(charp, world);
+	if (floorz <= charp->position->z)
+	{
+		charp->new_isgrounded = (charp->position->z <= floorz);
+		float target_z = floorz;
+		float gravityapply = 0.0012f;
+		float zveltarget;
+		zveltarget = GRAVITY;
+		if (charp->gravity_override != NULL)
+			zveltarget = *charp->gravity_override;
+		if (charp->new_isgrounded)
+			zveltarget = 0.0f;
+		charp->new_velocity.z = ft_fmovetowards(charp->new_velocity.z, zveltarget, gravityapply * world->clock.delta);
+		if (charp->new_velocity.z <= 0.0f)
+			target_z = floorz;
+		else
+			target_z = 10000.0f;
+		charp->position->z = ft_fmovetowards(charp->position->z, target_z, ft_absf(charp->new_velocity.z) * world->clock.delta);
+		charp->position->z = ft_clampf(charp->position->z, floorz, 10000.0f);
+		charp->new_isgrounded = (charp->position->z <= floorz);
 	}
-	*charp.isgrounded = (charp.position->z <= floorz);
+	else
+		charp->position->z = ft_fmovetowards(charp->position->z, floorz, world->clock.delta * -GRAVITY * 0.5f);
+	if (charp->new_isgrounded && charp->new_velocity.z != 0)
+	{
+		charp->new_landingtrigger = true;
+		charp->new_impactvelocity.z = charp->new_velocity.z;
+		charp->new_velocity.z = 0.0f;
+	}
+	charp->new_isgrounded = (charp->position->z <= floorz);
 }
 
 /*static void collision_movement(t_player *player, t_vector3 move_vector, t_world *world) //TODO: this takes only 2D velocity vector

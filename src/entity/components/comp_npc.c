@@ -2,55 +2,66 @@
 #include "doomnukem.h"
 #include "editor_tools.h"
 
-static void assign_npc_type(t_npc *source)
+static void assign_npc_type(t_npc *npc)
 {
-	if (!source)
+	if (!npc)
 		return;
-	if (source->npc_type == nt_default)
+	npc->func_update = civilian_update;
+	npc->func_movement = civilian_movement;
+	npc->func_action = civilian_action;
+	npc->func_anim = civilian_anim;
+	npc->func_take_damage = civilian_take_damage;
+	return ;
+	if (npc->npc_type == nt_default)
 	{
-		source->func_update = NULL;
-		source->func_movement = NULL;
-		source->func_action = NULL;
-		source->func_anim = NULL;
-		source->func_take_damage = NULL;
+		npc->func_update = NULL;
+		npc->func_movement = NULL;
+		npc->func_action = NULL;
+		npc->func_anim = NULL;
+		npc->func_take_damage = NULL;
 	}
-	else if (source->npc_type == nt_civilian)
+	else if (npc->npc_type == nt_civilian)
 	{
-		source->func_update = civilian_update;
-		source->func_movement = civilian_movement;
-		source->func_action = civilian_action;
-		source->func_anim = civilian_anim;
-		source->func_take_damage = civilian_take_damage;
+		npc->func_update = civilian_update;
+		npc->func_movement = civilian_movement;
+		npc->func_action = civilian_action;
+		npc->func_anim = civilian_anim;
+		npc->func_take_damage = civilian_take_damage;
 	}
-	else if (source->npc_type == nt_enemy)
+	if (npc->npc_type == nt_enemy)
 	{
-		source->func_update = enemy_update;
-		source->func_movement = enemy_movement;
-		source->func_action = enemy_action;
-		source->func_anim = enemy_anim;
-		source->func_take_damage = enemy_take_damage;
+		npc->func_update = enemy_update;
+		npc->func_movement = enemy_movement;
+		npc->func_action = enemy_action;
+		npc->func_anim = enemy_anim;
+		npc->func_take_damage = enemy_take_damage;
 	}
-	source->npc_type_changed = false;
+	npc->npc_type_changed = false;
 }
 
 //remember audio.sounds.c has a return remove it.
 static void	comp_npc_update(t_entity *entity, t_world *world)
 {
-	t_npc			*source;
+	if (!entity->animation.active)
+		start_anim(&entity->animation, anim_forwards);
+	else
+		update_anim(&entity->animation, world->clock.delta);
+		//entity_start_anim(entity, "anim");
+	t_npc			*npc;
 
-	source = entity->component.data;
-	if (source == NULL)
+	npc = entity->component.data;
+	if (npc == NULL)
 		return;
-	if (source->npc_type_changed)
-		assign_npc_type(source);
-	if (source->func_update)
-		source->func_update(entity, world);
-	if (source->func_movement)
-		source->func_movement(entity, world);
-	if (source->func_action)
-		source->func_action(entity, world);
-	if (source->func_anim)
-		source->func_anim(entity, world);
+	if (npc->npc_type_changed)
+		assign_npc_type(npc);
+	if (npc->func_update)
+		npc->func_update(entity, world);
+	if (npc->func_movement)
+		npc->func_movement(entity, world);
+	if (npc->func_action)
+		npc->func_action(entity, world);
+	if (npc->func_anim)
+		npc->func_anim(entity, world);
 }
 
 static char *get_npc_type_name(int i)
@@ -82,7 +93,11 @@ static void	comp_npc_gui_edit(t_entity *entity, t_autogui *gui, t_world *world)
 	gui_label("NPC: ", gui);
 	gui_label(get_npc_type_name(source->npc_type), gui);
 	gui_endhorizontal(gui);
+	gui_labeled_bool("ANIM:", entity->animation.active, gui);
+	gui_labeled_int("i:", entity->animation.frame, gui);
 
+	if (gui_button("Move towards player", gui))
+		source->aggroed = true;
 	if (gui_highlighted_button_if("NPC Type", gui, toggle_select))
 		toggle_select = !toggle_select;
 	if (toggle_select)
@@ -120,13 +135,19 @@ static void	comp_npc_allocate(t_entity *entity, t_world *world)
 	source = entity->component.data;
 	bzero(entity->component.data, sizeof(t_npc));
 	source->movementspeed = 0.1f;
-	source->path.start = get_nearest_target_node(world, entity->transform.position);
+	start_anim(&entity->animation, anim_forwards);
+	//entity_start_anim
+	entity->animation.lastframe = 30;
+	entity->animation.framerate = 30;
+	entity->animation.loop = true;
+	//source->path.start = get_nearest_target_node(world, entity->transform.position);
 	assign_npc_type(source);
 }
 
 void	assign_component_npc(t_component *component)
 {
 	component->data_size = sizeof(t_npc);
+	component_empty_function_pointers(component);
 	component->func_allocate = comp_npc_allocate;
 	component->func_update = comp_npc_update;
 	component->func_gui_edit = comp_npc_gui_edit;

@@ -16,6 +16,7 @@ typedef struct s_npc
 	t_path		path;
 	float		movementspeed;
 	bool		npc_type_changed;
+	bool		aggroed;
 	t_npc_type	npc_type;
 	void		(*func_take_damage)(struct s_entity *,struct s_world *); //on take damage can change civilians movement function to follow player and action to attack player
 	void		(*func_update)(struct s_entity *,struct s_world *); //general stuff

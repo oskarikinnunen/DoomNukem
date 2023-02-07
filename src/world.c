@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/04 20:49:49 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/07 16:08:13 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,7 @@ void update_world3d(t_world *world, t_render *render)
 		}
 		if (gui_shortcut_button("Toggle grids:", 'G', world->debug_gui))
 		{
-			world->player->velocity.x += 15.0f;
+			//world->player->velocity.x += 15.0f;
 			world->sdl->render_grid = !world->sdl->render_grid;
 		}
 			

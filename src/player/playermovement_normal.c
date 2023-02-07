@@ -32,9 +32,9 @@ static void	crouchupdate(t_player *player, t_world *world)
 {
 	if (player->input.crouch)
 	{
-		if (!player->crouchjumped && !player->isgrounded && player->velocity.z >= 0)
+		if (!player->crouchjumped && !player->isgrounded && player->cp.new_velocity.z >= 0)
 		{
-			player->velocity.z = 0.125f;
+			player->cp.new_velocity.z = 0.125f;
 			player->crouchjumped = true;
 		}
 		player->height = ft_fmovetowards(player->height, PLAYER_CROUCHHEIGHT, PLAYER_CROUCHSPEED * world->clock.delta);
@@ -47,28 +47,70 @@ static void	crouchupdate(t_player *player, t_world *world)
 	}
 }
 
-t_characterphysics	player_physics(t_player *player)
+void	player_init_physics(t_player *player)
 {
-	t_characterphysics	phys;
 	float				lerp;
 	static float		override;
 
-	ft_bzero(&phys, sizeof(phys));
-	phys.position = &player->transform.position;
-	phys.velocity = &player->velocity;
-	phys.impactvelocity = &player->impactvelocity;
-	phys.radius = 15.0f;
-	phys.isgrounded = &player->isgrounded;
-	phys.gravity_override = NULL;
-	phys.height = player->height;
-	phys.landingtrigger = &player->landingtrigger;
+	ft_bzero(&player->cp, sizeof(player->cp));
+	player->cp.position = &player->transform.position;
+	player->cp.radius = 15.0f;
+	player->cp.gravity_override = NULL;
+	//player->cp.height = player->height; Move to update
+	//return (phys);
+}
+
+/*	velocity_xy = v3tov2(player->velocity);
+	float acc = PLAYER_ACCELERATION;
+	if (!player->isgrounded)
+		acc *= 0.25f;
+	add_velocity = vector2_mul(normalized_inputvector(player->input, *player), acc * world->clock.delta);
+	velocity_xy = vector2_add(velocity_xy, add_velocity);
+	player->velocity.x = velocity_xy.x;
+	player->velocity.y = velocity_xy.y;
+	velocity_xy = vector2_clamp_magnitude(v3tov2(player->velocity), current_maxvelocity(player));
+	player->velocity.x = velocity_xy.x;
+	player->velocity.y = velocity_xy.y;*/
+
+void	capsule_add_xy_velocity(t_vector2 vel, t_characterphysics *phys, t_world *world)
+{
+	t_vector2	vel_clamped;
+	//phys->velocity = vector2_add(phys->velocity, vel);
+	phys->new_velocity.x += vel.x;
+	phys->new_velocity.y += vel.y;
+	vel_clamped = v3tov2(phys->new_velocity);
+	vel_clamped = vector2_clamp_magnitude(vel_clamped, phys->max_velocity);
+	phys->new_velocity.x = vel_clamped.x;
+	phys->new_velocity.y = vel_clamped.y;
+}
+
+void	capsule_damp(t_characterphysics *phys, t_world *world)
+{
+	t_vector2	velocity_xy;
+	velocity_xy = v3tov2(phys->new_velocity);
+	velocity_xy = vector2_mul(velocity_xy, 1.0f - (world->clock.delta * PLAYER_DECELERATION));
+	phys->new_velocity.x = velocity_xy.x;
+	phys->new_velocity.y = velocity_xy.y;
+}
+
+
+void	player_update_physics(t_player *player, t_world *world)
+{
+	float				lerp;
+	static float		override;
+
+	player->cp.position = &player->transform.position;
+	player->cp.radius = 15.0f;
+	player->cp.gravity_override = NULL;
+	player->cp.height = player->height;
+	player->cp.max_velocity = current_maxvelocity(player);
 	if (player->jump.active)
 	{
-		float lerp = 1.5f - player->jump.lerp;
+		lerp = 1.5f - player->jump.lerp;
 		override = (GRAVITY + (lerp * 0.66f));
-		phys.gravity_override = &override;
+		player->cp.gravity_override = &override;
 	}
-	return (phys);
+	//player->cp.po
 }
 
 void	play_footstepsound(t_player *player, t_world *world)
@@ -83,7 +125,7 @@ void	play_footstepsound(t_player *player, t_world *world)
 		source.play_always = true;
 		_audiosource_start(world->sdl, &source, &player->transform.position);
 	}
-	float lerp = vector2_magnitude(v3tov2(player->velocity)) * 10.0f; //TODO: use player speed
+	float lerp = vector2_magnitude(v3tov2(player->cp.new_velocity)) * 10.0f; //TODO: use phys
 	source.volume = lerp * 0.20f;
 	if (!player->isgrounded)
 	{
@@ -116,7 +158,7 @@ void	play_landingsound(t_player *player, t_world *world)
 	static	t_audiosource source;
 	float	vlerp;
 	
-	if (player->impactvelocity.z > 0.0f)
+	if (player->cp.new_impactvelocity.z > 0.0f)
 	{
 		source.volume = 0.2f;
 		source.sample = random_climbsound(world);
@@ -125,7 +167,7 @@ void	play_landingsound(t_player *player, t_world *world)
 	}
 	else
 	{
-		float vlerp = player->impactvelocity.z / (GRAVITY);
+		float vlerp = player->cp.new_impactvelocity.z / (GRAVITY);
 		source.volume = ft_clampf(vlerp, 0.2f, 0.4f);
 		source._realrange = ft_flerp(40.0f, 160.0f, vlerp);
 		if (vlerp < 0.38f)
@@ -144,31 +186,21 @@ void	playermovement_normal(t_player *player, t_world *world)
 	player->transform.rotation = vector3_sub(player->transform.rotation, v2tov3(player->input.turn));
 	player->transform.rotation.y = ft_clampf(player->transform.rotation.y, -RAD90 * 0.99f, RAD90 * 0.99f);
 	player->lookdir = lookdirection((t_vector2){player->transform.rotation.x, player->transform.rotation.y});
-	//TODO: split to addvelocity
-	velocity_xy = v3tov2(player->velocity);
-	float acc = PLAYER_ACCELERATION;
-	if (!player->isgrounded)
-		acc *= 0.25f;
-	add_velocity = vector2_mul(normalized_inputvector(player->input, *player), PLAYER_ACCELERATION * world->clock.delta);
-	velocity_xy = vector2_add(velocity_xy, add_velocity);
-	player->velocity.x = velocity_xy.x;
-	player->velocity.y = velocity_xy.y;
-	velocity_xy = vector2_clamp_magnitude(v3tov2(player->velocity), current_maxvelocity(player));
-	player->velocity.x = velocity_xy.x;
-	player->velocity.y = velocity_xy.y;
+	velocity_xy = vector2_mul(normalized_inputvector(player->input, *player), PLAYER_ACCELERATION * world->clock.delta);
+	capsule_add_xy_velocity(velocity_xy, &player->cp, world);
 	crouchupdate(player, world);
-	if (player->input.jump && player->isgrounded && world->clock.prev_time > player->lastjumptime + JUMP_DELAY)
+	if (player->input.jump && player->cp.new_isgrounded && world->clock.prev_time > player->lastjumptime + JUMP_DELAY)
 	{
-		if (vector2_magnitude(velocity_xy) > PLAYER_WALKSPEED)
+		/*if (vector2_magnitude(velocity_xy) > PLAYER_WALKSPEED)
 			player->velocity.z = 0.12f;
 		else
 		{
 			add_velocity = vector2_mul(normalized_inputvector(player->input, *player), 0.005f * world->clock.delta);
 			player->velocity.x += add_velocity.x;
 			player->velocity.y += add_velocity.y;
-			player->velocity.z = 0.065f;
-		}
-			
+			//player->velocity.z = 0.065f;
+		}*/
+		player->cp.new_velocity.z = 0.065f;
 		player->transform.position.z += 0.1f;
 		start_anim(&player->jump, anim_forwards);
 		player->lastjumptime = world->clock.prev_time;
@@ -176,20 +208,11 @@ void	playermovement_normal(t_player *player, t_world *world)
 	if (player->jump.active)
 		update_anim(&player->jump, world->clock.delta);
 	//collision_movement(player, vector3_mul(player->velocity, world->clock.delta), world);
-	apply_capsulephysics(player_physics(player), world);
-	player->speed = vector3_magnitude(player->velocity);
-	if (player->landingtrigger && (player->landingtrigger = false, 1))
-		play_landingsound(player, world);
+	player_update_physics(player, world);
+	capsule_applygravity_new(&player->cp, world);
+	//capsule_applygravity(player_physics(player), world);
+	//if (player->landingtrigger && (player->landingtrigger = false, 1))
+	//	play_landingsound(player, world);
 	play_footstepsound(player, world);
-	//t_vector2	damped;
-	//TODO: split to damp_player
-	velocity_xy = v3tov2(player->velocity);
-	velocity_xy = vector2_mul(velocity_xy, 1.0f - (world->clock.delta * PLAYER_DECELERATION));
-	//damped = v3tov2(vector3_mul(player->velocity, 1.0f - (world->clock.delta * PLAYER_DECELERATION)));
-	if (player->isgrounded)
-	{
-		player->velocity.x = velocity_xy.x;
-		player->velocity.y = velocity_xy.y;
-	}
-	
+	capsule_damp(&player->cp, world);
 }

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:10:14 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/04 20:55:06 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/07 13:51:47 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void	sample_ouroboros(t_img *orig) //samples the image into itself
 		sample.x = 0;
 		while (sample.x < orig->size.x)
 		{
-			newdata[sample.x + (sample.y * orig->size.x)] = orig->data[sample.x + sample.y + (sample.y * orig->size.x)];
+			newdata[sample.x + (sample.y * orig->size.x)] = flip_channels(orig->data[sample.x + sample.y + (sample.y * orig->size.x)]);
 			sample.x++;
 		}
 		sample.y++;

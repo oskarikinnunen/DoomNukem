@@ -24,7 +24,7 @@ void    show_navmesh(t_world *world)
 	world->sdl->render.gizmocolor = CLR_RED;
 	while (i < world->nav.node_amount)
 	{
-		render_gizmo3d(world->sdl, world->nav.navmesh[i].mid_point, 10.0f, CLR_BLUE);
+		render_circle(world->sdl, world->nav.navmesh[i].mid_point, 10.0f, CLR_BLUE);
 		world->sdl->render.gizmocolor = CLR_GREEN;
 		j = 0;
 		while (j < 3)

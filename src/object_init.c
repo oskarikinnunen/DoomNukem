@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 19:50:18 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 21:41:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/07 14:09:41 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ void	parseanim(t_object *object, char *animname)
 	while (fd != -1)
 	{
 		char name[256] = { 0 };
-		//sprintf(name, "assets/objects/animations/%s_%s%i.obj", base, animname, i); //TODO: protect
+		sprintf(name, "assets/objects/animations/%s_%s%i.obj", base, animname, i); //TODO: protect
+		//printf("name %s \n", name);
 		fd = open(name, O_RDONLY);
 		//printf("%s \n", name);
 		if (fd != -1)
@@ -60,6 +61,8 @@ void	parseanim(t_object *object, char *animname)
 		}
 		i++;
 	}
+	//printf("anim has %i frames", object->o_anim.framecount);
+	//exit(0);
 	free(base);
 }
 

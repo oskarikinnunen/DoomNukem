@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/04 20:52:55 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/07 13:59:40 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,6 +219,10 @@ void	load_assets(t_sdlcontext *sdl)
 	load_fonts(&sdl->font);
 	load_audio(&sdl->audio);
 	objects_init(sdl);
+	t_object *human = get_object_by_name(*sdl, "Human.obj");
+	parseanim(human, "anim");
+	return ;
+	//object_
 }
 
 void	load_lua_conf(t_sdlcontext *sdl)
