@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/03 23:04:57 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/07 12:14:19 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,6 +175,7 @@ void	show_error_message(t_sdlcontext	*sdl)
 	int			message_count;
 	char		**messages;
 	int			i;
+	static	int	scroll;
 
 	fd = open("doomlog.txt", O_RDONLY);
 	if (fd == -1)
@@ -224,6 +225,7 @@ void	show_error_message(t_sdlcontext	*sdl)
 	}
 	messages[i] = NULL;
 	sdl->font.color = color32_to_sdlcolor(CLR_GREEN);
+	i = 0;
 	while (1)
 	{
 		hid.mouse.scroll_delta = 0; //Needs to be reset
@@ -231,6 +233,9 @@ void	show_error_message(t_sdlcontext	*sdl)
 		SDL_GetRelativeMouseState(&hid.mouse.delta.x, &hid.mouse.delta.y);
 		while (SDL_PollEvent(&event))
 		{
+			ft_bzero(sdl->window_surface->pixels, sizeof(uint32_t) * 600 * 300);
+			ft_bzero(sdl->surface->pixels, sizeof(uint32_t) * 600 * 300);
+			//print_text(sdl, messages[], (t_point){10, (10 + (j - i) * 13)});
 			mouse_event(event, &hid.mouse);
 			if ((event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE) || \
 					(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE))
@@ -238,11 +243,14 @@ void	show_error_message(t_sdlcontext	*sdl)
 				printf("game ran into an error and the parent process showed the error message succesfully\n");
 				exit (0);
 			}
-			i = 0;
-			while (i < message_count)
+			printf("scroll d %i i = %i\n", hid.mouse.scroll_delta, i);
+			i += hid.mouse.scroll_delta; //clamp
+			int j = i;
+			while (j < message_count)
 			{
-				print_text(sdl, messages[i], (t_point){10, (10 + i * 13)});
-				i++;
+				if (j >= 0 && j < message_count)
+					print_text(sdl, messages[j], (t_point){10, (10 + (j - i) * 13)});
+				j++;
 			}
 			memcpy(sdl->window_surface->pixels, sdl->surface->pixels, sizeof(uint32_t) * 600 * 300);
 			if (SDL_UpdateWindowSurface(sdl->window) < 0)
@@ -295,8 +303,11 @@ int	main(int argc, char **argv)
 				return (1);
 			}
 		}
-		else
+		else {
 			printf("no exit status from the child process\n");
+			show_error_message(&sdl);
+		}
+			
 	}
 	return (0);
 }

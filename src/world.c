@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/01 14:36:10 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/07 12:07:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ void update_world3d(t_world *world, t_render *render)
 	t_sdlcontext	*sdl;
 	int				i;
 
+	//doomlog(LOG_FATAL, "shit something went wrong");
 	sdl = world->sdl;
 	ft_bzero(&render->rs, sizeof(t_render_statistics));
 	if (world->player != NULL && world->player->gun != NULL && !world->player->gun->disabled)
