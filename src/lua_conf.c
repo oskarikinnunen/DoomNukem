@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/07 13:59:40 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/08 18:07:55 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,6 +211,50 @@ void	load_resolution(lua_State *lua, t_sdlcontext *sdl)
 	sdl->screensize = (t_point) {sdl->window_w, sdl->window_h};
 }
 
+#include "file_io.h"
+
+void	parse_anim_legend(t_sdlcontext *sdl)
+{
+	int					fd;
+	char				*line;
+	int					i;
+	uint32_t			prev_frame;
+	uint32_t			frame;
+
+	fd = open("assets/objects/animations/anim_legend.txt", O_RDONLY);
+	if (fd == -1)
+	{
+		//TODO: doom log "couldn't open anim legend, EC"
+	}
+	else
+	{
+		sdl->human_anims = ft_memalloc(sizeof(t_human_animation) * 30);
+		sdl->human_anim_count = 0;
+		i = 0;
+		prev_frame = 0;
+		printf("prev frame %i \n", prev_frame);
+		while (ft_get_next_line(fd, &line))
+		{
+			if (i % 2 == 0)
+			{
+				ft_bzero(&sdl->human_anims[sdl->human_anim_count], sizeof(t_human_animation));
+				//ft_strcpy(sdl->human_anims[sdl->human_anim_count].name, line);
+				ft_memcpy(sdl->human_anims[sdl->human_anim_count].name, line, ft_strlen(line + 1));
+			}
+			else 
+			{
+				frame = ft_atoi(line);
+				sdl->human_anims[sdl->human_anim_count].endframe = frame;
+				sdl->human_anims[sdl->human_anim_count].startframe = prev_frame;
+				prev_frame = frame;
+				sdl->human_anim_count++;
+			}
+			i++;
+			free(line);
+		}
+	}
+}
+
 void	load_assets(t_sdlcontext *sdl)
 {
 	load_all_images(sdl);
@@ -221,6 +265,13 @@ void	load_assets(t_sdlcontext *sdl)
 	objects_init(sdl);
 	t_object *human = get_object_by_name(*sdl, "Human.obj");
 	parseanim(human, "anim");
+	parse_anim_legend(sdl);
+	int i = 0;
+	while (i < sdl->human_anim_count)
+	{
+		printf("anim %s frames %i->%i\n", sdl->human_anims[i].name, sdl->human_anims[i].startframe, sdl->human_anims[i].endframe);
+		i++;
+	}
 	return ;
 	//object_
 }

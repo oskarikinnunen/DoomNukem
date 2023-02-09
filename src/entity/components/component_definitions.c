@@ -39,7 +39,9 @@ t_componentdefinition	*get_component_definitions()
 		(t_componentdefinition){.type = COMP_HEALTHPACK, .name = "Healthpack",
 			.func_assign_component = assign_component_healthpack},
 		(t_componentdefinition){.type = COMP_NPC, .name = "NPC",
-			.func_assign_component = assign_component_npc}
+			.func_assign_component = assign_component_npc},
+		(t_componentdefinition){.type = COMP_NPC_CIVILIAN, .name = "Npc_civilian",
+			.func_assign_component = assign_component_npc_civilian}
 	};
 	return (editables);
 }

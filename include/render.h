@@ -198,6 +198,13 @@ typedef struct s_graphicprefs //Intermediate struct used for loading settings fr
 	//t_rectangle	bounds
 }	t_renderthreadinfo;*/
 
+typedef struct s_human_animation
+{
+	char			name[32];
+	uint32_t		startframe;
+	uint32_t		endframe;
+}	t_human_animation;
+
 typedef struct s_sdlcontext
 {
 	SDL_Window				*window;
@@ -215,6 +222,8 @@ typedef struct s_sdlcontext
 	t_img					*env_textures;
 	uint32_t				env_texturecount;
 	struct s_object			*objects;
+	struct s_human_animation	*human_anims;
+	uint32_t				human_anim_count;
 	int						ps1_tri_div;
 	bool					global_wireframe;
 	bool					blend;

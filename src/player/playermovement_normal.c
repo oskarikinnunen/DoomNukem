@@ -60,39 +60,6 @@ void	player_init_physics(t_player *player)
 	//return (phys);
 }
 
-/*	velocity_xy = v3tov2(player->velocity);
-	float acc = PLAYER_ACCELERATION;
-	if (!player->isgrounded)
-		acc *= 0.25f;
-	add_velocity = vector2_mul(normalized_inputvector(player->input, *player), acc * world->clock.delta);
-	velocity_xy = vector2_add(velocity_xy, add_velocity);
-	player->velocity.x = velocity_xy.x;
-	player->velocity.y = velocity_xy.y;
-	velocity_xy = vector2_clamp_magnitude(v3tov2(player->velocity), current_maxvelocity(player));
-	player->velocity.x = velocity_xy.x;
-	player->velocity.y = velocity_xy.y;*/
-
-void	capsule_add_xy_velocity(t_vector2 vel, t_characterphysics *phys, t_world *world)
-{
-	t_vector2	vel_clamped;
-	//phys->velocity = vector2_add(phys->velocity, vel);
-	phys->new_velocity.x += vel.x;
-	phys->new_velocity.y += vel.y;
-	vel_clamped = v3tov2(phys->new_velocity);
-	vel_clamped = vector2_clamp_magnitude(vel_clamped, phys->max_velocity);
-	phys->new_velocity.x = vel_clamped.x;
-	phys->new_velocity.y = vel_clamped.y;
-}
-
-void	capsule_damp(t_characterphysics *phys, t_world *world)
-{
-	t_vector2	velocity_xy;
-	velocity_xy = v3tov2(phys->new_velocity);
-	velocity_xy = vector2_mul(velocity_xy, 1.0f - (world->clock.delta * PLAYER_DECELERATION));
-	phys->new_velocity.x = velocity_xy.x;
-	phys->new_velocity.y = velocity_xy.y;
-}
-
 
 void	player_update_physics(t_player *player, t_world *world)
 {

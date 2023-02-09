@@ -9,12 +9,8 @@ void    civilian_movement(t_entity *entity, t_world *world)
 	//	source->path.end = game_random_range(world, 0, world->nav.node_amount - 1);
 	if (source->aggroed)
 	{
-		source->path.target = world->player->transform.position;
-		source->path.start = get_nearest_target_node(world, entity->transform.position);
-		//source->path.start = source->path.path[source->path.ai].index;
-		//source->path
-		source->path.end = get_nearest_target_node(world, world->player->transform.position);
-		source->path.valid_path = pathfind(world, &source->path);
+		source->path = path_find(entity->transform.position, world->player->transform.position, world);
+		printf("path valid = %i \n", source->path.valid_path);
 		source->aggroed = false;
 	}
 	if (world->nav.show_navmesh)

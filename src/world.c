@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/07 16:08:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/08 19:25:37 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,6 @@ void update_world3d(t_world *world, t_render *render)
 	ft_bzero(&render->rs, sizeof(t_render_statistics));
 	if (world->player != NULL && world->player->gun != NULL && !world->player->gun->disabled)
 		render_entity(world->sdl, &world->sdl->render, &world->player->gun->entity);
-	show_navmesh(world);
 	update_frustrum_culling(world, sdl, render);
 	clear_occlusion_buffer(sdl);
 	sort_entitycache(world, render->camera.position);
@@ -121,7 +120,7 @@ void update_world3d(t_world *world, t_render *render)
 		render_entity(sdl, render, &world->skybox);
 	bitmask_to_pixels(sdl);
 	rescale_surface(sdl);
-
+	show_navmesh(world);
 	lateupdate_entitycache(sdl, world);
 	if (!world->debug_gui->hidden)
 	{
@@ -285,6 +284,7 @@ t_entity	*spawn_entity(t_world	*world)
 			cache->entities[i].transform.position = vector3_zero();
 			cache->entities[i].transform.scale = vector3_one();
 			cache->entities[i].id = i;
+			cache->entities[i].hidden = false;
 			ft_bzero(&cache->entities[i].component, sizeof(t_component));
 			//cache->entities[i].transform.scale = vector3_zero();
 			cache->existing_entitycount++;

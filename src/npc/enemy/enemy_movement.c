@@ -7,10 +7,10 @@ void    enemy_movement(t_entity *entity, t_world *world)
 	source = entity->component.data;
 	if (source->path.ai == source->path.bi)
 	{
-		source->path.target = world->player->transform.position;
+		/*source->path.target = world->player->transform.position;
 		source->path.start = get_nearest_target_node(world, entity->transform.position);
 		source->path.end = get_nearest_target_node(world, world->player->transform.position);
-		source->path.valid_path = pathfind(world, &source->path);
+		source->path.valid_path = pathfind(world, &source->path);*/
 	}
 	if (world->nav.show_navmesh)
 	{

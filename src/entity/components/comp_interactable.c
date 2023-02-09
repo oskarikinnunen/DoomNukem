@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 06:20:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/07 16:24:47 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/08 18:20:02 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void	comp_interactable_update(t_entity *entity, t_world *world)
 	inter->velocity.y = velocity_xy.y;
 	/*else {}
 		inter->velocity.x = ft_fmovetowards(inter->velocity.x, 0.0f, world->clock.delta * 0.012f);*/
-	capsule_applygravity(inter_physics(entity, inter), world);
+	//capsule_applygravity(inter_physics(entity, inter), world);
 }
 
 void	comp_interactable_allocate(t_entity *entity, t_world *world)

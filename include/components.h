@@ -16,7 +16,8 @@ typedef enum e_componenttype
 	COMP_MECHASUIT,
 	COMP_WATERCOLLIDER,
 	COMP_LIGHT,
-	COMP_HEALTHPACK
+	COMP_HEALTHPACK,
+	COMP_NPC_CIVILIAN
 }	t_componenttype;
 
 struct s_autogui;
@@ -92,6 +93,10 @@ typedef struct	s_healthpack
 {
 	float	TESTVARIABLE;
 }	t_healthpack;
+typedef struct	s_npc_civilian
+{
+	float	TESTVARIABLE;
+}	t_npc_civilian;
 /*STRUCTDEF END, DONT REMOVE SINCE THE CREATECOMPONENT SCRIPT DEPENDS ON THIS*/
 
 /* AUDIOSOURCE FUNCTIONS */
@@ -102,6 +107,7 @@ void	assign_component_mechasuit(t_component *component);
 void	assign_component_watercollider(t_component *component);
 void	assign_component_light(t_component *component);
 void	assign_component_healthpack(t_component *component);
+void	assign_component_npc_civilian(t_component *component);
 /* ASSIGNFUNC END, DONT REMOVE SINCE THE CREATECOMPONENT SCRIPT DEPENDS ON THIS*/
 /* AUDIOSOURCE INTERNAL FUNCTIONS */
 void	_audiosource_start(t_sdlcontext *sdl, t_audiosource	*source, t_vector3 *pos);

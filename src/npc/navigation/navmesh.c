@@ -12,6 +12,23 @@ void	print_node(t_navnode n)
 	}
 }
 
+#include "movement_defs.h"
+
+bool	node_would_collide(t_world *world, t_vector3 midpoint)
+{
+	t_characterphysics	phys;
+	t_vector3			vec;
+
+	ft_bzero(&phys, sizeof(phys));
+	phys.radius = 17.5f;
+	phys.height = PLAYER_HEIGHT;
+	phys.position = &midpoint;
+	vec = midpoint;
+	if (check_collision_character(world, phys, midpoint, &vec))
+		return (true);
+	return (false);
+}
+
 void    show_navmesh(t_world *world)
 {
 	int	i;
@@ -24,20 +41,26 @@ void    show_navmesh(t_world *world)
 	world->sdl->render.gizmocolor = CLR_RED;
 	while (i < world->nav.node_amount)
 	{
-		render_circle(world->sdl, world->nav.navmesh[i].mid_point, 10.0f, CLR_BLUE);
-		world->sdl->render.gizmocolor = CLR_GREEN;
-		j = 0;
-		while (j < 3)
+		if (world->nav.navmesh[i].blocked)
 		{
-			render_ray(world->sdl, world->nav.navmesh[i].vertex[j], world->nav.navmesh[i].vertex[(j + 1) % 3]);
-			j++;
-		}
-		world->sdl->render.gizmocolor = CLR_RED;
-		j = 0;
-		while (j < world->nav.navmesh[i].neighbors)
+			render_circle(world->sdl, world->nav.navmesh[i].mid_point, 10.0f, CLR_RED);
+		}	else
 		{
-			render_ray(world->sdl, world->nav.navmesh[i].mid_point, world->nav.navmesh[world->nav.navmesh[i].neighbors_id[j]].mid_point);
-			j++;
+			render_circle(world->sdl, world->nav.navmesh[i].mid_point, 10.0f, CLR_BLUE);
+			world->sdl->render.gizmocolor = CLR_GREEN;
+			j = 0;
+			while (j < 3)
+			{
+				render_ray(world->sdl, world->nav.navmesh[i].vertex[j], world->nav.navmesh[i].vertex[(j + 1) % 3]);
+				j++;
+			}
+			world->sdl->render.gizmocolor = CLR_RED;
+			j = 0;
+			while (j < world->nav.navmesh[i].neighbors)
+			{
+				render_ray(world->sdl, world->nav.navmesh[i].mid_point, world->nav.navmesh[world->nav.navmesh[i].neighbors_id[j]].mid_point);
+				j++;
+			}
 		}
 		i++;
 	}
@@ -129,9 +152,12 @@ void	*ft_realloc(void *src, size_t dest_size, size_t src_size) //TODO: Should pr
 	return(dest);
 }
 
-void	add_to_navmesh(t_navigation *nav, t_triangle t)
+
+
+void	add_to_navmesh(t_navigation *nav, t_triangle t, t_world *world)
 {
 	int i;
+	t_vector3	midpoint;
 
 	i = 0;
 	while (i < 3)
@@ -139,7 +165,9 @@ void	add_to_navmesh(t_navigation *nav, t_triangle t)
 		nav->navmesh[nav->node_amount].vertex[i] = t.p[i].v;
 		i++;
 	}
-	if (!is_triangle_degenerate(nav->navmesh[nav->node_amount].vertex))
+	midpoint = vector3_div(vector3_add(vector3_add(nav->navmesh[nav->node_amount].vertex[0], nav->navmesh[nav->node_amount].vertex[1]), nav->navmesh[nav->node_amount].vertex[2]), 3.0f);
+	if (!is_triangle_degenerate(nav->navmesh[nav->node_amount].vertex)
+		&& !node_would_collide(world, midpoint))
 	{
 		if (nav->node_amount + 1 == nav->malloc_size)
 		{
@@ -195,7 +223,7 @@ int		get_max_dist_index(t_triangle t)
 	return (index);
 }
 
-void	clip_navmesh(t_navigation *nav, t_entity *ent)
+void	clip_navmesh(t_navigation *nav, t_entity *ent, t_world *world)
 {
 	t_triangle	*arr;
 	int			size;
@@ -214,7 +242,7 @@ void	clip_navmesh(t_navigation *nav, t_entity *ent)
 		index = get_max_dist_index(arr[start]);
 		dist = vector3_dist(arr[start].p[index].v, arr[start].p[(index + 1) % 3].v);
 		if (dist < nav->clip_size)
-			add_to_navmesh(nav, arr[start]);
+			add_to_navmesh(nav, arr[start], world);
 		else
 			arr = add_to_cliplist(arr, start, &end, &size, index);
 		start++;
@@ -245,7 +273,7 @@ void	malloc_space_for_navmesh(t_world *world)
 		{
 			if (ent->status == es_active && !ent->hidden)
 				if (ent->obj->bounds.type == bt_ignore)
-                    clip_navmesh(&world->nav, ent);
+					clip_navmesh(&world->nav, ent, world);
 			found++;
 		}
 		i++;
@@ -303,6 +331,33 @@ void	check_neighbors(t_navigation *nav, int i, t_vector3 start, t_vector3 end)
 	}
 }
 
+#include "physics.h"
+#include "movement_defs.h"
+
+void	navmesh_process(t_world *world)
+{
+	t_vector3	newpos;
+	t_characterphysics	phys;
+	int			i;
+
+	phys.height = PLAYER_HEIGHT;
+	phys.radius = 25.0f;
+	i = 0;
+	while (i < world->nav.node_amount)
+	{
+		/*if (node_would_collide(world, &world->nav.navmesh[i]))
+		{
+			printf("blocking nav %i \n", i);
+			world->nav.navmesh[i].blocked = true;
+		}*/
+			
+		//if 
+		//world->nav.navmesh[i];
+		i++;
+	}
+	//world->nav.navmesh->mid_point
+}
+
 void	create_navmesh(t_world *world)
 {
 	t_vector3	start;
@@ -326,7 +381,7 @@ void	create_navmesh(t_world *world)
 			check_neighbors(&world->nav, i, start, end);
 			j++;
 		}
-        i++;
+		i++;
 	}
 	if (world->nav.openlist)
 		free(world->nav.openlist);
@@ -334,4 +389,5 @@ void	create_navmesh(t_world *world)
 	if (!world->nav.openlist)
 		doomlog(LOGEC_MALLOC, NULL);
 	ft_bzero(world->nav.openlist, world->nav.malloc_size * sizeof(t_navnode));
+	//navmesh_process(world);
 }
