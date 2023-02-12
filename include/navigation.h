@@ -29,7 +29,6 @@ typedef struct s_path
 	uint32_t	bi;
 	uint32_t	start;
 	uint32_t	end;
-	t_vector3	target;
 }	t_path;
 
 typedef struct s_navigation

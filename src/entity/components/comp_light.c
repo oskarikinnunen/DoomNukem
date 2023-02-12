@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/23 07:01:10 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/07 13:08:58 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ void	comp_light_update(t_entity *entity, t_world *world)
 	light = entity->component.data;
 	if (light == NULL)
 		return ;
+	//if playmode
+	//
 }
 
 
@@ -45,7 +47,15 @@ void	comp_light_ui_update(t_entity *entity, t_world *world)
 		return ;
 	if (icon == NULL)
 		icon = get_image_by_name(*world->sdl, "light_icon.cng");
-	draw_entity_icon(entity, icon, world);
+	if (!entity->occlusion.is_occluded)
+	{
+		t_vector3	lpos;
+
+		lpos = transformed_vector3(entity->transform, light->origin).v;
+		draw_worldspace_icon(lpos, icon, world);
+		//draw_worldspace_i_icon(entity, icon, world);
+	}
+		
 	for_all_active_entities(world, highlight_bound);
 }
 
@@ -73,6 +83,7 @@ void	comp_light_gui_edit(t_entity *entity, t_autogui *gui, t_world *world)
 	if (light == NULL)
 		return;
 	gui_labeled_float_slider("Radius: ", &light->radius, 0.1f, gui);
+	gui_labeled_vector3_slider("Offset:", &light->origin, 0.1f, gui);
 	render_ball(world->sdl, entity->transform.position, light->radius, AMBER_3);
 }
 /*	This is called during load_world, use only if your component

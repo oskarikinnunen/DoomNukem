@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   animation.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 00:52:45 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/06 17:05:06 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/08 16:36:21 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct s_anim
 	bool			loop;
 	uint32_t		time;
 	int32_t			frame;
+	int32_t			startframe;
 	int32_t			lastframe;
 	uint8_t			framerate;
 	float			lerp;
@@ -48,5 +49,8 @@ typedef struct s_anim
 void	update_anim(t_anim *anim, uint32_t delta);
 void	update_anim_dir(t_anim *anim, uint32_t delta, t_anim_mode mode);
 void	start_anim(t_anim *anim, t_anim_mode mode); //TODO: make this return t_anim?
+struct s_entity;
+struct s_world;
+void	start_human_anim(struct s_entity *entity, char *name, struct s_world *world);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 14:52:25 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/27 18:45:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/04 21:09:36 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,70 @@ static t_wall	*_world_get_wall_with_entity(t_world *world, t_entity *entitymatch
 	return (NULL);
 }
 
+static t_wall	*_world_get_floor_with_entity(t_world *world, t_entity *entitymatch)
+{
+	t_list	*l;
+	t_area	*room;
+	t_wall	*found;
+
+	l = world->roomlist;
+	while (l != NULL)
+	{
+		room = l->content;
+		found = _room_get_wall_with_entity(room, entitymatch);
+		if (found != NULL)
+			return (found);
+		l = l->next;
+	}
+	return (NULL);
+}
+
+static void paint_room(t_entity *hit_ent, t_img *tex, t_world *world)
+{
+	t_list	*l;
+	int		i;
+
+	l = world->roomlist;
+	while (l != NULL)
+	{
+		t_area *area = l->content;
+		i = 0;
+		while (i < area->wallcount)
+		{
+			if (area->walls[i].entity == hit_ent)
+			{
+				ft_strcpy(area->walls[i].s_walltex.str, tex->name);
+				room_init(area, world);
+				return;
+			}
+			i++;
+		}
+		i = 0;
+		while (i < area->floorcount)
+		{
+			if (area->floors[i].entity == hit_ent)
+			{
+				ft_strcpy(area->s_floortex.str, tex->name);
+				room_init(area, world);
+				return;
+			}
+			i++;
+		}
+		i = 0;
+		while (i < area->ceilingcount)
+		{
+			if (area->ceilings[i].entity == hit_ent)
+			{
+				ft_strcpy(area->s_ceiltex.str, tex->name);
+				room_init(area, world);
+				return;
+			}
+			i++;
+		}
+		l = l->next;
+	}
+}
+
 void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 {
 	t_autogui		*gui;
@@ -197,25 +261,7 @@ void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 		ent->obj->materials->img != tex && tex != NULL
 		&& ent->obj != NULL)
 	{
-		t_wall *wall;
-		wall = _world_get_wall_with_entity(&ed->world, ent);
-		if (wall != NULL)
-		{
-			ft_strcpy(wall->s_walltex.str, tex->name);
-			t_area *associated_room = _world_get_room_with_entity(&ed->world, ent);
-			if (associated_room != NULL) //TODO: combine world_get_wall_with entity with get_room_with_entity, maybe just have separate raycast for rtm_paint
-			{
-				printf("initwalls called from rtm_paint\n");
-				room_init(associated_room, &ed->world);
-			}
-		}
-			
-		/*ent->obj->materials->img = tex;
-		t_room	*fr = get_floor_room(&ed->world, ent);
-		if (fr != NULL)
-		{
-			apply_floortexture(&ed->world, fr, tex->name);
-		}*/
+		paint_room(ent, tex, &ed->world);
 		//create_lightmap_for_entity(ent, &ed->world);
 		//create_map_for_entity(ent, &ed->world);
 	}

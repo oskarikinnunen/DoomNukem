@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
+#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/02/02 15:35:27 by raho             ###   ########.fr        #
+#    Updated: 2023/02/07 12:23:40 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -132,7 +132,8 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		entity/components/comp_mechasuit.c \
 		entity/components/comp_watercollider.c \
 		entity/components/comp_light.c \
-		entity/components/comp_healthpack.c #.ENDSRC. CREATECOMPONENT SCRIPT DEPENDS ON THIS SO DONT REMOVE
+		entity/components/comp_healthpack.c \
+		entity/components/comp_npc_civilian.c #.ENDSRC. CREATECOMPONENT SCRIPT DEPENDS ON THIS SO DONT REMOVE
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c vector3_more.c \
 		vector2_elementary.c vector2_shorthands.c \

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/07 16:26:26 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/08 17:52:02 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -263,6 +263,7 @@ void	draw_level_info(t_sdlcontext *sdl, t_world *world)
 	static t_point real_c;
 	char	*time_str;
 
+	return ;
 	if (real_c.x == 0)
 	{
 		real_c = print_text_boxed(sdl, world->name, (t_point){30, 0}).size;

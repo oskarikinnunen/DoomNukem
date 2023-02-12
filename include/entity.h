@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/30 19:59:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/07 13:09:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,7 @@ void	bitmask_to_pixels(t_sdlcontext *sdl);
 
 /* RENDERING */
 void	draw_entity_icon(t_entity *entity, t_img *img, struct s_world *world);
+void	draw_worldspace_icon(t_vector3 pos, t_img *img, struct s_world *world);
 void	highlight_entity(t_sdlcontext *sdl, t_entity *entity, uint32_t color);
 void	render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 void	render_worldspace(t_render *render, t_entity *entity);

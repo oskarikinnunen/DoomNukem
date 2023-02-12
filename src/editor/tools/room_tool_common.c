@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:53:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/27 18:45:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/03 15:35:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ t_vector2 next_edge(t_area *room, int i)
 	int	ni;
 
 	ni = i + 1;
-	if (i == room->edgecount - 1)
+	if (room->edgecount != 0 && i == room->edgecount - 1)
 		ni = 0;
 	return (room->edges[ni]);
 }
@@ -270,7 +270,7 @@ void highlight_room(t_editor *ed, t_sdlcontext *sdl, t_area *room, uint32_t colo
 		i++;
 	}
 	i = 0;
-	while (i < room->edgecount - !room->loop/* && room->floor_enabled*/)
+	while (i < room->edgecount/* && room->floor_enabled*/)
 	{
 		t_vector3	ws;
 		t_vector3	ws2;

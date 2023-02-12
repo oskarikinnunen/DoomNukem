@@ -13,6 +13,7 @@ typedef struct s_color
 	union cdata_u
 	{
 		t_rgb		rgb;
+		//float		flt;
 		uint32_t	color;
 	} dat;
 }	t_color;

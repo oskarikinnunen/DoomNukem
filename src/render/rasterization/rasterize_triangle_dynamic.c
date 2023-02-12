@@ -13,7 +13,7 @@ static uint32_t sample_img_dynamic(t_render *render, t_texture t)
 	y8b = (t.v / t.w) * 255;
 	ysample = (y8b * (render->img->size.y - 1)) / 255;
 
-	clr = flip_channels(render->img->data[(ysample * render->img->size.x) + xsample]);
+	clr = render->img->data[(ysample * render->img->size.x) + xsample];
 	uint8_t light = 255 - render->dynamic_light;
 	Uint32 alpha = clr & 0xFF000000;
 	Uint32 red = ((clr & 0x00FF0000) * light) >> 8;

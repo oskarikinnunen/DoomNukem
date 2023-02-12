@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 06:20:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/24 10:53:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/08 18:20:02 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ t_characterphysics	inter_physics(t_entity *entity, t_interactable *inter)
 
 	ft_bzero(&phys, sizeof(phys));
 	phys.position = &entity->transform.position;
-	phys.velocity = &inter->velocity;
-	phys.isgrounded = &inter->isgrounded;
+	//phys.velocity = &inter->velocity;
+	//phys.isgrounded = &inter->isgrounded;
 	phys.radius = inter->radius;
 	phys.height = 30.0f;
 	return (phys);
@@ -54,7 +54,7 @@ void	comp_interactable_update(t_entity *entity, t_world *world)
 	if (vector3_sqr_dist(world->player->transform.position, entity->transform.position) < 250.0f)
 	{
 		//world->player->velocity = vector3_mul(world->player->velocity, (world->clock.delta * 0.05f) - 1.0f);
-		world->player->velocity = vector3_sub(vector3_zero(), world->player->velocity); //Only for z
+		//world->player->velocity = vector3_sub(vector3_zero(), world->player->velocity); //Only for z
 		inter->velocity = vector3_sub(entity->transform.position, world->player->transform.position);
 		inter->velocity = vector3_normalise(inter->velocity);
 		float invf = 250.0f - vector3_sqr_dist(world->player->transform.position, entity->transform.position);
@@ -88,7 +88,7 @@ void	comp_interactable_update(t_entity *entity, t_world *world)
 	inter->velocity.y = velocity_xy.y;
 	/*else {}
 		inter->velocity.x = ft_fmovetowards(inter->velocity.x, 0.0f, world->clock.delta * 0.012f);*/
-	apply_capsulephysics(inter_physics(entity, inter), world);
+	//capsule_applygravity(inter_physics(entity, inter), world);
 }
 
 void	comp_interactable_allocate(t_entity *entity, t_world *world)

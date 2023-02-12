@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/01 14:34:58 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/09 16:20:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <math.h>
 # include <fcntl.h>
 # include <stdbool.h>
-# include "physics.h"//DEPRECATED UPDATED TO COLLISION.H
+//# include "physics.h"
 # include "animation.h" //PLAYER USES THIS, MOVE PLAYER TO SEPARATE HEADER
 # include "room.h"
 # include "npcs.h"
@@ -195,6 +195,7 @@ int		controller_events(SDL_Event e, t_hid_info *hid);
 uint32_t	game_random(t_world *world);
 //Generates a random number between min and max
 uint32_t	game_random_range(t_world *world, uint32_t min, uint32_t max);
+bool		game_random_coinflip(t_world *world);
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
@@ -207,9 +208,10 @@ void	update_render(t_render *render, t_player *player);
 void	moveplayer(t_player *player, t_input *input, t_world *world);
 
 /* NAVIGATION */
-bool	pathfind(t_world *world, t_path *path);
+bool	pathfind(t_world *world, t_path *path); //TODO: deprecated
+t_path	path_find(t_vector3 start_vec, t_vector3 end_vec, t_world *world);
 void	create_navmesh(t_world *world);
-void    show_navmesh(t_world *world);
+void	show_navmesh(t_world *world);
 
 /* COLLISION */
 bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, t_vector3 *newpos);

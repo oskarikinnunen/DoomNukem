@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/27 11:33:59 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/04 20:51:41 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -271,12 +271,21 @@ void	render_ball(t_sdlcontext *sdl, t_vector3 pos, float size, uint32_t clr)
 	}
 }
 
+bool	vector3_has_nan(t_vector3 vec)
+{
+	return (isnanf(vec.x) || isinff(vec.x)
+		|| isnanf(vec.y) || isinff(vec.y)
+		|| isnanf(vec.z) || isinff(vec.z));
+}
+
 void render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to)
 {
 	t_quaternion	q1;
 	t_quaternion	q2;
 	t_line			l;
-
+	
+	if (vector3_has_nan(from) || vector3_has_nan(to))
+		return ;
 	q1 = vector3_to_quaternion(from);
 	q2 = vector3_to_quaternion(to);
 	q1 = quaternion_mul_matrix(sdl->render.camera.matview, q1);
@@ -309,7 +318,7 @@ void render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to)
 		return ;
 	if (l.start.x < 0.0f || l.end.x > sdl->window_w)
 	{
-		printf("line start: %f %f end: %f %f \n", l.start.x, l.start.y, l.end.x, l.end.y);
+		//printf("line start: %f %f end: %f %f \n", l.start.x, l.start.y, l.end.x, l.end.y);
 	}
 	drawline(*sdl, vector2_to_point(l.start), vector2_to_point(l.end), sdl->render.gizmocolor);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/07 16:23:25 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/08 15:49:35 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -295,8 +295,8 @@ char	*signal_name(int wait_status)
 		ft_strcpy(signal, "SIGIOT");
 	if (WTERMSIG(wait_status) == SIGTRAP)
 		ft_strcpy(signal, "SIGTRAP");
-	if (WTERMSIG(wait_status) == SIGEMT)
-		ft_strcpy(signal, "SIGEMT");
+	/* if (WTERMSIG(wait_status) == SIGEMT) // doesnt work on linux, says it's undeclared
+		ft_strcpy(signal, "SIGEMT"); */
 	if (WTERMSIG(wait_status) == SIGSYS)
 		ft_strcpy(signal, "SIGSYS");
 	return (signal);
