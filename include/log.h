@@ -13,6 +13,9 @@
 #ifndef LOG_H
 # define LOG_H
 
+#include "render.h"
+#include "input.h"
+
 # define LOG_NORMAL 0
 # define LOG_WARNING 1
 # define LOG_FATAL 2
@@ -47,6 +50,26 @@
 # define LOG_EC_FMOD_CHANNELSTOP 60
 # define LOG_EC_FMOD_CHANNELGETCURRENTSOUND 61
 
+typedef struct s_error_window
+{
+    SDL_Event	event;
+	t_hid_info	hid;
+	int         scroll;
+    int         i;
+    int         j;
+}   t_error_window;
+
+typedef struct s_parent
+{
+    t_sdlcontext    sdl;
+    int             fd;
+    int             gnl;
+    char            *line;
+    int             message_count;
+    char            **messages;
+    t_error_window  ew;
+}   t_parent;
+
 /* code defines start with LOG */
 void	doomlog(int code, char *str);
 
@@ -56,9 +79,11 @@ void	doomlog_mul(int code, char **str);
 /* don't use this manually, call doomlog() instead */
 void	error_codes(int ec, int fd);
 
-char	*signal_name(int wait_status);
-
 void	normal_message_mul(int fd, char **str);
+
+/* parent process's error window */
+void	error_window(char *str);
+void	window_events(t_parent *p);
 
 /* converts integer to a stack memory string */
 char *s_itoa(int i);

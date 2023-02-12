@@ -64,7 +64,11 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		walls.c file_open.c \
 		moveplayer.c \
 		collision.c \
+		init_sdl.c \
 		errors.c \
+		error_window.c \
+		error_window_events.c \
+		handle_exit.c \
 		doomlog.c \
 		physics.c \
 		perfgraph.c \
