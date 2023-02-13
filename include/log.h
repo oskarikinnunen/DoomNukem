@@ -37,6 +37,7 @@
 # define LOG_EC_WRITE 32
 # define LOG_EC_MALLOC 33
 # define LOG_EC_GETNEXTLINE 34
+# define LOG_EC_FORK 35
 # define LOG_EC_FMOD_SYSTEMCREATE 50
 # define LOG_EC_FMOD_SYSTEMINIT 51
 # define LOG_EC_FMOD_SYSTEMCLOSE 52
@@ -83,7 +84,7 @@ void	normal_message_mul(int fd, char **str);
 
 /* parent process's error window */
 void	error_window(char *str);
-void	window_events(t_parent *p);
+void	error_window_events(t_parent *p);
 
 /* converts integer to a stack memory string */
 char *s_itoa(int i);

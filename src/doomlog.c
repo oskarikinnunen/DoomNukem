@@ -231,7 +231,7 @@ void	doomlog_mul(int code, char **str)
 	}
 	if (close(fd) == -1)
 	{
-		error_message(LOG_EC_CLOSE, fd, "log.txt");
+		error_message(LOG_EC_CLOSE, fd, "doomlog.txt");
 		exit (1);
 	}
 }
@@ -253,11 +253,12 @@ void	doomlog(int code, char *str)
 	else
 	{
 		error_message(code, fd, str);
-		exit (1);
+		if (code != LOG_EC_FORK)
+			exit (1);
 	}
 	if (close(fd) == -1)
 	{
-		error_message(code, fd, "log.txt");
+		error_message(code, fd, "doomlog.txt");
 		exit (1);
 	}
 }

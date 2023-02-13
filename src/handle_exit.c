@@ -70,14 +70,13 @@ static char	*signal_name(int wait_status)
 	return (signal);
 }
 
-int	handle_exit(int	wait_status)
+void	handle_exit(int	wait_status)
 {
 	if (WIFSIGNALED(wait_status))
 	{
 		error_window(combine_strings((char *[5]){
 				"child process raised a signal that caused it to exit:",
 				s_itoa(WTERMSIG(wait_status)), "-", signal_name(wait_status)}));
-		return (1);
 	}
 	else if (WIFEXITED(wait_status))
 	{
@@ -87,14 +86,9 @@ int	handle_exit(int	wait_status)
 			error_window(combine_strings((char *[3]){
 					"child process exited with status:",
 					s_itoa(WEXITSTATUS(wait_status))}));
-			return (1);
 		}
-		return (0);
+		exit (0);
 	}
 	else
-	{
 		error_window("no exit signal or status from the child process");
-		return (1);
-	}
-	return (0);
 }

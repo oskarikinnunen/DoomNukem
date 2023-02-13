@@ -44,15 +44,22 @@ static void	sdl_errors(int error_code, int fd)
 static void	std_fnc_errors(int ec, int fd)
 {
 	if (ec == LOG_EC_OPEN)
-		ft_putendl_fd("Open failed", fd);
+		ft_putendl_fd(combine_strings((char *[3]){
+				"Open failed -", strerror(errno)}), fd);
 	if (ec == LOG_EC_CLOSE)
-		ft_putendl_fd("Close failed", fd);
+		ft_putendl_fd(combine_strings((char *[3]){
+				"Close failed -", strerror(errno)}), fd);
 	if (ec == LOG_EC_WRITE)
-		ft_putendl_fd("Write failed", fd);
+		ft_putendl_fd(combine_strings((char *[3]){
+				"Write failed -", strerror(errno)}), fd);
 	if (ec == LOG_EC_MALLOC)
-		ft_putendl_fd("Malloc failed", fd);
+		ft_putendl_fd(combine_strings((char *[3]){
+				"Malloc failed -", strerror(errno)}), fd);
 	if (ec == LOG_EC_GETNEXTLINE)
 		ft_putendl_fd("get_next_line failed", fd);
+	if (ec == LOG_EC_FORK)
+		ft_putendl_fd(combine_strings((char *[3]){
+				"Fork failed -", strerror(errno)}), fd);
 }
 
 static void	fmod_errors(int ec, int fd)

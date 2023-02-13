@@ -6,10 +6,10 @@ static void	check_for_quit(t_parent *p)
 		p->ew.event.window.event == SDL_WINDOWEVENT_CLOSE) || \
 		(p->ew.event.type == SDL_KEYDOWN && \
 		p->ew.event.key.keysym.sym == SDLK_ESCAPE))
-		exit (0);
+		exit (1);
 }
 
-void	window_events(t_parent *p)
+void	error_window_events(t_parent *p)
 {
 	while (SDL_PollEvent(&p->ew.event))
 	{

@@ -16,6 +16,7 @@
 # include "libft.h"
 # include "log.h"
 # include <sys/wait.h>
+# include <errno.h>
 # include "limits.h" //TODO: remove mby? just define INT_MAX yourself
 # include <math.h>
 # include <fcntl.h>
@@ -161,7 +162,7 @@ int		init_log(void);
 
 /* HANDLE_EXIT.C */
 // Handles the game's (child process's) exit signal / status
-int		handle_exit(int	wait_status);
+void	handle_exit(int	wait_status);
 // combines given array of strings to a singular string and returns a pointer to it
 char	*combine_strings(char **str);
 

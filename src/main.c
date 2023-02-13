@@ -124,19 +124,19 @@ int	main(int argc, char **argv)
 {
 	pid_t	pid;
 	int		wait_status;
-	
+
 	pid = fork();
 	if (pid == -1)
 	{
-		error_window("fork failed, couldn't launch the game"); // check errno and wipe log file
-		return (1);
+		doomlog(LOG_EC_FORK, "couldn't create a child process for the game");
+		error_window("couldn't launch the game due to a fork fail");
 	}
 	if (pid == 0) // child process is always pid 0
 		doomnukem(argc, argv);
 	else
 	{
 		wait(&wait_status);
-		return(handle_exit(wait_status));
+		handle_exit(wait_status);
 	}
 	return (0);
 }

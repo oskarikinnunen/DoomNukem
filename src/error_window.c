@@ -55,7 +55,8 @@ static void	count_log_messages(t_parent *p)
 		p->message_count++;
 		p->gnl = get_next_line(p->fd, &p->line);
 	}
-	p->message_count += 2; // 2 extra messages for the title and the exit status
+	if (p->message_count > 0)
+		p->message_count += 2; // 2 extra messages for the title and the exit status
 	if (p->gnl == -1)
 	{
 		ft_putendl_fd("game ran into an error and the parent process couldn't read the log for the error message", 2);
@@ -93,6 +94,6 @@ void	error_window(char *str)
 		p.ew.hid.alphakey_pressed = 0; //Needs to be reset
 		SDL_GetRelativeMouseState(&p.ew.hid.mouse.delta.x, \
 									&p.ew.hid.mouse.delta.y);
-		window_events(&p);
+		error_window_events(&p);
 	}
 }
