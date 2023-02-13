@@ -9,7 +9,6 @@ static void	check_for_quit(t_parent *p)
 		exit (0);
 }
 
-// TODO: Doesn't work properly when there aren't many log messages
 void	window_events(t_parent *p)
 {
 	while (SDL_PollEvent(&p->ew.event))
@@ -18,12 +17,13 @@ void	window_events(t_parent *p)
 		ft_bzero(p->sdl.window_surface->pixels, sizeof(uint32_t) * 600 * 300);
 		ft_bzero(p->sdl.surface->pixels, sizeof(uint32_t) * 600 * 300);
 		mouse_event(p->ew.event, &p->ew.hid.mouse);
-		p->ew.i = ft_clamp((p->ew.i - p->ew.hid.mouse.scroll_delta), 0, \
-							(p->message_count - 22 + 2));
+		if (p->message_count > 21) // disables scrolling if there are not enough messages to fill the screen
+			p->ew.i = ft_clamp((p->ew.i - p->ew.hid.mouse.scroll_delta), 0, \
+							(p->message_count - 21)); // stop the scrolling once the messages stop
 		p->ew.j = p->ew.i;
-		while (p->ew.j < p->message_count + 3)
+		while (p->ew.j < p->message_count)
 		{
-			if (p->ew.j >= 0 && p->ew.j < p->message_count + 3)
+			if (p->ew.j >= 0 && p->ew.j < p->message_count)
 				print_text(&p->sdl, p->messages[p->ew.j], \
 					(t_point){10, (10 + (p->ew.j - p->ew.i) * 13)});
 			p->ew.j++;

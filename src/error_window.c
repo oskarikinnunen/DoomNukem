@@ -25,7 +25,7 @@ static void	save_messages(t_parent *p, char *str)
 
 static void	cache_log(t_parent *p, char *str)
 {
-	p->messages = (char **)malloc(sizeof(char *) * (p->message_count + 3)); // 2 messages extra for the title and the exit status
+	p->messages = (char **)malloc(sizeof(char *) * (p->message_count + 1));
 	if (p->messages == NULL)
 	{
 		ft_putendl_fd("game ran into an error and the parent process's malloc for the error message failed", 2);
@@ -55,6 +55,7 @@ static void	count_log_messages(t_parent *p)
 		p->message_count++;
 		p->gnl = get_next_line(p->fd, &p->line);
 	}
+	p->message_count += 2; // 2 extra messages for the title and the exit status
 	if (p->gnl == -1)
 	{
 		ft_putendl_fd("game ran into an error and the parent process couldn't read the log for the error message", 2);
