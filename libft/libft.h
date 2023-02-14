@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 17:57:33 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/17 16:45:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/16 20:04:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,10 @@
 # include "get_next_line.h"
 # include <math.h>
 
-# define INT_MAX 2147483647
+# ifndef INT_MAX
+#  define INT_MAX 2147483647
+# endif
+
 //# define PI 3.14159265359
 
 /* memory	*/
@@ -35,6 +38,7 @@ void			ft_memdel(void **ap);
 void			*ft_memalloc(size_t size);
 void			*ft_memchr(const void *ptr, int c, size_t n);
 void			ft_bzero(void *s, size_t n);
+void			protected_free(void	*ptr);
 
 /* strings	*/
 size_t			ft_strlcat(char *dst, const char *src, size_t siz);
@@ -99,7 +103,9 @@ int				ft_max(int i1, int i2);
 float			ft_minf(float f1, float f2);
 float			ft_maxf(float f1, float f2);
 float			ft_clampf(float val, float min, float max);
+float			ft_flerp(float from, float to, float delta);
 double			ft_degtorad(double angle);
+float			ft_fmovetowards(float f1, float f2, float delta);
 
 /* lists */
 typedef struct s_list

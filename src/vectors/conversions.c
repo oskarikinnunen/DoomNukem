@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   conversions.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 17:23:31 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/14 12:55:55 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/06 16:06:35 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,14 @@ t_point	vector2_to_point(t_vector2 vec)
 	return (result);
 }
 
-t_vector3	vector2_to_vector3(t_vector2 vec)
+t_vector3	v2tov3(t_vector2 vec)
 {
 	return ((t_vector3){vec.x, vec.y, 0.0f});
+}
+
+t_vector2	v3tov2(t_vector3 vec)
+{
+	return ((t_vector2){vec.x, vec.y});
 }
 
 t_vector2	point_to_vector2(t_point point)
@@ -82,4 +87,23 @@ char	*vector_string(t_vector3 vec)
 	ft_strcat(str, " z:");
 	ft_strcat(str, floatstr(vec.z));
 	return (str);
+}
+
+t_texture	vector2_to_texture(t_vector2 v)
+{
+	t_texture	t;
+
+	t.u = v.x;
+	t.v = v.y;
+	t.w = 1.0f;
+	return(t);
+}
+
+bool		float_cmp_epsilon(float v1, float v2, float epsilon)
+{
+	float	temp;
+
+	temp = v1 - v2;
+	temp = fabsf(temp);
+	return (temp - epsilon <= 0.0f);
 }

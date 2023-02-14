@@ -1,8 +1,9 @@
 
-
 #include "libft.h"
 #include "doomnukem.h"
 #include "objects.h"
+
+//# define OBJ_DEBUG
 
 void	printcolor(uint32_t clr)
 {
@@ -44,6 +45,12 @@ t_material	parsemat(int fd, char *name)
 			else
 				ft_strcpy(mat.texturename, line + sizeof("map_Kd"));
 			//printf("MAT TEX NAME %s \n", mat.texturename);
+			char	*ext_start = ft_strstr(mat.texturename, ".png");
+			if (ext_start != NULL)
+			{
+				ext_start[1] = 'c';
+			}
+			printf("MAT TEX NAME %s \n", mat.texturename);
 		}
 		if (ft_strlen(line) == 0)
 		{
@@ -70,7 +77,9 @@ void	parse_mtllib(t_list **list, char *filename)
 	{
 		if (ft_strstr(line, "newmtl ") != NULL)
 		{
+			#ifdef OBJ_DEBUG
 			printf("found mat %s \n", line + sizeof("newmtl"));
+			#endif
 			mat = parsemat(fd, line + sizeof("newmtl"));
 			list_push(list, &mat, sizeof(t_material));
 			#ifdef	OBJ_DEBUG
@@ -113,11 +122,12 @@ t_object	objparse(char *filename)
 	t_list		*faces;
 	int			fd;
 
+	printf("opening .obj file: %s\n", filename);
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)
 		return ((t_object){"NULLOBJECT"}); //TODO: return a crash bandicoot here
 	ft_bzero(&result, sizeof(t_object));
-	printf("reading object %s \n", filename);
+	//printf("reading object %s \n", filename);
 	materials = get_material_list(fd);
 	vertices = get_vertex_list(fd);
 	uvs = get_uv_list(fd);

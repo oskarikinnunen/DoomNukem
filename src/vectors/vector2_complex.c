@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector2_complex.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 11:43:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/19 15:54:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/21 17:13:26 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,14 @@
 float	vector2_sqr_magnitude(t_vector2 vec)
 {
 	return ((vec.x * vec.x) + (vec.y * vec.y));
+}
+
+float	vector2_sqr_dist(t_vector2 first, t_vector2 second)
+{
+	t_vector2	diff;
+
+	diff = vector2_sub(first, second);
+	return (vector2_sqr_magnitude(diff));
 }
 
 t_vector2 vector2_normalise(t_vector2 vec)
@@ -69,4 +77,24 @@ t_vector2 vector2_crossproduct(t_vector2 v1, t_vector2 v2)
 bool	vector2_cmp(t_vector2 first, t_vector2 second)
 {
 	return ((first.x == second.x) && (first.y == second.y));
+}
+
+float vector2_fdist_to_plane(t_vector2 p, t_vector2 plane_n, t_vector2 plane_p)
+{
+	t_vector2 n = vector2_normalise(p);
+	return (plane_n.x * p.x + plane_n.y * p.y - vector2_dot(plane_n, plane_p));
+}
+
+t_vector2	vector2_abs(t_vector2 v)
+{
+	return((t_vector2){fabsf(v.x), fabsf(v.y)});
+}
+
+bool		vector2_cmp_epsilon(t_vector2 v1, t_vector2 v2, float epsilon)
+{
+	t_vector2	temp;
+
+	temp = vector2_sub(v1, v2);
+	temp = vector2_abs(temp);
+	return (temp.x - epsilon <= 0.0f && temp.y - epsilon <= 0.0f);
 }

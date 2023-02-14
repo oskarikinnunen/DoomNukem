@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   png.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 17:10:14 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/08 00:24:18 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/07 13:51:47 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ char	*readpalette(t_pngdata *png, uint8_t *ptr)
 
 	png->palette.plte = ft_memalloc(sizeof(uint32_t) * 2048);
 	if (png->palette.plte == NULL)
-		error_log(EC_MALLOC);
+		doomlog(LOG_EC_MALLOC, NULL);
 	while (ft_strncmp(ptr, "PLTE", 4) != 0)
 		ptr++;
 	ptr += 4;
@@ -69,7 +69,7 @@ void	readdat(t_pngdata *png, uint8_t *ptr)
 	png->data = malloc(sizeof(uint8_t) * png->width * png->height);
 	//png->data[(png->width * png->height) - 1] = 0;
 	if (png->data == NULL)
-		error_log(EC_MALLOC);
+		doomlog(LOG_EC_MALLOC, NULL);
 	count = 0;
 	while (count < (png->width * png->height) - 1
 			/*&& ft_strncmp(ptr, "tEXT", 4) != 0*/)
@@ -88,17 +88,19 @@ void	sample_ouroboros(t_img *orig) //samples the image into itself
 
 	newdata = ft_memalloc((orig->length) * sizeof(uint32_t));
 	sample = point_zero();
-	while (sample.y < orig->size.y)
+	//orig->size.y -= 1;
+	while (sample.y < orig->size.y - 1)
 	{
 		sample.x = 0;
 		while (sample.x < orig->size.x)
 		{
-			newdata[sample.x + (sample.y * orig->size.x)] = orig->data[sample.x + sample.y + (sample.y * orig->size.x)];
+			newdata[sample.x + (sample.y * orig->size.x)] = flip_channels(orig->data[sample.x + sample.y + (sample.y * orig->size.x)]);
 			sample.x++;
 		}
 		sample.y++;
 	}
 	free(orig->data);
+	orig->size.y--;
 	orig->data = newdata;
 }
 
@@ -133,7 +135,7 @@ t_img	pngparse(char *filename)
 
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
-		error_log(EC_OPEN);
+		doomlog(LOG_EC_OPEN, NULL);
 	len = read(fd, buf, sizeof(uint8_t) * 1000000);
 	ft_bzero(&png, sizeof(t_pngdata));
 	ptr = buf;
@@ -142,6 +144,7 @@ t_img	pngparse(char *filename)
 	ptr += 4;
 	png.width = rev_bytes(*(uint32_t *)ptr);
 	png.height = rev_bytes(*(uint32_t *)(ptr + 4));
+	printf("size %i %i \n",png.width, png.height);
 	if (png.width >= 165 || png.height >= 165)
 	{
 		printf("images with size over ~165 pixels are unsupported, pls fix the png reader! (image was %s , assumed size %ix%i\n", filename, png.width, png.height);

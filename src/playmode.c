@@ -1,5 +1,5 @@
 #include "doomnukem.h"
-#include "inputhelp.h"
+ 
 #include "file_io.h"
 #include "objects.h"
 //	Good resource for remembering bitwise operations:
@@ -8,7 +8,7 @@
 /*place holder for inits*/
 void	move(t_game *game);
 
-static int key_events(SDL_Event e, t_game *game)
+static int key_events(SDL_Event e, t_hid_info *hid)
 {
 	t_vector2 temp;
 	if (e.type == SDL_KEYDOWN)
@@ -17,29 +17,29 @@ static int key_events(SDL_Event e, t_game *game)
 			return (game_exit);
 		if (iskey(e, SDLK_TAB))
 			return (game_switchmode);
-		game->keystate |= keyismoveleft(e) << KEYS_LEFTMASK;
-		game->keystate |= keyismoveright(e) << KEYS_RIGHTMASK;
-		game->keystate |= keyismoveup(e) << KEYS_UPMASK;
-		game->keystate |= keyismovedown(e) << KEYS_DOWNMASK;
-		game->keystate |= iskey(e, SDLK_SPACE) << KEYS_SPACEMASK;
-		game->keystate |= iskey(e, SDLK_LCTRL) << KEYS_CTRLMASK;
-		game->keystate |= iskey(e, SDLK_LSHIFT) << KEYS_SHIFTMASK;
-		game->keystate |= iskey(e, SDLK_m) << KEYS_MMASK;
-		if (iskey(e, SDLK_m))
+		hid->keystate |= keyismoveleft(e) << KEYS_LEFTMASK;
+		hid->keystate |= keyismoveright(e) << KEYS_RIGHTMASK;
+		hid->keystate |= keyismoveup(e) << KEYS_UPMASK;
+		hid->keystate |= keyismovedown(e) << KEYS_DOWNMASK;
+		hid->keystate |= iskey(e, SDLK_SPACE) << KEYS_SPACEMASK;
+		hid->keystate |= iskey(e, SDLK_LCTRL) << KEYS_CTRLMASK;
+		hid->keystate |= iskey(e, SDLK_LSHIFT) << KEYS_SHIFTMASK;
+		hid->keystate |= iskey(e, SDLK_m) << KEYS_MMASK;
+		/*if (iskey(e, SDLK_m))
 		{
 			game->cam_mode = !game->cam_mode;
-		}
+		}*/
 	}
 	else if(e.type == SDL_KEYUP)
 	{
-		game->keystate &= ~(keyismoveleft(e) << KEYS_LEFTMASK);
-		game->keystate &= ~(keyismoveright(e) << KEYS_RIGHTMASK);
-		game->keystate &= ~(keyismoveup(e) << KEYS_UPMASK);
-		game->keystate &= ~(keyismovedown(e) << KEYS_DOWNMASK);
-		game->keystate &= ~(iskey(e, SDLK_SPACE) << KEYS_SPACEMASK);
-		game->keystate &= ~(iskey(e, SDLK_LCTRL) << KEYS_CTRLMASK);
-		game->keystate &= ~(iskey(e, SDLK_LSHIFT) << KEYS_SHIFTMASK);
-		game->keystate &= ~(iskey(e, SDLK_m) << KEYS_MMASK);
+		hid->keystate &= ~(keyismoveleft(e) << KEYS_LEFTMASK);
+		hid->keystate &= ~(keyismoveright(e) << KEYS_RIGHTMASK);
+		hid->keystate &= ~(keyismoveup(e) << KEYS_UPMASK);
+		hid->keystate &= ~(keyismovedown(e) << KEYS_DOWNMASK);
+		hid->keystate &= ~(iskey(e, SDLK_SPACE) << KEYS_SPACEMASK);
+		hid->keystate &= ~(iskey(e, SDLK_LCTRL) << KEYS_CTRLMASK);
+		hid->keystate &= ~(iskey(e, SDLK_LSHIFT) << KEYS_SHIFTMASK);
+		hid->keystate &= ~(iskey(e, SDLK_m) << KEYS_MMASK);
 	}
 	return (game_continue);
 }
@@ -50,61 +50,25 @@ static void updatemouse(t_mouse *mouse)
 	SDL_GetRelativeMouseState(&mouse->delta.x, &mouse->delta.y);
 }
 
-static void updateinput(t_input *input, int keystate, t_mouse m, t_controller *controller)
-{
-	input->move = vector2_zero();
-
-	input->move.x -= (keystate >> KEYS_LEFTMASK) & 1;
-	input->move.x += (keystate >> KEYS_RIGHTMASK) & 1;
-	input->move.y += (keystate >> KEYS_DOWNMASK) & 1;
-	input->move.y -= (keystate >> KEYS_UPMASK) & 1;
-	input->crouch = (keystate >> KEYS_CTRLMASK) & 1;
-	input->jump = (keystate >> KEYS_SPACEMASK) & 1;
-	input->run = (keystate >> KEYS_SHIFTMASK) & 1;
-	input->turn = vector2_mul(point_to_vector2(m.delta), MOUSESPEED);
-
-	input->move.x += controller->leftanalog.x;
-	input->move.y += controller->leftanalog.y;
-	input->crouch += controller->b;
-	input->jump += controller->a;
-	input->run += controller->lefttrigger;
-	input->turn = vector2_add(input->turn, vector2_mul(controller->rightanalog, CONTROLLER_SENS));
-}
-
 /*check for keyboard/mouse/joystick input*/
-static int handleinput(t_game *game)
+static int handleinput(t_hid_info	*hid)
 {
 	static SDL_Event	e;
 	t_gamereturn		gr;
 
-	updatemouse(&game->mouse);
+	updatemouse(&hid->mouse);
 	while (SDL_PollEvent(&e))
 	{
-		
-		gr = key_events(e, game);
+		mouse_event(e, &hid->mouse);
+		gr = key_events(e, hid);
 		if (gr != game_continue)
 			return (gr);
-		gr = controller_events(e, game);
+		//gr = controller_events(e, game);
 		if (gr != game_continue)
 			return (gr);
 	}
-	updateinput(&game->input, game->keystate, game->mouse, &game->controller[0]);
+	updateinput(&hid->input, hid->keystate, hid->mouse, &hid->controller[0]);
 	return(game_continue);
-}
-
-static void update_render(t_render *render, t_player player)
-{
-	render->lookdir = player.lookdir;
-	render->position = player.position;
-	//render.
-}
-
-static void player_init(t_player *player)
-{
-	player->position = (t_vector3) {500.0f, 500.0f, 500.0f};
-	player->angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
-	player->jump.framerate = 30;
-	player->jump.lastframe = 15;
 }
 
 /*main game loop*/
@@ -115,26 +79,37 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 
 	//alloc_image(&pgraph.image, PERFGRAPH_SAMPLES + 1, PERFGRAPH_SAMPLES + 1);
 	gr = game_continue;
-	render = init_render(sdl);
-	game.world = load_world("world1", sdl);
-	player_init(&game.player);
-	game.player.position = (t_vector3) {500.0f, 500.0f, 500.0f};
-	game.player.angle = (t_vector2){-RAD90, -RAD90 * 0.99f};
-	initialize_controllers(&game);
+	//render = init_render(sdl, &game.world);
+	game.world = load_world("world1", &sdl);
+	*(game.world.debug_gui) = init_gui(&sdl, &game.hid, &game.player, sdl.screensize, "Debugging menu (F2)");
+	game.world.debug_gui->rect.size.y = 120;
+	game.world.debug_gui->hidden = true;
+	game.world.debug_gui->rect.position.y = sdl.window_h / 2;
+	game.world.debug_gui->rect.size.y = sdl.window_h / 2;
+	player_init(&game.player, &sdl, &game.world);
+	initialize_controllers(&game.hid);
 	while (gr == game_continue)
 	{
-		update_deltatime(&game.clock);
-		gr = handleinput(&game);
-		moveplayer(&game);
-		update_render(&render, game.player);
+		update_deltatime(&game.clock); //TODO: remove game.clock and always use world clock
+		update_deltatime(&game.world.clock);
+		gr = handleinput(&game.hid);
+		moveplayer(&game.player, &game.hid.input, &game.world);
+		update_render(&render, &game.player);
 		screen_blank(sdl); //Combine with render_start?
 		render_start(&render);
-		render_world3d(sdl, game.world, &render);
-		draw_text_boxed(&sdl, "PLAYMODE", (t_point){5, 5}, (t_point){sdl.window_w, sdl.window_h});
+		update_world3d(&game.world, &render);
+		print_text(&sdl, "PLAYMODE", (t_point){5, 5});
+		/*game.player.gun->transform.position = vector3_add(game.player.position, (t_vector3){.z = -25.5f});
+		game.player.gun->transform.rotation.x = game.player.angle.x + ft_degtorad(100.0f);*/
+		render_entity(&sdl, &render, &game.player.gun->entity);
 		//DRAWPERFGRAPH
+		rescale_surface(&sdl);
+		join_surfaces(sdl.window_surface, sdl.surface);
+		join_surfaces(sdl.window_surface, sdl.ui_surface);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
-			error_log(EC_SDL_UPDATEWINDOWSURFACE);
-		//gr = game_switchmode;
+			doomlog(LOG_EC_SDL_UPDATEWINDOWSURFACE, NULL);
+		
+		
 	}
 	free_render(render);
 	if (gr == game_exit)
@@ -151,11 +126,11 @@ int playmode(t_sdlcontext sdl)
 	bzero(&game, sizeof(t_game));
 	//Locks mouse
 	if (SDL_SetRelativeMouseMode(SDL_TRUE) < 0)
-		error_log(EC_SDL_SETRELATIVEMOUSEMODE);
+		doomlog(LOG_EC_SDL_SETRELATIVEMOUSEMODE, NULL);
 	//Do game loop until exit or error
 	gr = gameloop(sdl, game);
 	//Unlocks mouse
 	if (SDL_SetRelativeMouseMode(SDL_FALSE) < 0)
-		error_log(EC_SDL_SETRELATIVEMOUSEMODE);
+		doomlog(LOG_EC_SDL_SETRELATIVEMOUSEMODE, NULL);
 	return (gr);
 }

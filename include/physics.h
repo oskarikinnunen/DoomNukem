@@ -3,35 +3,51 @@
 /*                                                        :::      ::::::::   */
 /*   physics.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/02 14:53:58 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/18 18:30:35 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/08 18:18:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+/* DEPRECATED UPDATED TO COLLISION.H*/
 #ifndef PHYSICS_H
 # define PHYSICS_H
 
-#include "doomnukem.h" //TODO: only needs entity
-
-typedef struct s_physics
-{
-	struct s_entity	*entities[20]; //points to entities in 'editor->entitylist'
-	int				cube[100][100][10];
-}	t_physics;
+#include "entity.h"
+#include "render.h"
 
 struct s_render;
 struct s_sdlcontext;
 struct s_entity;
 struct s_triangle;
 struct s_line;
+struct s_world;
 
-void			calculate_colliders(t_physics *p);
-void			draw_colliders(t_physics p, struct s_sdlcontext sdl, struct s_render render);
-struct s_entity	*entity_collides(t_physics p, struct s_entity ent);
-bool			pointtrianglecollision (t_point point, struct s_triangle tri); //TODO: pls deprecate, the other one is better
-bool			pointtrianglecollisionp (t_point point, t_point	t1, t_point	t2, t_point	t3);
-bool			linelineintersect(struct s_line line1, struct s_line line2);
+/*
+make xy_physics controller
+*/
+
+typedef struct s_characterphysics
+{
+	float		height;
+	float		radius;
+	float		*gravity_override;
+	t_vector3	*position;
+	t_vector3	new_velocity;
+	float		max_velocity;
+	bool		new_isgrounded;
+	bool		new_landingtrigger;
+	t_vector3	new_impactvelocity;
+}	t_characterphysics;
+
+bool	check_collision_character(struct s_world *world, t_characterphysics cp, t_vector3 potential_pos, t_vector3 *new_pos);
+void	capsule_damp(t_characterphysics *phys, struct s_world *world);
+void	capsule_add_xy_velocity(t_vector2 vel, t_characterphysics *phys, struct s_world *world);
+void	capsule_applygravity_new(t_characterphysics *charp, struct s_world *world);
+void	capsule_applygravity(t_characterphysics charp, struct s_world *world);
+bool	pointtrianglecollision (t_point point, struct s_triangle tri); //TODO: pls deprecate, the other one is better
+bool	pointtrianglecollisionp (t_point point, t_point	t1, t_point	t2, t_point	t3);
+bool	linelineintersect(struct s_line line1, struct s_line line2);
 
 #endif

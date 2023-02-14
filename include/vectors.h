@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vectors.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/21 16:19:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/17 14:20:08 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,10 @@
 #include <math.h>
 #include <stdbool.h>
 #include "libft.h"
+
+
+//returns true if v1 == v2 in the error range of epsilon
+bool	float_cmp_epsilon(float v1, float v2, float epsilon);
 
 /* t_vector2 functions */
 typedef struct s_vector2
@@ -48,6 +52,9 @@ t_vector2	vector2_snap(t_vector2 vec, int interval);
 //returns vector 'vec' multiplied by 'mul'
 t_vector2	vector2_mul(t_vector2 vec, float mul);
 
+//returns vector 'first' multiplied by 'second'
+t_vector2	vector2_multiply(t_vector2 first, t_vector2 second);
+
 //returns vector 'vec' divided by 'div'
 t_vector2	vector2_div(t_vector2 vec, float div);
 
@@ -59,6 +66,9 @@ float		vector2_magnitude(t_vector2 vec);
 
 //returns the squared magnitude of the vector 'vec'
 float		vector2_sqr_magnitude(t_vector2 vec);
+
+//return the approximate distance between vectors 'first' and 'second'
+float		vector2_sqr_dist(t_vector2 first, t_vector2 second);
 
 //returns distance between first and second vector
 float		vector2_dist(t_vector2 first, t_vector2 second);
@@ -83,6 +93,18 @@ bool		vector2_cmp(t_vector2 first, t_vector2 second);
 
 //returns copy of 'vec' but with magnitude clamped to 'max_magnitude'
 t_vector2	vector2_clamp_magnitude(t_vector2 vec, float max_magnitude);
+
+//returns float distance, to plane_p position and direction vector plane_n
+float vector2_fdist_to_plane(t_vector2 p, t_vector2 plane_n, t_vector2 plane_p);
+
+//returns vector 2 abs
+t_vector2	vector2_abs(t_vector2 v);
+
+//returns true if v1 == v2 in the error range of epsilon
+bool		vector2_cmp_epsilon(t_vector2 v1, t_vector2 v2, float epsilon);
+
+//returns float from 0 to 1 depending on where the line intersected plane. Pass t_vector3 plane_p location and t_vector3 plane_n normalised, currently function does normalise plane_n just in case, but it will be changed later.
+float	vector2_line_intersect_plane(t_vector2 plane_p, t_vector2 plane_n, t_vector2 start, t_vector2 end);
 
 /* t_vector3 functions */
 typedef struct s_vector3
@@ -123,7 +145,10 @@ t_vector3	vector3_mul(t_vector3 vec, float mul);
 t_vector3	vector3_div(t_vector3 vec, float div);
 
 //returns vector 'vec' moved towards set 'direction' //TODO: explain delta
-t_vector3	vector3_movetowards(t_vector3 vec, t_vector3 direction, float delta);
+t_vector3	vector3_movetowards(t_vector3 vec, t_vector3 to, float delta);
+
+//returns absolute vector
+t_vector3	vector3_abs(t_vector3 v);
 
 //returns the magnitude of the vector 'vec'
 float		vector3_magnitude(t_vector3 vec);
@@ -134,11 +159,19 @@ float		vector3_sqr_magnitude(t_vector3 vec);
 //returns distance between first and second vector
 float		vector3_dist(t_vector3 first, t_vector3 second);
 
+//returns distance between first and second vector, but different //TODO: better explanation
+float	vector3_sqr_dist(t_vector3 first, t_vector3 second);
+
 //returns dot product of vector 'first' and vector 'second'
 float		vector3_dot(t_vector3 first, t_vector3 second);
 
 //returns true if both vectors are identical
 bool		vector3_cmp(t_vector3 first, t_vector3 second);
+
+//returns true if both vectors are in the error range of epsilon
+bool		vector3_cmp_epsilon(t_vector3 v1, t_vector3 v2, float epsilon);
+
+t_vector3	vector3_snap(t_vector3 vec, int interval);
 
 //returns vector3 multiplied by vector 'v1' and vector 'v2'
 t_vector3	vector3_mul_vector3(t_vector3 v1, t_vector3 v2);
@@ -157,6 +190,20 @@ t_vector3	vector3_rotate_euler(t_vector3 original, t_vector3 eulers);
 
 //returns signed shortest distance from point to plane, plane normal must be normalised
 float		vector3_fdist_to_plane(t_vector3 p, t_vector3 plane_n, t_vector3 plane_p);
+
+//returns float from 0 to 1 depending on where the line intersected plane. Pass t_vector3 plane_p location and t_vector3 plane_n normalised, currently function does normalise plane_n just in case, but it will be changed later.
+float	line_intersect_plane(t_vector3 plane_p, t_vector3 plane_n, t_vector3 start, t_vector3 end);
+
+//returns linearly interpolated value between 'v1' and 'v2' using lerp (which should be in range 0.0 - 1.0f)
+t_vector3	vector3_lerp(t_vector3 v1, t_vector3 v2, float lerp);
+
+typedef struct s_transform
+{
+	t_vector3			position;
+	t_vector3			rotation;
+	t_vector3			scale;
+	struct s_transform	*parent;
+}	t_transform;
 
 typedef struct s_point
 {
@@ -221,6 +268,18 @@ int			point_dot(t_point first, t_point second);
 //returns true if both points are identical
 bool		point_cmp(t_point first, t_point second);
 
+//returns the squared magnitude of the point 'point'
+float		point_sqr_fmagnitude(t_point point);
+
+//returns distance between first and second point
+float		point_fdist(t_point first, t_point second);
+
+//returns dot product of point 'first' and point 'second'
+float		point_fdot(t_point first, t_point second);
+
+//returns point lerped;
+t_point lerp_point(t_point from, t_point to, float delta);
+
 typedef struct s_quaternion
 {
 	t_vector3	v;
@@ -230,14 +289,26 @@ typedef struct s_quaternion
 //shorthand for writing (t_quaternion){1.0f, 1.0f, 1.0f, 1.0f}
 t_quaternion	quaternion_identity();
 
-
 t_quaternion	quaternion_rotate_euler(t_vector3 original, t_vector3 eulers);
 
 //returns quaternion multiplication result 'first * second'
 t_quaternion	quaternion_mul(t_quaternion first, t_quaternion second);
 
 //returns quaternion, for quaternion line that starts from 'linestart' and ends in 'lineend' and intersects plane vector 'plane_p' and 'plane_n'
-t_quaternion quaternion_intersectplane(t_vector3 plane_p, t_vector3 plane_n, t_quaternion lineStart, t_quaternion lineEnd, float *t);
+t_quaternion	quaternion_intersectplane(t_vector3 plane_p, t_vector3 plane_n, t_quaternion lineStart, t_quaternion lineEnd, float *t);
+
+//returns quaternion lerped from, to by delta
+t_quaternion	lerp_quaternion(t_quaternion from, t_quaternion to, float delta);
+
+typedef struct s_texture
+{
+	float	u;
+	float	v;
+	float	w;
+} t_texture;
+
+//returns texture lerped from, to by delta
+t_texture		lerp_texture(t_texture from, t_texture to, float delta);
 
 typedef struct s_mat4x4
 {
@@ -261,7 +332,13 @@ t_mat4x4 matrix_makerotationy(float fAngleRad);
 t_mat4x4 matrix_makerotationz(float fAngleRad);
 
 //matrix makes identity matrix and sets matrix[3][0] = 'x', matrix.m[3][1] = 'y', matrix.m[3][2] = 'z'
-t_mat4x4 matrix_maketranslation(float x, float y, float z);
+t_mat4x4 matrix_maketranslation(t_vector3 v);
+
+//returns matrix scale
+t_mat4x4 matrix_makescale(t_vector3 v);
+
+//returns transform matrix
+t_mat4x4 make_transform_matrix(t_transform transform);
 
 //returns matrix projection, fFovDegrees is player field of view in degrees, aspect ratio is float window height divided by window width, fnear is how close the camera clips and ffar is how far the camera clips 
 t_mat4x4 matrix_makeprojection(float fFovDegrees, float fAspectRatio, float fNear, float fFar);
@@ -281,6 +358,9 @@ t_quaternion quaternion_mul_matrix(t_mat4x4 m, t_quaternion i);
 //returns vector3 lookdirection, from vector2 angle
 t_vector3	lookdirection(t_vector2 angle);
 
+//returns vector3 lookdirection, from vector3 angle (only uses x and y for now)
+t_vector3	lookdirection_3(t_vector3 angle);
+
 //returns vector3 'i' multiplied by matrix 'm'
 t_vector3 vector3_mul_matrix(t_mat4x4 m, t_vector3 i);
 
@@ -289,7 +369,9 @@ float	radtodeg(float rad);
 
 t_quaternion	vector3_to_quaternion(t_vector3 v);
 
-t_vector3		vector2_to_vector3(t_vector2 vec);
+t_vector3		v2tov3(t_vector2 vec);
+
+t_vector2		v3tov2(t_vector3 vec);
 
 //Returns t_vector2 'vec' casted to t_point. (Shorthand for '*(t_point *)&vec').
 t_point			vector2_to_point(t_vector2 vec);
@@ -299,5 +381,14 @@ t_vector2		point_to_vector2(t_point point);
 
 //Returns static str for given vector3
 char			*vector_string(t_vector3 vec);
+
+t_texture		vector2_to_texture(t_vector2 v);
+
+typedef struct s_ray
+{
+	t_vector3 origin;
+	t_vector3 dir;
+}	t_ray;
+
 
 #endif

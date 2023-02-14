@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   walltool.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:17:04 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/18 17:20:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/12/22 09:48:12 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef WALLTOOL_H
 # define WALLTOOL_H
 
-#include "objects.h"
+#include "room.h"
 
 typedef	enum e_walltoolmode
 {
@@ -26,9 +26,9 @@ typedef	enum e_walltoolmode
 
 typedef struct s_floorcalc
 {
-	t_vector2	edges[32];
-	t_face		faces[32];
-	t_line		normals[32];
+	t_vector2	edges[1024];
+	t_face		faces[1024];
+	t_line		normals[1024];
 	uint8_t		edgecount;
 	uint8_t		facecount;
 }	t_floorcalc;
@@ -49,7 +49,7 @@ struct s_roomtooldata;
 struct s_room;
 
 void		makefloor(struct s_editor *ed, struct s_roomtooldata dat, struct s_sdlcontext *sdl);
-void		makefloor_room(struct s_editor *ed, struct s_sdlcontext *sdl, struct s_room *room);
+//void		makefloor_room(struct s_editor *ed, struct s_sdlcontext *sdl, struct s_room *room, int debug);
 void		floorcalc_debugdraw(struct s_editor *ed, struct s_sdlcontext *sdl, t_floorcalc fc, int tri_i, float rad);
 void		render_snapgrid(struct s_editor *ed, struct s_sdlcontext *sdl, t_vector2 wallpos, bool shift, bool hover); //TODO: move somewhere
 

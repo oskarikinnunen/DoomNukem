@@ -6,101 +6,13 @@
 /*   By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/23 15:00:21 by kfum             ###   ########.fr       */
+/*   Updated: 2023/02/14 11:18:28 by kfum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
-#include "editor_tools.h"
-#include "file_io.h"
-#include "inputhelp.h"
+#include "tools/entitytool.h" 
 #include "objects.h"
-/*
-void entity_tool_append_list(t_editor *ed, t_entity ent) //TODO: make 
-{
-	list_push(&ed->entitylist, &ent, sizeof(t_entity));
-}
-
-static t_entity	*find_closest(t_editor *ed) //TODO: pointer
-{
-	t_list		*l;
-	t_entity	*cur_ent;
-	t_point		entity_pos;
-
-	l = ed->entitylist;
-	while (l != NULL)
-	{
-		cur_ent = (t_entity *)l->content;
-		entity_pos = vector2_to_point(cur_ent->position);
-		if (point_sqr_magnitude(point_sub(mousetoworldspace(ed), entity_pos)) < 400)
-		{
-			return (cur_ent);
-		}
-		l = l->next;
-	}
-	return (NULL);
-}
-
-static void entity_tool_place(t_editor *ed)
-{
-	t_entity		*ent;
-
-	ent = (t_entity *)ed->tool->tooldata;
-	ent->position = point_to_vector2(mousetoworldspace(ed));
-	entity_tool_append_list(ed, *ent);
-	ed->mouse.click_unhandled = false;
-}
-
-static void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
-{
-	static t_img	*entity_img;
-	t_entity		*ent;
-	t_list			*l;
-
-	if (entity_img == NULL)
-		entity_img = get_image_by_name(sdl, "entitytool.png");
-	l = ed->entitylist;
-	while (l != NULL)
-	{
-		ent = (t_entity *)l->content;
-		draw_image(sdl, worldtoeditorspace(ed, ent->position), *entity_img, entity_img->size);
-		l = l->next;
-	}
-	draw_image(sdl, ed->mouse.pos, *entity_img, entity_img->size);
-	ent = find_closest(ed);
-	if (ent != NULL)
-		drawcircle(sdl, worldtoeditorspace(ed, ent->position), 20, CLR_GREEN);
-	return ;
-}
-
-static void	entity_tool_update(t_editor *ed) //This needs to access editors state, so pass editor here??
-{
-	t_entity *hover;
-
-	hover = find_closest(ed);
-	if (ed->mouse.held == MOUSE_LEFT && hover != NULL)
-		hover->position = point_to_vector2(mousetoworldspace(ed));
-	if (ed->mouse.click_unhandled)
-	{
-		if (hover == NULL && ed->mouse.click_button == MOUSE_LEFT)
-			entity_tool_place(ed);
-		else if (ed->mouse.click_button == MOUSE_RIGHT)
-			list_remove(&ed->entitylist, hover, sizeof(t_entity));
-		ed->mouse.click_unhandled = false;
-	}
-		
-}
-
-static void	entity_tool_cleanup(t_editor *ed)
-{
-	SDL_ShowCursor(SDL_ENABLE);
-}
-*/
-
-/*void	entity_tool_update(t_editor *ed)
-{
-
-}*/
 
 char	*floatstr(float f)
 {
@@ -141,29 +53,6 @@ t_img	black_image()
 }
 /**/
 
-static void	draw_transform_info(t_transform t, t_sdlcontext sdl)
-{
-	draw_image(sdl, (t_point){17, 100}, black_image(), (t_point){180, 58});
-	draw_text_boxed(&sdl, "POS  :", (t_point){20, 143}, (t_point){sdl.window_w, sdl.window_h});
-	draw_text_boxed(&sdl, vector_string(t.location), (t_point){65, 143}, (t_point){sdl.window_w, sdl.window_h});
-	draw_text_boxed(&sdl, "SCALE:", (t_point){20, 105}, (t_point){sdl.window_w, sdl.window_h});
-	draw_text_boxed(&sdl, vector_string(t.scale), (t_point){65, 105}, (t_point){sdl.window_w, sdl.window_h});
-}
-
-static void	draw_current_operation(t_entity *ent, t_entity *collide, t_sdlcontext sdl)
-{
-	if (collide == NULL)
-	{
-		draw_text_boxed(&sdl, "ADD:", (t_point){sdl.window_w / 2, sdl.window_h - 25}, (t_point){sdl.window_w, sdl.window_h});
-		draw_text_boxed(&sdl, ent->obj->name, (t_point){sdl.window_w / 2 + 60, sdl.window_h - 25}, (t_point){sdl.window_w, sdl.window_h});
-	}
-	else
-	{
-		draw_text_boxed(&sdl, "DEL:", (t_point){sdl.window_w / 2, sdl.window_h - 25}, (t_point){sdl.window_w, sdl.window_h});
-		draw_text_boxed(&sdl, collide->obj->name, (t_point){sdl.window_w / 2 + 60, sdl.window_h - 25}, (t_point){sdl.window_w, sdl.window_h});
-	}
-}
-
 static void findbounds(t_entity *ent)
 {
 	t_bound		zbound;
@@ -185,104 +74,444 @@ static void findbounds(t_entity *ent)
 	ent->z_bound = zbound;
 }
 
-t_entity *selected_entity(t_editor *ed, t_sdlcontext sdl)
+static int find_object_index(t_sdlcontext *sdl, t_entity *ent)
+{
+	int	i;
+
+	i = 0;
+	while (i < sdl->objectcount)
+	{
+		if (&sdl->objects[i] == ent->obj)
+			return (i);
+		i++;
+	}
+	return (0);
+}
+
+void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
+{
+	if (dat->sel_ent != NULL || vector3_cmp(dat->info.hit_pos, vector3_zero()))
+		return ;
+	objectgui_update(&dat->objectgui, &dat->ent);
+	if (dat->ent != NULL)
+	{
+		/*dat->entitygui.hidden = false;
+		gui_start(&dat->entitygui);
+		gui_preset_scale_and_rotate(&dat->ent->transform, &dat->entitygui);
+		gui_labeled_int("Object triangles: ", dat->ent->obj->face_count, &dat->entitygui);
+		gui_end(&dat->entitygui);*/
+		findbounds(dat->ent);
+		dat->ent->transform.position = dat->info.hit_pos;
+		//dat->ent->transform.position = raycast(ed);//vector3_movetowards(ent->transform.position, dir, ed->clock.delta * 1.0f);
+		dat->ent->transform.position.z -= dat->ent->z_bound.min * dat->ent->transform.scale.z;
+		dat->ent->transform.rotation.x += ed->hid.mouse.scroll_delta * 0.261799388f;
+		sdl->render.wireframe = true;
+		sdl->render.gizmocolor = AMBER_3;
+		render_entity(sdl, &sdl->render, dat->ent);
+		sdl->render.wireframe = false;
+	}
+	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT) && ed->hid.mouse.relative && dat->ent != NULL)
+	{
+		t_entity *went = spawn_entity(&ed->world);
+		entity_assign_object(&ed->world, went, dat->ent->obj);
+		/*went->obj = dat->ent->obj;*/
+		//ft_strcpy(went->object_name, dat->ent->object_name); //TODO: fix in world save or in assign object
+		went->transform = dat->ent->transform;
+	}
+	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT) && dat->ent != NULL)
+	{
+		free(dat->ent);
+		dat->ent = NULL;
+	}
+}
+
+static void gui_component(t_entity *entity, t_autogui *gui, t_world *world)
+{
+	gui_start(gui);
+	if (entity->component.func_gui_edit != NULL)
+	{
+		entity->component.func_gui_edit(entity, gui, world);
+	}
+	else
+	{
+		gui_label("!Component doesn't have gui function", gui);
+	}
+	gui_end(gui);
+}
+
+static void gui_entitymode(t_entity *entity, t_autogui *gui, t_world *world)
+{
+	t_componentdefinition	*defs;
+	int						i;
+	gui->offset.x = 20;
+	defs = get_component_definitions();
+	i = 0;
+	while (ft_strlen(defs[i].name) > 0)
+	{
+		if (gui_highlighted_button_if(defs[i].name, gui,
+			entity->component.type == defs[i].type))
+		{
+			entity_set_component(entity, defs[i].type, world);
+			printf("set component to %s \n",defs[i].name);
+		}
+		i++;
+	}
+	//if (entity->component.)
+	/*gui_label("Component type:", gui);
+	if (gui_highlighted_button_if("None", gui, entity->component.type == pft_none))
+	{
+		entity->component.type = pft_none;
+		component_init(entity);
+	}
+		
+	if (gui_highlighted_button_if("Light", gui, entity->component.type == pft_light))
+	{
+		entity->component.type = pft_light;
+		if (entity->component.data != NULL)
+		{
+			free(entity->component.data);
+			entity->component.data = NULL;
+		}
+		entity->component.data = ft_memalloc(sizeof(t_pointlight)); //TODO: protect
+		entity->component.data_size = sizeof(t_pointlight);
+		t_pointlight	*pl;
+		pl = entity->component.data;
+		pl->radius = 100.0f;
+		pl->shadows = true;
+		component_init(entity);
+	}
+	if (gui_highlighted_button_if("Audio", gui, entity->component.type == pft_audiosource))
+	{
+		///*protected_free(entity->component.data);
+		//assign_component_audiosource(&entity->component);
+		//entity->component.func_allocate(entity, world);
+	}
+		
+	if (gui_highlighted_button_if("Interactable", gui, entity->component.type == pft_interactable))
+	{
+		entity->component.type = pft_interactable;
+		if (entity->component.data != NULL)
+		{
+			free(entity->component.data);
+			entity->component.data = NULL;
+		}
+		entity->component.data = ft_memalloc(sizeof(t_interactable)); //TODO: protect
+		entity->component.data_size = sizeof(t_interactable);
+		t_interactable	*inter;
+		inter = entity->component.data;
+		inter->radius = 100.0f;
+		component_init(entity);
+	}*/
+	gui->offset.x = 0;
+}
+
+void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
+{
+	//t_entity	*hover;
+	t_entity	*ent;
+	t_autogui	*gui;
+
+	if (dat->ent != NULL)
+		return ;
+	if (dat->info.hit_entity != NULL &&
+		!dat->info.hit_entity->rigid && mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
+	{
+		dat->sel_ent = dat->info.hit_entity;
+		//dat->sel_ent->ignore_raycasts = true;
+	}
+	if (dat->sel_ent != NULL)
+	{
+		gui = &dat->entityeditor.gui;
+		ent = dat->sel_ent;
+		highlight_entity(sdl, ent, AMBER_3);
+		gui_start(gui);
+		char *idstr;
+		idstr = ft_itoa(ent->id);
+		gui_starthorizontal(gui);
+		gui_label("ID: ", gui);
+		gui_label(idstr, gui);
+		free(idstr);
+		gui_endhorizontal(gui);
+		
+		if (gui_highlighted_button_if("Edit transform", gui, dat->entityeditor.transform_toggle))
+			dat->entityeditor.transform_toggle = !dat->entityeditor.transform_toggle;
+		if (dat->entityeditor.transform_toggle)
+		{
+			gui_preset_transform(&ent->transform, gui);
+			gui_emptyvertical(15, gui);
+			if (gui_button("Reset rotation", gui))
+				ent->transform.rotation = vector3_zero();
+			if (gui_button("Reset scale", gui))
+				ent->transform.scale = vector3_one();
+		}
+		if (ent->lightmap != NULL)
+		{
+			gui_labeled_bool_edit("Dynamic lighting: ", &ent->lightmap->dynamic, gui);
+			gui_labeled_int("Cur light: ", ent->lightmap->dynamic_data, gui);
+		}
+		if (gui_highlighted_button_if("Edit component", gui, dat->entityeditor.component_toggle))
+			dat->entityeditor.component_toggle = !dat->entityeditor.component_toggle;
+		if (dat->entityeditor.component_toggle)
+		{
+			gui_entitymode(ent, gui, &ed->world);
+			if (ent->component.type != COMP_NONE)
+			{
+				gui_start(&dat->entityeditor.component_gui);
+				gui_component(ent, &dat->entityeditor.component_gui, &ed->world);
+				gui_end(&dat->entityeditor.component_gui);
+			}
+		}
+		if (gui_shortcut_button("Delete", KEYS_DELETEMASK, gui))
+		{
+			destroy_entity(&ed->world, ent);
+			dat->sel_ent = NULL;
+			gui_end(gui);
+			return ;
+		}
+		gui_end(gui);
+		if (ent == dat->info.hit_entity && ed->hid.mouse.held == MOUSE_LEFT && ed->hid.mouse.relative && !ed->world.player->locked)
+		{
+			dat->grabbing = true;
+			ent->ignore_raycasts = true;
+			return ;
+		}
+		if ((ed->hid.mouse.held == 0 || !ed->hid.mouse.relative) || gui->locking_player)
+		{
+			ent->ignore_raycasts = false;
+			dat->grabbing = false;
+			return ;
+		}
+			
+		if (dat->grabbing && !vector3_cmp(dat->info.hit_pos, vector3_zero()))
+		{
+			ent->transform.position = dat->info.hit_pos;
+			//ent->transform.position.z -= ent->z_bound.min * ent->transform.scale.z;
+			ent->transform.rotation.x += ed->hid.mouse.scroll_delta * ft_degtorad(5.0f);
+		}
+		if ((ed->hid.keystate >> KEYS_DELETEMASK) & 1)
+		{
+			destroy_entity(&ed->world, ent);
+			dat->sel_ent = NULL;
+		}
+		if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
+		{
+			dat->sel_ent->ignore_raycasts = false;
+			dat->sel_ent = NULL;
+		}
+	}
+}
+
+void	entity_tool_list(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
+{
+	t_autogui		*gui = &dat->worldgui;
+	int				i = 0;
+	int				found = 0;
+	t_entitycache	*cache;
+	
+	gui_start(gui);
+	i = 0;
+	cache = &ed->world.entitycache;
+	while (i < cache->alloc_count)
+	{
+		t_entity	ent;
+		char		*str;
+
+		ent = cache->entities[i];
+		str = ft_itoa(ent.id);
+		gui_starthorizontal(gui);
+		gui_label(str, gui);
+		if (gui_hoverlabel("Show", gui))
+		{
+			highlight_entity(sdl, &ent, CLR_RED);
+		}
+		gui_endhorizontal(gui);
+		free(str);
+		i++;
+	}
+	gui_end(gui);
+}
+
+void	entity_tool_raycast(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
+{
+	t_ray				ray;
+
+	ray.origin = vector3_add(ed->player.transform.position, (t_vector3){.z = ed->player.height});
+	ray.dir = ed->player.lookdir;//vector3_mul(ed->player.lookdir, 10000.f);
+	bzero(&dat->info, sizeof(t_raycastinfo));
+	if (raycast_new(ray, &dat->info, &ed->world))
+	{
+		if (dat->info.hit_entity != NULL
+			&& !dat->info.hit_entity->rigid)
+			highlight_entity(sdl, dat->info.hit_entity, AMBER_4);
+	}
+	else
+		raycast_plane(ray, &dat->info, 0.0f);
+}
+
+void	list_prefabs(t_prefab_editor *pe, t_world *world)
 {
 	t_list		*l;
-	t_entity	*cur;
-	
-	l = ed->world.entitylist;
+	t_prefab	*fab;
+	t_autogui	*gui;
+
+	gui = &pe->prefab_select;
+	l = world->prefabs;
 	while (l != NULL)
 	{
-		cur = l->content;
-		if (entity_lookedat(ed, sdl, cur))
-			return (cur);
+		fab = l->content;
+		if (gui_highlighted_button_if(fab->prefab_name, gui, pe->prefab == fab))
+		{
+			pe->prefab = fab;
+		}
+			
 		l = l->next;
 	}
-	return (NULL);
 }
 
-void	entity_tool_draw(t_editor *ed, t_sdlcontext sdl)
+void	edit_prefab_subtype(t_prefab_editor *pe)
 {
-	t_entity	*ent;
-	t_entity	*collide;
+	t_autogui	*gui;
 
-	ent = (t_entity *)ed->tool->tooldata;
-	if (instantbutton((t_rectangle) {52, 200, 20, 20}, &ed->mouse, sdl, "minus.png"))
-		ent->object_index--;
-	if (instantbutton((t_rectangle) {74, 200, 20, 20}, &ed->mouse, sdl, "plus.png"))
-		ent->object_index++;
-	ent->object_index = ft_clamp(ent->object_index, 0, sdl.objectcount - 1);
-	if (ent->obj != &sdl.objects[ent->object_index])
+	gui = &pe->subtype_gui;
+	if (pe->prefab->prefabtype == COMP_LIGHT)
 	{
-		ent->obj = &sdl.objects[ent->object_index];
-		findbounds(ent);
+		t_pointlight	*light;
+		light = pe->prefab->data;
+
+		gui_start(gui);
+		gui_labeled_float_slider("Light radius:", &light->radius, 2.0f, gui);
+		gui_end(gui);
+		gui->sdl->render.gizmocolor = AMBER_2;
+		render_ball(gui->sdl, pe->preview_entity.transform.position, light->radius, AMBER_3);
 	}
-	/* SPLIT HERE */
-	ed->render.wireframe = true;
-	ed->render.gizmocolor = CLR_GREEN;
-	collide = selected_entity(ed, sdl);
-	render_entity(sdl, ed->render, ent);
+}
+
+void	entity_tool_edit_prefab(t_editor *ed, t_entitytooldata *dat)
+{
+	t_sdlcontext	*sdl;
+	t_autogui		*gui;
+	t_prefab_editor	*pe;
+
+	pe = &dat->prefab_editor;
+	gui = &pe->prefab_modify;
+	sdl = gui->sdl;
+	if (pe->prefab != NULL)
+	{
+		ed->world.sdl->global_wireframe = true;
+		if (!pe->view_lock)
+			pe->preview_entity.transform.position = dat->info.hit_pos;
+		pe->preview_entity.obj = pe->prefab->object;
+		pe->preview_entity.hidden = pe->prefab->hidden;
+		pe->preview_entity.transform.scale = vector3_one();
+		rendergrid(&ed->world, dat->info.hit_pos, 5, CLR_DARKGRAY);
+		ed->world.sdl->global_wireframe = false;
+		if (!pe->preview_entity.hidden)
+			render_entity(sdl, &sdl->render, &pe->preview_entity);
+		highlight_entity(sdl, &pe->preview_entity, AMBER_3);
+		ed->world.sdl->global_wireframe = true;
+
+		gui_start(gui);
+		gui_label("Object:", gui);
+		if (pe->prefab->object != NULL)
+			gui_label(pe->prefab->object->name, gui);
+		gui_labeled_bool_edit("Lock view", &pe->view_lock, gui);
+		if (gui_highlighted_button_if("Select object", gui, !pe->object_select.hidden))
+			pe->object_select.hidden = !pe->object_select.hidden;
+		gui_labeled_bool_edit("Hide object", &pe->prefab->hidden, gui);
+		gui_preset_transform(&pe->prefab->offset, gui);
+		//select_prefab_type(pe);
+		gui_end(gui);
+
+		if (pe->prefab->prefabtype != COMP_NONE)
+			edit_prefab_subtype(pe);
+		//TODO: split
+		gui = &pe->object_select;
+		gui_start(gui);
+		int			i;
+		t_object	*obj;
+
+		i = 0;
+		if (gui_highlighted_button_if("No object", gui, pe->prefab->object == NULL))
+			pe->prefab->object = NULL;
+
+		while (i < ed->world.sdl->objectcount)
+		{
+			obj = &ed->world.sdl->objects[i];
+			if (gui_highlighted_button_if(obj->name, gui, obj == pe->prefab->object))
+				pe->prefab->object = obj;
+			i++;
+		}
+		gui_end(gui);
+		
+	} else {
+		ed->world.sdl->global_wireframe = false;
+	}
+}
+
+void	entity_tool_prefab(t_editor *ed, t_entitytooldata *dat)
+{
+	t_sdlcontext	*sdl;
+	t_autogui		*gui;
+
+	gui = &dat->prefab_editor.prefab_select;
+	sdl = ed->world.sdl;
+	gui_start(gui);
+	list_prefabs(&dat->prefab_editor, &ed->world);
+	if (gui_button("Add new prefab", gui))
+	{
+		t_prefab	fab;
+		ft_bzero(&fab, sizeof(fab));
+		////ft_strcpy(fab.object_name, "cube.obj");
+		//ft_strcpy(fab.prefab_name, "cubeprefab");
+		//fab.object = get_object_by_name(*sdl, fab.object_name);
+		fab.offset.scale = vector3_one();
+		list_push(&ed->world.prefabs, &fab, sizeof(fab));
+	}
+	gui_end(gui);
+	entity_tool_edit_prefab(ed, dat);
 	
-	ed->render.wireframe = false;
-	/* END SPLIT */
-	set_font_size(&sdl, 0);
-	draw_transform_info(ent->transform, sdl);
-	draw_current_operation(ent, collide, sdl);
-	if (instantbutton((t_rectangle) {30, 120, 20, 20}, &ed->mouse, sdl, "minus.png"))
-		ent->transform.scale = vector3_add_xyz(ent->transform.scale, -0.25f);
-	if (instantbutton((t_rectangle) {52, 120, 20, 20}, &ed->mouse, sdl, "one.png"))
-		ent->transform.scale = vector3_one();
-	if (instantbutton((t_rectangle) {74, 120, 20, 20}, &ed->mouse, sdl, "plus.png"))
-		ent->transform.scale = vector3_add_xyz(ent->transform.scale, 0.25f);
-	if ((ed->keystate >> KEYS_SHIFTMASK) & 1)
-		ent->transform.rotation.y += ed->mouse.scroll_delta * ft_degtorad(15.0f);
-	else if ((ed->keystate >> KEYS_LALTMASK) & 1)
-		ent->transform.rotation.z += ed->mouse.scroll_delta * ft_degtorad(15.0f);
-	else
-		ent->transform.rotation.x += ed->mouse.scroll_delta * ft_degtorad(15.0f);
-	if (mouse_clicked(ed->mouse, MOUSE_MDL))
-		ent->transform.rotation = vector3_zero();
-	if (collide != NULL)
-	{
-		ed->render.gizmocolor = CLR_PRPL;
-		ed->render.wireframe = true;
-		render_entity(sdl, ed->render, collide);
-		ed->render.wireframe = false;
-		if (mouse_clicked(ed->mouse, MOUSE_RIGHT))
-			list_remove(&ed->world.entitylist, collide, sizeof(t_entity));
-	}
-	if (mouse_clicked(ed->mouse, MOUSE_LEFT) && collide == NULL) //and selected is null, move to drawupdate
-		list_push(&ed->world.entitylist, ent, sizeof(t_entity));
 }
 
-void	entity_tool_update(t_editor *ed)
+void	entity_tool_update(t_editor *ed, t_sdlcontext *sdl)
 {
-	t_entity	*ent;
-	t_vector3	dir;
+	t_entitytooldata	*dat;
+	t_entity			*collide;
 
-	sizeof(t_sdlcontext);
-	ent = (t_entity *)ed->tool->tooldata;
-	dir = vector3_sub((t_vector3){ed->position.x, ed->position.y, 20.0f}, ent->transform.location);
-	ent->transform.location = raycast(ed);//vector3_movetowards(ent->transform.location, dir, ed->clock.delta * 1.0f);
-	ent->transform.location.z -= ent->z_bound.min * ent->transform.scale.z;
+	dat = (t_entitytooldata *)ed->tool->tooldata;
+	entity_tool_raycast(ed, sdl, dat);
+	//entity_tool_list(ed, sdl, dat);
+	//entity_tool_prefab(ed, dat);
+	entity_tool_place(ed, sdl, dat);
+	entity_tool_modify(ed, sdl, dat);
+}
+
+void	entity_tool_init(t_editor *ed, t_sdlcontext *sdl)
+{
+	t_entitytooldata	*dat;
+
+	dat = ed->tool->tooldata;
+	entitytool_entitygui_init(ed, sdl, dat);
+	entitytool_worldgui_init(ed, sdl, dat);
+	entitytool_prefabgui_init(ed, sdl, dat);
+	entitytool_objectgui_init(ed, sdl, dat);
 }
 
 t_tool	*get_entity_tool()
 {
 	static t_tool	tool
 	= {
-		entity_tool_update, entity_tool_draw 
+		.update = entity_tool_update,
+		.init	= entity_tool_init
 	};
-	t_entity		*ent; //TODO: make entity tool use it's own tooldata struct,
+	t_entitytooldata	*dat; //TODO: make entity tool use it's own tooldata struct,
 
 	if (tool.tooldata == NULL)
 	{
-		tool.tooldata = ft_memalloc(sizeof(t_entity));
+		tool.tooldata = ft_memalloc(sizeof(t_entitytooldata));
 		if (tool.tooldata == NULL)
-			error_log(EC_MALLOC);
-		ent = (t_entity *)tool.tooldata;
-		ent->transform.scale = vector3_one();
-		ent->object_index = 1;
+			doomlog(LOG_EC_MALLOC, NULL);
+		dat = (t_entitytooldata *)tool.tooldata;
+		dat->ent = NULL;
 	}
 	ft_strcpy(tool.icon_name, "entitytool.png");
 	return (&tool);

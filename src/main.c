@@ -6,7 +6,7 @@
 /*   By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/23 14:49:23 by kfum             ###   ########.fr       */
+/*   Updated: 2023/02/14 11:18:14 by kfum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,73 +14,30 @@
 #include "png.h"
 #include "game_lua.h"
 #include "objects.h"
+#include "file_io.h"
+#ifdef __APPLE__
 #include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
 
-static void	create_sdl_context(t_sdlcontext *sdl)
+void	free_sdl_stuff(t_sdlcontext *sdl)
 {
-	const char	*platform;
-
-	load_lua_conf(sdl);
-	if (SDL_Init(SDL_INIT_VIDEO) < 0
-		|| SDL_Init(SDL_INIT_EVENTS) < 0)
-		error_log(EC_SDL_INIT);
-	if (SDL_Init(SDL_INIT_GAMECONTROLLER) < 0)
-		error_log(EC_SDL_INIT);
-		
-	platform = SDL_GetPlatform();
-	printf("platform: %s\n", platform);
-	if (ft_strequ(platform, "Mac OS X"))
-		sdl->platform = os_mac;
-	else if (ft_strequ(platform, "Linux"))
-		sdl->platform = os_linux;
-	else
-	{
-		sdl->platform = os_unsupported;
-		printf("platform %s not supported\n", platform);
-	}
-	
-	sdl->window = SDL_CreateWindow("DoomNukem",
-		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		sdl->window_w, sdl->window_h, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
-	//SDL_CreateWindowAndRenderer(0, 0, )
-	if (sdl->window == NULL)
-		error_log(EC_SDL_CREATEWINDOW);
-	sdl->surface = SDL_GetWindowSurface(sdl->window);
-	//sdl->surface->format = SDL_pixeSDL_PIXELFORMAT_BGR24;
-	sdl->surface->format->format = SDL_PIXELFORMAT_ABGR1555;
-	//SDL_setw
-	//sdl->surface
-	if (sdl->surface == NULL)
-		error_log(EC_SDL_GETWINDOW_SURFACE);
-	
-	load_fonts(sdl);
-	
-	sdl->zbuffer = malloc(sdl->window_w * sdl->window_h * sizeof(float));
-	objects_init(sdl);
-
-
-	/* create context here, call gl clear in render start, glbegin in drawtriangles etc */
-	/*SDL_GLContext glc = SDL_GL_CreateContext(sdl->window);
-	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity();
-	glEnable(GL_DEPTH_TEST);
-
-	//glBegin( GL_QUADS );
-	
-	glBegin(GL_TRIANGLES);
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glVertex3f( -0.5f, -0.5f, 0.2f);
-	glVertex3f( 0.5f, -0.5f, 0.5f);
-	glVertex3f( 0.5f, 0.5f, 1.0f);
-	glColor3f(1.0f, 1.0f, 0.0f);
-	glVertex3f( -0.6f, -0.6f, 2.0f);
-	glVertex3f( 0.5f, -0.6f, 2.0f);
-	glVertex3f( 0.1f, 0.3f, -2.0f);
-	//glVertex2f( -0.5f, 0.5f );
-	glEnd();
-	SDL_GL_SwapWindow(sdl->window);*/
-	SDL_GLContext glc = SDL_GL_CreateContext(sdl->window);
-	printf("OPENGL RENDERER: '%s' \n", glGetString(GL_RENDERER));
+	if (sdl->zbuffer != NULL)
+		free(sdl->zbuffer);
+	if (sdl->surface != NULL)
+		SDL_FreeSurface(sdl->surface);
+	if (sdl->ui_surface != NULL)
+		SDL_FreeSurface(sdl->ui_surface);
+	if (sdl->window_surface != NULL)
+		SDL_FreeSurface(sdl->window_surface);
+	if (sdl->window != NULL)
+		SDL_DestroyWindow(sdl->window);
+	free_render(sdl->render);
+	if (sdl->bitmask.tile != NULL)
+		free(sdl->bitmask.tile);
+	if (sdl->scaling_buffer != NULL)
+		free(sdl->scaling_buffer);
 }
 
 void	quit_game(t_sdlcontext *sdl)
@@ -89,21 +46,97 @@ void	quit_game(t_sdlcontext *sdl)
 	exit(0);
 }
 
-int	main(int argc, char **argv)
+void	alloc_occlusion(t_sdlcontext *sdl)
+{
+	sdl->bitmask.tile = ft_memalloc(sizeof(t_tile) * ((sdl->window_h * sdl->window_w) / 64)); //TODO: free
+	sdl->bitmask.bitmask_chunks.x = sdl->window_w / 16;
+	sdl->bitmask.bitmask_chunks.y = sdl->window_h / 8;
+	sdl->bitmask.tile_chunks.x = sdl->window_w / 8;
+	sdl->bitmask.tile_chunks.y = sdl->window_h / 8;
+}
+
+void	set_sdl_settings(t_sdlcontext *sdl)
+{
+	t_graphicprefs	prefs;
+
+	free_sdl_stuff(sdl);
+	ft_bzero(sdl, sizeof(sdl)); //WHY DOES THIS WORK... this resets asset pointers aswell??
+	prefs = load_graphicsprefs(); //TODO: load before this and just pass prefs set_sdl_settings
+	sdl->window_w = prefs.resolution_x;
+	sdl->window_h = prefs.resolution_y;
+	sdl->resolution_scaling = ft_clampf(prefs.resolutionscale, 0.25f, 1.0f);
+	sdl->audio.sfx_volume = prefs.volume;
+	printf("prefs volume was %f \n", prefs.volume);
+	create_sdl_window(sdl, prefs.screenmode);
+	sdl->surface = SDL_CreateRGBSurfaceWithFormat(SDL_SWSURFACE, sdl->window_w, sdl->window_h, 32, SDL_PIXELFORMAT_ARGB8888);
+	if (sdl->surface == NULL)
+		doomlog(LOG_EC_SDL_CREATERGBSURFACE, NULL);
+	sdl->ui_surface = SDL_CreateRGBSurfaceWithFormat(SDL_SWSURFACE, sdl->window_w, sdl->window_h, 32, SDL_PIXELFORMAT_ARGB8888);
+	if (sdl->ui_surface == NULL)
+		doomlog(LOG_EC_SDL_CREATERGBSURFACE, NULL);
+	sdl->zbuffer = ft_memalloc(sdl->window_w * sdl->window_h * sizeof(float));
+	sdl->scaling_buffer = ft_memalloc(sdl->window_w * sdl->window_w * sizeof(uint32_t));
+	alloc_occlusion(sdl);
+	sdl->render = init_render(*sdl);
+}
+
+void	create_sdlcontext(t_sdlcontext	*sdl)
+{
+	ft_bzero(sdl, sizeof(t_sdlcontext));
+	if (SDL_Init(SDL_INIT_VIDEO) < 0 \
+		|| SDL_Init(SDL_INIT_EVENTS) < 0 \
+		|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0 \
+		|| TTF_Init() < 0)
+		doomlog(LOG_EC_SDL_INIT, NULL);
+	set_sdl_settings(sdl);
+	printf("audio volume %f \n", sdl->audio.sfx_volume);
+	load_assets(sdl);
+	printf("audio volume2 %f \n", sdl->audio.sfx_volume);
+}
+
+void	checkargs(int argc, char **argv)
+{
+	if (argc == 2 && ft_strcmp(argv[1], "-gfxreset") == 0)
+		reset_graphics_prefs();
+	if (argc == 2 && ft_strcmp(argv[1], "-mapreset") == 0)
+	{
+		
+	}
+}
+
+void	doomnukem(int argc, char **argv)
 {
 	t_sdlcontext	sdl;
 	t_gamereturn	gr;
 
-	create_sdl_context(&sdl);
+	generate_struct_datas();
+	checkargs(argc, argv);
+	create_sdlcontext(&sdl);
 	gr = game_switchmode;
 	while (gr == game_switchmode)
 	{
-		
-		//printf("%s\ngamereturn after editor %i \n", CLEARSCREEN, gr);
 		gr = editorloop(sdl); // quit & exit is handled inside the loop
 		gr = playmode(sdl); // quit & exit is handled inside the loop
-		//printf("%s\ngamereturn after playmode %i \n", CLEARSCREEN, gr);
 	}
-	//shouldn't get here?
+}
+
+int	main(int argc, char **argv)
+{
+	pid_t	pid;
+	int		wait_status;
+
+	pid = fork();
+	if (pid == -1)
+	{
+		doomlog(LOG_EC_FORK, "couldn't create a child process for the game");
+		error_window("couldn't launch the game due to a fork fail");
+	}
+	if (pid == 0) // child process is always pid 0
+		doomnukem(argc, argv);
+	else
+	{
+		wait(&wait_status);
+		handle_exit(wait_status);
+	}
 	return (0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   list_helper.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 12:32:25 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/18 16:26:22 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/07 15:32:56 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,18 @@ void	list_push(t_list **head, void *content, size_t content_size)
 
 	node = ft_lstnew(content, content_size);
 	if (node == NULL)
-		error_log(EC_MALLOC);
+		doomlog(LOG_EC_MALLOC, NULL);
 	if (*head == NULL)
+	{
+		//printf("List was null, making the node the head \n");
 		*head = node;
-	else
+	}
+	else {
+		//printf("List wasnt null, appending normally \n");
 		ft_lstapp(head, node);
+		
+	}
+		
 }
 
 void	*list_findlast(t_list *head)
@@ -104,6 +111,7 @@ t_list	*ptr_to_list(void	*src, uint32_t len, size_t size)
 }
 
 //Returns a mallocated and NULL terminated array of list contents.
+
 void	*list_to_ptr(t_list *source, uint32_t *set_length)
 {
 	t_list	*l;

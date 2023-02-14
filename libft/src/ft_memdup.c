@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 20:35:15 by okinnune          #+#    #+#             */
-/*   Updated: 2022/02/22 09:37:49 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/01/09 13:42:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,14 @@ char	*ft_memdup(const void *m, size_t n)
 
 	i = 0;
 	result = (char *)malloc(n);
-	if (result != NULL)
+	ft_memcpy(result, m, n);
+	/*if (result != NULL)
 	{
 		while (i < n)
 		{
 			((unsigned char *)result)[i] = ((unsigned char *)m)[i];
 			i++;
 		}
-	}
+	}*/
 	return (result);
 }
