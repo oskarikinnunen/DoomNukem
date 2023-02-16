@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   walls.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/03 17:54:40 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/15 15:48:26 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,11 +208,6 @@ void	_room_initwalls(t_world *world, t_area *room)
 		room->wallcount--;
 	while (i < room->wallcount)
 	{
-		if (room->walls[i].entity == NULL)
-		{
-			room->walls[i].entity = spawn_entity(world); //Copy saved entitys important values
-			room->walls[i].entity->rigid = true;
-		}
 		room->walls[i].edgeline.start = &room->edges[i];
 		room->walls[i].edgeline.start_index = i;
 		if (i != room->edgecount - 1)
@@ -225,12 +220,17 @@ void	_room_initwalls(t_world *world, t_area *room)
 			room->walls[i].edgeline.end = &room->edges[0];
 			room->walls[i].edgeline.end_index = 0;
 		}
+		if (room->walls[i].entity == NULL)
+		{
+			t_object *obj;
+			obj = object_plane(world->sdl);
+			if (strlen(room->walls[i].s_walltex.str) != 0)
+				obj->materials->img = get_image_by_name(*world->sdl, room->walls[i].s_walltex.str);
+			room->walls[i].entity = spawn_entity(world, obj); //Copy saved entitys important values
+			room->walls[i].entity->rigid = true;
+		}
 		room->walls[i].entity->transform.position = vector3_zero();
 		room->walls[i].entity->transform.scale = vector3_one();
-		if (room->walls[i].entity->obj == NULL)
-			room->walls[i].entity->obj = object_plane(world->sdl);
-		if (strlen(room->walls[i].s_walltex.str) != 0)
-			room->walls[i].entity->obj->materials->img = get_image_by_name(*world->sdl, room->walls[i].s_walltex.str);
 		room->walls[i].height = room->ceiling_height;
 		applywallmesh(&room->walls[i], room, world);
 		//update_wall_bounds(&room->walls[i]);
@@ -249,11 +249,6 @@ void	_room_initwalls_shallow(t_world *world, t_area *room)
 		room->wallcount--;
 	while (i < room->wallcount)
 	{
-		if (room->walls[i].entity == NULL)
-		{
-			room->walls[i].entity = spawn_entity(world); //Copy saved entitys important values
-			room->walls[i].entity->rigid = true;
-		}
 		room->walls[i].edgeline.start = &room->edges[i];
 		room->walls[i].edgeline.start_index = i;
 		if (i != room->edgecount - 1)
@@ -266,12 +261,17 @@ void	_room_initwalls_shallow(t_world *world, t_area *room)
 			room->walls[i].edgeline.end = &room->edges[0];
 			room->walls[i].edgeline.end_index = 0;
 		}
+		if (room->walls[i].entity == NULL)
+		{
+			t_object *obj;
+			obj = object_plane(world->sdl);
+			if (strlen(room->walls[i].s_walltex.str) != 0)
+				obj->materials->img = get_image_by_name(*world->sdl, room->walls[i].s_walltex.str);
+			room->walls[i].entity = spawn_entity(world, obj); //Copy saved entitys important values
+			room->walls[i].entity->rigid = true;
+		}
 		room->walls[i].entity->transform.position = vector3_zero();
 		room->walls[i].entity->transform.scale = vector3_one();
-		if (room->walls[i].entity->obj == NULL)
-			room->walls[i].entity->obj = object_plane(world->sdl);
-		if (strlen(room->walls[i].s_walltex.str) != 0)
-			room->walls[i].entity->obj->materials->img = get_image_by_name(*world->sdl, room->walls[i].s_walltex.str);
 		room->walls[i].height = room->ceiling_height;
 		//update_wall_bounds(&room->walls[i]);
 		i++;

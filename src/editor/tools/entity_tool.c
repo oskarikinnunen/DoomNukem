@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/06 22:36:24 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/15 15:35:23 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,8 +110,7 @@ void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT) && ed->hid.mouse.relative && dat->ent != NULL)
 	{
-		t_entity *went = spawn_entity(&ed->world);
-		entity_assign_object(&ed->world, went, dat->ent->obj);
+		t_entity *went = spawn_entity(&ed->world, dat->ent->obj);
 		/*went->obj = dat->ent->obj;*/
 		//ft_strcpy(went->object_name, dat->ent->object_name); //TODO: fix in world save or in assign object
 		went->transform = dat->ent->transform;

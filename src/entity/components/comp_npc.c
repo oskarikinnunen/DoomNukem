@@ -100,8 +100,9 @@ static void npc_update_state(t_entity *entity,  t_npc *npc, t_world *world)
 {
 	t_entity	*player_ent;
 	t_ray		r;
-	player_ent = spawn_entity(world);
-	player_ent->obj = get_object_by_name(*world->sdl, "Human.obj");
+	t_object	*obj;
+	obj = get_object_by_name(*world->sdl, "Human.obj");
+	player_ent = spawn_entity(world, obj);
 	player_ent->transform.position = world->player->transform.position;
 	entity->ignore_raycasts = true;
 	r.origin = vector3_add(entity->transform.position, (t_vector3){.z = 5.0f});

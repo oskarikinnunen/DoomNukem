@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world_load.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 14:55:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/02 15:44:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/15 15:35:08 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,7 @@ void	load_basic_ent_cache_from_list(t_world *world, t_list *l)
 {
 	t_entity	*list_entity;
 	t_entity	*world_entity;
+	t_object	*obj;
 	char		comp_filename[64];
 	char		*str;
 
@@ -130,11 +131,11 @@ void	load_basic_ent_cache_from_list(t_world *world, t_list *l)
 		}*/
 		//list_entity
 		//load_filecontent(filename, "")
-		world_entity = spawn_entity(world);
+		obj = get_object_by_name(*world->sdl, world_entity->object_name.str);
+		world_entity = spawn_entity(world, obj);
 		//ft_memcpy(world_entity, list_entity, sizeof(t_entity));
 		world_entity->object_name = list_entity->object_name;
 		world_entity->transform = list_entity->transform;
-		world_entity->obj = get_object_by_name(*world->sdl, world_entity->object_name.str);
 		l = l->next;
 	}
 }

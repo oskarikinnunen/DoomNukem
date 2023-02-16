@@ -316,16 +316,29 @@ int clip_bitmask_triangle_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_
 
 void clipped_point_triangle(t_render *render, t_sdlcontext sdl)
 {
-	int i = 0;
+	t_point_triangle	triangles[200];
+	t_point_triangle	clipped[2];
+	int i = render->start;
 	int start = 0;
 	int end = 0;
 
-	t_point_triangle	triangles[200];
-	t_point_triangle	clipped[2];
-	while (i < render->worldspace_ptri_count)
+	if (!render->world_triangles)
+		return;
+	while (i <= render->end)
 	{
-		triangles[end++] = render->worldspace_ptris[i];
-		int nnewtriangles = 1;
+		t_triangle world_tri;
+
+		world_tri = render->world_triangles[i];
+		int nnewtriangles = 0;
+		if (!is_triangle_backface(world_tri, render))
+		{
+			t_triangle clipped[2];
+			world_tri = triangle_to_viewspace(world_tri, render->camera.matview);
+			int nclippedtriangles = clip_triangle_against_plane((t_vector3){.z = 0.1f}, (t_vector3){.z = 1.0f}, world_tri, clipped);
+			for (int n = 0; n < nclippedtriangles; n++)
+				triangles[end++] = triangle_to_screenspace_point_triangle(render->camera.matproj, clipped[n], sdl);
+			nnewtriangles = nclippedtriangles;
+		}
 		for (int p = 0; p < 4; p++)
 		{
 			int ntristoadd = 0;

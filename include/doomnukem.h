@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/09 16:20:49 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/15 17:37:24 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,8 @@ typedef enum e_gamereturn
 	void	update_npcs(t_world *world) //moves npcs towards their destination, updates their animations
 */
 
-struct s_autogui;
+struct	s_autogui;
+enum	e_load_arg;
 
 typedef struct s_log
 {
@@ -124,14 +125,12 @@ void		for_all_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *worl
 void		update_world3d(t_world *world, t_render *render);
 void		toggle_ceilings(t_world *world);
 
-
-enum e_load_arg;
 t_world		load_world_args(char *filename, t_sdlcontext *sdl, enum e_load_arg arg);
 t_world		load_world(char *filename, t_sdlcontext *sdl);
 
 
 void		destroy_entity(t_world *world, t_entity *ent);
-t_entity	*spawn_entity(t_world	*world);
+t_entity	*spawn_entity(t_world *world, t_object *obj);
 t_entity	*spawn_basic_entity(t_world *world, char *objectname, t_vector3 position);
 void		entity_assign_object(t_world *world, t_entity *entity, t_object *obj);
 void		save_world(char *filename, t_world world);

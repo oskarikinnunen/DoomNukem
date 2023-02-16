@@ -112,25 +112,22 @@ typedef enum e_rend_lightmode
 typedef struct s_render
 {
 	t_camera			camera;
-	t_point_triangle	*worldspace_ptris;
-	t_point_triangle	*screenspace_ptris;
-	uint32_t			worldspace_ptri_count;
-	uint32_t			screenspace_ptri_count;
+	t_map				map;
 	t_img				*img;
-	t_img				*debug_img;
 	t_quaternion		*q;
+	t_triangle			*world_triangles;
+	uint32_t			start;
+	uint32_t			end;
+	t_point_triangle	*screenspace_ptris;
+	uint32_t			screenspace_ptri_count;
+	t_rend_lightmode	lightmode;
+	uint32_t			dynamic_light;
+	t_debug_occlusion	occlusion;
+	t_v2rectangle		screen_edge;
 	bool				wireframe;
 	uint32_t			gizmocolor;
+	t_img				*debug_img;
 	t_render_statistics	rs;
-	struct s_world		*world;
-	t_debug_occlusion	occlusion;
-	t_map				map;
-	uint32_t			dynamic_light;
-	t_rend_lightmode	lightmode;
-	t_v2rectangle		screen_edge;
-	/*bool				is_wrap;
-	bool				dynamic_light;*/
-	//struct s_sdlcontext	*sdl;
 }	t_render;
 
 typedef struct s_audiosample

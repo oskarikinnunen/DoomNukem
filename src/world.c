@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/08 19:25:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/16 16:13:57 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,9 +110,10 @@ void update_world3d(t_world *world, t_render *render)
 
 	//doomlog(LOG_FATAL, "shit something went wrong");
 	sdl = world->sdl;
+	for_all_active_entities(world, render_entity_worldtriangles);
 	ft_bzero(&render->rs, sizeof(t_render_statistics));
 	if (world->player != NULL && world->player->gun != NULL && !world->player->gun->disabled)
-		render_entity(world->sdl, &world->sdl->render, &world->player->gun->entity);
+		render_entity(sdl, &sdl->render, &world->player->gun->entity);
 	update_frustrum_culling(world, sdl, render);
 	clear_occlusion_buffer(sdl);
 	sort_entitycache(world, render->camera.position);
@@ -230,9 +231,6 @@ void	scale_skybox_uvs(t_object *obj)
 	}
 }
 
-
-
-
 void	init_guns(t_world *world, t_sdlcontext *sdl)
 {
 	t_list	*l;
@@ -269,7 +267,7 @@ void		destroy_entity(t_world *world, t_entity *ent)
 	cache->existing_entitycount--;
 }*/
 
-t_entity	*spawn_entity(t_world	*world)
+t_entity	*spawn_entity(t_world *world, t_object *obj)
 {
 	int	i;
 	t_entitycache	*cache;
@@ -287,7 +285,7 @@ t_entity	*spawn_entity(t_world	*world)
 			cache->entities[i].id = i;
 			cache->entities[i].hidden = false;
 			ft_bzero(&cache->entities[i].component, sizeof(t_component));
-			//cache->entities[i].transform.scale = vector3_zero();
+			entity_assign_object(world, &cache->entities[i], obj);
 			cache->existing_entitycount++;
 			if (cache->existing_entitycount >= cache->alloc_count)
 				doomlog(LOG_EC_MALLOC, NULL);
@@ -302,8 +300,13 @@ t_entity	*spawn_entity(t_world	*world)
 
 void		entity_assign_object(t_world *world, t_entity *entity, t_object *obj)
 {
+	if (obj == NULL)
+		return;
 	ft_strcpy(entity->object_name.str, obj->name);
 	entity->obj = obj;
+	entity->world_triangles = (t_triangle *)malloc(sizeof(t_triangle) * obj->face_count);
+	if (!entity->world_triangles)
+		doomlog(LOG_WARNING, "Non-fatal malloc error on entity_assign_object");
 	//create_lightmap_for_entity(entity, world);
 	//create_map_for_entity(entity, world);
 }
@@ -311,9 +314,10 @@ void		entity_assign_object(t_world *world, t_entity *entity, t_object *obj)
 t_entity	*spawn_basic_entity(t_world *world, char *objectname, t_vector3 position) //UNUSED
 {
 	t_entity	*ent;
+	t_object	*obj;
 
-	ent = spawn_entity(world);
-	ent->obj = get_object_by_name(*world->sdl, objectname);
+	obj = get_object_by_name(*world->sdl, objectname);
+	ent = spawn_entity(world, obj);
 	ent->transform.position = position;
 	ent->transform.scale = vector3_one();
 	return (ent);
@@ -390,12 +394,6 @@ void	load_component(t_entity	*entity, char	*filename)
 	}
 }
 
-
-audiosource_preset1(t_audiosource source)
-{
-	source.range = 100.0f;
-}
-
 void	load_cache_from_list(char *filename, t_world *world, t_list *l)
 {
 	t_entity	*list_entity;
@@ -412,7 +410,7 @@ void	load_cache_from_list(char *filename, t_world *world, t_list *l)
 		}
 		//list_entity
 		//load_filecontent(filename, "")
-		world_entity = spawn_entity(world);
+		world_entity = spawn_entity(world, NULL);
 		ft_memcpy(world_entity, list_entity, sizeof(t_entity));
 		l = l->next;
 	}
