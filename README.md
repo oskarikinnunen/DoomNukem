@@ -12,3 +12,8 @@ This readme isn't finished, better explanations and gifs soon!
 ### Physics
 
 ![phys_g](https://user-images.githubusercontent.com/45420297/219398585-2911b0ea-36cb-4570-a7dc-7903c7241364.gif)
+
+### Room/Area building tools
+
+<img src="https://user-images.githubusercontent.com/45420297/219416908-5c9657a5-61c7-4577-bfd5-41a2e8f328e6.gif" width="600">
+
