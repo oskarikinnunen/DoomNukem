@@ -318,13 +318,13 @@ void clipped_point_triangle(t_render *render, t_sdlcontext sdl)
 {
 	t_point_triangle	triangles[200];
 	t_point_triangle	clipped[2];
-	int i = render->start;
+	int i = render->start_index;
 	int start = 0;
 	int end = 0;
 
 	if (!render->world_triangles)
 		return;
-	while (i <= render->end)
+	while (i <= render->end_index)
 	{
 		t_triangle world_tri;
 

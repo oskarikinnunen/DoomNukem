@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 14:40:03 by vlaine            #+#    #+#             */
-/*   Updated: 2023/02/16 17:32:16 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/02/16 17:56:15 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,9 +113,9 @@ void update_floor_bounds(t_meshtri *f)
 	f->entity->obj->bounds.origin = vector3_div(vector3_add(vector3_add(f->entity->obj->vertices[0], f->entity->obj->vertices[1]), f->entity->obj->vertices[2]), 3.0f);
 	set_bounding_box(&max, &min, f->entity->obj->vertices, f->entity->obj->vertice_count);
 	f->entity->obj->bounds.radius = get_box_sphere_radius(f->entity->obj->bounds.origin, max, min);
-	/*obj->bounds.box.v[0] = obj->vertices[0];
+	obj->bounds.box.v[0] = obj->vertices[0];
 	obj->bounds.box.v[1] = obj->vertices[1];
-	obj->bounds.box.v[2] = obj->vertices[2];*/
+	obj->bounds.box.v[2] = obj->vertices[2];
 	f->entity->obj->bounds.count = 3;
 	f->entity->obj->bounds.type = bt_ignore;
 }

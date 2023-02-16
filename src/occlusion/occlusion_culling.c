@@ -3,31 +3,34 @@
 void calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity)
 {
 	render->world_triangles = entity->occlusion.world_tri;
-	render->start = 0;
+	render->start_index = 0;
 	render->screenspace_ptri_count = 0;
 	render->screen_edge.max.x = (float)(sdl.window_w * sdl.resolution_scaling) - 1.0f;
 	render->screen_edge.max.y = (float)(sdl.window_h * sdl.resolution_scaling) - 1.0f;
 	render->screen_edge.min.x = 0.0f;
 	render->screen_edge.min.y = 0.0f;
 	if (entity->obj->bounds.type == bt_plane)
-		render->end = 1;
+		render->end_index = 1;
 	else if (entity->obj->bounds.type == bt_box)
-		render->end = 11;
-	else if (entity->obj->bounds.type == bt_ignore)
-		render->end = 0;
+		render->end_index = 11;
+	else
+		render->end_index = 0;
 	clipped_point_triangle(render, sdl);
 }
 
 void clear_occlusion_buffer(t_sdlcontext *sdl)
 {
 	t_tile	temp;
+	int		i;
 
 	temp.mask = 0;
 	temp.max0 = sdl->bitmask.max_dist + 1000.0f;
 	temp.max1 = 0;
-	for (int i = 0; i < ((sdl->window_h * sdl->window_w) / 64); i++)
+	i = 0;
+	while (i < ((sdl->window_h * sdl->window_w) / 64))
 	{
 		sdl->bitmask.tile[i] = temp;
+		i++;
 	}
 }
 

@@ -116,8 +116,8 @@ typedef struct s_render
 	t_img				*img;
 	t_quaternion		*q;
 	t_triangle			*world_triangles;
-	uint32_t			start;
-	uint32_t			end;
+	uint32_t			start_index;
+	uint32_t			end_index;
 	t_point_triangle	*screenspace_ptris;
 	uint32_t			screenspace_ptri_count;
 	t_rend_lightmode	lightmode;

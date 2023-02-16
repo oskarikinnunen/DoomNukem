@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 15:36:10 by vlaine            #+#    #+#             */
-/*   Updated: 2023/02/16 17:36:36 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/02/16 17:45:53 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,17 +76,7 @@ inline static void update_bounds_world_triangles(t_entity *entity, t_mat4x4 matw
 	else if (obj->bounds.type == bt_plane)
 		update_world_triangle_plane(transformed, entity->occlusion.world_tri);
 	else
-	{
-		printf("%f\n", entity->transform.scale.x);
-		index = 0;
-		while (index < 3)
-		{
-			transformed[index] = vector3_to_quaternion(obj->vertices[0]);
-			transformed[index] = quaternion_mul_matrix(matworld, transformed[index]);
-			index++;
-		}
 		update_world_triangle_ignore(transformed, entity->occlusion.world_tri);
-	}
 }
 
 void render_worldspace(t_render *render, t_entity *entity)
@@ -200,7 +190,7 @@ void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 	obj = entity->obj;
 	render->world_triangles = entity->world_triangles;
 	index = 0;
-	render->start = 0;
+	render->start_index = 0;
 	while (index < obj->face_count)
 	{
 		if (index + 1 == obj->face_count || obj->faces[index].materialindex != obj->faces[index + 1].materialindex)
@@ -213,9 +203,9 @@ void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 				render->map.img_size = point_sub(render->map.img_size, (t_point){1, 1});
 				render->lightmode = lm_lit;
 			}
-			render->end = index;
+			render->end_index = index;
 			clip_and_render_triangles(sdl, render);
-			render->start = index;
+			render->start_index = index;
 		}
 		index++;
 	}
