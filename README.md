@@ -9,4 +9,6 @@ This readme isn't finished, better explanations and gifs soon!
 
 ![light2](https://user-images.githubusercontent.com/45420297/219388010-a8ded9b4-1e62-4797-a9ef-35e30d1dfad8.png)
 
+### Physics
 
+![phys_g](https://user-images.githubusercontent.com/45420297/219398585-2911b0ea-36cb-4570-a7dc-7903c7241364.gif)
