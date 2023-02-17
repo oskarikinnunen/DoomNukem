@@ -110,6 +110,7 @@ void update_floor_bounds(t_meshtri *f)
 	t_vector3	max;
 	t_object	*obj;
 
+	obj = f->entity->obj;
 	f->entity->obj->bounds.origin = vector3_div(vector3_add(vector3_add(f->entity->obj->vertices[0], f->entity->obj->vertices[1]), f->entity->obj->vertices[2]), 3.0f);
 	set_bounding_box(&max, &min, f->entity->obj->vertices, f->entity->obj->vertice_count);
 	f->entity->obj->bounds.radius = get_box_sphere_radius(f->entity->obj->bounds.origin, max, min);
