@@ -127,12 +127,15 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		npc/enemy/enemy_take_damage.c \
 		npc/navigation/pathfind.c \
 		npc/navigation/navmesh.c \
+		render/rasterization/rasterize_zbuffer.c \
 		render/rasterization/rasterize_triangle_wrap.c \
 		render/rasterization/rasterize_triangle.c \
 		render/rasterization/rasterize_triangle_uv.c \
 		render/rasterization/rasterize_triangle_dynamic.c \
+		render/rasterization/rasterize_triangle_shadow.c \
 		render/render_helper.c \
 		render/flip_channel.c \
+		render/render_zbuffer.c \
 		entity/components/comp_mechasuit.c \
 		entity/components/comp_watercollider.c \
 		entity/components/comp_light.c \

@@ -131,7 +131,7 @@ void	load_basic_ent_cache_from_list(t_world *world, t_list *l)
 		}*/
 		//list_entity
 		//load_filecontent(filename, "")
-		obj = get_object_by_name(*world->sdl, world_entity->object_name.str);
+		obj = get_object_by_name(*world->sdl, list_entity->object_name.str);
 		world_entity = spawn_entity(world, obj);
 		//ft_memcpy(world_entity, list_entity, sizeof(t_entity));
 		world_entity->object_name = list_entity->object_name;

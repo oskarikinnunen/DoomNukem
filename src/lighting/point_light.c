@@ -120,7 +120,7 @@ void calculate_pointlight_step(t_pointlight *pointlight, t_world *world, t_rende
 	free(l.entities);
 }
 
-void calculate_pointlight(t_pointlight *pointlight, t_world *world, t_render *render)
+void calculate_pointlight_old(t_pointlight *pointlight, t_world *world, t_render *render)
 {
 	int i = 0;
 	int found = 0;

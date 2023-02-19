@@ -8,6 +8,7 @@
 # include "objects.h" // only one function is using currently can be moved to doomnukem.h if needed
 # include "lighting.h"
 # include "occlusion.h"
+# include "render_utils.h"
 
 # include "fmod.h"
 
@@ -93,14 +94,6 @@ typedef struct s_debug_occlusion
 	bool		draw_occlusion;
 	bool		slow_render;
 }	t_debug_occlusion;
-
-typedef struct s_camera
-{
-	t_mat4x4			matview;
-	t_mat4x4			matproj;
-	t_vector3			position;
-	t_vector3			lookdir;
-}	t_camera;
 
 typedef enum e_rend_lightmode
 {
@@ -263,7 +256,7 @@ void	draw_triangle(t_sdlcontext *sdl, t_point p1, t_point p2, t_point p3, uint32
 /* INIT_RENDER.C */
 t_render	init_render(t_sdlcontext sdl);
 void		free_render(t_render render);
-void		render_start(t_render *render);
+void		render_start(t_camera *camera);
 
 /* RENDER */
 void				render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size);
@@ -285,6 +278,7 @@ void				render_triangle_lit(t_sdlcontext *sdl, t_render *render, int index);
 void				render_triangle_uv(t_lighting l, t_triangle_polygon triangle);
 void				render_triangle_unlit(t_sdlcontext *sdl, t_render *render, int index);
 void				render_triangle_dynamic(t_sdlcontext *sdl, t_render *render, int index);
+void				rasterize_light(t_triangle_polygon triangle, t_lighting *lighting);
 
 /* AUDIO TOOLS */
 

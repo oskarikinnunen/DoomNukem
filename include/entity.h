@@ -124,4 +124,7 @@ void	create_map_for_entity(t_entity *entity, struct s_world *world);
 void	create_dynamic_map_for_entity(t_entity *entity, struct s_world *world);
 void	create_lightmap_for_entity(t_entity *entity, struct s_world *world);
 
+
+/* LIGHTING */
+void render_zbuffer(t_lighting *lighting, t_entity *entity);
 # endif

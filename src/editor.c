@@ -286,43 +286,6 @@ int	editorloop(t_sdlcontext sdl)
 	sdl.lighting_toggled = false;
 	ed.world.lighting.calculated = false;
 	//play_music(&sdl, "music_arp1_ambient.wav");
-	/* doomlog(LOG_NORMAL, "here");
-	doomlog(LOG_NORMAL, "are");
-	doomlog(LOG_NORMAL, "some");
-	doomlog(LOG_NORMAL, "random");
-	doomlog(LOG_NORMAL, "entries");
-	doomlog(LOG_NORMAL, "kiwi");
-	doomlog(LOG_NORMAL, "kiwi");
-	doomlog(LOG_NORMAL, "kiwi");
-	doomlog(LOG_NORMAL, "kiwi");
-	doomlog(LOG_NORMAL, "kiwi");
-	doomlog(LOG_NORMAL, "kiwi");
-	doomlog(LOG_NORMAL, "kiwi");
-	doomlog(LOG_NORMAL, "apple");
-	doomlog(LOG_NORMAL, "apple");
-	doomlog(LOG_NORMAL, "apple");
-	doomlog(LOG_NORMAL, "apple");
-	doomlog(LOG_NORMAL, "apple");
-	doomlog(LOG_NORMAL, "apple");
-	doomlog(LOG_NORMAL, "apple");
-	doomlog(LOG_NORMAL, "apple");
-	doomlog(LOG_NORMAL, "mandarin");
-	doomlog(LOG_NORMAL, "mandarin");
-	doomlog(LOG_NORMAL, "mandarin");
-	doomlog(LOG_NORMAL, "mandarin");
-	doomlog(LOG_NORMAL, "mandarin");
-	doomlog(LOG_NORMAL, "mandarin");
-	doomlog(LOG_NORMAL, "mandarin");
-	doomlog(LOG_NORMAL, "mandarin");
-	doomlog(LOG_NORMAL, "banana");
-	doomlog(LOG_NORMAL, "banana");
-	doomlog(LOG_NORMAL, "banana");
-	doomlog(LOG_NORMAL, "banana");
-	doomlog(LOG_NORMAL, "banana");
-	doomlog(LOG_NORMAL, "banana");
-	doomlog(LOG_NORMAL, "banana");
-	doomlog(LOG_NORMAL, "banana");
-	doomlog(LOG_NORMAL, "banana"); */
 	while (ed.gamereturn == game_continue)
 	{
 		update_deltatime(&ed.world.clock);
@@ -332,7 +295,7 @@ int	editorloop(t_sdlcontext sdl)
 			moveplayer(&ed.player, &ed.hid.input, &ed.world);
 		update_render(&sdl.render, &ed.player);
 		screen_blank(sdl);
-		render_start(&sdl.render);
+		render_start(&sdl.render.camera);
 		update_frustrum_culling(&ed.world, &sdl, &sdl.render);
 		clear_occlusion_buffer(&sdl);
 		if (!ed.player.gun->disabled)

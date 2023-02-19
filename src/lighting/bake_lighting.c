@@ -65,29 +65,95 @@ void create_lightmap_for_entity(t_entity *entity, struct s_world *world)
 void create_dynamic_map_for_entity(t_entity *entity, struct s_world *world)
 {
 	t_object *obj;
+	t_img *img;
+	t_vector2 max;
+	int index;
+	int i;
+
+	obj = entity->obj;
+	if (obj->uv_count == 0)
+	{
+		entity->map = NULL;
+		return;
+	}
+	entity->map = malloc(sizeof(t_map) * entity->obj->material_count);
+	if (entity->map == NULL)
+		doomlog(LOG_FATAL, "Malloc fail in bake_lighting.c");
+	i = 0;
+	index = 0;
+	max.x = -10000.0f;
+	max.y = -10000.0f;
+	while (i < obj->face_count && obj->uv_count != 0)
+	{
+		int j = 0;
+		while (j < 3)
+		{
+			t_vector2 uv;
+
+			uv = obj->uvs[obj->faces[i].uv_indices[j] - 1];
+			if (uv.x > max.x)
+				max.x = uv.x;
+			if (uv.y > max.y)
+				max.y = uv.y;
+			j++;
+		}
+		index = obj->faces[i].materialindex;
+		if (i + 1 == obj->face_count || index != obj->faces[i + 1].materialindex)
+		{
+			img = obj->materials[index].img;
+			entity->map[index].size = (t_point){max.x * img->size.x, max.y * img->size.y};
+			entity->map[index].data = malloc(sizeof(uint32_t) * entity->map[index].size.x * entity->map[index].size.y);
+			if (entity->map[index].data == NULL)
+				doomlog(LOG_FATAL, "Malloc fail in bake_lighting.c");
+			for (int e = 0; e < entity->map[index].size.y; e++)
+			{
+				for (int j = 0; j < entity->map[index].size.x; j++)
+				{
+					uint8_t	light = 255;
+					uint32_t clr;
+					clr = img->data[(e % (img->size.y)) * img->size.x + (j % (img->size.x))];
+					Uint32 alpha = clr & 0xFF000000;
+					Uint32 red = ((clr & 0x00FF0000) * light) >> 8;
+					Uint32 green = ((clr & 0x0000FF00) * light) >> 8;
+					Uint32 blue = ((clr & 0x000000FF) * light) >> 8;
+					clr = flip_channels(alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF));
+					entity->map[index].data[e * entity->map[index].size.x + j] = clr;
+				}
+			}
+		}
+		i++;
+	}
+}
+
+void create_dynamic_map_for_entity_old(t_entity *entity, struct s_world *world)
+{
+	t_object *obj;
 	t_lightmap *lightmap;
 	t_img *img;
 	uint8_t light;
+	t_vector2 max;
 
 	int index;
 	int i;
 
 	light = 0;
 	obj = entity->obj;
-	if (entity->map == NULL)
-		entity->map = malloc(sizeof(t_map) * entity->obj->material_count);
 	if (obj->uv_count == 0)
 	{
-		free(entity->map);
 		entity->map = NULL;
+		return;
 	}
+	if (entity->map == NULL)
+		entity->map = malloc(sizeof(t_map) * entity->obj->material_count);
 	i = 0;
 	index = 0;
 	while (i < obj->face_count && obj->uv_count != 0)
 	{
+
 		index = obj->faces[i].materialindex;
 		if (i + 1 == obj->face_count || index != obj->faces[i + 1].materialindex)
 		{
+
 			lightmap = &entity->lightmap[index];
 			light = lightmap->dynamic_data;
 			img = obj->materials[index].img;
@@ -95,6 +161,8 @@ void create_dynamic_map_for_entity(t_entity *entity, struct s_world *world)
 			entity->map[index].size.y = lightmap->size.y;
 			if (!img)
 			{
+				printf("exited at bake lighting\n");
+				exit(0);
 				entity->map = NULL;
 				return;
 			}
@@ -105,6 +173,7 @@ void create_dynamic_map_for_entity(t_entity *entity, struct s_world *world)
 			{
 				for (int j = 0; j < entity->map[index].size.x; j++)
 				{
+					
 					uint32_t clr;
 					clr = img->data[(e % (img->size.y)) * img->size.x + (j % (img->size.x))];
 					Uint32 alpha = clr & 0xFF000000;
@@ -173,98 +242,88 @@ uint8_t	average(t_point sample, t_lightmap *lmap, t_map *map)
 
 void create_map_for_entity(t_entity *entity, struct s_world *world)
 {
-	t_object *obj;
-	t_lightmap *lightmap;
-	t_img *img;
-	int index;
-	int i;
+	t_lighting	lighting;
+	t_object	*obj;
+	t_img		*img;
+	t_vector2	max;
+	int			index;
+	int			start;
+	int			i;
 
 	obj = entity->obj;
-	entity->map = malloc(sizeof(t_map) * entity->obj->material_count);
-	
-	if (obj->uv_count == 0)
+	if (obj->uv_count == 0 || entity->world_triangles == NULL)
 	{
-		free(entity->map);
 		entity->map = NULL;
+		return;
 	}
+	entity->map = malloc(sizeof(t_map) * entity->obj->material_count);
+	if (entity->map == NULL)
+		doomlog(LOG_FATAL, "Malloc fail in bake_lighting.c");
+	lighting.world = world;
 	i = 0;
-	while (i < obj->face_count && obj->uv_count != 0)
+	start = 0;
+	max.x = -10000.0f;
+	max.y = -10000.0f;
+	while (i < obj->face_count)
 	{
+		int j = 0;
+		while (j < 3)
+		{
+			t_vector2 uv;
+
+			uv = obj->uvs[obj->faces[i].uv_indices[j] - 1];
+			if (uv.x > max.x)
+				max.x = uv.x;
+			if (uv.y > max.y)
+				max.y = uv.y;
+			j++;
+		}
 		index = obj->faces[i].materialindex;
 		if (i + 1 == obj->face_count || index != obj->faces[i + 1].materialindex)
 		{
-			lightmap = &entity->lightmap[index];
 			img = obj->materials[index].img;
-			entity->map[index].size.x = lightmap->size.x;
-			entity->map[index].size.y = lightmap->size.y;
-			if (!img)
-			{
-				entity->map = NULL;
-				return;
-			}
+			max.x = ft_maxf(max.x, 1.0f);
+			max.y = ft_maxf(max.y, 1.0f);
+			entity->map[index].size = (t_point){max.x * img->size.x, max.y * img->size.y};
 			entity->map[index].img_size = img->size;
 			entity->map[index].data = malloc(sizeof(uint32_t) * entity->map[index].size.x * entity->map[index].size.y);
-			for (int e = 0; e < entity->map[index].size.y; e++)
+			if (entity->map[index].data == NULL)
+				doomlog(LOG_FATAL, "Malloc fail in bake_lighting.c");
+			lighting.map = &entity->map[index];
+			lighting.img = img->data;
+			while (start <= i)
+			{
+				t_triangle_polygon temp;
+
+				for (int vertex = 0; vertex < 3; vertex++)
+				{
+					temp.p3[vertex] = entity->world_triangles[start].p[vertex].v;
+					temp.p2[vertex].x = entity->world_triangles[start].t[vertex].u * (entity->map[index].img_size.x - 1);
+					temp.p2[vertex].y = entity->world_triangles[start].t[vertex].v * (entity->map[index].img_size.y - 1);
+					temp.uv[vertex].x = entity->world_triangles[start].t[vertex].u;
+					temp.uv[vertex].y = entity->world_triangles[start].t[vertex].v;
+				}
+				rasterize_light(temp, &lighting);
+				start++;
+			}
+			for (int e = 0; e < entity->map[index].size.y && 0; e++)
 			{
 				for (int j = 0; j < entity->map[index].size.x; j++)
 				{
+					uint8_t	light = 200;
 					uint32_t clr;
 					clr = img->data[(e % (img->size.y)) * img->size.x + (j % (img->size.x))];
-					uint8_t light = average((t_point){j, e}, lightmap, entity->map);
-					//uint8_t light = //lightmap->data[e * entity->map[index].size.x + j];
 					Uint32 alpha = clr & 0xFF000000;
-					//COLORED LIGHTING:
-					/*Uint32 red = ((clr & 0x00FF0000) * (uint8_t)(light * 0.4f)) >> 8;
-					Uint32 green = ((clr & 0x0000FF00) * (uint8_t)(light * 0.5f)) >> 8;
-					Uint32 blue = ((clr & 0x000000FF) * (uint8_t)(light * 0.9f)) >> 8;*/
 					Uint32 red = ((clr & 0x00FF0000) * light) >> 8;
 					Uint32 green = ((clr & 0x0000FF00) * light) >> 8;
 					Uint32 blue = ((clr & 0x000000FF) * light) >> 8;
 					clr = flip_channels(alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF));
 					entity->map[index].data[e * entity->map[index].size.x + j] = clr;
-					/*light = light / 2;
-					if (e - 1 > 0 && lightmap->data[(e - 1) * entity->map[index].size.x + j] < light)
-					{
-						clr = img->data[((e - 1) % (img->size.y)) * img->size.x + (j % (img->size.x))];
-						Uint32 alpha = clr & 0xFF000000;
-						Uint32 red = ((clr & 0x00FF0000) * light) >> 8;
-						Uint32 green = ((clr & 0x0000FF00) * light) >> 8;
-						Uint32 blue = ((clr & 0x000000FF) * light) >> 8;
-						clr = flip_channels(alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF));
-						entity->map[index].data[(e - 1) * entity->map[index].size.x + j] = clr;
-					}
-					if (e + 1 < entity->map[index].size.y && lightmap->data[(e + 1) * entity->map[index].size.x + j] < light)
-					{
-						clr = img->data[((e + 1) % (img->size.y)) * img->size.x + (j % (img->size.x))];
-						Uint32 alpha = clr & 0xFF000000;
-						Uint32 red = ((clr & 0x00FF0000) * light) >> 8;
-						Uint32 green = ((clr & 0x0000FF00) * light) >> 8;
-						Uint32 blue = ((clr & 0x000000FF) * light) >> 8;
-						clr = flip_channels(alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF));
-						entity->map[index].data[(e + 1) * entity->map[index].size.x + j] = clr;
-					}
-					if (j + 1 < entity->map[index].size.x && lightmap->data[e * entity->map[index].size.x + (j + 1)] < light)
-					{
-						clr = img->data[(e % (img->size.y)) * img->size.x + ((j + 1) % (img->size.x))];
-						Uint32 alpha = clr & 0xFF000000;
-						Uint32 red = ((clr & 0x00FF0000) * light) >> 8;
-						Uint32 green = ((clr & 0x0000FF00) * light) >> 8;
-						Uint32 blue = ((clr & 0x000000FF) * light) >> 8;
-						clr = flip_channels(alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF));
-						entity->map[index].data[e * entity->map[index].size.x + (j + 1)] = clr;
-					}
-					if (j - 1 > 0 && lightmap->data[e * entity->map[index].size.x + (j - 1)] < light)
-					{
-						clr = img->data[(e % (img->size.y)) * img->size.x + ((j - 1) % (img->size.x))];
-						Uint32 alpha = clr & 0xFF000000;
-						Uint32 red = ((clr & 0x00FF0000) * light) >> 8;
-						Uint32 green = ((clr & 0x0000FF00) * light) >> 8;
-						Uint32 blue = ((clr & 0x000000FF) * light) >> 8;
-						clr = flip_channels(alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF));
-						entity->map[index].data[e * entity->map[index].size.x + (j - 1)] = clr;
-					}*/
 				}
 			}
+			max.x = -10000.0f;
+			max.y = -10000.0f;
+			//start = i;
 		}
 		i++;
 	}
@@ -403,55 +462,7 @@ void bake_lights(t_render *render, t_world *world)
 
 //light_recalculate(t_entity *light_ent, t_world *world)
 
-static void entity_set_ambient_lightmap(t_entity *entity)
-{
 
-}
-
-#include "collision.h"
-
-void	apply_wcoord_fromface(t_lightpoly *poly, t_face face, t_entity *entity) //TODO: t_face, t_entity, t_
-{
-	int					i;
-	static t_vector3	res[3];
-	t_vector3			vert;
-
-	i = 0;
-	while (i < 3)
-	{
-		vert = entity->obj->vertices[(face.v_indices[i] - 1)];
-		poly->world_coord[i] = transformed_vector3(entity->transform, vert).v;
-		/*vert = obj->vertices[face.v_indices[i] - 1];
-		res[i] = transformed_vector3(transform, vert).v;
-		i++;*/
-	}
-}
-
-static void entity_triangle_light(t_entity *entity, t_light *light)
-{
-	int			i;
-	t_lightpoly	poly;
-
-	i = 0;
-	poly.light = light;
-	poly.lmap = entity->lightmap;
-	//poly.
-	while (i < entity->obj->face_count)
-	{
-		t_face	face;
-		face = entity->obj->faces[i];
-		/*poly.world_coord = ws_fromface(entity->transform, face, entity->obj);
-		poly.world_coord[1] = ws_fromface(entity->transform, face, entity->obj)[1];
-		poly.world_coord[2] = ws_fromface(entity->transform, face, entity->obj)[2];*/
-		/*
-		tex coord
-		world coord
-		uv coord
-		*/
-
-		i++;
-	}
-}
 
 static void entity_calculate_lighting(t_entity *entity, t_world *world)
 {
@@ -474,7 +485,7 @@ static void entity_calculate_lighting(t_entity *entity, t_world *world)
 
 			if (vector3_dist(b_pos, other_ent->transform.position)
 				< entity->obj->bounds.radius + light->radius)
-			{
+			{	
 				/*uint8_t lval;
 				float dist = vector3_dist(other_ent->transform.position, b_pos);
 				if (dist <= light->radius)
@@ -490,6 +501,46 @@ static void entity_calculate_lighting(t_entity *entity, t_world *world)
 		i++;
 	}
 	//create_dynamic_map_for_entity(entity, world);
+}
+
+static void render_shadowmap(t_world *world, t_lighting *lighting)
+{
+	int			i;
+	int			found;
+	t_entity	*ent;
+
+	i = 0;
+	found = 0;
+	while (found < world->entitycache.existing_entitycount)
+	{
+		ent = world->entitycache.sorted_entities[i];
+		if (ent->status != es_free)
+		{
+			if (ent->status == es_active && !ent->hidden)
+			{
+			//	if (is_entity_culled(world->sdl, render, ent) == false)
+				render_zbuffer(lighting, ent);
+			}
+			found++;
+		}
+		i++;
+	}
+}
+
+void calculate_pointlight(t_light *light, t_world *world, t_render *render)
+{
+	int				index;
+	t_lighting		lighting;
+
+	index = 0;
+	while (index < 6)
+	{
+		lighting.camera = light->cubemap.cameras[index];
+		lighting.zbuffer = light->cubemap.shadowmaps[index];
+		ft_bzero(lighting.zbuffer, sizeof(float) * 1280 * 1280);
+		render_shadowmap(world, &lighting);
+		index++;
+	}
 }
 
 void	recalculate_lighting(t_world *world)
@@ -508,11 +559,28 @@ void	recalculate_lighting(t_world *world)
 		ent = &cache->entities[i];
 		if (ent->status != es_free)
 		{
+			if	(ent->status == es_active && ent->component.type == COMP_LIGHT)
+			{
+				calculate_pointlight(ent->component.data, world, &world->sdl->render);
+			}
+			found++;
+		}
+		i++;
+	}
+	i = 0;
+	found = 0;
+	while (found < cache->existing_entitycount
+		&& i < cache->alloc_count)
+	{
+		ent = &cache->entities[i];
+		if (ent->status != es_free)
+		{
 			if	(ent->status == es_active && ent->obj != NULL && ent->lightmap == NULL)
 			{
-				create_lightmap_for_entity(ent, world);
+				//render shadowmaps for t_lights then do the maps, dont do the t_lights here
+				//create_lightmap_for_entity(ent, world);
 				create_map_for_entity(ent, world);
-				entity_calculate_lighting(ent, world);
+				//entity_calculate_lighting(ent, world);
 				//create_dynamic_map_for_entity(ent, world);
 			}
 			else

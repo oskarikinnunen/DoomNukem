@@ -1,7 +1,7 @@
 #ifndef LIGHTING_H
 # define LIGHTING_H
 
-#include "vectors.h"
+#include "render_utils.h"
 
 typedef struct s_triangle_polygon //TODO: Renam this to light triangle or smt similar
 {
@@ -10,24 +10,37 @@ typedef struct s_triangle_polygon //TODO: Renam this to light triangle or smt si
 	t_vector2	uv[3];
 }	t_triangle_polygon;
 
-struct s_lightmap;
-struct s_light;
-
-typedef struct s_lightpoly //TODO: Renam this to light triangle or smt similar
-{
-	t_point				tex_coord[3];
-	t_vector3			world_coord[3];
-	t_vector2			uv_coord[3];
-	struct s_lightmap	*lmap;
-	struct s_light		*light;
-}	t_lightpoly;
-
 typedef struct s_map
 {
 	uint32_t	*data;
 	t_point		img_size;
 	t_point		size;
 }	t_map;
+
+typedef enum e_cubemap_state
+{
+	cm_default,
+	cm_1,
+	cm_2,
+	cm_3,
+	cm_4,
+	cm_5,
+	cm_6
+}	t_cubemap_state;
+
+typedef struct s_cubemap
+{
+	float		shadowmaps[6][1280 * 1280];
+	t_camera	cameras[6];
+}	t_cubemap;
+
+typedef struct	s_light
+{
+	float			radius;
+	t_vector3		origin;
+	t_cubemap_state	cm_state;	
+	t_cubemap		cubemap;
+}	t_light;
 
 typedef struct s_lightmap
 {
@@ -53,6 +66,15 @@ typedef struct s_pointlight
 
 typedef struct s_lighting
 {
+	t_triangle			*world_triangles;
+	uint32_t			end;
+	t_camera			camera;
+	float				*zbuffer;
+	t_v2rectangle		screen_edge;
+	struct s_world		*world;
+	t_map				*map;
+	uint32_t			*img;
+	//
 	t_lightmap			*lightmap;
 	uint16_t			entity_id;
 	bool				*drawnbuff;

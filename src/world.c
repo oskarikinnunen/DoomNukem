@@ -43,16 +43,12 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 	int			i;
 	int			found;
 	t_entity	*ent;
-	int		test1;
 	
 	i = 0;
 	found = 0;
-	bool test = false;
-	while (found < world->entitycache.existing_entitycount
-		/*&& i < world->entitycache.alloc_count*/)
+	while (found < world->entitycache.existing_entitycount)
 	{
 		ent = world->entitycache.sorted_entities[i];
-	//	ent = &world->entitycache.entities[i];
 		if (ent->status != es_free)
 		{
 			if(ent->component.func_update != NULL)
@@ -253,6 +249,7 @@ void		destroy_entity(t_world *world, t_entity *ent)
 	//protect id here? if greater than alloccount
 	cache->entities[ent->id].status = es_free;
 	cache->entities[ent->id].obj = NULL;
+	free(ent->world_triangles);
 	if (cache->existing_entitycount == 0)
 		doomlog(LOG_EC_MALLOC, "Tried to remove entity -1\n");
 	cache->existing_entitycount--;

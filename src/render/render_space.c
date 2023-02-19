@@ -182,9 +182,9 @@ void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 
 	if (entity->world_triangles == NULL)
 	{
-		doomlog(LOG_WARNING, "entity->worldtriangles == null in render_quaternions\n!	printing entity->object_name.str and entity->obj->name");
-		doomlog(LOG_WARNING, entity->object_name.str);
-		doomlog(LOG_WARNING, entity->obj->name);
+		//doomlog(LOG_WARNING, "entity->worldtriangles == null in render_quaternions\n!	printing entity->object_name.str and entity->obj->name");
+		//doomlog(LOG_WARNING, entity->object_name.str);
+		//doomlog(LOG_WARNING, entity->obj->name);
 		return;
 	}
 	obj = entity->obj;

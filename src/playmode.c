@@ -96,7 +96,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 		moveplayer(&game.player, &game.hid.input, &game.world);
 		update_render(&render, &game.player);
 		screen_blank(sdl); //Combine with render_start?
-		render_start(&render);
+		render_start(&render.camera);
 		update_world3d(&game.world, &render);
 		print_text(&sdl, "PLAYMODE", (t_point){5, 5});
 		/*game.player.gun->transform.position = vector3_add(game.player.position, (t_vector3){.z = -25.5f});

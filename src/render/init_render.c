@@ -36,14 +36,15 @@ t_render	init_render(t_sdlcontext sdl)
 	return(render);
 }
 
-void	render_start(t_render *render)
+//make this function reutrn matview and take position/lookdir
+void	render_start(t_camera *camera)
 {
 	t_vector3	vtarget;
 	t_mat4x4	matcamera;
 
-	vtarget = vector3_add(render->camera.position, render->camera.lookdir);
-	matcamera = matrix_lookat(render->camera.position, vtarget, (t_vector3){0.0f, 0.0f, 1.0f});
-	render->camera.matview = matrix_quickinverse(matcamera);
+	vtarget = vector3_add(camera->position, camera->lookdir);
+	matcamera = matrix_lookat(camera->position, vtarget, (t_vector3){0.0f, 0.0f, 1.0f});
+	camera->matview = matrix_quickinverse(matcamera);
 }
 
 void update_render(t_render *render, t_player *player)

@@ -100,13 +100,18 @@ void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 		gui_end(&dat->entitygui);*/
 		findbounds(dat->ent);
 		dat->ent->transform.position = dat->info.hit_pos;
+		dat->ent->world_triangles = malloc(sizeof(t_triangle) * dat->ent->obj->face_count); // this is horrible
+		if (!dat->ent->world_triangles)
+			doomlog(LOG_FATAL, "Malloc failed in entity_tool.c");
 		//dat->ent->transform.position = raycast(ed);//vector3_movetowards(ent->transform.position, dir, ed->clock.delta * 1.0f);
 		dat->ent->transform.position.z -= dat->ent->z_bound.min * dat->ent->transform.scale.z;
 		dat->ent->transform.rotation.x += ed->hid.mouse.scroll_delta * 0.261799388f;
 		sdl->render.wireframe = true;
 		sdl->render.gizmocolor = AMBER_3;
+		render_entity_worldtriangles(dat->ent, &ed->world);
 		render_entity(sdl, &sdl->render, dat->ent);
 		sdl->render.wireframe = false;
+		free(dat->ent->world_triangles); // this is horrible
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT) && ed->hid.mouse.relative && dat->ent != NULL)
 	{
