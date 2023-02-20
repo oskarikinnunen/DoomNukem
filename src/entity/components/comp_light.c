@@ -36,7 +36,7 @@ void	highlight_bound(t_entity *ent, t_world *world)
 	}*/
 }
 
-static void	draw_shadowmap(t_light *light, float *shadowmap, t_sdlcontext *sdl)
+static void	draw_shadowmap(t_light *light, t_cubemap *cubemap, t_sdlcontext *sdl)
 {
 	int x;
 	int y;
@@ -44,8 +44,8 @@ static void	draw_shadowmap(t_light *light, float *shadowmap, t_sdlcontext *sdl)
 	t_point	size;
 	float	w;
 
-	size.x = 1280 / 4;
-	size.y = 1280 / 4;
+	size.x = 1280 / 8;
+	size.y = 1280 / 8;
 	width = sdl->window_w - size.x;
 	y = 0;
 	while (y < size.y)
@@ -53,25 +53,28 @@ static void	draw_shadowmap(t_light *light, float *shadowmap, t_sdlcontext *sdl)
 		x = 0;
 		while (x < size.x)
 		{
-			float tempx = (float)x/(float)size.x;
-			float tempy = (float)y/(float)size.y;
-			tempx = tempx * 1280.0f;
-			tempy = tempy * 1280.0f;
+			for (int i = 0; i < 6; i++)
+			{
+				float tempx = (float)x/(float)size.x;
+				float tempy = (float)y/(float)size.y;
+				tempx = tempx * 1280.0f;
+				tempy = tempy * 1280.0f;
 
-			//printf("x, y %f %f\n", tempx, tempy);
-			float w = 1.0f / shadowmap[(int)(tempy * 1280.0f + tempx)];
+				//printf("x, y %f %f\n", tempx, tempy);
+				float w = 1.0f / cubemap->shadowmaps[i][(int)(tempy * 1280.0f + tempx)];
 
-			uint32_t clr = INT_MAX;
-			w = (light->radius - w) / light->radius;
-			w = ft_flerp(0.2f, 0.8f, w);
-			uint8_t p = ft_clamp(w * 255.0f, 0, 255);
-			Uint32 alpha = clr & 0xFF000000;
-			Uint32 red = ((clr & 0x00FF0000) * p) >> 8;
-			Uint32 green = ((clr & 0x0000FF00) * p) >> 8;
-			Uint32 blue = ((clr & 0x000000FF) * p) >> 8;
-			clr = flip_channels(alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF));
-			
-			((uint32_t *)sdl->surface->pixels)[(y * (sdl->window_w)) + x + width] = clr;
+				uint32_t clr = INT_MAX;
+				w = (light->radius - w) / light->radius;
+				w = ft_flerp(0.2f, 0.8f, w);
+				uint8_t p = ft_clamp(w * 255.0f, 0, 255);
+				Uint32 alpha = clr & 0xFF000000;
+				Uint32 red = ((clr & 0x00FF0000) * p) >> 8;
+				Uint32 green = ((clr & 0x0000FF00) * p) >> 8;
+				Uint32 blue = ((clr & 0x000000FF) * p) >> 8;
+				clr = flip_channels(alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF));
+				
+				((uint32_t *)sdl->surface->pixels)[((y + sdl->window_h - size.y) * (sdl->window_w)) + x + (i * size.x)] = clr;
+			}
 			x++;
 		}
 		y++;
@@ -100,7 +103,7 @@ void	comp_light_ui_update(t_entity *entity, t_world *world)
 	for_all_active_entities(world, highlight_bound);
 	if (light->cm_state != cm_default)
 	{
-		draw_shadowmap(light, light->cubemap.shadowmaps[light->cm_state - 1], world->sdl);
+		draw_shadowmap(light, &light->cubemap, world->sdl);
 	}
 }
 
@@ -199,17 +202,19 @@ void	comp_light_allocate(t_entity *entity, t_world *world)
 	entity->component.data = ft_memalloc(sizeof(t_light));
 	entity->component.data_size = sizeof(t_light);
 	light = (t_light *)entity->component.data;
-	light->radius = 50.0f;
+	//light->cubemap.shadowmaps = (float **)malloc(sizeof(float *) * 6);
+	light->radius = 500.0f;
 	matproj = matrix_makeprojection(90.0f, 1280.0f / 1280.0f, 2.0f, 1000.0f);
 	light->cubemap.cameras[0].lookdir = (t_vector3){.x = 1.0f};
-	light->cubemap.cameras[1].lookdir = (t_vector3){.y = 1.0f};
-	light->cubemap.cameras[2].lookdir = (t_vector3){.x = 0.01f, .z = 0.99f};
-	light->cubemap.cameras[3].lookdir = (t_vector3){.x = -1.0f};
-	light->cubemap.cameras[4].lookdir = (t_vector3){.y = -1.0f};
+	light->cubemap.cameras[1].lookdir = (t_vector3){.y = -1.0f};
+	light->cubemap.cameras[2].lookdir = (t_vector3){.x = -1.0f};
+	light->cubemap.cameras[3].lookdir = (t_vector3){.y = 1.0f};
+	light->cubemap.cameras[4].lookdir = (t_vector3){.x = 0.01f, .z = 0.99f};
 	light->cubemap.cameras[5].lookdir = (t_vector3){.x = -0.01f, .z = -0.99f};
 	i = 0;
 	while (i < 6)
 	{
+		//light->cubemap.shadowmaps[i] = (float *)malloc(sizeof(float) * (1280 * 1280));
 		light->cubemap.cameras[i].position = vector3_add(entity->transform.position, light->origin); 
 		light->cubemap.cameras[i].matproj = matproj;
 		render_start(&light->cubemap.cameras[i]);

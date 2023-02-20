@@ -25,8 +25,10 @@ static void sample_img(t_lighting *lighting, int x, int y, t_triangle_polygon po
     //printf("x %d, y %d size %d %d\n", x, y, lighting->map->size.x, lighting->map->size.y);
     // clr = img->data[(e % (img->size.y)) * img->size.x + (j % (img->size.x))];
     // entity->map[index].data[e * entity->map[index].size.x + j]
+	//	ray.origin = texcoord_to_loc(poly.world_coord, poly.uv_coord,
+	//							(t_vector2){xy.x/(float)poly.lmap->size.x, xy.y/(float)poly.lmap->size.y});
 
-    loc = texcoord_to_loc(poly.p3, poly.uv, (t_vector2){x/(float)lighting->map->size.x, y/(float)lighting->map->size.y});
+    loc = texcoord_to_loc(poly.p3, poly.uv, (t_vector2){(float)x/(float)lighting->map->size.x, (float)y/(float)lighting->map->size.y});
 
     int				i;
 	int				found;
@@ -45,10 +47,9 @@ static void sample_img(t_lighting *lighting, int x, int y, t_triangle_polygon po
 			if	(ent->status == es_active && ent->component.type == COMP_LIGHT)
 			{
                 t_light *light = ent->component.data;
-                
-				t_vector3 dir = vector3_normalise(vector3_sub(vector3_add(ent->transform.position, light->origin), loc));
+				t_vector3 dir = vector3_normalise(vector3_sub(loc, vector3_add(ent->transform.position, light->origin)));
 
-				dir = vector3_negative(dir);
+				//print_vector3(dir);
                 int e = 0;
                 float temp = dir.x;
                 if (fabsf(dir.y) > fabsf(temp))
@@ -59,10 +60,32 @@ static void sample_img(t_lighting *lighting, int x, int y, t_triangle_polygon po
                 if (fabsf(dir.z) > fabsf(temp))
                 {
 					temp = dir.z;
-					e = 2;
+					e = 4;
                 }
                 if (temp < 0.0f)
                     e += 3;
+				temp = ft_maxf(fabsf(dir.x), ft_maxf(fabsf(dir.y), fabsf(dir.z)));
+				if (temp == fabsf(dir.x))
+				{
+					if (dir.x > 0.0f)
+						e = 0;
+					else
+						e = 1;
+				}
+				if (temp == fabsf(dir.y))
+				{
+					if (dir.y > 0.0f)
+						e = 1;
+					else
+						e = 3;
+				}
+				if (temp == fabsf(dir.z))
+				{
+					if (dir.z > 0.0f)
+						e = 4;
+					else
+						e = 5;
+				}
                 int j = 0;
                 int index = 0;
                 while (j < 6)
@@ -76,6 +99,13 @@ static void sample_img(t_lighting *lighting, int x, int y, t_triangle_polygon po
                 t_vector3 voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
                 q = vector3_to_quaternion(loc);
                 q = quaternion_mul_matrix(light->cubemap.cameras[j].matview, q);
+				float dist = vector3_fdist_to_plane(q.v, (t_vector3){.z = 1.0f}, (t_vector3){.z = 0.1f});
+				if (dist < 0.0f)
+				{
+					found++;
+					i++;
+					continue;
+				}
                 q = quaternion_mul_matrix(light->cubemap.cameras[j].matproj, q);
                 q.v = vector3_div(q.v, q.w);
                 q.v = vector3_negative(q.v);
@@ -86,23 +116,29 @@ static void sample_img(t_lighting *lighting, int x, int y, t_triangle_polygon po
 
                // q.v.x = ft_clampf(q.v.x, 1.0f, 1279.0f);
               //  q.v.y = ft_clampf(q.v.y, 1.0f, 1279.0f);
-                int test = p.y * 1280 + p.x;
-                if (q.w >= light->cubemap.shadowmaps[j % 6][ft_clamp(test, 0, 1280 * 1280)] * 0.95f)
-                {
-                     lighting->map->data[y * (lighting->map->size.x) + x] = lighting->img[(y % (lighting->map->img_size.y)) * lighting->map->img_size.x + (x % (lighting->map->img_size.x))];
-                }
+               
                 uint32_t clr;
                 clr = INT_MAX;
-                switch(j)
+				if (j == 0)
+					clr = CLR_BLUE;
+				if (j == 1)
+					clr = CLR_GREEN;
+				if (j == 2)
+					clr = CLR_RED;
+				if (j == 3)
+					clr = CLR_TURQ;
+				if (j == 4)
+					clr = CLR_PRPL;
+				if (j == 5)
+					clr = CLR_DARKGRAY;
+				//clr = lighting->img[(y % (lighting->map->img_size.y)) * lighting->map->img_size.x + (x % (lighting->map->img_size.x))];
+                 int test = p.y * 1280 + p.x;
+                if (q.w >= light->cubemap.shadowmaps[j][ft_clamp(test, 0, 1280 * 1280)] * 0.95f)
                 {
-                    case 0: clr = CLR_BLUE; break;
-                    case 1: clr = CLR_GREEN; break;
-                    case 2: clr = CLR_RED; break;
-                    case 3: clr = CLR_TURQ; break;
-                    case 4: clr = CLR_PRPL; break;
-                    case 5: clr = CLR_DARKGRAY; break;
+                     lighting->map->data[y * (lighting->map->size.x) + x] = clr;
+					 //lighting->img[(y % (lighting->map->img_size.y)) * lighting->map->img_size.x + (x % (lighting->map->img_size.x))];
                 }
-                lighting->map->data[y * (lighting->map->size.x) + x] = clr;
+                //lighting->map->data[y * (lighting->map->size.x) + x] = clr;
 			}
 			found++;
 		}
