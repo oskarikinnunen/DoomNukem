@@ -300,8 +300,8 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 					temp.p3[vertex] = entity->world_triangles[start].p[vertex].v;
 					temp.p2[vertex].x = entity->world_triangles[start].t[vertex].u * (entity->map[index].img_size.x - 1);
 					temp.p2[vertex].y = entity->world_triangles[start].t[vertex].v * (entity->map[index].img_size.y - 1);
-					temp.uv[vertex].x = entity->world_triangles[start].t[vertex].u;
-					temp.uv[vertex].y = entity->world_triangles[start].t[vertex].v;
+					temp.uv[vertex].x = entity->world_triangles[start].t[vertex].u * (img->size.x - 1);
+					temp.uv[vertex].y = entity->world_triangles[start].t[vertex].v * (img->size.y - 1);
 				}
 				rasterize_light(temp, &lighting);
 				start++;

@@ -1,5 +1,29 @@
 #include "doomnukem.h"
-
+/*
+	int e = 0;
+	float temp = dir.x;
+	if (fabsf(dir.y) > fabsf(temp))
+	{
+		temp = dir.y;
+		e = 1;
+	}
+	if (fabsf(dir.z) > fabsf(temp))
+	{
+		temp = dir.z;
+		e = 4;
+	}
+	if (temp < 0.0f)
+		e += 3; */
+			/*
+	int j = 0;
+	int index = 0;
+	while (j < 6)
+	{
+		if (vector3_dot(dir, light->cubemap.cameras[j].lookdir) >= 0.70710f)
+			break;
+		j++;
+	}
+	j = j; */
 
 static t_vector3 texcoord_to_loc(t_vector3 ws[3], t_vector2 uv[3], t_vector2 p)
 {
@@ -17,27 +41,17 @@ static t_vector3 texcoord_to_loc(t_vector3 ws[3], t_vector2 uv[3], t_vector2 p)
 	return r;
 }
 
-static void sample_img(t_lighting *lighting, int x, int y, t_triangle_polygon poly)
+uint32_t get_lighting_for_pixel(t_entitycache *cache, uint32_t clr, t_vector3 location)
 {
-    t_vector3       loc;
-    t_quaternion    q;
-
-    //printf("x %d, y %d size %d %d\n", x, y, lighting->map->size.x, lighting->map->size.y);
-    // clr = img->data[(e % (img->size.y)) * img->size.x + (j % (img->size.x))];
-    // entity->map[index].data[e * entity->map[index].size.x + j]
-	//	ray.origin = texcoord_to_loc(poly.world_coord, poly.uv_coord,
-	//							(t_vector2){xy.x/(float)poly.lmap->size.x, xy.y/(float)poly.lmap->size.y});
-
-    loc = texcoord_to_loc(poly.p3, poly.uv, (t_vector2){(float)x/(float)lighting->map->size.x, (float)y/(float)lighting->map->size.y});
-
-    int				i;
+	uint8_t			light_amount;
+	int				i;
 	int				found;
-	t_entitycache	*cache;
 	t_entity		*ent;
+	t_quaternion	q;
 
 	i = 0;
 	found = 0;
-	cache = &lighting->world->entitycache;
+	light_amount = 0;
 	while (found < cache->existing_entitycount
 		&& i < cache->alloc_count)
 	{
@@ -47,60 +61,42 @@ static void sample_img(t_lighting *lighting, int x, int y, t_triangle_polygon po
 			if	(ent->status == es_active && ent->component.type == COMP_LIGHT)
 			{
                 t_light *light = ent->component.data;
-				t_vector3 dir = vector3_normalise(vector3_sub(loc, vector3_add(ent->transform.position, light->origin)));
+				t_vector3 dir;
 
-				//print_vector3(dir);
-                int e = 0;
-                float temp = dir.x;
-                if (fabsf(dir.y) > fabsf(temp))
-                {
-                    temp = dir.y;
-                    e = 1;
-                }
-                if (fabsf(dir.z) > fabsf(temp))
-                {
-					temp = dir.z;
-					e = 4;
-                }
-                if (temp < 0.0f)
-                    e += 3;
+				dir = vector3_add(ent->transform.position, light->origin);
+				dir = vector3_sub(location, dir);
+				dir = vector3_normalise(dir);
+                int j = 0;
+                float temp;
 				temp = ft_maxf(fabsf(dir.x), ft_maxf(fabsf(dir.y), fabsf(dir.z)));
 				if (temp == fabsf(dir.x))
 				{
 					if (dir.x > 0.0f)
-						e = 0;
+						j = 0;
 					else
-						e = 1;
+						j = 2;
 				}
 				if (temp == fabsf(dir.y))
 				{
 					if (dir.y > 0.0f)
-						e = 1;
+						j = 3;
 					else
-						e = 3;
+						j = 1;
 				}
 				if (temp == fabsf(dir.z))
 				{
 					if (dir.z > 0.0f)
-						e = 4;
+						j = 4;
 					else
-						e = 5;
+						j = 5;
 				}
-                int j = 0;
-                int index = 0;
-                while (j < 6)
-                {
-                    if (vector3_dot(dir, light->cubemap.cameras[j].lookdir) >= 0.70710f)
-                        break;
-                    j++;
-                }
-                j = e;
+
                 t_point     p;
                 t_vector3 voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
-                q = vector3_to_quaternion(loc);
+                q = vector3_to_quaternion(location);
                 q = quaternion_mul_matrix(light->cubemap.cameras[j].matview, q);
 				float dist = vector3_fdist_to_plane(q.v, (t_vector3){.z = 1.0f}, (t_vector3){.z = 0.1f});
-				if (dist < 0.0f)
+				if (dist < 0.0f && 0)
 				{
 					found++;
 					i++;
@@ -110,14 +106,13 @@ static void sample_img(t_lighting *lighting, int x, int y, t_triangle_polygon po
                 q.v = vector3_div(q.v, q.w);
                 q.v = vector3_negative(q.v);
                 q.v = vector3_add(q.v, voffsetview);
-                q.w = 1.0f / q.w; //1.0f /
-                p.x = q.v.x * 640;
-                p.y = q.v.y * 640;
+                p.x = q.v.x * 640.0f;
+                p.y = q.v.y * 640.0f;
 
-               // q.v.x = ft_clampf(q.v.x, 1.0f, 1279.0f);
-              //  q.v.y = ft_clampf(q.v.y, 1.0f, 1279.0f);
-               
-                uint32_t clr;
+                p.x = ft_clamp(p.x, 0, 1279);
+                p.y = ft_clamp(p.y, 0, 1279);
+	
+				/*
                 clr = INT_MAX;
 				if (j == 0)
 					clr = CLR_BLUE;
@@ -131,11 +126,14 @@ static void sample_img(t_lighting *lighting, int x, int y, t_triangle_polygon po
 					clr = CLR_PRPL;
 				if (j == 5)
 					clr = CLR_DARKGRAY;
-				//clr = lighting->img[(y % (lighting->map->img_size.y)) * lighting->map->img_size.x + (x % (lighting->map->img_size.x))];
-                 int test = p.y * 1280 + p.x;
-                if (q.w >= light->cubemap.shadowmaps[j][ft_clamp(test, 0, 1280 * 1280)] * 0.95f)
+				*/
+                int test = p.y * 1280 + p.x;
+                if (1.0f / q.w >= light->cubemap.shadowmaps[j][test] * 0.98f && q.w < light->radius)
                 {
-                     lighting->map->data[y * (lighting->map->size.x) + x] = clr;
+					//uint8_t	light_amount = q.w;
+					float dist = 1.0f - (q.w / light->radius);
+					light_amount = ft_clamp(dist * 255 + light_amount, 0, 255);
+                    //lighting->map->data[y * (lighting->map->size.x) + x] = clr;
 					 //lighting->img[(y % (lighting->map->img_size.y)) * lighting->map->img_size.x + (x % (lighting->map->img_size.x))];
                 }
                 //lighting->map->data[y * (lighting->map->size.x) + x] = clr;
@@ -144,34 +142,23 @@ static void sample_img(t_lighting *lighting, int x, int y, t_triangle_polygon po
 		}
 		i++;
 	}
-    /*
-	ray.origin = texcoord_to_loc(poly.world_coord, poly.uv_coord,
-								(t_vector2){xy.x/(float)poly.lmap->size.x, xy.y/(float)poly.lmap->size.y});
-	float dist = vector3_dist(ray.origin, poly.light->origin);
-	if (dist <= poly.light->radius)
-	{
-		dist = 1.0f - (dist / poly.light->radius);
-		poly.lmap->data[x + poly.lmap->size.x * y] = ft_clamp((dist * 255) + poly.lmap->data[x + poly.lmap->size.x * y], 0, 255);
-	}*/
-	/*t_ray		ray;
-	t_texture	temp_t;
+	Uint32 alpha = clr & 0xFF000000;
+	Uint32 red = ((clr & 0x00FF0000) * light_amount) >> 8;
+	Uint32 green = ((clr & 0x0000FF00) * light_amount) >> 8;
+	Uint32 blue = ((clr & 0x000000FF) * light_amount) >> 8;
+	clr = alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF);
+	return(clr);
+}
 
-	if (l.lightmap->data[x + l.lightmap->size.x * y] != l.ambient_light)
-	{
-		//printf("light map data %i, ambient %i \n", l.lightmap->data[x + l.lightmap->size.x * y], l.ambient_light);
-		return ;
-	}
-	ray.origin = texcoord_to_loc(t.p3, t.uv, (t_vector2){x/(float)l.lightmap->size.x, y/(float)l.lightmap->size.y});
-	if (l.pointlight->shadows == false)
-	{
-		float dist = vector3_dist(ray.origin, l.pointlight->origin);
-		if (dist <= l.pointlight->radius)
-		{
-			dist = 1.0f - (dist / l.pointlight->radius);
-			l.lightmap->data[x + l.lightmap->size.x * y] = ft_clamp((dist * 255) + l.lightmap->data[x + l.lightmap->size.x * y], 0, 255);
-		}
-		return;
-	}*/
+static void sample_img(t_lighting *lighting, int x, int y, t_triangle_polygon poly)
+{
+    t_vector3       loc;
+    t_quaternion    q;
+	uint32_t		clr;
+
+    loc = texcoord_to_loc(poly.p3, poly.uv, (t_vector2){(float)x, (float)y});
+	clr = lighting->img[(y % (lighting->map->img_size.y)) * lighting->map->img_size.x + (x % (lighting->map->img_size.x))];
+	lighting->map->data[y * (lighting->map->size.x) + x] = get_lighting_for_pixel(&lighting->world->entitycache, clr, loc);
 }
 
 static void fill_point_tri_bot(t_lighting *l, t_triangle_polygon triangle)
