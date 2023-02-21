@@ -151,9 +151,10 @@ static void fill_point_tri_bot(t_lighting *lighting, t_point_triangle triangle)
 		t_step[0].w = (t_temp.w - temp.w) / delta;
 		while(ax <= bx)
 		{
-			if (temp.w > lighting->zbuffer[ax + y * 1280])
+			int index = ax + y * lighting->resolution.x;
+			if (temp.w > lighting->zbuffer[index])
 			{
-				lighting->zbuffer[ax + y * 1280] = temp.w;
+				lighting->zbuffer[index] = temp.w;
 			}
 			temp.w += t_step[0].w;
 			ax++;
@@ -215,9 +216,10 @@ static void fill_point_tri_top(t_lighting *lighting, t_point_triangle triangle)
 		t_step[0].w = (t_temp.w - temp.w) / delta;
 		while(ax <= bx)
 		{
-			if (temp.w > lighting->zbuffer[ax + y * 1280])
+			int index = ax + y * lighting->resolution.x;
+			if (temp.w > lighting->zbuffer[index])
 			{
-				lighting->zbuffer[ax + y * 1280] = temp.w;
+				lighting->zbuffer[index] = temp.w;
 			}
 			temp.w += t_step[0].w;
 			ax++;

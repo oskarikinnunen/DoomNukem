@@ -36,6 +36,7 @@ void	highlight_bound(t_entity *ent, t_world *world)
 	}*/
 }
 
+//make this take one shadowmap and scale it to fit screen
 static void	draw_shadowmap(t_light *light, t_cubemap *cubemap, t_sdlcontext *sdl)
 {
 	int x;
@@ -44,8 +45,8 @@ static void	draw_shadowmap(t_light *light, t_cubemap *cubemap, t_sdlcontext *sdl
 	t_point	size;
 	float	w;
 
-	size.x = 1280 / 8;
-	size.y = 1280 / 8;
+	size.x = cubemap->resolution.x / 8;
+	size.y = cubemap->resolution.y / 8;
 	width = sdl->window_w - size.x;
 	y = 0;
 	while (y < size.y)
@@ -57,11 +58,11 @@ static void	draw_shadowmap(t_light *light, t_cubemap *cubemap, t_sdlcontext *sdl
 			{
 				float tempx = (float)x/(float)size.x;
 				float tempy = (float)y/(float)size.y;
-				tempx = tempx * 1280.0f;
-				tempy = tempy * 1280.0f;
+				tempx = tempx * cubemap->resolution.x;
+				tempy = tempy * cubemap->resolution.y;
 
 				//printf("x, y %f %f\n", tempx, tempy);
-				float w = 1.0f / cubemap->shadowmaps[i][(int)(tempy * 1280.0f + tempx)];
+				float w = 1.0f / cubemap->shadowmaps[i][(int)(tempy * cubemap->resolution.x + tempx)];
 
 				uint32_t clr = INT_MAX;
 				w = (light->radius - w) / light->radius;
@@ -149,11 +150,11 @@ void	comp_light_gui_edit(t_entity *entity, t_autogui *gui, t_world *world)
 			cubemap_nb[0] = i + '1';
 			if (gui_button(cubemap_nb, gui))
 			{
-				for (int y = 0; y < 1280 && 0; y++)
+				for (int y = 0; y < light->cubemap.resolution.y && 0; y++)
 				{
-					for (int x = 0; x < 1280; x++)
+					for (int x = 0; x < light->cubemap.resolution.x; x++)
 					{
-						printf("%f ", light->cubemap.shadowmaps[i][y * 1280 + x]);
+						printf("%f ", light->cubemap.shadowmaps[i][(int)(y * light->cubemap.resolution.x + x)]);
 					}
 					printf("\n");
 				}
@@ -170,7 +171,7 @@ void	comp_light_gui_edit(t_entity *entity, t_autogui *gui, t_world *world)
 		render_gizmo3d(world->sdl, vector3_add(entity->transform.position, light->origin), 50, CLR_RED);
 		render_ray3D(world->sdl, vector3_add(entity->transform.position, light->origin), vector3_add(vector3_mul(light->cubemap.cameras[light->cm_state - 1].lookdir, 25.0f), vector3_add(entity->transform.position, light->origin)), INT_MAX);
 	}
-	t_mat4x4 matproj = matrix_makeprojection(90.0f, 1280.0f / 1280.0f, 2.0f, 1000.0f);
+	t_mat4x4 matproj = matrix_makeprojection(90.0f, light->cubemap.resolution.y / light->cubemap.resolution.x, 2.0f, 1000.0f);
 	i = 0;
 	while (i < 6)
 	{
@@ -204,17 +205,20 @@ void	comp_light_allocate(t_entity *entity, t_world *world)
 	light = (t_light *)entity->component.data;
 	//light->cubemap.shadowmaps = (float **)malloc(sizeof(float *) * 6);
 	light->radius = 500.0f;
-	matproj = matrix_makeprojection(90.0f, 1280.0f / 1280.0f, 2.0f, 1000.0f);
 	light->cubemap.cameras[0].lookdir = (t_vector3){.x = 1.0f};
-	light->cubemap.cameras[1].lookdir = (t_vector3){.y = -1.0f};
-	light->cubemap.cameras[2].lookdir = (t_vector3){.x = -1.0f};
-	light->cubemap.cameras[3].lookdir = (t_vector3){.y = 1.0f};
-	light->cubemap.cameras[4].lookdir = (t_vector3){.x = 0.01f, .z = 0.99f};
+	light->cubemap.cameras[1].lookdir = (t_vector3){.y = 1.0f};
+	light->cubemap.cameras[2].lookdir = (t_vector3){.x = 0.01f, .z = 0.99f};
+	light->cubemap.cameras[3].lookdir = (t_vector3){.x = -1.0f};
+	light->cubemap.cameras[4].lookdir = (t_vector3){.y = -1.0f};
 	light->cubemap.cameras[5].lookdir = (t_vector3){.x = -0.01f, .z = -0.99f};
+	light->cubemap.resolution.x = 10000;
+	light->cubemap.resolution.y = 10000;
+	light->ignoreself = true;
+	matproj = matrix_makeprojection(90.0f, light->cubemap.resolution.y / light->cubemap.resolution.x, 2.0f, 1000.0f);
 	i = 0;
 	while (i < 6)
 	{
-		//light->cubemap.shadowmaps[i] = (float *)malloc(sizeof(float) * (1280 * 1280));
+		light->cubemap.shadowmaps[i] = (float *)malloc(sizeof(float) * (light->cubemap.resolution.x * light->cubemap.resolution.y));
 		light->cubemap.cameras[i].position = vector3_add(entity->transform.position, light->origin); 
 		light->cubemap.cameras[i].matproj = matproj;
 		render_start(&light->cubemap.cameras[i]);

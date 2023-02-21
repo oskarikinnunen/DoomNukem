@@ -519,6 +519,7 @@ static void render_shadowmap(t_world *world, t_lighting *lighting)
 			if (ent->status == es_active && !ent->hidden)
 			{
 			//	if (is_entity_culled(world->sdl, render, ent) == false)
+				if (lighting->light->ignoreself == false || (lighting->light->ignoreself && ent->id != lighting->entity->id))
 				render_zbuffer(lighting, ent);
 			}
 			found++;
@@ -527,17 +528,20 @@ static void render_shadowmap(t_world *world, t_lighting *lighting)
 	}
 }
 
-void calculate_pointlight(t_light *light, t_world *world, t_render *render)
+void calculate_pointlight(t_world *world, t_entity *entity)
 {
 	int				index;
 	t_lighting		lighting;
 
+	lighting.light = entity->component.data;
+	lighting.resolution = lighting.light->cubemap.resolution;
+	lighting.entity = entity;
 	index = 0;
 	while (index < 6)
 	{
-		lighting.camera = light->cubemap.cameras[index];
-		lighting.zbuffer = light->cubemap.shadowmaps[index];
-		ft_bzero(lighting.zbuffer, sizeof(float) * 1280 * 1280);
+		lighting.camera = lighting.light->cubemap.cameras[index];
+		lighting.zbuffer = lighting.light->cubemap.shadowmaps[index];
+		ft_bzero(lighting.zbuffer, sizeof(float) * lighting.light->cubemap.resolution.x * lighting.light->cubemap.resolution.y);
 		render_shadowmap(world, &lighting);
 		index++;
 	}
@@ -561,7 +565,7 @@ void	recalculate_lighting(t_world *world)
 		{
 			if	(ent->status == es_active && ent->component.type == COMP_LIGHT)
 			{
-				calculate_pointlight(ent->component.data, world, &world->sdl->render);
+				calculate_pointlight(world, ent);
 			}
 			found++;
 		}

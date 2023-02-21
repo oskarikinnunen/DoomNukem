@@ -41,7 +41,7 @@ static void    clip_and_render_triangle(t_lighting *lighting, t_point_triangle t
 	}
 }
 
-t_point_triangle triangle_to_screen_point_triangle(t_mat4x4 matproj, t_triangle clipped)
+t_point_triangle triangle_to_screen_point_triangle(t_mat4x4 matproj, t_triangle clipped, t_vector2 size)
 {
 	t_triangle			triprojected;
 	t_point_triangle	tri;
@@ -57,8 +57,8 @@ t_point_triangle triangle_to_screen_point_triangle(t_mat4x4 matproj, t_triangle 
 		triprojected.p[i].v = vector3_div(triprojected.p[i].v, triprojected.p[i].w);
 		triprojected.p[i].v = vector3_negative(triprojected.p[i].v);
 		triprojected.p[i].v = vector3_add(triprojected.p[i].v, voffsetview);
-		tri.p[i].x = triprojected.p[i].v.x * 640;
-		tri.p[i].y = triprojected.p[i].v.y * 640;
+		tri.p[i].x = triprojected.p[i].v.x * (size.x * 0.5f);
+		tri.p[i].y = triprojected.p[i].v.y * (size.y * 0.5f);
 		i++;
 	}
 	tri.clr = clipped.clr;
@@ -82,7 +82,7 @@ void render_zbuffer(t_lighting *lighting, t_entity *entity)
 	}
 	if (point_cmp(entity->occlusion.clip.max, point_zero()) && point_cmp(entity->occlusion.clip.min, point_zero()))
 	{
-		lighting->screen_edge.max = (t_vector2){1279.0f, 1279.0f};
+		lighting->screen_edge.max = lighting->resolution;
 		lighting->screen_edge.min = vector2_zero();
 	}
 	else
@@ -90,7 +90,7 @@ void render_zbuffer(t_lighting *lighting, t_entity *entity)
 		lighting->screen_edge.min = point_to_vector2(entity->occlusion.clip.min);
 		lighting->screen_edge.max = point_to_vector2(entity->occlusion.clip.max);
 	}
-	lighting->screen_edge.max = (t_vector2){1279.0f, 1279.0f};
+	lighting->screen_edge.max = lighting->resolution;
 	lighting->screen_edge.min = vector2_zero();
 	i = 0;
 	while (i < entity->obj->face_count)
@@ -100,7 +100,7 @@ void render_zbuffer(t_lighting *lighting, t_entity *entity)
 		index = 0;
 		while (index < nclippedtriangles) // check backface
 		{
-			clip_and_render_triangle(lighting, triangle_to_screen_point_triangle(lighting->camera.matproj, clipped[index]));
+			clip_and_render_triangle(lighting, triangle_to_screen_point_triangle(lighting->camera.matproj, clipped[index], lighting->resolution));
 			index++;
 		}
 		i++;

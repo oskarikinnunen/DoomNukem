@@ -136,6 +136,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		render/render_helper.c \
 		render/flip_channel.c \
 		render/render_zbuffer.c \
+		render/pixel_utils.c \
 		entity/components/comp_mechasuit.c \
 		entity/components/comp_watercollider.c \
 		entity/components/comp_light.c \

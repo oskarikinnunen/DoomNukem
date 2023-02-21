@@ -30,7 +30,8 @@ typedef enum e_cubemap_state
 
 typedef struct s_cubemap
 {
-	float		shadowmaps[6][1280 * 1280];
+	t_vector2	resolution;
+	float		*shadowmaps[6];
 	t_camera	cameras[6];
 }	t_cubemap;
 
@@ -40,6 +41,7 @@ typedef struct	s_light
 	t_vector3		origin;
 	t_cubemap_state	cm_state;	
 	t_cubemap		cubemap;
+	bool			ignoreself;
 }	t_light;
 
 typedef struct s_lightmap
@@ -74,6 +76,9 @@ typedef struct s_lighting
 	struct s_world		*world;
 	t_map				*map;
 	uint32_t			*img;
+	t_vector2			resolution;
+	t_light				*light;
+	struct s_entity		*entity;
 	//
 	t_lightmap			*lightmap;
 	uint16_t			entity_id;

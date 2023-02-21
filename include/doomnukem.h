@@ -303,7 +303,7 @@ void	bake_lighting_shadows(t_render *render, t_world *world);
 void	render_entity_depth_buffer(t_sdlcontext sdl, t_render *render, t_entity *entity);
 void	update_arealights_for_entity(t_sdlcontext sdl, t_render *render, t_entity *entity);
 void	update_pointlight_for_entity(t_sdlcontext sdl, t_render *render, t_entity *entity);
-void	calculate_pointlight(t_light *pointlight, t_world *world, t_render *render);
+void	calculate_pointlight(t_world *world, t_entity *entity);
 void	calculate_pointlight_step(t_pointlight *pointlight, t_world *world, t_render *render);
 
 void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render);

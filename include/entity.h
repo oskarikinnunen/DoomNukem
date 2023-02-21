@@ -124,7 +124,9 @@ void	create_map_for_entity(t_entity *entity, struct s_world *world);
 void	create_dynamic_map_for_entity(t_entity *entity, struct s_world *world);
 void	create_lightmap_for_entity(t_entity *entity, struct s_world *world);
 
-
+uint32_t	update_pixel_brightness(uint8_t light, uint32_t clr);
+uint32_t	get_lighting_for_pixel(t_entitycache *cache, uint32_t clr, t_vector3 location);
+t_vector3	texcoord_to_loc(t_vector3 ws[3], t_vector2 uv[3], t_vector2 p);
 /* LIGHTING */
 void render_zbuffer(t_lighting *lighting, t_entity *entity);
 # endif

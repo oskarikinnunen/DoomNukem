@@ -1,21 +1,5 @@
 #include "doomnukem.h"
 
-static t_vector3 texcoord_to_loc(t_vector3 ws[3], t_vector2 uv[3], t_vector2 p)
-{
-	float       i;
-	float       s;
-	float       delta;
-
-	t_vector3   r;
-	i = 1.0f / ((uv[1].x - uv[0].x) * (uv[2].y - uv[0].y) - (uv[1].y - uv[0].y) * (uv[2].x - uv[0].x));
-	s = i * ((uv[2].y - uv[0].y) * (p.x - uv[0].x) - (uv[2].x - uv[0].x) * (p.y - uv[0].y));
-	delta = i * (-(uv[1].y - uv[0].y) * (p.x - uv[0].x) + (uv[1].x - uv[0].x) * (p.y - uv[0].y));
-	r.x = ws[0].x + s * (ws[1].x - ws[0].x) + delta * (ws[2].x - ws[0].x);
-	r.y = ws[0].y + s * (ws[1].y - ws[0].y) + delta * (ws[2].y - ws[0].y);
-	r.z = ws[0].z + s * (ws[1].z - ws[0].z) + delta * (ws[2].z - ws[0].z);
-	return r;
-}
-
 //	abc = tri to check against
 //	w = distance of ray hit
 // disable inverse normal hitting by removing fabs
@@ -44,6 +28,7 @@ static void sample_img(t_lighting l, int x, int y, t_triangle_polygon t)
 	t_ray		ray;
 	t_texture	temp_t;
 
+	exit(0);
 	if (l.lightmap->data[x + l.lightmap->size.x * y] != l.ambient_light)
 	{
 		//printf("light map data %i, ambient %i \n", l.lightmap->data[x + l.lightmap->size.x * y], l.ambient_light);
