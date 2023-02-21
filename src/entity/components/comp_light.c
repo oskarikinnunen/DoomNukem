@@ -213,7 +213,7 @@ void	comp_light_allocate(t_entity *entity, t_world *world)
 	light->cubemap.cameras[5].lookdir = (t_vector3){.x = -0.01f, .z = -0.99f};
 	light->cubemap.resolution.x = 10000;
 	light->cubemap.resolution.y = 10000;
-	light->ignoreself = true;
+	light->ignoreself = false;
 	matproj = matrix_makeprojection(90.0f, light->cubemap.resolution.y / light->cubemap.resolution.x, 2.0f, 1000.0f);
 	i = 0;
 	while (i < 6)
