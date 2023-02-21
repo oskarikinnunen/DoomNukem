@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/08 17:52:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/21 14:37:31 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -284,13 +284,11 @@ int	editorloop(t_sdlcontext sdl)
 	editor_load_prefs(&ed, &sdl);
 	ed.gamereturn = game_continue;
 	sdl.lighting_toggled = false;
-	ed.world.lighting.calculated = false;
 	//play_music(&sdl, "music_arp1_ambient.wav");
 	while (ed.gamereturn == game_continue)
 	{
 		update_deltatime(&ed.world.clock);
 		ed.gamereturn = editor_events(&ed);
-		bake_lights(&sdl.render, &ed.world);
 		if (!ed.player.locked)
 			moveplayer(&ed.player, &ed.hid.input, &ed.world);
 		update_render(&sdl.render, &ed.player);

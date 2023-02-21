@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/15 15:35:23 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/02/21 14:38:25 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,7 +184,7 @@ static void gui_entitymode(t_entity *entity, t_autogui *gui, t_world *world)
 	}
 	if (gui_highlighted_button_if("Audio", gui, entity->component.type == pft_audiosource))
 	{
-		///*protected_free(entity->component.data);
+		//protected_free(entity->component.data);
 		//assign_component_audiosource(&entity->component);
 		//entity->component.func_allocate(entity, world);
 	}
@@ -245,11 +245,6 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 				ent->transform.rotation = vector3_zero();
 			if (gui_button("Reset scale", gui))
 				ent->transform.scale = vector3_one();
-		}
-		if (ent->lightmap != NULL)
-		{
-			gui_labeled_bool_edit("Dynamic lighting: ", &ent->lightmap->dynamic, gui);
-			gui_labeled_int("Cur light: ", ent->lightmap->dynamic_data, gui);
 		}
 		if (gui_highlighted_button_if("Edit component", gui, dat->entityeditor.component_toggle))
 			dat->entityeditor.component_toggle = !dat->entityeditor.component_toggle;

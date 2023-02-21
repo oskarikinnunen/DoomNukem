@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   rasterize_lightpoly.c                              :+:      :+:    :+:   */
+/*   rasterize_zbuffer.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 07:34:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/23 08:07:22 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/21 14:57:11 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ static void fill_point_tri_bot(t_lighting *lighting, t_point_triangle triangle)
 
 	bary.v1 = p[0].x * bary.b1;
 	bary.v2 = bary.b3 * bary.b2 - (float)(p[1].x - p[0].x) * bary.b1;
-	y = p[1].y;
+	y = p[1].y - 1;
 	while (y >= p[0].y)
 	{
 		delta = p[1].y - y;
@@ -151,7 +151,7 @@ static void fill_point_tri_bot(t_lighting *lighting, t_point_triangle triangle)
 		t_step[0].w = (t_temp.w - temp.w) / delta;
 		while(ax <= bx)
 		{
-			int index = ax + y * lighting->resolution.x;
+			int index = ax + y * (lighting->resolution.x);
 			if (temp.w > lighting->zbuffer[index])
 			{
 				lighting->zbuffer[index] = temp.w;
@@ -193,7 +193,7 @@ static void fill_point_tri_top(t_lighting *lighting, t_point_triangle triangle)
 	bary.v2 = bary.b3 * bary.b2 - (float)(p[1].x - p[0].x) * bary.b1;
 
 	y = p[1].y;
-	while (y <= p[0].y)
+	while (y < p[0].y)
 	{
 		delta = y - p[1].y;
 		ax = p[1].x + (step[0] * delta);
@@ -216,7 +216,7 @@ static void fill_point_tri_top(t_lighting *lighting, t_point_triangle triangle)
 		t_step[0].w = (t_temp.w - temp.w) / delta;
 		while(ax <= bx)
 		{
-			int index = ax + y * lighting->resolution.x;
+			int index = ax + y * (lighting->resolution.x);
 			if (temp.w > lighting->zbuffer[index])
 			{
 				lighting->zbuffer[index] = temp.w;

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/16 16:13:57 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/02/21 14:38:46 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,7 +183,6 @@ void	init_entity(t_entity *entity, t_world *world)
 	int						i;
 
 	entity->obj = get_object_by_name(*world->sdl, entity->object_name.str);
-	entity->lightmap = NULL;
 	entity->map = NULL; //TODO: load maps here
 	defs = get_component_definitions();
 	i = 0;

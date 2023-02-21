@@ -44,18 +44,6 @@ typedef struct	s_light
 	bool			ignoreself;
 }	t_light;
 
-typedef struct s_lightmap
-{
-	bool		dynamic;
-	uint32_t	progress; //tri_index
-	bool		done;
-	t_point		size;
-	uint8_t		dynamic_data;
-	//uint32_t	color;
-	uint8_t		*data;
-	//uint8_t		*draw_buffer;
-}	t_lightmap;
-
 typedef struct s_pointlight
 {
 	t_vector3	origin;
@@ -79,16 +67,6 @@ typedef struct s_lighting
 	t_vector2			resolution;
 	t_light				*light;
 	struct s_entity		*entity;
-	//
-	t_lightmap			*lightmap;
-	uint16_t			entity_id;
-	bool				*drawnbuff;
-	t_triangle_polygon	**triangles;
-    struct s_entity		**entities;
-	uint32_t			entities_count;
-	t_pointlight		*pointlight;
-	uint8_t				ambient_light;
-	bool				calculated;
 }	t_lighting;
 
 #endif

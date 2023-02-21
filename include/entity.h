@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/15 16:43:15 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/02/21 14:36:59 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ typedef struct s_entity
 	t_anim			animation;
 	t_object		*obj;
 	t_occlusion		occlusion;
-	t_lightmap		*lightmap;
 	t_map			*map;
 }	t_entity;
 
@@ -125,7 +124,7 @@ void	create_dynamic_map_for_entity(t_entity *entity, struct s_world *world);
 void	create_lightmap_for_entity(t_entity *entity, struct s_world *world);
 
 uint32_t	update_pixel_brightness(uint8_t light, uint32_t clr);
-uint32_t	get_lighting_for_pixel(t_entitycache *cache, uint32_t clr, t_vector3 location);
+uint32_t	get_lighting_for_pixel(t_entitycache *cache, t_vector3 location);
 t_vector3	texcoord_to_loc(t_vector3 ws[3], t_vector2 uv[3], t_vector2 p);
 /* LIGHTING */
 void render_zbuffer(t_lighting *lighting, t_entity *entity);

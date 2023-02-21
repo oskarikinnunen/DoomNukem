@@ -11,7 +11,7 @@ uint32_t	update_pixel_brightness(uint8_t light, uint32_t clr)
     return(clr);
 }
 
-uint32_t	get_lighting_for_pixel(t_entitycache *cache, uint32_t clr, t_vector3 location)
+uint32_t	get_lighting_for_pixel(t_entitycache *cache, t_vector3 location)
 {
     int             j;
     int				i;
@@ -20,6 +20,7 @@ uint32_t	get_lighting_for_pixel(t_entitycache *cache, uint32_t clr, t_vector3 lo
     uint32_t        light_amount;
     t_quaternion    q;
 
+	light_amount = 0;
 	i = 0;
 	found = 0;
 	while (found < cache->existing_entitycount
@@ -62,10 +63,10 @@ uint32_t	get_lighting_for_pixel(t_entitycache *cache, uint32_t clr, t_vector3 lo
                 p.y = q.v.y * (light->cubemap.resolution.y * 0.5f);
 
                 p.x = ft_clamp(p.x, 0, light->cubemap.resolution.x);
-                p.y = ft_clamp(p.x, 0, light->cubemap.resolution.y);
+                p.y = ft_clamp(p.y, 0, light->cubemap.resolution.y);
 
                 int test = p.y * light->cubemap.resolution.x + p.x;
-                if (1.0f / q.w >= light->cubemap.shadowmaps[j][test] * 0.98f)
+                if (1.0f / q.w >= light->cubemap.shadowmaps[j][test] * 0.98f && q.w < light->radius)
                 {
                     float delta = 1.0f - (q.w / light->radius);
                     light_amount += delta * 255.0f;
@@ -75,8 +76,7 @@ uint32_t	get_lighting_for_pixel(t_entitycache *cache, uint32_t clr, t_vector3 lo
 		}
 		i++;
 	}
-    clr = update_pixel_brightness(ft_clamp(light_amount, 0, 255), clr);
-    return(clr);
+    return(light_amount);
 }
 
 t_vector3 texcoord_to_loc(t_vector3 ws[3], t_vector2 uv[3], t_vector2 p)

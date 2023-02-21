@@ -5,10 +5,12 @@ static void sample_img(t_lighting *lighting, int x, int y, t_triangle_polygon po
     t_vector3       loc;
     t_quaternion    q;
 	uint32_t		clr;
+	uint32_t		light_amount;
 
 	clr = lighting->img[(y % (lighting->map->img_size.y)) * lighting->map->img_size.x + (x % (lighting->map->img_size.x))];
     loc = texcoord_to_loc(poly.p3, poly.uv, (t_vector2){x, y});
-	clr = get_lighting_for_pixel(&lighting->world->entitycache, clr, loc);
+	light_amount = get_lighting_for_pixel(&lighting->world->entitycache, loc);
+	clr = update_pixel_brightness(ft_clamp(light_amount, 0, 255), clr);
 	lighting->map->data[y * (lighting->map->size.x) + x] = clr;
 }
 

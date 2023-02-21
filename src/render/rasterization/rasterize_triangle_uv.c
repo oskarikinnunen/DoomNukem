@@ -25,6 +25,7 @@ static bool intersect_triangle(t_ray r, t_texture *t, t_vector3 a, t_vector3 b, 
 
 static void sample_img(t_lighting l, int x, int y, t_triangle_polygon t)
 {
+	/*
 	t_ray		ray;
 	t_texture	temp_t;
 
@@ -38,7 +39,7 @@ static void sample_img(t_lighting l, int x, int y, t_triangle_polygon t)
 	if (l.pointlight->shadows == false)
 	{
 		float dist = vector3_dist(ray.origin, l.pointlight->origin);
-		if (dist <= l.pointlight->radius /*&& l.drawnbuff[x + l.lightmap->size.x * y] == false*/)
+		if (dist <= l.pointlight->radius )//&& l.drawnbuff[x + l.lightmap->size.x * y] == false
 		{
 			dist = 1.0f - (dist / l.pointlight->radius);
 			//l.drawnbuff[x + l.lightmap->size.x * y] = true;
@@ -50,8 +51,8 @@ static void sample_img(t_lighting l, int x, int y, t_triangle_polygon t)
 	bool ol = false;
 	for (int o = 0; o < l.entities_count; o++)
 	{
-		/*if (l.entities[o]->id == l.entity_id)
-			continue ;*/
+		//if (l.entities[o]->id == l.entity_id)
+		//	continue ;
 		if (l.entities[o]->hidden
 			|| (l.pointlight->ignoreself && l.entities[o]->id == l.entity_id))
 			continue;
@@ -69,7 +70,7 @@ static void sample_img(t_lighting l, int x, int y, t_triangle_polygon t)
 		if (ol == true)
 			break;
 	}
-	if (ol == false /*&& l.drawnbuff[x + l.lightmap->size.x * y] == false*/)
+	if (ol == false ) //&& l.drawnbuff[x + l.lightmap->size.x * y] == false
 	{
 		float dist = vector3_dist(ray.origin, l.pointlight->origin);
 		if (dist <= l.pointlight->radius)
@@ -78,7 +79,7 @@ static void sample_img(t_lighting l, int x, int y, t_triangle_polygon t)
 			//l.drawnbuff[x + l.lightmap->size.x * y] = true;
 			l.lightmap->data[x + l.lightmap->size.x * y] = ft_clamp((dist * 255) + l.lightmap->data[x + l.lightmap->size.x * y], 0, 255);
 		}
-	}
+	}*/
 }
 
 static void fill_point_tri_bot(t_lighting l, t_triangle_polygon triangle)

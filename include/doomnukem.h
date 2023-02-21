@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/15 17:37:24 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/02/21 14:37:20 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -290,20 +290,15 @@ void	free_roomwalls(t_world *world, t_area *room);
 void	set_nullentities(t_wall **ptr, int count);
 
 //TODO: temp for lights
-void	start_lightbake(t_render *render, t_world *world);
-void	bake_lights(t_render *render, t_world *world);
 void	recalculate_lighting(t_world *world);
+void	recalculate_pointlight(t_world *world);
 void	rasterize_zbuffer(t_lighting *lighting, t_point_triangle triangle);
-
-
-uint8_t *smooth_lightmap(t_lightmap *lmap);
 
 void	bake_lighting(t_render *render, t_world *world);
 void	bake_lighting_shadows(t_render *render, t_world *world);
 void	render_entity_depth_buffer(t_sdlcontext sdl, t_render *render, t_entity *entity);
 void	update_arealights_for_entity(t_sdlcontext sdl, t_render *render, t_entity *entity);
 void	update_pointlight_for_entity(t_sdlcontext sdl, t_render *render, t_entity *entity);
-void	calculate_pointlight(t_world *world, t_entity *entity);
 void	calculate_pointlight_step(t_pointlight *pointlight, t_world *world, t_render *render);
 
 void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render);

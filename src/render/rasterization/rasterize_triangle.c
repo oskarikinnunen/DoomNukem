@@ -16,8 +16,8 @@ static uint32_t sample_img(t_render *render, t_texture t)
 		printf("ysample %i \n", ysample);
 		printf("img dim %i %i \n\n", render->map.size.x, render->map.size.y);
 	}*/
-	xsample = ft_clamp(xsample, 0, render->map.size.x);
-	ysample = ft_clamp(ysample, 0, render->map.size.y);
+	xsample = ft_clamp(xsample, 0, render->map.size.x - 1);
+	ysample = ft_clamp(ysample, 0, render->map.size.y - 1);
 	/*xsample = ft_abs(xsample);
 	ysample = ft_abs(ysample);*/
 	//render->

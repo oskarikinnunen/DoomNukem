@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 14:55:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/15 15:35:08 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/02/21 14:37:50 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ void	world_init(t_world *world, t_sdlcontext *sdl)
 	world->debugconsole = debugconsole_default();
 	world->entitycache = entitycache_empty(1024);
 	_world_init_skybox(world);
-	world->lighting.ambient_light = 20;
 	world->nav.clip_size = 250.0f;
 	world->debug_gui = ft_memalloc(sizeof(t_autogui));
 }
