@@ -36,7 +36,6 @@ uint32_t	get_lighting_for_pixel(t_entitycache *cache, uint32_t clr, t_vector3 lo
                 dir = vector3_sub(location, dir);
                 dir = vector3_normalise(dir);
 
-				dir = vector3_negative(dir);
                 j = 0;
                 float temp = dir.x;
                 if (fabsf(dir.y) > fabsf(temp))
@@ -59,7 +58,6 @@ uint32_t	get_lighting_for_pixel(t_entitycache *cache, uint32_t clr, t_vector3 lo
                 q.v = vector3_div(q.v, q.w);
                 q.v = vector3_negative(q.v);
                 q.v = vector3_add(q.v, voffsetview);
-                q.w = q.w;
                 p.x = q.v.x * (light->cubemap.resolution.x * 0.5f);
                 p.y = q.v.y * (light->cubemap.resolution.y * 0.5f);
 
