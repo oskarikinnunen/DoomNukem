@@ -200,7 +200,7 @@ void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 			if (entity->map != NULL && sdl->lighting_toggled)
 			{
 				render->map = entity->map[obj->faces[index].materialindex];
-				render->map.img_size = point_sub(render->map.img_size, (t_point){1, 1});
+				//render->map.img_size = point_sub(render->map.img_size, (t_point){1, 0});
 				render->lightmode = lm_lit;
 			}
 			render->end_index = index;

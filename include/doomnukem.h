@@ -29,6 +29,8 @@
 # include "input.h"
 # include "debug.h"
 # include "navigation.h"
+# include <pthread.h>
+# include <SDL_thread.h>
 
 # define PI	3.14159265359
 # define FULLRAD M_PI * 2.0

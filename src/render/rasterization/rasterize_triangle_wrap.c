@@ -15,12 +15,6 @@ inline static uint32_t sample_img_dynamic(t_render *render, t_texture t)
 //	w1 = ((float)p[0].x * (float)(p[2].y - p[0].y) + (float)(y - p[0].y) * (float)(p[2].x - p[0].x) - (float)ax * (float)(p[2].y - p[0].y)) / (float)((float)(p[1].y - p[0].y) * (float)(p[2].x - p[0].x) - (float)(p[1].x - p[0].x) * (float)(p[2].y - p[0].y));
 //	w2 = (float)(y - p[0].y - w1 * (float)(p[1].y - p[0].y)) / (float)(p[2].y - p[0].y);
 
-typedef struct s_step
-{
-	float	location;
-	float	step;
-}	t_step;
-
 
 inline static void scanline(int ax, int bx, int y, t_point *p, t_texture *t, t_sdlcontext *sdl)
 {
@@ -60,34 +54,26 @@ inline static void scanline(int ax, int bx, int y, t_point *p, t_texture *t, t_s
 	render_bitmask_row(ax, bx, dist * 1000.0f, tex.w * 1000.0f, y, sdl);
 }
 
-typedef struct s_test
-{
-	t_sdlcontext *sdl;
-	t_point_triangle triangle;
-}	t_test;
-
 static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle)
 {
 	t_point			*p;
 	t_texture		*t;
-	t_texture		temp;
 	int				y;
 	float			delta;
 	float			w1;
 	float			w2;
+	t_step			left;
+	t_step			right;
 
 	p = triangle.p;
 	t = triangle.t;
-	t_step	left;
-	t_step right;
-
 	delta = p[1].y - p[0].y;
 	left.location = p[0].x;
 	left.step = (p[1].x - p[0].x) / delta;
 	right.location = p[0].x;
 	right.step = (p[2].x - p[0].x) / delta;
 	y = p[0].y;
-	while (y <= p[1].y)
+	while (y < p[1].y)
 	{
 		scanline(left.location, right.location, y, p, t, sdl);
 		left.location += left.step;
@@ -111,32 +97,24 @@ static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle)
 {
 	t_point			*p;
 	t_texture		*t;
-	t_texture		temp;
 	int				y;
 	float			delta;
 	float			w1;
 	float			w2;
+	t_step			left;
+	t_step			right;
 
 	p = triangle.p;
 	t = triangle.t;
-	t_step	left;
-	t_step right;
-
 	delta = p[0].y - p[1].y;
-
 	left.location = p[1].x;
 	left.step = (p[0].x - p[1].x) / delta;
-
 	right.location = p[2].x;
 	right.step = (p[0].x - p[2].x) / delta;
-
 	y = p[1].y;
-	while (y <= p[0].y)
+	while (y < p[0].y)
 	{
-		//render_bitmask_row(ax, bx, temp.w * 1000.0f, t_temp.w * 1000.0f, y, sdl);
-
 		scanline(left.location, right.location, y, p, t, sdl);
-
 		left.location += left.step;
 		right.location += right.step;
 		y++;
@@ -153,6 +131,7 @@ void	render_triangle_unlit(t_sdlcontext *sdl, t_render *render, int index)
 	t_point				*p;
 	float				lerp;
 
+	
 	triangle = render->screenspace_ptris[index];
 	if (sdl->ps1_tri_div > 1)
 		triangle = ps1(triangle, sdl->ps1_tri_div);
@@ -182,6 +161,70 @@ void	render_triangle_unlit(t_sdlcontext *sdl, t_render *render, int index)
 }
 
 /*
+
+void	render_triangle_unlit(t_sdlcontext *sdl, t_render *render, int index)
+{
+	SDL_Thread			*pthread_pool[2];
+	t_point_triangle	triangle;
+	t_point				p_split;
+	t_texture			t_split;
+	t_texture			t_temp;
+	t_point				p_temp;
+	t_point				*p;
+	float				lerp;
+
+	
+	triangle = render->screenspace_ptris[index];
+	if (sdl->ps1_tri_div > 1)
+		triangle = ps1(triangle, sdl->ps1_tri_div);
+	p = triangle.p;
+	sort_point_uv_tri(triangle.p, triangle.t);
+	lerp = ((float)p[1].y - (float)p[2].y) / ((float)p[0].y - (float)p[2].y);
+	p_split.x = p[2].x + (lerp * ((float)p[0].x - (float)p[2].x));
+	p_split.y = p[1].y;
+	t_split.u = ft_flerp(triangle.t[2].u, triangle.t[0].u, lerp);
+	t_split.v = ft_flerp(triangle.t[2].v, triangle.t[0].v, lerp);
+	t_split.w = ft_flerp(triangle.t[2].w, triangle.t[0].w, lerp);
+	if (p_split.x < p[1].x)
+	{
+		ft_swap(&p[1], &p_split, sizeof(t_point));
+		ft_swap(&triangle.t[1], &t_split, sizeof(t_texture));
+	}
+	t_test tri_inf[2];
+	p_temp = p[2];
+	t_temp = triangle.t[2];
+	p[2] = p_split;
+	triangle.t[2] = t_split;
+	tri_inf[0].triangle = triangle;
+	tri_inf[0].sdl = sdl;
+	bool efg[2];
+	efg[0] = false;
+	efg[1] = false;
+
+	if (p[0].y != p[1].y && p[1].x != p[2].x)
+	{
+		efg[0] = true;
+		pthread_pool[0] = SDL_CreateThread(fill_point_tri_top, "thread1", &tri_inf[0]);
+	}
+		//pthread_create(&pthread_pool, NULL, &fill_point_tri_top, (void *)&tri_inf[0]);
+		//fill_point_tri_top(&tri_inf[0]);
+	p[0] = p_temp;
+	triangle.t[0] = t_temp;
+	tri_inf[1].triangle = triangle;
+	tri_inf[1].sdl = sdl;
+	if (p[0].y != p[1].y && p[1].x != p[2].x)
+	{
+		efg[1] = true;
+		pthread_pool[1] = SDL_CreateThread(fill_point_tri_bot, "thread2", &tri_inf[1]);
+	}
+		//ill_point_tri_bot(&tri_inf[1]);
+	for (int i = 0; i < 2; i++)
+	{
+		if (efg[i])
+			SDL_WaitThread(pthread_pool[i], NULL);
+	}
+}
+
 
 typedef struct s_barycentric
 {

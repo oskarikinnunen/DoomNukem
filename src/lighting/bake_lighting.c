@@ -73,31 +73,31 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 		if (i + 1 == obj->face_count || index != obj->faces[i + 1].materialindex)
 		{
 			img = obj->materials[index].img;
-			max.x = ft_maxf(max.x, 1.0f);
-			max.y = ft_maxf(max.y, 1.0f);
-			entity->map[index].size = (t_point){max.x * img->size.x, max.y * img->size.y};
+			//max.x = ft_maxf(max.x, 1.0f);
+			//max.y = ft_maxf(max.y, 1.0f);
+			entity->map[index].size = (t_point){ceilf(max.x * img->size.x), ceilf(max.y * img->size.y)}; // maybe try ceilf, but roundf seems to work
 			entity->map[index].img_size = img->size;
 			entity->map[index].data = malloc(sizeof(uint32_t) * entity->map[index].size.x * entity->map[index].size.y);
 			if (entity->map[index].data == NULL)
 				doomlog(LOG_FATAL, "Malloc fail in bake_lighting.c");
 			lighting.map = &entity->map[index];
 			lighting.img = img->data;
-			while (start <= i && 0)
+			while (start <= i && 1)
 			{
 				t_triangle_polygon temp;
 
 				for (int vertex = 0; vertex < 3; vertex++)
 				{
 					temp.p3[vertex] = entity->world_triangles[start].p[vertex].v;
-					temp.p2[vertex].x = entity->world_triangles[start].t[vertex].u * (entity->map[index].img_size.x - 1);
-					temp.p2[vertex].y = entity->world_triangles[start].t[vertex].v * (entity->map[index].img_size.y - 1);
-					temp.uv[vertex].x = entity->world_triangles[start].t[vertex].u * (img->size.x - 1);
-					temp.uv[vertex].y = entity->world_triangles[start].t[vertex].v * (img->size.y - 1);
+					temp.p2[vertex].x = ceilf(entity->world_triangles[start].t[vertex].u * (entity->map[index].img_size.x));
+					temp.p2[vertex].y = ceilf(entity->world_triangles[start].t[vertex].v * (entity->map[index].img_size.y));
+					temp.uv[vertex].x = entity->world_triangles[start].t[vertex].u * (img->size.x);
+					temp.uv[vertex].y = entity->world_triangles[start].t[vertex].v * (img->size.y);
 				}
 				rasterize_light(temp, &lighting);
 				start++;
 			}
-			for (int e = 0; e < entity->map[index].size.y && 1; e++)
+			for (int e = 0; e < entity->map[index].size.y && 0; e++)
 			{
 				for (int j = 0; j < entity->map[index].size.x; j++)
 				{

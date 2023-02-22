@@ -10,58 +10,65 @@ static void sample_img(t_lighting *lighting, int x, int y, t_triangle_polygon po
 	clr = lighting->img[(y % (lighting->map->img_size.y)) * lighting->map->img_size.x + (x % (lighting->map->img_size.x))];
     loc = texcoord_to_loc(poly.p3, poly.uv, (t_vector2){x, y});
 	light_amount = get_lighting_for_pixel(&lighting->world->entitycache, loc);
-	clr = update_pixel_brightness(ft_clamp(light_amount, 0, 255), clr);
-	lighting->map->data[y * (lighting->map->size.x) + x] = clr;
+	//clr = update_pixel_brightness(ft_clamp(light_amount, 0, 255), clr);
+	x = ft_clamp(x, 0, lighting->map->size.x);
+	y = ft_clamp(y, 0, lighting->map->size.y);
+	lighting->map->data[ft_clamp(y * (lighting->map->size.x) + x, 0, lighting->map->size.x * lighting->map->size.y - 1)] = CLR_RED;
+}
+
+inline static void scanline(int ax, int bx, int y, t_lighting *lighting, t_triangle_polygon poly)
+{
+	while (ax <= bx)
+	{
+		sample_img(lighting, ax, y, poly);
+		ax++;
+	}
 }
 
 static void fill_point_tri_bot(t_lighting *l, t_triangle_polygon triangle)
 {
 	t_point			*p;
-	float			step[2];
-	int				x;
 	int				y;
 	float			delta;
+	t_step			left;
+	t_step			right;
 
 	p = triangle.p2;
-	delta = 1.0f / ((float)(p[1].y - p[0].y));
-	step[0] = (p[0].x - p[1].x) * delta;
-	step[1] = (p[0].x - p[2].x) * delta;
-	y = p[1].y;
-	while (y >= p[0].y)
+	delta = p[1].y - p[0].y;
+	left.location = p[0].x;
+	left.step = (p[1].x - p[0].x) / delta;
+	right.location = p[0].x;
+	right.step = (p[2].x - p[0].x) / delta;
+	y = p[0].y;
+	while (y <= p[1].y)
 	{
-		x = p[1].x + (step[0] * (float)(p[1].y - y));
-		int ax =  p[2].x + (step[1] * (float)(p[1].y - y));
-		while(x <= ax)
-		{	
-			sample_img(l, x, y, triangle);
-			x++;
-		}
-		y--;
+		scanline(left.location, right.location, y, l, triangle);
+		left.location += left.step;
+		right.location += right.step;
+		y++;
 	}
 }
 
 static void fill_point_tri_top(t_lighting *l, t_triangle_polygon triangle)
 {
 	t_point			*p;
-	float			step[2];
-	int				x;
 	int				y;
 	float			delta;
+	t_step			left;
+	t_step			right;
 
 	p = triangle.p2;
-	delta = 1.0f/((float)(p[0].y - p[1].y));
-	step[0] = (p[0].x - p[1].x) * delta;
-	step[1] = (p[0].x - p[2].x) * delta;
+	delta = p[0].y - p[1].y;
+	left.location = p[1].x;
+	left.step = (p[0].x - p[1].x) / delta;
+	right.location = p[2].x;
+	right.step = (p[0].x - p[2].x) / delta;
 	y = p[1].y;
 	while (y <= p[0].y)
 	{
-		x = p[1].x + (step[0] * (float)(y - p[1].y));
-		int ax =  p[2].x + (step[1] * (float)(y - p[1].y));
-		while(x <= ax)
-		{
-			sample_img(l, x, y, triangle);
-			x++;
-		}
+		scanline(left.location, right.location, y, l, triangle);
+		left.location += left.step;
+		right.location += right.step;
 		y++;
 	}
 }
@@ -85,8 +92,7 @@ void	rasterize_light(t_triangle_polygon triangle, t_lighting *lighting)
 	lerp = ((float)p2[1].y - (float)p2[2].y) / ((float)p2[0].y - (float)p2[2].y);
 	p2_split.x = p2[2].x + (lerp * ((float)p2[0].x - (float)p2[2].x));
 	p2_split.y = p2[1].y;
-	uv_split.x = ft_flerp(triangle.uv[2].x, triangle.uv[0].x, lerp);
-	uv_split.y = ft_flerp(triangle.uv[2].y, triangle.uv[0].y, lerp);
+	uv_split = vector2_lerp(triangle.uv[2], triangle.uv[0], lerp);
 	p3_split = vector3_lerp(p3[2], p3[0], lerp);
 	if (p2_split.x < p2[1].x)
 	{

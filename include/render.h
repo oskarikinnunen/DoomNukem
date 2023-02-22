@@ -28,6 +28,12 @@
 # define AMBER_4 0xf5a845
 # define CLEARSCREEN "\e[1;1H\e[2J"
 
+typedef struct s_step
+{
+	float	location;
+	float	step;
+}	t_step;
+
 typedef enum e_platform
 {
 	os_mac,
