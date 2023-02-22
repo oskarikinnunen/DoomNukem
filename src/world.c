@@ -96,6 +96,25 @@ static void sort_entitycache(t_world *world, t_vector3 location)
 	}
 }
 
+void check_if_screen_has_black_pixel(t_world *world)
+{
+	bool hasblackpixel = false;
+	for (int y = 0; y < world->sdl->window_h; y++)
+	{
+		for (int x = 0; x < world->sdl->window_w; x++)
+		{
+			if (((uint32_t *)world->sdl->surface->pixels)[y * world->sdl->window_w + x] == 0)
+				hasblackpixel = true;
+		}
+	}
+	if (hasblackpixel)
+	{
+		printf("Black pixel found\n");
+	}
+	else
+		printf("no black pixels\n");
+}
+
 void update_world3d(t_world *world, t_render *render)
 {
 	t_list			*l;
@@ -140,7 +159,8 @@ void update_world3d(t_world *world, t_render *render)
 			//world->player->velocity.x += 15.0f;
 			world->sdl->render_grid = !world->sdl->render_grid;
 		}
-			
+		if (gui_shortcut_button("Check screen", 'Q', world->debug_gui))
+			check_if_screen_has_black_pixel(world);
 		if (gui_shortcut_button("Toggle noclip", 'F', world->debug_gui))
 			world->player->noclip = !world->player->noclip;
 		//gui_labeled_bool_edit("Noclip:", &world->player->noclip, world->debug_gui);

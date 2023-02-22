@@ -30,7 +30,7 @@ t_render	init_render(t_sdlcontext sdl)
 	vtarget = vector3_add(render.camera.position, render.camera.lookdir);
 	matcamera = matrix_lookat(render.camera.position, vtarget, (t_vector3){0.0f, 0.0f, 1.0f});
 	render.camera.matview = matrix_quickinverse(matcamera);
-	render.occlusion.occlusion = true;
+	render.occlusion.occlusion = false;
 	render.occlusion.occluder_box = false;
 	render.occlusion.draw_occlusion = false;
 	return(render);

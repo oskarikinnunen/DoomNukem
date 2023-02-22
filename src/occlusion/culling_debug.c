@@ -40,7 +40,7 @@ void set_square_from_triangles(t_occlusion *occl, t_point_triangle *t, int count
 				s->min.y = v.y;
 			if (v.y > s->max.y)
 				s->max.y = v.y;
-			dist = 1.0f / t[i].t[j].w;
+			dist = t[i].t[j].w * 1000.0f;
 			if (dist > occl->z_dist[0])
 				occl->z_dist[0] = dist;
 			if (dist < occl->z_dist[1])
