@@ -7,11 +7,17 @@ inline static uint32_t sample_img(t_render *render, t_texture t)
 	uint32_t	xsample;
 	uint32_t	ysample;
 
-	xsample = t.u * render->map.img_size.x;
-	ysample = t.v * render->map.img_size.y;
+	xsample = t.u * (render->map.img_size.x);
+	ysample = t.v * (render->map.img_size.y);
 
-	//xsample = ft_clamp(xsample, 0, render->map.size.x - 1);
-	//ysample = ft_clamp(ysample, 0, render->map.size.y - 1);
+	xsample = ft_clamp(xsample, 0, render->map.size.x - 1);
+	ysample = ft_clamp(ysample, 0, render->map.size.y - 1);
+	/*if (ysample * render->map.size.x + xsample < 0 || ysample * render->map.size.x + xsample > render->map.size.x * render->map.size.y)
+	{
+		printf("x %d y %d\nuv %f %f\nsize %d %d\nimg size %d %d\n", xsample, ysample, t.u, t.v, render->map.size.x, render->map.size.y, render->map.img_size.x, render->map.img_size.y);
+		printf("exit\n");
+		exit(0);
+	}*/
 	return(render->map.data[ysample * render->map.size.x + xsample]);
 }
 
@@ -23,9 +29,9 @@ inline static void scanline(int ax, int bx, int y, t_point *p, t_texture *t, t_s
 	float		dist;
 
 	w1 = ((float)p[0].x * (float)(p[2].y - p[0].y) + (float)(y - p[0].y) * (float)(p[2].x - p[0].x) - (float)ax * (float)(p[2].y - p[0].y)) / (float)((float)(p[1].y - p[0].y) * (float)(p[2].x - p[0].x) - (float)(p[1].x - p[0].x) * (float)(p[2].y - p[0].y));
-	w1 = fmaxf(w1, 0.0f); //this is horrible
+	//w1 = fmaxf(w1, 0.0f);
 	w2 = (float)(y - p[0].y - w1 * (float)(p[1].y - p[0].y)) / (float)(p[2].y - p[0].y);
-	w2 = fmaxf(w2, 0.0f);
+	//w2 = fmaxf(w2, 0.0f);
 	dist = ft_flerp(t[0].w, t[1].w, w1);
 	dist += ((t[2].w - t[0].w) * w2);
 	while(ax <= bx)
@@ -44,9 +50,9 @@ inline static void scanline(int ax, int bx, int y, t_point *p, t_texture *t, t_s
 		}
 		ax++;
 		w1 = ((float)p[0].x * (float)(p[2].y - p[0].y) + (float)(y - p[0].y) * (float)(p[2].x - p[0].x) - (float)ax * (float)(p[2].y - p[0].y)) / (float)((float)(p[1].y - p[0].y) * (float)(p[2].x - p[0].x) - (float)(p[1].x - p[0].x) * (float)(p[2].y - p[0].y));
-		w1 = fmaxf(w1, 0.0f); //this is horrible
+		//w1 = fmaxf(w1, 0.0f);
 		w2 = (float)(y - p[0].y - w1 * (float)(p[1].y - p[0].y)) / (float)(p[2].y - p[0].y);
-		w2 = fmaxf(w2, 0.0f);
+		//w2 = fmaxf(w2, 0.0f);
 	}
 	render_bitmask_row(ax, bx, dist * 1000.0f, tex.w * 1000.0f, y, sdl);
 }
@@ -135,7 +141,6 @@ void	render_triangle_lit(t_sdlcontext *sdl, t_render *render, int index)
 	t_split.u = ft_flerp(triangle.t[2].u, triangle.t[0].u, lerp);
 	t_split.v = ft_flerp(triangle.t[2].v, triangle.t[0].v, lerp);
 	t_split.w = ft_flerp(triangle.t[2].w, triangle.t[0].w, lerp);
-
 	if (p_split.x < p[1].x)
 	{
 		ft_swap(&p[1], &p_split, sizeof(t_point));

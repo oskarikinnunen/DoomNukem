@@ -11,9 +11,9 @@ static void sample_img(t_lighting *lighting, int x, int y, t_triangle_polygon po
     loc = texcoord_to_loc(poly.p3, poly.uv, (t_vector2){x, y});
 	light_amount = get_lighting_for_pixel(&lighting->world->entitycache, loc);
 	//clr = update_pixel_brightness(ft_clamp(light_amount, 0, 255), clr);
-	x = ft_clamp(x, 0, lighting->map->size.x);
-	y = ft_clamp(y, 0, lighting->map->size.y);
-	lighting->map->data[ft_clamp(y * (lighting->map->size.x) + x, 0, lighting->map->size.x * lighting->map->size.y - 1)] = CLR_RED;
+	x = ft_clamp(x, 0, lighting->map->size.x - 1);
+	y = ft_clamp(y, 0, lighting->map->size.y - 1);
+	lighting->map->data[ft_clamp(y * (lighting->map->size.x) + x, 0, lighting->map->size.x * lighting->map->size.y)] = CLR_RED;
 }
 
 inline static void scanline(int ax, int bx, int y, t_lighting *lighting, t_triangle_polygon poly)
@@ -73,7 +73,59 @@ static void fill_point_tri_top(t_lighting *l, t_triangle_polygon triangle)
 	}
 }
 
+//w1 = ((float)p[0].x * (float)(p[2].y - p[0].y) + (float)(y - p[0].y) * (float)(p[2].x - p[0].x) - (float)x * (float)(p[2].y - p[0].y)) / (float)((float)(p[1].y - p[0].y) * (float)(p[2].x - p[0].x) - (float)(p[1].x - p[0].x) * (float)(p[2].y - p[0].y));
+//w2 = (float)(y - p[0].y - w1 * (float)(p[1].y - p[0].y)) / (float)(p[2].y - p[0].y);
+static void	rasterize_triangle_bounds(t_triangle_polygon triangle, t_square bounds, t_lighting *lighting)
+{
+	t_point	*p;
+	int x;
+	int y;
+	float w1, w2;
+	t_vector2	temp;
 
+	p = triangle.p2;
+	y = bounds.min.y;
+	while (y < bounds.max.y)
+	{
+		x = bounds.min.x;
+		while (x < bounds.max.x)
+		{
+			lighting->map->data[y * (lighting->map->size.x) + x] = CLR_RED;
+			x++;
+		}
+		y++;
+	}
+}
+
+void	rasterize_light(t_triangle_polygon triangle, t_lighting *lighting)
+{
+	t_point			*p2;
+	t_vector3		*p3;
+	t_square	bounds;
+
+	p2 = triangle.p2;
+	p3 = triangle.p3;
+	sort_polygon_tri(triangle.p2, triangle.uv, triangle.p3);
+	bounds.min.y = p2[2].y;
+	bounds.max.y = p2[0].y;
+	if (p2[1].x < p2[2].x)
+	{
+		ft_swap(&p2[1], &p2[2], sizeof(t_point));
+		ft_swap(&triangle.uv[1], &triangle.uv[2], sizeof(t_vector2));
+		ft_swap(&p3[1], &p3[2], sizeof(t_vector3));
+	}
+	if (p2[0].x < p2[1].x)
+	{
+		ft_swap(&p2[1], &p2[0], sizeof(t_point));
+		ft_swap(&triangle.uv[1], &triangle.uv[0], sizeof(t_vector2));
+		ft_swap(&p3[1], &p3[0], sizeof(t_vector3));
+	}
+	bounds.min.x = p2[2].x;
+	bounds.max.x = p2[0].x;
+	rasterize_triangle_bounds(triangle, bounds, lighting);
+}
+
+/*
 void	rasterize_light(t_triangle_polygon triangle, t_lighting *lighting)
 {
 	t_point			p2_split;
@@ -90,8 +142,10 @@ void	rasterize_light(t_triangle_polygon triangle, t_lighting *lighting)
 	p3 = triangle.p3;
 	sort_polygon_tri(triangle.p2, triangle.uv, triangle.p3);
 	lerp = ((float)p2[1].y - (float)p2[2].y) / ((float)p2[0].y - (float)p2[2].y);
-	p2_split.x = p2[2].x + (lerp * ((float)p2[0].x - (float)p2[2].x));
-	p2_split.y = p2[1].y;
+	//p2_split.x = p2[2].x + (lerp * ((float)p2[0].x - (float)p2[2].x));
+	//p2_split.y = p2[1].y;
+	p2_split.x = ft_flerp(p2[2].x, p2[0].x, lerp);
+	p2_split.y = ft_flerp(p2[2].y, p2[0].y, lerp);
 	uv_split = vector2_lerp(triangle.uv[2], triangle.uv[0], lerp);
 	p3_split = vector3_lerp(p3[2], p3[0], lerp);
 	if (p2_split.x < p2[1].x)
@@ -114,3 +168,4 @@ void	rasterize_light(t_triangle_polygon triangle, t_lighting *lighting)
 	if (p2[0].y != p2[1].y)
 		fill_point_tri_bot(lighting, triangle);
 }
+*/

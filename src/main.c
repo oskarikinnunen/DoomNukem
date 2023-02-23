@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/08 15:49:35 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/23 09:51:31 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,18 +125,19 @@ int	main(int argc, char **argv)
 	pid_t	pid;
 	int		wait_status;
 
-	pid = fork();
+	/*pid = fork();
 	if (pid == -1)
 	{
 		doomlog(LOG_EC_FORK, "couldn't create a child process for the game");
 		error_window("couldn't launch the game due to a fork fail");
 	}
-	if (pid == 0) // child process is always pid 0
-		doomnukem(argc, argv);
-	else
+	if (pid == 0) // child process is always pid 0*/
+	doomnukem(argc, argv);
+	
+	/*else
 	{
 		wait(&wait_status);
 		handle_exit(wait_status);
-	}
+	}*/
 	return (0);
 }
