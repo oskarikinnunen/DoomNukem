@@ -154,7 +154,8 @@ VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		matrix_shorthands.c matrix_rotations.c \
 		matrix_transform.c \
 		matrix_functions.c matrix_functions2.c \
-		debug_vectors.c point_more.c
+		debug_vectors.c point_more.c \
+		barycentric.c
 VECTORSRC= $(addprefix src/vectors/,$(VECTORSRCFILES))
 SRC= $(addprefix src/,$(SRCFILES))
 SRC+= $(VECTORSRC)

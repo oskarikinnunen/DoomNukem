@@ -55,23 +55,30 @@ void render_entity_worldtriangles(t_entity *entity, t_world *world)
 	t_triangle		tritransformed;
 	t_render		*render;
 	t_object		*obj;
+	int				i;
 	int				index;
 
 	obj = entity->obj;
 	render = &world->sdl->render;
 	render_worldspace(render, entity);
-	index = 0;
-	while (index < obj->face_count)
+	i = 0;
+	while (i < obj->face_count)
 	{
-		tritransformed = (t_triangle){render->q[obj->faces[index].v_indices[0] - 1], render->q[obj->faces[index].v_indices[1] - 1], render->q[obj->faces[index].v_indices[2] - 1]};
+		index = obj->faces[i].materialindex;
+		tritransformed = (t_triangle){render->q[obj->faces[i].v_indices[0] - 1], render->q[obj->faces[i].v_indices[1] - 1], render->q[obj->faces[i].v_indices[2] - 1]};
 		if (obj->uv_count != 0)
 		{
-			tritransformed.t[0] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[0] - 1]);
-			tritransformed.t[1] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[1] - 1]);
-			tritransformed.t[2] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[2] - 1]);
+			for (int e = 0; e < 3; e++)
+			{
+				t_vector2 uv = obj->uvs[obj->faces[i].uv_indices[e] - 1];
+			//	uv.x = roundf(uv.x * (obj->materials[index].img->size.x));
+			//	uv.y = roundf(uv.y * (obj->materials[index].img->size.y));
+				tritransformed.t[e] = vector2_to_texture(uv);
+
+			}
 		}
-		entity->world_triangles[index] = tritransformed;
-		index++;
+		entity->world_triangles[i] = tritransformed;
+		i++;
 	}
 }
 

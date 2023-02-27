@@ -178,6 +178,7 @@ void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 	t_triangle		world_tri;
 	t_object		*obj;
 	t_quaternion	temp;
+	int				i;
 	int				index;
 
 	if (entity->world_triangles == NULL)
@@ -189,25 +190,27 @@ void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 	}
 	obj = entity->obj;
 	render->world_triangles = entity->world_triangles;
-	index = 0;
+	i = 0;
 	render->start_index = 0;
-	while (index < obj->face_count)
+	while (i < obj->face_count)
 	{
-		if (index + 1 == obj->face_count || obj->faces[index].materialindex != obj->faces[index + 1].materialindex)
+		index = obj->faces[i].materialindex;
+		if (i + 1 == obj->face_count || index != obj->faces[i + 1].materialindex)
 		{
 			render->lightmode = lm_unlit;
-			render->img = obj->materials[obj->faces[index].materialindex].img;
+			render->img = obj->materials[index].img;
 			if (entity->map != NULL && sdl->lighting_toggled)
 			{
-				render->map = entity->map[obj->faces[index].materialindex];
-				//render->map.img_size = point_sub(render->map.img_size, (t_point){1, 0});
+				render->map = entity->map[index];
+				//render->map.img_size = render->img->size;
+				//render->map.size = point_sub(render->map.size, (t_point){1, 1});
 				render->lightmode = lm_lit;
 			}
-			render->end_index = index;
+			render->end_index = i;
 			clip_and_render_triangles(sdl, render);
-			render->start_index = index;
+			render->start_index = i + 1;
 		}
-		index++;
+		i++;
 	}
 	render->world_triangles = NULL; // should be unnecessary
 	render->rs.render_count++;

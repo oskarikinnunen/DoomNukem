@@ -68,3 +68,4 @@ void	recalculate_pointlight(t_world *world)
 		i++;
 	}
 }
+

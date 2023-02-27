@@ -2,57 +2,88 @@
 
 #define FOG 0.0025f
 
+/*
 inline static uint32_t sample_img(t_render *render, t_texture t)
 {
 	uint32_t	xsample;
 	uint32_t	ysample;
 
-	xsample = t.u * (render->map.img_size.x);
-	ysample = t.v * (render->map.img_size.y);
-
-	xsample = ft_clamp(xsample, 0, render->map.size.x - 1);
-	ysample = ft_clamp(ysample, 0, render->map.size.y - 1);
-	/*if (ysample * render->map.size.x + xsample < 0 || ysample * render->map.size.x + xsample > render->map.size.x * render->map.size.y)
-	{
-		printf("x %d y %d\nuv %f %f\nsize %d %d\nimg size %d %d\n", xsample, ysample, t.u, t.v, render->map.size.x, render->map.size.y, render->map.img_size.x, render->map.img_size.y);
-		printf("exit\n");
-		exit(0);
-	}*/
+	xsample = t.u;
+	ysample = t.v;
 	return(render->map.data[ysample * render->map.size.x + xsample]);
 }
 
 inline static void scanline(int ax, int bx, int y, t_point *p, t_texture *t, t_sdlcontext *sdl)
 {
 	t_texture	tex;
-	float		w1;
-	float		w2;
+	t_vector2	bary;
 	float		dist;
 
-	w1 = ((float)p[0].x * (float)(p[2].y - p[0].y) + (float)(y - p[0].y) * (float)(p[2].x - p[0].x) - (float)ax * (float)(p[2].y - p[0].y)) / (float)((float)(p[1].y - p[0].y) * (float)(p[2].x - p[0].x) - (float)(p[1].x - p[0].x) * (float)(p[2].y - p[0].y));
-	//w1 = fmaxf(w1, 0.0f);
-	w2 = (float)(y - p[0].y - w1 * (float)(p[1].y - p[0].y)) / (float)(p[2].y - p[0].y);
-	//w2 = fmaxf(w2, 0.0f);
-	dist = ft_flerp(t[0].w, t[1].w, w1);
-	dist += ((t[2].w - t[0].w) * w2);
+	//printf("ax %d bx %d\n", ax, bx);
+	bary = barycentric_coordinates(p, (t_point){ax, y});
+	dist = ft_flerp(t[0].w, t[1].w, bary.x) + ((t[2].w - t[0].w) * bary.y);
 	while(ax <= bx)
 	{
-		tex.u = ft_flerp(t[0].u, t[1].u, w1) + ((t[2].u - t[0].u) * w2);
-		tex.v = ft_flerp(t[0].v, t[1].v, w1) + ((t[2].v - t[0].v) * w2);
-		tex.w = ft_flerp(t[0].w, t[1].w, w1) + ((t[2].w - t[0].w) * w2);
+		tex.w = ft_flerp(t[0].w, t[1].w, bary.x) + ((t[2].w - t[0].w) * bary.y);
 		if (tex.w > sdl->zbuffer[ax + y * sdl->window_w])
 		{
-			tex.u = fmaxf(tex.u / tex.w, 0.0f);
-			tex.v = fmaxf(tex.v / tex.w, 0.0f);
+			tex.u = ft_flerp(t[0].u, t[1].u, bary.x) + ((t[2].u - t[0].u) * bary.y);
+			tex.v = ft_flerp(t[0].v, t[1].v, bary.x) + ((t[2].v - t[0].v) * bary.y);
+			tex.u = tex.u / tex.w;
+			tex.v = tex.v / tex.w;
 			sdl->zbuffer[ax + y * sdl->window_w] = tex.w;
-			//printf("w1 w2 %f %f\n", w1, w2);
 			((uint32_t *)sdl->surface->pixels)[ax + y * sdl->window_w] =
 				sample_img(&sdl->render, tex);
 		}
 		ax++;
-		w1 = ((float)p[0].x * (float)(p[2].y - p[0].y) + (float)(y - p[0].y) * (float)(p[2].x - p[0].x) - (float)ax * (float)(p[2].y - p[0].y)) / (float)((float)(p[1].y - p[0].y) * (float)(p[2].x - p[0].x) - (float)(p[1].x - p[0].x) * (float)(p[2].y - p[0].y));
-		//w1 = fmaxf(w1, 0.0f);
-		w2 = (float)(y - p[0].y - w1 * (float)(p[1].y - p[0].y)) / (float)(p[2].y - p[0].y);
-		//w2 = fmaxf(w2, 0.0f);
+		bary = barycentric_coordinates(p, (t_point){ax, y});
+	}
+	render_bitmask_row(ax, bx, dist * 1000.0f, tex.w * 1000.0f, y, sdl);
+}
+*/
+inline static uint32_t sample_img(t_render *render, t_texture t)
+{
+	uint32_t	xsample;
+	uint32_t	ysample;
+
+	xsample = t.u;
+	ysample = t.v;
+	xsample = xsample % (render->img->size.x);
+	ysample = ysample % (render->img->size.y);
+	if (xsample < 0 || ysample < 0 || xsample >= render->map.size.x + 1 || ysample >= render->map.size.y || ysample * render->map.size.x + xsample > render->map.size.x * render->map.size.y)
+	{
+		printf("%d %d\n%d %d\n%d %d\n", xsample, ysample, render->map.size.x, render->map.size.y, render->img->size.x, render->img->size.y);
+		exit(0);
+	}
+	return(render->map.data[ysample * render->map.size.x + xsample]);
+}
+
+inline static void scanline(int ax, int bx, int y, t_point *p, t_texture *t, t_sdlcontext *sdl)
+{
+	t_texture	tex;
+	t_vector2	bary;
+	float		dist;
+
+	//printf("ax %d bx %d\n", ax, bx);
+	bary = barycentric_coordinates(p, (t_point){ax, y});
+	dist = ft_flerp(t[0].w, t[1].w, bary.x) + ((t[2].w - t[0].w) * bary.y);
+	while(ax <= bx)
+	{
+		bary.x = fmaxf(bary.x, 0.0f);
+		bary.y = fmaxf(bary.y, 0.0f);
+		tex.w = ft_flerp(t[0].w, t[1].w, bary.x) + ((t[2].w - t[0].w) * bary.y);
+		if (tex.w > sdl->zbuffer[ax + y * sdl->window_w] && bary.x + bary.y <= 1.0f)
+		{
+			tex.u = ft_flerp(t[0].u, t[1].u, bary.x) + ((t[2].u - t[0].u) * bary.y);
+			tex.v = ft_flerp(t[0].v, t[1].v, bary.x) + ((t[2].v - t[0].v) * bary.y);
+			tex.u = tex.u / tex.w;
+			tex.v = tex.v / tex.w;
+			sdl->zbuffer[ax + y * sdl->window_w] = tex.w;
+			((uint32_t *)sdl->surface->pixels)[ax + y * sdl->window_w] =
+				sample_img(&sdl->render, tex);
+		}
+		ax++;
+		bary = barycentric_coordinates(p, (t_point){ax, y});
 	}
 	render_bitmask_row(ax, bx, dist * 1000.0f, tex.w * 1000.0f, y, sdl);
 }
@@ -76,7 +107,7 @@ static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle)
 	right.location = p[0].x;
 	right.step = (p[2].x - p[0].x) / delta;
 	y = p[0].y;
-	while (y < p[1].y)
+	while (y <= p[1].y)
 	{
 		scanline(left.location, right.location, y, p, t, sdl);
 		left.location += left.step;
@@ -105,7 +136,7 @@ static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle)
 	right.location = p[2].x;
 	right.step = (p[0].x - p[2].x) / delta;
 	y = p[1].y;
-	while (y < p[0].y)
+	while (y <= p[0].y)
 	{
 		scanline(left.location, right.location, y, p, t, sdl);
 		left.location += left.step;

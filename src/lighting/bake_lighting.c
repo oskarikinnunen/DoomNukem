@@ -53,51 +53,51 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 	lighting.world = world;
 	i = 0;
 	start = 0;
-	max.x = -10000.0f;
-	max.y = -10000.0f;
+	max.x = 0.0f;
+	max.y = 0.0f;
 	while (i < obj->face_count)
 	{
 		int j = 0;
 		while (j < 3)
 		{
-			t_vector2 uv;
+			t_texture uv;
 
-			uv = obj->uvs[obj->faces[i].uv_indices[j] - 1];
-			if (uv.x > max.x)
-				max.x = uv.x;
-			if (uv.y > max.y)
-				max.y = uv.y;
+			uv = entity->world_triangles[i].t[j];
+			if (uv.u > max.x)
+				max.x = uv.u;
+			if (uv.v > max.y)
+				max.y = uv.v;
 			j++;
 		}
 		index = obj->faces[i].materialindex;
 		if (i + 1 == obj->face_count || index != obj->faces[i + 1].materialindex)
 		{
 			img = obj->materials[index].img;
-			max.x = fmaxf(max.x, 1.0f);
-			max.y = fmaxf(max.y, 1.0f);
-			entity->map[index].size = (t_point){(max.x * (float)img->size.x), max.y * (float)img->size.y};
+			max.x = fmaxf(max.x + 1.0f, 1.0f);
+			max.y = fmaxf(max.y + 1.0f, 1.0f);
+			entity->map[index].size = (t_point){max.x + 1, max.y + 3};
 			entity->map[index].img_size = img->size;
 			entity->map[index].data = malloc(sizeof(uint32_t) * entity->map[index].size.x * entity->map[index].size.y);
 			if (entity->map[index].data == NULL)
 				doomlog(LOG_FATAL, "Malloc fail in bake_lighting.c");
 			lighting.map = &entity->map[index];
 			lighting.img = img->data;
-			while (start <= i && 1)
+			while (start <= i && 0)
 			{
 				t_triangle_polygon temp;
 
 				for (int vertex = 0; vertex < 3; vertex++)
 				{
 					temp.p3[vertex] = entity->world_triangles[start].p[vertex].v;
-					temp.p2[vertex].x = entity->world_triangles[start].t[vertex].u * (img->size.x);
-					temp.p2[vertex].y = entity->world_triangles[start].t[vertex].v * (img->size.y);
-					temp.uv[vertex].x = entity->world_triangles[start].t[vertex].u * (img->size.x - 1);
-					temp.uv[vertex].y = entity->world_triangles[start].t[vertex].v * (img->size.y - 1);
+					
+					temp.p2[vertex].x = entity->world_triangles[start].t[vertex].u * (float)(img->size.x);
+					temp.p2[vertex].y = entity->world_triangles[start].t[vertex].v * (float)(img->size.y);
+					temp.uv[vertex] = (t_vector2){temp.p2[vertex].x, temp.p2[vertex].y}; // this is not needed
 				}
 				rasterize_light(temp, &lighting);
 				start++;
 			}
-			for (int e = 0; e < entity->map[index].size.y && 0; e++)
+			for (int e = 0; e < entity->map[index].size.y && 1; e++)
 			{
 				for (int j = 0; j < entity->map[index].size.x; j++)
 				{
@@ -112,9 +112,8 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 					entity->map[index].data[e * entity->map[index].size.x + j] = clr;
 				}
 			}
-			max.x = -10000.0f;
-			max.y = -10000.0f;
-			//start = i;
+			max.x = 0.0f;
+			max.y = 0.0f;
 		}
 		i++;
 	}

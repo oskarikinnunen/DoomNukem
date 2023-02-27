@@ -88,7 +88,7 @@ static void sample_img(t_point xy, t_lightpoly poly)
 	}
 }*/
 
-typedef struct s_barycentric
+typedef struct s_barycentricold
 {
 	float	v1;
 	float	v2;
@@ -98,7 +98,7 @@ typedef struct s_barycentric
 	float	b1;
 	float	b2;
 	float	b3;
-}	t_barycentric;
+}	t_barycentric_old;
 
 static void fill_point_tri_bot(t_lighting *lighting, t_point_triangle triangle)
 {
@@ -114,7 +114,7 @@ static void fill_point_tri_bot(t_lighting *lighting, t_point_triangle triangle)
 	float			w2;
 	t_texture		t_temp;
 	t_texture		temp;
-	t_barycentric	bary;
+	t_barycentric_old	bary;
 
 	p = triangle.p;
 	t = triangle.t;
@@ -177,7 +177,7 @@ static void fill_point_tri_top(t_lighting *lighting, t_point_triangle triangle)
 	float			w2;
 	t_texture		t_temp;
 	t_texture		temp;
-	t_barycentric	bary;
+	t_barycentric_old	bary;
 
 	p = triangle.p;
 	t = triangle.t;

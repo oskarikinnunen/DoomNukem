@@ -390,4 +390,21 @@ typedef struct s_ray
 	t_vector3 dir;
 }	t_ray;
 
+typedef struct s_barycentric
+{
+    float       b1;
+    float       b2;
+    float       b3;
+    float       b1x;
+    float       div;
+}   t_barycentric;
+
+//sets up all the static values for fast barycentric function
+t_barycentric	get_barycentric(t_point *p);
+
+//fast barycentric with the minimal math
+t_vector2		fast_barycentric(t_point *p, t_barycentric b, t_point v);
+
+//normal barycentric coordinats x is delta value between p0 and p1 and y is delta between p1 and p2
+t_vector2		barycentric_coordinates(t_point *p, t_point v);
 #endif
