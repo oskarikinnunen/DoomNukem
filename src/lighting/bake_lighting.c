@@ -31,6 +31,22 @@ uint8_t	average(t_point sample, t_map *lmap, t_map *map)
 	return ((uint8_t)(avg / hit));
 }
 
+static void sample_img(t_lighting *lighting, int x, int y, t_triangle_polygon poly)
+{
+    t_vector3       loc;
+    t_quaternion    q;
+	uint32_t		clr;
+	uint32_t		light_amount;
+
+	clr = lighting->img[(y % (lighting->map->img_size.y)) * lighting->map->img_size.x + (x % (lighting->map->img_size.x))];
+	loc = texcoord_to_loc(poly.p3, poly.uv, (t_vector2){x, y});
+	light_amount = get_lighting_for_pixel(&lighting->world->entitycache, loc);
+	clr = update_pixel_brightness(ft_clamp(light_amount, 0, 255), clr);
+	x = ft_clamp(x, 0, lighting->map->size.x - 1);
+	y = ft_clamp(y, 0, lighting->map->size.y - 1);
+	lighting->map->data[y * lighting->map->size.x + x] = clr;
+}
+
 void create_map_for_entity(t_entity *entity, struct s_world *world)
 {
 	t_lighting	lighting;
@@ -73,9 +89,9 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 		if (i + 1 == obj->face_count || index != obj->faces[i + 1].materialindex)
 		{
 			img = obj->materials[index].img;
-			max.x = fmaxf(max.x + 1.0f, 1.0f);
-			max.y = fmaxf(max.y + 1.0f, 1.0f);
-			entity->map[index].size = (t_point){max.x + 1, max.y + 3};
+			max.x = fmaxf(max.x, 1.0f);
+			max.y = fmaxf(max.y, 1.0f);
+			entity->map[index].size = (t_point){ceilf(max.x * img->size.x), ceilf(max.y * img->size.y)};
 			entity->map[index].img_size = img->size;
 			entity->map[index].data = malloc(sizeof(uint32_t) * entity->map[index].size.x * entity->map[index].size.y);
 			if (entity->map[index].data == NULL)
@@ -90,13 +106,20 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 				{
 					temp.p3[vertex] = entity->world_triangles[start].p[vertex].v;
 					
-					temp.p2[vertex].x = entity->world_triangles[start].t[vertex].u * (float)(img->size.x);
-					temp.p2[vertex].y = entity->world_triangles[start].t[vertex].v * (float)(img->size.y);
+					temp.p2[vertex].x = roundf(entity->world_triangles[start].t[vertex].u * (float)(img->size.x));
+					temp.p2[vertex].y = roundf(entity->world_triangles[start].t[vertex].v * (float)(img->size.y));
 					temp.uv[vertex] = (t_vector2){temp.p2[vertex].x, temp.p2[vertex].y}; // this is not needed
+				}
+				t_vector2 midpoint = vector2_div(vector2_add(vector2_add(point_to_vector2(temp.p2[0]), point_to_vector2(temp.p2[1])), point_to_vector2(temp.p2[2])), 3.0f);
+				for (int vertex = 0; vertex < 3; vertex++)
+				{
+					t_vector2 dir = vector2_sub(point_to_vector2(temp.p2[vertex]), midpoint);
+					temp.p2[vertex] = vector2_to_point(vector2_add(point_to_vector2(temp.p2[vertex]), vector2_mul(dir, 0.1f)));
 				}
 				rasterize_light(temp, &lighting);
 				start++;
 			}
+			int starttemp = start;
 			for (int e = 0; e < entity->map[index].size.y && 1; e++)
 			{
 				for (int j = 0; j < entity->map[index].size.x; j++)
@@ -109,7 +132,32 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 					Uint32 green = ((clr & 0x0000FF00) * light) >> 8;
 					Uint32 blue = ((clr & 0x000000FF) * light) >> 8;
 					clr = alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF);
-					entity->map[index].data[e * entity->map[index].size.x + j] = clr;
+					t_triangle_polygon temp;
+					start = starttemp;
+					while (start <= i)
+					{
+						for (int vertex = 0; vertex < 3; vertex++)
+						{
+							temp.p3[vertex] = entity->world_triangles[start].p[vertex].v;
+							temp.p2[vertex].x = roundf(entity->world_triangles[start].t[vertex].u * (float)(img->size.x));
+							temp.p2[vertex].y = roundf(entity->world_triangles[start].t[vertex].v * (float)(img->size.y));
+							temp.uv[vertex] = (t_vector2){temp.p2[vertex].x, temp.p2[vertex].y}; // this is not needed
+						}
+						t_vector2 midpoint = vector2_div(vector2_add(vector2_add(point_to_vector2(temp.p2[0]), point_to_vector2(temp.p2[1])), point_to_vector2(temp.p2[2])), 3.0f);
+						for (int vertex = 0; vertex < 3 && 0; vertex++)
+						{
+							t_vector2 dir = vector2_sub(point_to_vector2(temp.p2[vertex]), midpoint);
+							temp.p2[vertex] = vector2_to_point(vector2_add(point_to_vector2(temp.p2[vertex]), vector2_mul(dir, 0.05f)));
+						}
+						//t_vector2 bary = barycentric_coordinates(temp.p2, (t_point){j, e});
+						//rasterize_light(temp, &lighting);
+						start++;
+						if ((pointtrianglecollisionp((t_point){j, e}, temp.p2[0], temp.p2[1], temp.p2[2])))
+						{
+							entity->map[index].data[e * entity->map[index].size.x + j] = CLR_RED;
+							//sample_img(&lighting, j, e, temp);
+						}//
+					}
 				}
 			}
 			max.x = 0.0f;

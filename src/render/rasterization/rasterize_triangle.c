@@ -40,21 +40,21 @@ inline static void scanline(int ax, int bx, int y, t_point *p, t_texture *t, t_s
 	}
 	render_bitmask_row(ax, bx, dist * 1000.0f, tex.w * 1000.0f, y, sdl);
 }
+if (xsample < 0 || ysample < 0 || ysample * render->map.size.x + xsample > render->map.size.x * render->map.size.y)
+{
+	printf("xsample ysample %d %d\n%d %d %d %d\n%f %f\n", xsample, ysample, render->img->size.x, render->img->size.y, render->map.size.x, render->map.size.y, t.u, t.v);
+	exit(0);
+}
 */
 inline static uint32_t sample_img(t_render *render, t_texture t)
 {
 	uint32_t	xsample;
 	uint32_t	ysample;
 
-	xsample = t.u;
-	ysample = t.v;
-	xsample = xsample % (render->img->size.x);
-	ysample = ysample % (render->img->size.y);
-	if (xsample < 0 || ysample < 0 || xsample >= render->map.size.x + 1 || ysample >= render->map.size.y || ysample * render->map.size.x + xsample > render->map.size.x * render->map.size.y)
-	{
-		printf("%d %d\n%d %d\n%d %d\n", xsample, ysample, render->map.size.x, render->map.size.y, render->img->size.x, render->img->size.y);
-		exit(0);
-	}
+	xsample = t.u * render->img->size.x;
+	ysample = t.v * render->img->size.y;
+	xsample = ft_clamp(xsample, 0, render->map.size.x);
+	ysample = ft_clamp(ysample, 0, render->map.size.y);
 	return(render->map.data[ysample * render->map.size.x + xsample]);
 }
 
@@ -62,30 +62,34 @@ inline static void scanline(int ax, int bx, int y, t_point *p, t_texture *t, t_s
 {
 	t_texture	tex;
 	t_vector2	bary;
+	t_vector2	left;
+	t_vector2	right;
 	float		dist;
+	float		steps;
 
-	//printf("ax %d bx %d\n", ax, bx);
-	bary = barycentric_coordinates(p, (t_point){ax, y});
+	left = barycentric_coordinates(p, (t_point){ax + 1, y});
+	right = barycentric_coordinates(p, (t_point){bx, y});
+	bary = left;
 	dist = ft_flerp(t[0].w, t[1].w, bary.x) + ((t[2].w - t[0].w) * bary.y);
+	int start = ax;
+	steps = bx - start;
 	while(ax <= bx)
 	{
-		bary.x = fmaxf(bary.x, 0.0f);
-		bary.y = fmaxf(bary.y, 0.0f);
 		tex.w = ft_flerp(t[0].w, t[1].w, bary.x) + ((t[2].w - t[0].w) * bary.y);
-		if (tex.w > sdl->zbuffer[ax + y * sdl->window_w] && bary.x + bary.y <= 1.0f)
+		if (tex.w > sdl->zbuffer[ax + y * sdl->window_w])
 		{
 			tex.u = ft_flerp(t[0].u, t[1].u, bary.x) + ((t[2].u - t[0].u) * bary.y);
 			tex.v = ft_flerp(t[0].v, t[1].v, bary.x) + ((t[2].v - t[0].v) * bary.y);
-			tex.u = tex.u / tex.w;
-			tex.v = tex.v / tex.w;
+			tex.u = (tex.u / tex.w);
+			tex.v = (tex.v / tex.w);
 			sdl->zbuffer[ax + y * sdl->window_w] = tex.w;
 			((uint32_t *)sdl->surface->pixels)[ax + y * sdl->window_w] =
 				sample_img(&sdl->render, tex);
 		}
 		ax++;
-		bary = barycentric_coordinates(p, (t_point){ax, y});
+		bary = vector2_lerp(left, right, (float)(ax - start) / steps);
 	}
-	render_bitmask_row(ax, bx, dist * 1000.0f, tex.w * 1000.0f, y, sdl);
+	render_bitmask_row(start, bx, dist * 1000.0f, tex.w * 1000.0f, y, sdl);
 }
 
 static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle)
@@ -96,18 +100,16 @@ static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle)
 	float			delta;
 	float			w1;
 	float			w2;
-	t_step	left;
-	t_step right;
+	t_step			left;
+	t_step			right;
 
 	p = triangle.p;
 	t = triangle.t;
-	delta = p[1].y - p[0].y;
-	left.location = p[0].x;
-	left.step = (p[1].x - p[0].x) / delta;
-	right.location = p[0].x;
-	right.step = (p[2].x - p[0].x) / delta;
+	delta = 1.0f / (float)(p[1].y - p[0].y);
+	left = make_slope(p[0].x, p[1].x, delta);
+	right = make_slope(p[0].x, p[2].x, delta);
 	y = p[0].y;
-	while (y <= p[1].y)
+	while (y < p[1].y)
 	{
 		scanline(left.location, right.location, y, p, t, sdl);
 		left.location += left.step;
@@ -115,7 +117,6 @@ static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle)
 		y++;
 	}
 }
-#include <assert.h>
 
 static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle)
 {
@@ -125,18 +126,16 @@ static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle)
 	float			delta;
 	float			w1;
 	float			w2;
-	t_step	left;
-	t_step right;
+	t_step			left;
+	t_step			right;
 
 	p = triangle.p;
 	t = triangle.t;
-	delta = p[0].y - p[1].y;
-	left.location = p[1].x;
-	left.step = (p[0].x - p[1].x) / delta;
-	right.location = p[2].x;
-	right.step = (p[0].x - p[2].x) / delta;
+	delta = 1.0f / (float)(p[0].y - p[1].y);
+	left = make_slope(p[1].x, p[0].x, delta);
+	right = make_slope(p[2].x, p[0].x, delta);
 	y = p[1].y;
-	while (y <= p[0].y)
+	while (y < p[0].y)
 	{
 		scanline(left.location, right.location, y, p, t, sdl);
 		left.location += left.step;

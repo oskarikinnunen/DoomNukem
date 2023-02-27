@@ -11,6 +11,15 @@ uint32_t	update_pixel_brightness(uint8_t light, uint32_t clr)
     return(clr);
 }
 
+inline t_step	make_slope(int ax, int bx, float delta)
+{
+	t_step temp;
+
+	temp.location = ax;
+	temp.step = (bx - ax) * delta;
+	return(temp);
+}
+
 uint32_t	get_lighting_for_pixel(t_entitycache *cache, t_vector3 location)
 {
     int             j;

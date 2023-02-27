@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/17 14:20:08 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/02/27 14:01:10 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -407,4 +407,5 @@ t_vector2		fast_barycentric(t_point *p, t_barycentric b, t_point v);
 
 //normal barycentric coordinats x is delta value between p0 and p1 and y is delta between p1 and p2
 t_vector2		barycentric_coordinates(t_point *p, t_point v);
+
 #endif

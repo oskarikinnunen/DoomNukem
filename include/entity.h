@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/21 14:36:59 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/02/27 14:02:11 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,6 +126,8 @@ void	create_lightmap_for_entity(t_entity *entity, struct s_world *world);
 uint32_t	update_pixel_brightness(uint8_t light, uint32_t clr);
 uint32_t	get_lighting_for_pixel(t_entitycache *cache, t_vector3 location);
 t_vector3	texcoord_to_loc(t_vector3 ws[3], t_vector2 uv[3], t_vector2 p);
+t_step		make_slope(int ax, int bx, float delta);
+
 /* LIGHTING */
 void render_zbuffer(t_lighting *lighting, t_entity *entity);
 # endif
