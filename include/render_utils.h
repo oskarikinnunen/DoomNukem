@@ -9,6 +9,8 @@ typedef struct s_camera
 	t_mat4x4			matproj;
 	t_vector3			position;
 	t_vector3			lookdir;
+	t_vector3			right;
+	t_vector3			up;
 }	t_camera;
 
 #endif

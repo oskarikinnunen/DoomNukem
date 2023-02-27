@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/21 14:38:46 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/02/27 19:10:24 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,95 @@ void check_if_screen_has_black_pixel(t_world *world)
 		printf("no black pixels\n");
 }
 
+/*
+
+// Reconstruct worldspace depth value from z/w depth buffer
+float depth = -(z_near * z_far) / (zbuffer_depth * (z_far - z_near) - z_far);	
+
+// Compute screenspace coordinate of pixel
+float2 screenspace = (float2(pixel.xy) / float2(viewport_size.xy)) * 2.0f - 1.0f;
+
+// Get direction of ray from camera through pixel	
+float3 ray_direction = normalize(camera_forward + camera_right * screenspace.x - camera_up * screenspace.y);
+	
+// Reconstruct world position from depth: depth in z buffer is distance to picture plane, not camera
+float distance_to_camera = depth / dot(ray_direction, camera_forward);
+float3 world_position = camera_position + ray_direction * distance_to_camera;
+inline static t_vector3 get_pixel_worldpos(float x, float y, t_sdlcontext *sdl)
+{
+	
+	float zbuffer_depth = sdl->zbuffer[(int)(y * sdl->window_w + x)];
+	float depth = -(z_near * z_far) / (zbuffer_depth * (z_far - z_near) - z_far);	
+	t_vector2 screenspace;
+	screenspace.x = (x / (float)sdl->window_w) * 2.0f - 1.0f;
+	screenspace.y = (y / (float)sdl->window_h) * 2.0f - 1.0f;
+	t_vector3 ray_direction;
+	ray_direction = vector3_add(sdl->render.camera.lookdir, vector3_mul(sdl->render.camera.right, screenspace.x));
+	ray_direction = vector3_sub(ray_direction, vector3_mul(sdl->render.camera.up, screenspace.y));
+	ray_direction = vector3_normalise(ray_direction);
+	
+	float distance_to_camera = depth / vector3_dot(ray_direction, sdl->render.camera.lookdir);
+	return (vector3_add(sdl->render.camera.position, vector3_mul(ray_direction, distance_to_camera)));
+}
+float3 VSPositionFromDepth(float2 vTexCoord)
+{
+    // Get the depth value for this pixel
+    float z = tex2D(DepthSampler, vTexCoord);  
+    // Get x/w and y/w from the viewport position
+    float x = vTexCoord.x * 2 - 1;
+    float y = (1 - vTexCoord.y) * 2 - 1;
+    float4 vProjectedPos = float4(x, y, z, 1.0f);
+    // Transform by the inverse projection matrix
+    float4 vPositionVS = mul(vProjectedPos, g_matInvProjection);  
+    // Divide by w to get the view-space position
+    return vPositionVS.xyz / vPositionVS.w;  
+}
+*/
+
+//WorldPosition = CameraPosition + CameraVector * CustomDepth.r / dot(CameraVector, CameraDirectionVector)
+# define z_near 2.0f
+# define z_far 1000.0f
+
+inline static t_vector3 get_pixel_worldpos(float x, float y, t_sdlcontext *sdl)
+{
+	t_vector2 xy;
+	float z = sdl->zbuffer[(int)(y * sdl->window_w + x)];
+
+	xy.x = x * 2.0f - 1.0f;
+	xy.y = (1.0f - y) * 2.0f - 1.0f;
+	t_quaternion vprojectedpos = (t_quaternion){xy.x, xy.y, z, 1.0f};
+	t_quaternion vpositionvs = quaternion_mul_matrix(matrix_quickinverse(sdl->render.camera.matproj), vprojectedpos);
+	return (vector3_div(vpositionvs.v, vpositionvs.w));
+
+}
+
+inline static uint32_t sample_img(t_world *world, t_sdlcontext *sdl, int x, int y)
+{
+    t_vector3       loc;
+    t_quaternion    q;
+	uint32_t		clr;
+	uint32_t		light_amount;
+	
+	clr = ((uint32_t *)sdl->surface->pixels)[y * sdl->window_w + x];
+	loc = get_pixel_worldpos(x, y, sdl);
+	light_amount = get_lighting_for_pixel(&world->entitycache, loc);
+	//print_vector3(loc);
+	//printf("light_ amount %d\n", light_amount);
+	clr = update_pixel_brightness(ft_clamp(light_amount, 0, 255), clr);
+	return(clr);
+}
+
+static void realtime_lighting(t_world *world, t_sdlcontext *sdl)
+{
+	for (int y = 0; y < sdl->window_h; y++)
+	{
+		for (int x = 0; x < sdl->window_w; x++)
+		{
+			((uint32_t *)sdl->surface->pixels)[y * sdl->window_w + x] = sample_img(world, sdl, x, y);
+		}
+	}
+}
+
 void update_world3d(t_world *world, t_render *render)
 {
 	t_list			*l;
@@ -136,6 +225,8 @@ void update_world3d(t_world *world, t_render *render)
 	if (!sdl->global_wireframe && !world->skybox.hidden)
 		render_entity(sdl, render, &world->skybox);
 	bitmask_to_pixels(sdl);
+	if (sdl->lighting_toggled && 0)
+		realtime_lighting(world, sdl);
 	rescale_surface(sdl);
 	show_navmesh(world);
 	lateupdate_entitycache(sdl, world);

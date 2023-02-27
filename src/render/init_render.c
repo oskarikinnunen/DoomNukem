@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/16 17:46:37 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/02/27 18:42:44 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,49 @@ void	render_start(t_camera *camera)
 	camera->matview = matrix_quickinverse(matcamera);
 }
 
+/*
+DirectX::XMVECTOR Camera::getDirection() const noexcept
+{
+    // camDirection = camPosition - camTarget
+    const dx::XMVECTOR forwardVector{0.0f, 0.0f, 1.0f, 0.0f};
+    const auto lookVector = dx::XMVector3Transform( forwardVector,
+        dx::XMMatrixRotationRollPitchYaw( m_pitch, m_yaw, 0.0f ) );
+    const auto camPosition = dx::XMLoadFloat3( &m_position );
+    const auto camTarget = dx::XMVectorAdd( camPosition,
+        lookVector );
+    return dx::XMVector3Normalize( dx::XMVectorSubtract( camPosition,
+        camTarget ) );
+}
+
+DirectX::XMVECTOR Camera::getRight() const noexcept
+{
+    const dx::XMVECTOR upVector{0.0f, 1.0f, 0.0f, 0.0f};
+    return dx::XMVector3Cross( upVector,
+        getDirection() );
+}
+
+DirectX::XMVECTOR Camera::getUp() const noexcept
+{
+    return dx::XMVector3Cross( getDirection(),
+        getRight() );
+}
+*/
+static t_vector3 camera_right(t_camera camera)
+{
+	return (vector3_crossproduct((t_vector3){.z = 1.0f}, camera.lookdir));
+}
+
+static t_vector3 camera_up(t_camera camera)
+{
+	return(vector3_crossproduct(camera.lookdir, camera.right));
+}
+
 void update_render(t_render *render, t_player *player)
 {
 	render->camera.lookdir = player->lookdir;
 	render->camera.position = player->headposition;
+	render->camera.right = camera_right(render->camera);
+	render->camera.up = camera_up(render->camera);
 }
 
 void	free_render(t_render render)

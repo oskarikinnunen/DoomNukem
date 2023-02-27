@@ -98,7 +98,7 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 				doomlog(LOG_FATAL, "Malloc fail in bake_lighting.c");
 			lighting.map = &entity->map[index];
 			lighting.img = img->data;
-			while (start <= i && 0)
+			while (start <= i && 1)
 			{
 				t_triangle_polygon temp;
 
@@ -120,7 +120,7 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 				start++;
 			}
 			int starttemp = start;
-			for (int e = 0; e < entity->map[index].size.y && 1; e++)
+			for (int e = 0; e < entity->map[index].size.y && 0; e++)
 			{
 				for (int j = 0; j < entity->map[index].size.x; j++)
 				{
@@ -132,32 +132,7 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 					Uint32 green = ((clr & 0x0000FF00) * light) >> 8;
 					Uint32 blue = ((clr & 0x000000FF) * light) >> 8;
 					clr = alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF);
-					t_triangle_polygon temp;
-					start = starttemp;
-					while (start <= i)
-					{
-						for (int vertex = 0; vertex < 3; vertex++)
-						{
-							temp.p3[vertex] = entity->world_triangles[start].p[vertex].v;
-							temp.p2[vertex].x = roundf(entity->world_triangles[start].t[vertex].u * (float)(img->size.x));
-							temp.p2[vertex].y = roundf(entity->world_triangles[start].t[vertex].v * (float)(img->size.y));
-							temp.uv[vertex] = (t_vector2){temp.p2[vertex].x, temp.p2[vertex].y}; // this is not needed
-						}
-						t_vector2 midpoint = vector2_div(vector2_add(vector2_add(point_to_vector2(temp.p2[0]), point_to_vector2(temp.p2[1])), point_to_vector2(temp.p2[2])), 3.0f);
-						for (int vertex = 0; vertex < 3 && 0; vertex++)
-						{
-							t_vector2 dir = vector2_sub(point_to_vector2(temp.p2[vertex]), midpoint);
-							temp.p2[vertex] = vector2_to_point(vector2_add(point_to_vector2(temp.p2[vertex]), vector2_mul(dir, 0.05f)));
-						}
-						//t_vector2 bary = barycentric_coordinates(temp.p2, (t_point){j, e});
-						//rasterize_light(temp, &lighting);
-						start++;
-						if ((pointtrianglecollisionp((t_point){j, e}, temp.p2[0], temp.p2[1], temp.p2[2])))
-						{
-							entity->map[index].data[e * entity->map[index].size.x + j] = CLR_RED;
-							//sample_img(&lighting, j, e, temp);
-						}//
-					}
+					entity->map[index].data[e * entity->map[index].size.x + j] = clr;
 				}
 			}
 			max.x = 0.0f;
