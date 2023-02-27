@@ -18,16 +18,22 @@ inline static void scanline(int ax, int bx, int y, t_point *p, t_texture *t, t_s
 {
 	t_texture	tex;
 	t_vector2	bary;
+	t_vector2	end;
+	t_vector2	start;
 	float		dist;
 
 	bary = barycentric_coordinates(p, (t_point){ax, y});
+	start = bary;
+	end = barycentric_coordinates(p, (t_point){bx, y});
 	dist = ft_flerp(t[0].w, t[1].w, bary.x) + ((t[2].w - t[0].w) * bary.y);
+	int temp = ax;
+	float steps = bx - ax;
 	while(ax <= bx)
 	{
 		//bary.x = fmaxf(bary.x, 0.0f);
 		//bary.y = fmaxf(bary.y, 0.0f);
 		tex.w = ft_flerp(t[0].w, t[1].w, bary.x) + ((t[2].w - t[0].w) * bary.y);
-		if (tex.w > sdl->zbuffer[ax + y * sdl->window_w] && bary.x >= -0.01f && bary.y >= -0.01f && bary.x + bary.y <= 1.01f) // && bary.x >= 0.0f && bary.y >= 0.0f && bary.x + bary.y <= 1.0f
+		if (tex.w > sdl->zbuffer[ax + y * sdl->window_w]) // && bary.x >= 0.0f && bary.y >= 0.0f && bary.x + bary.y <= 1.0f
 		{
 			tex.u = ft_flerp(t[0].u, t[1].u, bary.x) + ((t[2].u - t[0].u) * bary.y);
 			tex.v = ft_flerp(t[0].v, t[1].v, bary.x) + ((t[2].v - t[0].v) * bary.y);
@@ -38,7 +44,9 @@ inline static void scanline(int ax, int bx, int y, t_point *p, t_texture *t, t_s
 				sample_img_dynamic(&sdl->render, tex);
 		}
 		ax++;
-		bary = barycentric_coordinates(p, (t_point){ax, y});
+		bary.x = ft_flerp(start.x, end.x, (float)(ax - temp) / steps);
+		bary.y = ft_flerp(start.y, end.y, (float)(ax - temp) / steps);
+		//bary = barycentric_coordinates(p, (t_point){ax, y});
 	}
 	render_bitmask_row(ax, bx, dist * 1000.0f, tex.w * 1000.0f, y, sdl);
 }
