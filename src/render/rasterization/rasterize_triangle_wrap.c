@@ -5,8 +5,8 @@ inline static uint32_t sample_img_dynamic(t_render *render, t_texture t)
 	uint32_t	xsample;
 	uint32_t	ysample;
 
-	xsample = t.u;
-	ysample = t.v;
+//	xsample = t.u;
+//	ysample = t.v;
 	xsample = (t.u * render->img->size.x);
 	ysample = (t.v * render->img->size.y);
 	xsample = xsample % (render->img->size.x);
@@ -27,7 +27,7 @@ inline static void scanline(int ax, int bx, int y, t_point *p, t_texture *t, t_s
 		//bary.x = fmaxf(bary.x, 0.0f);
 		//bary.y = fmaxf(bary.y, 0.0f);
 		tex.w = ft_flerp(t[0].w, t[1].w, bary.x) + ((t[2].w - t[0].w) * bary.y);
-		if (tex.w > sdl->zbuffer[ax + y * sdl->window_w]) // && bary.x >= 0.0f && bary.y >= 0.0f && bary.x + bary.y <= 1.0f
+		if (tex.w > sdl->zbuffer[ax + y * sdl->window_w] && bary.x >= -0.01f && bary.y >= -0.01f && bary.x + bary.y <= 1.01f) // && bary.x >= 0.0f && bary.y >= 0.0f && bary.x + bary.y <= 1.0f
 		{
 			tex.u = ft_flerp(t[0].u, t[1].u, bary.x) + ((t[2].u - t[0].u) * bary.y);
 			tex.v = ft_flerp(t[0].v, t[1].v, bary.x) + ((t[2].v - t[0].v) * bary.y);
@@ -43,6 +43,16 @@ inline static void scanline(int ax, int bx, int y, t_point *p, t_texture *t, t_s
 	render_bitmask_row(ax, bx, dist * 1000.0f, tex.w * 1000.0f, y, sdl);
 }
 
+inline static t_step	make_slope(int ax, int bx, float delta)
+{
+	t_step temp;
+
+	temp.location = ax;
+	temp.step = (bx - ax) * delta;
+	return(temp);
+}
+
+
 static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle)
 {
 	t_point			*p;
@@ -57,10 +67,8 @@ static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle)
 	p = triangle.p;
 	t = triangle.t;
 	delta = 1.0f / (p[1].y - p[0].y);
-	left.location = p[0].x;
-	left.step = (p[1].x - p[0].x) * delta;
-	right.location = p[0].x;
-	right.step = (p[2].x - p[0].x) * delta;
+	left = make_slope(p[0].x, p[1].x, delta);
+	right = make_slope(p[0].x, p[2].x, delta);
 	y = p[0].y;
 	while (y < p[1].y)
 	{
@@ -87,10 +95,8 @@ static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle)
 	p = triangle.p;
 	t = triangle.t;
 	delta = 1.0f / (p[0].y - p[1].y);
-	left.location = p[1].x;
-	left.step = (p[0].x - p[1].x) * delta;
-	right.location = p[2].x;
-	right.step = (p[0].x - p[2].x) * delta;
+	left = make_slope(p[1].x, p[0].x, delta);
+	right = make_slope(p[2].x, p[0].x, delta);
 	y = p[1].y;
 	while (y < p[0].y)
 	{
@@ -98,67 +104,6 @@ static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle)
 		left.location += left.step;
 		right.location += right.step;
 		y++;
-	}
-}
-
-t_step	make_slope(int ax, int bx, float steps)
-{
-	t_step temp;
-
-	temp.location = ax;
-	temp.step = (bx - ax) * (1.0f / steps);
-	return(temp);
-}
-
-
-/*
-if (p[2].x < p[1].x && shortside == false)
-	{
-		for (int i = 0; i < 3; i++)
-			print_point(p[i]);
-		exit(0);
-	}
-	*/
-static void fill_triangle(t_sdlcontext *sdl, t_point_triangle triangle)
-{
-	t_point			*p;
-	t_texture		*t;
-	int				y;
-	float			delta;
-	float			w1;
-	float			w2;
-	t_step			sides[2];
-	t_step			left;
-	t_step			right;
-
-	p = triangle.p;
-	t = triangle.t;
-	bool shortside = (p[1].y - p[2].y) * (p[0].x - p[2].x) < (p[1].x - p[2].x) * (p[0].y - p[2].y);
-	
-	sides[!shortside] = make_slope(p[2].x, p[0].x, p[0].y - p[2].y);
-	if (p[2].y < p[1].y)
-	{
-		sides[shortside] = make_slope(p[2].x, p[1].x, p[1].y - p[2].y);
-		y = p[2].y;
-		while (y < p[1].y)
-		{
-			scanline(sides[0].location, sides[1].location, y, p, t, sdl);
-			sides[0].location += sides[0].step;
-			sides[1].location += sides[1].step;
-			y++;
-		}
-	}
-	if (p[1].y < p[0].y)
-	{
-		sides[shortside] = make_slope(p[1].x, p[0].x, p[0].y - p[1].y);
-		y = p[1].y;
-		while (y < p[0].y)
-		{
-			scanline(sides[0].location, sides[1].location, y, p, t, sdl);
-			sides[0].location += sides[0].step;
-			sides[1].location += sides[1].step;
-			y++;
-		}
 	}
 }
 
@@ -174,19 +119,31 @@ void	render_triangle_unlit(t_sdlcontext *sdl, t_render *render, int index)
 
 	
 	triangle = render->screenspace_ptris[index];
-	p = triangle.p;
-	if (p[0].y == p[2].y)
-		return;
 	if (sdl->ps1_tri_div > 1)
 		triangle = ps1(triangle, sdl->ps1_tri_div);
+	p = triangle.p;
 	sort_point_uv_tri(triangle.p, triangle.t);
-	if (p[0].x > p[1].x && p[0].y == p[1].y)
+	lerp = ((float)p[1].y - (float)p[2].y) / ((float)p[0].y - (float)p[2].y);
+	p_split.x = p[2].x + (lerp * ((float)p[0].x - (float)p[2].x));
+	p_split.y = p[1].y;
+	t_split.u = ft_flerp(triangle.t[2].u, triangle.t[0].u, lerp);
+	t_split.v = ft_flerp(triangle.t[2].v, triangle.t[0].v, lerp);
+	t_split.w = ft_flerp(triangle.t[2].w, triangle.t[0].w, lerp);
+	if (p_split.x < p[1].x)
 	{
-		ft_swap(&p[1], &p[0], sizeof(t_point));
-		ft_swap(&triangle.t[1], &triangle.t[0], sizeof(t_texture));
+		ft_swap(&p[1], &p_split, sizeof(t_point));
+		ft_swap(&triangle.t[1], &t_split, sizeof(t_texture));
 	}
-	fill_triangle(sdl, triangle);
-	return;
+	p_temp = p[2];
+	t_temp = triangle.t[2];
+	p[2] = p_split;
+	triangle.t[2] = t_split;
+	if (p[0].y != p[1].y && p[1].x != p[2].x)
+		fill_point_tri_top(sdl, triangle);
+	p[0] = p_temp;
+	triangle.t[0] = t_temp;
+	if (p[0].y != p[1].y && p[1].x != p[2].x)
+		fill_point_tri_bot(sdl, triangle);
 }
 
 /*
