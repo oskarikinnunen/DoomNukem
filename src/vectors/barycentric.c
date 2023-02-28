@@ -24,10 +24,10 @@ t_vector2	fast_barycentric(t_vector2 *p, t_barycentric b, t_vector2 v)
 
 t_vector2	barycentric_coordinates(t_vector2 *p, t_vector2 v)
 {
-    double       b1;
-    double       b2;
-    double       b3;
-    double       b4;
+    float       b1;
+    float       b2;
+    float       b3;
+    float       b4;
     t_vector2   w;
 
     b1 = p[2].y - p[0].y;
