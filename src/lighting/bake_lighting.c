@@ -91,7 +91,7 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 			img = obj->materials[index].img;
 			max.x = fmaxf(max.x, 1.0f);
 			max.y = fmaxf(max.y, 1.0f);
-			entity->map[index].size = (t_point){ceilf(max.x * img->size.x), ceilf(max.y * img->size.y)};
+			entity->map[index].size = (t_point){ceilf(max.x), ceilf(max.y)};
 			entity->map[index].img_size = img->size;
 			entity->map[index].data = malloc(sizeof(uint32_t) * entity->map[index].size.x * entity->map[index].size.y);
 			if (entity->map[index].data == NULL)
@@ -105,16 +105,10 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 				for (int vertex = 0; vertex < 3; vertex++)
 				{
 					temp.p3[vertex] = entity->world_triangles[start].p[vertex].v;
-					
-					temp.p2[vertex].x = roundf(entity->world_triangles[start].t[vertex].u * (float)(img->size.x));
-					temp.p2[vertex].y = roundf(entity->world_triangles[start].t[vertex].v * (float)(img->size.y));
+					temp.p2[vertex].x = (entity->world_triangles[start].t[vertex].u);
+					temp.p2[vertex].y = (entity->world_triangles[start].t[vertex].v);
+				//	temp.p2[vertex] = vector2_add_xy(temp.p2[vertex], 0.5f);
 					temp.uv[vertex] = (t_vector2){temp.p2[vertex].x, temp.p2[vertex].y}; // this is not needed
-				}
-				t_vector2 midpoint = vector2_div(vector2_add(vector2_add((temp.p2[0]), (temp.p2[1])), (temp.p2[2])), 3.0f);
-				for (int vertex = 0; vertex < 3; vertex++)
-				{
-					t_vector2 dir = vector2_sub((temp.p2[vertex]), midpoint);
-					temp.p2[vertex] = vector2_add((temp.p2[vertex]), vector2_mul(dir, 0.1f));
 				}
 				rasterize_light(temp, &lighting);
 				start++;

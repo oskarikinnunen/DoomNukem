@@ -43,12 +43,10 @@ inline static void scanline(int ax, int bx, int y, t_vector2*p, t_texture *t, t_
 
 static void render_flat_top_tri(t_sdlcontext *sdl, t_point_triangle triangle)
 {
-	t_vector2			*p;
+	t_vector2		*p;
 	t_texture		*t;
 	int				y;
 	float			delta;
-	float			w1;
-	float			w2;
 	t_step			left;
 	t_step			right;
 	int				endy;
@@ -70,12 +68,10 @@ static void render_flat_top_tri(t_sdlcontext *sdl, t_point_triangle triangle)
 
 static void render_flat_bot_tri(t_sdlcontext *sdl, t_point_triangle triangle)
 {
-	t_vector2			*p;
+	t_vector2		*p;
 	t_texture		*t;
 	int				y;
 	float			delta;
-	float			w1;
-	float			w2;
 	t_step			left;
 	t_step			right;
 	int				endy;
@@ -98,14 +94,13 @@ static void render_flat_bot_tri(t_sdlcontext *sdl, t_point_triangle triangle)
 void	render_triangle_unlit(t_sdlcontext *sdl, t_render *render, int index)
 {
 	t_point_triangle	triangle;
-	t_vector2				p_split;
+	t_vector2			p_split;
 	t_texture			t_split;
 	t_texture			t_temp;
-	t_vector2				p_temp;
-	t_vector2				*p;
+	t_vector2			p_temp;
+	t_vector2			*p;
 	float				lerp;
 
-	
 	triangle = render->screenspace_ptris[index];
 	if (sdl->ps1_tri_div > 1)
 		triangle = ps1(triangle, sdl->ps1_tri_div);
@@ -133,15 +128,13 @@ void	render_triangle_unlit(t_sdlcontext *sdl, t_render *render, int index)
 	}
 	else
 	{
-		float alphasplit = (p[1].y - p[2].y) / (p[0].y - p[2].y);
+		float delta = (p[1].y - p[2].y) / (p[0].y - p[2].y);
 
-		t_vector2 vi = vector2_mul(vector2_add(p[2], vector2_sub(p[0], p[2])), alphasplit);
-
-		p_split.x = p[2].x + (alphasplit * (p[0].x - p[2].x));
+		p_split.x = ft_flerp(p[2].x, p[0].x, delta);
 		p_split.y = p[1].y;
-		t_split.u = ft_flerp(triangle.t[2].u, triangle.t[0].u, alphasplit);
-		t_split.v = ft_flerp(triangle.t[2].v, triangle.t[0].v, alphasplit);
-		t_split.w = ft_flerp(triangle.t[2].w, triangle.t[0].w, alphasplit);
+		t_split.u = ft_flerp(triangle.t[2].u, triangle.t[0].u, delta);
+		t_split.v = ft_flerp(triangle.t[2].v, triangle.t[0].v, delta);
+		t_split.w = ft_flerp(triangle.t[2].w, triangle.t[0].w, delta);
 		if (p_split.x < p[1].x)
 		{
 			ft_swap(&p[1], &p_split, sizeof(t_vector2));

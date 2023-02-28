@@ -120,6 +120,8 @@ void	doomnukem(int argc, char **argv)
 	}
 }
 
+/*
+
 int	main(int argc, char **argv)
 {
 	pid_t	pid;
@@ -131,12 +133,21 @@ int	main(int argc, char **argv)
 		doomlog(LOG_EC_FORK, "couldn't create a child process for the game");
 		error_window("couldn't launch the game due to a fork fail");
 	}
-	if (pid == 0) // child process is always pid 0*/
+	if (pid == 0) // child process is always pid 0*//*
 		doomnukem(argc, argv);
 	else
 	{
 		wait(&wait_status);
 		handle_exit(wait_status);
 	}
+	return (0);
+}
+*/
+int	main(int argc, char **argv)
+{
+	pid_t	pid;
+	int		wait_status;
+
+	doomnukem(argc, argv);
 	return (0);
 }
