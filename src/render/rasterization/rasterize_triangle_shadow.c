@@ -16,7 +16,7 @@ static void sample_img(t_lighting *lighting, int x, int y, t_triangle_polygon po
 
 inline static void scanline(int ax, int bx, int y, t_lighting *lighting, t_triangle_polygon poly)
 {
-	t_point		*p;
+	t_vector2	*p;
 	t_vector2	bary;
 	t_vector2	left;
 	t_vector2	right;
@@ -26,8 +26,8 @@ inline static void scanline(int ax, int bx, int y, t_lighting *lighting, t_trian
 	ax = ft_clamp(ax, 0, lighting->map->size.x - 1);
 	bx = ft_clamp(bx, 0, lighting->map->size.x - 1);
 	y = ft_clamp(y, 0, lighting->map->size.y - 1);
-	left = barycentric_coordinates(p, (t_point){ax, y});
-	right = barycentric_coordinates(p, (t_point){bx, y});
+	left = barycentric_coordinates(p, (t_vector2){ax, y});
+	right = barycentric_coordinates(p, (t_vector2){bx, y});
 	bary = left;
 	int start = ax;
 	steps = bx - start;
@@ -41,7 +41,7 @@ inline static void scanline(int ax, int bx, int y, t_lighting *lighting, t_trian
 
 static void fill_point_tri_bot(t_lighting *lighting, t_triangle_polygon triangle)
 {
-	t_point			*p;
+	t_vector2			*p;
 	t_texture		*t;
 	int				y;
 	float			delta;
@@ -64,7 +64,7 @@ static void fill_point_tri_bot(t_lighting *lighting, t_triangle_polygon triangle
 
 static void fill_point_tri_top(t_lighting *lighting, t_triangle_polygon triangle)
 {
-	t_point			*p;
+	t_vector2			*p;
 	int				y;
 	float			delta;
 	t_step			left;
@@ -89,7 +89,7 @@ static void fill_point_tri_top(t_lighting *lighting, t_triangle_polygon triangle
 //w2 = (float)(y - p[0].y - w1 * (float)(p[1].y - p[0].y)) / (float)(p[2].y - p[0].y);
 static void	rasterize_triangle_bounds(t_triangle_polygon triangle, t_square bounds, t_lighting *lighting)
 {
-	t_point	*p;
+	t_vector2	*p;
 	int x;
 	int y;
 	float w1, w2;
@@ -111,13 +111,13 @@ static void	rasterize_triangle_bounds(t_triangle_polygon triangle, t_square boun
 
 void	rasterize_light(t_triangle_polygon triangle, t_lighting *lighting)
 {
-	t_point			p2_split;
+	t_vector2			p2_split;
 	t_vector2		uv_split;
 	t_vector3		p3_split;
-	t_point			p2_temp;
+	t_vector2			p2_temp;
 	t_vector2		uv_temp;
 	t_vector3		p3_temp;
-	t_point			*p2;
+	t_vector2			*p2;
 	t_vector3		*p3;
 	float			lerp;
 
@@ -133,7 +133,7 @@ void	rasterize_light(t_triangle_polygon triangle, t_lighting *lighting)
 	p3_split = vector3_lerp(p3[2], p3[0], lerp);
 	if (p2_split.x < p2[1].x)
 	{
-		ft_swap(&p2[1], &p2_split, sizeof(t_point));
+		ft_swap(&p2[1], &p2_split, sizeof(t_vector2));
 		ft_swap(&triangle.uv[1], &uv_split, sizeof(t_vector2));
 		ft_swap(&p3[1], &p3_split, sizeof(t_vector3));
 	}
@@ -155,13 +155,13 @@ void	rasterize_light(t_triangle_polygon triangle, t_lighting *lighting)
 /*
 void	rasterize_light(t_triangle_polygon triangle, t_lighting *lighting)
 {
-	t_point			p2_split;
+	t_vector2			p2_split;
 	t_vector2		uv_split;
 	t_vector3		p3_split;
-	t_point			p2_temp;
+	t_vector2			p2_temp;
 	t_vector2		uv_temp;
 	t_vector3		p3_temp;
-	t_point			*p2;
+	t_vector2			*p2;
 	t_vector3		*p3;
 	float			lerp;
 
@@ -177,7 +177,7 @@ void	rasterize_light(t_triangle_polygon triangle, t_lighting *lighting)
 	p3_split = vector3_lerp(p3[2], p3[0], lerp);
 	if (p2_split.x < p2[1].x)
 	{
-		ft_swap(&p2[1], &p2_split, sizeof(t_point));
+		ft_swap(&p2[1], &p2_split, sizeof(t_vector2));
 		ft_swap(&triangle.uv[1], &uv_split, sizeof(t_vector2));
 		ft_swap(&p3[1], &p3_split, sizeof(t_vector3));
 	}

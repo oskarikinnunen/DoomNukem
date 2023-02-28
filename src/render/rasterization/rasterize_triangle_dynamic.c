@@ -27,9 +27,9 @@ static uint32_t sample_img_dynamic(t_render *render, t_texture t)
 
 static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_render *render)
 {
-	t_point			*p;
+	t_vector2			*p;
 	t_texture		*t;
-	//t_point		t[3];
+	//t_vector2		t[3];
 	float			step[2];
 	t_texture		t_step[3];
 	int				x;
@@ -80,7 +80,7 @@ static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 
 static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle, t_render *render)
 {
-	t_point			*p;
+	t_vector2			*p;
 	t_texture		*t;
 	float			step[2];
 	t_texture		t_step[3];
@@ -132,11 +132,11 @@ static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle, t_r
 void	render_triangle_dynamic(t_sdlcontext *sdl, t_render *render, int index)
 {
 	t_point_triangle	triangle;
-	t_point				p_split;
+	t_vector2				p_split;
 	t_texture			t_split;
 	t_texture			t_temp;
-	t_point				p_temp;
-	t_point				*p;
+	t_vector2				p_temp;
+	t_vector2				*p;
 	float				lerp;
 
 	triangle = render->screenspace_ptris[index];
@@ -153,7 +153,7 @@ void	render_triangle_dynamic(t_sdlcontext *sdl, t_render *render, int index)
 
 	if (p_split.x < p[1].x)
 	{
-		ft_swap(&p[1], &p_split, sizeof(t_point));
+		ft_swap(&p[1], &p_split, sizeof(t_vector2));
 		ft_swap(&triangle.t[1], &t_split, sizeof(t_texture));
 	}
 	p_temp = p[2];

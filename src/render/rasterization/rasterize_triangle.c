@@ -13,14 +13,14 @@ inline static uint32_t sample_img(t_render *render, t_texture t)
 	return(render->map.data[ysample * render->map.size.x + xsample]);
 }
 
-inline static void scanline(int ax, int bx, int y, t_point *p, t_texture *t, t_sdlcontext *sdl)
+inline static void scanline(int ax, int bx, int y, t_vector2 *p, t_texture *t, t_sdlcontext *sdl)
 {
 	t_texture	tex;
 	t_vector2	bary;
 	float		dist;
 
 	//printf("ax %d bx %d\n", ax, bx);
-	bary = barycentric_coordinates(p, (t_point){ax, y});
+	bary = barycentric_coordinates(p, (t_vector2){ax, y});
 	dist = ft_flerp(t[0].w, t[1].w, bary.x) + ((t[2].w - t[0].w) * bary.y);
 	while(ax <= bx)
 	{
@@ -36,7 +36,7 @@ inline static void scanline(int ax, int bx, int y, t_point *p, t_texture *t, t_s
 				sample_img(&sdl->render, tex);
 		}
 		ax++;
-		bary = barycentric_coordinates(p, (t_point){ax, y});
+		bary = barycentric_coordinates(p, (t_vector2){ax, y});
 	}
 	render_bitmask_row(ax, bx, dist * 1000.0f, tex.w * 1000.0f, y, sdl);
 }
@@ -58,7 +58,7 @@ inline static uint32_t sample_img(t_render *render, t_texture t)
 	return(render->map.data[ysample * render->map.size.x + xsample]);
 }
 
-inline static void scanline(int ax, int bx, int y, t_point *p, t_texture *t, t_sdlcontext *sdl)
+inline static void scanline(int ax, int bx, int y, t_vector2 *p, t_texture *t, t_sdlcontext *sdl)
 {
 	t_texture	tex;
 	t_vector2	bary;
@@ -67,8 +67,8 @@ inline static void scanline(int ax, int bx, int y, t_point *p, t_texture *t, t_s
 	float		dist;
 	float		steps;
 
-	left = barycentric_coordinates(p, (t_point){ax + 1, y});
-	right = barycentric_coordinates(p, (t_point){bx, y});
+	left = barycentric_coordinates(p, (t_vector2){ax + 1, y});
+	right = barycentric_coordinates(p, (t_vector2){bx, y});
 	bary = left;
 	dist = ft_flerp(t[0].w, t[1].w, bary.x) + ((t[2].w - t[0].w) * bary.y);
 	int start = ax;
@@ -92,9 +92,9 @@ inline static void scanline(int ax, int bx, int y, t_point *p, t_texture *t, t_s
 	render_bitmask_row(start, bx, dist, tex.w, y, sdl);
 }
 
-static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle)
+static void render_flat_bot_tri(t_sdlcontext *sdl, t_point_triangle triangle)
 {
-	t_point			*p;
+	t_vector2			*p;
 	t_texture		*t;
 	int				y;
 	float			delta;
@@ -118,9 +118,9 @@ static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle)
 	}
 }
 
-static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle)
+static void render_flat_top_tri(t_sdlcontext *sdl, t_point_triangle triangle)
 {
-	t_point			*p;
+	t_vector2			*p;
 	t_texture		*t;
 	int				y;
 	float			delta;
@@ -146,18 +146,18 @@ static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle)
 
 /*
 creates two triangles from the given triangle one flat top and one flat bottom.
-both triangles are then assigned to t_point p[3] array and passed onto fill_tri_bot/top functions.
+both triangles are then assigned to t_vector2 p[3] array and passed onto fill_tri_bot/top functions.
 p[0] is always the pointy head of the triangle p[1] and p[2] are flat points where, p[1] x is smaller than p[2]
 */
 
 void	render_triangle_lit(t_sdlcontext *sdl, t_render *render, int index)
 {
 	t_point_triangle	triangle;
-	t_point				p_split;
+	t_vector2				p_split;
 	t_texture			t_split;
 	t_texture			t_temp;
-	t_point				p_temp;
-	t_point				*p;
+	t_vector2				p_temp;
+	t_vector2				*p;
 	float				lerp;
 
 	triangle = render->screenspace_ptris[index];
@@ -173,7 +173,7 @@ void	render_triangle_lit(t_sdlcontext *sdl, t_render *render, int index)
 	t_split.w = ft_flerp(triangle.t[2].w, triangle.t[0].w, lerp);
 	if (p_split.x < p[1].x)
 	{
-		ft_swap(&p[1], &p_split, sizeof(t_point));
+		ft_swap(&p[1], &p_split, sizeof(t_vector2));
 		ft_swap(&triangle.t[1], &t_split, sizeof(t_texture));
 	}
 	p_temp = p[2];
@@ -181,9 +181,9 @@ void	render_triangle_lit(t_sdlcontext *sdl, t_render *render, int index)
 	p[2] = p_split;
 	triangle.t[2] = t_split;
 	if (p[0].y != p[1].y && p[1].x != p[2].x)
-		fill_point_tri_top(sdl, triangle);
+		render_flat_top_tri(sdl, triangle);
 	p[0] = p_temp;
 	triangle.t[0] = t_temp;
 	if (p[0].y != p[1].y && p[1].x != p[2].x)
-		fill_point_tri_bot(sdl, triangle);
+		render_flat_bot_tri(sdl, triangle);
 }

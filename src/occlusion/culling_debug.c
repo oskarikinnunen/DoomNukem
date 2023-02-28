@@ -15,7 +15,7 @@
 void set_square_from_triangles(t_occlusion *occl, t_point_triangle *t, int count)
 {
 	t_square	*s;
-	t_point		v;
+	t_vector2	v;
 	float		dist;
 	int			i;
 

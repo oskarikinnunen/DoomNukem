@@ -5,7 +5,7 @@
 
 typedef struct s_triangle_polygon //TODO: Renam this to light triangle or smt similar
 {
-	t_point		p2[3];
+	t_vector2	p2[3];
 	t_vector3	p3[3];
 	t_vector2	uv[3];
 }	t_triangle_polygon;

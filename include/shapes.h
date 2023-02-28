@@ -43,7 +43,7 @@ typedef struct	s_triangle
 
 typedef struct s_point_triangle
 {
-	t_point			p[3];
+	t_vector2		p[3];
 	t_texture		t[3];
 	uint32_t		clr;
 }	t_point_triangle;

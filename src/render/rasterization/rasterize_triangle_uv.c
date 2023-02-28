@@ -84,7 +84,7 @@ static void sample_img(t_lighting l, int x, int y, t_triangle_polygon t)
 
 static void fill_point_tri_bot(t_lighting l, t_triangle_polygon triangle)
 {
-	t_point			*p;
+	t_vector2			*p;
 	float			step[2];
 	int				x;
 	int				y;
@@ -111,7 +111,7 @@ static void fill_point_tri_bot(t_lighting l, t_triangle_polygon triangle)
 
 static void fill_point_tri_top(t_lighting l, t_triangle_polygon triangle)
 {
-	t_point			*p;
+	t_vector2			*p;
 	float			step[2];
 	int				x;
 	int				y;
@@ -137,19 +137,19 @@ static void fill_point_tri_top(t_lighting l, t_triangle_polygon triangle)
 
 /*
 creates two triangles from the given triangle one flat top and one flat bottom.
-both triangles are then assigned to t_point p[3] array and passed onto fill_tri_bot/top functions.
+both triangles are then assigned to t_vector2 p[3] array and passed onto fill_tri_bot/top functions.
 p[0] is always the pointy head of the triangle p[1] and p[2] are flat points where, p[1] x is smaller than p[2]
 */
 
 void	render_triangle_uv(t_lighting l, t_triangle_polygon triangle)
 {
-	t_point			p2_split;
+	t_vector2			p2_split;
 	t_vector2		uv_split;
 	t_vector3		p3_split;
-	t_point			p2_temp;
+	t_vector2			p2_temp;
 	t_vector2		uv_temp;
 	t_vector3		p3_temp;
-	t_point			*p2;
+	t_vector2			*p2;
 	t_vector3		*p3;
 	float			lerp;
 
@@ -164,7 +164,7 @@ void	render_triangle_uv(t_lighting l, t_triangle_polygon triangle)
 	p3_split = vector3_lerp(p3[2], p3[0], lerp);
 	if (p2_split.x < p2[1].x)
 	{
-		ft_swap(&p2[1], &p2_split, sizeof(t_point));
+		ft_swap(&p2[1], &p2_split, sizeof(t_vector2));
 		ft_swap(&triangle.uv[1], &uv_split, sizeof(t_vector2));
 		ft_swap(&p3[1], &p3_split, sizeof(t_vector3));
 	}

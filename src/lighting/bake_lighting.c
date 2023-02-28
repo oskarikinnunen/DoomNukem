@@ -110,11 +110,11 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 					temp.p2[vertex].y = roundf(entity->world_triangles[start].t[vertex].v * (float)(img->size.y));
 					temp.uv[vertex] = (t_vector2){temp.p2[vertex].x, temp.p2[vertex].y}; // this is not needed
 				}
-				t_vector2 midpoint = vector2_div(vector2_add(vector2_add(point_to_vector2(temp.p2[0]), point_to_vector2(temp.p2[1])), point_to_vector2(temp.p2[2])), 3.0f);
+				t_vector2 midpoint = vector2_div(vector2_add(vector2_add((temp.p2[0]), (temp.p2[1])), (temp.p2[2])), 3.0f);
 				for (int vertex = 0; vertex < 3; vertex++)
 				{
-					t_vector2 dir = vector2_sub(point_to_vector2(temp.p2[vertex]), midpoint);
-					temp.p2[vertex] = vector2_to_point(vector2_add(point_to_vector2(temp.p2[vertex]), vector2_mul(dir, 0.1f)));
+					t_vector2 dir = vector2_sub((temp.p2[vertex]), midpoint);
+					temp.p2[vertex] = vector2_add((temp.p2[vertex]), vector2_mul(dir, 0.1f));
 				}
 				rasterize_light(temp, &lighting);
 				start++;

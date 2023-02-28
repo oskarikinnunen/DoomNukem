@@ -46,9 +46,9 @@ void render_buffer_triangle_wireframes(t_sdlcontext *sdl, t_render *render)
 	while (index < render->screenspace_ptri_count)
 	{
 		t_point_triangle t1 = wf_tri(render->screenspace_ptris[index], sdl->resolution_scaling);
-		drawline(*sdl, t1.p[0], t1.p[1], render->gizmocolor);
-		drawline(*sdl, t1.p[1], t1.p[2], render->gizmocolor);
-		drawline(*sdl, t1.p[2], t1.p[0], render->gizmocolor);
+		drawline(*sdl, vector2_to_point(t1.p[0]), vector2_to_point(t1.p[1]), render->gizmocolor);
+		drawline(*sdl, vector2_to_point(t1.p[1]), vector2_to_point(t1.p[2]), render->gizmocolor);
+		drawline(*sdl, vector2_to_point(t1.p[2]), vector2_to_point(t1.p[0]), render->gizmocolor);
 		index++;
 	}
 }
