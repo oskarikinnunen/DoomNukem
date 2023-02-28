@@ -33,9 +33,9 @@ t_vector2	barycentric_coordinates(t_vector2 *p, t_vector2 v)
     b1 = p[2].y - p[0].y;
     b2 = p[2].x - p[0].x;
     b3 = p[1].y - p[0].y;
-    b4 = (v.y + 0.5f) - p[0].y;
+    b4 = v.y - p[0].y;
 
-    w.x = (p[0].x * b1 + b4 * b2 - (v.x + 0.5f) * b1) / (b3 * b2 - (p[1].x - p[0].x) * b1);
+    w.x = (p[0].x * b1 + b4 * b2 - v.x * b1) / (b3 * b2 - (p[1].x - p[0].x) * b1);
     w.y = (b4 - w.x * b3) / b1;
     return(w);
 }

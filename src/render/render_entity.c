@@ -71,10 +71,9 @@ void render_entity_worldtriangles(t_entity *entity, t_world *world)
 			for (int e = 0; e < 3; e++)
 			{
 				t_vector2 uv = obj->uvs[obj->faces[i].uv_indices[e] - 1];
-				//uv.x = ceilf(uv.x * (float)(obj->materials[index].img->size.x));
-				//uv.y = ceilf(uv.y * (float)(obj->materials[index].img->size.y));
+				uv.x = uv.x * (float)(obj->materials[index].img->size.x);
+				uv.y = uv.y * (float)(obj->materials[index].img->size.y);
 				tritransformed.t[e] = vector2_to_texture(uv);
-
 			}
 		}
 		entity->world_triangles[i] = tritransformed;

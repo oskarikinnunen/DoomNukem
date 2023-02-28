@@ -1,12 +1,7 @@
 #include "doomnukem.h"
 
-inline static uint32_t sample_img_dynamic(t_render *render, t_texture t)
+inline static uint32_t sample_img_dynamic(t_render *render, uint32_t xsample, uint32_t ysample)
 {
-	uint32_t	xsample;
-	uint32_t	ysample;
-
-	xsample = (t.u * render->img->size.x);
-	ysample = (t.v * render->img->size.y);
 	xsample = xsample % (render->img->size.x);
 	ysample = ysample % (render->img->size.y);
 	return((render->img->data[ysample * render->img->size.x + xsample]));
@@ -21,8 +16,8 @@ inline static void scanline(int ax, int bx, int y, t_vector2*p, t_texture *t, t_
 	float		dist;
 	float		steps;
 
-	left = barycentric_coordinates(p, (t_vector2){ax, y});
-	right = barycentric_coordinates(p, (t_vector2){bx, y});
+	left = barycentric_coordinates(p, vector2_add_xy((t_vector2){ax, y}, 0.5f));
+	right = barycentric_coordinates(p, vector2_add_xy((t_vector2){bx, y}, 0.5f));
 	bary = left;
 	dist = ft_flerp(t[0].w, t[1].w, bary.x) + ((t[2].w - t[0].w) * bary.y);
 	int start = ax;
@@ -38,11 +33,10 @@ inline static void scanline(int ax, int bx, int y, t_vector2*p, t_texture *t, t_
 			tex.v = (tex.v / tex.w);
 			sdl->zbuffer[ax + y * sdl->window_w] = tex.w;
 			((uint32_t *)sdl->surface->pixels)[ax + y * sdl->window_w] =
-				sample_img_dynamic(&sdl->render, tex);
+				sample_img_dynamic(&sdl->render, tex.u, tex.v);
 		}
 		ax++;
 		bary = vector2_lerp(left, right, (float)(ax - start) / steps);
-		bary = barycentric_coordinates(p, (t_vector2){ax, y});
 	}
 	render_bitmask_row(start, bx, dist, tex.w, y, sdl);
 }
@@ -61,14 +55,14 @@ static void render_flat_top_tri(t_sdlcontext *sdl, t_point_triangle triangle)
 
 	p = triangle.p;
 	t = triangle.t;
-	left.step = (float)(p[0].x - p[1].x) / (float)(p[0].y - p[1].y);
-	right.step = (float)(p[0].x - p[2].x) / (float)(p[0].y - p[2].y);
-	y = ceilf((float)p[2].y - 0.5f);
-	endy = ceilf((float)p[0].y - 0.5f);
+	left.step = (p[0].x - p[1].x) / (p[0].y - p[1].y);
+	right.step = (p[0].x - p[2].x) / (p[0].y - p[2].y);
+	y = ceilf(p[2].y - 0.5f);
+	endy = ceilf(p[0].y - 0.5f);
 	while (y < endy)
 	{
-		left.location = left.step * ((float)y + 0.5f - (float)p[1].y) + (float)p[1].x;
-		right.location = right.step * ((float)y + 0.5f - (float)p[2].y) + (float)p[2].x;
+		left.location = left.step * ((float)y + 0.5f - p[1].y) + p[1].x;
+		right.location = right.step * ((float)y + 0.5f - p[2].y) + p[2].x;
 		scanline(ceilf(left.location - 0.5f), ceilf(right.location - 0.5f), y, p, t, sdl);
 		y++;
 	}
@@ -88,14 +82,14 @@ static void render_flat_bot_tri(t_sdlcontext *sdl, t_point_triangle triangle)
 
 	p = triangle.p;
 	t = triangle.t;
-	left.step = (float)(p[1].x - p[0].x) / (float)(p[1].y - p[0].y);
-	right.step = (float)(p[2].x - p[0].x) / (float)(p[2].y - p[0].y);
-	y = ceilf((float)p[0].y - 0.5f);
-	endy = ceilf((float)p[2].y - 0.5f);
+	left.step = (p[1].x - p[0].x) / (p[1].y - p[0].y);
+	right.step = (p[2].x - p[0].x) / (p[2].y - p[0].y);
+	y = ceilf(p[0].y - 0.5f);
+	endy = ceilf(p[2].y - 0.5f);
 	while (y < endy)
 	{
-		left.location = left.step * ((float)y + 0.5f - (float)p[0].y) + (float)p[0].x;
-		right.location = right.step * ((float)y + 0.5f - (float)p[0].y) + (float)p[0].x;
+		left.location = left.step * ((float)y + 0.5f - p[0].y) + p[0].x;
+		right.location = right.step * ((float)y + 0.5f - p[0].y) + p[0].x;
 		scanline(ceilf(left.location - 0.5f), ceilf(right.location - 0.5f), y, p, t, sdl);
 		y++;
 	}
@@ -139,11 +133,11 @@ void	render_triangle_unlit(t_sdlcontext *sdl, t_render *render, int index)
 	}
 	else
 	{
-		float alphasplit = (float)(p[1].y - p[2].y) / (float)(p[0].y - p[2].y);
+		float alphasplit = (p[1].y - p[2].y) / (p[0].y - p[2].y);
 
 		t_vector2 vi = vector2_mul(vector2_add(p[2], vector2_sub(p[0], p[2])), alphasplit);
 
-		p_split.x = (float)p[2].x + (alphasplit * ((float)p[0].x - (float)p[2].x));
+		p_split.x = p[2].x + (alphasplit * (p[0].x - p[2].x));
 		p_split.y = p[1].y;
 		t_split.u = ft_flerp(triangle.t[2].u, triangle.t[0].u, alphasplit);
 		t_split.v = ft_flerp(triangle.t[2].v, triangle.t[0].v, alphasplit);
