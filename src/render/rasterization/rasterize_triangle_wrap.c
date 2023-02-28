@@ -43,7 +43,7 @@ inline static void scanline(int ax, int bx, int y, t_point *p, t_texture *t, t_s
 		ax++;
 		bary = vector2_lerp(left, right, (float)(ax - start) / steps);
 	}
-	render_bitmask_row(start, bx, dist * 1000.0f, tex.w * 1000.0f, y, sdl);// times by far
+	render_bitmask_row(start, bx, dist, tex.w, y, sdl);
 }
 
 static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle)

@@ -53,8 +53,8 @@ inline static uint32_t sample_img(t_render *render, t_texture t)
 
 	xsample = t.u * render->img->size.x;
 	ysample = t.v * render->img->size.y;
-	xsample = ft_clamp(xsample, 0, render->map.size.x);
-	ysample = ft_clamp(ysample, 0, render->map.size.y);
+	xsample = ft_clamp(xsample, 0, render->map.size.x - 1);
+	ysample = ft_clamp(ysample, 0, render->map.size.y - 1);
 	return(render->map.data[ysample * render->map.size.x + xsample]);
 }
 
@@ -89,7 +89,7 @@ inline static void scanline(int ax, int bx, int y, t_point *p, t_texture *t, t_s
 		ax++;
 		bary = vector2_lerp(left, right, (float)(ax - start) / steps);
 	}
-	render_bitmask_row(start, bx, dist * 1000.0f, tex.w * 1000.0f, y, sdl);
+	render_bitmask_row(start, bx, dist, tex.w, y, sdl);
 }
 
 static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle)

@@ -83,7 +83,7 @@ static void sort_entitycache(t_world *world, t_vector3 location)
 		if (ent->status != es_free)
 		{
 			j = i - 1;
-			while (j >= 0 && world->entitycache.sorted_entities[j]->occlusion.z_dist[1] > key->occlusion.z_dist[1])
+			while (j >= 0 && world->entitycache.sorted_entities[j]->occlusion.z_dist[1] < key->occlusion.z_dist[1])
 			{
 				if (ent->status != es_free)
 					world->entitycache.sorted_entities[j + 1] = world->entitycache.sorted_entities[j];
