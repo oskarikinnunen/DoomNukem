@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:11:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/17 11:29:14 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/01 18:58:10 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,40 +18,22 @@
 #include <stdbool.h>
 #include <doomnukem.h>
 #include <file_io.h>
-
+#include "structsaver.h"
 
 //TODO:
 /*
 	enums,
 	different int sizes
 */
-typedef enum e_valuetype
-{
-	value_float,
-	value_int,
-	value_struct,
-	value_missing,
-	value_ptr
-}	t_valuetype;
-
-typedef struct s_valuemetadata
-{
-	char		name[32];
-	char		typename[32];
-	t_valuetype	type;
-	size_t		size;
-	size_t		mem_offset;
-}	t_valuemetadata;
-
-typedef struct s_structmetadata
-{
-	char			name[32];
-	t_list			*values;
-}	t_structmetadata;
 
 bool	string_contains(char *haystack, char *needle)
 {
 	return (ft_strstr(haystack, needle) != NULL);
+}
+
+bool	string_starts_with(char *string1, char *startswith)
+{
+	return (ft_strncmp(string1, startswith, ft_strlen(startswith)) == 0);
 }
 
 bool	string_is_match(char *string1, char *string2)
@@ -62,8 +44,9 @@ bool	string_is_match(char *string1, char *string2)
 typedef struct s_structanalyzer
 {
 	bool				reading;
-	t_structmetadata		cur_struct;
+	t_structmetadata	cur_struct;
 	t_list				*structs;
+	t_list				*enums;
 }	t_structanalyzer;
 
 bool	struct_ends(char *line)
@@ -71,10 +54,13 @@ bool	struct_ends(char *line)
 	return (string_contains(line, "}") && string_contains(line, ";"));
 }
 
-bool	structmetadata_has_missing_values(t_structmetadata *smd)
+t_structmetadata	*find_struct_match(char *structname, t_structanalyzer *saver);
+
+bool	structmetadata_has_missing_values(t_structanalyzer *analyzer, t_structmetadata *smd)
 {
 	t_list				*l_val;
 	t_valuemetadata		*val;
+	t_structmetadata	*child;
 
 	l_val = smd->values;
 	while (l_val != NULL)
@@ -82,6 +68,12 @@ bool	structmetadata_has_missing_values(t_structmetadata *smd)
 		val = (t_valuemetadata *)l_val->content;
 		if (val->type == value_missing)
 			return (true);
+		if (val->type == value_struct)
+		{
+			/*child = find_struct_match(val->typename, analyzer);
+			if (child != NULL && structmetadata_has_missing_values(analyzer, child))
+				return (true);*/
+		}
 		l_val = l_val->next;
 	}
 	return (false);
@@ -93,6 +85,12 @@ void	set_structname(t_structmetadata *saved, char *line)
 	int		i;
 
 	i = 0;
+	char	*occ;
+	occ = ft_strstr(line, "__attribute__((packed, aligned(1))");
+	if (occ != NULL)
+	{
+		line += sizeof("__attribute__((packed, aligned(1)))");
+	}
 	while (line[i] == '}' || line[i] == ' ' || line[i] == '\t')
 		i++;
 	
@@ -122,12 +120,17 @@ void	try_parse_value(char *line, t_structmetadata *saved)
 	split = ft_strscrape(line, "\t ");
 	if (splitlen(split) == 2)
 	{
-		if (string_is_match(split[0], "float"))
+		if (string_is_match(split[0], "char") || string_is_match(split[0], "uint8_t") || string_is_match(split[0], "int8_t") || string_contains(split[0], "bool"))
+		{
+			value.size = 1UL;
+			value.type = value_char;
+		}
+		else if (string_is_match(split[0], "float"))
 		{
 			value.size = 4UL;
 			value.type = value_float;
 		}
-		else if (string_contains(split[0], "int") || string_contains(split[0], "bool"))
+		else if (string_contains(split[0], "int"))
 		{
 			value.size = 4UL;
 			value.type = value_int;
@@ -139,6 +142,16 @@ void	try_parse_value(char *line, t_structmetadata *saved)
 		}
 		else
 			value.type = value_missing;
+		if (value.type != value_missing && string_contains(split[1], "[") && string_contains(split[1], "]"))
+		{
+			char arrsize_str[32];
+			char *arrsize_start = ft_strstr(split[1], "[");
+			ft_strcpy(arrsize_str, arrsize_start + 1);
+			size_t arrsize = ft_atoi(arrsize_str);
+			printf("found array of size %i \n", arrsize);
+			if (arrsize > 0)
+				value.size = value.size * arrsize;
+		}
 		ft_strcpy(value.typename, split[0]);
 		ft_strcpy(value.name, split[1]);
 		value.name[ft_strlen(value.name) - 1] = '\0';
@@ -160,16 +173,20 @@ void	print_missing_types(t_list	*savedatas)
 	while (l_sd != NULL) 
 	{
 		sd = (t_structmetadata *)l_sd->content;
+		doomlog(LOG_NORMAL, sd->name);
 		l_val = sd->values;
 		i = 0;
 		while (l_val != NULL)
 		{
 			val = (t_valuemetadata *)l_val->content;
 			if (val->type == value_missing)
+			{
+				doomlog_mul(LOG_WARNING, (char *[32]){"missing value:", val->typename, NULL});
 				i++;
+			}
+				
 			l_val = l_val->next;
 		}
-		printf("%s has %i missing types \n", sd->name, i);
 		l_sd = l_sd->next;
 	}
 }
@@ -188,7 +205,47 @@ size_t	sizeof_struct(t_structmetadata *saved)
 		size += val->size;
 		l_val = l_val->next;
 	}
+	//if (size % 8 != 0)
+	//t_gun gun;
+	//offsetof(gun.active, gun);
+	//	size += size % 8;
 	return (size);
+}
+
+size_t	sizeof_internal_struct(t_structmetadata *saved)
+{
+	t_list				*l_val;
+	t_valuemetadata		*val;
+	size_t				size;
+
+	l_val = saved->values;
+	size = 0;
+	while (l_val != NULL)
+	{
+		val = (t_valuemetadata *)l_val->content;
+		size += val->size;
+		l_val = l_val->next;
+	}
+	//sizeof(t_anim);
+	return (size);
+}
+
+bool	is_enum(t_structanalyzer *analyzer, char *val_typename)
+{
+	t_list	*l;
+	char	*enumname;
+
+	l = analyzer->enums;
+	while (l != NULL)
+	{
+		enumname = (char *)l->content;
+		if (string_is_match(val_typename + 2, enumname)) //TODO: protect short enumname
+		{
+			return (true);
+		}
+		l = l->next;
+	}
+	return (false);
 }
 
 void	fix_missing_types(t_structanalyzer	*saver, t_structmetadata	*saved)
@@ -199,28 +256,54 @@ void	fix_missing_types(t_structanalyzer	*saver, t_structmetadata	*saved)
 	t_structmetadata		*sd;
 
 	l_sd = saver->structs;
+	doomlog_mul(LOG_WARNING, (char *[32]){"Fixing struct ", saved->name, NULL});
 	while (l_sd != NULL) 
 	{
 		sd = (t_structmetadata *)l_sd->content;
+		
 		if (sd != saved)
 		{
+			
 			//printf("checking struct %s for match \n", sd->name);
 			l_val = saved->values;
 			while (l_val != NULL)
 			{
 				val = (t_valuemetadata *)l_val->content;
 				//printf("checking if '%s %s'  matches '%s'\n", val->typename, val->name, sd->name);
-				if (string_is_match(val->typename, sd->name))
+				if (val->type != value_ptr && string_is_match(val->typename, sd->name))
 				{
-					val->size = sizeof_struct(sd);
+					val->size = sizeof_internal_struct(sd);
 					val->type = value_struct;
 					//printf("found missing value type %s as struct of size %lu \n", val->name, val->size);
+				}
+				if (is_enum(saver, val->typename))
+				{
+					doomlog_mul(LOG_WARNING, (char *[32]){"Found enum ", val->typename, NULL});
+					val->size = sizeof(int32_t);
+					val->type = value_int;
 				}
 				l_val = l_val->next;
 			}
 		}
 		/*if(string_is_match(sd->name, saved))
 			return (sd);*/
+		l_sd = l_sd->next;
+	}
+}
+
+void	fix_all_missing_types(t_structanalyzer	*saver)
+{
+	t_list				*l_sd;
+	t_list				*l_val;
+	t_valuemetadata		*val;
+	t_structmetadata		*sd;
+
+	l_sd = saver->structs;
+	while (l_sd != NULL) 
+	{
+		sd = (t_structmetadata *)l_sd->content;
+		if (structmetadata_has_missing_values(saver, sd))
+			fix_missing_types(saver, sd);
 		l_sd = l_sd->next;
 	}
 }
@@ -269,6 +352,7 @@ static void	force_save_chunk(char *filename, char *chunkname, t_list *content)
 	write(fd, "CEND", 4);
 	close(fd);
 }
+
 static void fancysave(char *filename, t_list *values)
 {
 	int				written;
@@ -303,11 +387,14 @@ void	print_memorychunks(t_structmetadata *stru)
 	int				i;
 
 	l_val = stru->values;
+	write(1, stru->name, 32);
+	write(1, &"\n", 1);
+	printf("total size: %i \n", sizeof_struct(stru));
 	while (l_val != NULL) 
 	{
 		val = (t_valuemetadata *)l_val->content;
 		i = 0;
-		while (i < 8)
+		while (i < 16)
 		{
 			if (val->name[i] != 0)
 				write(1, &val->name[i], 1);
@@ -316,7 +403,8 @@ void	print_memorychunks(t_structmetadata *stru)
 			i++;
 		}
 		i = 0;
-		while (i < val->mem_offset)
+		printf("OFFSET %i, SIZE %i \n", val->mem_offset, val->size);
+		/*while (i < val->mem_offset)
 		{
 			printf("_");
 			i++;
@@ -326,8 +414,8 @@ void	print_memorychunks(t_structmetadata *stru)
 		{
 			printf("#");
 			i++;
-		}
-		printf("\n");
+		}*/
+		//printf("\n");
 		l_val = l_val->next;
 	}
 }
@@ -340,11 +428,12 @@ void	print_analysis(t_structanalyzer *lyzer)
 	t_list				*l_val;
 
 	l = lyzer->structs;
+	print_missing_types(l);
 	while (l != NULL)
 	{
 		stru = (t_structmetadata *)l->content;
-		printf("%s\n", stru->name);
-		print_memorychunks(stru);
+		if (!structmetadata_has_missing_values(lyzer, stru))
+			print_memorychunks(stru);
 		/*l_val = stru->values;
 		while (l_val != NULL) 
 		{
@@ -405,6 +494,19 @@ void	applyoffsets(t_structanalyzer *lyzer)
 	}
 }
 
+void	analyzer_check_enum(t_structanalyzer *analyzer, char *line)
+{
+	char	*occ;
+	char	*enumname;
+
+	occ = ft_strstr(line, "typedef enum");
+	if (occ != NULL)
+	{
+		enumname = line + sizeof("typedef enum e");
+		list_push(&analyzer->enums, enumname, ft_strlen(enumname) + 1);
+	}
+}
+
 void	read_header(char	*path, t_structanalyzer *lyzer)
 {
 	char			*line;
@@ -415,7 +517,6 @@ void	read_header(char	*path, t_structanalyzer *lyzer)
 	fd = open(path, O_RDONLY);
 	if (fd != -1)
 	{
-		//printf("reading header: %s\n", path);
 		commented = false;
 		while (ft_get_next_line(fd, &line))
 		{
@@ -430,10 +531,9 @@ void	read_header(char	*path, t_structanalyzer *lyzer)
 				if (occ != NULL)
 				{
 					ft_bzero(&lyzer->cur_struct, sizeof(lyzer->cur_struct));
-					//ft_strcpy(saver.sdata.name, occ + sizeof("typedef struct"));
-					//printf("parsing struct '%s'\n", saver.sdata.name);
 					lyzer->reading = true;
 				}
+				analyzer_check_enum(lyzer, line);
 				continue ;
 			}
 			else
@@ -441,7 +541,6 @@ void	read_header(char	*path, t_structanalyzer *lyzer)
 				if (struct_ends(line))
 				{
 					set_structname(&lyzer->cur_struct, line);
-					//printf("finished parsing struct %s with %i values\n", lyzer->cur_struct.name, ft_listlen(lyzer->cur_struct.values));
 					list_push(&lyzer->structs, &lyzer->cur_struct, sizeof(lyzer->cur_struct));
 					lyzer->reading = false;
 					continue ;
@@ -453,22 +552,9 @@ void	read_header(char	*path, t_structanalyzer *lyzer)
 		}
 	}
 	close(fd);
-	//printf("read %i struct datas \n", ft_listlen(lyzer->structs));
-	//print_missing_types(lyzer->structs);
-	t_structmetadata	*mis_struct = find_struct_match("t_container", lyzer);
-	if (mis_struct != NULL)
-	{
-		//printf("trying to fix struct %s with missing values \n", mis_struct->name);
-		fix_missing_types(lyzer, mis_struct);
-		//print_missing_types(lyzer->structs);
-	}
+	fix_all_missing_types(lyzer);
 	applyoffsets(lyzer);
-
 }
-
-//void	print_structdata()
-
-//void	load_struct
 
 void	read_analysis_chunks(t_structanalyzer *lyzer, int fd)
 {
@@ -592,7 +678,6 @@ void	*structmetadata_allocate(void *oldmem, t_structmetadata	*stru_new, t_struct
 			//((char *)mem)[new_val->mem_offset] = ((char*)oldmem)[val->mem_offset];
 			//mem[new_val->mem_offset] = 
 			//sizeof(char *)
-			printf("found match for %s \n", new_val->name);
 		}
 		//find_value_match(new_md)
 		l_val = l_val->next;
@@ -608,13 +693,47 @@ void	*load_singlechunk(char	*filename, char *chunkname, size_t size)
 	return (NULL);
 }
 
-void	load_struct(char	*filename, char *structname, t_structanalyzer *old, t_structanalyzer *new)
+t_structanalyzer *old_struct_analysis() //TODO: handle case where there is no old analysis
+{
+	static t_structanalyzer	old_analysis;
+	if (old_analysis.structs == NULL)
+	{
+		old_analysis = load_analysis();
+	}
+	return (&old_analysis);
+}
+
+t_structanalyzer *new_struct_analysis()
+{
+	static t_structanalyzer	new_analysis;
+	if (new_analysis.structs == NULL)
+	{
+		read_header("include/vectors.h", &new_analysis);
+		read_header("include/animation.h", &new_analysis);
+		read_header("include/components.h", &new_analysis);
+		read_header("include/entity.h", &new_analysis);
+		t_list *enumlist = new_analysis.enums;
+		while (enumlist != NULL)
+		{
+			char *str = enumlist->content;
+			doomlog_mul(LOG_WARNING, (char *[32]){"Enum def ", str, NULL});
+			enumlist = enumlist->next;
+		}
+	}
+	return (&new_analysis);
+}
+//load_struct(entity_0001_component, componentname)
+void	load_struct(char	*filename, char *structname)
 {
 	void				*new_memory;
 	void				*old_memory;
 	t_structmetadata	*old_smd;
 	t_structmetadata	*new_smd;
+	t_structanalyzer	*old;
+	t_structanalyzer	*new;
 
+	old = old_struct_analysis();
+	new = new_struct_analysis();
 	if (old->structs == NULL || new->structs == NULL)
 	{
 		printf("cannot load struct %s because either metadata is totally missing\n", structname);
@@ -622,28 +741,58 @@ void	load_struct(char	*filename, char *structname, t_structanalyzer *old, t_stru
 	}
 	old_smd = find_struct_match(structname, old);
 	new_smd = find_struct_match(structname, new);
-	if (structmetadata_has_missing_values(old_smd) || structmetadata_has_missing_values(new_smd))
+	/*if (structmetadata_has_missing_values(old_smd) || structmetadata_has_missing_values(new_smd))
 	{
 		printf("cannot load struct %s because it has missing values in metadata \n", structname);
 		return ;
-	}
-	if (structmetadata_has_missing_values(old_smd) || structmetadata_has_missing_values(new_smd))
-	{
-		printf("cannot load struct %s because it has missing values in metadata \n", structname);
-		return ;
-	}
-	old_memory = load_singlechunk("testfile", "TEST", sizeof_struct(old_smd));
+	}*/
+	//old_memory = load_singlechunk("testfile", "TEST", sizeof_struct(old_smd));
+	//load_filecontent_fd()
 	if (old_memory != NULL)
 		structmetadata_allocate(old_memory, new_smd, old_smd);
+}
+
+//.world
+//	.amap
+//	.fent
+//	.global
+
+//filename, packname, structname, structdata
+//save_struct("gun_1", game_global, "t_gun", (void *)gun)
+
+//save_struct("entity_1_component", world, component.name, (void *)component.data)
+
+void	save_struct(char	filename[32], char *packname, char *structname, void *structdata)
+{
+	int					fd;
+	t_structanalyzer	*new;
+	t_structmetadata	*s_meta;
+
+	new = new_struct_analysis();
+	fd = fileopen(filename, O_CREAT | O_RDWR | O_APPEND);
+	write(fd, structname, ft_strlen(structname));
+	s_meta = find_struct_match(structname, new);
+	if (s_meta != NULL)
+	{
+		if (structmetadata_has_missing_values(new_struct_analysis, s_meta))
+		{
+			doomlog(LOG_WARNING, "Can't save struct since it has missing values.");
+		}
+		if (sizeof(t_gun) != sizeof_struct(find_struct_match("t_gun", new)))
+		{
+			doomlog(LOG_WARNING, "Can't save struct since metadata doesn't match the real size.");
+		}
+		//sizeof(t_entity **);
+		//sizeof(t_gun);
+		sizeof(char[128]);
+		print_analysis(new);
+	}
+	sizeof(t_gun);
 	/*
-	gather list of matching variables
-	check for overlap?
-	allocate memory from list of matching
+	Decide if this always packs this somewhere
 	
 	*/
-	//new_memory = ft_memalloc(sizeof_struct(new_m));
-	//printf("allocated %lu bytes for struct %s \n", sizeof_struct(new_m), structname);
-	//old_m.
+	close(fd);
 }
 
 #include <test.h>
@@ -682,11 +831,12 @@ void	generate_struct_datas()
 		print_analysis(&old_analysis);
 	}
 	ft_bzero(&new_analysis, sizeof(new_analysis));
-	//printf("NEW ANALYSIS:\n");
 	read_header("include/test.h", &new_analysis);
 	save_analysis(&new_analysis);
 	printf("new analysis: \n");
 	print_analysis(&new_analysis);
+	//sizeof(t_gun);
+	sizeof(t_anim);
 	//force_save_chunk("testfile", "TEST", )
 	//load_struct("", "t_container", &old_analysis, &new_analysis);
 

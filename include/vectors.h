@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vectors.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/17 14:20:08 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/02/28 15:29:25 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -365,7 +365,9 @@ t_vector3	lookdirection_3(t_vector3 angle);
 t_vector3 vector3_mul_matrix(t_mat4x4 m, t_vector3 i);
 
 /* CONVERSIONS */
-float	radtodeg(float rad);
+float			fov_deg_to_fov_rad(float fovdeg);
+
+float			radtodeg(float rad);
 
 t_quaternion	vector3_to_quaternion(t_vector3 v);
 

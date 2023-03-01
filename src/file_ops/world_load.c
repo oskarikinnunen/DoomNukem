@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 14:55:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/30 20:15:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/28 14:01:04 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,9 +131,37 @@ void	load_basic_ent_cache_from_list(t_world *world, t_list *l)
 		//list_entity
 		//load_filecontent(filename, "")
 		world_entity = spawn_entity(world);
-		//ft_memcpy(world_entity, list_entity, sizeof(t_entity));
 		world_entity->object_name = list_entity->object_name;
 		world_entity->transform = list_entity->transform;
+		world_entity->transform.parent = NULL; //TODO: Might be fine if we don't allow parenting in the editor
+		world_entity->obj = get_object_by_name(*world->sdl, world_entity->object_name.str);
+		l = l->next;
+	}
+}
+
+void	load_full_ent_cache_from_list(t_world *world, t_list *l)
+{
+	t_entity	*list_entity;
+	t_entity	*world_entity;
+	char		comp_filename[64];
+	char		*str;
+
+	while (l != NULL)
+	{
+		list_entity = l->content;
+		/*if (list_entity->component.type != COMP_NONE)
+		{
+			load_component(list_entity, filename);
+		}*/
+		//list_entity
+		//load_filecontent(filename, "")
+		world_entity = spawn_entity(world);
+		world_entity->object_name = list_entity->object_name;
+		world_entity->transform = list_entity->transform;
+		world_entity->transform.parent = NULL; //TODO: Might be fine if we don't allow parenting in the editor
+		world_entity->component.type = list_entity->component.type;
+		//world_entity->comp
+		entity_set_component_functions(world_entity, world);
 		world_entity->obj = get_object_by_name(*world->sdl, world_entity->object_name.str);
 		l = l->next;
 	}
@@ -162,6 +190,26 @@ void	world_load_basic_ent(t_world *world)
 	}
 }
 
+void	world_load_full_ent(t_world *world)
+{
+	int		fd;
+	char	*bent_fname;
+	t_list	*e_list;
+
+	bent_fname = world_filename(world->name, ".full_ent");
+	fd = open(bent_fname, O_RDONLY);
+	if (fd != -1)
+	{
+		printf("	found .full_ent for world %s \n", world->name);
+		e_list = load_chunk(bent_fname, "FENT", sizeof(t_entity));
+		load_full_ent_cache_from_list(world, e_list);
+	}
+	else
+	{
+		printf("	!No .amap for world %s \n", world->name);
+	}
+}
+
 t_world	load_world_args(char *filename, t_sdlcontext *sdl, t_load_arg arg)
 {
 	t_world	world;
@@ -172,10 +220,10 @@ t_world	load_world_args(char *filename, t_sdlcontext *sdl, t_load_arg arg)
 	ft_strcpy(world.name, filename);
 	world_init(&world, sdl);
 	world_load_amap(&world);
-	if (arg >= LOAD_ARG_AMAP_AND_BASIC)
+	if (arg == LOAD_ARG_AMAP_AND_BASIC)
 		world_load_basic_ent(&world);
-	if (arg == LOAD_ARG_FULL)
-		/*load full_ent*/;
+	else if (arg == LOAD_ARG_FULL)
+		world_load_full_ent(&world);
 	return (world);
 }
 

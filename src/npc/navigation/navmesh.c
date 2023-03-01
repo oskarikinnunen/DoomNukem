@@ -24,7 +24,7 @@ bool	node_would_collide(t_world *world, t_vector3 midpoint)
 	phys.height = PLAYER_HEIGHT;
 	phys.position = &midpoint;
 	vec = midpoint;
-	if (check_collision_character(world, phys, midpoint, &vec))
+	if (check_collision_character(world, phys, vector3_add(midpoint, (t_vector3){0.0f, 0.0f, 0.0001f}), &vec))
 		return (true);
 	return (false);
 }
@@ -43,24 +43,29 @@ void    show_navmesh(t_world *world)
 	{
 		if (world->nav.navmesh[i].blocked)
 		{
-			render_circle(world->sdl, world->nav.navmesh[i].mid_point, 10.0f, CLR_RED);
+			//render_circle(world->sdl, world->nav.navmesh[i].mid_point, 10.0f, CLR_RED);
 		}	else
 		{
-			render_circle(world->sdl, world->nav.navmesh[i].mid_point, 10.0f, CLR_BLUE);
-			world->sdl->render.gizmocolor = CLR_GREEN;
-			j = 0;
-			while (j < 3)
+			//render_circle(world->sdl, world->nav.navmesh[i].mid_point, 10.0f, CLR_BLUE);
+			float fdist = vector3_sqr_dist(world->player->transform.position, world->nav.navmesh[i].mid_point);
+			if (fdist < 60000.0f) 
 			{
-				render_ray(world->sdl, world->nav.navmesh[i].vertex[j], world->nav.navmesh[i].vertex[(j + 1) % 3]);
-				j++;
+				world->sdl->render.gizmocolor = AMBER_1;
+				if (fdist < 30000.0f)
+					world->sdl->render.gizmocolor = AMBER_3;
+				j = 0;
+				while (j < 3)
+				{
+					render_ray(world->sdl, world->nav.navmesh[i].vertex[j], world->nav.navmesh[i].vertex[(j + 1) % 3]);
+					j++;
+				}
 			}
-			world->sdl->render.gizmocolor = CLR_RED;
-			j = 0;
-			while (j < world->nav.navmesh[i].neighbors)
+
+			/*while (j < world->nav.navmesh[i].neighbors)
 			{
 				render_ray(world->sdl, world->nav.navmesh[i].mid_point, world->nav.navmesh[world->nav.navmesh[i].neighbors_id[j]].mid_point);
 				j++;
-			}
+			}*/
 		}
 		i++;
 	}
@@ -336,6 +341,7 @@ void	check_neighbors(t_navigation *nav, int i, t_vector3 start, t_vector3 end)
 
 void	navmesh_process(t_world *world)
 {
+	return ;
 	t_vector3	newpos;
 	t_characterphysics	phys;
 	int			i;
@@ -389,5 +395,4 @@ void	create_navmesh(t_world *world)
 	if (!world->nav.openlist)
 		doomlog(LOGEC_MALLOC, NULL);
 	ft_bzero(world->nav.openlist, world->nav.malloc_size * sizeof(t_navnode));
-	//navmesh_process(world);
 }

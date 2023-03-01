@@ -100,6 +100,7 @@ typedef struct s_camera
 	t_mat4x4			matproj;
 	t_vector3			position;
 	t_vector3			lookdir;
+	float				aspectratio;
 }	t_camera;
 
 typedef enum e_rend_lightmode

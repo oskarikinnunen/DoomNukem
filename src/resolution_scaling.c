@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 06:55:31 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/13 13:50:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/01 11:52:44 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,26 @@ uint32_t	combine_colors(uint32_t clr1, uint32_t clr2)
 
 //#include <pthread.h>
 
+uint32_t darken(uint32_t clr, float lerp)
+{
+	uint32_t	final;
+	final = (clr & 0xFF) * lerp;
+	final += (uint32_t)((clr >> 8 & 0xFF) * lerp) << 8;
+	final += (uint32_t)((clr >> 16 & 0xFF) * lerp) << 16;
+	return (final);
+}
+
+uint32_t mixcolor(uint32_t clr1, uint32_t clr2, float lerp)
+{
+	uint32_t	final;
+	clr1 = darken(clr1, lerp);
+	clr2 = darken(clr2, 1.0f - lerp);
+	final = (((clr1 & 0xFF) + (clr2 & 0xFF)) / 2) & 0xFF;
+	final += (uint32_t)(((clr1 >> 8 & 0xFF) + (clr2 >> 8 & 0xFF)) / 2) << 8;
+	final += (uint32_t)(((clr1 >> 16 & 0xFF) + (clr2 >> 8 & 0xFF)) / 2) << 16;
+	return (final);
+}
+
 void	rescale_surface(t_sdlcontext *sdl)
 {
 	static	uint32_t	*swap;
@@ -86,18 +106,17 @@ void	rescale_surface(t_sdlcontext *sdl)
 		while (p.x < sdl->window_w)
 		{
 			sample.x = p.x * sdl->resolution_scaling;
-			if (0/* && p.y < sdl->window_h - 2*/)
+			float zval = sdl->zbuffer[sample.x + sample.y];
+			if (zval < 0.0048f)
 			{
-				uint32_t	clr;
-				uint32_t	clr2;
-				clr = ((uint32_t *)sdl->surface->pixels)[sample.x + (sample.y)];
-				int	sy = (p.y + 1) * sdl->resolution_scaling;
-				sy *= sdl->window_w;
-				clr2 = ((uint32_t *)sdl->surface->pixels)[sample.x + (sy)];
-				sdl->scaling_buffer[p.x + pstride] = combine_colors(clr, clr2);
-			} else {
-				sdl->scaling_buffer[p.x + pstride] = ((uint32_t *)sdl->surface->pixels)[sample.x + (sample.y)];
+				float lerp = 1.0f - ((0.0048f - zval) * 350.0f);
+				lerp = ft_clampf(lerp, 0.2f, 1.0f);
+				sdl->scaling_buffer[p.x + pstride] = darken(((uint32_t *)sdl->surface->pixels)[sample.x + (sample.y)], lerp);
+				//sdl->scaling_buffer[p.x + pstride] = mixcolor(((uint32_t *)sdl->surface->pixels)[sample.x + (sample.y)], CLR_GRAY, lerp);
 			}
+				
+			else
+				sdl->scaling_buffer[p.x + pstride] = ((uint32_t *)sdl->surface->pixels)[sample.x + (sample.y)];
 			p.x++;
 		}
 		p.y++;

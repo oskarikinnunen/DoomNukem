@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 16:56:41 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/30 16:06:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/28 15:20:30 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ int		fileopen(char *filename, int flags);
 
 
 void	generate_struct_datas();
+void	load_struct(char	*filename, char *structname);
+void	save_struct(char	filename[32], char *packname, char *structname, void *structdata);
 /* World save/load */
 char	*world_filename(char *worldname, char *suffix);
 

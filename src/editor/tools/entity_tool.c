@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/06 22:36:24 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/01 17:29:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,8 +112,6 @@ void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 	{
 		t_entity *went = spawn_entity(&ed->world);
 		entity_assign_object(&ed->world, went, dat->ent->obj);
-		/*went->obj = dat->ent->obj;*/
-		//ft_strcpy(went->object_name, dat->ent->object_name); //TODO: fix in world save or in assign object
 		went->transform = dat->ent->transform;
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT) && dat->ent != NULL)
@@ -149,7 +147,7 @@ static void gui_entitymode(t_entity *entity, t_autogui *gui, t_world *world)
 		if (gui_highlighted_button_if(defs[i].name, gui,
 			entity->component.type == defs[i].type))
 		{
-			entity_set_component(entity, defs[i].type, world);
+			entity_set_component_functions(entity, world);
 			printf("set component to %s \n",defs[i].name);
 		}
 		i++;
@@ -215,7 +213,6 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 		!dat->info.hit_entity->rigid && mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 	{
 		dat->sel_ent = dat->info.hit_entity;
-		//dat->sel_ent->ignore_raycasts = true;
 	}
 	if (dat->sel_ent != NULL)
 	{
@@ -230,7 +227,18 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 		gui_label(idstr, gui);
 		free(idstr);
 		gui_endhorizontal(gui);
-		
+		if (gui_button("Clone", gui))
+		{
+			t_entity *clone = spawn_entity(&ed->world);
+			
+			entity_assign_object(&ed->world, clone, ent->obj);
+			clone->component.type = ent->component.type;
+			entity_set_component_functions(clone, &ed->world);
+			clone->transform.position = ent->transform.position;
+			dat->sel_ent = clone;
+			return ;
+			//dat->se
+		}
 		if (gui_highlighted_button_if("Edit transform", gui, dat->entityeditor.transform_toggle))
 			dat->entityeditor.transform_toggle = !dat->entityeditor.transform_toggle;
 		if (dat->entityeditor.transform_toggle)

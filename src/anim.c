@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:56:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/09 16:21:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/28 14:05:37 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,14 @@
 #include "libft.h"
 #include "render.h"
 #include <stdio.h>
+
+void	anim_setframe(t_anim *anim, uint32_t frame)
+{
+	anim->frame = frame;
+	//anim->time = 
+	anim->lerp = ((float)anim->frame / (float)anim->lastframe);
+	anim->time = anim->lerp * anim->framerate;
+}
 
 void	update_anim(t_anim *anim, uint32_t delta)
 {
@@ -28,11 +36,12 @@ void	update_anim(t_anim *anim, uint32_t delta)
 	{
 		if (anim->frame >= anim->lastframe)
 		{
-			anim->frame = anim->startframe;
-			if (!anim->loop)
+			if (!anim->loop && !anim->persist)
 				anim->active = false;
 			else
 				anim->time = 0;
+			if (anim->persist)
+				anim->frame = anim->lastframe;
 		}
 		else 
 		{
@@ -77,7 +86,6 @@ void	start_human_anim(t_entity *entity, char *name, t_world *world)
 			entity->animation.lastframe = anim.endframe;
 			entity->animation.framerate = 30;
 			entity->animation.loop = true;
-			printf("found anim %s, anim frames: %i-%i\n", name, entity->animation.startframe, entity->animation.lastframe);
 			start_anim(&entity->animation, anim_forwards);
 			return ;
 		}

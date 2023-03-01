@@ -1,19 +1,16 @@
 
 #include "doomnukem.h"
 
-
+#define RAND_A 1664525
+#define RAND_B 1013904223
 
 uint32_t	game_random(t_world *world)
 {
-	static uint32_t r = INT_MAX / 2;
+	static uint32_t seed = 1234;
 
-	r += INT_MAX / 4;
-	r++;
-	r = r << (int)(world->clock.prev_time);
-	return (r);
+	seed = (RAND_A * seed) + RAND_B;
+	return (seed);
 }
-
-
 
 uint32_t	game_random_range(t_world *world, uint32_t min, uint32_t max)
 {

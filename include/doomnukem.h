@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/09 16:20:49 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/27 22:08:35 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,12 @@ typedef struct s_log
 	int	fd;
 }	t_log;
 
+typedef enum e_gamemode
+{
+	MODE_PLAY,
+	MODE_EDITOR
+}	t_gamemode;
+
 typedef struct s_world
 {
 	char				name[32];
@@ -114,6 +120,7 @@ typedef struct s_world
 	bool				ceiling_toggle;
 	t_navigation		nav;
 	uint32_t			lastsavetime;
+	t_gamemode			gamemode;
 }	t_world;
 
 t_vector2	flipped_uv(t_vector2 og);
@@ -130,6 +137,7 @@ t_world		load_world(char *filename, t_sdlcontext *sdl);
 
 void		destroy_entity(t_world *world, t_entity *ent);
 t_entity	*spawn_entity(t_world	*world);
+t_entity	*find_entity_with_comp(t_world	*world, t_componenttype comp);
 t_entity	*spawn_basic_entity(t_world *world, char *objectname, t_vector3 position);
 void		entity_assign_object(t_world *world, t_entity *entity, t_object *obj);
 void		save_world(char *filename, t_world world);

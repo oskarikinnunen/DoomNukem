@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   spaceconversions.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 13:31:43 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 15:25:54 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/02/27 19:20:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,10 @@ t_quaternion	transformed_vector3(t_transform transform, t_vector3 v)
 		forward = vector3_normalise(forward);
 		right = vector3_normalise(right);
 		up = vector3_normalise(up);
+		result.v = vector3_add(transform.parent->position, result.v);
 		result.v = vector3_add(result.v, vector3_mul(forward, transform.position.y));
 		result.v = vector3_add(result.v, vector3_mul(right, transform.position.x));
 		result.v = vector3_add(result.v, vector3_mul(up, transform.position.z));
-		result.v = vector3_add(transform.parent->position, result.v);
 	}
 	else
 	{
@@ -64,9 +64,9 @@ t_quaternion	transformed_vector3(t_transform transform, t_vector3 v)
 
 t_vector3	anim_transformed_vector3(t_entity *entity, t_vector3 v)
 {
-	t_vector3	result;
+	/*t_vector3	result;
 
-	/*if (entity->animation.active)
+	if (entity->animation.active)
 	{
 		result = vector3_add(entity->obj->o_anim.frames[entity->animation.frame].deltavertices[index].delta, temp.v);
 	}*/

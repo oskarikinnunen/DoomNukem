@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 14:40:03 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/24 11:36:14 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/27 18:17:04 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ void update_object_bounds(t_object *obj)
 	obj->bounds.box.v[5] = (t_vector3){.x = max.x, .y = min.y, max.z};
 	obj->bounds.box.v[6] = (t_vector3){.x = min.x, .y = min.y, max.z};
 	obj->bounds.box.v[7] = (t_vector3){.x = min.x, .y = max.y, max.z};
+	obj->bounds.height = max.z - min.z;
 	obj->bounds.type = bt_box;
 }
 

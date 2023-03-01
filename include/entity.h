@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/07 13:09:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/01 18:40:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,15 @@
 # include "lighting.h"
 # include "components.h"
 
+# define GUNPRESETCOUNT 2
+
 typedef struct s_bound
 {
 	float	min;
 	float	max;
 }	t_bound;
 
-typedef enum s_entitystatus
+typedef enum e_entitystatus
 {
 	es_free,
 	es_inactive,
@@ -64,25 +66,40 @@ typedef struct s_prefab
 	void				*data;
 }	t_prefab;
 
-typedef struct s_gun
+typedef struct s_gunstats
 {
-	t_entity	entity;
 	char		object_name[128];
-	char		preset_name[32];
-	t_anim		shoot_anim;
-	t_anim		view_anim;
+	char		audio_name[128];
 	t_vector3	holsterpos;
 	t_vector3	aimpos;
-	uint32_t	lastshottime;
-	bool		readytoshoot;
-	bool		disabled;
 	t_vector2	viewrecoil;
 	t_vector2	recoiljump;
 	t_vector2	recoilangle;
 	float		anglerecovery;
-	bool		fullauto;
+	float		fov_offset;
+	float		ads_speed;
+	uint32_t	damage;
+	uint32_t	magazinecapacity;
 	uint32_t	firedelay;
+	uint32_t	reloadtime;
+	uint32_t	ammomask;
+	bool		fullauto;
+}	t_gunstats;
+
+typedef struct s_gun
+{
+	t_entity	*entity;
+	t_gunstats	stats;
+	t_anim		shoot_anim;
+	t_anim		view_anim;
+	t_anim		reload_anim;
+	uint32_t	lastshottime;
+	uint32_t	bullets;
+	bool		readytoshoot;
+	bool		disabled;
 }	t_gun;
+
+void	change_gun_preset(t_gun *gun, t_sdlcontext *sdl, int index);
 
 typedef struct s_entitycache
 {
@@ -92,7 +109,7 @@ typedef struct s_entitycache
 	t_entity	**sorted_entities;
 }	t_entitycache;
 
-void	entity_set_component(t_entity *entity, t_componenttype type, struct s_world *world);
+void	entity_set_component_functions(t_entity *entity, struct s_world *world);
 
 
 /* OCCLUSION*/

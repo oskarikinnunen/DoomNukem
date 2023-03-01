@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/02/07 12:23:40 by okinnune         ###   ########.fr        #
+#    Updated: 2023/03/01 13:21:38 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,9 +29,6 @@ FREETYPE = $(INSTALLED_LIBS_DIR)/lib/libfreetype.a
 FMOD = $(FMOD_DIR)/copied
 
 LIBFT = libft/libft.a
-
-LUAFOLDER= lua-5.3.6
-LUA= $(LUAFOLDER)/install/lib/liblua.a
 
 #Source files:
 SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
@@ -81,6 +78,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		player/playermovement_normal.c \
 		player/playermovement_noclip.c \
 		entity/components/comp_npc.c \
+		guns/gun_presets.c \
 		obj_parser/obj_parse.c \
 		obj_parser/obj_parse_vertex.c \
 		obj_parser/obj_parse_faces.c \
@@ -103,6 +101,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		occlusion/culling_debug.c \
 		occlusion/bitmask_culling.c \
 		surface_tools.c \
+		playmode_events.c \
 		colors.c \
 		render/render_entity.c \
 		render/render_clip.c \
@@ -133,7 +132,8 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		entity/components/comp_watercollider.c \
 		entity/components/comp_light.c \
 		entity/components/comp_healthpack.c \
-		entity/components/comp_npc_civilian.c #.ENDSRC. CREATECOMPONENT SCRIPT DEPENDS ON THIS SO DONT REMOVE
+		entity/components/comp_npc_civilian.c \
+		entity/components/comp_playerspawn.c #.ENDSRC. CREATECOMPONENT SCRIPT DEPENDS ON THIS SO DONT REMOVE
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c vector3_more.c \
 		vector2_elementary.c vector2_shorthands.c \
@@ -178,8 +178,8 @@ endif
 #multi:
 #	$(MAKE) -j6 all
 
-all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(FMOD) $(LUA) $(LIBFT) $(OBJ)
-	$(CC) $(OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LUA) $(LDFLAGS)
+all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(FMOD) $(LIBFT) $(OBJ)
+	$(CC) $(OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LDFLAGS)
 
 #-include $(DEPENDS)
 
@@ -204,14 +204,6 @@ clean-libs:
 	rm $(FMOD)
 
 re-libs: clean-libs all
-
-clean-lua:
-	rm -rf $(LUAFOLDER)/install
-
-re-lua: clean-lua $(LUA)
-
-$(LUA):
-	cd $(LUAFOLDER) && make generic && make local
 
 $(FMOD):
 	cp $(FMOD_DIR)/libfmod.dylib $(INSTALLED_LIBS_DIR)/lib/

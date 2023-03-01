@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/08 15:49:35 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/01 12:51:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,6 @@ void	set_sdl_settings(t_sdlcontext *sdl)
 	sdl->audio.sfx_volume = prefs.volume;
 	printf("prefs volume was %f \n", prefs.volume);
 	create_sdl_window(sdl, prefs.screenmode);
-	
 	sdl->surface = SDL_CreateRGBSurfaceWithFormat(SDL_SWSURFACE, sdl->window_w, sdl->window_h, 32, SDL_PIXELFORMAT_ARGB8888);
 	if (sdl->surface == NULL)
 		doomlog(LOGEC_SDL_CREATERGBSURFACE, NULL);
@@ -140,15 +139,18 @@ int	main(int argc, char **argv)
 	t_sdlcontext	sdl;
 	t_gamereturn	gr;
 
-	generate_struct_datas();
 	checkargs(argc, argv);
 	create_sdlcontext(&sdl);
 	gr = game_switchmode;
-	while (gr == game_switchmode)
+	if (argc == 2 && ft_strcmp(argv[1], "-editor") == 0)
+		gr = editorloop(sdl);
+	else
+		gr = playmode(sdl);
+	/*while (gr == game_switchmode)
 	{
-		gr = editorloop(sdl); // quit & exit is handled inside the loop
+		//gr = editorloop(sdl); // quit & exit is handled inside the loop
 		gr = playmode(sdl); // quit & exit is handled inside the loop
-	}
+	}*/
 	//shouldn't get here?
 	return (0);
 }

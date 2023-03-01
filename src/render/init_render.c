@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/18 12:29:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/28 15:38:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ t_render	init_render(t_sdlcontext sdl)
 	bzero(&render.camera, sizeof(t_camera));
 	render.camera.lookdir = (t_vector3){0};
 	render.camera.position = (t_vector3){0};
-	render.camera.matproj = matrix_makeprojection(90.0f, (float)(sdl.window_h * sdl.resolution_scaling) / (float)(sdl.window_w * sdl.resolution_scaling), 2.0f, 1000.0f);
+	render.camera.aspectratio = (float)(sdl.window_h * sdl.resolution_scaling) / (float)(sdl.window_w * sdl.resolution_scaling);
+	render.camera.matproj = matrix_makeprojection(90.0f, render.camera.aspectratio, 2.0f, 1000.0f);
 	render.worldspace_ptris = malloc(sizeof(t_point_triangle) * 10000);
 	render.screenspace_ptris = malloc(sizeof(t_point_triangle) * 10000);
 	render.q = malloc(sizeof(t_quaternion) * 10000); //TODO: should be multiplied by the largest obj vertex count
@@ -51,8 +52,13 @@ void	render_start(t_render *render)
 
 void update_render(t_render *render, t_player *player)
 {
+	float	fov_rad;
 	render->camera.lookdir = player->lookdir;
 	render->camera.position = player->headposition;
+	//render->camera.
+	fov_rad = fov_deg_to_fov_rad(player->fov);
+	render->camera.matproj.m[0][0] = render->camera.aspectratio * fov_rad;
+	render->camera.matproj.m[1][1] = fov_rad;
 }
 
 void	free_render(t_render render)

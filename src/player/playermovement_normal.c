@@ -74,7 +74,7 @@ void	player_update_physics(t_player *player, t_world *world)
 	if (player->jump.active)
 	{
 		lerp = 1.5f - player->jump.lerp;
-		override = (GRAVITY + (lerp * 0.66f));
+		override = (GRAVITY + (lerp * 0.7f));
 		player->cp.gravity_override = &override;
 	}
 	//player->cp.po
@@ -94,7 +94,7 @@ void	play_footstepsound(t_player *player, t_world *world)
 	}
 	float lerp = vector2_magnitude(v3tov2(player->cp.new_velocity)) * 10.0f; //TODO: use phys
 	source.volume = lerp * 0.20f;
-	if (!player->isgrounded)
+	if (!player->cp.new_isgrounded)
 	{
 		source.volume = 0.0f;
 		return ;

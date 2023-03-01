@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 00:52:45 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/08 16:36:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/28 19:04:28 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 typedef enum	e_anim_mode
 {
 	anim_forwards,
-	anim_backwards
+	anim_backwards,
 } t_anim_mode;
 
 struct s_audio ;
@@ -36,17 +36,19 @@ typedef struct s_anim
 {
 	bool			active;
 	bool			loop;
+	bool			persist;
+	uint8_t			framerate;
 	uint32_t		time;
 	int32_t			frame;
 	int32_t			startframe;
 	int32_t			lastframe;
-	uint8_t			framerate;
 	float			lerp;
 	t_anim_mode		mode;
 	t_audioevent	*audioevent;
 }	t_anim;
 
 void	update_anim(t_anim *anim, uint32_t delta);
+void	anim_setframe(t_anim *anim, uint32_t frame);
 void	update_anim_dir(t_anim *anim, uint32_t delta, t_anim_mode mode);
 void	start_anim(t_anim *anim, t_anim_mode mode); //TODO: make this return t_anim?
 struct s_entity;

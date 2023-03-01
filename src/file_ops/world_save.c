@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 13:57:45 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/30 20:08:01 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/27 22:29:58 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,15 +191,26 @@ static void _world_save_basic_ent(t_world world)
 	entitylist = entitycache_to_list(&world.entitycache);
 	_entitylist_basicify(entitylist);
 	save_chunk(filename, "BENT", entitylist);
-	//listdel(&entitylist);
 }
 
+static void _world_save_full_ent(t_world world)
+{
+	int		fd;
+	char	*filename;
+	t_list	*entitylist;
 
+	filename = world_filename(world.name, ".full_ent");
+	printf("saving .full_ent to '%s'\n", filename);
+	fd = fileopen(filename, O_RDWR | O_CREAT | O_TRUNC);
+	entitylist = entitycache_to_list(&world.entitycache);
+	save_chunk(filename, "FENT", entitylist);
+}
 
 void	world_save_to_file(t_world world)
 {
 	_world_save_amap(world);
 	_world_save_basic_ent(world);
+	_world_save_full_ent(world);
 	_world_init_rooms(&world);
 }
 

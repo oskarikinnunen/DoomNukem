@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/04 22:12:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/01 12:33:13 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,16 +26,6 @@ static void	init_roomwalls_shallow(t_world *world, t_area *room)
 	i = 0;
 	while (i < room->wallcount)
 	{
-		//room->walls[i].entity = raise_entity(world); //Copy saved entitys important values
-		//if (room->walls[i].ceilingwall)
-		//	room->walls[i].entity->hidden = true;
-
-		/*room->walls[i].edgeline.start = &room->edges[i];
-		if (i != room->wallcount - 1)
-			room->walls[i].edgeline.end = &room->edges[i + 1];
-		else
-			room->walls[i].edgeline.end = &room->edges[0];*/
-
 		room->walls[i].entity->transform.position = vector3_zero();
 		room->walls[i].entity->transform.scale = vector3_one();
 		room->walls[i].entity->obj = object_plane(world->sdl);
@@ -68,6 +58,7 @@ t_area	*world_add_room(t_world *world, t_area *room)
 	ft_strcpy(room->name, roomname);
 	worldroom = ft_memalloc(sizeof(t_area));
 	ft_strcpy(worldroom->s_floortex.str, room->s_floortex.str);
+	ft_strcpy(worldroom->s_ceiltex.str, room->s_ceiltex.str);
 	//worldroom->wallcount = room->wallcount;
 	//worldroom->edges = room->edges;
 	ft_memcpy(worldroom->edges, room->edges, sizeof(worldroom->edges));
@@ -278,7 +269,6 @@ static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	cursor = createmode_raycast(ed, dat);
 	if (dat->room->edgecount == 0)
 		dat->room->height = cursor.z;
-	//closest_edge
 	gui = &dat->newroom_gui;
 	gui_start(gui);
 	if (dat->room->edgecount == 0)
@@ -830,6 +820,7 @@ void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	{
 		dat->room = ft_memalloc(sizeof(t_area));
 		ft_strcpy(dat->room->s_floortex.str, "concrete02.cng");
+		ft_strcpy(dat->room->s_ceiltex.str, "concrete02.cng");
 		ft_bzero(&dat->wall.edgeline, sizeof(t_edgeline));
 		dat->rtm = rtm_create;
 		room_setpreset_room(dat->room);

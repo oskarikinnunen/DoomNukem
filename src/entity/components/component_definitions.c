@@ -41,7 +41,9 @@ t_componentdefinition	*get_component_definitions()
 		(t_componentdefinition){.type = COMP_NPC, .name = "NPC",
 			.func_assign_component = assign_component_npc},
 		(t_componentdefinition){.type = COMP_NPC_CIVILIAN, .name = "Npc_civilian",
-			.func_assign_component = assign_component_npc_civilian}
+			.func_assign_component = assign_component_npc_civilian},
+		(t_componentdefinition){.type = COMP_PLAYERSPAWN, .name = "Playerspawn",
+			.func_assign_component = assign_component_playerspawn}
 	};
 	return (editables);
 }

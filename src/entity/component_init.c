@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:34:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/23 07:01:10 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/28 13:58:35 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void	component_init(t_entity	*entity)
 	}*/
 }
 
-void	entity_set_component(t_entity *entity, t_componenttype type, t_world *world)
+void	entity_set_component_functions(t_entity *entity, t_world *world)
 {
 	t_componentdefinition	*defs;
 	int						i;
@@ -78,7 +78,7 @@ void	entity_set_component(t_entity *entity, t_componenttype type, t_world *world
 	i = 0;
 	while (ft_strlen(defs[i].name) > 0)
 	{
-		if (defs[i].type == type)
+		if (defs[i].type == entity->component.type)
 		{
 			if (defs[i].func_assign_component == NULL)
 			{
@@ -86,7 +86,6 @@ void	entity_set_component(t_entity *entity, t_componenttype type, t_world *world
 				exit(0);
 			}
 			defs[i].func_assign_component(&entity->component);
-			entity->component.type = type;
 			protected_free(entity->component.data);
 			entity->component.data = NULL;
 			if (entity->component.func_allocate != NULL)
