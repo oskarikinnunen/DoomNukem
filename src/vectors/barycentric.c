@@ -9,6 +9,7 @@ t_barycentric	get_barycentric(t_vector2 *p)
     b.b3 = p[1].y - p[0].y;
     b.b1x = p[0].x * b.b1;
     b.div = (b.b3 * b.b2 - (p[1].x - p[0].x) * b.b1);
+	return(b);
 }
 
 t_vector2	fast_barycentric(t_vector2 *p, t_barycentric b, t_vector2 v)

@@ -89,8 +89,8 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 		if (i + 1 == obj->face_count || index != obj->faces[i + 1].materialindex)
 		{
 			img = obj->materials[index].img;
-			max.x = fmaxf(max.x, 1.0f);
-			max.y = fmaxf(max.y, 1.0f);
+			//max.x = fmaxf(max.x, 1.0f);
+			//max.y = fmaxf(max.y, 1.0f);
 			entity->map[index].size = (t_point){ceilf(max.x), ceilf(max.y)};
 			entity->map[index].img_size = img->size;
 			entity->map[index].data = malloc(sizeof(uint32_t) * entity->map[index].size.x * entity->map[index].size.y);
@@ -107,9 +107,21 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 					temp.p3[vertex] = entity->world_triangles[start].p[vertex].v;
 					temp.p2[vertex].x = (entity->world_triangles[start].t[vertex].u);
 					temp.p2[vertex].y = (entity->world_triangles[start].t[vertex].v);
-				//	temp.p2[vertex] = vector2_add_xy(temp.p2[vertex], 0.5f);
-					temp.uv[vertex] = (t_vector2){temp.p2[vertex].x, temp.p2[vertex].y}; // this is not needed
+					if (temp.p2[vertex].x < 0.0f || temp.p2[vertex].y < 0.0f)
+						printf("less than 0 %s \n", obj->name);
+					//temp.p2[vertex] = vector2_add_xy(temp.p2[vertex], 0.5f);
 				}
+				t_vector2 midpoint = vector2_div(vector2_add(vector2_add((temp.p2[0]), (temp.p2[1])), (temp.p2[2])), 3.0f);
+				printf("start\n");
+				for (int vertex = 0; vertex < 3 && 0; vertex++)
+				{
+					t_vector2 dir = vector2_normalise(vector2_sub((temp.p2[vertex]), midpoint));
+					dir.x = 0;
+					temp.p2[vertex] = vector2_add((temp.p2[vertex]), vector2_multiply(dir, vector2_one()));
+					temp.p2[vertex].x = ft_clampf(temp.p2[vertex].x, 1.0f, lighting.map->size.x - 1);
+					temp.p2[vertex].y = ft_clampf(temp.p2[vertex].y, 1.0f, lighting.map->size.y - 1);
+				}
+				printf("end\n");
 				rasterize_light(temp, &lighting);
 				start++;
 			}
@@ -118,14 +130,9 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 			{
 				for (int j = 0; j < entity->map[index].size.x; j++)
 				{
-					uint8_t	light = 200;
 					uint32_t clr;
 					clr = img->data[(e % (img->size.y)) * img->size.x + (j % (img->size.x))];
-					Uint32 alpha = clr & 0xFF000000;
-					Uint32 red = ((clr & 0x00FF0000) * light) >> 8;
-					Uint32 green = ((clr & 0x0000FF00) * light) >> 8;
-					Uint32 blue = ((clr & 0x000000FF) * light) >> 8;
-					clr = alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF);
+					clr = update_pixel_brightness(200, clr);
 					entity->map[index].data[e * entity->map[index].size.x + j] = clr;
 				}
 			}
