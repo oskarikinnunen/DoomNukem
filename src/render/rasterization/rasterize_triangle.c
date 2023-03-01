@@ -179,8 +179,6 @@ void	render_triangle_lit(t_sdlcontext *sdl, t_render *render, int index)
 	{
 		float alphasplit = (p[1].y - p[2].y) / (p[0].y - p[2].y);
 
-		t_vector2 vi = vector2_mul(vector2_add(p[2], vector2_sub(p[0], p[2])), alphasplit);
-
 		p_split.x = p[2].x + (alphasplit * (p[0].x - p[2].x));
 		p_split.y = p[1].y;
 		t_split.u = ft_flerp(triangle.t[2].u, triangle.t[0].u, alphasplit);

@@ -91,7 +91,7 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 			img = obj->materials[index].img;
 			//max.x = fmaxf(max.x, 1.0f);
 			//max.y = fmaxf(max.y, 1.0f);
-			entity->map[index].size = (t_point){ceilf(max.x), ceilf(max.y)};
+			entity->map[index].size = (t_point){ceilf(max.x) + 10, ceilf(max.y) + 10};
 			entity->map[index].img_size = img->size;
 			entity->map[index].data = malloc(sizeof(uint32_t) * entity->map[index].size.x * entity->map[index].size.y);
 			if (entity->map[index].data == NULL)
@@ -107,6 +107,8 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 					temp.p3[vertex] = entity->world_triangles[start].p[vertex].v;
 					temp.p2[vertex].x = (entity->world_triangles[start].t[vertex].u);
 					temp.p2[vertex].y = (entity->world_triangles[start].t[vertex].v);
+					t_vector2 uv = obj->uvs[obj->faces[start].uv_indices[vertex] - 1];
+					temp.uv[vertex] = uv;
 					if (temp.p2[vertex].x < 0.0f || temp.p2[vertex].y < 0.0f)
 						printf("less than 0 %s \n", obj->name);
 					//temp.p2[vertex] = vector2_add_xy(temp.p2[vertex], 0.5f);
@@ -116,16 +118,20 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 				for (int vertex = 0; vertex < 3 && 0; vertex++)
 				{
 					t_vector2 dir = vector2_normalise(vector2_sub((temp.p2[vertex]), midpoint));
-					dir.x = 0;
-					temp.p2[vertex] = vector2_add((temp.p2[vertex]), vector2_multiply(dir, vector2_one()));
-					temp.p2[vertex].x = ft_clampf(temp.p2[vertex].x, 1.0f, lighting.map->size.x - 1);
-					temp.p2[vertex].y = ft_clampf(temp.p2[vertex].y, 1.0f, lighting.map->size.y - 1);
+					if (isnan(dir.x) || isnan(dir.y))
+					{
+						start++;
+						continue;
+					}
+					temp.p2[vertex] = vector2_add((temp.p2[vertex]), dir);
+					//temp.p2[vertex].x = ft_clampf(temp.p2[vertex].x, 1.0f, lighting.map->size.x - 1);
+					//temp.p2[vertex].y = ft_clampf(temp.p2[vertex].y, 1.0f, lighting.map->size.y - 1);
 				}
 				printf("end\n");
 				rasterize_light(temp, &lighting);
 				start++;
 			}
-			int starttemp = start;
+			
 			for (int e = 0; e < entity->map[index].size.y && 0; e++)
 			{
 				for (int j = 0; j < entity->map[index].size.x; j++)
@@ -133,9 +139,23 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 					uint32_t clr;
 					clr = img->data[(e % (img->size.y)) * img->size.x + (j % (img->size.x))];
 					clr = update_pixel_brightness(200, clr);
-					entity->map[index].data[e * entity->map[index].size.x + j] = clr;
+					for (int x = start; x <= i; x++)
+					{
+						t_triangle_polygon temp;
+						for (int vertex = 0; vertex < 3; vertex++)
+						{
+							temp.p3[vertex] = entity->world_triangles[x].p[vertex].v;
+							temp.p2[vertex].x = (entity->world_triangles[x].t[vertex].u);
+							temp.p2[vertex].y = (entity->world_triangles[x].t[vertex].v);
+						}
+						t_vector2 bary = barycentric_coordinates(temp.p2, (t_vector2){ceilf((float)j + 0.0f), ceilf((float)e + 0.0f)});
+						if (bary.x >= -0.01f && bary.y >= -0.01f && bary.x + bary.y <= 1.01f)
+							entity->map[index].data[e * entity->map[index].size.x + j] = CLR_RED;
+					}
+					//entity->map[index].data[e * entity->map[index].size.x + j] = clr;
 				}
 			}
+			start = i;
 			max.x = 0.0f;
 			max.y = 0.0f;
 		}
