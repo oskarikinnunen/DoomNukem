@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 15:53:51 by raho              #+#    #+#             */
-/*   Updated: 2023/02/07 15:32:09 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/01 18:39:58 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,9 @@ static void	std_fnc_errors(int ec, int fd)
 	if (ec == LOG_EC_FORK)
 		ft_putendl_fd(combine_strings((char *[3]){
 				"Fork failed -", strerror(errno)}), fd);
+	if (ec == LOG_EC_READ)
+		ft_putendl_fd(combine_strings((char *[3]){
+				"Read failed -", strerror(errno)}), fd);
 }
 
 static void	fmod_errors(int ec, int fd)

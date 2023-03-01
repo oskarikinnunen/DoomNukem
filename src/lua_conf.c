@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lua_conf.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/08 18:07:55 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/01 18:07:41 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "doomnukem.h"
 #include "objects.h"
 #include "png.h"
+#include "tga.h"
 #include <dirent.h>
 
 void	allocate_object_count(t_sdlcontext *sdl)
@@ -78,17 +79,19 @@ void	allocate_image_count(t_sdlcontext *sdl)
 {
 	DIR				*d;
 	struct dirent	*dfile;
-	char path		[256] = "assets/images";
+	//char path		[256] = "assets/images";
+	char path		[256] = "assets/images/tga";
 	int				i;
 
-	d = opendir(path);
+	d = opendir(path); // TODO: is opendir allowed?
 	i = 0;
 	if (d)
 	{
-		dfile = readdir(d);
+		dfile = readdir(d); // TODO: is readdir allowed?
 		while (dfile != NULL)
 		{
-			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".cng") != NULL)
+			//if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".cng") != NULL)
+			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".tga") != NULL)
 				i++;
 			dfile = readdir(d);
 		}
@@ -102,7 +105,8 @@ void	allocate_env_texturecount(t_sdlcontext *sdl)
 {
 	DIR				*d;
 	struct dirent	*dfile;
-	char path		[256] = "assets/images/env";
+	//char path		[256] = "assets/images/env";
+	char path		[256] = "assets/images/tga/env";
 	int				i;
 
 	d = opendir(path);
@@ -112,7 +116,8 @@ void	allocate_env_texturecount(t_sdlcontext *sdl)
 		dfile = readdir(d);
 		while (dfile != NULL)
 		{
-			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".cng") != NULL)
+			//if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".cng") != NULL)//
+			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".tga") != NULL)
 				i++;
 			dfile = readdir(d);
 		}
@@ -126,7 +131,8 @@ void	load_all_images(t_sdlcontext *sdl)
 {
 	DIR				*d;
 	struct dirent	*dfile;
-	char path		[256] = "assets/images";
+	//char path		[256] = "assets/images";
+	char path		[256] = "assets/images/tga";
 	char fullpath	[512];
 	int				i;
 
@@ -139,12 +145,15 @@ void	load_all_images(t_sdlcontext *sdl)
 		dfile = readdir(d);
 		while (dfile != NULL)
 		{
-			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".cng") != NULL)
+			//if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".cng") != NULL)
+			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".tga") != NULL)
 			{
 				snprintf(fullpath, 512, "%s/%s", path, dfile->d_name);
-				sdl->images[i] = pngparse(fullpath);
+				//sdl->images[i] = pngparse(fullpath);
+				sdl->images[i] = tgaparse(fullpath);
 				ft_strcpy(sdl->images[i].name, dfile->d_name);
-				printf("	parsed cpng file: %s \n", fullpath);
+				//printf("	parsed cpng file: %s \n", fullpath);
+				printf("	parsed tga file: %s \n", fullpath);
 				i++;
 			}
 			dfile = readdir(d);
@@ -158,7 +167,8 @@ void	load_all_env_textures(t_sdlcontext *sdl)
 {
 	DIR				*d;
 	struct dirent	*dfile;
-	char path		[256] = "assets/images/env";
+	//char path		[256] = "assets/images/env";
+	char path		[256] = "assets/images/tga/env";
 	char fullpath	[512];
 	int				i;
 
@@ -171,12 +181,15 @@ void	load_all_env_textures(t_sdlcontext *sdl)
 		dfile = readdir(d);
 		while (dfile != NULL)
 		{
-			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".cng") != NULL)
+			//if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".cng") != NULL)
+			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".tga") != NULL)
 			{
 				snprintf(fullpath, 512, "%s/%s", path, dfile->d_name);
-				sdl->env_textures[i] = pngparse(fullpath);
+				//sdl->env_textures[i] = pngparse(fullpath);
+				sdl->env_textures[i] = tgaparse(fullpath);
 				ft_strcpy(sdl->env_textures[i].name, dfile->d_name);
-				printf("	parsed cpng file: %s \n", fullpath);
+				//printf("	parsed cpng file: %s \n", fullpath);
+				printf("	parsed tga file: %s \n", fullpath);
 				i++;
 			}
 			dfile = readdir(d);

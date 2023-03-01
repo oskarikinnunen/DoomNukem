@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/08 15:49:35 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/01 18:04:59 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ void	doomnukem(int argc, char **argv)
 
 int	main(int argc, char **argv)
 {
-	pid_t	pid;
+	/* pid_t	pid;
 	int		wait_status;
 
 	pid = fork();
@@ -137,6 +137,7 @@ int	main(int argc, char **argv)
 	{
 		wait(&wait_status);
 		handle_exit(wait_status);
-	}
+	} */
+	doomnukem(argc, argv);
 	return (0);
 }

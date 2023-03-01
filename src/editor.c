@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/08 17:52:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/01 18:11:34 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -275,6 +275,8 @@ void	draw_level_info(t_sdlcontext *sdl, t_world *world)
 	print_text_boxed(sdl, time_str, point_add(real_c, (t_point){0, 15}));
 }
 
+t_img	tgaparse(char *filename);
+
 int	editorloop(t_sdlcontext sdl)
 {
 	t_editor	ed;
@@ -345,6 +347,9 @@ int	editorloop(t_sdlcontext sdl)
 		char *fps = ft_itoa(ed.world.clock.fps);
 		print_text(&sdl, fps, (t_point){sdl.window_w - 80, 10});
 		drawcircle(sdl, point_div(sdl.screensize, 2), 4, CLR_BLUE);
+
+		//draw_image(sdl, point_zero(), tgaparse("assets/images/stone02.tga"), (t_point){400, 400});
+
 		free(fps);
 		draw_level_info(&sdl, &ed.world);
 		update_editor_lateguis(&ed);
@@ -354,6 +359,7 @@ int	editorloop(t_sdlcontext sdl)
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			doomlog(LOG_EC_SDL_UPDATEWINDOWSURFACE, NULL);
 		update_audio(&ed.world);
+		
 		//play_localsound()
 		//ft_bzero(NULL, 10); // forces a crash (for error test purposes only) remove this
 	}

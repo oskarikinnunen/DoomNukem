@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_entity.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/02/04 20:51:41 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/01 16:50:51 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -273,9 +273,10 @@ void	render_ball(t_sdlcontext *sdl, t_vector3 pos, float size, uint32_t clr)
 
 bool	vector3_has_nan(t_vector3 vec)
 {
-	return (isnanf(vec.x) || isinff(vec.x)
-		|| isnanf(vec.y) || isinff(vec.y)
-		|| isnanf(vec.z) || isinff(vec.z));
+	// TODO: Rene edited these functions from isnanf and isinff to compile on mac
+	return (isnan(vec.x) || isinf(vec.x)
+		|| isnan(vec.y) || isinf(vec.y)
+		|| isnan(vec.z) || isinf(vec.z));
 }
 
 void render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to)

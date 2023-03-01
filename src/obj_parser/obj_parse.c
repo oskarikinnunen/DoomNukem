@@ -45,11 +45,6 @@ t_material	parsemat(int fd, char *name)
 			else
 				ft_strcpy(mat.texturename, line + sizeof("map_Kd"));
 			//printf("MAT TEX NAME %s \n", mat.texturename);
-			char	*ext_start = ft_strstr(mat.texturename, ".png");
-			if (ext_start != NULL)
-			{
-				ext_start[1] = 'c';
-			}
 			printf("MAT TEX NAME %s \n", mat.texturename);
 		}
 		if (ft_strlen(line) == 0)
