@@ -15,6 +15,8 @@
 
 # include "libft.h"
 # include "log.h"
+# include <sys/wait.h>
+# include <errno.h>
 # include "limits.h" //TODO: remove mby? just define INT_MAX yourself
 # include <math.h>
 # include <fcntl.h>
@@ -166,6 +168,12 @@ typedef struct s_game
 /* LOG.C */
 int		init_log(void);
 
+/* HANDLE_EXIT.C */
+// Handles the game's (child process's) exit signal / status
+void	handle_exit(int	wait_status);
+// combines given array of strings to a singular string and returns a pointer to it
+char	*combine_strings(char **str);
+
 /* EDITOR.C */
 int		editorloop(t_sdlcontext sdl);
 
@@ -230,6 +238,10 @@ bool	alaiwan_collision(t_world *world, t_player *player, t_vector3 potential_pos
 void	error_log(int error_code);
 
 /* SDL */
+void	create_sdlcontext(t_sdlcontext	*sdl);
+void	create_sdl_window(t_sdlcontext *sdl, t_screenmode mode);
+void	set_sdl_settings(t_sdlcontext *sdl);
+void	init_sdl_error_window(t_sdlcontext *sdl);
 void	quit_game(t_sdlcontext *sdl);
 
 void	apply_graphics_prefs(t_graphicprefs prefs);

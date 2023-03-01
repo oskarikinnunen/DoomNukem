@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:41 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/28 16:30:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/01 21:13:10 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,27 +29,27 @@ void	_audiosource_2D_start(t_sdlcontext *sdl, t_audiosource	*source)
 {
 	FMOD_Channel_SetPaused(source->channel, true);
 	if (FMOD_System_PlaySound(sdl->audio.system, source->sample.sound, NULL, true, &source->channel) != FMOD_OK)
-		doomlog(LOGEC_FMOD_SYSTEMPLAYSOUND, NULL);
+		doomlog(LOG_EC_FMOD_SYSTEMPLAYSOUND, NULL);
 	//FMOD_Channel_SetReverbProperties(
 	FMOD_Channel_Set3DLevel(source->channel, 0.0f);
 	if (FMOD_Channel_SetVolume(source->channel, source->volume * sdl->audio.sfx_volume) != FMOD_OK)
-		doomlog(LOGEC_FMOD_CHANNELSETVOLUME, NULL);
+		doomlog(LOG_EC_FMOD_CHANNELSETVOLUME, NULL);
 	if (FMOD_Channel_SetPaused(source->channel, false) != FMOD_OK)
-			doomlog(LOGEC_FMOD_CHANNELSETPAUSED, NULL);
+			doomlog(LOG_EC_FMOD_CHANNELSETPAUSED, NULL);
 }
 
 void	_audiosource_start(t_sdlcontext *sdl, t_audiosource	*source, t_vector3 *pos)
 {
 	FMOD_Channel_SetPaused(source->channel, true);
 	if (FMOD_System_PlaySound(sdl->audio.system, source->sample.sound, NULL, true, &source->channel) != FMOD_OK)
-		doomlog(LOGEC_FMOD_SYSTEMPLAYSOUND, NULL);
+		doomlog(LOG_EC_FMOD_SYSTEMPLAYSOUND, NULL);
 	//FMOD_Channel_SetReverbProperties()
 	
 	if (FMOD_Channel_Set3DAttributes(source->channel, (FMOD_VECTOR *)pos, &((FMOD_VECTOR){0})) != FMOD_OK)
-			doomlog(LOGEC_FMOD_CHANNELSET3DATTRIBUTES, NULL);
+			doomlog(LOG_EC_FMOD_CHANNELSET3DATTRIBUTES, NULL);
 	FMOD_Channel_Set3DMinMaxDistance(source->channel, source->_realrange, 10000.0f);
 	if (FMOD_Channel_SetVolume(source->channel, source->volume * sdl->audio.sfx_volume) != FMOD_OK)
-		doomlog(LOGEC_FMOD_CHANNELSETVOLUME, NULL);
+		doomlog(LOG_EC_FMOD_CHANNELSETVOLUME, NULL);
 	if (FMOD_Channel_SetPaused(source->channel, false) != FMOD_OK)
-			doomlog(LOGEC_FMOD_CHANNELSETPAUSED, NULL);
+			doomlog(LOG_EC_FMOD_CHANNELSETPAUSED, NULL);
 }

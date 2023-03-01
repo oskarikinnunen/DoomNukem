@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/27 11:14:16 by raho              #+#    #+#             */
-/*   Updated: 2023/01/31 16:19:34 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/07 15:41:59 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,6 @@ int	check_channel_status(FMOD_CHANNEL *channel)
 
 	isplaying = 0;
 	if (FMOD_Channel_IsPlaying(channel, &isplaying) != FMOD_OK)
-		doomlog(LOGEC_FMOD_CHANNELISPLAYING, NULL);
+		doomlog(LOG_EC_FMOD_CHANNELISPLAYING, NULL);
 	return (isplaying);
 }

@@ -195,6 +195,22 @@ static void npc_update_state(t_entity *entity,  t_npc *npc, t_world *world)
 	//t_raycastinfo	
 }
 
+void npc_play_sound(t_entity *entity, t_world *world, char *soundname)
+{
+	t_npc			*npc;
+	t_audiosource	source;
+	if (entity->component.type != COMP_NPC)
+		return;
+	
+	npc = entity->component.data;
+	source = npc->audiosource;
+	source.sample = get_sample(world->sdl, soundname);
+	source._realrange = 250.0f;
+	source.volume = 1.0f;
+	source.play_always = false;
+	_audiosource_start(world->sdl, &source, &entity->transform.position);
+}
+
 void npc_shoot(t_entity *entity, t_npc *npc, t_world *world)
 {
 	t_audiosource source = npc->audiosource;

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/01 18:44:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/01 21:25:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,9 +90,12 @@ void player_gun_raycast(t_player *player, t_world *world)
 				if (r == 3)
 					protagonist_play_audio(player, world, "protag_anotherone.wav");
 				printf("play protag \n");
+				if (r % 2 == 0)
+					npc_play_sound(info.hit_entity, world, "npc_death.wav");
+				else
+					npc_play_sound(info.hit_entity, world, "npc_death2.wav");
 			}
 			hit_npc->hit = true;
-			
 			hit_npc->phys.new_velocity = vector3_normalise(vector3_sub(info.hit_entity->transform.position, player->headposition));
 			hit_npc->phys.new_velocity = vector3_mul(hit_npc->phys.new_velocity, 0.3f);
 			hit_npc->phys.new_velocity.z = 0.0f;

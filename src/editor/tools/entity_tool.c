@@ -515,7 +515,7 @@ t_tool	*get_entity_tool()
 	{
 		tool.tooldata = ft_memalloc(sizeof(t_entitytooldata));
 		if (tool.tooldata == NULL)
-			doomlog(LOGEC_MALLOC, NULL);
+			doomlog(LOG_EC_MALLOC, NULL);
 		dat = (t_entitytooldata *)tool.tooldata;
 		dat->ent = NULL;
 	}

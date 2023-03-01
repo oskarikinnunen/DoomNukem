@@ -108,6 +108,7 @@ void update_world3d(t_world *world, t_render *render)
 	t_sdlcontext	*sdl;
 	int				i;
 
+	//doomlog(LOG_FATAL, "shit something went wrong");
 	sdl = world->sdl;
 	ft_bzero(&render->rs, sizeof(t_render_statistics));
 	update_frustrum_culling(world, sdl, render);
@@ -251,7 +252,7 @@ void		destroy_entity(t_world *world, t_entity *ent)
 	cache->entities[ent->id].status = es_free;
 	cache->entities[ent->id].obj = NULL;
 	if (cache->existing_entitycount == 0)
-		doomlog(LOGEC_MALLOC, "Tried to remove entity -1\n");
+		doomlog(LOG_EC_MALLOC, "Tried to remove entity -1\n");
 	cache->existing_entitycount--;
 	//printf("%i entities exist after remove \n", cache->existing_entitycount);
 }
@@ -301,14 +302,14 @@ t_entity	*spawn_entity(t_world	*world)
 			//cache->entities[i].transform.scale = vector3_zero();
 			cache->existing_entitycount++;
 			if (cache->existing_entitycount >= cache->alloc_count)
-				doomlog(LOGEC_MALLOC, NULL);
+				doomlog(LOG_EC_MALLOC, NULL);
 			return (&cache->entities[i]);
 		}
 		i++;
 	}
 	printf("cache alloc count %i exists %i\n", cache->alloc_count, cache->existing_entitycount);
 	printf("ENTITYCACHE TOO SMALL, ABORT!");
-	doomlog(LOGEC_MALLOC, NULL);
+	doomlog(LOG_EC_MALLOC, NULL);
 	return (NULL); //never gets here
 }
 

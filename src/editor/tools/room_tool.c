@@ -109,7 +109,7 @@ void ptr_add(void **ptr, uint32_t *len, size_t size, void *add)
 
 	newptr = ft_memalloc((*len + 1) * size);
 	if (newptr == NULL)
-		doomlog(LOGEC_MALLOC, NULL);
+		doomlog(LOG_EC_MALLOC, NULL);
 	if (*ptr != NULL)
 	{
 		ft_memcpy(newptr, *ptr, *len * size);

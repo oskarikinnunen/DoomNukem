@@ -98,5 +98,5 @@ void	alloc_image(t_img *img, int width, int height)
 	img->length = width * height;
 	img->data = ft_memalloc(img->length * sizeof(uint32_t));
 	if (img->data == NULL)
-		doomlog(LOGEC_MALLOC, NULL);
+		doomlog(LOG_EC_MALLOC, NULL);
 }

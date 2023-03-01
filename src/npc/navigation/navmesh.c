@@ -179,7 +179,7 @@ void	add_to_navmesh(t_navigation *nav, t_triangle t, t_world *world)
 			nav->navmesh = ft_realloc(nav->navmesh, (nav->malloc_size + 1000) * sizeof(t_navnode), nav->malloc_size * sizeof(t_navnode));
 			nav->malloc_size += 1000;
 			if (!nav->navmesh)
-				doomlog(LOGEC_MALLOC, NULL);
+				doomlog(LOG_EC_MALLOC, NULL);
 		}
 		nav->navmesh[nav->node_amount].mid_point = vector3_div(vector3_add(vector3_add(nav->navmesh[nav->node_amount].vertex[0], nav->navmesh[nav->node_amount].vertex[1]), nav->navmesh[nav->node_amount].vertex[2]), 3.0f);
 		nav->navmesh[nav->node_amount].index = nav->node_amount;
@@ -266,7 +266,7 @@ void	malloc_space_for_navmesh(t_world *world)
 	world->nav.malloc_size = 1000;
 	world->nav.navmesh = ft_memalloc(sizeof(t_navnode) * world->nav.malloc_size);
 	if (!world->nav.navmesh)
-		doomlog(LOGEC_MALLOC, NULL);
+		doomlog(LOG_EC_MALLOC, NULL);
 	bzero(world->nav.navmesh, sizeof(t_navnode) * world->nav.malloc_size);
 	i = 0;
 	found = 0;
@@ -393,6 +393,6 @@ void	create_navmesh(t_world *world)
 		free(world->nav.openlist);
 	world->nav.openlist = ft_memalloc(world->nav.malloc_size * sizeof(t_navnode));
 	if (!world->nav.openlist)
-		doomlog(LOGEC_MALLOC, NULL);
+		doomlog(LOG_EC_MALLOC, NULL);
 	ft_bzero(world->nav.openlist, world->nav.malloc_size * sizeof(t_navnode));
 }

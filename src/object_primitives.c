@@ -8,7 +8,7 @@ static t_material	*planemat()
 
 	mat = ft_memalloc(sizeof(t_material));
 	if (mat == NULL)
-		doomlog(LOGEC_MALLOC, NULL);
+		doomlog(LOG_EC_MALLOC, NULL);
 	ft_strcpy(mat->texturename, "metal03.cng");
 	mat->kd = INT_MAX;
 	return (mat);
@@ -20,7 +20,7 @@ static t_material	*trimat()
 
 	mat = ft_memalloc(sizeof(t_material));
 	if (mat == NULL)
-		doomlog(LOGEC_MALLOC, NULL);
+		doomlog(LOG_EC_MALLOC, NULL);
 	ft_strcpy(mat->texturename, "metal03.cng");
 	mat->kd = INT_MAX;
 	return (mat);
@@ -46,7 +46,7 @@ t_object	*object_tri(t_sdlcontext *sdl)
 	tri->face_count = 1;
 	strcpy(tri->name, "meshtri");
 	if (tri->vertices == NULL || tri->faces == NULL)
-		doomlog(LOGEC_MALLOC, NULL);
+		doomlog(LOG_EC_MALLOC, NULL);
 	tri->vertices[0] = (t_vector3){0.0f, 0.0f, 0.0f};
 	tri->vertices[1] = (t_vector3){10.0f, 0.0f, 0.0f};
 	tri->vertices[2] = (t_vector3){0.0f, 0.0f, 10.0f};
@@ -81,7 +81,7 @@ t_object	*object_plane(t_sdlcontext *sdl)
 	plane->face_count = 2;
 	strcpy(plane->name, "plane");
 	if (plane->vertices == NULL || plane->faces == NULL)
-		doomlog(LOGEC_MALLOC, NULL);
+		doomlog(LOG_EC_MALLOC, NULL);
 	plane->vertices[0] = (t_vector3){0.0f, 0.0f, 0.0f};
 	plane->vertices[1] = (t_vector3){10.0f, 0.0f, 0.0f};
 	plane->vertices[2] = (t_vector3){0.0f, 0.0f, 10.0f};

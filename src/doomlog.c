@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 14:59:55 by raho              #+#    #+#             */
-/*   Updated: 2023/02/01 20:36:04 by raho             ###   ########.fr       */
+/*   Updated: 2023/02/07 15:54:56 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ static int	doomlog_fd(void)
 		if (fd == -1)
 		{
 			ft_putstr_fd("!!! doomlog.txt - ", 2);
-			error_codes(LOGEC_OPEN, 2);
+			error_codes(LOG_EC_OPEN, 2);
 			exit (1);
 		}
 		ft_putendl_fd("created/cleaned the log file succesfully", fd);
@@ -85,14 +85,14 @@ static int	doomlog_fd(void)
 		if (fd == -1)
 		{
 			ft_putstr_fd("!!! doomlog.txt - ", 2);
-			error_codes(LOGEC_OPEN, 2);
+			error_codes(LOG_EC_OPEN, 2);
 			exit (1);
 		}
 	}
 	return (fd);
 }
 
-static void	normal_message_mul(int fd, char **str)
+void	normal_message_mul(int fd, char **str)
 {
 	int	index;
 
@@ -123,6 +123,37 @@ static void warning_message_mul(int fd, char **str)
 	index = 0;
 	ft_putstr_fd("! ", fd);
 	ft_putstr_fd("! ", 2);
+	while (str[index] != NULL)
+	{
+		ft_putstr_fd(str[index], fd);
+		ft_putstr_fd(str[index], 2);
+		if (str[index + 1] == NULL)
+		{
+			ft_putchar_fd('\n', fd);
+			ft_putchar_fd('\n', 2);
+		}
+		else
+		{
+			ft_putchar_fd(' ', fd);
+			ft_putchar_fd(' ', 2);
+		}
+		index++;
+	}
+}
+
+static void	fatal_message(int fd, char *str)
+{
+	ft_putstr_fd("!!! ", fd);
+	ft_putstr_fd(str, fd);
+}
+
+static void	fatal_message_mul(int fd, char **str)
+{
+	int	index;
+
+	index = 0;
+	ft_putstr_fd("!!! ", fd);
+	ft_putstr_fd("!!! ", 2);
 	while (str[index] != NULL)
 	{
 		ft_putstr_fd(str[index], fd);
@@ -188,6 +219,11 @@ void	doomlog_mul(int code, char **str)
 		normal_message_mul(fd, str);
 	else if (code == LOG_WARNING)
 		warning_message_mul(fd, str);
+	else if (code == LOG_FATAL)
+	{
+		fatal_message_mul(fd, str);
+		exit (1);
+	}
 	else
 	{
 		error_message_mul(code, fd, str);
@@ -195,7 +231,7 @@ void	doomlog_mul(int code, char **str)
 	}
 	if (close(fd) == -1)
 	{
-		error_message(LOGEC_CLOSE, fd, "log.txt");
+		error_message(LOG_EC_CLOSE, fd, "doomlog.txt");
 		exit (1);
 	}
 }
@@ -209,14 +245,20 @@ void	doomlog(int code, char *str)
 		ft_putendl_fd(str, fd);
 	else if (code == LOG_WARNING)
 		warning_message(fd, str);
+	else if (code == LOG_FATAL)
+	{
+		fatal_message(fd, str);
+		exit (1);
+	}
 	else
 	{
 		error_message(code, fd, str);
-		exit (1);
+		if (code != LOG_EC_FORK)
+			exit (1);
 	}
 	if (close(fd) == -1)
 	{
-		error_message(code, fd, "log.txt");
+		error_message(code, fd, "doomlog.txt");
 		exit (1);
 	}
 }

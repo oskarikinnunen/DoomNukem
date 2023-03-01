@@ -160,7 +160,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 		game.hid.mouse.click_unhandled = false;
 		memcpy(sdl.window_surface->pixels, sdl.surface->pixels, sizeof(uint32_t) * sdl.window_w * sdl.window_h);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
-			doomlog(LOGEC_SDL_UPDATEWINDOWSURFACE, NULL);
+			doomlog(LOG_EC_SDL_UPDATEWINDOWSURFACE, NULL);
 		update_audio(&game.world);
 		game_random(&game.world);
 	}
@@ -206,7 +206,7 @@ int playmode(t_sdlcontext sdl)
 	bzero(&game, sizeof(t_game));
 	//Locks mouse
 	if (SDL_SetRelativeMouseMode(SDL_TRUE) < 0)
-		doomlog(LOGEC_SDL_SETRELATIVEMOUSEMODE, NULL);
+		doomlog(LOG_EC_SDL_SETRELATIVEMOUSEMODE, NULL);
 	game.world = load_world_args("leveltest_bu", &sdl, LOAD_ARG_FULL);
 	game.world.gamemode = MODE_PLAY;
 	create_navmesh(&game.world);
@@ -215,6 +215,6 @@ int playmode(t_sdlcontext sdl)
 	gr = gameloop(sdl, game);
 	//Unlocks mouse
 	if (SDL_SetRelativeMouseMode(SDL_FALSE) < 0)
-		doomlog(LOGEC_SDL_SETRELATIVEMOUSEMODE, NULL);
+		doomlog(LOG_EC_SDL_SETRELATIVEMOUSEMODE, NULL);
 	return (gr);
 }
