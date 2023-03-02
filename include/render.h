@@ -281,10 +281,10 @@ t_point_triangle	triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_tria
 bool				is_triangle_backface(t_triangle tritransformed, t_render *render);
 /* RASTERIZER */
 void				render_triangle_lit(t_sdlcontext *sdl, t_render *render, int index);
-void				render_triangle_uv(t_lighting l, t_triangle_polygon triangle);
+void				render_triangle_uv(t_lighting l, t_point_triangle triangle);
 void				render_triangle_unlit(t_sdlcontext *sdl, t_render *render, int index);
 void				render_triangle_dynamic(t_sdlcontext *sdl, t_render *render, int index);
-void				rasterize_light(t_triangle_polygon triangle, t_lighting *lighting);
+void				rasterize_light(t_point_triangle triangle, t_lighting *lighting);
 
 /* AUDIO TOOLS */
 
@@ -327,10 +327,11 @@ void	set_square_from_triangles(t_occlusion *occl, t_point_triangle *t, int count
 void	render_bitmask(t_sdlcontext *sdl, t_render *render);
 
 /*Render helper*/
+int					triangle_to_flat(t_point_triangle triangle, t_point_triangle tris[2]);
 t_point_triangle	wf_tri(t_point_triangle in, float scaling);
-t_texture			calc_step_texture(t_texture *t, float delta);
-void				calc_points_step(float x_step[2], t_texture t_step[2], t_vector2 *p, t_texture *t, float delta);
-void				sort_point_uv_tri(t_vector2 *p, t_texture *t);
+t_vector3			calc_step_texture(t_vector3 *t, float delta);
+void				calc_points_step(float x_step[2], t_vector3 t_step[2], t_vector2 *p, t_vector3 *t, float delta);
+void				sort_point_uv_tri(t_vector2 *p, t_vector3 *t);
 void				sort_polygon_tri(t_vector2 *p2, t_vector2 *t, t_vector3 *p3);
 void				sort_point_tri(t_vector2 *p2, float *w);
 void				ft_swap(void * a, void * b, size_t len);

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 13:54:56 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/12 09:07:12 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/02 18:01:52 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,28 @@ typedef struct s_v2rectangle
 typedef struct	s_triangle
 {
 	t_quaternion	p[3];
-	t_texture		t[3];
+	t_vector3		t[3];
 	uint32_t		clr;
 }	t_triangle;
 
+typedef struct s_trianglev3
+{
+	t_vector3	a;
+	t_vector3	b;
+	t_vector3	c;
+}	t_trianglev3;
+
+typedef struct s_trianglev2
+{
+	t_vector2	a;
+	t_vector2	b;
+	t_vector2	c;
+}	t_trianglev2;
+
 typedef struct s_point_triangle
 {
-	t_vector2		p[3];
-	t_texture		t[3];
+	t_vector2	p[3];
+	t_vector3	t[3];
 	uint32_t		clr;
 }	t_point_triangle;
 

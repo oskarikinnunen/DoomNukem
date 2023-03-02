@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/27 14:01:10 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/02 18:02:48 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -300,16 +300,6 @@ t_quaternion	quaternion_intersectplane(t_vector3 plane_p, t_vector3 plane_n, t_q
 //returns quaternion lerped from, to by delta
 t_quaternion	lerp_quaternion(t_quaternion from, t_quaternion to, float delta);
 
-typedef struct s_texture
-{
-	float	u;
-	float	v;
-	float	w;
-} t_texture;
-
-//returns texture lerped from, to by delta
-t_texture		lerp_texture(t_texture from, t_texture to, float delta);
-
 typedef struct s_mat4x4
 {
 	float	m[4][4];
@@ -382,7 +372,7 @@ t_vector2		point_to_vector2(t_point point);
 //Returns static str for given vector3
 char			*vector_string(t_vector3 vec);
 
-t_texture		vector2_to_texture(t_vector2 v);
+t_vector3		vector2_to_texture(t_vector2 v);
 
 typedef struct s_ray
 {

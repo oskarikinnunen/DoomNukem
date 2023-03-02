@@ -53,7 +53,7 @@ t_point_triangle triangle_to_screen_point_triangle(t_mat4x4 matproj, t_triangle 
 	{
 		triprojected.p[i] = quaternion_mul_matrix(matproj, clipped.p[i]);
 		triprojected.t[i] = clipped.t[i];
-		tri.t[i].w = 1.0f / triprojected.p[i].w;
+		tri.t[i].z = 1.0f / triprojected.p[i].w;
 		triprojected.p[i].v = vector3_div(triprojected.p[i].v, triprojected.p[i].w);
 		triprojected.p[i].v = vector3_negative(triprojected.p[i].v);
 		triprojected.p[i].v = vector3_add(triprojected.p[i].v, voffsetview);

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 07:34:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/21 14:57:11 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/02 19:22:16 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ inline static void sample_img(uint32_t x, uint32_t y, float z, t_lighting *light
 	}
 }
 
-inline static void scanline(int ax, int bx, int y, t_vector2*p, t_texture *t, t_lighting *lighting)
+inline static void scanline(int ax, int bx, int y, t_vector2*p, t_vector3 *t, t_lighting *lighting)
 {
 	float		z;
 	t_vector2	bary;
@@ -38,7 +38,7 @@ inline static void scanline(int ax, int bx, int y, t_vector2*p, t_texture *t, t_
 	steps = bx - start;
 	while(ax < bx)
 	{
-		z = ft_flerp(t[0].w, t[1].w, bary.x) + ((t[2].w - t[0].w) * bary.y);
+		z = ft_flerp(t[0].z, t[1].z, bary.x) + ((t[2].z - t[0].z) * bary.y);
 		sample_img(ax, y, z, lighting);
 		ax++;
 		bary = vector2_lerp(left, right, (float)(ax - start) / steps);
@@ -48,7 +48,7 @@ inline static void scanline(int ax, int bx, int y, t_vector2*p, t_texture *t, t_
 static void fill_point_tri_top(t_lighting *lighting, t_point_triangle triangle)
 {
 	t_vector2			*p;
-	t_texture		*t;
+	t_vector3		*t;
 	int				y;
 	float			delta;
 	float			w1;
@@ -75,7 +75,7 @@ static void fill_point_tri_top(t_lighting *lighting, t_point_triangle triangle)
 static void fill_point_tri_bot(t_lighting *lighting, t_point_triangle triangle)
 {
 	t_vector2			*p;
-	t_texture		*t;
+	t_vector3		*t;
 	int				y;
 	float			delta;
 	float			w1;
@@ -101,60 +101,17 @@ static void fill_point_tri_bot(t_lighting *lighting, t_point_triangle triangle)
 
 void	rasterize_zbuffer(t_lighting *lighting, t_point_triangle triangle)
 {
-	t_vector2				p_split;
-	t_texture			t_split;
-	t_texture			t_temp;
-	t_vector2				p_temp;
-	t_vector2				*p;
-	float				lerp;
+	t_point_triangle	tris[2];
+	int	res;
 
-	p = triangle.p;
-	sort_point_uv_tri(triangle.p, triangle.t);
-	if (p[1].y == p[2].y)
-	{
-		if (p[1].x > p[2].x)
-		{
-			ft_swap(&p[1], &p[2], sizeof(t_vector2));
-			ft_swap(&triangle.t[1], &triangle.t[2], sizeof(t_texture));
-		}
-		fill_point_tri_top(lighting, triangle);
-	}
-	else if (p[0].y == p[1].y)
-	{
-		ft_swap(&p[0], &p[2], sizeof(t_vector2));
-		ft_swap(&triangle.t[0], &triangle.t[2], sizeof(t_texture));
-		if (p[1].x > p[2].x)
-		{
-			ft_swap(&p[1], &p[2], sizeof(t_vector2));
-			ft_swap(&triangle.t[1], &triangle.t[2], sizeof(t_texture));
-		}
-		fill_point_tri_bot(lighting, triangle);
-	}
+	res = triangle_to_flat(triangle, tris);
+	if (res == 0)
+		fill_point_tri_top(lighting, tris[0]);
+	else if (res == 1)
+		fill_point_tri_bot(lighting, tris[0]);
 	else
 	{
-		float alphasplit = (p[1].y - p[2].y) / (p[0].y - p[2].y);
-
-		t_vector2 vi = vector2_mul(vector2_add(p[2], vector2_sub(p[0], p[2])), alphasplit);
-
-		p_split.x = p[2].x + (alphasplit * (p[0].x - p[2].x));
-		p_split.y = p[1].y;
-		t_split.u = ft_flerp(triangle.t[2].u, triangle.t[0].u, alphasplit);
-		t_split.v = ft_flerp(triangle.t[2].v, triangle.t[0].v, alphasplit);
-		t_split.w = ft_flerp(triangle.t[2].w, triangle.t[0].w, alphasplit);
-		if (p_split.x < p[1].x)
-		{
-			ft_swap(&p[1], &p_split, sizeof(t_vector2));
-			ft_swap(&triangle.t[1], &t_split, sizeof(t_texture));
-		}
-		p_temp = p[2];
-		t_temp = triangle.t[2];
-		p[2] = p_split;
-		triangle.t[2] = t_split;
-		if (p[0].y != p[1].y && p[1].x != p[2].x)
-			fill_point_tri_top(lighting, triangle);
-		p[0] = p_temp;
-		triangle.t[0] = t_temp;
-		if (p[0].y != p[1].y && p[1].x != p[2].x)
-			fill_point_tri_bot(lighting, triangle);
+		fill_point_tri_top(lighting, tris[0]);
+		fill_point_tri_bot(lighting, tris[1]);
 	}
 }

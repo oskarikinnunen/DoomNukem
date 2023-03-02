@@ -3,13 +3,6 @@
 
 #include "render_utils.h"
 
-typedef struct s_triangle_polygon //TODO: Renam this to light triangle or smt similar
-{
-	t_vector2	p2[3];
-	t_vector3	p3[3];
-	t_vector2	uv[3];
-}	t_triangle_polygon;
-
 typedef struct s_map
 {
 	uint32_t	*data;

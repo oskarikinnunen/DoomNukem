@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
+#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/02/07 12:23:40 by okinnune         ###   ########.fr        #
+#    Updated: 2023/03/02 18:39:00 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -130,8 +130,6 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		render/rasterization/rasterize_zbuffer.c \
 		render/rasterization/rasterize_triangle_wrap.c \
 		render/rasterization/rasterize_triangle.c \
-		render/rasterization/rasterize_triangle_uv.c \
-		render/rasterization/rasterize_triangle_dynamic.c \
 		render/rasterization/rasterize_triangle_shadow.c \
 		render/render_helper.c \
 		render/flip_channel.c \

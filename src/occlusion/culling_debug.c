@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 14:59:10 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/12 11:10:11 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/02 18:00:51 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void set_square_from_triangles(t_occlusion *occl, t_point_triangle *t, int count
 				s->min.y = v.y;
 			if (v.y > s->max.y)
 				s->max.y = v.y;
-			dist = t[i].t[j].w * 1000.0f;
+			dist = t[i].t[j].z * 1000.0f;
 			if (dist > occl->z_dist[0])
 				occl->z_dist[0] = dist;
 			if (dist < occl->z_dist[1])
