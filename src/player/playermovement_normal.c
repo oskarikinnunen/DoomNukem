@@ -74,7 +74,7 @@ void	player_update_physics(t_player *player, t_world *world)
 	if (player->jump.active)
 	{
 		lerp = 1.5f - player->jump.lerp;
-		override = (GRAVITY + (lerp * 0.7f));
+		override = (GRAVITY + (lerp * 0.65f));
 		player->cp.gravity_override = &override;
 	}
 	//player->cp.po
@@ -156,7 +156,7 @@ void	playermovement_normal(t_player *player, t_world *world)
 	velocity_xy = vector2_mul(normalized_inputvector(player->input, *player), PLAYER_ACCELERATION * world->clock.delta);
 	capsule_add_xy_velocity(velocity_xy, &player->cp, world);
 	crouchupdate(player, world);
-	if (player->input.jump && player->cp.new_isgrounded && world->clock.prev_time > player->lastjumptime + JUMP_DELAY)
+	if (player->input.jump && player->cp.new_isgrounded && world->clock.time > player->lastjumptime + JUMP_DELAY)
 	{
 		/*if (vector2_magnitude(velocity_xy) > PLAYER_WALKSPEED)
 			player->velocity.z = 0.12f;
@@ -170,7 +170,7 @@ void	playermovement_normal(t_player *player, t_world *world)
 		player->cp.new_velocity.z = 0.065f;
 		player->transform.position.z += 0.1f;
 		start_anim(&player->jump, anim_forwards);
-		player->lastjumptime = world->clock.prev_time;
+		player->lastjumptime = world->clock.time;
 	}
 	if (player->jump.active)
 		update_anim(&player->jump, world->clock.delta);

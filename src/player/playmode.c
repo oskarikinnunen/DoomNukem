@@ -1,5 +1,4 @@
-#include "doomnukem.h"
- 
+#include "doomnukem.h" 
 #include "file_io.h"
 #include "objects.h"
 //	Good resource for remembering bitwise operations:
@@ -70,63 +69,6 @@ static int handleinput(t_hid_info	*hid)
 	updateinput(&hid->input, hid->keystate, hid->mouse, &hid->controller[0]);
 	return(game_continue);
 }
-
-t_point screenlerp(float xlerp, float ylerp, t_sdlcontext *sdl)
-{
-	return ((t_point){sdl->screensize.x * xlerp, sdl->screensize.y * ylerp});
-}
-
-static void draw_gun_hud(t_world *world)
-{
-	t_point		pos_ammo;
-	t_rectangle	rect_ammo;
-	//world->player.gun.
-	//world->sdl->font.text
-	pos_ammo = (t_point){20, world->sdl->screensize.y - 40};
-	rect_ammo.position = point_sub(pos_ammo, (t_point){3,2});
-	rect_ammo.size = (t_point) {50, 28};
-	draw_rectangle_filled(*world->sdl, rect_ammo, 0);
-	drawrectangle(*world->sdl, rect_ammo, AMBER_1);
-	world->sdl->font.color = color32_to_sdlcolor(AMBER_2);
-	print_text(world->sdl, "Ammo:", pos_ammo);
-	pos_ammo.y += 14;
-	if (world->player->gun->reload_anim.active)
-		print_text(world->sdl, "R", pos_ammo);
-	else
-		print_text(world->sdl, s_itoa(world->player->gun->bullets), pos_ammo);
-	pos_ammo.x += 20;
-	print_text(world->sdl, "/", pos_ammo);
-	pos_ammo.x += 10;
-	uint8_t ammocount = world->player->ammo_union.ammo_arr[world->player->gun->stats.ammomask];
-	print_text(world->sdl, s_itoa(ammocount), pos_ammo);
-	world->sdl->font.font = world->sdl->font.font_sizes[0];
-
-	t_point pos_reload;
-	t_rectangle rect_reload;
-
-	pos_reload = screenlerp(0.75f, 0.75f, world->sdl);
-	if (world->player->input.aim)
-		pos_reload = screenlerp(0.55f, 0.5f, world->sdl);
-	if (world->player->gun->bullets == 0)
-	{
-		if (world->player->input.shoot && sin(world->clock.prev_time * 0.0185f) < 0.0f)
-			world->sdl->font.color = color32_to_sdlcolor(CLR_RED);
-		print_text_boxed(world->sdl, "![R]eload", pos_reload);
-		world->sdl->font.color = color32_to_sdlcolor(AMBER_2);
-	}
-		
-		
-		
-
-	//Draw player hud
-	t_rectangle rect_health;
-	rect_health.size = (t_point){100, 15};
-	rect_health.position = point_add(rect_ammo.position, (t_point) {60, rect_ammo.size.y - rect_health.size.y});
-	draw_rectangle_filled(*world->sdl, rect_health, 0);
-	drawrectangle(*world->sdl, rect_health, AMBER_1);
-	rect_health.size.x = ft_max(0, ((float)world->player->health / (float)MAXHEALTH) * 100);
-	draw_rectangle_filled(*world->sdl, rect_health, CLR_RED);
-}
 #include "input.h"
 /*main game loop*/
 static int gameloop(t_sdlcontext sdl, t_game game)
@@ -142,27 +84,28 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	sdl.audio.sfx_volume = 1.0f;
 	game.world.player = &game.player;
 	protagonist_play_audio(&game.player, &game.world, "protag_letsdo.wav");
+	play_music(&sdl, "music_arp1_action.wav");
 	while (gr == game_continue)
 	{
-		update_deltatime(&game.world.clock);
-		gr = playmode_events(&game);
-		moveplayer(&game.player, &game.hid.input, &game.world);
-		update_render(&sdl.render, &game.player);
-		screen_blank(sdl);
-		render_start(&sdl.render);
-		update_world3d(&game.world, &sdl.render);
-		char *fps = ft_itoa(game.world.clock.fps);
-		print_text(&sdl, fps, (t_point){sdl.window_w - 80, 10});
-		if (!game.player.input.aim)
-			drawcircle(sdl, point_div(sdl.screensize, 2), 4, CLR_BLUE);
-		free(fps);
-		draw_gun_hud(&game.world);
-		game.hid.mouse.click_unhandled = false;
-		memcpy(sdl.window_surface->pixels, sdl.surface->pixels, sizeof(uint32_t) * sdl.window_w * sdl.window_h);
-		if (SDL_UpdateWindowSurface(sdl.window) < 0)
-			doomlog(LOG_EC_SDL_UPDATEWINDOWSURFACE, NULL);
-		update_audio(&game.world);
-		game_random(&game.world);
+		if (game.player.health > 0)
+		{
+			update_deltatime(&game.world.clock);
+			gr = playmode_events(&game);
+			moveplayer(&game.player, &game.hid.input, &game.world);
+			update_world3d(&game.world, &sdl.render);
+			//FPS COUNTER
+			print_text(&sdl, s_itoa(game.world.clock.fps), (t_point){sdl.window_w - 80, 10});
+			draw_player_hud(&game.world);
+			memcpy(sdl.window_surface->pixels, sdl.surface->pixels, sizeof(uint32_t) * sdl.window_w * sdl.window_h);
+			if (SDL_UpdateWindowSurface(sdl.window) < 0)
+				doomlog(LOG_EC_SDL_UPDATEWINDOWSURFACE, NULL);
+			update_audio(&game.world);
+			game_random(&game.world);
+		}
+		else
+		{
+			playmode_death(&game);
+		}
 	}
 	if (gr == game_exit)
 	{
@@ -197,6 +140,8 @@ static t_vector3 find_playerspawn(t_world *world)
 	return (result);
 }
 
+
+//Resetlevel??
 /*setup and call gameloop*/
 int playmode(t_sdlcontext sdl)
 {

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/27 22:08:35 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/02 19:20:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,6 @@
 # define OBJPATH "assets/objects/"
 
 # define TEXTBACKGROUND_BORDERPADDING 6
-
-void	screen_blank(t_sdlcontext sdl);
 # define PERFGRAPH_SAMPLES 64
 
 typedef struct s_perfgraph
@@ -54,7 +52,7 @@ typedef struct s_perfgraph
 
 typedef struct s_clock
 {
-	Uint32	prev_time;
+	Uint32	time;
 	Uint32	delta;
 	Uint32	fps;
 } t_clock;
@@ -107,7 +105,7 @@ typedef enum e_gamemode
 typedef struct s_world
 {
 	char				name[32];
-	t_player			*player;
+	t_player			*player; //make this just a local player, not a pointer?
 	t_clock				clock;
 	t_debugconsole		debugconsole;
 	struct s_autogui	*debug_gui;
@@ -159,10 +157,8 @@ void		free_walls(t_area *room, t_world *world);
 typedef struct s_game
 {
 	t_world			world;
-	t_clock			clock;
 	t_hid_info		hid;
 	t_player		player;
-	t_cam_mode		cam_mode; //Unused but will be reimplemented?
 } t_game;
 
 /* LOG.C */
@@ -215,10 +211,12 @@ bool		game_random_coinflip(t_world *world);
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
+void	playmode_death(t_game *game);
 
 /* PLAYER.C */
 void	player_init(t_player *player, t_sdlcontext *sdl, t_world *world);
-void	update_render(t_render *render, t_player *player);
+
+void	render_start_new(t_sdlcontext *sdl, t_player *player);
 
 /* MOVEPLAYER.C */
 void	moveplayer(t_player *player, t_input *input, t_world *world);

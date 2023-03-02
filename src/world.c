@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/27 22:34:49 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/02 19:37:26 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 		/*&& i < world->entitycache.alloc_count*/)
 	{
 		ent = world->entitycache.sorted_entities[i];
-	//	ent = &world->entitycache.entities[i];
 		if (ent->status != es_free)
 		{
 			if(ent->component.func_update != NULL)
@@ -102,30 +101,25 @@ static void sort_entitycache(t_world *world, t_vector3 location)
 
 void update_world3d(t_world *world, t_render *render)
 {
-	t_list			*l;
-	t_entity		*ent;
-	t_wall			wall;
 	t_sdlcontext	*sdl;
-	int				i;
 
-	//doomlog(LOG_FATAL, "shit something went wrong");
 	sdl = world->sdl;
-	ft_bzero(&render->rs, sizeof(t_render_statistics));
-	update_frustrum_culling(world, sdl, render);
+	
+	// Blanking / setup for screen
+	render_start_new(world->sdl, world->player);
+	// Occlusion start?
 	clear_occlusion_buffer(sdl);
+	update_frustrum_culling(world, sdl, render);
 	sort_entitycache(world, render->camera.position);
+	//
 	update_entitycache(sdl, world, render);
 	bitmask_to_pixels(sdl);
 	rescale_surface(sdl);
-	show_navmesh(world);
 	lateupdate_entitycache(sdl, world);
 	if (world->gamemode == MODE_EDITOR && !world->debug_gui->hidden)
 	{
+		show_navmesh(world);
 		gui_start(world->debug_gui);
-		/*if (gui_button("music action", world->debug_gui))
-			change_music(sdl, "music_arp1_action.wav");
-		if (gui_button("music calm", world->debug_gui))
-			change_music(sdl, "music_arp1_ambient.wav");*/
 		gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);
 		gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);
 		gui_labeled_int("Entity count:", world->entitycache.existing_entitycount, world->debug_gui);
@@ -134,12 +128,6 @@ void update_world3d(t_world *world, t_render *render)
 			world->ceiling_toggle = !world->ceiling_toggle;
 			toggle_ceilings(world);
 		}
-		if (gui_shortcut_button("Toggle grids:", 'G', world->debug_gui))
-		{
-			//world->player->velocity.x += 15.0f;
-			world->sdl->render_grid = !world->sdl->render_grid;
-		}
-			
 		if (gui_shortcut_button("Toggle noclip", 'F', world->debug_gui))
 			world->player->noclip = !world->player->noclip;
 		//gui_labeled_bool_edit("Noclip:", &world->player->noclip, world->debug_gui);

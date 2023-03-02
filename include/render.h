@@ -230,6 +230,7 @@ typedef struct s_sdlcontext
 	bool					blend;
 	bool					render_grid;
 	bool					lighting_toggled;
+	bool					fog;
 	uint32_t				objectcount;
 	t_font					font;
 	t_audio					audio;
@@ -259,9 +260,10 @@ void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr);
 void	draw_alpha(t_sdlcontext sdl, t_point pos, uint32_t clr);
 void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr);
 void	drawcircle(t_sdlcontext sdl, t_point pos, int size, uint32_t clr);
-void	drawrectangle(t_sdlcontext, t_rectangle rect, uint32_t clr);
+void	draw_rectangle(t_sdlcontext, t_rectangle rect, uint32_t clr);
 void	draw_rectangle_filled(t_sdlcontext sdl, t_rectangle rect, uint32_t clr);
 void	draw_rectangle_raster(t_sdlcontext sdl, t_rectangle rect, uint32_t clr);
+void	draw_rectangle_raster_few(t_sdlcontext sdl, t_rectangle rect, uint32_t clr);
 void	draw_triangle(t_sdlcontext *sdl, t_point p1, t_point p2, t_point p3, uint32_t clr);
 
 /* INIT_RENDER.C */

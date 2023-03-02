@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   matrix_functions.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 19:24:23 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/11 10:55:09 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/02 19:21:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,29 @@ t_mat4x4 matrix_multiply_matrix(t_mat4x4 m1, t_mat4x4 m2)
 	return matrix;
 }
 
+// Only for Rotation/Translation Matrices
+t_mat4x4 matrix_quickinverse(t_mat4x4 m)
+{
+	t_mat4x4 matrix = matrix_zero();
+	matrix.m[0][0] = m.m[0][0];
+	matrix.m[0][1] = m.m[1][0];
+	matrix.m[0][2] = m.m[2][0];
+	matrix.m[0][3] = 0.0f;
+	matrix.m[1][0] = m.m[0][1];
+	matrix.m[1][1] = m.m[1][1];
+	matrix.m[1][2] = m.m[2][1];
+	matrix.m[1][3] = 0.0f;
+	matrix.m[2][0] = m.m[0][2];
+	matrix.m[2][1] = m.m[1][2];
+	matrix.m[2][2] = m.m[2][2];
+	matrix.m[2][3] = 0.0f;
+	matrix.m[3][0] = -(m.m[3][0] * matrix.m[0][0] + m.m[3][1] * matrix.m[1][0] + m.m[3][2] * matrix.m[2][0]);
+	matrix.m[3][1] = -(m.m[3][0] * matrix.m[0][1] + m.m[3][1] * matrix.m[1][1] + m.m[3][2] * matrix.m[2][1]);
+	matrix.m[3][2] = -(m.m[3][0] * matrix.m[0][2] + m.m[3][1] * matrix.m[1][2] + m.m[3][2] * matrix.m[2][2]);
+	matrix.m[3][3] = 1.0f;
+	return matrix;
+}
+
 t_mat4x4 matrix_lookat(t_vector3 pos, t_vector3 target, t_vector3 up)
 {
 	// Calculate new forward direction
@@ -49,33 +72,30 @@ t_mat4x4 matrix_lookat(t_vector3 pos, t_vector3 target, t_vector3 up)
 	// New Right direction is easy, its just cross product
 	t_vector3 newRight = vector3_crossproduct(newUp, newForward);
 
-	// Construct Dimensioning and Translation Matrix	
+	// Construct Dimensioning and Translation Matrix
 	t_mat4x4 matrix = matrix_zero();
-	matrix.m[0][0] = newRight.x;	matrix.m[0][1] = newRight.y;	matrix.m[0][2] = newRight.z;	matrix.m[0][3] = 0.0f;
-	matrix.m[1][0] = newUp.x;		matrix.m[1][1] = newUp.y;		matrix.m[1][2] = newUp.z;		matrix.m[1][3] = 0.0f;
-	matrix.m[2][0] = newForward.x;	matrix.m[2][1] = newForward.y;	matrix.m[2][2] = newForward.z;	matrix.m[2][3] = 0.0f;
-	matrix.m[3][0] = pos.x;			matrix.m[3][1] = pos.y;			matrix.m[3][2] = pos.z;			matrix.m[3][3] = 1.0f;
-	return matrix;
-
-}
-
-// Only for Rotation/Translation Matrices
-t_mat4x4 matrix_quickinverse(t_mat4x4 m)
-{
-	t_mat4x4 matrix = matrix_zero();
-	matrix.m[0][0] = m.m[0][0]; matrix.m[0][1] = m.m[1][0]; matrix.m[0][2] = m.m[2][0]; matrix.m[0][3] = 0.0f;
-	matrix.m[1][0] = m.m[0][1]; matrix.m[1][1] = m.m[1][1]; matrix.m[1][2] = m.m[2][1]; matrix.m[1][3] = 0.0f;
-	matrix.m[2][0] = m.m[0][2]; matrix.m[2][1] = m.m[1][2]; matrix.m[2][2] = m.m[2][2]; matrix.m[2][3] = 0.0f;
-	matrix.m[3][0] = -(m.m[3][0] * matrix.m[0][0] + m.m[3][1] * matrix.m[1][0] + m.m[3][2] * matrix.m[2][0]);
-	matrix.m[3][1] = -(m.m[3][0] * matrix.m[0][1] + m.m[3][1] * matrix.m[1][1] + m.m[3][2] * matrix.m[2][1]);
-	matrix.m[3][2] = -(m.m[3][0] * matrix.m[0][2] + m.m[3][1] * matrix.m[1][2] + m.m[3][2] * matrix.m[2][2]);
+	matrix.m[0][0] = newRight.x;
+	matrix.m[0][1] = newRight.y;
+	matrix.m[0][2] = newRight.z;
+	matrix.m[0][3] = 0.0f;
+	matrix.m[1][0] = newUp.x;
+	matrix.m[1][1] = newUp.y;
+	matrix.m[1][2] = newUp.z;
+	matrix.m[1][3] = 0.0f;
+	matrix.m[2][0] = newForward.x;
+	matrix.m[2][1] = newForward.y;
+	matrix.m[2][2] = newForward.z;
+	matrix.m[2][3] = 0.0f;
+	matrix.m[3][0] = pos.x;
+	matrix.m[3][1] = pos.y;
+	matrix.m[3][2] = pos.z;
 	matrix.m[3][3] = 1.0f;
-	return matrix;
+	return (matrix_quickinverse(matrix));
 }
 
 t_vector3 vector3_mul_matrix(t_mat4x4 m, t_vector3 i)
 {
-	t_vector3	v;
+	t_vector3 v;
 	v.x = i.x * m.m[0][0] + i.y * m.m[1][0] + i.z * m.m[2][0] + 1 * m.m[3][0];
 	v.y = i.x * m.m[0][1] + i.y * m.m[1][1] + i.z * m.m[2][1] + 1 * m.m[3][1];
 	v.z = i.x * m.m[0][2] + i.y * m.m[1][2] + i.z * m.m[2][2] + 1 * m.m[3][2];

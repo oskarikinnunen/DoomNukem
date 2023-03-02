@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/01 15:31:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/02 15:59:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ t_gamereturn	editor_events(t_editor *ed)
 			if (iskey(e, SDLK_F5))
 			{
 				world_save_to_file(ed->world);
-				ed->world.lastsavetime = ed->world.clock.prev_time;
+				ed->world.lastsavetime = ed->world.clock.time;
 			}
 		}
 		if (e.type == SDL_CONTROLLERBUTTONDOWN)

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 12:51:01 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/01 18:40:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/01 21:55:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ t_gunstats	gun_sniper()
 	stats.damage = 100;
 	stats.ads_speed = 0.005f;
 	stats.magazinecapacity = 5;
-	stats.reloadtime = 60;
+	stats.reloadtime = 25;
 	stats.fullauto = false;
 	return (stats);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   deltatime.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:25:00 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/04 17:25:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/02 15:59:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ void	update_deltatime(t_clock *c)
 	static uint32_t	betweenframes;
 
 	time_now = SDL_GetTicks();
-	c->delta = time_now - c->prev_time;
-	c->prev_time = time_now;
+	c->delta = time_now - c->time;
+	c->time = time_now;
 	add += c->delta;
 	betweenframes++;
 	if (time_now >= prev_fpstime + 1000)

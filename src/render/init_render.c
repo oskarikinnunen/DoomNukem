@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/28 15:38:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/02 19:34:35 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,44 +21,40 @@ t_render	init_render(t_sdlcontext sdl)
 
 	bzero(&render, sizeof(t_render));
 	bzero(&render.camera, sizeof(t_camera));
-	render.camera.lookdir = (t_vector3){0};
-	render.camera.position = (t_vector3){0};
-	render.camera.aspectratio = (float)(sdl.window_h * sdl.resolution_scaling) / (float)(sdl.window_w * sdl.resolution_scaling);
-	render.camera.matproj = matrix_makeprojection(90.0f, render.camera.aspectratio, 2.0f, 1000.0f);
+	render.camera.aspectratio = (float)(sdl.window_h) / (float)(sdl.window_w);
+	render.camera.matproj = matrix_makeprojection(90.0f, \
+								render.camera.aspectratio, 2.0f, 1000.0f);
 	render.worldspace_ptris = malloc(sizeof(t_point_triangle) * 10000);
 	render.screenspace_ptris = malloc(sizeof(t_point_triangle) * 10000);
-	render.q = malloc(sizeof(t_quaternion) * 10000); //TODO: should be multiplied by the largest obj vertex count
+	render.q = malloc(sizeof(t_quaternion) * 10000);
 	render.debug_img = get_image_by_name(sdl, "");
-	vtarget = vector3_add(render.camera.position, render.camera.lookdir);
-	matcamera = matrix_lookat(render.camera.position, vtarget, (t_vector3){0.0f, 0.0f, 1.0f});
-	render.camera.matview = matrix_quickinverse(matcamera);
 	render.occlusion.occlusion = true;
 	render.occlusion.occluder_box = false;
 	render.occlusion.draw_occlusion = false;
-	//render.world = world;
-	//render.sdl = &sdl;
-	return(render);
+	return (render);
 }
 
-void	render_start(t_render *render)
+void	render_start_new(t_sdlcontext *sdl, t_player *player)
 {
+	float		fov_rad;
+	t_render	*render;
 	t_vector3	vtarget;
-	t_mat4x4	matcamera;
 
-	vtarget = vector3_add(render->camera.position, render->camera.lookdir);
-	matcamera = matrix_lookat(render->camera.position, vtarget, (t_vector3){0.0f, 0.0f, 1.0f});
-	render->camera.matview = matrix_quickinverse(matcamera);
-}
-
-void update_render(t_render *render, t_player *player)
-{
-	float	fov_rad;
+	render = &sdl->render;
 	render->camera.lookdir = player->lookdir;
 	render->camera.position = player->headposition;
-	//render->camera.
 	fov_rad = fov_deg_to_fov_rad(player->fov);
 	render->camera.matproj.m[0][0] = render->camera.aspectratio * fov_rad;
 	render->camera.matproj.m[1][1] = fov_rad;
+	vtarget = vector3_add(render->camera.position, render->camera.lookdir);
+	render->camera.matview = matrix_lookat(render->camera.position, \
+										vtarget, (t_vector3){0.0f, 0.0f, 1.0f});
+	ft_bzero(sdl->surface->pixels,
+		sizeof(uint32_t) * sdl->window_h * sdl->window_w);
+	ft_bzero(sdl->ui_surface->pixels,
+		sizeof(uint32_t) * sdl->window_h * sdl->window_w);
+	ft_bzero(sdl->zbuffer, sizeof(float) * sdl->window_h * sdl->window_w);
+	ft_bzero(&render->rs, sizeof(t_render_statistics));
 }
 
 void	free_render(t_render render)

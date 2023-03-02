@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/01 21:25:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/02 15:59:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,9 +172,9 @@ void	updateguntransform(t_player *player, t_world *world)
 	gun->entity->transform.position = gun->stats.holsterpos;
 	//gun->entity->transform.position.z -= player.tra;
 	//neutralpos = gun->entity->transform.location;
-	if (!player->input.shoot && world->clock.prev_time > gun->lastshottime + gun->stats.firedelay)
+	if (!player->input.shoot && world->clock.time > gun->lastshottime + gun->stats.firedelay)
 		gun->readytoshoot = true;
-	if (gun->stats.fullauto && world->clock.prev_time > gun->lastshottime + gun->stats.firedelay)
+	if (gun->stats.fullauto && world->clock.time > gun->lastshottime + gun->stats.firedelay)
 		gun->readytoshoot = true;
 	if (gun->bullets == 0 || gun->reload_anim.active)
 		gun->readytoshoot = false;
@@ -182,9 +182,9 @@ void	updateguntransform(t_player *player, t_world *world)
 	{
 		start_anim(&gun->shoot_anim, anim_forwards);
 		start_anim(&gun->view_anim, anim_forwards);
-		printf("shot delta %i \n", world->clock.prev_time - gun->lastshottime);
+		printf("shot delta %i \n", world->clock.time - gun->lastshottime);
 		gun->readytoshoot = false;
-		gun->lastshottime = world->clock.prev_time;
+		gun->lastshottime = world->clock.time;
 		gun->bullets--;
 		play_gun_audio(gun, world);
 		player_gun_raycast(player, world);
@@ -224,9 +224,9 @@ void	updateguntransform(t_player *player, t_world *world)
 		if (gun->shoot_anim.active)
 		gun->entity->transform.position = vector3_add(gun->entity->transform.position, vector3_mul(vector3_up(), gun->shoot_anim.lerp * gun->stats.recoiljump.y));
 	//bobbing:
-		gun->entity->transform.position.z += vector2_magnitude(player->input.move) * cosf((world->clock.prev_time * 0.007f)) * 0.05f;
+		gun->entity->transform.position.z += vector2_magnitude(player->input.move) * cosf((world->clock.time * 0.007f)) * 0.05f;
 		gun->entity->transform.position.z = ft_fmovetowards(gun->entity->transform.position.z, gun->entity->transform.position.z + player->cp.new_velocity.z, world->clock.delta * 0.1f);
-		gun->entity->transform.rotation.z += vector2_magnitude(player->input.move) * cosf((world->clock.prev_time * 0.007f)) * ft_degtorad(0.15f);
+		gun->entity->transform.rotation.z += vector2_magnitude(player->input.move) * cosf((world->clock.time * 0.007f)) * ft_degtorad(0.15f);
 		//recoilrecovery:
 		gun->entity->transform.rotation.y = fmovetowards(gun->entity->transform.rotation.y, ft_degtorad(player->input.move.y * 1.15f), gun->stats.anglerecovery * world->clock.delta);
 		//recoil.y:
@@ -285,7 +285,12 @@ void	moveplayer(t_player *player, t_input *input, t_world *world)
 	if (!player->locked)
 	{
 		if (!player->noclip)
-			playermovement_normal(player, world);
+		{
+			if (player->health > 0)
+				playermovement_normal(player, world);
+			else
+				playermovement_death(player, world);
+		}
 		else
 			playermovement_noclip(player, world);
 	}

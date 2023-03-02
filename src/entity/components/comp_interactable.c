@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 06:20:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/16 16:37:47 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/02 15:59:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,8 @@ void	comp_interactable_update(t_entity *entity, t_world *world)
 	{
 		update_anim(&inter->wiggle, world->clock.delta);
 		float angleamount = (1.0f - inter->wiggle.lerp) * 0.2f;
-		entity->transform.rotation.y = ft_fmovetowards(entity->transform.rotation.y, angleamount * cosf(world->clock.prev_time * 0.005f), world->clock.delta * 0.0007f * ft_absf(pushv.x));
-		entity->transform.rotation.z = ft_fmovetowards(entity->transform.rotation.z, angleamount * sinf(world->clock.prev_time * 0.005f), world->clock.delta * 0.0007f * ft_absf(pushv.y));
+		entity->transform.rotation.y = ft_fmovetowards(entity->transform.rotation.y, angleamount * cosf(world->clock.time * 0.005f), world->clock.delta * 0.0007f * ft_absf(pushv.x));
+		entity->transform.rotation.z = ft_fmovetowards(entity->transform.rotation.z, angleamount * sinf(world->clock.time * 0.005f), world->clock.delta * 0.0007f * ft_absf(pushv.y));
 	}
 	else
 	{

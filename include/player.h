@@ -42,6 +42,8 @@ typedef struct s_player
 	t_anim				landing;
 	uint32_t			lastjumptime;
 	uint32_t			health;
+	uint32_t			lasthurttime;
+	t_vector3			lasthurtpos;
 	uint8_t				gun_selection;
 	union ammo_union
 	{
@@ -59,9 +61,9 @@ typedef struct s_player
 
 struct s_world;
 
+void	draw_player_hud(struct s_world *world);
 void	playermovement_normal(t_player *player, struct s_world *world);
 void	playermovement_noclip(t_player *player, struct s_world *world);
-
 void	protagonist_play_audio(t_player *player, struct s_world *world, char *soundname);
 
 #endif

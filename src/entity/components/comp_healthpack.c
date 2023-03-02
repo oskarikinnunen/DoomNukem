@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/24 11:11:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/02 14:33:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,9 @@ void	comp_healthpack_update(t_entity *entity, t_world *world)
 {
 	t_healthpack	*healthpack;
 
+	//if 
+	//world->player->health += 
+	//destroy_entity()
 	healthpack = entity->component.data;
 	if (healthpack == NULL)
 		return ;

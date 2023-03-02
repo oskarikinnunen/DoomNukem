@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/01 21:09:22 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/02 19:21:25 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,7 +237,7 @@ char	*seconds_since_last_save_str(t_world *world)
 	uint32_t	time_s;
 	char		*temp;
 
-	time_s = world->clock.prev_time - world->lastsavetime;
+	time_s = world->clock.time - world->lastsavetime;
 	time_s = time_s / 1000;
 	time_m = 0;
 	if (world->lastsavetime == 0)
@@ -296,9 +296,9 @@ int	editorloop(t_sdlcontext sdl)
 		bake_lights(&sdl.render, &ed.world);
 		if (!ed.player.locked)
 			moveplayer(&ed.player, &ed.hid.input, &ed.world);
-		update_render(&sdl.render, &ed.player);
-		screen_blank(sdl);
-		render_start(&sdl.render);
+		//update_render(&sdl.render, &ed.player);
+		//screen_blank(sdl);
+		//render_start(&sdl.render);
 		//update_frustrum_culling(&ed.world, &sdl, &sdl.render);
 		//clear_occlusion_buffer(&sdl);
 		update_world3d(&ed.world, &sdl.render);

@@ -163,7 +163,7 @@ void	load_tool_update(t_editor *ed, t_sdlcontext *sdl)
 	if (gui_button("Save current world", gui))
 	{
 		world_save_to_file(ed->world);
-		ed->world.lastsavetime = ed->world.clock.prev_time;
+		ed->world.lastsavetime = ed->world.clock.time;
 		return ;
 		load_tool_init(ed, sdl);
 		debugconsole_addmessage(&ed->world.debugconsole, "Saved world!");

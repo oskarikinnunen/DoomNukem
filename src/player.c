@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 14:31:10 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/01 21:01:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/02 18:56:02 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	player_init(t_player *player, t_sdlcontext *sdl, t_world *world)
 	ft_bzero(player, sizeof(player));
 	//player->transform.position = (t_vector3) {500.0f, 500.0f, 500.0f};
 	//player->transform.rotation = (t_vector3){-RAD90, -RAD90 * 0.99f, 0.0f}; //TODO: implement transform for player
-	player->ammo_union.ammo_u8.assault = 60;
+	player->ammo_union.ammo_u8.assault = 120;
 	player->ammo_union.ammo_u8.sniper = 20;
 	player->ammo_union.ammo_u8.pistol = 100;
 	player->ammo_union.ammo_u8.grenade = 5;
@@ -54,7 +54,7 @@ void	player_init(t_player *player, t_sdlcontext *sdl, t_world *world)
 	player->jump.lastframe = 18;
 	player->height = PLAYER_HEIGHT;
 	player->fov = 90.0f;
-	player->health = 200;
+	player->health = 50;
 	//player->jump.lerp = 
 	player->gun = debug_gun(player, sdl, world);
 }

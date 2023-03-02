@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/01 13:21:38 by okinnune         ###   ########.fr        #
+#    Updated: 2023/03/02 21:41:42 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,7 @@ FMOD = $(FMOD_DIR)/copied
 LIBFT = libft/libft.a
 
 #Source files:
-SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
+SRCFILES= main.c img.c deltatime.c anim.c \
 		editor.c editor_mouse.c editor_events.c \
 		file_ops/filechunks.c	\
 		file_ops/world_save.c	\
@@ -57,7 +57,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		preferences/graphicsprefs.c \
 		debug/debugconsole.c \
 		debug/debug_rendering.c \
-		playmode.c inputhelper.c \
+		inputhelper.c \
 		walls.c file_open.c \
 		moveplayer.c \
 		collision.c \
@@ -81,6 +81,9 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		physics/capsulephysics.c \
 		player/playermovement_normal.c \
 		player/playermovement_noclip.c \
+		player/playmode.c \
+		player/playmode_death.c \
+		player/hud.c \
 		entity/components/comp_npc.c \
 		guns/gun_presets.c \
 		obj_parser/obj_parse.c \
@@ -130,6 +133,9 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		render/rasterization/rasterize_triangle.c \
 		render/rasterization/rasterize_triangle_uv.c \
 		render/rasterization/rasterize_triangle_dynamic.c \
+		render/draw.c \
+		render/draw_rectangle.c \
+		render/draw_shapes.c \
 		render/render_helper.c \
 		render/flip_channel.c \
 		entity/components/comp_mechasuit.c \
