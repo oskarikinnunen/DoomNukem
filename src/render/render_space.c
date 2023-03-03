@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 15:36:10 by vlaine            #+#    #+#             */
-/*   Updated: 2023/02/07 14:04:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/27 18:43:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 
 void render_worldspace(t_render *render, t_entity *entity)
 {
-	t_object		*obj;
-	int				index;
-	t_mat4x4		matworld;
+	t_object *obj;
+	int index;
+	t_mat4x4 matworld;
 
 	obj = entity->obj;
-	if (obj == NULL)//TODO: Is this needed?
+	if (obj == NULL) // TODO: Is this needed?
 		return;
 	matworld = make_transform_matrix(entity->transform);
 	index = 0;
@@ -28,12 +28,13 @@ void render_worldspace(t_render *render, t_entity *entity)
 		render->q[index] = vector3_to_quaternion(obj->vertices[index]);
 		if (entity->animation.active)
 			render->q[index].v = vector3_add(entity->obj->o_anim.frames[entity->animation.frame].deltavertices[index].delta, render->q[index].v);
-		render->q[index] = quaternion_mul_matrix(matworld, render->q[index]);
+		// render->q[index] = quaternion_mul_matrix(matworld, render->q[index]);
+		render->q[index] = transformed_vector3(entity->transform, render->q[index].v);
 		index++;
 	}
 }
 
-t_triangle	triangle_to_viewspace(t_triangle tritransformed, t_mat4x4 matview)
+t_triangle triangle_to_viewspace(t_triangle tritransformed, t_mat4x4 matview)
 {
 	tritransformed.p[0] = quaternion_mul_matrix(matview, tritransformed.p[0]);
 	tritransformed.p[1] = quaternion_mul_matrix(matview, tritransformed.p[1]);
@@ -42,7 +43,7 @@ t_triangle	triangle_to_viewspace(t_triangle tritransformed, t_mat4x4 matview)
 	tritransformed.t[1] = tritransformed.t[1];
 	tritransformed.t[2] = tritransformed.t[2];
 	tritransformed.clr = tritransformed.clr;
-	return(tritransformed);
+	return (tritransformed);
 }
 
 static t_vector3 normal_calc(t_triangle tritransformed)
@@ -59,23 +60,23 @@ static t_vector3 normal_calc(t_triangle tritransformed)
 
 bool is_triangle_backface(t_triangle tritransformed, t_render *render)
 {
-	t_vector3	normal;	
-	t_vector3	vcameraray;
-	
+	t_vector3 normal;
+	t_vector3 vcameraray;
+
 	normal = normal_calc(tritransformed);
 	vcameraray = vector3_sub(tritransformed.p[0].v, render->camera.position);
 	if (vector3_dot(normal, vcameraray) < 0.0f || 1)
-		return(false);
+		return (false);
 	else
-		return(true);
+		return (true);
 }
 
 t_point_triangle triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_triangle clipped, t_sdlcontext sdl)
 {
-	t_triangle			triprojected;
-	t_point_triangle	tri;
-	int					i;
-	t_vector3			voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
+	t_triangle triprojected;
+	t_point_triangle tri;
+	int i;
+	t_vector3 voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
 
 	i = 0;
 	while (i < 3)
@@ -84,7 +85,7 @@ t_point_triangle triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_tria
 		triprojected.t[i] = clipped.t[i];
 		tri.t[i].u = triprojected.t[i].u / triprojected.p[i].w;
 		tri.t[i].v = triprojected.t[i].v / triprojected.p[i].w;
-		tri.t[i].w = 1.0f / triprojected.p[i].w; //1.0f /
+		tri.t[i].w = 1.0f / triprojected.p[i].w; // 1.0f /
 		triprojected.p[i].v = vector3_div(triprojected.p[i].v, triprojected.p[i].w);
 		triprojected.p[i].v = vector3_negative(triprojected.p[i].v);
 		triprojected.p[i].v = vector3_add(triprojected.p[i].v, voffsetview);
@@ -93,7 +94,7 @@ t_point_triangle triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_tria
 		i++;
 	}
 	tri.clr = clipped.clr;
-	return(tri);
+	return (tri);
 }
 
 static void clip_and_render_triangles(t_sdlcontext *sdl, t_render *render)
@@ -108,16 +109,16 @@ static void clip_and_render_triangles(t_sdlcontext *sdl, t_render *render)
 
 void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 {
-	t_object		*obj;
-	t_quaternion	temp;
-	int				index;
+	t_object *obj;
+	t_quaternion temp;
+	int index;
 
 	obj = entity->obj;
 
 	index = 0;
 	while (index < obj->face_count)
 	{
-		t_triangle	tritransformed;
+		t_triangle tritransformed;
 
 		tritransformed = (t_triangle){render->q[obj->faces[index].v_indices[0] - 1], render->q[obj->faces[index].v_indices[1] - 1], render->q[obj->faces[index].v_indices[2] - 1]};
 		if (obj->uv_count != 0 && !render->wireframe)
@@ -126,7 +127,7 @@ void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 			tritransformed.t[1] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[1] - 1]);
 			tritransformed.t[2] = vector2_to_texture(obj->uvs[obj->faces[index].uv_indices[2] - 1]);
 		}
-		//tritransformed.clr = obj->materials[obj->faces[index].materialindex].kd;
+		// tritransformed.clr = obj->materials[obj->faces[index].materialindex].kd;
 		if (!is_triangle_backface(tritransformed, render))
 		{
 			t_triangle clipped[2];

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/09 16:20:49 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/02 19:20:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,6 @@
 # define OBJPATH "assets/objects/"
 
 # define TEXTBACKGROUND_BORDERPADDING 6
-
-void	screen_blank(t_sdlcontext sdl);
 # define PERFGRAPH_SAMPLES 64
 
 typedef struct s_perfgraph
@@ -54,7 +52,7 @@ typedef struct s_perfgraph
 
 typedef struct s_clock
 {
-	Uint32	prev_time;
+	Uint32	time;
 	Uint32	delta;
 	Uint32	fps;
 } t_clock;
@@ -98,10 +96,16 @@ typedef struct s_log
 	int	fd;
 }	t_log;
 
+typedef enum e_gamemode
+{
+	MODE_PLAY,
+	MODE_EDITOR
+}	t_gamemode;
+
 typedef struct s_world
 {
 	char				name[32];
-	t_player			*player;
+	t_player			*player; //make this just a local player, not a pointer?
 	t_clock				clock;
 	t_debugconsole		debugconsole;
 	struct s_autogui	*debug_gui;
@@ -116,6 +120,7 @@ typedef struct s_world
 	bool				ceiling_toggle;
 	t_navigation		nav;
 	uint32_t			lastsavetime;
+	t_gamemode			gamemode;
 }	t_world;
 
 t_vector2	flipped_uv(t_vector2 og);
@@ -132,6 +137,7 @@ t_world		load_world(char *filename, t_sdlcontext *sdl);
 
 void		destroy_entity(t_world *world, t_entity *ent);
 t_entity	*spawn_entity(t_world	*world);
+t_entity	*find_entity_with_comp(t_world	*world, t_componenttype comp);
 t_entity	*spawn_basic_entity(t_world *world, char *objectname, t_vector3 position);
 void		entity_assign_object(t_world *world, t_entity *entity, t_object *obj);
 void		save_world(char *filename, t_world world);
@@ -151,10 +157,8 @@ void		free_walls(t_area *room, t_world *world);
 typedef struct s_game
 {
 	t_world			world;
-	t_clock			clock;
 	t_hid_info		hid;
 	t_player		player;
-	t_cam_mode		cam_mode; //Unused but will be reimplemented?
 } t_game;
 
 /* LOG.C */
@@ -207,10 +211,12 @@ bool		game_random_coinflip(t_world *world);
 
 /* PLAYMODE.C */
 int		playmode(t_sdlcontext sdl);
+void	playmode_death(t_game *game);
 
 /* PLAYER.C */
 void	player_init(t_player *player, t_sdlcontext *sdl, t_world *world);
-void	update_render(t_render *render, t_player *player);
+
+void	render_start_new(t_sdlcontext *sdl, t_player *player);
 
 /* MOVEPLAYER.C */
 void	moveplayer(t_player *player, t_input *input, t_world *world);

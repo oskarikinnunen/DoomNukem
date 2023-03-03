@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   controller.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:36:01 by raho              #+#    #+#             */
-/*   Updated: 2023/02/07 15:41:33 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/01 21:09:02 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,6 +208,9 @@ static void	keyboard_movement(t_input *input, t_mouse mouse, int keystate, int a
 	input->aim = mouse.heldstate >> MOUSE_RIGHT & 1;
 	input->shoot = mouse.heldstate >> MOUSE_LEFT & 1;
 	input->use = check_alpha_key(akeystate, 'e');
+	input->prevgun = check_alpha_key(akeystate, 'q');
+	input->nextgun = check_alpha_key(akeystate, 'e');
+	input->reload = check_alpha_key(akeystate, 'r');
 	if (input->use)
 	{
 		printf("input use %i \n", input->use);

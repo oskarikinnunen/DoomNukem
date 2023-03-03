@@ -5,7 +5,7 @@
 	#include <inttypes.h>
 # endif
 
-#include "npc.h"
+
 
 typedef enum e_componenttype
 {
@@ -17,7 +17,10 @@ typedef enum e_componenttype
 	COMP_WATERCOLLIDER,
 	COMP_LIGHT,
 	COMP_HEALTHPACK,
-	COMP_NPC_CIVILIAN
+	COMP_NPC_CIVILIAN,
+	COMP_PLAYERSPAWN,
+	COMP_GUN_PICKUP,
+	COMP_AUTO_DOOR
 }	t_componenttype;
 
 struct s_autogui;
@@ -63,9 +66,11 @@ typedef struct s_audiosource
 	uint32_t		_nextstart;
 }	t_audiosource;
 
+#include "npc.h"
+
 typedef struct s_interactable
 {
-	//t_characterphysics	cphys;
+	t_characterphysics	phys;
 	t_anim		wiggle;
 	t_vector3	velocity;
 	float		radius;
@@ -97,6 +102,18 @@ typedef struct	s_npc_civilian
 {
 	float	TESTVARIABLE;
 }	t_npc_civilian;
+typedef struct	s_playerspawn
+{
+	float	TESTVARIABLE;
+}	t_playerspawn;
+typedef struct	s_gun_pickup
+{
+	float	TESTVARIABLE;
+}	t_gun_pickup;
+typedef struct	s_auto_door
+{
+	float	TESTVARIABLE;
+}	t_auto_door;
 /*STRUCTDEF END, DONT REMOVE SINCE THE CREATECOMPONENT SCRIPT DEPENDS ON THIS*/
 
 /* AUDIOSOURCE FUNCTIONS */
@@ -108,9 +125,13 @@ void	assign_component_watercollider(t_component *component);
 void	assign_component_light(t_component *component);
 void	assign_component_healthpack(t_component *component);
 void	assign_component_npc_civilian(t_component *component);
+void	assign_component_playerspawn(t_component *component);
+void	assign_component_gun_pickup(t_component *component);
+void	assign_component_auto_door(t_component *component);
 /* ASSIGNFUNC END, DONT REMOVE SINCE THE CREATECOMPONENT SCRIPT DEPENDS ON THIS*/
 /* AUDIOSOURCE INTERNAL FUNCTIONS */
 void	_audiosource_start(t_sdlcontext *sdl, t_audiosource	*source, t_vector3 *pos);
+void	_audiosource_2D_start(t_sdlcontext *sdl, t_audiosource	*source);
 
 /*NPC*/
 void	assign_component_npc(t_component *component);

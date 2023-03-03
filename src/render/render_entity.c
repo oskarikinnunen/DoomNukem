@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/01 16:50:51 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/03 19:22:28 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -273,7 +273,6 @@ void	render_ball(t_sdlcontext *sdl, t_vector3 pos, float size, uint32_t clr)
 
 bool	vector3_has_nan(t_vector3 vec)
 {
-	// TODO: Rene edited these functions from isnanf and isinff to compile on mac
 	return (isnan(vec.x) || isinf(vec.x)
 		|| isnan(vec.y) || isinf(vec.y)
 		|| isnan(vec.z) || isinf(vec.z));

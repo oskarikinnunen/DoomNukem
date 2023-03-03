@@ -6,12 +6,11 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/30 17:04:01 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/03 16:33:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
- 
 #include "editor_tools.h"
 
 bool		check_alpha_key(uint32_t alphakeystate, char c)
@@ -46,9 +45,9 @@ void		toggle_keystates(t_hid_info *hid, SDL_Event e)
 		c = 'a';
 		while (c <= 'z')
 		{
-			if (hid->alphakeystate >> (c - 'a' & 1) == 0)
-				hid->alphakey_pressed |= iskey(e, c) << (c - 'a');
 			hid->alphakeystate |= iskey(e, c) << (c - 'a');
+			if ((hid->alphakeystate >> (c - 'a')) & 1 == 1)
+				hid->alphakey_pressed |= iskey(e, c) << (c - 'a');
 			c++; //Not the language
 		}
 	}
@@ -73,7 +72,7 @@ void		toggle_keystates(t_hid_info *hid, SDL_Event e)
 		while (c <= 'z')
 		{
 			hid->alphakeystate &= ~(iskey(e, c) << (c - 'a'));
-			c++; //Not the language
+			c++;
 		}
 	}
 }
@@ -139,7 +138,7 @@ t_gamereturn	editor_events(t_editor *ed)
 			if (iskey(e, SDLK_F5))
 			{
 				world_save_to_file(ed->world);
-				ed->world.lastsavetime = ed->world.clock.prev_time;
+				ed->world.lastsavetime = ed->world.clock.time;
 			}
 		}
 		if (e.type == SDL_CONTROLLERBUTTONDOWN)
@@ -150,7 +149,6 @@ t_gamereturn	editor_events(t_editor *ed)
 				return (game_exit);
 		}
 	}
-	//updateinput(&ed->hid.input, ed->hid.keystate, ed->hid.mouse, ed->hid.controller);
 	updateinput_new(&ed->hid.input, ed->hid);
 	return (game_continue);
 }

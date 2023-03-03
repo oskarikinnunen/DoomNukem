@@ -351,20 +351,6 @@ void bake_lights(t_render *render, t_world *world)
 	int i;
 	i = 0;
 
-	if (!world->player->gun->entity.hidden)
-	{
-		t_entity	*g_ent;
-
-		g_ent = &world->player->gun->entity;
-		if (g_ent->lightmap == NULL)
-		{
-			create_lightmap_for_entity(g_ent, world);
-			create_map_for_entity(g_ent, world);
-			//create_dynamic_map_for_entity(g_ent, world);
-			world->player->gun->entity.lightmap->dynamic = true;
-		}
-		dynamic_light(&world->player->gun->entity, world);
-	}
 	return ;
 	//for_all_active_entities(world, dynamic_light);
 	i = 0;

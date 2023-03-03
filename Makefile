@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/01 18:00:37 by raho             ###   ########.fr        #
+#    Updated: 2023/03/03 19:20:55 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,11 +30,8 @@ FMOD = $(FMOD_DIR)/copied
 
 LIBFT = libft/libft.a
 
-LUAFOLDER= lua-5.3.6
-LUA= $(LUAFOLDER)/install/lib/liblua.a
-
 #Source files:
-SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
+SRCFILES= main.c img.c deltatime.c anim.c \
 		editor.c editor_mouse.c editor_events.c \
 		file_ops/filechunks.c	\
 		file_ops/world_save.c	\
@@ -60,7 +57,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		preferences/graphicsprefs.c \
 		debug/debugconsole.c \
 		debug/debug_rendering.c \
-		playmode.c inputhelper.c \
+		inputhelper.c \
 		walls.c file_open.c \
 		moveplayer.c \
 		collision.c \
@@ -85,7 +82,11 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		physics/capsulephysics.c \
 		player/playermovement_normal.c \
 		player/playermovement_noclip.c \
+		player/playmode.c \
+		player/playmode_death.c \
+		player/hud.c \
 		entity/components/comp_npc.c \
+		guns/gun_presets.c \
 		obj_parser/obj_parse.c \
 		obj_parser/obj_parse_vertex.c \
 		obj_parser/obj_parse_faces.c \
@@ -108,6 +109,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		occlusion/culling_debug.c \
 		occlusion/bitmask_culling.c \
 		surface_tools.c \
+		playmode_events.c \
 		colors.c \
 		render/render_entity.c \
 		render/render_clip.c \
@@ -132,13 +134,19 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		render/rasterization/rasterize_triangle.c \
 		render/rasterization/rasterize_triangle_uv.c \
 		render/rasterization/rasterize_triangle_dynamic.c \
+		render/draw.c \
+		render/draw_rectangle.c \
+		render/draw_shapes.c \
 		render/render_helper.c \
 		render/flip_channel.c \
 		entity/components/comp_mechasuit.c \
 		entity/components/comp_watercollider.c \
 		entity/components/comp_light.c \
 		entity/components/comp_healthpack.c \
-		entity/components/comp_npc_civilian.c #.ENDSRC. CREATECOMPONENT SCRIPT DEPENDS ON THIS SO DONT REMOVE
+		entity/components/comp_npc_civilian.c \
+		entity/components/comp_playerspawn.c \
+		entity/components/comp_gun_pickup.c \
+		entity/components/comp_auto_door.c #.ENDSRC. CREATECOMPONENT SCRIPT DEPENDS ON THIS SO DONT REMOVE
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c vector3_more.c \
 		vector2_elementary.c vector2_shorthands.c \
@@ -183,8 +191,8 @@ endif
 #multi:
 #	$(MAKE) -j6 all
 
-all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(FMOD) $(LUA) $(LIBFT) $(OBJ)
-	$(CC) $(OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LUA) $(LDFLAGS)
+all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(FMOD) $(LIBFT) $(OBJ)
+	$(CC) $(OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LDFLAGS)
 
 #-include $(DEPENDS)
 
@@ -209,14 +217,6 @@ clean-libs:
 	rm $(FMOD)
 
 re-libs: clean-libs all
-
-clean-lua:
-	rm -rf $(LUAFOLDER)/install
-
-re-lua: clean-lua $(LUA)
-
-$(LUA):
-	cd $(LUAFOLDER) && make generic && make local
 
 $(FMOD):
 	cp $(FMOD_DIR)/libfmod.dylib $(INSTALLED_LIBS_DIR)/lib/

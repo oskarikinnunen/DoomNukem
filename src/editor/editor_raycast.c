@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 18:03:40 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/08 19:29:32 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/27 19:25:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,9 +190,19 @@ t_vector3_tri	worldspace_tri(t_entity *entity, int index)
 
 	object = entity->obj;
 	
-	tri.a = object->vertices[object->faces[index].v_indices[0] - 1];
-	tri.b = object->vertices[object->faces[index].v_indices[1] - 1];
-	tri.c = object->vertices[object->faces[index].v_indices[2] - 1];
+	int i1, i2, i3;
+	i1 = object->faces[index].v_indices[0] - 1;
+	i2 = object->faces[index].v_indices[1] - 1;
+	i3 = object->faces[index].v_indices[2] - 1;
+	tri.a = object->vertices[i1];
+	tri.b = object->vertices[i2];
+	tri.c = object->vertices[i3];
+	if (entity->animation.active) //TODO: use new entity->worldspace_triangles
+	{
+		tri.a = vector3_add(entity->obj->o_anim.frames[entity->animation.frame].deltavertices[i1].delta, tri.a);
+		tri.b = vector3_add(entity->obj->o_anim.frames[entity->animation.frame].deltavertices[i2].delta, tri.b);
+		tri.c = vector3_add(entity->obj->o_anim.frames[entity->animation.frame].deltavertices[i3].delta, tri.c);
+	}
 	tri.a = transformed_vector3(entity->transform, tri.a).v;
 	tri.b = transformed_vector3(entity->transform, tri.b).v;
 	tri.c = transformed_vector3(entity->transform, tri.c).v;

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/01 18:11:34 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/03 19:21:17 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ char	*world_fullpath(char	*filename)
 void	editor_load_world_args(t_editor *ed, char	*worldname, t_sdlcontext *sdl, t_load_arg args)
 {
 	ed->world = load_world_args(worldname, sdl, args);
+	ed->world.gamemode = MODE_EDITOR;
 	*(ed->world.debug_gui) = init_gui(sdl, &ed->hid, &ed->player, sdl->screensize, "Debugging menu (F2)");
 	
 	ed->toolbar_gui = init_gui(sdl, &ed->hid, &ed->player, (t_point){5, 5}, "Toolbar (F1)");
@@ -236,7 +237,7 @@ char	*seconds_since_last_save_str(t_world *world)
 	uint32_t	time_s;
 	char		*temp;
 
-	time_s = world->clock.prev_time - world->lastsavetime;
+	time_s = world->clock.time - world->lastsavetime;
 	time_s = time_s / 1000;
 	time_m = 0;
 	if (world->lastsavetime == 0)
@@ -287,44 +288,10 @@ int	editorloop(t_sdlcontext sdl)
 	ed.gamereturn = game_continue;
 	sdl.lighting_toggled = false;
 	ed.world.lighting.calculated = false;
+	ed.player.gun->entity->hidden = true;
 	//play_music(&sdl, "music_arp1_ambient.wav");
-	/* doomlog(LOG_NORMAL, "here");
-	doomlog(LOG_NORMAL, "are");
-	doomlog(LOG_NORMAL, "some");
-	doomlog(LOG_NORMAL, "random");
-	doomlog(LOG_NORMAL, "entries");
-	doomlog(LOG_NORMAL, "kiwi");
-	doomlog(LOG_NORMAL, "kiwi");
-	doomlog(LOG_NORMAL, "kiwi");
-	doomlog(LOG_NORMAL, "kiwi");
-	doomlog(LOG_NORMAL, "kiwi");
-	doomlog(LOG_NORMAL, "kiwi");
-	doomlog(LOG_NORMAL, "kiwi");
-	doomlog(LOG_NORMAL, "apple");
-	doomlog(LOG_NORMAL, "apple");
-	doomlog(LOG_NORMAL, "apple");
-	doomlog(LOG_NORMAL, "apple");
-	doomlog(LOG_NORMAL, "apple");
-	doomlog(LOG_NORMAL, "apple");
-	doomlog(LOG_NORMAL, "apple");
-	doomlog(LOG_NORMAL, "apple");
-	doomlog(LOG_NORMAL, "mandarin");
-	doomlog(LOG_NORMAL, "mandarin");
-	doomlog(LOG_NORMAL, "mandarin");
-	doomlog(LOG_NORMAL, "mandarin");
-	doomlog(LOG_NORMAL, "mandarin");
-	doomlog(LOG_NORMAL, "mandarin");
-	doomlog(LOG_NORMAL, "mandarin");
-	doomlog(LOG_NORMAL, "mandarin");
-	doomlog(LOG_NORMAL, "banana");
-	doomlog(LOG_NORMAL, "banana");
-	doomlog(LOG_NORMAL, "banana");
-	doomlog(LOG_NORMAL, "banana");
-	doomlog(LOG_NORMAL, "banana");
-	doomlog(LOG_NORMAL, "banana");
-	doomlog(LOG_NORMAL, "banana");
-	doomlog(LOG_NORMAL, "banana");
-	doomlog(LOG_NORMAL, "banana"); */
+	sdl.render.occlusion.occlusion = false;
+	sdl.fog = false;
 	while (ed.gamereturn == game_continue)
 	{
 		update_deltatime(&ed.world.clock);
@@ -332,13 +299,11 @@ int	editorloop(t_sdlcontext sdl)
 		bake_lights(&sdl.render, &ed.world);
 		if (!ed.player.locked)
 			moveplayer(&ed.player, &ed.hid.input, &ed.world);
-		update_render(&sdl.render, &ed.player);
-		screen_blank(sdl);
-		render_start(&sdl.render);
-		update_frustrum_culling(&ed.world, &sdl, &sdl.render);
-		clear_occlusion_buffer(&sdl);
-		if (!ed.player.gun->disabled)
-			render_entity(&sdl, &sdl.render, &ed.player.gun->entity);
+		//update_render(&sdl.render, &ed.player);
+		//screen_blank(sdl);
+		//render_start(&sdl.render);
+		//update_frustrum_culling(&ed.world, &sdl, &sdl.render);
+		//clear_occlusion_buffer(&sdl);
 		update_world3d(&ed.world, &sdl.render);
 		update_editor_toolbar(&ed, &ed.toolbar_gui);
 		if (ed.tool != NULL)
@@ -359,16 +324,18 @@ int	editorloop(t_sdlcontext sdl)
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
 			doomlog(LOG_EC_SDL_UPDATEWINDOWSURFACE, NULL);
 		update_audio(&ed.world);
-		
-		//play_localsound()
-		//ft_bzero(NULL, 10); // forces a crash (for error test purposes only) remove this
 	}
+	if (ed.player.gun->entity != NULL)
+		destroy_entity(&ed.world, ed.player.gun->entity);
 	editor_save_prefs(&ed);
 	save_graphics_prefs(&sdl);
 	//save_world(ed.world.name, ed.world);
 	world_save_to_file(ed.world);
-	free_render(sdl.render);
 	if (ed.gamereturn == game_exit)
+	{
+		free_render(sdl.render);
 		quit_game(&sdl);
+	}
+		
 	return (ed.gamereturn);
 }

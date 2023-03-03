@@ -16,44 +16,10 @@ load/save different world (file selector)
 	single file
 	fix room save (actually read the room)
 
-==64027== Invalid read of size 8
-==64027==    at 0x11529F: free_object (wall_tool_rooms.c:695)
-==64027==    by 0x11529F: free_floor (wall_tool_rooms.c:714)
-==64027==    by 0x11529F: make_areas (wall_tool_rooms.c:780)
-==64027==    by 0x1192B3: recalculate_joined_rooms (room_tool.c:767)
-==64027==    by 0x1192B3: modifymode (room_tool.c:909)
-==64027==    by 0x11AD99: room_tool_update (room_tool.c:1446)
-==64027==    by 0x110F2B: editorloop (editor.c:64)
-==64027==    by 0x10F494: main (main.c:151)
-==64027==  Address 0x110 is not stack'd, malloc'd or (recently) free'd
-==64027== Process terminating with default action of signal 11 (SIGSEGV)
-==64027==  Access not within mapped region at address 0x110
-==64027==    at 0x11529F: free_object (wall_tool_rooms.c:695)
-==64027==    by 0x11529F: free_floor (wall_tool_rooms.c:714)
-==64027==    by 0x11529F: make_areas (wall_tool_rooms.c:780)
-==64027==    by 0x1192B3: recalculate_joined_rooms (room_tool.c:767)
-==64027==    by 0x1192B3: modifymode (room_tool.c:909)
-==64027==    by 0x11AD99: room_tool_update (room_tool.c:1446)
-==64027==    by 0x110F2B: editorloop (editor.c:64)
-==64027==    by 0x10F494: main (main.c:151)
-==64027==  If you believe this happened as a result of a stack
-==64027==  overflow in your program's main thread (unlikely but
-==64027==  possible), you can try to increase the size of the
-==64027==  main thread stack using the --main-stacksize= flag.
-==64027==  The main thread stack size used in this run was 8388608.
-==64027== 
-==64027== HEAP SUMMARY:
-==64027==     in use at exit: 61,670,376 bytes in 6,300 blocks
-==64027==   total heap usage: 262,184 allocs, 255,884 frees, 159,349,239 bytes allocated
-==64027== 
-==64027== LEAK SUMMARY:
-==64027==    definitely lost: 415,530 bytes in 340 blocks
-==64027==    indirectly lost: 143,800 bytes in 378 blocks
-==64027==      possibly lost: 15,852,491 bytes in 1,041 blocks
-==64027==    still reachable: 45,258,551 bytes in 4,540 blocks
-==64027==         suppressed: 4 bytes in 1 blocks
-==64027== Rerun with --leak-check=full to see details
-
+component/gun struct saving:
+	hardcoded presets, option to save a raw struct but those will immediately be deleted when structanalyzer detects a change in the headers
+	raw structs use only read/write, no attempt at realigning memory
+	
 
 maybe / later:
 	snap toggle

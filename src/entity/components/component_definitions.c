@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   component_definitions.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 20:11:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/24 11:35:34 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/03 14:06:24 by kfum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,13 @@ t_componentdefinition	*get_component_definitions()
 		(t_componentdefinition){.type = COMP_NPC, .name = "NPC",
 			.func_assign_component = assign_component_npc},
 		(t_componentdefinition){.type = COMP_NPC_CIVILIAN, .name = "Npc_civilian",
-			.func_assign_component = assign_component_npc_civilian}
+			.func_assign_component = assign_component_npc_civilian},
+		(t_componentdefinition){.type = COMP_PLAYERSPAWN, .name = "Playerspawn",
+			.func_assign_component = assign_component_playerspawn},
+		(t_componentdefinition){.type = COMP_GUN_PICKUP, .name = "Gun_pickup",
+			.func_assign_component = assign_component_gun_pickup},
+		(t_componentdefinition){.type = COMP_AUTO_DOOR, .name = "Auto_door",
+			.func_assign_component = assign_component_auto_door}
 	};
 	return (editables);
 }

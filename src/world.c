@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/08 19:25:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/02 19:37:26 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 		/*&& i < world->entitycache.alloc_count*/)
 	{
 		ent = world->entitycache.sorted_entities[i];
-	//	ent = &world->entitycache.entities[i];
 		if (ent->status != es_free)
 		{
 			if(ent->component.func_update != NULL)
@@ -102,34 +101,25 @@ static void sort_entitycache(t_world *world, t_vector3 location)
 
 void update_world3d(t_world *world, t_render *render)
 {
-	t_list			*l;
-	t_entity		*ent;
-	t_wall			wall;
 	t_sdlcontext	*sdl;
-	int				i;
 
-	//doomlog(LOG_FATAL, "shit something went wrong");
 	sdl = world->sdl;
-	ft_bzero(&render->rs, sizeof(t_render_statistics));
-	if (world->player != NULL && world->player->gun != NULL && !world->player->gun->disabled)
-		render_entity(world->sdl, &world->sdl->render, &world->player->gun->entity);
-	update_frustrum_culling(world, sdl, render);
+	
+	// Blanking / setup for screen
+	render_start_new(world->sdl, world->player);
+	// Occlusion start?
 	clear_occlusion_buffer(sdl);
+	update_frustrum_culling(world, sdl, render);
 	sort_entitycache(world, render->camera.position);
+	//
 	update_entitycache(sdl, world, render);
-	if (!sdl->global_wireframe && !world->skybox.hidden)
-		render_entity(sdl, render, &world->skybox);
 	bitmask_to_pixels(sdl);
 	rescale_surface(sdl);
-	show_navmesh(world);
 	lateupdate_entitycache(sdl, world);
-	if (!world->debug_gui->hidden)
+	if (world->gamemode == MODE_EDITOR && !world->debug_gui->hidden)
 	{
+		show_navmesh(world);
 		gui_start(world->debug_gui);
-		/*if (gui_button("music action", world->debug_gui))
-			change_music(sdl, "music_arp1_action.wav");
-		if (gui_button("music calm", world->debug_gui))
-			change_music(sdl, "music_arp1_ambient.wav");*/
 		gui_labeled_int("Tri count:", render->rs.triangle_count, world->debug_gui);
 		gui_labeled_int("Render count:", render->rs.render_count, world->debug_gui);
 		gui_labeled_int("Entity count:", world->entitycache.existing_entitycount, world->debug_gui);
@@ -138,12 +128,6 @@ void update_world3d(t_world *world, t_render *render)
 			world->ceiling_toggle = !world->ceiling_toggle;
 			toggle_ceilings(world);
 		}
-		if (gui_shortcut_button("Toggle grids:", 'G', world->debug_gui))
-		{
-			//world->player->velocity.x += 15.0f;
-			world->sdl->render_grid = !world->sdl->render_grid;
-		}
-			
 		if (gui_shortcut_button("Toggle noclip", 'F', world->debug_gui))
 			world->player->noclip = !world->player->noclip;
 		//gui_labeled_bool_edit("Noclip:", &world->player->noclip, world->debug_gui);
@@ -242,7 +226,7 @@ void	init_guns(t_world *world, t_sdlcontext *sdl)
 	while (l != NULL)
 	{
 		gun = l->content;
-		gun->entity.obj = get_object_by_name(*sdl, gun->entity.object_name.str);
+		gun->entity->obj = get_object_by_name(*sdl, gun->entity->object_name.str);
 		l = l->next;
 	}
 }
@@ -268,6 +252,22 @@ void		destroy_entity(t_world *world, t_entity *ent)
 		error_log(EC_MALLOC);
 	cache->existing_entitycount--;
 }*/
+
+t_entity	*find_entity_with_comp(t_world	*world, t_componenttype comp)
+{
+	int	i;
+	t_entitycache	*cache;
+
+	cache = &world->entitycache;
+	i = 0;
+	while (i < cache->alloc_count)
+	{
+		if (cache->entities[i].status == es_active && cache->entities[i].component.type == comp)
+			return (&cache->entities[i]);
+		i++;
+	}
+	return (NULL);
+}
 
 t_entity	*spawn_entity(t_world	*world)
 {
@@ -295,6 +295,7 @@ t_entity	*spawn_entity(t_world	*world)
 		}
 		i++;
 	}
+	printf("cache alloc count %i exists %i\n", cache->alloc_count, cache->existing_entitycount);
 	printf("ENTITYCACHE TOO SMALL, ABORT!");
 	doomlog(LOG_EC_MALLOC, NULL);
 	return (NULL); //never gets here

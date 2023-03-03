@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 17:23:31 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/06 16:06:35 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/28 15:28:58 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,12 @@ float	radtodeg(float rad)
 {
 	return (rad * (180.0f / M_PI));
 }
+
+float fov_deg_to_fov_rad(float fovdeg)
+{
+	return (1.0f / tanf(fovdeg * 0.5f / 180.0f * 3.14159f));
+}
+
 
 char	*vector_string(t_vector3 vec)
 {

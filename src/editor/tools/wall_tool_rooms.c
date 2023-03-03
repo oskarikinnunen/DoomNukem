@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wall_tool_rooms.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/01 14:38:41 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/03 18:26:04 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -578,8 +578,6 @@ void	triangulate(t_floorcalc *fc, int valid_target)
 	int	lowest = validcount;
 	i = 0;
 	fc->facecount = 0;
-	//checkroomnormal(fc);
-	//printf("\nMAKING NEW FACES: \n");
 	//printf("triangulating shape with %i edges\n", fc->edgecount);
 	while (validcount > valid_target)
 	{
@@ -595,7 +593,6 @@ void	triangulate(t_floorcalc *fc, int valid_target)
 			center.x = 0.0001f;
 			center.y = -0.0001f;
 			//printf("removed aligned %i \n", valid[0]);
-			//removevalid(valid, validcount--, 0);
 		}
 
 		if (valid[0] == 2 && valid[1] == 5 && valid[validcount - 1] == 1)
@@ -603,11 +600,9 @@ void	triangulate(t_floorcalc *fc, int valid_target)
 			if (!correctangle((t_vector2[3]){first,center,second}))
 				printf("512 IS INCORRECT??\n");
 		}
-		
 		/*if (!correctangle((t_vector2[3]){first,center,second}))
-		{
 			printf("incorrect angle between %i %i %i\n", valid[validcount - 1], valid[0], valid[1]);
-		}*/
+		*/
 		if (!points_collide(fc, (t_vector2[3]){first,center,second})
 			&& correctangle((t_vector2[3]){first,center,second})
 			&& !intersect(line_shorten(line1), fc->edges, fc->edgecount))
@@ -625,15 +620,6 @@ void	triangulate(t_floorcalc *fc, int valid_target)
 				first = fc->edges[valid[validcount - 1]];
 				center = fc->edges[valid[0]];
 				second = fc->edges[valid[1]];
-				//printf("next line would be %i->%i\n", valid[validcount - 1], valid[1]);
-				/*if (points_collide(fc, (t_vector2[3]){first,center,second}))
-					printf("VALID 2 POINTS COLLIDE???\n");
-				if (!correctangle((t_vector2[3]){first,center,second}))
-					printf("Incorrect angle\n");
-				if (intersect(line_shorten(line1), fc->edges, fc->edgecount))
-				{
-					printf("Incorrect line??\n");
-				}*/
 			}
 			if (validcount <= lowest)
 				lowest = validcount;
@@ -657,16 +643,6 @@ void	triangulate(t_floorcalc *fc, int valid_target)
 		}
 		if (i > 100000)
 		{
-			/*attempts++;
-			populatevalid(valid, &validcount, *fc);
-			i = 0;
-			while (i < attempts)
-			{
-				shiftvalid(valid, validcount);
-				i++;
-			}
-			i = 0;*/
-			//if (validcount > lowest)
 			fc->facecount = 0;
 			doomlog(LOG_WARNING, "Couldn't create floor, too many iterations!");
 			return ;
@@ -676,7 +652,6 @@ void	triangulate(t_floorcalc *fc, int valid_target)
 			fc->facecount = 0;
 			return ;
 		}
-			
 	}
 	//printf("made %i faces \n", fc->facecount);
 }

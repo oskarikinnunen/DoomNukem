@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/01 18:04:59 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/03 19:21:47 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,15 +109,18 @@ void	doomnukem(int argc, char **argv)
 	t_sdlcontext	sdl;
 	t_gamereturn	gr;
 
-	generate_struct_datas();
 	checkargs(argc, argv);
 	create_sdlcontext(&sdl);
 	gr = game_switchmode;
-	while (gr == game_switchmode)
+	if (argc == 2 && ft_strcmp(argv[1], "-editor") == 0)
+		gr = editorloop(sdl);
+	else
+		gr = playmode(sdl);
+	/*while (gr == game_switchmode)
 	{
-		gr = editorloop(sdl); // quit & exit is handled inside the loop
+		//gr = editorloop(sdl); // quit & exit is handled inside the loop
 		gr = playmode(sdl); // quit & exit is handled inside the loop
-	}
+	}*/
 }
 
 int	main(int argc, char **argv)

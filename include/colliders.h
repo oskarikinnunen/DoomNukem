@@ -19,6 +19,7 @@ typedef struct s_bounds
 	t_box			box;
 	t_bound_type	type;
 	float			radius;
+	float			height;
 }	t_bounds;
 
 typedef struct s_limbcollider
