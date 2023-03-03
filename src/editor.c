@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/02 19:21:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/03 18:08:38 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,6 +289,7 @@ int	editorloop(t_sdlcontext sdl)
 	ed.player.gun->entity->hidden = true;
 	//play_music(&sdl, "music_arp1_ambient.wav");
 	sdl.render.occlusion.occlusion = false;
+	sdl.fog = false;
 	while (ed.gamereturn == game_continue)
 	{
 		update_deltatime(&ed.world.clock);

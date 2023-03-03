@@ -157,6 +157,7 @@ int playmode(t_sdlcontext sdl)
 	create_navmesh(&game.world);
 	player_init(&game.player, &sdl, &game.world);
 	game.player.transform.position = find_playerspawn(&game.world);
+	sdl.fog = true;
 	gr = gameloop(sdl, game);
 	//Unlocks mouse
 	if (SDL_SetRelativeMouseMode(SDL_FALSE) < 0)

@@ -1,44 +1,6 @@
 #include "entity.h"
 #include "doomnukem.h"
 #include "editor_tools.h"
-
-static void assign_npc_type(t_npc *npc)
-{
-	if (!npc)
-		return;
-	npc->func_update = civilian_update;
-	npc->func_movement = civilian_movement;
-	npc->func_action = civilian_action;
-	npc->func_anim = civilian_anim;
-	npc->func_take_damage = civilian_take_damage;
-	return ;
-	if (npc->npc_type == nt_default)
-	{
-		npc->func_update = NULL;
-		npc->func_movement = NULL;
-		npc->func_action = NULL;
-		npc->func_anim = NULL;
-		npc->func_take_damage = NULL;
-	}
-	else if (npc->npc_type == nt_civilian)
-	{
-		npc->func_update = civilian_update;
-		npc->func_movement = civilian_movement;
-		npc->func_action = civilian_action;
-		npc->func_anim = civilian_anim;
-		npc->func_take_damage = civilian_take_damage;
-	}
-	if (npc->npc_type == nt_enemy)
-	{
-		npc->func_update = enemy_update;
-		npc->func_movement = enemy_movement;
-		npc->func_action = enemy_action;
-		npc->func_anim = enemy_anim;
-		npc->func_take_damage = enemy_take_damage;
-	}
-	npc->npc_type_changed = false;
-}
-
 #include "movement_defs.h"
 
 static void npc_update_physics(t_npc *npc, t_entity *entity)
@@ -114,6 +76,8 @@ static void npc_update_state(t_entity *entity,  t_npc *npc, t_world *world)
 	t_entity	*player_ent;
 	t_ray		r;
 
+	//npc_raycast
+	npc->prev_state = npc->state;
 	player_ent = spawn_entity(world);
 	player_ent->obj = get_object_by_name(*world->sdl, "Human.obj");
 	player_ent->transform.position = world->player->transform.position;
@@ -130,43 +94,42 @@ static void npc_update_state(t_entity *entity,  t_npc *npc, t_world *world)
 		{
 			npc->seesplayer = true;
 			npc->lastseen_playerpos = world->player->transform.position;
-			//}
 		}
 	}
+	entity->ignore_raycasts = false;
+	//state thingies:
 	if (!npc->seesplayer && !vector3_cmp(npc->lastseen_playerpos, vector3_zero()) && npc->state != NPC_STATE_CHASE)
 	{
 		npc->state = NPC_STATE_CHASE;
 		npc->path = path_find(entity->transform.position, npc->lastseen_playerpos, world);
 		printf("Found new path towards player, valid = %i \n", npc->path.valid_path);
-		start_human_anim(entity, "Walk_weapon", world);
+		//start_human_anim(entity, "Walk_weapon", world);
 	}
 	if (npc->state == NPC_STATE_CHASE && !npc->path.valid_path)
 	{
-		npc->state = NPC_STATE_CAUTIOUS;
+		npc->state = NPC_STATE_CAUTIOUS_MOVE;
 		npc->next_action_time = world->clock.time + 3000;
 		npc->lastseen_playerpos = vector3_zero();
-		/*npc->path = random_path(entity, npc, world);
-		npc->next_action_time = world->clock.prev_time;*/
 		//start_human_anim(entity, "Walk_weapon", world);
 		printf("GO TO CAUTION!\n");
 	}
 	if (npc->seesplayer && npc->state != NPC_STATE_AIM)
 	{
 		npc->state = NPC_STATE_AIM;
-		start_human_anim(entity, "Shoot_rifle", world);
-		update_anim(&entity->animation, world->clock.delta);
+		//start_human_anim(entity, "Shoot_rifle", world);
+		//update_anim(&entity->animation, world->clock.delta);
 		//entity->animation.active = false;
 	}
-	if (npc->state == NPC_STATE_CAUTIOUS && world->clock.time > npc->next_action_time && !npc->path.valid_path)
+	if (npc->state == NPC_STATE_CAUTIOUS_MOVE && world->clock.time > npc->next_action_time && !npc->path.valid_path)
 	{
 		npc->next_action_time = world->clock.time + 2000;
-		if (rand() % 2 == 0)
-		{
-			npc->path = random_path(entity, npc, world);
-			//if (npc->path.)
-			npc->orig_x_rotation = 0.0f;
-			start_human_anim(entity, "Walk_weapon", world);
-		}
+		//if (rand() % 2 == 0)
+		//{
+		npc->path = random_path(entity, npc, world);
+		//if (npc->path.)
+		npc->orig_x_rotation = 0.0f;
+		//start_human_anim(entity, "Walk_weapon", world);
+		/*}
 		else if (npc->orig_x_rotation == 0.0f)
 		{
 			if (rand() % 2 == 0)
@@ -177,12 +140,8 @@ static void npc_update_state(t_entity *entity,  t_npc *npc, t_world *world)
 			else
 				start_human_anim(entity, "Idle", world);
 			npc->orig_x_rotation = entity->transform.rotation.x + RAD90; //ADD random
-		}
-		// Queue path
+		}*/
 	}
-	entity->ignore_raycasts = false;
-	//if (vector3_dist(entity->transform.position, player_ent->transform.position) < 50.0f)
-	//	npc->state = NPC_STATE_IDLE;
 	destroy_entity(world, player_ent);
 	if (npc->health <= 0 && npc->state != NPC_STATE_DEAD)
 	{
@@ -191,7 +150,6 @@ static void npc_update_state(t_entity *entity,  t_npc *npc, t_world *world)
 		entity->animation.loop = false;
 		entity->animation.persist = true;
 	}
-	//t_raycastinfo	
 }
 
 void npc_play_sound(t_entity *entity, t_world *world, char *soundname)
@@ -216,14 +174,7 @@ void npc_shoot(t_entity *entity, t_npc *npc, t_world *world)
 
 	if (world->player->health == 0)
 		return ;
-	source.sample = get_sample(world->sdl, "gun_machinegun.wav");
-	source._realrange = 250.0f;
-	source.volume = 1.0f;
-	source.play_always = false;
-	FMOD_BOOL playing;
-	FMOD_Channel_IsPlaying(source.channel, &playing);
-	
-	_audiosource_start(world->sdl, &source, &entity->transform.position);
+	npc_play_sound(entity, world, "gun_machinegun.wav");
 	if (npc->seesplayer)
 	{
 		uint32_t hitdice = game_random_range(world, 0, 10);
@@ -242,83 +193,111 @@ void npc_shoot(t_entity *entity, t_npc *npc, t_world *world)
 			protagonist_play_audio(world->player, world, "ricochet.wav");
 		}
 	}
+	npc->next_shoot_time = world->clock.time + game_random_range(world, 750, 2200);
 }
 
-	
+static inline void	npc_update_pushanim(t_entity *entity, t_npc *npc, t_world *world)
+{
+	if (!npc->push_anim.active)
+		return ;
+	update_anim(&npc->push_anim, world->clock.delta);
+	if (!npc->push_anim.active) //Should change state to NPC_STATE_AIM
+		start_human_anim(entity, "Shoot_rifle", world);
+	t_vector2 move;
+	move = v3tov2(vector3_sub(world->player->transform.position, entity->transform.position));
+	capsule_add_xy_velocity(move, &npc->phys, world);
+}
+
+//"animation" for when the npc starts moving towards player, while the npc is in state NPC_STATE_AIM
+static void npc_start_pushanim(t_entity *entity, t_npc *npc, t_world *world)
+{
+	npc->push_anim.framerate = 30;
+	npc->push_anim.lastframe = 15;
+	start_anim(&npc->push_anim, anim_forwards);
+	start_human_anim(entity, "Walk_weapon", world);
+	npc->next_action_time = world->clock.time + game_random_range(world, 700, 4000);
+}
+
+static void entity_rotatetowards_xy(t_entity *entity, t_vector2 pos, float delta)
+{
+	float	angle;
+
+	angle = vector2_anglebetween(vector2_zero(),vector2_sub(v3tov2(entity->transform.position), pos));
+	entity->transform.rotation.x = ft_fmovetowards(entity->transform.rotation.x, angle + RAD90, delta);
+}
+
+static void	entity_rotatetowards_player(t_entity *entity, float speed, t_world *world)
+{
+	float	angle;
+
+	angle = vector2_anglebetween(vector2_zero(),v3tov2(vector3_sub(entity->transform.position, world->player->transform.position)));
+	entity->transform.rotation.x = ft_fmovetowards(entity->transform.rotation.x, angle + RAD90, world->clock.delta * speed);
+}
+
+static void npc_pathfind_step(t_entity *entity, t_npc *npc, t_world *world)
+{
+	t_vector2	enterpoint_2d;
+
+	if (!npc->path.valid_path/* || (npc->state != NPC_STATE_CHASE && npc->state != NPC_STATE_CAUTIOUS_MOVE)*/)
+		return ;
+	enterpoint_2d = v3tov2(npc->path.path[npc->path.ai].enter_point);
+	t_vector2 move = vector2_sub(enterpoint_2d, v3tov2(entity->transform.position));
+	move = vector2_mul(vector2_normalise(move), world->clock.delta * PLAYER_ACCELERATION);
+	capsule_add_xy_velocity(move, &npc->phys, world);
+	entity_rotatetowards_xy(entity, enterpoint_2d, 0.015f * world->clock.delta);
+	if (vector3_sqr_dist(entity->transform.position, npc->path.path[npc->path.ai].enter_point) < 160.1f && npc->path.ai < npc->path.bi)
+		npc->path.ai++;
+	if (npc->path.ai >= npc->path.bi && npc->path.valid_path)
+		npc->path.valid_path = false;
+}
+
+static void npc_update_anim_state(t_entity *entity, t_npc *npc, t_world *world)
+{
+	bool	changed;
+
+	changed = npc->prev_state != npc->state;
+	if (!changed)
+		return ;
+	if (npc->state == NPC_STATE_AIM)
+	{
+		start_human_anim(entity, "Shoot_rifle", world);
+		update_anim(&entity->animation, world->clock.delta);
+	}
+	//if (vector2_magnitude(v3tov2(npc->phys.new_velocity) > 0.5f)
+	if (npc->state == NPC_STATE_CHASE || npc->state == NPC_STATE_CAUTIOUS_MOVE)
+		start_human_anim(entity, "Walk_weapon", world);
+	//if (npc->state == NPC_STATE_CHASE || npc->state == NPC_STATE_CAUTIOUS_MOVE)
+}
 
 static void	comp_npc_update(t_entity *entity, t_world *world)
 {
-	t_npc			*npc;
+	t_npc	*npc;
 
 	npc = entity->component.data;
 	if (npc == NULL || world->gamemode == MODE_EDITOR || world->player->health == 0)
 		return;
 	if (entity->animation.active)
-	{
 		update_anim(&entity->animation, world->clock.delta);
-	}
 	if (npc->state != NPC_STATE_DEAD)
 	{
 		npc_update_state(entity, npc, world);
 		if (npc->state == NPC_STATE_AIM)
 		{
 			if (world->clock.time > npc->next_shoot_time)
-			{
-				npc->next_shoot_time = world->clock.time + game_random_range(world, 750, 2200);
 				npc_shoot(entity, npc, world);
-			}
-				
-			float fang = vector2_anglebetween(vector2_zero(),v3tov2(vector3_sub(entity->transform.position, npc->lastseen_playerpos)));
-			entity->transform.rotation.x = ft_fmovetowards(entity->transform.rotation.x, fang + RAD90, world->clock.delta * 0.015f);
-			uint32_t r = game_random_range(world, 0, 32);
-			if (world->clock.time > npc->next_action_time)
-			{
-				npc->strafe_anim.framerate = 30;
-				npc->strafe_anim.lastframe = 15;
-				start_anim(&npc->strafe_anim, anim_forwards);
-				start_human_anim(entity, "Walk_weapon", world);
-				npc->next_action_time = world->clock.time + game_random_range(world, 700, 4000);
-			}
-			if (npc->strafe_anim.active)
-			{
-				update_anim(&npc->strafe_anim, world->clock.delta);
-				if (!npc->strafe_anim.active)
-					start_human_anim(entity, "Shoot_rifle", world);
-				t_vector2 move;
-				move = v3tov2(vector3_sub(world->player->transform.position, entity->transform.position));
-				capsule_add_xy_velocity(move, &npc->phys, world);
-			}
+			entity_rotatetowards_xy(entity, v3tov2(world->player->transform.position), 0.015f * world->clock.delta);
+			if (world->clock.time > npc->next_action_time) //Move this to update_state, and 
+				npc_start_pushanim(entity, npc, world);
+			npc_update_pushanim(entity, npc, world);
 		}
-		if (npc->path.valid_path && (npc->state == NPC_STATE_CHASE || npc->state == NPC_STATE_CAUTIOUS))
-		{
-			t_vector2 move = v3tov2(vector3_sub(npc->path.path[npc->path.ai].enter_point, entity->transform.position));
-			move = vector2_mul(vector2_normalise(move), world->clock.delta * PLAYER_ACCELERATION);
-			capsule_add_xy_velocity(move, &npc->phys, world);
-
-			float fang = vector2_anglebetween(vector2_zero(),v3tov2(vector3_sub(entity->transform.position, npc->path.path[npc->path.ai].enter_point)));
-			entity->transform.rotation.x = ft_fmovetowards(entity->transform.rotation.x, fang + RAD90, world->clock.delta * 0.015f);
-		}
-		if (npc->state == NPC_STATE_CAUTIOUS && npc->orig_x_rotation != 0.0f)
+		if (npc->state == NPC_STATE_CAUTIOUS_MOVE && npc->orig_x_rotation != 0.0f)
 			entity->transform.rotation.x = ft_fmovetowards(entity->transform.rotation.x, npc->orig_x_rotation + (sinf(world->clock.time * 0.0012f) * RAD90) - (RAD90 / 2.0f), world->clock.delta * 0.015f);
+		npc_pathfind_step(entity, npc, world);
 	}
 	npc_update_physics(npc, entity);
 	capsule_applygravity_new(&npc->phys, world);
 	capsule_damp(&npc->phys, world);
-	if (npc->state != NPC_STATE_DEAD)
-	{
-		if (vector3_sqr_dist(entity->transform.position, npc->path.path[npc->path.ai].enter_point) < 160.1f && npc->path.ai < npc->path.bi && npc->path.valid_path)
-			npc->path.ai++;
-		if (npc->path.ai >= npc->path.bi && npc->path.valid_path)
-		{
-			npc->path.valid_path = false;
-			printf("Reached dest\n");
-			if (npc->state == NPC_STATE_CAUTIOUS)
-				start_human_anim(entity, "Idle2", world);
-			else
-				start_human_anim(entity, "Idle1", world);
-		}
-	}
-	
+	npc_update_anim_state(entity, npc, world);
 }
 
 static char *get_npc_type_name(int i)
@@ -408,9 +387,6 @@ static void	comp_npc_allocate(t_entity *entity, t_world *world)
 	npc->movementspeed = 0.1f;
 	npc->path.valid_path = false;
 	npc->health = 100;
-	//entity_start_anim
-	//source->path.start = get_nearest_target_node(world, entity->transform.position);
-	assign_npc_type(npc);
 }
 
 
@@ -423,5 +399,4 @@ void	assign_component_npc(t_component *component)
 	component->func_update = comp_npc_update;
 	component->func_ui_update = comp_npc_ui_update;
 	component->func_gui_edit = comp_npc_gui_edit;
-	assign_npc_type(component->data);
 }

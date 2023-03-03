@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/02 15:59:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/03 16:39:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,16 +78,17 @@ void player_gun_raycast(t_player *player, t_world *world)
 			printf("cur health = %i \n", hit_npc->health);
 			printf("future health = %i \n", (hit_npc->health - player->gun->stats.damage));
 			hit_npc->health -= player->gun->stats.damage;
+			protagonist_play_audio(player, world, "hitmarker.wav");
 			if (hit_npc->health <= 0 && hit_npc->state != NPC_STATE_DEAD)
 			{
 				uint32_t r = game_random_range(world, 0, 15);
 				if (r == 0)
 					protagonist_play_audio(player, world, "protag_niceshot.wav");
-				if (r == 1)
+				else if (r == 1)
 					protagonist_play_audio(player, world, "protag_thatonesdead.wav");
-				if (r == 2)
+				else if (r == 2)
 					protagonist_play_audio(player, world, "protag_onedown.wav");
-				if (r == 3)
+				else if (r == 3)
 					protagonist_play_audio(player, world, "protag_anotherone.wav");
 				printf("play protag \n");
 				if (r % 2 == 0)

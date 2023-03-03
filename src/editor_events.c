@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/02 15:59:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/03 16:33:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,7 @@ void		toggle_keystates(t_hid_info *hid, SDL_Event e)
 		{
 			hid->alphakeystate |= iskey(e, c) << (c - 'a');
 			if ((hid->alphakeystate >> (c - 'a')) & 1 == 1)
-			{
-				printf("alpha pressed %c\n", c);
 				hid->alphakey_pressed |= iskey(e, c) << (c - 'a');
-			}
-				
 			c++; //Not the language
 		}
 	}
@@ -76,7 +72,7 @@ void		toggle_keystates(t_hid_info *hid, SDL_Event e)
 		while (c <= 'z')
 		{
 			hid->alphakeystate &= ~(iskey(e, c) << (c - 'a'));
-			c++; //Not the language
+			c++;
 		}
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 06:55:31 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/02 21:22:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/03 17:54:24 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ static void	surface_fog(t_sdlcontext *sdl)
 	t_point			sample;
 	uint32_t		sample_stride;
 
+	if (!sdl->fog)
+		return ;
 	sample.y = 0;
 	while (sample.y < sdl->window_h * sdl->resolution_scaling)
 	{

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 14:31:10 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/02 18:56:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/03 15:30:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	player_init(t_player *player, t_sdlcontext *sdl, t_world *world)
 	player->jump.lastframe = 18;
 	player->height = PLAYER_HEIGHT;
 	player->fov = 90.0f;
-	player->health = 50;
+	player->health = 120;
 	//player->jump.lerp = 
 	player->gun = debug_gun(player, sdl, world);
 }
