@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/02 21:47:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/03 19:58:23 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,18 +31,16 @@ void	draw_alpha(t_sdlcontext sdl, t_point pos, uint32_t clr)
 	((uint32_t *)sdl.surface->pixels)[pos.x + (pos.y * sdl.window_w)] = \
 			blend_colors_alpha(((uint32_t *)sdl.surface->pixels) \
 					[pos.x + (pos.y * sdl.window_w)], clr, (clr >> 24));
-	sdl.zbuffer[pos.x + (pos.y * sdl.window_w)] = 2.0f;
 }
 
-void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale)
+static inline void	draw_image_alpha(t_sdlcontext sdl,
+									t_point pos, t_img img, t_point scale)
 {
 	t_point		pixel;
 	t_point		sample;
 	t_vector2	scalar;
 	uint32_t	color;
 
-	if (img.size.x == 0 || img.size.y == 0 || img.length == 0)
-		return ;
 	scalar.x = ((float)img.size.x / scale.x);
 	scalar.y = ((float)img.size.y / scale.y);
 	pixel.y = 0;
@@ -54,9 +52,45 @@ void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale)
 			sample.x = ft_clamp(pixel.x * scalar.x, 0, img.size.x - 1);
 			sample.y = ft_clamp(pixel.y * scalar.y, 0, img.size.y - 1);
 			color = img.data[sample.x + (sample.y * img.size.x)];
-			draw(sdl, point_add(pos, pixel), flip_channels(color));
+			draw_alpha(sdl, point_add(pos, pixel), color);
 			pixel.x++;
 		}
 		pixel.y++;
 	}
+}
+
+static inline void	draw_image_opaque(t_sdlcontext sdl,
+									t_point pos, t_img img, t_point scale)
+{
+	t_point		pixel;
+	t_point		sample;
+	t_vector2	scalar;
+	uint32_t	color;
+
+	scalar.x = ((float)img.size.x / scale.x);
+	scalar.y = ((float)img.size.y / scale.y);
+	pixel.y = 0;
+	while (pixel.y < scale.y)
+	{
+		pixel.x = 0;
+		while (pixel.x < scale.x)
+		{
+			sample.x = ft_clamp(pixel.x * scalar.x, 0, img.size.x - 1);
+			sample.y = ft_clamp(pixel.y * scalar.y, 0, img.size.y - 1);
+			color = img.data[sample.x + (sample.y * img.size.x)];
+			draw(sdl, point_add(pos, pixel), color);
+			pixel.x++;
+		}
+		pixel.y++;
+	}
+}
+
+void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale)
+{
+	if (img.size.x == 0 || img.size.y == 0 || img.length == 0)
+		return ;
+	if (img.transparency)
+		draw_image_alpha(sdl, pos, img, scale);
+	else
+		draw_image_opaque(sdl, pos, img, scale);
 }
