@@ -19,7 +19,8 @@ typedef enum e_componenttype
 	COMP_HEALTHPACK,
 	COMP_NPC_CIVILIAN,
 	COMP_PLAYERSPAWN,
-	COMP_GUN_PICKUP
+	COMP_GUN_PICKUP,
+	COMP_AUTO_DOOR
 }	t_componenttype;
 
 struct s_autogui;
@@ -109,6 +110,10 @@ typedef struct	s_gun_pickup
 {
 	float	TESTVARIABLE;
 }	t_gun_pickup;
+typedef struct	s_auto_door
+{
+	float	TESTVARIABLE;
+}	t_auto_door;
 /*STRUCTDEF END, DONT REMOVE SINCE THE CREATECOMPONENT SCRIPT DEPENDS ON THIS*/
 
 /* AUDIOSOURCE FUNCTIONS */
@@ -122,6 +127,7 @@ void	assign_component_healthpack(t_component *component);
 void	assign_component_npc_civilian(t_component *component);
 void	assign_component_playerspawn(t_component *component);
 void	assign_component_gun_pickup(t_component *component);
+void	assign_component_auto_door(t_component *component);
 /* ASSIGNFUNC END, DONT REMOVE SINCE THE CREATECOMPONENT SCRIPT DEPENDS ON THIS*/
 /* AUDIOSOURCE INTERNAL FUNCTIONS */
 void	_audiosource_start(t_sdlcontext *sdl, t_audiosource	*source, t_vector3 *pos);
