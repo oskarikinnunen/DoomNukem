@@ -40,6 +40,7 @@ typedef struct s_img
 	char		name[128];
 	uint32_t	*data;
 	uint32_t	length;
+	bool		transparency;
 }	t_img;
 
 typedef struct s_fontcolors

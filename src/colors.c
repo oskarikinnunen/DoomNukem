@@ -6,12 +6,21 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 19:49:59 by raho              #+#    #+#             */
-/*   Updated: 2022/12/01 22:12:46 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/03 19:04:36 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "colors.h"
+
+uint32_t	flip_alpha(uint32_t clr)
+{
+	t_color		result;
+
+	result.color = clr;
+	result.argb.alpha = 255 - result.argb.alpha;
+	return (result.color);
+}
 
 uint32_t	blend_colors_alpha(uint32_t bg, uint32_t fg, uint8_t alpha)
 {

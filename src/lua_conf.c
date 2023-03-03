@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/01 18:07:41 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/03 18:39:58 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,8 @@ void	load_all_images(t_sdlcontext *sdl)
 				snprintf(fullpath, 512, "%s/%s", path, dfile->d_name);
 				//sdl->images[i] = pngparse(fullpath);
 				sdl->images[i] = tgaparse(fullpath);
-				ft_strcpy(sdl->images[i].name, dfile->d_name);
+				if (sdl->images[i].data != NULL)
+					ft_strcpy(sdl->images[i].name, dfile->d_name);
 				//printf("	parsed cpng file: %s \n", fullpath);
 				printf("	parsed tga file: %s \n", fullpath);
 				i++;
@@ -187,7 +188,8 @@ void	load_all_env_textures(t_sdlcontext *sdl)
 				snprintf(fullpath, 512, "%s/%s", path, dfile->d_name);
 				//sdl->env_textures[i] = pngparse(fullpath);
 				sdl->env_textures[i] = tgaparse(fullpath);
-				ft_strcpy(sdl->env_textures[i].name, dfile->d_name);
+				if (sdl->env_textures[i].data != NULL)
+					ft_strcpy(sdl->env_textures[i].name, dfile->d_name);
 				//printf("	parsed cpng file: %s \n", fullpath);
 				printf("	parsed tga file: %s \n", fullpath);
 				i++;
