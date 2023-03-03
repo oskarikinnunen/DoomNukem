@@ -6,7 +6,7 @@
 #    By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/02/14 11:17:43 by kfum             ###   ########.fr        #
+#    Updated: 2023/03/03 11:26:09 by kfum             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -145,7 +145,9 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		entity/components/comp_watercollider.c \
 		entity/components/comp_light.c \
 		entity/components/comp_healthpack.c \
-		entity/components/comp_npc_civilian.c #.ENDSRC. CREATECOMPONENT SCRIPT DEPENDS ON THIS SO DONT REMOVE
+		entity/components/comp_npc_civilian.c \
+		entity/components/comp_gun_pickup.c \
+		entity/components/comp_auto_door.c #.ENDSRC. CREATECOMPONENT SCRIPT DEPENDS ON THIS SO DONT REMOVE
 VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c vector3_more.c \
 		vector2_elementary.c vector2_shorthands.c \
@@ -159,11 +161,17 @@ VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		matrix_transform.c \
 		matrix_functions.c matrix_functions2.c \
 		debug_vectors.c point_more.c
-VECTORSRC= $(addprefix src/vectors/,$(VECTORSRCFILES))
-SRC= $(addprefix src/,$(SRCFILES))
-SRC+= $(VECTORSRC)
-OBJ= $(SRC:.c=.o)
+
+OBJ = $(patsubst %.c, $(OBJ_PATH)%.o, $(SRCFILES))
+VECTORSRC= $(addprefix vectors/, $(VECTORSRCFILES))
+VEC_OBJ = $(patsubst %.c, $(OBJ_PATH)%.o, $(VECTORSRC))
 DEPENDS= $(OBJ:.o=.d)
+
+# VECTORSRC= $(addprefix src/vectors/,$(VECTORSRCFILES))
+# SRC= $(addprefix src/,$(SRCFILES))
+# SRC+= $(VECTORSRC)
+# OBJ= $(SRC:.c=.o)
+# DEPENDS= $(OBJ:.o=.d)
 
 #Compilation stuff:
 INCLUDE= -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include \
@@ -190,17 +198,43 @@ endif
 #multi:
 #	$(MAKE) -j6 all
 
-all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(FMOD) $(LUA) $(LIBFT) $(OBJ)
-	$(CC) $(OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LUA) $(LDFLAGS)
+all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(FMOD) $(LUA) $(LIBFT) $(OBJ_PATH) $(OBJ) $(VEC_OBJ)
+	$(CC) $(OBJ) $(VEC_OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LUA) $(LDFLAGS)
 
+$(OBJ_PATH):
+	@mkdir -p $(OBJ_PATH)/debug
+	@mkdir -p $(OBJ_PATH)/editor/tools
+	@mkdir -p $(OBJ_PATH)/entity/components
+	@mkdir -p $(OBJ_PATH)/file_ops
+	@mkdir -p $(OBJ_PATH)/guns
+	@mkdir -p $(OBJ_PATH)/lighting
+	@mkdir -p $(OBJ_PATH)/npc/civilian
+	@mkdir -p $(OBJ_PATH)/npc/enemy
+	@mkdir -p $(OBJ_PATH)/npc/navigation
+	@mkdir -p $(OBJ_PATH)/obj_parser
+	@mkdir -p $(OBJ_PATH)/occlusion
+	@mkdir -p $(OBJ_PATH)/physics
+	@mkdir -p $(OBJ_PATH)/player
+	@mkdir -p $(OBJ_PATH)/preferences
+	@mkdir -p $(OBJ_PATH)/render/rasterization
+	@mkdir -p $(OBJ_PATH)/structsaver
+	@mkdir -p $(OBJ_PATH)/vectors
+	
 #-include $(DEPENDS)
+
+$(OBJ_PATH)%.o: $(SRC_PATH)%.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ): Makefile include/*.h
 #	//$()
 
 clean:
-	rm -f $(OBJ)
-	rm -f $(DEPENDS)
+# rm -f $(OBJ)
+# rm -f $(DEPENDS)
+
+	@echo "$(RED)Cleaning obj folder...$(DEFAULT)"
+	@rm -rf $(OBJ_PATH)
+	@echo "$(GREEN)DONE.\n$(DEFAULT)"
 
 re: clean all
 
@@ -273,3 +307,9 @@ $(FREETYPE): $(FREETYPE_DIR)/ready_to_build
 
 $(SDL2_TTF): $(SDL2_TTF_DIR)/ready_to_build
 	cd $(SDL2_TTF_DIR) && make && make install
+
+
+# Output colors
+DEFAULT	:=\033[0m
+GREEN	:=\033[0;32m
+RED		:=\033[0;31m
