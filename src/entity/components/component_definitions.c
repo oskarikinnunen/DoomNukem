@@ -44,6 +44,8 @@ t_componentdefinition	*get_component_definitions()
 			.func_assign_component = assign_component_npc_civilian},
 		(t_componentdefinition){.type = COMP_PLAYERSPAWN, .name = "Playerspawn",
 			.func_assign_component = assign_component_playerspawn}
+		(t_componentdefinition){.type = COMP_GUN_PICKUP, .name = "Gun_pickup",
+			.func_assign_component = assign_component_gun_pickup},
 	};
 	return (editables);
 }
