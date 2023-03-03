@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 16:12:58 by raho              #+#    #+#             */
-/*   Updated: 2023/03/03 19:57:10 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/03 20:09:08 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,8 +109,6 @@ static void	parse_top_left(int fd, char *filename, t_tga *tga)
 		if (read(fd, &tga->image_data.pixels[i], 
 				(tga->header.pixel_depth / 8)) == -1)
 			doomlog(LOG_EC_READ, filename);
-		/* if (tga->transparency)
-			tga->image_data.pixels[i] = flip_alpha(tga->image_data.pixels[i]); */
 		i++;
 	}
 }
@@ -129,8 +127,6 @@ static void	parse_top_right(int fd, char *filename, t_tga *tga)
 			if (read(fd, &tga->image_data.pixels[i], 
 					(tga->header.pixel_depth / 8)) == -1)
 				doomlog(LOG_EC_READ, filename);
-			/* if (tga->transparency)
-				tga->image_data.pixels[i] = flip_alpha(tga->image_data.pixels[i]); */
 			i--;
 		}
 		i += tga->header.image_width * 2;
@@ -152,8 +148,6 @@ static void	parse_bottom_left(int fd, char *filename, t_tga *tga)
 			if (read(fd, &tga->image_data.pixels[i], 
 					(tga->header.pixel_depth / 8)) == -1)
 				doomlog(LOG_EC_READ, filename);
-			/* if (tga->transparency)
-				tga->image_data.pixels[i] = flip_alpha(tga->image_data.pixels[i]); */
 			i++;
 		}
 		i -= tga->header.image_width * 2;
@@ -175,8 +169,6 @@ static void	parse_bottom_right(int fd, char *filename, t_tga *tga)
 			if (read(fd, &tga->image_data.pixels[i], 
 					(tga->header.pixel_depth / 8)) == -1)
 				doomlog(LOG_EC_READ, filename);
-			/* if (tga->transparency)
-				tga->image_data.pixels[i] = flip_alpha(tga->image_data.pixels[i]); */
 			i--;
 		}
 		start_of_the_row -= tga->header.image_width;
@@ -215,18 +207,6 @@ static void	convert_grayscale_to_rgb(t_tga *tga)
 int	load_tga(int fd, char *filename, t_tga *tga)
 {
 	save_header(fd, filename, tga);
-	printf("idLength: %d \n", tga->header.id_length);
-	printf("colorMapData: %d \n", tga->header.color_map_type);
-	printf("dataTypeCode: %d \n", tga->header.data_type_code);
-	printf("colorMapFirstEntry: %d \n", tga->header.color_map_first_entry);
-	printf("colorMapLength: %d \n", tga->header.color_map_length);
-	printf("colorMapEntrySize: %d \n",tga->header.color_map_entry_size);
-	printf("x_origin: %d \n", tga->header.x_origin);
-	printf("y_origin: %d \n", tga->header.y_origin);
-	printf("imagewidth: %d \n", tga->header.image_width);
-	printf("imageheight: %d \n", tga->header.image_height);
-	printf("pixeldepth: %d \n", tga->header.pixel_depth);
-	printf("imageDescriptor: %d \n", tga->header.image_descriptor);
 	if (check_data_type(tga->header.data_type_code, filename) == -1)
 		return (-1);
 	tga->image_data.size = tga->header.image_height * tga->header.image_width;
