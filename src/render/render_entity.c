@@ -71,8 +71,8 @@ void render_entity_worldtriangles(t_entity *entity, t_world *world)
 			for (int e = 0; e < 3; e++)
 			{
 				t_vector2 uv = obj->uvs[obj->faces[i].uv_indices[e] - 1];
-				uv.x = (uv.x * (obj->materials[index].img->size.x));
-				uv.y = (uv.y * (obj->materials[index].img->size.y));
+				uv.x = (uv.x);
+				uv.y = (uv.y);
 				tritransformed.t[e] = (t_vector3){uv.x, uv.y, 1.0f};
 			}
 		}
