@@ -18,3 +18,8 @@ This readme isn't finished, better explanations and gifs soon!
 
 <img src="https://user-images.githubusercontent.com/45420297/219416908-5c9657a5-61c7-4577-bfd5-41a2e8f328e6.gif" width="600">  
 
+Unedited raw footage of editor:
+https://youtu.be/vbBMOKnZURs
+
+Unedited raw footage of gameplay:
+https://youtu.be/Q9WXTHtTu_4
