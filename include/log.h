@@ -81,8 +81,20 @@ void	doomlog_mul(int code, char **str);
 
 /* don't use this manually, call doomlog() instead */
 void	error_codes(int ec, int fd);
-
+/* don't use this manually, call doomlog() instead */
 void	normal_message_mul(int fd, char **str);
+/* don't use this manually, call doomlog() instead */
+void	warning_message(int fd, char *str);
+/* don't use this manually, call doomlog() instead */
+void	warning_message_mul(int fd, char **str);
+/* don't use this manually, call doomlog() instead */
+void	fatal_message(int fd, char *str);
+/* don't use this manually, call doomlog() instead */
+void	fatal_message_mul(int fd, char **str);
+/* don't use this manually, call doomlog() instead */
+void	error_message(int code, int fd, char *str);
+/* don't use this manually, call doomlog() instead */
+void	error_message_mul(int code, int fd, char **str);
 
 /* parent process's error window */
 void	error_window(char *str);

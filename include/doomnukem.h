@@ -16,6 +16,7 @@
 # include "libft.h"
 # include "log.h"
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <errno.h>
 # include "limits.h" //TODO: remove mby? just define INT_MAX yourself
 # include <math.h>
