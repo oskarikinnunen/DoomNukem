@@ -57,7 +57,11 @@ typedef struct s_tga
 
 typedef struct s_img	t_img;
 
-int		load_tga(int fd, char *filename, t_tga *tga);
-t_img	tgaparse(char *filename);		
+t_img	tgaparse(char *filename);
+void	save_header(int fd, char *filename, t_tga *tga);
+int		check_data_type(uint8_t data_type_code, char *filename);
+void	save_pixel_order(t_tga *tga);
+void	save_image_id(int fd, char *filename, t_tga *tga);
+void	save_image_data(int fd, char *filename, t_tga *tga);
 
 #endif

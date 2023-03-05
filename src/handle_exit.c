@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   handle_exit.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/01/28 14:59:55 by raho              #+#    #+#             */
+/*   Updated: 2023/02/07 15:54:56 by raho             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "doomnukem.h"
 #include <signal.h>
 
@@ -63,6 +75,7 @@ static char	*signal_name(int wait_status)
 		ft_strcpy(signal, "SIGIOT");
 	if (WTERMSIG(wait_status) == SIGTRAP)
 		ft_strcpy(signal, "SIGTRAP");
+	// TODO: linux ifdef
 	/* if (WTERMSIG(wait_status) == SIGEMT) // doesnt work on linux, says it's undeclared
 		ft_strcpy(signal, "SIGEMT"); */
 	if (WTERMSIG(wait_status) == SIGSYS)
@@ -70,7 +83,7 @@ static char	*signal_name(int wait_status)
 	return (signal);
 }
 
-void	handle_exit(int	wait_status)
+void	handle_exit(int wait_status)
 {
 	if (WIFSIGNALED(wait_status))
 	{
@@ -82,9 +95,9 @@ void	handle_exit(int	wait_status)
 	{
 		if (WEXITSTATUS(wait_status) != 0)
 		{
-			// could differentiate behaviors for different exit codes here
+			// TODO: could differentiate behaviors for different exit codes here
 			error_window(combine_strings((char *[3]){
-					"child process exited with status:",
+					"game process exited with status:",
 					s_itoa(WEXITSTATUS(wait_status))}));
 		}
 		exit (0);

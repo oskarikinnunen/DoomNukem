@@ -12,53 +12,22 @@
 
 #include "doomnukem.h"
 
-static void	initialize_font_colors(t_font *font)
-{
-	SDL_Color	temp;
-
-	temp.a = 255;
-	temp.r = 0;
-	temp.g = 0;
-	temp.b = 0;
-	font->font_colors.black = temp;
-	temp.r = 255;
-	font->font_colors.red = temp;
-	temp.r = 99;
-	font->font_colors.crimson = temp;
-	temp.r = 0;
-	temp.g = 255;
-	font->font_colors.green = temp;
-	temp.g = 0;
-	temp.b = 255;
-	font->font_colors.blue = temp;
-	temp.r = 255;
-	temp.g = 255;
-	font->font_colors.white = temp;
-	temp.b = 0;
-	font->font_colors.yellow = temp;
-	temp.g = 165;
-	font->font_colors.orange = temp;
-	temp.r = 135;
-	temp.g = 206;
-	temp.b = 235;
-	font->font_colors.skyblue = temp;
-}
-
 static void	initialize_background_colors(t_font *font)
 {
-	font->background_colors.black = 0xFF000000;
-	font->background_colors.white = 0xFFFFFFFF;
-	font->background_colors.dark_grey = 0xFF222222;
-	font->background_colors.light_grey = 0xFF555555;
-	font->background_colors.brown = 0xFF4C3228;
+	font->background_colors.black = CLR_BLACK;
+	font->background_colors.white = CLR_WHITE;
+	font->background_colors.dark_grey = CLR_DARKGRAY;
+	font->background_colors.light_grey = CLR_LIGHTGRAY;
+	font->background_colors.brown = CLR_BROWN;
 }
 
+// last argument in TTF_OpenFont is the wanted font size
 void	load_fonts(t_font *font)
 {
 	const char	font_file[] = "assets/fonts/Apple2.ttf";
 	char		text[5];
 
-	font->font_sizes[0] = TTF_OpenFont(font_file, 8); // last argument is font size
+	font->font_sizes[0] = TTF_OpenFont(font_file, 8);
 	if (!font->font_sizes[0])
 		doomlog(LOG_EC_TTF_OPENFONT, NULL);
 	font->font_sizes[1] = TTF_OpenFont(font_file, 30);
@@ -70,10 +39,9 @@ void	load_fonts(t_font *font)
 	font->font_sizes[3] = TTF_OpenFont(font_file, 100);
 	if (!font->font_sizes[3])
 		doomlog(LOG_EC_TTF_OPENFONT, NULL);
-	font->font = font->font_sizes[0]; // initialize the font pointer to the smallest font
-	initialize_font_colors(font);
+	font->font = font->font_sizes[0];
 	initialize_background_colors(font);
-	font->color = color32_to_sdlcolor(AMBER_2); // initialize the font's color
-	font->box_color = font->background_colors.black; // initialize the print_text_boxed background color
-	font->text = ft_strcpy(text, "text"); // initialize text if it's used before being set to something specific
+	font->color = color32_to_sdlcolor(AMBER_2);
+	font->box_color = font->background_colors.black;
+	font->text = ft_strcpy(text, "text");
 }

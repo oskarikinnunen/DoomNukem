@@ -13,16 +13,27 @@
 #ifndef COLORS_H
 # define COLORS_H
 
+typedef struct s_rgba
+{
+	uint8_t	red;
+	uint8_t	green;
+	uint8_t	blue;
+	uint8_t	alpha;
+
+}	t_rgb;
+
+/* colors are in the order of bgra (blue green red alhpa),
+	because sdl surface flips blue and red */
 typedef union u_color
 {
 	uint32_t	color;
-	struct		s_argb
+	struct		s_bgra
 	{
 		uint8_t	blue;
 		uint8_t	green;
 		uint8_t	red;
 		uint8_t	alpha;
-	}	argb;
+	}	bgra;
 }	t_color;
 
 typedef struct s_argbf
@@ -33,6 +44,8 @@ typedef struct s_argbf
 	float	b;
 }	t_argbf;
 
+SDL_Color	color32_to_sdlcolor(uint32_t color);
+
 t_argbf		color_to_argbf(t_color color);
 
 // OpenGL - transparency (alpha blending) Youtube
@@ -40,5 +53,8 @@ uint32_t	blend_colors_alpha(uint32_t bg, uint32_t fg, uint8_t alpha);
 
 // flips alpha values upside down
 uint32_t	flip_alpha(uint32_t clr);
+
+// flips blue and red channels with each other
+uint32_t	flip_channels(uint32_t clr);
 
 #endif

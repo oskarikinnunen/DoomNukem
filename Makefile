@@ -71,7 +71,6 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		doomlog_messages.c \
 		physics.c \
 		perfgraph.c \
-		tga.c \
 		png.c lua_conf.c list_helper.c \
 		spaceconversions.c \
 		structsaver/structsaver.c \
@@ -93,9 +92,12 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		obj_parser/obj_parse_vertex.c \
 		obj_parser/obj_parse_faces.c \
 		obj_parser/obj_parse_uvs.c \
-		obj_parser/obj_parse_anim.c\
+		obj_parser/obj_parse_anim.c \
+		tga_parser/tga.c \
+		tga_parser/image_data.c \
+		tga_parser/preliminary_data.c \
 		game_random.c \
-		font.c text.c \
+		font.c \
 		object_init.c \
 		object_primitives.c \
 		world.c player.c \
@@ -113,9 +115,7 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		occlusion/occlusion_culling.c \
 		occlusion/culling_debug.c \
 		occlusion/bitmask_culling.c \
-		surface_tools.c \
 		playmode_events.c \
-		colors.c \
 		render/render_entity.c \
 		render/render_clip.c \
 		render/render_triangle.c \
@@ -143,7 +143,9 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		render/draw_rectangle.c \
 		render/draw_shapes.c \
 		render/render_helper.c \
-		render/flip_channel.c \
+		render/surface_tools.c \
+		render/colors.c \
+		render/text.c \
 		entity/components/comp_mechasuit.c \
 		entity/components/comp_watercollider.c \
 		entity/components/comp_light.c \

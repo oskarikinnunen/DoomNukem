@@ -13,12 +13,33 @@
 #include "doomnukem.h"
 #include "colors.h"
 
+SDL_Color	color32_to_sdlcolor(uint32_t color)
+{
+	SDL_Color	sdl_color;
+	t_rgb		temp;
+
+	temp.blue = color & 0xFF;
+	temp.green = (color >> 8) & 0xFF;
+	temp.red = (color >> 16) & 0xFF;
+	sdl_color = (SDL_Color){\
+		.r = temp.red, .g = temp.green, .b = temp.blue, .a = 255};
+	return (sdl_color);
+}
+
+uint32_t	flip_channels(uint32_t clr)
+{
+	t_color		result;
+
+	result.color = clr;
+	return (result.color);
+}
+
 uint32_t	flip_alpha(uint32_t clr)
 {
 	t_color		result;
 
 	result.color = clr;
-	result.argb.alpha = 255 - result.argb.alpha;
+	result.bgra.alpha = 255 - result.bgra.alpha;
 	return (result.color);
 }
 
@@ -26,10 +47,10 @@ t_argbf	color_to_argbf(t_color color)
 {
 	t_argbf	new;
 
-	new.a = ((float)color.argb.alpha / 255.0f);
-	new.r = (float)color.argb.red / 255.0f;
-	new.g = (float)color.argb.green / 255.0f;
-	new.b = (float)color.argb.blue / 255.0f;
+	new.a = ((float)color.bgra.alpha / 255.0f);
+	new.r = (float)color.bgra.red / 255.0f;
+	new.g = (float)color.bgra.green / 255.0f;
+	new.b = (float)color.bgra.blue / 255.0f;
 	return (new);
 }
 
@@ -44,8 +65,8 @@ uint32_t	blend_colors_alpha(uint32_t background,
 
 	color_bg.color = background;
 	color_fg.color = foreground;
-	color_bg.argb.alpha = (uint8_t)255;
-	color_fg.argb.alpha = alpha;
+	color_bg.bgra.alpha = (uint8_t)255;
+	color_fg.bgra.alpha = alpha;
 	bg = color_to_argbf(color_bg);
 	fg = color_to_argbf(color_fg);
 	new.a = fg.a + bg.a * (1.0f - fg.a);

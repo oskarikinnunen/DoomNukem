@@ -21,11 +21,7 @@ t_rectangle	print_text_boxed(t_sdlcontext *sdl, const char *text, t_point pos)
 
 	surfacetext = TTF_RenderText_Blended(sdl->font.font, text, sdl->font.color);
 	if (!surfacetext)
-	{
-		return ((t_rectangle){0});
-		//error_log(EC_TTF_RENDERTEXTBLENDED);
-	}
-		
+		doomlog(LOG_EC_TTF_RENDERTEXTBLENDED, NULL);
 	padding.x = 3;
 	padding.y = 3;
 	rect.size.x = surfacetext->w + padding.x * 2;
@@ -37,20 +33,6 @@ t_rectangle	print_text_boxed(t_sdlcontext *sdl, const char *text, t_point pos)
 	return (rect);
 }
 
-SDL_Color color32_to_sdlcolor(uint32_t color)
-{
-	SDL_Color	sdl_color;
-	uint8_t		r;
-	uint8_t		g;
-	uint8_t		b;
-
-	b = color & 0xFF;
-	g = (color >> 8) & 0xFF;
-	r = (color >> 16) & 0xFF;
-	sdl_color = (SDL_Color){.r = r, .g = g, .b = b, .a = 255};
-	return (sdl_color);
-}
-
 t_rectangle	print_text(t_sdlcontext *sdl, const char *text, t_point pos)
 {
 	SDL_Surface	*surfacetext;
@@ -58,11 +40,7 @@ t_rectangle	print_text(t_sdlcontext *sdl, const char *text, t_point pos)
 
 	surfacetext = TTF_RenderText_Blended(sdl->font.font, text, sdl->font.color);
 	if (!surfacetext)
-	{
-		return ((t_rectangle){0});
-		//error_log(EC_TTF_RENDERTEXTBLENDED);
-	}
-		
+		doomlog(LOG_EC_TTF_RENDERTEXTBLENDED, NULL);
 	rect.position = pos;
 	rect.size.x = surfacetext->w;
 	rect.size.y = surfacetext->h;
@@ -71,20 +49,18 @@ t_rectangle	print_text(t_sdlcontext *sdl, const char *text, t_point pos)
 	return (rect);
 }
 
-t_rectangle	print_text_colored(t_sdlcontext *sdl, const char *text, t_point pos, uint32_t color)
+t_rectangle	print_text_colored(t_sdlcontext *sdl, const char *text, \
+								t_point pos, uint32_t color)
 {
 	t_rectangle	rect;
 	SDL_Color	c;
 	SDL_Color	prev;
-	uint8_t		r;
-	uint8_t		g;
-	uint8_t		b;
+	t_rgb		temp;
 
-	
-	b = color & 0xFF;
-	g = (color >> 8) & 0xFF;
-	r = (color >> 16) & 0xFF;
-	c = (SDL_Color){.r = r, .g = g, .b = b, .a = 255};
+	temp.blue = color & 0xFF;
+	temp.green = (color >> 8) & 0xFF;
+	temp.red = (color >> 16) & 0xFF;
+	c = (SDL_Color){.r = temp.red, .g = temp.green, .b = temp.blue, .a = 255};
 	prev = sdl->font.color;
 	sdl->font.color = c;
 	rect = print_text(sdl, text, pos);

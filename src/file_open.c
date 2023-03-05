@@ -17,7 +17,7 @@ int	fileopen(char *filename, int flags)
 	int	fd;
 
 	fd = open(filename, flags, 0666);
-	//if (fd == -1)
-		//error_log(EC_WRITE);
+	if (fd == -1)
+		doomlog(LOG_EC_OPEN, filename);
 	return (fd);
 }

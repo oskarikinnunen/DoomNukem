@@ -262,10 +262,8 @@ t_line	line_shorten(t_line line);
 
 // Prints text and returns the rectangle of the printed text
 // Font size and color can be set using:
-// sdl->font->font = sdll->font->font_sizes[x] where x can be 0-3
-// sdl->font->color = sdl->font->font_colors.x where x is the color
-SDL_Color	color32_to_sdlcolor(uint32_t color);
-
+// sdl->font->font = sdl->font->font_sizes[x] where x can be 0-3
+// sdl->font->color = color32_to_sdlcolor(CLR_GREEN)
 t_rectangle	print_text(t_sdlcontext *sdl, const char *text, t_point pos);
 
 // Does the same as print_ftext but also fills in the background for the text

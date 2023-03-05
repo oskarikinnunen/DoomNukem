@@ -64,7 +64,9 @@ void	warning_message_mul(int fd, char **str)
 void	fatal_message(int fd, char *str)
 {
 	ft_putstr_fd("!!! ", fd);
-	ft_putstr_fd(str, fd);
+	ft_putendl_fd(str, fd);
+	ft_putstr_fd("!!! ", 2);
+	ft_putendl_fd(str, 2);
 }
 
 void	fatal_message_mul(int fd, char **str)

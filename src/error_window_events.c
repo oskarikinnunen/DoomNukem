@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   error_window_events.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/01/28 14:59:55 by raho              #+#    #+#             */
+/*   Updated: 2023/02/07 15:54:56 by raho             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "doomnukem.h"
 
 static void	check_for_quit(t_parent *p)
@@ -17,9 +29,9 @@ void	error_window_events(t_parent *p)
 		ft_bzero(p->sdl.window_surface->pixels, sizeof(uint32_t) * 600 * 300);
 		ft_bzero(p->sdl.surface->pixels, sizeof(uint32_t) * 600 * 300);
 		mouse_event(p->ew.event, &p->ew.hid.mouse);
-		if (p->message_count > 21) // disables scrolling if there are not enough messages to fill the screen
+		if (p->message_count > 21)
 			p->ew.i = ft_clamp((p->ew.i - p->ew.hid.mouse.scroll_delta), 0, \
-							(p->message_count - 21)); // stop the scrolling once the messages stop
+							(p->message_count - 21));
 		p->ew.j = p->ew.i;
 		while (p->ew.j < p->message_count)
 		{
@@ -32,7 +44,7 @@ void	error_window_events(t_parent *p)
 				sizeof(uint32_t) * 600 * 300);
 		if (SDL_UpdateWindowSurface(p->sdl.window) < 0)
 		{
-			ft_putendl_fd("game ran into an error and the parent process couldn't update the window surface for the error message", 2);
+			ft_putendl_fd("can't update sdl surface for error message", 2);
 			exit (1);
 		}
 	}

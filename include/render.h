@@ -8,15 +8,20 @@
 # include "objects.h" // only one function is using currently can be moved to doomnukem.h if needed
 # include "lighting.h"
 # include "occlusion.h"
+# include "colors.h"
 
 # include "fmod.h"
 
+# define CLR_BLACK 0xFF000000
+# define CLR_WHITE 0xFFFFFFFF
 # define CLR_PRPL 14231500
 # define CLR_TURQ 5505010
 # define CLR_BLUE 255
 # define CLR_GRAY 4868682
 # define CLR_DARKGRAY 0x292929
 # define CLR_BLACKGRAY 0x1a1a1a
+# define CLR_LIGHTGRAY 0xFF222222
+# define CLR_BROWN 0xFF4C3228
 # define CLR_GREEN 3002977
 # define CLR_RED 0xFF2919
 # define AMBER_0 0x551501
@@ -43,19 +48,6 @@ typedef struct s_img
 	bool		transparency;
 }	t_img;
 
-typedef struct s_fontcolors
-{
-	SDL_Color	black;
-	SDL_Color	white;
-	SDL_Color	red;
-	SDL_Color	green;
-	SDL_Color	blue;
-	SDL_Color	yellow;
-	SDL_Color	crimson;
-	SDL_Color	orange;
-	SDL_Color	skyblue;
-}	t_fontcolors;
-
 typedef struct s_backgroundcolors
 {
 	uint32_t	black;
@@ -67,7 +59,6 @@ typedef struct s_backgroundcolors
 
 typedef struct s_font
 {
-	t_fontcolors		font_colors;
 	t_backgroundcolors	background_colors;
 	SDL_Color			color;
 	uint32_t			box_color;
@@ -342,7 +333,6 @@ void				sort_polygon_tri(t_point *p2, t_vector2 *t, t_vector3 *p3);
 void				sort_point_tri(t_point *p2, float *w);
 void				ft_swap(void * a, void * b, size_t len);
 t_point_triangle	ps1(t_point_triangle in, int div);
-uint32_t			flip_channels(uint32_t clr);
 
 
 #endif

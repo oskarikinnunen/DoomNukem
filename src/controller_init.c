@@ -17,7 +17,7 @@ static void	save_controller_info(t_hid_info *hid,
 {
 	while (i < joysticks && i < MAX_CONTROLLERS)
 	{
-		if (SDL_IsGameController(index))
+		if (SDL_IsGameController(i))
 		{
 			hid->controller[i].gamecontroller = \
 					SDL_GameControllerOpen(i);
@@ -33,7 +33,7 @@ static void	save_controller_info(t_hid_info *hid,
 			else
 				hid->controller[i].connected = true;
 			doomlog_mul(LOG_NORMAL, (char *[4]){
-				"controller", s_itoa(index + 1), "connected", NULL});
+				"controller", s_itoa(i + 1), "connected", NULL});
 		}
 		else
 			doomlog(LOG_WARNING, "controller not supported");
