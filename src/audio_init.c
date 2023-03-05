@@ -12,21 +12,20 @@
 
 #include "render.h"
 #include "doomnukem.h"
-
 #include <dirent.h>
 
-bool is_sample(char	*audioname)
+bool	is_sample(char	*audioname)
 {
 	return (ft_strstr(audioname, ".wav") != NULL
 		|| ft_strstr(audioname, ".mp3") != NULL);
 }
 
-bool is_music(char *audioname)
+bool	is_music(char *audioname)
 {
 	return (ft_strstr(audioname, "music") != NULL);
 }
 
-static void allocate_sample_count(t_audio *audio)
+static void	allocate_sample_count(t_audio *audio)
 {
 	DIR				*d;
 	struct dirent	*dfile;

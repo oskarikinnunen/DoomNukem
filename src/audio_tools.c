@@ -31,7 +31,7 @@ t_audiosample	get_music(t_sdlcontext *sdl, const char *name)
 
 t_audiosample	get_sample(t_sdlcontext *sdl, const char *name)
 {
-	int	i;
+	int				i;
 	t_audiosample	error;
 
 	i = 0;

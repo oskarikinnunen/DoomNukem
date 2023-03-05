@@ -13,8 +13,8 @@
 #ifndef LOG_H
 # define LOG_H
 
-#include "render.h"
-#include "input.h"
+# include "render.h"
+# include "input.h"
 
 # define LOG_NORMAL 0
 # define LOG_WARNING 1
@@ -54,28 +54,29 @@
 
 typedef struct s_error_window
 {
-    SDL_Event	event;
+	SDL_Event	event;
 	t_hid_info	hid;
-	int         scroll;
-    int         i;
-    int         j;
-}   t_error_window;
+	int			scroll;
+	int			i;
+	int			j;
+}	t_error_window;
 
 typedef struct s_parent
 {
-    t_sdlcontext    sdl;
-    int             fd;
-    int             gnl;
-    char            *line;
-    int             message_count;
-    char            **messages;
-    t_error_window  ew;
-}   t_parent;
+	t_sdlcontext	sdl;
+	int				fd;
+	int				gnl;
+	char			*line;
+	int				message_count;
+	char			**messages;
+	t_error_window	ew;
+}	t_parent;
 
 /* code defines start with LOG */
 void	doomlog(int code, char *str);
 
-/* example: doomlog_mul(LOG_NORMAL, (char *[32]){"parsed", s_itoa(i), "imagefiles", NULL}); */
+/* example: doomlog_mul(LOG_NORMAL, (char *[32]){
+			"parsed", s_itoa(i), "imagefiles", NULL}); */
 void	doomlog_mul(int code, char **str);
 
 /* don't use this manually, call doomlog() instead */
@@ -88,6 +89,6 @@ void	error_window(char *str);
 void	error_window_events(t_parent *p);
 
 /* converts integer to a stack memory string */
-char *s_itoa(int i);
+char	*s_itoa(int i);
 
 #endif

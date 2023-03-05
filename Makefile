@@ -99,6 +99,9 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		world.c player.c \
 		resolution_scaling.c \
 		controller.c \
+		controller_init.c \
+		controller_events.c \
+		controller_events_buttons.c \
 		audio_init.c \
 		audio_tools.c \
 		audio_sounds.c \

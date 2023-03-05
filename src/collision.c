@@ -18,7 +18,7 @@ t_collision	calculate_new_pos(t_vector2 delta, float radius)
 {
 	t_collision	result;
 	float		dist;
-	
+
 	dist = vector2_magnitude(delta);
 	result.normal = vector2_mul(delta, (1.0f / dist));
 	result.depth = radius - dist;
@@ -45,7 +45,7 @@ bool	linepoint(t_vector2 start, t_vector2 end, t_vector2 point)
 bool	pointcircle(t_vector2 point, t_vector2 circle, float radius)
 {
 	t_vector2	delta;
-	
+
 	delta = vector2_sub(circle, point);
 	if (vector2_dot(delta, delta) <= radius * radius)
 		return (true);
@@ -78,7 +78,8 @@ bool	linecirclecollision(t_line line, t_vector2 circle, float radius)
 	return (false);
 }
 
-bool	col_linecircle(t_line line, t_vector2 circle, float radius, t_collision *collision)
+bool	col_linecircle(t_line line, t_vector2 circle,
+						float radius, t_collision *collision)
 {
 	float		wall_len;
 	float		dot;
@@ -117,7 +118,7 @@ bool	lineline(t_line first, t_line second, t_vector2 *collision_point)
 {
 	float	a;
 	float	b;
-	
+
 	a = (((second.end.x - second.start.x) * (first.start.y - second.start.y)) - \
 		((second.end.y - second.start.y) * (first.start.x - second.start.x))) / \
 		(((second.end.y - second.start.y) * (first.end.x - first.start.x)) - \

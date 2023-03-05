@@ -201,6 +201,10 @@ void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
 /* CONTROLLER.C */
 void	initialize_controllers(t_hid_info *hid);
 int		controller_events(SDL_Event e, t_hid_info *hid);
+void	controller_button_press(SDL_ControllerButtonEvent cbutton, t_hid_info *hid);
+void	controller_button_release(SDL_ControllerButtonEvent cbutton, t_hid_info *hid);
+
+
 
 /* GAME_RANDOM.C */
 //Generates a random number between 0 and UINT32_MAX

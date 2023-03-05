@@ -55,7 +55,7 @@ typedef struct s_tga
 	bool			transparency;
 }	t_tga;
 
-typedef struct s_img t_img;
+typedef struct s_img	t_img;
 
 int		load_tga(int fd, char *filename, t_tga *tga);
 t_img	tgaparse(char *filename);		

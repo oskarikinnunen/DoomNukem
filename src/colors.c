@@ -22,58 +22,42 @@ uint32_t	flip_alpha(uint32_t clr)
 	return (result.color);
 }
 
-uint32_t	blend_colors_alpha(uint32_t bg, uint32_t fg, uint8_t alpha)
+t_argbf	color_to_argbf(t_color color)
 {
-	uint32_t	result;
-	
-	float		new_alpha;
-	float		new_red;
-	float		new_green;
-	float		new_blue;
+	t_argbf	new;
 
+	new.a = ((float)color.argb.alpha / 255.0f);
+	new.r = (float)color.argb.red / 255.0f;
+	new.g = (float)color.argb.green / 255.0f;
+	new.b = (float)color.argb.blue / 255.0f;
+	return (new);
+}
+
+uint32_t	blend_colors_alpha(uint32_t background,
+								uint32_t foreground, uint8_t alpha)
+{
+	t_argbf		new;
+	t_argbf		bg;
+	t_argbf		fg;
 	t_color		color_bg;
 	t_color		color_fg;
-	
-	float		alpha_bg;
-	float		red_bg;
-	float		green_bg;
-	float		blue_bg;
-	
-	float		alpha_fg;
-	float		red_fg;
-	float		green_fg;
-	float		blue_fg;
 
-
-	color_bg.color = bg;
-	color_fg.color = fg;
-
+	color_bg.color = background;
+	color_fg.color = foreground;
 	color_bg.argb.alpha = (uint8_t)255;
 	color_fg.argb.alpha = alpha;
-
-	alpha_bg = ((float)color_bg.argb.alpha / 255.0f);
-	alpha_fg = ((float)color_fg.argb.alpha / 255.0f);
-	
-	red_bg = (float)color_bg.argb.red / 255.0f;
-	green_bg = (float)color_bg.argb.green / 255.0f;
-	blue_bg = (float)color_bg.argb.blue / 255.0f;
-	
-	red_fg = (float)color_fg.argb.red / 255.0f;
-	green_fg = (float)color_fg.argb.green / 255.0f;
-	blue_fg = (float)color_fg.argb.blue / 255.0f;
-
-	// OpenGL - transparency (alpha blending) Youtube
-	new_alpha = alpha_fg + alpha_bg * (1.0f - alpha_fg);
-	new_red = ((red_fg * alpha_fg) + (red_bg * alpha_bg * (1.0f - alpha_fg))) / new_alpha;
-	new_green = ((green_fg * alpha_fg) + (green_bg * alpha_bg * (1.0f - alpha_fg))) / new_alpha;
-	new_blue = ((blue_fg * alpha_fg) + (blue_bg * alpha_bg * (1.0f - alpha_fg))) / new_alpha;
-
-	new_alpha *= 255.0f;
-	new_red *= 255.0f;
-	new_green *= 255.0f;
-	new_blue *= 255.0f;
-
-	result = ((uint32_t)new_alpha << 24) | ((uint32_t)new_red << 16) | ((uint32_t)new_green << 8) | (uint32_t)new_blue;
-
-	return (result);
+	bg = color_to_argbf(color_bg);
+	fg = color_to_argbf(color_fg);
+	new.a = fg.a + bg.a * (1.0f - fg.a);
+	new.r = ((fg.r * fg.a) + (bg.r * bg.a * (1.0f - fg.a))) / new.a;
+	new.g = ((fg.g * fg.a) + (bg.g * bg.a * (1.0f - fg.a))) / new.a;
+	new.b = ((fg.b * fg.a) + (bg.b * bg.a * (1.0f - fg.a))) / new.a;
+	new.a *= 255.0f;
+	new.r *= 255.0f;
+	new.g *= 255.0f;
+	new.b *= 255.0f;
+	return (((uint32_t)new.a << 24) | \
+			((uint32_t)new.r << 16) | \
+			((uint32_t)new.g << 8) | \
+			(uint32_t)new.b);
 }
