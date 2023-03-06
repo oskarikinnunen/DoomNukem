@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/03 19:21:47 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/06 17:13:17 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ void	doomnukem(int argc, char **argv)
 
 int	main(int argc, char **argv)
 {
-	pid_t	pid;
+	/* pid_t	pid;
 	int		wait_status;
 
 	pid = fork();
@@ -140,7 +140,7 @@ int	main(int argc, char **argv)
 	{
 		wait(&wait_status);
 		handle_exit(wait_status);
-	}
+	} */
 	doomnukem(argc, argv);
 	return (0);
 }

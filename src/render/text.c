@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   text.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 22:00:00 by raho              #+#    #+#             */
-/*   Updated: 2023/01/11 10:41:01 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/06 17:07:13 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,9 @@ t_rectangle	print_text_colored(t_sdlcontext *sdl, const char *text, \
 	t_rectangle	rect;
 	SDL_Color	c;
 	SDL_Color	prev;
-	t_rgb		temp;
+	t_rgba		temp;
 
-	temp.blue = color & 0xFF;
-	temp.green = (color >> 8) & 0xFF;
-	temp.red = (color >> 16) & 0xFF;
-	c = (SDL_Color){.r = temp.red, .g = temp.green, .b = temp.blue, .a = 255};
+	c = color32_to_sdlcolor(color);
 	prev = sdl->font.color;
 	sdl->font.color = c;
 	rect = print_text(sdl, text, pos);

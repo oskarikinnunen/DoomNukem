@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   controller.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:36:01 by raho              #+#    #+#             */
-/*   Updated: 2023/03/01 21:09:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/06 15:55:58 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ void	updateinput_new(t_input *input, t_hid_info info)
 void	updateinput(t_input *input, int keystate,
 					t_mouse m, t_controller *controller)
 {
-	//controller[1].
 	input->move = vector2_zero();
 	input->turn = vector2_mul(point_to_vector2(m.delta), MOUSESPEED);
 	input->move.x += controller->leftanalog.x;

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 19:49:03 by raho              #+#    #+#             */
-/*   Updated: 2023/03/03 19:01:58 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/06 17:11:17 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,12 @@ typedef struct s_rgba
 	uint8_t	blue;
 	uint8_t	alpha;
 
-}	t_rgb;
+}	t_rgba;
 
-/* colors are in the order of bgra (blue green red alhpa),
-	because sdl surface flips blue and red */
 typedef union u_color
 {
 	uint32_t	color;
-	struct		s_bgra
-	{
-		uint8_t	blue;
-		uint8_t	green;
-		uint8_t	red;
-		uint8_t	alpha;
-	}	bgra;
+	t_rgba		rgba;
 }	t_color;
 
 typedef struct s_argbf
@@ -51,10 +43,10 @@ t_argbf		color_to_argbf(t_color color);
 // OpenGL - transparency (alpha blending) Youtube
 uint32_t	blend_colors_alpha(uint32_t bg, uint32_t fg, uint8_t alpha);
 
-// flips alpha values upside down
+// flips alpha value upside down
 uint32_t	flip_alpha(uint32_t clr);
 
 // flips blue and red channels with each other
-uint32_t	flip_channels(uint32_t clr);
+uint32_t	flip_rb_channels(uint32_t clr);
 
 #endif

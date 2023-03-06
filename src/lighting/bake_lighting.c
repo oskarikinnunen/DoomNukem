@@ -111,7 +111,7 @@ void create_dynamic_map_for_entity(t_entity *entity, struct s_world *world)
 					Uint32 red = ((clr & 0x00FF0000) * light) >> 8;
 					Uint32 green = ((clr & 0x0000FF00) * light) >> 8;
 					Uint32 blue = ((clr & 0x000000FF) * light) >> 8;
-					clr = flip_channels(alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF));
+					clr = flip_rb_channels(alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF));
 					entity->map[index].data[e * entity->map[index].size.x + j] = clr;
 				}
 			}
@@ -220,7 +220,7 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 					Uint32 red = ((clr & 0x00FF0000) * light) >> 8;
 					Uint32 green = ((clr & 0x0000FF00) * light) >> 8;
 					Uint32 blue = ((clr & 0x000000FF) * light) >> 8;
-					clr = flip_channels(alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF));
+					clr = alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF);
 					entity->map[index].data[e * entity->map[index].size.x + j] = clr;
 					/*light = light / 2;
 					if (e - 1 > 0 && lightmap->data[(e - 1) * entity->map[index].size.x + j] < light)
