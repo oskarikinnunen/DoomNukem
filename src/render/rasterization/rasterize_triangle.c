@@ -50,8 +50,8 @@ if (xsample < 0 || ysample < 0 || ysample * render->map.size.x + xsample > rende
 inline static uint32_t sample_img(t_render *render, uint32_t xsample, uint32_t ysample)
 {
 	uint32_t	clr;
-	xsample = ft_clamp(xsample, 0, render->map.size.x);
-	ysample = ft_clamp(ysample, 0, render->map.size.y);
+	//xsample = ft_clamp(xsample, 0, render->map.size.x);
+	//ysample = ft_clamp(ysample, 0, render->map.size.y);
 	clr = render->map.data[ysample * render->map.size.x + xsample];
 	//render->map.data[ysample * render->map.size.x + xsample] = CLR_PRPL;
 	return(clr);

@@ -103,7 +103,7 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 					uv.x = roundf(uv.x * (float)(entity->obj->materials[index].img->size.x));
 					uv.y = roundf(uv.y * (float)(entity->obj->materials[index].img->size.y));
 					//uv = vector2_add_xy(uv, -0.5f);
-					//temp.t[vertex] = uv;
+					temp.t[vertex] = entity->world_triangles[start].t[vertex];
 					temp.p[vertex] = uv;
 					//temp.p[vertex].x = entity->world_triangles[start].t[vertex].x;
 					//temp.p[vertex].y = entity->world_triangles[start].t[vertex].y;

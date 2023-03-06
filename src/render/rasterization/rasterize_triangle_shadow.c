@@ -27,25 +27,54 @@ inline static void scanline(int ax, int bx, int y, t_lighting *lighting, t_point
 static void fill_point_tri_top(t_lighting *lighting, t_point_triangle triangle)
 {
 	t_vector2		*p;
+	t_vector3		*t;
 	int				y;
 	float			delta;
-	t_step			left;
-	t_step			right;
 	int				endy;
 
 	p = triangle.p;
-	left.step = (p[0].x - p[1].x) / (p[0].y - p[1].y);
-	right.step = (p[0].x - p[2].x) / (p[0].y - p[2].y);
-	delta = 1.0f/(p[0].y - p[1].y);
-	left = make_slope(p[1].x, p[0].x, delta);
-	right = make_slope(p[2].x, p[0].x, delta);
+	t = triangle.t;
+	delta = p[0].y - p[1].y;
+	t_vector2 dv0 = vector2_div(vector2_sub(p[0], p[1]), delta);
+	t_vector2 dv1 = vector2_div(vector2_sub(p[0], p[2]), delta);
+	t_vector3 tdv0 = vector3_div(vector3_sub(t[0], t[1]), delta);
+	t_vector3 tdv1 = vector3_div(vector3_sub(t[0], t[2]), delta);
+
+	t_vector2 itedge0 = p[1];
+	t_vector2 itedge1 = p[2];
+	t_vector3 titedge0 = t[1];
+	t_vector3 titedge1 = t[2];
+
 	y = ceilf(p[1].y - 0.5f);
 	endy = ceilf(p[0].y - 0.5f);
+
+	itedge0 = vector2_add(itedge0, vector2_mul(dv0, (float)y + 0.5f - p[1].y));
+	itedge1 = vector2_add(itedge1, vector2_mul(dv1, (float)y + 0.5f - p[1].y));
+	titedge0 = vector3_add(titedge0, vector3_mul(tdv0, (float)y + 0.5f - p[1].y));
+	titedge1 = vector3_add(titedge1, vector3_mul(tdv1, (float)y + 0.5f - p[1].y));
+
 	while (y < endy)
 	{
-		left.location = left.step * ((float)y + 0.5f - p[1].y) + p[1].x;
-		right.location = right.step * ((float)y + 0.5f - p[2].y) + p[2].x;
-		scanline(ceilf(left.location - 0.5f), ceilf(right.location - 0.5f), y, lighting, triangle);
+		int ax, bx;
+		ax = ceilf(itedge0.x - 0.5f);
+		bx = ceilf(itedge1.x + 0.5f);
+		
+		t_vector3 dtcline = vector3_div(vector3_sub(titedge1, titedge0), itedge1.x - itedge0.x);
+
+		t_vector3 itcline = titedge0;
+
+		for (int x = ax; x < bx; x++)
+		{
+			int tempx = itcline.x;
+			int tempy = itcline.y;
+			lighting->map->data[y * lighting->map->size.x + x] = CLR_RED;
+			lighting->map->data[tempy * lighting->map->size.x + tempx] = CLR_RED;
+			itcline = vector3_add(itcline, dtcline);
+		}
+		itedge0 = vector2_add(itedge0, dv0);
+		itedge1 = vector2_add(itedge1, dv1);
+		titedge0 = vector3_add(titedge0, tdv0);
+		titedge1 = vector3_add(titedge1, tdv1);
 		y++;
 	}
 }
@@ -53,25 +82,54 @@ static void fill_point_tri_top(t_lighting *lighting, t_point_triangle triangle)
 static void fill_point_tri_bot(t_lighting *lighting, t_point_triangle triangle)
 {
 	t_vector2		*p;
+	t_vector3		*t;
 	int				y;
 	float			delta;
-	t_step			left;
-	t_step			right;
 	int				endy;
 
 	p = triangle.p;
-	left.step = (p[1].x - p[0].x) / (p[1].y - p[0].y);
-	right.step = (p[2].x - p[0].x) / (p[2].y - p[0].y);
-	delta = 1.0f/(p[1].y - p[0].y);
-	left = make_slope(p[0].x, p[1].x, delta);
-	right = make_slope(p[0].x, p[2].x, delta);
+	t = triangle.t;
+	delta = p[2].y - p[0].y;
+	t_vector2 dv0 = vector2_div(vector2_sub(p[1], p[0]), delta);
+	t_vector2 dv1 = vector2_div(vector2_sub(p[2], p[0]), delta);
+	t_vector3 tdv0 = vector3_div(vector3_sub(t[1], t[0]), delta);
+	t_vector3 tdv1 = vector3_div(vector3_sub(t[2], t[0]), delta);
+
+	t_vector2 itedge0 = p[0];
+	t_vector2 itedge1 = p[0];
+	t_vector3 titedge0 = t[0];
+	t_vector3 titedge1 = t[0];
+
 	y = ceilf(p[0].y - 0.5f);
-	endy = ceilf(p[1].y - 0.5f);
+	endy = ceilf(p[2].y - 0.5f);
+
+	itedge0 = vector2_add(itedge0, vector2_mul(dv0, (float)y + 0.5f - p[0].y));
+	itedge1 = vector2_add(itedge1, vector2_mul(dv1, (float)y + 0.5f - p[0].y));
+	titedge0 = vector3_add(titedge0, vector3_mul(tdv0, (float)y + 0.5f - p[0].y));
+	titedge1 = vector3_add(titedge1, vector3_mul(tdv1, (float)y + 0.5f - p[0].y));
+
 	while (y < endy)
 	{
-		left.location = left.step * ((float)y + 0.5f - p[0].y) + p[0].x;
-		right.location = right.step * ((float)y + 0.5f - p[0].y) + p[0].x;
-		scanline(ceilf(left.location - 0.5f), ceilf(right.location - 0.5f), y, lighting, triangle);
+		int ax, bx;
+		ax = ceilf(itedge0.x - 0.5f);
+		bx = ceilf(itedge1.x + 0.5f);
+		
+		t_vector3 dtcline = vector3_div(vector3_sub(titedge1, titedge0), itedge1.x - itedge0.x);
+
+		t_vector3 itcline = titedge0;
+
+		for (int x = ax; x < bx; x++)
+		{
+			int tempx = itcline.x;
+			int tempy = itcline.y;
+			lighting->map->data[y * lighting->map->size.x + x] = CLR_RED;
+			lighting->map->data[tempy * lighting->map->size.x + tempx] = CLR_RED;
+			itcline = vector3_add(itcline, dtcline);
+		}
+		itedge0 = vector2_add(itedge0, dv0);
+		itedge1 = vector2_add(itedge1, dv1);
+		titedge0 = vector3_add(titedge0, tdv0);
+		titedge1 = vector3_add(titedge1, tdv1);
 		y++;
 	}
 }
@@ -399,4 +457,84 @@ static void fill_point_tri_bot(t_lighting *lighting, t_point_triangle triangle)
 	}
 }
 
+
+inline static void scanline(int ax, int bx, int y, t_lighting *lighting, t_point_triangle poly)
+{
+	t_vector3	tex;
+	t_vector2	bary;
+	t_vector2	left;
+	t_vector2	right;
+	float		dist;
+	float		steps;
+
+	t_vector2 *p = poly.p;
+	t_vector3 *t = poly.t;
+	left = barycentric_coordinates(p, vector2_add_xy((t_vector2){ax, y}, 0.5f));
+	right = barycentric_coordinates(p, vector2_add_xy((t_vector2){bx, y}, 0.5f));
+	bary = left;
+	//dist = ft_flerp(t[0].z, t[1].z, bary.x) + ((t[2].z - t[0].z) * bary.y);
+	int start = ax;
+	steps = bx - start;
+	while(ax < bx)
+	{
+		int tempx = ft_flerp(t[0].x, t[1].x, bary.x) + ((t[2].x - t[0].x) * bary.y);
+		int tempy = ft_flerp(t[0].y, t[1].y, bary.x) + ((t[2].y - t[0].y) * bary.y);
+		lighting->map->data[y * (lighting->map->size.x) + ax] = CLR_RED;
+		lighting->map->data[tempy * (lighting->map->size.x) + tempx] = CLR_RED;
+		ax++;
+		bary = vector2_lerp(left, right, (float)(ax - start) / steps);
+	}
+}
+
+static void fill_point_tri_top(t_lighting *lighting, t_point_triangle triangle)
+{
+	t_vector2		*p;
+	int				y;
+	float			delta;
+	t_step			left;
+	t_step			right;
+	int				endy;
+
+	p = triangle.p;
+	left.step = (p[0].x - p[1].x) / (p[0].y - p[1].y);
+	right.step = (p[0].x - p[2].x) / (p[0].y - p[2].y);
+	delta = 1.0f/(p[0].y - p[1].y);
+	left = make_slope(p[1].x, p[0].x, delta);
+	right = make_slope(p[2].x, p[0].x, delta);
+	y = ceilf(p[1].y - 0.5f);
+	endy = ceilf(p[0].y - 0.5f);
+	while (y < endy)
+	{
+		left.location = left.step * ((float)y + 0.5f - p[1].y) + p[1].x;
+		right.location = right.step * ((float)y + 0.5f - p[2].y) + p[2].x;
+		scanline(ceilf(left.location - 0.5f), ceilf(right.location - 0.5f), y, lighting, triangle);
+		y++;
+	}
+}
+
+static void fill_point_tri_bot(t_lighting *lighting, t_point_triangle triangle)
+{
+	t_vector2		*p;
+	int				y;
+	float			delta;
+	t_step			left;
+	t_step			right;
+	int				endy;
+
+	p = triangle.p;
+	left.step = (p[1].x - p[0].x) / (p[1].y - p[0].y);
+	right.step = (p[2].x - p[0].x) / (p[2].y - p[0].y);
+	delta = 1.0f/(p[1].y - p[0].y);
+	left = make_slope(p[0].x, p[1].x, delta);
+	right = make_slope(p[0].x, p[2].x, delta);
+	y = ceilf(p[0].y - 0.5f);
+	endy = ceilf(p[1].y - 0.5f);
+	while (y < endy)
+	{
+		left.location = left.step * ((float)y + 0.5f - p[0].y) + p[0].x;
+		right.location = right.step * ((float)y + 0.5f - p[0].y) + p[0].x;
+		scanline(ceilf(left.location - 0.5f), ceilf(right.location - 0.5f), y, lighting, triangle);
+		y++;
+	}
+}
 */
