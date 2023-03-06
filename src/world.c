@@ -38,6 +38,38 @@ void	lateupdate_entitycache(t_sdlcontext *sdl, t_world *world)
 	}
 }
 
+static void	draw_map(t_entity *entity, t_sdlcontext *sdl)
+{
+	int x;
+	int y;
+	int	width;
+	t_point	size;
+	float	w;
+
+	if (!entity->map)
+		return;
+	size.x = entity->map->size.x;
+	size.y = entity->map->size.y;
+	width = sdl->window_w - size.x;
+	y = 0;
+	while (y < size.y)
+	{	
+		x = 0;
+		while (x < size.x)
+		{
+			float tempx = (float)x/(float)size.x;
+			float tempy = (float)y/(float)size.y;
+			tempx = tempx * entity->map->size.x;
+			tempy = tempy * entity->map->size.y;
+
+			uint32_t clr = entity->map->data[(int)(tempy * entity->map->size.x + tempx)];
+			((uint32_t *)sdl->surface->pixels)[((y) * (sdl->window_w)) + x + 700] = clr;
+			x++;
+		}
+		y++;
+	}
+}
+
 void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 {
 	int			i;
@@ -51,6 +83,8 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 		ent = world->entitycache.sorted_entities[i];
 		if (ent->status != es_free)
 		{
+			if (ent->id == 53)
+				draw_map(ent, sdl);
 			if(ent->component.func_update != NULL)
 				ent->component.func_update(ent, world);
 			if (ent->status == es_active && !ent->hidden)

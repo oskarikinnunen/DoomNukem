@@ -75,7 +75,7 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 			img = obj->materials[index].img;
 			max.x = fmaxf(max.x, 1.0f);
 			max.y = fmaxf(max.y, 1.0f);
-			entity->map[index].size = (t_point){ceilf(max.x) + 10, ceilf(max.y) + 10};
+			entity->map[index].size = (t_point){ceilf(max.x), ceilf(max.y)};
 			entity->map[index].img_size = img->size;
 			entity->map[index].data = malloc(sizeof(uint32_t) * entity->map[index].size.x * entity->map[index].size.y);
 			if (entity->map[index].data == NULL)
@@ -83,15 +83,47 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 			lighting.map = &entity->map[index];
 			lighting.img = img->data;
 			ft_bzero(entity->map[index].data, sizeof(uint32_t) * entity->map[index].size.x * entity->map[index].size.y);
+			for (int e = 0; e < entity->map[index].size.y && 1; e++)
+			{
+				for (int j = 0; j < entity->map[index].size.x; j++)
+				{
+					uint32_t clr;
+					clr = img->data[(e % (img->size.y)) * img->size.x + (j % (img->size.x))];
+					clr = update_pixel_brightness(200, clr);
+					entity->map[index].data[e * entity->map[index].size.x + j] = clr;
+				}
+			}
 			while (start <= i && 1)
 			{
 				t_point_triangle temp;
 
 				for (int vertex = 0; vertex < 3; vertex++)
 				{
-					temp.t[vertex] = entity->world_triangles[start].p[vertex].v;
-					temp.p[vertex].x = (entity->world_triangles[start].t[vertex].x);
-					temp.p[vertex].y = (entity->world_triangles[start].t[vertex].y);
+					t_vector2 uv = obj->uvs[obj->faces[start].uv_indices[vertex] - 1];
+					uv.x = roundf(uv.x * (float)(entity->obj->materials[index].img->size.x));
+					uv.y = roundf(uv.y * (float)(entity->obj->materials[index].img->size.y));
+					//uv = vector2_add_xy(uv, -0.5f);
+					//temp.t[vertex] = uv;
+					temp.p[vertex] = uv;
+					//temp.p[vertex].x = entity->world_triangles[start].t[vertex].x;
+					//temp.p[vertex].y = entity->world_triangles[start].t[vertex].y;
+				}
+				t_vector2	midpoint = vector2_div(vector2_add(vector2_add(temp.p[0], temp.p[1]), temp.p[2]), 3.0f);
+
+				for (int vertex = 0; vertex < 3 && 0; vertex++)
+				{
+					t_vector2 dir = vector2_normalise(vector2_sub(temp.p[vertex], midpoint));
+					//if (vector2_cmp(temp.p[vertex], midpoint))
+					//	temp.p[vertex] = vector2_zero();
+				//	dir = vector2_mul(dir, 2.0f);
+					
+					temp.p[vertex] = vector2_add(temp.p[vertex], dir);
+					temp.p[vertex].x = fmaxf(temp.p[vertex].x, 0.0f);
+					temp.p[vertex].y = fmaxf(temp.p[vertex].y, 0.0f);
+					if ((int)(temp.p[vertex].x / (float)lighting.map->size.x) > 0)
+						temp.p[vertex].x = (int)(temp.p[vertex].x / (float)lighting.map->size.x) * (lighting.map->size.x);
+					if ((int)(temp.p[vertex].y / (float)lighting.map->size.y) > 0)
+						temp.p[vertex].y = (int)(temp.p[vertex].y / (float)lighting.map->size.y) * (lighting.map->size.y);
 				}
 				rasterize_light(temp, &lighting);
 				start++;

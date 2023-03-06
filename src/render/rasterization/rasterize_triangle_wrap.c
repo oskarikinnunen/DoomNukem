@@ -84,17 +84,19 @@ static void render_flat_top_tri(t_sdlcontext *sdl, t_point_triangle triangle)
 		
 		t_vector3 dtcline = vector3_div(vector3_sub(titedge1, titedge0), itedge1.x - itedge0.x);
 
-		t_vector3 itcline = vector3_add(titedge0, vector3_mul(dtcline, (float)ax + 0.5f - itedge0.x));
+		t_vector3 itcline = titedge0;
 
 		for (int x = ax; x < bx; x++)
 		{
 			if (itcline.z > sdl->zbuffer[x + y * sdl->window_w])
 			{
-				int tempx = (itcline.x / itcline.z) * (float)sdl->render.img->size.x;
-				int tempy = (itcline.y / itcline.z) * (float)sdl->render.img->size.y;
+				int tempx = (itcline.x / itcline.z);
+				int tempy = (itcline.y / itcline.z);
+				uint32_t clr = sample_img_dynamic(&sdl->render, tempx, tempy);
+				if (((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] != 0)
+					clr = CLR_PRPL;
+				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] = clr;
 				sdl->zbuffer[x + y * sdl->window_w] = itcline.z;
-				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] =
-					sample_img_dynamic(&sdl->render, tempx, tempy);
 			}
 			itcline = vector3_add(itcline, dtcline);
 		}
@@ -143,17 +145,19 @@ static void render_flat_bot_tri(t_sdlcontext *sdl, t_point_triangle triangle)
 		
 		t_vector3 dtcline = vector3_div(vector3_sub(titedge1, titedge0), itedge1.x - itedge0.x);
 
-		t_vector3 itcline = vector3_add(titedge0, vector3_mul(dtcline, (float)ax + 0.5f - itedge0.x));
+		t_vector3 itcline = titedge0;
 
 		for (int x = ax; x < bx; x++)
 		{
 			if (itcline.z > sdl->zbuffer[x + y * sdl->window_w])
 			{
-				int tempx = (itcline.x / itcline.z) * (float)sdl->render.img->size.x;
-				int tempy = (itcline.y / itcline.z) * (float)sdl->render.img->size.y;
+				int tempx = (itcline.x / itcline.z);
+				int tempy = (itcline.y / itcline.z);
+				uint32_t clr = sample_img_dynamic(&sdl->render, tempx, tempy);
+				if (((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] != 0)
+					clr = CLR_PRPL;
+				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] = clr;
 				sdl->zbuffer[x + y * sdl->window_w] = itcline.z;
-				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] =
-					sample_img_dynamic(&sdl->render, tempx, tempy);
 			}
 			itcline = vector3_add(itcline, dtcline);
 		}
@@ -272,4 +276,59 @@ lerp = ((float)p[1].y - (float)p[2].y) / ((float)p[0].y - (float)p[2].y);
 		tcedger = vector3_add(tcedgel, tright.step);
 		y++;
 	}
+
+	inline static void render_flat_top_tri(t_sdlcontext *sdl, t_point_triangle triangle)
+{
+	t_vector2			*p;
+	t_vector3		*t;
+	int				y;
+	float			delta;
+	float			w1;
+	float			w2;
+	t_step			left;
+	t_step			right;
+	int				endy;
+
+	p = triangle.p;
+	t = triangle.t;
+	left.step = (p[0].x - p[1].x) / (p[0].y - p[1].y);
+	right.step = (p[0].x - p[2].x) / (p[0].y - p[2].y);
+	y = ceilf(p[2].y - 0.5f);
+	endy = ceilf(p[0].y - 0.5f);
+	while (y < endy)
+	{
+		left.location = left.step * ((float)y + 0.5f - p[1].y) + p[1].x;
+		right.location = right.step * ((float)y + 0.5f - p[2].y) + p[2].x;
+		scanline(ceilf(left.location - 0.5f), ceilf(right.location - 0.5f), y, p, t, sdl);
+		y++;
+	}
+}
+
+inline static void render_flat_bot_tri(t_sdlcontext *sdl, t_point_triangle triangle)
+{
+	t_vector2			*p;
+	t_vector3		*t;
+	int				y;
+	float			delta;
+	float			w1;
+	float			w2;
+	t_step			left;
+	t_step			right;
+	int				endy;
+
+	p = triangle.p;
+	t = triangle.t;
+	left.step = (p[1].x - p[0].x) / (p[1].y - p[0].y);
+	right.step = (p[2].x - p[0].x) / (p[2].y - p[0].y);
+	y = ceilf(p[0].y - 0.5f);
+	endy = ceilf(p[2].y - 0.5f);
+	while (y < endy)
+	{
+		left.location = left.step * ((float)y + 0.5f - p[0].y) + p[0].x;
+		right.location = right.step * ((float)y + 0.5f - p[0].y) + p[0].x;
+		scanline(ceilf(left.location - 0.5f), ceilf(right.location - 0.5f), y, p, t, sdl);
+		y++;
+	}
+}
+
 		*/
