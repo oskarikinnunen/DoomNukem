@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/03 19:20:55 by raho             ###   ########.fr        #
+#    Updated: 2023/03/07 12:59:21 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -71,7 +71,7 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		doomlog_messages.c \
 		physics.c \
 		perfgraph.c \
-		png.c lua_conf.c list_helper.c \
+		lua_conf.c list_helper.c \
 		spaceconversions.c \
 		structsaver/structsaver.c \
 		entity/entity_animate.c \

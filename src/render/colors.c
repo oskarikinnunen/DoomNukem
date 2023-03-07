@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 19:49:59 by raho              #+#    #+#             */
-/*   Updated: 2023/03/03 19:04:36 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/07 12:55:17 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,6 @@ SDL_Color	color32_to_sdlcolor(uint32_t color)
 	sdl_color = (SDL_Color){\
 		.r = temp.red, .g = temp.green, .b = temp.blue, .a = 255};
 	return (sdl_color);
-}
-
-uint32_t	flip_channels(uint32_t clr)
-{
-	t_color		result;
-
-	result.color = clr;
-	return (result.color);
 }
 
 uint32_t	flip_alpha(uint32_t clr)

@@ -6,12 +6,11 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/06 15:30:39 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/07 12:59:33 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
-#include "png.h"
 #include "game_lua.h"
 #include "objects.h"
 #include "file_io.h"

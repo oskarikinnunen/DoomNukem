@@ -85,6 +85,8 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	game.world.player = &game.player;
 	protagonist_play_audio(&game.player, &game.world, "protag_letsdo.wav");
 	play_music(&sdl, "music_arp1_action.wav");
+	t_img	*skybox;
+	skybox = get_image_by_name(sdl, "Daylight_Box_UV");
 	while (gr == game_continue)
 	{
 		if (game.player.health > 0)
@@ -96,6 +98,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 			//FPS COUNTER
 			print_text(&sdl, s_itoa(game.world.clock.fps), (t_point){sdl.window_w - 80, 10});
 			draw_player_hud(&game.world);
+			draw_image(sdl, point_zero(), *skybox, sdl.screensize);
 			memcpy(sdl.window_surface->pixels, sdl.surface->pixels, sizeof(uint32_t) * sdl.window_w * sdl.window_h);
 			if (SDL_UpdateWindowSurface(sdl.window) < 0)
 				doomlog(LOG_EC_SDL_UPDATEWINDOWSURFACE, NULL);
