@@ -45,7 +45,7 @@ inline static void scanline(int ax, int bx, int y, t_vector2*p, t_vector3 *t, t_
 
 inline static void render_flat_top_tri(t_sdlcontext *sdl, t_point_triangle triangle)
 {
-	t_vector2			*p;
+	t_vector2		*p;
 	t_vector3		*t;
 	int				y;
 	float			steps;

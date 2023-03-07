@@ -49,6 +49,10 @@ bool is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *e
 	chunk.min.y = chunk.min.y / 8;
 	chunk.max.y = ceilf((float)chunk.max.y / 8.0f);
 	entity->occlusion.is_occluded = true;
+	entity->occlusion.clip.max.x = 0;
+	entity->occlusion.clip.max.y = 0;
+	entity->occlusion.clip.min.x = sdl->window_w;
+	entity->occlusion.clip.min.y = sdl->window_h;
 	y = chunk.min.y;
 	while (y <= chunk.max.y)
 	{
@@ -73,9 +77,13 @@ bool is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *e
 	}
 	if (entity->occlusion.is_occluded == false)
 	{
-		entity->occlusion.clip.max = point_add_xy(entity->occlusion.clip.max, 1);
+		//entity->occlusion.clip.max = point_add_xy(entity->occlusion.clip.max, 1);
+		print_point(entity->occlusion.clip.min);
+		print_point(entity->occlusion.clip.max);
 		entity->occlusion.clip.min = point_mul(entity->occlusion.clip.min, 8);
 		entity->occlusion.clip.max = point_mul(entity->occlusion.clip.max, 8);
+		//entity->occlusion.clip.min = point_sub(entity->occlusion.clip.min, point_one());
+		entity->occlusion.clip.max = point_sub(entity->occlusion.clip.max, point_one());
 	}
 	return (entity->occlusion.is_occluded); // unnecessary to return anything
 }
