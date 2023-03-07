@@ -6,6 +6,7 @@
 typedef struct s_map
 {
 	uint32_t	*data;
+	uint32_t	*lightmap;
 	t_point		img_size;
 	t_point		size;
 }	t_map;

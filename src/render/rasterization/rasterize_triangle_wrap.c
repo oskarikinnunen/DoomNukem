@@ -7,12 +7,6 @@ inline static uint32_t sample_img_dynamic(t_render *render, uint32_t xsample, ui
 	return((render->img->data[ysample * render->img->size.x + xsample]));
 }
 
-typedef struct s_stepv3
-{
-	t_vector3	step;
-	t_vector3	location;
-}	t_stepv3;
-
 inline static void scanline(int ax, int bx, int y, t_vector2*p, t_vector3 *t, t_sdlcontext *sdl)
 {
 	t_vector3	tex;
@@ -44,127 +38,59 @@ inline static void scanline(int ax, int bx, int y, t_vector2*p, t_vector3 *t, t_
 		ax++;
 		bary = vector2_lerp(left, right, (float)(ax - start) / steps);
 	}
-	render_bitmask_row(start, bx, dist, tex.z, y, sdl);
+	//dist = (1000.0f * 2.0f) / ((998.0f) * dist + 2.0f);
+	//tex.z = (1000.0f * 2.0f) / ((998.0f) * tex.z + 2.0f);
+	render_bitmask_row(start, bx, 1.0f / dist, 1.0f / tex.z, y, sdl);
 }
 
-static void render_flat_top_tri(t_sdlcontext *sdl, t_point_triangle triangle)
+inline static void render_flat_top_tri(t_sdlcontext *sdl, t_point_triangle triangle)
 {
-	t_vector2		*p;
+	t_vector2			*p;
 	t_vector3		*t;
 	int				y;
-	float			delta;
+	float			steps;
+	t_step			left;
+	t_step			right;
 	int				endy;
 
 	p = triangle.p;
 	t = triangle.t;
-	delta = p[0].y - p[1].y;
-	t_vector2 dv0 = vector2_div(vector2_sub(p[0], p[1]), delta);
-	t_vector2 dv1 = vector2_div(vector2_sub(p[0], p[2]), delta);
-	t_vector3 tdv0 = vector3_div(vector3_sub(t[0], t[1]), delta);
-	t_vector3 tdv1 = vector3_div(vector3_sub(t[0], t[2]), delta);
-
-	t_vector2 itedge0 = p[1];
-	t_vector2 itedge1 = p[2];
-	t_vector3 titedge0 = t[1];
-	t_vector3 titedge1 = t[2];
-
-	y = ceilf(p[1].y - 0.5f);
+	steps = p[0].y - p[1].y;
+	left = make_slope(p[1].x, p[0].x, steps);
+	right = make_slope(p[2].x, p[0].x, steps);
+	y = ceilf(p[2].y - 0.5f);
 	endy = ceilf(p[0].y - 0.5f);
-
-	itedge0 = vector2_add(itedge0, vector2_mul(dv0, (float)y + 0.5f - p[1].y));
-	itedge1 = vector2_add(itedge1, vector2_mul(dv1, (float)y + 0.5f - p[1].y));
-	titedge0 = vector3_add(titedge0, vector3_mul(tdv0, (float)y + 0.5f - p[1].y));
-	titedge1 = vector3_add(titedge1, vector3_mul(tdv1, (float)y + 0.5f - p[1].y));
-
 	while (y < endy)
 	{
-		int ax, bx;
-		ax = ceilf(itedge0.x - 0.5f);
-		bx = ceilf(itedge1.x - 0.5f);
-		
-		t_vector3 dtcline = vector3_div(vector3_sub(titedge1, titedge0), itedge1.x - itedge0.x);
-
-		t_vector3 itcline = titedge0;
-
-		for (int x = ax; x < bx; x++)
-		{
-			if (itcline.z > sdl->zbuffer[x + y * sdl->window_w])
-			{
-				int tempx = (itcline.x / itcline.z);
-				int tempy = (itcline.y / itcline.z);
-				uint32_t clr = sample_img_dynamic(&sdl->render, tempx, tempy);
-				if (((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] != 0)
-					clr = CLR_PRPL;
-				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] = clr;
-				sdl->zbuffer[x + y * sdl->window_w] = itcline.z;
-			}
-			itcline = vector3_add(itcline, dtcline);
-		}
-		itedge0 = vector2_add(itedge0, dv0);
-		itedge1 = vector2_add(itedge1, dv1);
-		titedge0 = vector3_add(titedge0, tdv0);
-		titedge1 = vector3_add(titedge1, tdv1);
+		left.location = left.step * ((float)y + 0.5f - p[1].y) + p[1].x;
+		right.location = right.step * ((float)y + 0.5f - p[2].y) + p[2].x;
+		scanline(ceilf(left.location - 0.5f), ceilf(right.location - 0.5f), y, p, t, sdl);
 		y++;
 	}
 }
 
-static void render_flat_bot_tri(t_sdlcontext *sdl, t_point_triangle triangle)
+inline static void render_flat_bot_tri(t_sdlcontext *sdl, t_point_triangle triangle)
 {
-	t_vector2		*p;
+	t_vector2			*p;
 	t_vector3		*t;
 	int				y;
-	float			delta;
+	float			steps;
+	t_step			left;
+	t_step			right;
 	int				endy;
 
 	p = triangle.p;
 	t = triangle.t;
-	delta = p[2].y - p[0].y;
-	t_vector2 dv0 = vector2_div(vector2_sub(p[1], p[0]), delta);
-	t_vector2 dv1 = vector2_div(vector2_sub(p[2], p[0]), delta);
-	t_vector3 tdv0 = vector3_div(vector3_sub(t[1], t[0]), delta);
-	t_vector3 tdv1 = vector3_div(vector3_sub(t[2], t[0]), delta);
-
-	t_vector2 itedge0 = p[0];
-	t_vector2 itedge1 = p[0];
-	t_vector3 titedge0 = t[0];
-	t_vector3 titedge1 = t[0];
-
+	steps = p[1].y - p[0].y;
+	left = make_slope(p[0].x, p[1].x, steps);
+	right = make_slope(p[0].x, p[2].x, steps);
 	y = ceilf(p[0].y - 0.5f);
 	endy = ceilf(p[2].y - 0.5f);
-
-	itedge0 = vector2_add(itedge0, vector2_mul(dv0, (float)y + 0.5f - p[0].y));
-	itedge1 = vector2_add(itedge1, vector2_mul(dv1, (float)y + 0.5f - p[0].y));
-	titedge0 = vector3_add(titedge0, vector3_mul(tdv0, (float)y + 0.5f - p[0].y));
-	titedge1 = vector3_add(titedge1, vector3_mul(tdv1, (float)y + 0.5f - p[0].y));
-
 	while (y < endy)
 	{
-		int ax, bx;
-		ax = ceilf(itedge0.x - 0.5f);
-		bx = ceilf(itedge1.x - 0.5f);
-		
-		t_vector3 dtcline = vector3_div(vector3_sub(titedge1, titedge0), itedge1.x - itedge0.x);
-
-		t_vector3 itcline = titedge0;
-
-		for (int x = ax; x < bx; x++)
-		{
-			if (itcline.z > sdl->zbuffer[x + y * sdl->window_w])
-			{
-				int tempx = (itcline.x / itcline.z);
-				int tempy = (itcline.y / itcline.z);
-				uint32_t clr = sample_img_dynamic(&sdl->render, tempx, tempy);
-				if (((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] != 0)
-					clr = CLR_PRPL;
-				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] = clr;
-				sdl->zbuffer[x + y * sdl->window_w] = itcline.z;
-			}
-			itcline = vector3_add(itcline, dtcline);
-		}
-		itedge0 = vector2_add(itedge0, dv0);
-		itedge1 = vector2_add(itedge1, dv1);
-		titedge0 = vector3_add(titedge0, tdv0);
-		titedge1 = vector3_add(titedge1, tdv1);
+		left.location = left.step * ((float)y + 0.5f - p[0].y) + p[0].x;
+		right.location = right.step * ((float)y + 0.5f - p[0].y) + p[0].x;
+		scanline(ceilf(left.location - 0.5f), ceilf(right.location - 0.5f), y, p, t, sdl);
 		y++;
 	}
 }

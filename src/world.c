@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/01 11:38:57 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/07 08:13:21 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ static void sort_entitycache(t_world *world, t_vector3 location)
 		if (ent->status != es_free)
 		{
 			j = i - 1;
-			while (j >= 0 && world->entitycache.sorted_entities[j]->occlusion.z_dist[1] < key->occlusion.z_dist[1])
+			while (j >= 0 && world->entitycache.sorted_entities[j]->occlusion.z_dist[1] > key->occlusion.z_dist[1])
 			{
 				if (ent->status != es_free)
 					world->entitycache.sorted_entities[j + 1] = world->entitycache.sorted_entities[j];

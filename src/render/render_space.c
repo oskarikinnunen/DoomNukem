@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 15:36:10 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/02 18:04:17 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/07 08:34:27 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@ t_point_triangle triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_tria
 		triprojected.t[i] = clipped.t[i];
 		tri.t[i].x = triprojected.t[i].x / triprojected.p[i].w;
 		tri.t[i].y = triprojected.t[i].y / triprojected.p[i].w;
-		tri.t[i].z = 1.0f / triprojected.p[i].w; //1.0f /
+		tri.t[i].z = 1.0f / triprojected.p[i].w;
 		triprojected.p[i].v = vector3_div(triprojected.p[i].v, triprojected.p[i].w);
 		triprojected.p[i].v = vector3_negative(triprojected.p[i].v);
 		triprojected.p[i].v = vector3_add(triprojected.p[i].v, voffsetview);

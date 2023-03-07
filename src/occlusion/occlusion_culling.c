@@ -14,7 +14,7 @@ void calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity)
 	else if (entity->obj->bounds.type == bt_box)
 		render->end_index = 11;
 	else
-		render->end_index = 0;
+		render->end_index = 2;
 	clipped_point_triangle(render, sdl);
 }
 
@@ -45,14 +45,10 @@ bool is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *e
 	chunk = entity->occlusion.box;
 	w = entity->occlusion.z_dist[1];
 	chunk.min.x = chunk.min.x / 8;
-	chunk.max.x = ceilf(chunk.max.x / 8.0f);
+	chunk.max.x = ceilf((float)chunk.max.x / 8.0f);
 	chunk.min.y = chunk.min.y / 8;
-	chunk.max.y = ceilf(chunk.max.y / 8.0f);
+	chunk.max.y = ceilf((float)chunk.max.y / 8.0f);
 	entity->occlusion.is_occluded = true;
-	entity->occlusion.clip.max.x = 0;
-	entity->occlusion.clip.max.y = 0;
-	entity->occlusion.clip.min.x = sdl->window_w;
-	entity->occlusion.clip.min.y = sdl->window_h;
 	y = chunk.min.y;
 	while (y <= chunk.max.y)
 	{
@@ -75,13 +71,12 @@ bool is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *e
 		}
 		y++;
 	}
-	entity->occlusion.clip.min = point_mul(entity->occlusion.clip.min, 8);
-	entity->occlusion.clip.max = point_mul(entity->occlusion.clip.max, 8);
-	entity->occlusion.clip.max = point_add_xy(entity->occlusion.clip.max, 8);
-	entity->occlusion.clip.max.x = ft_clamp(entity->occlusion.clip.max.x, 0, (sdl->window_w * sdl->resolution_scaling) - 1);
-	entity->occlusion.clip.max.y = ft_clamp(entity->occlusion.clip.max.y, 0, (sdl->window_h * sdl->resolution_scaling) - 1);
-	entity->occlusion.clip.min.x = ft_clamp(entity->occlusion.clip.min.x, 0, (sdl->window_w * sdl->resolution_scaling) - 1);
-	entity->occlusion.clip.min.y = ft_clamp(entity->occlusion.clip.min.y, 0, (sdl->window_h * sdl->resolution_scaling) - 1);
+	if (entity->occlusion.is_occluded == false)
+	{
+		entity->occlusion.clip.max = point_add_xy(entity->occlusion.clip.max, 1);
+		entity->occlusion.clip.min = point_mul(entity->occlusion.clip.min, 8);
+		entity->occlusion.clip.max = point_mul(entity->occlusion.clip.max, 8);
+	}
 	return (entity->occlusion.is_occluded); // unnecessary to return anything
 }
 

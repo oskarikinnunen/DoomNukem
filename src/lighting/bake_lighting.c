@@ -1,6 +1,6 @@
 #include "doomnukem.h"
 
-uint8_t	average(t_point sample, t_map *lmap, t_map *map)
+uint8_t	average(t_point sample, t_map map)
 {
 	t_point		subsample;
 	t_point		avgsample;
@@ -19,9 +19,9 @@ uint8_t	average(t_point sample, t_map *lmap, t_map *map)
 		while (subsample.x < 3)
 		{
 			avgsample = point_add(start, subsample);
-			if (avgsample.x >= 0 && avgsample.y >= 0 && avgsample.x < map->size.x - 1 && avgsample.y < map->size.y - 1)
+			if (avgsample.x >= 0 && avgsample.y >= 0 && avgsample.x < map.size.x - 1 && avgsample.y < map.size.y - 1)
 			{
-			avg += lmap->data[avgsample.y * map->size.x + avgsample.x];
+			avg += map.lightmap[avgsample.y * map.size.x + avgsample.x];
 			hit++;
 			}
 			subsample.x++;
@@ -31,7 +31,47 @@ uint8_t	average(t_point sample, t_map *lmap, t_map *map)
 	return ((uint8_t)(avg / hit));
 }
 
+static void sample_pixel(int x, int y, int index, t_entity *entity)
+{
+	uint8_t		light;
+	uint32_t	clr;
+	t_img		*img;
+
+	img = entity->obj->materials[index].img;
+//	light = average((t_point){x, y}, entity->map[index]);
+	light = entity->map->lightmap[y * entity->map->size.x + x];
+	light = ft_clamp(light, 0, 255);
+	clr = img->data[(y % (img->size.y)) * img->size.x + (x % (img->size.x))];
+	entity->map[index].data[y * entity->map[index].size.x + x] = update_pixel_brightness(light, clr);
+}
+
 void create_map_for_entity(t_entity *entity, struct s_world *world)
+{
+	int			y;
+	int			x;
+	int			index;
+
+	if (!entity->map)
+		return;
+	index = 0;
+	while (index < entity->obj->material_count)
+	{
+		y = 0;
+		while (y < entity->map->size.y)
+		{
+			x = 0;
+			while (x < entity->map->size.x)
+			{
+				sample_pixel(x, y, index, entity);
+				x++;
+			}
+			y++;
+		}
+		index++;
+	}
+}
+
+void create_lightmap_for_entity(t_entity *entity, struct s_world *world)
 {
 	t_lighting	lighting;
 	t_object	*obj;
@@ -78,21 +118,13 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 			entity->map[index].size = (t_point){ceilf(max.x), ceilf(max.y)};
 			entity->map[index].img_size = img->size;
 			entity->map[index].data = malloc(sizeof(uint32_t) * entity->map[index].size.x * entity->map[index].size.y);
+			entity->map[index].lightmap = malloc(sizeof(uint32_t) * entity->map[index].size.x * entity->map[index].size.y);
 			if (entity->map[index].data == NULL)
 				doomlog(LOG_FATAL, "Malloc fail in bake_lighting.c");
 			lighting.map = &entity->map[index];
 			lighting.img = img->data;
 			ft_bzero(entity->map[index].data, sizeof(uint32_t) * entity->map[index].size.x * entity->map[index].size.y);
-			for (int e = 0; e < entity->map[index].size.y && 1; e++)
-			{
-				for (int j = 0; j < entity->map[index].size.x; j++)
-				{
-					uint32_t clr;
-					clr = img->data[(e % (img->size.y)) * img->size.x + (j % (img->size.x))];
-					clr = update_pixel_brightness(200, clr);
-					entity->map[index].data[e * entity->map[index].size.x + j] = clr;
-				}
-			}
+			ft_bzero(entity->map[index].lightmap, sizeof(uint32_t) * entity->map[index].size.x * entity->map[index].size.y);
 			while (start <= i && 1)
 			{
 				t_point_triangle temp;
@@ -102,54 +134,11 @@ void create_map_for_entity(t_entity *entity, struct s_world *world)
 					t_vector2 uv = obj->uvs[obj->faces[start].uv_indices[vertex] - 1];
 					uv.x = roundf(uv.x * (float)(entity->obj->materials[index].img->size.x));
 					uv.y = roundf(uv.y * (float)(entity->obj->materials[index].img->size.y));
-					//uv = vector2_add_xy(uv, -0.5f);
-					temp.t[vertex] = entity->world_triangles[start].t[vertex];
+					temp.t[vertex] = entity->world_triangles[start].p[vertex].v;
 					temp.p[vertex] = uv;
-					//temp.p[vertex].x = entity->world_triangles[start].t[vertex].x;
-					//temp.p[vertex].y = entity->world_triangles[start].t[vertex].y;
-				}
-				t_vector2	midpoint = vector2_div(vector2_add(vector2_add(temp.p[0], temp.p[1]), temp.p[2]), 3.0f);
-
-				for (int vertex = 0; vertex < 3 && 0; vertex++)
-				{
-					t_vector2 dir = vector2_normalise(vector2_sub(temp.p[vertex], midpoint));
-					//if (vector2_cmp(temp.p[vertex], midpoint))
-					//	temp.p[vertex] = vector2_zero();
-				//	dir = vector2_mul(dir, 2.0f);
-					
-					temp.p[vertex] = vector2_add(temp.p[vertex], dir);
-					temp.p[vertex].x = fmaxf(temp.p[vertex].x, 0.0f);
-					temp.p[vertex].y = fmaxf(temp.p[vertex].y, 0.0f);
-					if ((int)(temp.p[vertex].x / (float)lighting.map->size.x) > 0)
-						temp.p[vertex].x = (int)(temp.p[vertex].x / (float)lighting.map->size.x) * (lighting.map->size.x);
-					if ((int)(temp.p[vertex].y / (float)lighting.map->size.y) > 0)
-						temp.p[vertex].y = (int)(temp.p[vertex].y / (float)lighting.map->size.y) * (lighting.map->size.y);
 				}
 				rasterize_light(temp, &lighting);
 				start++;
-			}
-			for (int e = 0; e < entity->map[index].size.y && 0; e++)
-			{
-				for (int j = 0; j < entity->map[index].size.x; j++)
-				{
-					uint32_t clr;
-					clr = img->data[(e % (img->size.y)) * img->size.x + (j % (img->size.x))];
-					clr = update_pixel_brightness(200, clr);
-					for (int x = start; x <= i; x++)
-					{
-						t_point_triangle temp;
-						for (int vertex = 0; vertex < 3; vertex++)
-						{
-							temp.t[vertex] = entity->world_triangles[x].p[vertex].v;
-							temp.p[vertex].x = (entity->world_triangles[x].t[vertex].x);
-							temp.p[vertex].y = (entity->world_triangles[x].t[vertex].y);
-						}
-						t_vector2 bary = barycentric_coordinates(temp.p, (t_vector2){ceilf((float)j + 0.0f), ceilf((float)e + 0.0f)});
-						if (bary.x >= -0.01f && bary.y >= -0.01f && bary.x + bary.y <= 1.01f)
-							entity->map[index].data[e * entity->map[index].size.x + j] = CLR_RED;
-					}
-					//entity->map[index].data[e * entity->map[index].size.x + j] = clr;
-				}
 			}
 			max.x = 0.0f;
 			max.y = 0.0f;
@@ -177,6 +166,7 @@ void	recalculate_lighting(t_world *world)
 		{
 			if	(ent->status == es_active && ent->obj != NULL)
 			{
+				create_lightmap_for_entity(ent, world);
 				create_map_for_entity(ent, world);
 			}
 			found++;

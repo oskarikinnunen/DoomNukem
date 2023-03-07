@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 07:34:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/02 19:22:16 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/07 07:42:33 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,20 +47,19 @@ inline static void scanline(int ax, int bx, int y, t_vector2*p, t_vector3 *t, t_
 
 static void fill_point_tri_top(t_lighting *lighting, t_point_triangle triangle)
 {
-	t_vector2			*p;
+	t_vector2		*p;
 	t_vector3		*t;
 	int				y;
-	float			delta;
-	float			w1;
-	float			w2;
+	float			steps;
 	t_step			left;
 	t_step			right;
 	int				endy;
 
 	p = triangle.p;
 	t = triangle.t;
-	left.step = (p[0].x - p[1].x) / (p[0].y - p[1].y);
-	right.step = (p[0].x - p[2].x) / (p[0].y - p[2].y);
+	steps = p[0].y - p[1].y;
+	left = make_slope(p[1].x, p[0].x, steps);
+	right = make_slope(p[2].x, p[0].x, steps);
 	y = ceilf(p[2].y - 0.5f);
 	endy = ceilf(p[0].y - 0.5f);
 	while (y < endy)
@@ -74,20 +73,19 @@ static void fill_point_tri_top(t_lighting *lighting, t_point_triangle triangle)
 
 static void fill_point_tri_bot(t_lighting *lighting, t_point_triangle triangle)
 {
-	t_vector2			*p;
+	t_vector2		*p;
 	t_vector3		*t;
 	int				y;
-	float			delta;
-	float			w1;
-	float			w2;
+	float			steps;
 	t_step			left;
 	t_step			right;
 	int				endy;
 
 	p = triangle.p;
 	t = triangle.t;
-	left.step = (p[1].x - p[0].x) / (p[1].y - p[0].y);
-	right.step = (p[2].x - p[0].x) / (p[2].y - p[0].y);
+	steps = p[1].y - p[0].y;
+	left = make_slope(p[0].x, p[1].x, steps);
+	right = make_slope(p[0].x, p[2].x, steps);
 	y = ceilf(p[0].y - 0.5f);
 	endy = ceilf(p[2].y - 0.5f);
 	while (y < endy)

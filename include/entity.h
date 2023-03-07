@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/27 14:02:11 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/07 07:36:16 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,14 +119,14 @@ void	render_worldspace(t_render *render, t_entity *entity);
 void	render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 void	render_entity_worldtriangles(t_entity *entity, struct s_world *world);
 
+void	create_lightmap_for_entity(t_entity *entity, struct s_world *world);
 void	create_map_for_entity(t_entity *entity, struct s_world *world);
 void	create_dynamic_map_for_entity(t_entity *entity, struct s_world *world);
-void	create_lightmap_for_entity(t_entity *entity, struct s_world *world);
 
 uint32_t	update_pixel_brightness(uint8_t light, uint32_t clr);
 uint32_t	get_lighting_for_pixel(t_entitycache *cache, t_vector3 location);
 t_vector3	texcoord_to_loc(t_vector3 ws[3], t_vector2 uv[3], t_vector2 p);
-t_step		make_slope(int ax, int bx, float delta);
+t_step		make_slope(float ax, float bx, float steps);
 
 /* LIGHTING */
 void render_zbuffer(t_lighting *lighting, t_entity *entity);

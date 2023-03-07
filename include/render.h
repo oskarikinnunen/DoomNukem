@@ -34,6 +34,18 @@ typedef struct s_step
 	float	step;
 }	t_step;
 
+typedef struct s_stepv3
+{
+	t_vector3	step;
+	t_vector3	location;
+}	t_stepv3;
+
+typedef struct s_stepv2
+{
+	t_vector2	step;
+	t_vector2	location;
+}	t_stepv2;
+
 typedef enum e_platform
 {
 	os_mac,

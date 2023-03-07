@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 14:40:03 by vlaine            #+#    #+#             */
-/*   Updated: 2023/02/16 17:56:15 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/07 08:09:54 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,12 @@ static void set_bounding_box(t_vector3 *max, t_vector3 *min, t_vector3 *vector, 
 	t_vector3 v;
 	int	i;
 
-	max->x = -1000000000;
-	max->y = -1000000000;
-	max->z = -1000000000;
-	min->x = 1000000000;
-	min->y = 1000000000;
-	min->z = 1000000000;
+	max->x = -10000000.0f;
+	max->y = -10000000.0f;
+	max->z = -10000000.0f;
+	min->x = 10000000.0f;
+	min->y = 10000000.0f;
+	min->z = 10000000.0f;
 	i = 0;
 	while (i < count)
 	{

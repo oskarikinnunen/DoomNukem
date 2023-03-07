@@ -11,12 +11,12 @@ uint32_t	update_pixel_brightness(uint8_t light, uint32_t clr)
     return(clr);
 }
 
-inline t_step	make_slope(int ax, int bx, float delta)
+inline t_step	make_slope(float ax, float bx, float steps)
 {
 	t_step temp;
 
 	temp.location = ax;
-	temp.step = (bx - ax) * delta;
+	temp.step = (bx - ax) / steps;
 	return(temp);
 }
 
@@ -94,6 +94,8 @@ t_vector3 texcoord_to_loc(t_vector3 ws[3], t_vector2 uv[3], t_vector2 p)
 	float       s;
 	float       delta;
 
+	//t_vector2 bary = barycentric_coordinates(poly.p, (t_vector2){x, y});
+	//loc = vector3_add(vector3_lerp(poly.t[0], poly.t[1], bary.x), vector3_mul(vector3_sub(poly.t[2], poly.t[0]), bary.y));
 	t_vector3   r;
 	i = 1.0f / ((uv[1].x - uv[0].x) * (uv[2].y - uv[0].y) - (uv[1].y - uv[0].y) * (uv[2].x - uv[0].x));
 	s = i * ((uv[2].y - uv[0].y) * (p.x - uv[0].x) - (uv[2].x - uv[0].x) * (p.y - uv[0].y));
