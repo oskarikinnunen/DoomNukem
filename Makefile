@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/07 12:59:21 by raho             ###   ########.fr        #
+#    Updated: 2023/03/07 16:27:45 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,11 +32,14 @@ LIBFT = libft/libft.a
 
 #Source files:
 SRCFILES= main.c img.c deltatime.c anim.c \
-		editor.c editor_mouse.c editor_events.c \
 		file_ops/filechunks.c	\
 		file_ops/world_save.c	\
 		file_ops/world_load.c	\
+		editor/editor.c \
+		editor/editor_mouse.c \
+		editor/editor_events.c \
 		editor/editor_preferences.c \
+		editor/editor_asset_load.c \
 		editor/tools/entity_tool.c \
 		editor/tools/entity_tool_gui_inits.c \
 		editor/tools/wall_tool_rooms.c \
@@ -71,7 +74,7 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		doomlog_messages.c \
 		physics.c \
 		perfgraph.c \
-		lua_conf.c list_helper.c \
+		list_helper.c \
 		spaceconversions.c \
 		structsaver/structsaver.c \
 		entity/entity_animate.c \
@@ -84,8 +87,11 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		player/playermovement_normal.c \
 		player/playermovement_noclip.c \
 		player/playmode.c \
+		player/playmode_asset_load.c \
 		player/playmode_death.c \
+		player/playmode_events.c \
 		player/hud.c \
+		player/player.c \
 		entity/components/comp_npc.c \
 		guns/gun_presets.c \
 		obj_parser/obj_parse.c \
@@ -100,7 +106,7 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		font.c \
 		object_init.c \
 		object_primitives.c \
-		world.c player.c \
+		world.c \
 		resolution_scaling.c \
 		controller.c \
 		controller_init.c \
@@ -115,7 +121,6 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		occlusion/occlusion_culling.c \
 		occlusion/culling_debug.c \
 		occlusion/bitmask_culling.c \
-		playmode_events.c \
 		render/render_entity.c \
 		render/render_clip.c \
 		render/render_triangle.c \
@@ -178,7 +183,7 @@ INCLUDE= -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include \
 			-I$(INSTALLED_LIBS_DIR)/include/SDL2/ \
 			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
 CC= gcc
-CFLAGS= $(INCLUDE) -g #-finline-functions -O2 -MMD #-march=native
+CFLAGS= $(INCLUDE) -g -finline-functions -O2 -MMD #-march=native
 LDFLAGS = -Wl,-rpath $(INSTALLED_LIBS_DIR)/lib
 
 UNAME= $(shell uname)

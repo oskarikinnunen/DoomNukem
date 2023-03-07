@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/02 19:20:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/07 16:22:54 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -241,7 +241,7 @@ bool	alaiwan_collision(t_world *world, t_player *player, t_vector3 potential_pos
 void	error_log(int error_code);
 
 /* SDL */
-void	create_sdlcontext(t_sdlcontext	*sdl);
+void	create_sdlcontext(t_sdlcontext	*sdl, t_gamemode mode);
 void	create_sdl_window(t_sdlcontext *sdl, t_screenmode mode);
 void	set_sdl_settings(t_sdlcontext *sdl);
 void	init_sdl_error_window(t_sdlcontext *sdl);
@@ -251,7 +251,8 @@ void	apply_graphics_prefs(t_graphicprefs prefs);
 
 /* FONT.C */
 
-void	load_fonts(t_font *font);
+void	editor_load_fonts(t_font *font);
+void	playmode_load_fonts(t_font *font);
 
 void	draw_black_background(t_sdlcontext *sdl, t_point pos, t_point size);
 

@@ -1,21 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   game_lua.h                                         :+:      :+:    :+:   */
+/*   assets.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:33:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 14:25:22 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/07 16:07:17 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GAME_LUA_H
-# define GAME_LUA_H
+#ifndef ASSETS_H
+# define ASSETS_H
 
 struct s_sdlcontext;
 
-void	load_lua_conf(struct s_sdlcontext *sdl);
-void	load_assets(t_sdlcontext *sdl);
+void	editor_load_assets(t_sdlcontext *sdl);
+void	playmode_load_assets(t_sdlcontext *sdl);
 
 #endif

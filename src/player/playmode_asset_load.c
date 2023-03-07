@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lua_conf.c                                         :+:      :+:    :+:   */
+/*   playmode_asset_load.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/07 13:05:43 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/07 16:27:22 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "tga.h"
 #include <dirent.h>
 
-void	allocate_object_count(t_sdlcontext *sdl)
+void	playmode_allocate_object_count(t_sdlcontext *sdl)
 {
 	DIR				*d;
 	struct dirent	*dfile;
@@ -40,7 +40,7 @@ void	allocate_object_count(t_sdlcontext *sdl)
 	sdl->objects = ft_memalloc(sizeof(t_object) * sdl->objectcount);
 }
 
-void	load_all_objects(t_sdlcontext *sdl)
+void	playmode_load_all_objects(t_sdlcontext *sdl)
 {
 	DIR				*d;
 	struct dirent	*dfile;
@@ -48,7 +48,7 @@ void	load_all_objects(t_sdlcontext *sdl)
 	char fullpath	[512];
 	int				i;
 
-	allocate_object_count(sdl);
+	playmode_allocate_object_count(sdl);
 	d = opendir(path);
 	i = 0;
 	if (d)
@@ -71,7 +71,7 @@ void	load_all_objects(t_sdlcontext *sdl)
 	printf("parsed %i objectfiles \n", i);
 }
 
-void	allocate_image_count(t_sdlcontext *sdl)
+void	playmode_allocate_image_count(t_sdlcontext *sdl)
 {
 	DIR				*d;
 	struct dirent	*dfile;
@@ -96,7 +96,7 @@ void	allocate_image_count(t_sdlcontext *sdl)
 	sdl->images = ft_memalloc(sizeof(t_img) * sdl->imagecount);
 }
 
-void	allocate_env_texturecount(t_sdlcontext *sdl)
+void	playmode_allocate_env_texturecount(t_sdlcontext *sdl)
 {
 	DIR				*d;
 	struct dirent	*dfile;
@@ -120,7 +120,7 @@ void	allocate_env_texturecount(t_sdlcontext *sdl)
 	sdl->env_textures = ft_memalloc(sizeof(t_img) * sdl->env_texturecount);
 }
 
-void	load_all_images(t_sdlcontext *sdl)
+void	playmode_load_all_images(t_sdlcontext *sdl)
 {
 	DIR				*d;
 	struct dirent	*dfile;
@@ -129,7 +129,7 @@ void	load_all_images(t_sdlcontext *sdl)
 	int				i;
 
 	printf("LOAD IMAGES! \n");
-	allocate_image_count(sdl);
+	playmode_allocate_image_count(sdl);
 	d = opendir(path);
 	i = 0;
 	if (d)
@@ -153,7 +153,7 @@ void	load_all_images(t_sdlcontext *sdl)
 	doomlog_mul(LOG_NORMAL, (char *[32]){"parsed", s_itoa(i), "imagefiles", NULL});
 }
 
-void	load_all_env_textures(t_sdlcontext *sdl)
+void	playmode_load_all_env_textures(t_sdlcontext *sdl)
 {
 	DIR				*d;
 	struct dirent	*dfile;
@@ -162,7 +162,7 @@ void	load_all_env_textures(t_sdlcontext *sdl)
 	int				i;
 
 	printf("LOAD ENV_TEX! \n");
-	allocate_env_texturecount(sdl);
+	playmode_allocate_env_texturecount(sdl);
 	d = opendir(path);
 	i = 0;
 	if (d)
@@ -188,7 +188,7 @@ void	load_all_env_textures(t_sdlcontext *sdl)
 
 #include "file_io.h"
 
-void	parse_anim_legend(t_sdlcontext *sdl)
+void	playmode_parse_anim_legend(t_sdlcontext *sdl)
 {
 	int					fd;
 	char				*line;
@@ -230,17 +230,35 @@ void	parse_anim_legend(t_sdlcontext *sdl)
 	}
 }
 
-void	load_assets(t_sdlcontext *sdl)
+#include "tga.h"
+t_img	unpack_img(char *image_name)
 {
-	load_all_images(sdl);
-	load_all_env_textures(sdl);
-	load_all_objects(sdl);
-	load_fonts(&sdl->font);
-	load_audio(&sdl->audio);
+	t_img	img;
+	int		fd;
+	int		writefd;
+
+	fd = load_filecontent_fd(".tgapack", image_name);
+	if (fd == -1)
+		doomlog(LOG_EC_OPEN, ".tgapack");
+	//load_filecontent()
+	img = tgaparse("temp.tga");
+
+	if (close(fd) == -1)
+		doomlog(LOG_EC_CLOSE, "temp.tga");
+	return (img);
+}
+
+void	playmode_load_assets(t_sdlcontext *sdl)
+{
+	playmode_load_all_images(sdl);
+	playmode_load_all_env_textures(sdl);
+	playmode_load_all_objects(sdl);
+	playmode_load_fonts(&sdl->font);
+	playmode_load_audio(&sdl->audio);
 	objects_init(sdl);
 	t_object *human = get_object_by_name(*sdl, "Human.obj");
 	parseanim(human, "anim");
-	parse_anim_legend(sdl);
+	playmode_parse_anim_legend(sdl);
 	int i = 0;
 	while (i < sdl->human_anim_count)
 	{

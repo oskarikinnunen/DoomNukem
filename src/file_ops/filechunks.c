@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/07 15:30:11 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/07 15:29:59 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,15 +183,18 @@ t_filecontent	load_filecontent(char	*worldname, char	*fc_name)
 		}
 		rbytes = read(fd, buf, CHUNKSIZE);
 	}
+	if (close(fd) == -1)
+		doomlog(LOG_EC_CLOSE, worldname);
 }
 
+// TODO: PROTECT
 int load_filecontent_fd(char	*worldname, char *fcname)
 {
 	t_filecontent	fc;
 	int				fd;
 
 	fc = load_filecontent(worldname, fcname);
-	fd = open(fcname, O_CREAT | O_RDWR | O_APPEND, 0666);
+	fd = open("temp.tga", O_CREAT | O_RDWR | O_APPEND, 0666);
 	write(fd, fc.content, fc.length);
 	return (fd);
 }

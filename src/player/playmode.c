@@ -69,6 +69,7 @@ static int handleinput(t_hid_info	*hid)
 	updateinput(&hid->input, hid->keystate, hid->mouse, &hid->controller[0]);
 	return(game_continue);
 }
+
 #include "input.h"
 /*main game loop*/
 static int gameloop(t_sdlcontext sdl, t_game game)

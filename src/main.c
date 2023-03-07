@@ -6,12 +6,12 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/07 12:59:33 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/07 16:11:35 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
-#include "game_lua.h"
+#include "assets.h"
 #include "objects.h"
 #include "file_io.h"
 #ifdef __APPLE__
@@ -79,7 +79,7 @@ void	set_sdl_settings(t_sdlcontext *sdl)
 	sdl->render = init_render(*sdl);
 }
 
-void	create_sdlcontext(t_sdlcontext	*sdl)
+void	create_sdlcontext(t_sdlcontext	*sdl, t_gamemode mode)
 {
 	ft_bzero(sdl, sizeof(t_sdlcontext));
 	if (SDL_Init(SDL_INIT_VIDEO) < 0 \
@@ -87,9 +87,13 @@ void	create_sdlcontext(t_sdlcontext	*sdl)
 		|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0 \
 		|| TTF_Init() < 0)
 		doomlog(LOG_EC_SDL_INIT, NULL);
+	
 	set_sdl_settings(sdl);
+	if (mode == MODE_EDITOR)
+		editor_load_assets(sdl);
+	else
+		playmode_load_assets(sdl);
 	printf("audio volume %f \n", sdl->audio.sfx_volume);
-	load_assets(sdl);
 	printf("audio volume2 %f \n", sdl->audio.sfx_volume);
 }
 
@@ -109,12 +113,17 @@ void	doomnukem(int argc, char **argv)
 	t_gamereturn	gr;
 
 	checkargs(argc, argv);
-	create_sdlcontext(&sdl);
 	gr = game_switchmode;
 	if (argc == 2 && ft_strcmp(argv[1], "-editor") == 0)
+	{
+		create_sdlcontext(&sdl, MODE_EDITOR);
 		gr = editorloop(sdl);
+	}
 	else
+	{
+		create_sdlcontext(&sdl, MODE_PLAY);
 		gr = playmode(sdl);
+	}
 	/*while (gr == game_switchmode)
 	{
 		//gr = editorloop(sdl); // quit & exit is handled inside the loop

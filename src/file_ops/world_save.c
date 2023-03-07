@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world_save.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 13:57:45 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/27 22:29:58 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/07 16:31:42 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,12 +206,42 @@ static void _world_save_full_ent(t_world world)
 	save_chunk(filename, "FENT", entitylist);
 }
 
+static void	_world_save_images(t_world *world, char *image_list)
+{
+	int		fd;
+	int		ret;
+	char	*filename;
+
+	(void)world;
+	filename = NULL;
+	fd = fileopen(image_list, O_RDONLY);
+	if (fd == -1)
+		doomlog(LOG_EC_OPEN, image_list);
+	ret = get_next_line(fd, &filename);
+	while (ret)
+	{
+		if (filename)
+		{
+			force_pack_file(".tgapack", filename);
+			free(filename);
+			filename = NULL;
+		}
+		ret = get_next_line(fd, &filename);
+	}
+	if (ret == -1)
+		doomlog(LOG_EC_GETNEXTLINE, "_world_save_images");
+	if (close(fd) == -1)
+		doomlog(LOG_EC_CLOSE, image_list);
+}
+
 void	world_save_to_file(t_world world)
 {
 	_world_save_amap(world);
 	_world_save_basic_ent(world);
 	_world_save_full_ent(world);
 	_world_init_rooms(&world);
+	//_world_save_images(&world, "assets/.image_list.txt");
+	//_world_save_images(&world, "assets/.image_list_env.txt");
 }
 
 void	save_world(char *namename, t_world world)
