@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/08 14:57:52 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/08 15:08:26 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,7 +171,7 @@ void	editor_load_all_images(t_sdlcontext *sdl, char *image_list)
 
 	printf("LOAD IMAGES! \n");
 	sdl->imagecount = count_asset_list(image_list);
-	printf(".image_list.txt size = %i\n", sdl->imagecount);
+	printf("%s size = %i\n", image_list, sdl->imagecount);
 	sdl->images = ft_memalloc(sizeof(t_img) * sdl->imagecount);
 	if (sdl->images == NULL)
 		doomlog(LOG_EC_MALLOC, "sdl->images");
@@ -193,45 +193,53 @@ void	editor_load_all_images(t_sdlcontext *sdl, char *image_list)
 			image_path = NULL;
 			i++;
 		}
-		ret = get_next_line(fd, &image_path);			
+		ret = get_next_line(fd, &image_path);
 	}
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, image_list);
 	doomlog_mul(LOG_NORMAL, (char *[4]){"parsed", s_itoa(i), "imagefiles", NULL});
 }
 
-void	editor_load_all_env_textures(t_sdlcontext *sdl)
+void	editor_load_all_env_textures(t_sdlcontext *sdl, char *env_texture_list)
 {
-	DIR				*d;
-	struct dirent	*dfile;
-	char path		[256] = "assets/images/tga/env";
-	char fullpath	[512];
-	int				i;
+	char	*env_texture_path;
+	int		ret;
+	int		fd;
+	int		i;
 
 	printf("LOAD ENV_TEX! \n");
-	editor_allocate_env_texturecount(sdl);
-	d = opendir(path);
+	sdl->env_texturecount = count_asset_list(env_texture_list);
+	printf("%s size = %i\n", env_texture_list, sdl->env_texturecount);
+	sdl->env_textures = ft_memalloc(sizeof(t_img) * sdl->env_texturecount);
+	if (sdl->env_textures == NULL)
+		doomlog(LOG_EC_MALLOC, "sdl->env_textures");
+	fd = open(env_texture_list, O_RDONLY);
+	if (fd == -1)
+		doomlog(LOG_EC_OPEN, env_texture_list);
+	env_texture_path = NULL;
+	ret = get_next_line(fd, &env_texture_path);
 	i = 0;
-	if (d)
+	while (ret)
 	{
-		dfile = readdir(d);
-		while (dfile != NULL)
+		if (env_texture_path)
 		{
-			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".tga") != NULL)
-			{
-				snprintf(fullpath, 512, "%s/%s", path, dfile->d_name);
-				sdl->env_textures[i] = tgaparse(fullpath);
-				if (sdl->env_textures[i].data != NULL)
-					ft_strcpy(sdl->env_textures[i].name, dfile->d_name);
-				printf("	parsed tga file: %s \n", fullpath);
-				i++;
-			}
-			dfile = readdir(d);
+			sdl->env_textures[i] = tgaparse(env_texture_path);
+			if (sdl->env_textures[i].data != NULL)
+				ft_strcpy(sdl->env_textures[i].name, extract_filename(env_texture_path));
+			printf("	parsed tga file: %s \n", sdl->env_textures[i].name);
+			free(env_texture_path);
+			env_texture_path = NULL;
+			i++;
 		}
-		closedir(d);
+		ret = get_next_line(fd, &env_texture_path);
 	}
-	printf("parsed %i env_textures \n", i);
+	if (ret == -1)
+		doomlog(LOG_EC_GETNEXTLINE, env_texture_path);
+	if (close(fd) == -1)
+		doomlog(LOG_EC_CLOSE, env_texture_list);
+	doomlog_mul(LOG_NORMAL, (char *[4]){"parsed", s_itoa(i), "env_textures", NULL});
 }
+
 
 #include "file_io.h"
 
@@ -280,7 +288,7 @@ void	editor_parse_anim_legend(t_sdlcontext *sdl)
 void	editor_load_assets(t_sdlcontext *sdl)
 {
 	editor_load_all_images(sdl, "assets/.image_list.txt");
-	editor_load_all_env_textures(sdl);
+	editor_load_all_env_textures(sdl, "assets/.image_list_env.txt");
 	editor_load_all_objects(sdl);
 	editor_load_fonts(&sdl->font);
 	editor_load_audio(&sdl->audio);
