@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/07 16:27:22 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/08 14:08:46 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,24 @@ void	playmode_allocate_env_texturecount(t_sdlcontext *sdl)
 	sdl->env_textures = ft_memalloc(sizeof(t_img) * sdl->env_texturecount);
 }
 
+#include "tga.h"
+t_img	unpack_img(char *image_name)
+{
+	t_img	img;
+	int		fd;
+	int		writefd;
+
+	fd = load_filecontent_fd(".tgapack", image_name);
+	if (fd == -1)
+		doomlog(LOG_EC_OPEN, ".tgapack");
+	//load_filecontent()
+	img = tgaparse("temp.tga");
+
+	if (close(fd) == -1)
+		doomlog(LOG_EC_CLOSE, "temp.tga");
+	return (img);
+}
+
 void	playmode_load_all_images(t_sdlcontext *sdl)
 {
 	DIR				*d;
@@ -228,24 +246,6 @@ void	playmode_parse_anim_legend(t_sdlcontext *sdl)
 			free(line);
 		}
 	}
-}
-
-#include "tga.h"
-t_img	unpack_img(char *image_name)
-{
-	t_img	img;
-	int		fd;
-	int		writefd;
-
-	fd = load_filecontent_fd(".tgapack", image_name);
-	if (fd == -1)
-		doomlog(LOG_EC_OPEN, ".tgapack");
-	//load_filecontent()
-	img = tgaparse("temp.tga");
-
-	if (close(fd) == -1)
-		doomlog(LOG_EC_CLOSE, "temp.tga");
-	return (img);
 }
 
 void	playmode_load_assets(t_sdlcontext *sdl)

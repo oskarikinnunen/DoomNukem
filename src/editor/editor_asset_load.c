@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/07 16:25:58 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/08 14:57:52 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,37 +120,84 @@ void	editor_allocate_env_texturecount(t_sdlcontext *sdl)
 	sdl->env_textures = ft_memalloc(sizeof(t_img) * sdl->env_texturecount);
 }
 
-void	editor_load_all_images(t_sdlcontext *sdl)
+int	count_asset_list(char *filename)
 {
-	DIR				*d;
-	struct dirent	*dfile;
-	char path		[256] = "assets/images/tga";
-	char fullpath	[512];
-	int				i;
+	char	*line;
+	int		ret;
+	int		fd;
+	int		i;
+
+	if (filename == NULL)
+		return (0);
+	fd = open(filename, O_RDONLY);
+	if (fd == -1)
+		doomlog(LOG_EC_CLOSE, filename);
+	line = NULL;
+	ret = get_next_line(fd, &line);
+	i = 0;
+	while (ret)
+	{
+		i++;
+		if (line)
+		{
+			free(line);
+			line = NULL;
+		}
+		ret = get_next_line(fd, &line);	
+	}
+	if (ret == -1)
+		doomlog(LOG_EC_GETNEXTLINE, filename);
+	if (close(fd) == -1)
+		doomlog(LOG_EC_CLOSE, filename);
+	return (i);
+}
+
+// returns a pointer to the start of the file's name without its path
+char	*extract_filename(const char *filepath)
+{
+	char	*filename;
+
+	filename = ft_strrchr(filepath, '/');
+	filename++;
+	return (filename);
+}
+
+void	editor_load_all_images(t_sdlcontext *sdl, char *image_list)
+{
+	char	*image_path;
+	int		ret;
+	int		fd;
+	int		i;
 
 	printf("LOAD IMAGES! \n");
-	editor_allocate_image_count(sdl);
-	d = opendir(path);
+	sdl->imagecount = count_asset_list(image_list);
+	printf(".image_list.txt size = %i\n", sdl->imagecount);
+	sdl->images = ft_memalloc(sizeof(t_img) * sdl->imagecount);
+	if (sdl->images == NULL)
+		doomlog(LOG_EC_MALLOC, "sdl->images");
+	fd = open(image_list, O_RDONLY);
+	if (fd == -1)
+		doomlog(LOG_EC_OPEN, image_list);
+	image_path = NULL;
+	ret = get_next_line(fd, &image_path);
 	i = 0;
-	if (d)
+	while (ret)
 	{
-		dfile = readdir(d);
-		while (dfile != NULL)
+		if (image_path)
 		{
-			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".tga") != NULL)
-			{
-				snprintf(fullpath, 512, "%s/%s", path, dfile->d_name);
-				sdl->images[i] = tgaparse(fullpath);
-				if (sdl->images[i].data != NULL)
-					ft_strcpy(sdl->images[i].name, dfile->d_name);
-				printf("	parsed tga file: %s \n", fullpath);
-				i++;
-			}
-			dfile = readdir(d);
+			sdl->images[i] = tgaparse(image_path);
+			if (sdl->images[i].data != NULL)
+				ft_strcpy(sdl->images[i].name, extract_filename(image_path));
+			printf("	parsed tga file: %s \n", sdl->images[i].name);
+			free(image_path);
+			image_path = NULL;
+			i++;
 		}
-		closedir(d);
+		ret = get_next_line(fd, &image_path);			
 	}
-	doomlog_mul(LOG_NORMAL, (char *[32]){"parsed", s_itoa(i), "imagefiles", NULL});
+	if (ret == -1)
+		doomlog(LOG_EC_GETNEXTLINE, image_list);
+	doomlog_mul(LOG_NORMAL, (char *[4]){"parsed", s_itoa(i), "imagefiles", NULL});
 }
 
 void	editor_load_all_env_textures(t_sdlcontext *sdl)
@@ -232,7 +279,7 @@ void	editor_parse_anim_legend(t_sdlcontext *sdl)
 
 void	editor_load_assets(t_sdlcontext *sdl)
 {
-	editor_load_all_images(sdl);
+	editor_load_all_images(sdl, "assets/.image_list.txt");
 	editor_load_all_env_textures(sdl);
 	editor_load_all_objects(sdl);
 	editor_load_fonts(&sdl->font);
