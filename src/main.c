@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/07 16:11:35 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/08 19:45:05 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ void	set_sdl_settings(t_sdlcontext *sdl)
 	sdl->window_h = prefs.resolution_y;
 	sdl->resolution_scaling = ft_clampf(prefs.resolutionscale, 0.25f, 1.0f);
 	sdl->audio.sfx_volume = prefs.volume;
-	printf("prefs volume was %f \n", prefs.volume);
 	create_sdl_window(sdl, prefs.screenmode);
 	sdl->surface = SDL_CreateRGBSurfaceWithFormat(SDL_SWSURFACE, sdl->window_w, sdl->window_h, 32, SDL_PIXELFORMAT_ARGB8888);
 	if (sdl->surface == NULL)
@@ -93,8 +92,6 @@ void	create_sdlcontext(t_sdlcontext	*sdl, t_gamemode mode)
 		editor_load_assets(sdl);
 	else
 		playmode_load_assets(sdl);
-	printf("audio volume %f \n", sdl->audio.sfx_volume);
-	printf("audio volume2 %f \n", sdl->audio.sfx_volume);
 }
 
 void	checkargs(int argc, char **argv)

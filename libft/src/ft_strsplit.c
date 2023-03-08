@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strsplit.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/05 13:51:35 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/19 13:16:58 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/08 16:57:20 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ char	**ft_strsplit(const char *s, char c)
 		while (*s == c)
 			s++;
 		arr[i] = (char *)malloc(delimit_strlen(s, c) + 1);
+		if (!arr[i])
+			return (NULL);
 		si = 0;
 		while (*s != c && *s)
 			arr[i][si++] = *(s++);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   object_init.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 19:50:18 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/07 14:09:41 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/08 19:30:25 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ char	*basename(char *filename)
 	int		i;
 
 	split = ft_strsplit(filename, '.');
+	if (split == NULL)
+		doomlog(LOG_EC_MALLOC, "parseanim basename");
 	i = 1;
 	while (split[i] != NULL)
 	{
@@ -32,37 +34,49 @@ char	*basename(char *filename)
 	return (result);
 }
 
+static char	*glue_anim_name(char *base, char *animname, int i)
+{
+	char	name[256];
+	char	*newname;
+
+	ft_strcpy(name, "assets/objects/animations/");
+	ft_strcat(name, base);
+	ft_strcat(name, "_");
+	ft_strcat(name, animname);
+	ft_strcat(name, s_itoa(i));
+	ft_strcat(name, ".obj");
+	newname = ft_memalloc(sizeof(name));
+	if (newname == NULL)
+		doomlog(LOG_EC_MALLOC, "parseanim anim_name");
+	return (ft_strcpy(newname, name));
+}
+
 void	parseanim(t_object *object, char *animname)
 {
-	int		i;
-	int		fd;
-	//char	name[256];
+	int					i;
+	int					fd;
+	char				*name;
 	t_objectanimframe	frame;
-	char	*base;
+	char				*base;
 
-	fd = 0;
 	i = 0;
 	base = basename(object->name);
 	object->o_anim.framecount = 0;
+	fd = open(name, O_RDONLY);
 	while (fd != -1)
 	{
-		char name[256] = { 0 };
-		sprintf(name, "assets/objects/animations/%s_%s%i.obj", base, animname, i); //TODO: protect
-		//printf("name %s \n", name);
+		name = glue_anim_name(base, animname, i);
 		fd = open(name, O_RDONLY);
-		//printf("%s \n", name);
-		if (fd != -1)
+		if (fd == -1)
 		{
-			ft_strcpy(object->o_anim.name, animname); //TODO: protect
+			ft_strcpy(object->o_anim.name, animname);
 			parse_animframe(fd, &frame, object);
 			ptr_add((void **)&object->o_anim.frames, &object->o_anim.framecount, sizeof(t_objectanimframe), &frame);
-			//ptr_add()
-			close(fd);
+			fileclose(fd, name);
 		}
+		free(name);
 		i++;
 	}
-	//printf("anim has %i frames", object->o_anim.framecount);
-	//exit(0);
 	free(base);
 }
 
@@ -77,7 +91,6 @@ void	objects_init(t_sdlcontext *sdl)
 	{
 		object = &sdl->objects[i];
 		m_i = 0;
-		//printf("\ngetting image for object %s \n", object->name);
 		while (m_i < object->material_count)
 		{
 			//if (ft_strcmp(object->materials[m_i].texturename, "") != 0)
@@ -87,7 +100,6 @@ void	objects_init(t_sdlcontext *sdl)
 				printf("set null image, kd was %i\n", object->materials[m_i].kd & 0xFF);
 				object->materials[m_i].img = NULL;
 			}*/
-			
 			m_i++;
 		}
 		update_object_bounds(object);

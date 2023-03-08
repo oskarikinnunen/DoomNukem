@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   surface_tools.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 19:37:04 by raho              #+#    #+#             */
-/*   Updated: 2022/12/22 10:27:59 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/08 21:29:44 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ static void	blend_text(t_sdlcontext *sdl, SDL_Surface *src, \
 		(i.x + pos.x) + ((i.y + pos.y) * sdl->surface->w)] = \
 		blend_colors_alpha(((uint32_t *)sdl->surface->pixels)[\
 		(i.x + pos.x) + ((i.y + pos.y) * sdl->surface->w)], \
-		((uint32_t *)src->pixels)[i.x + (i.y * src->w)], sdl->font.color.a);
+		((uint32_t *)src->pixels)[i.x + (i.y * src->w)], \
+							sdl->font_default->color.a);
 }
 
 static void	blend_box(t_sdlcontext *sdl, SDL_Surface *src, \
@@ -29,7 +30,7 @@ static void	blend_box(t_sdlcontext *sdl, SDL_Surface *src, \
 		(i.x + pos.x) + ((i.y + pos.y) * sdl->surface->w)] = \
 		blend_colors_alpha(((uint32_t *)sdl->surface->pixels)[\
 		(i.x + pos.x) + ((i.y + pos.y) * sdl->surface->w)], \
-		sdl->font.box_color, sdl->font.color.a);
+		sdl->font_default->box_color, sdl->font_default->color.a);
 }
 
 void	join_text_boxed_to_surface(t_sdlcontext *sdl, SDL_Surface *src, \

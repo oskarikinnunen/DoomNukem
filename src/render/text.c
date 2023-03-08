@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   text.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 22:00:00 by raho              #+#    #+#             */
-/*   Updated: 2023/01/11 10:41:01 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/08 21:28:08 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ t_rectangle	print_text_boxed(t_sdlcontext *sdl, const char *text, t_point pos)
 	t_rectangle	rect;
 	t_point		padding;
 
-	surfacetext = TTF_RenderText_Blended(sdl->font.font, text, sdl->font.color);
+	surfacetext = TTF_RenderText_Blended(sdl->font_default->size_default, \
+											text, sdl->font_default->color);
 	if (!surfacetext)
 		doomlog(LOG_EC_TTF_RENDERTEXTBLENDED, NULL);
 	padding.x = 3;
@@ -38,13 +39,15 @@ t_rectangle	print_text(t_sdlcontext *sdl, const char *text, t_point pos)
 	SDL_Surface	*surfacetext;
 	t_rectangle	rect;
 
-	surfacetext = TTF_RenderText_Blended(sdl->font.font, text, sdl->font.color);
+	surfacetext = TTF_RenderText_Blended(sdl->font_default->size_default, \
+											text, sdl->font_default->color);
 	if (!surfacetext)
 		doomlog(LOG_EC_TTF_RENDERTEXTBLENDED, NULL);
 	rect.position = pos;
 	rect.size.x = surfacetext->w;
 	rect.size.y = surfacetext->h;
-	join_text_to_surface(sdl->surface, surfacetext, pos, sdl->font.color.a);
+	join_text_to_surface(sdl->surface, surfacetext, pos, \
+										sdl->font_default->color.a);
 	SDL_FreeSurface(surfacetext);
 	return (rect);
 }
@@ -61,9 +64,9 @@ t_rectangle	print_text_colored(t_sdlcontext *sdl, const char *text, \
 	temp.green = (color >> 8) & 0xFF;
 	temp.red = (color >> 16) & 0xFF;
 	c = (SDL_Color){.r = temp.red, .g = temp.green, .b = temp.blue, .a = 255};
-	prev = sdl->font.color;
-	sdl->font.color = c;
+	prev = sdl->font_default->color;
+	sdl->font_default->color = c;
 	rect = print_text(sdl, text, pos);
-	sdl->font.color = prev;
+	sdl->font_default->color = prev;
 	return (rect);
 }

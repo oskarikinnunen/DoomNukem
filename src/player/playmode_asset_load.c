@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/08 14:08:46 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/08 21:09:10 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,7 +253,7 @@ void	playmode_load_assets(t_sdlcontext *sdl)
 	playmode_load_all_images(sdl);
 	playmode_load_all_env_textures(sdl);
 	playmode_load_all_objects(sdl);
-	playmode_load_fonts(&sdl->font);
+	editor_load_fonts(sdl, "assets/.font_list.txt");
 	playmode_load_audio(&sdl->audio);
 	objects_init(sdl);
 	t_object *human = get_object_by_name(*sdl, "Human.obj");

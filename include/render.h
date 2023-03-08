@@ -62,8 +62,10 @@ typedef struct s_font
 	t_backgroundcolors	background_colors;
 	SDL_Color			color;
 	uint32_t			box_color;
-	TTF_Font			*font_sizes[4];
-	TTF_Font			*font;
+	TTF_Font			*sizes[4];
+	uint32_t			size_count;
+	TTF_Font			*size_default;
+	char				name[128];
 	char				*text;
 }	t_font;
 
@@ -224,7 +226,9 @@ typedef struct s_sdlcontext
 	bool					lighting_toggled;
 	bool					fog;
 	uint32_t				objectcount;
-	t_font					font;
+	t_font					*fonts;
+	uint32_t				fontcount;
+	t_font					*font_default;
 	t_audio					audio;
 	uint32_t				window_w;
 	uint32_t				window_h;

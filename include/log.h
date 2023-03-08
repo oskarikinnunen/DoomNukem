@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 20:21:24 by raho              #+#    #+#             */
-/*   Updated: 2023/03/01 18:38:52 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/08 17:04:42 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@
 # define LOG_EC_GETNEXTLINE 34
 # define LOG_EC_FORK 35
 # define LOG_EC_READ 36
+# define LOG_EC_LSEEK 37
 # define LOG_EC_FMOD_SYSTEMCREATE 50
 # define LOG_EC_FMOD_SYSTEMINIT 51
 # define LOG_EC_FMOD_SYSTEMCLOSE 52

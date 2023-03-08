@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/07 16:22:54 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/08 21:30:53 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,6 +162,11 @@ typedef struct s_game
 	t_player		player;
 } t_game;
 
+/* ASSETS */
+
+int		count_asset_list(char *filename);
+char	*extract_filename(const char *filepath);
+
 /* LOG.C */
 int		init_log(void);
 
@@ -251,8 +256,8 @@ void	apply_graphics_prefs(t_graphicprefs prefs);
 
 /* FONT.C */
 
-void	editor_load_fonts(t_font *font);
-void	playmode_load_fonts(t_font *font);
+void	editor_load_fonts(t_sdlcontext *sdl, char *font_list);
+void	playmode_load_fonts(t_sdlcontext *sdl, char *font_list);
 
 void	draw_black_background(t_sdlcontext *sdl, t_point pos, t_point size);
 
@@ -263,11 +268,13 @@ t_line	line_shorten(t_line line);
 
 // Prints text and returns the rectangle of the printed text
 // Font size and color can be set using:
-// sdl->font->font = sdl->font->font_sizes[x] where x can be 0-3
-// sdl->font->color = color32_to_sdlcolor(CLR_GREEN)
+// sdl->font_default->size_default = sdl->font_default->font_sizes[x] where x can be 0-3
+// sdl->font_default->color = color32_to_sdlcolor(CLR_GREEN)
 t_rectangle	print_text(t_sdlcontext *sdl, const char *text, t_point pos);
 
 // Does the same as print_ftext but also fills in the background for the text
+// Background can be changed with:
+// sdl->font_default->box_color = sdl->font_default->background_colors.'color'
 t_rectangle	print_text_boxed(t_sdlcontext *sdl, const char *text, t_point pos);
 
 t_rectangle	print_text_colored(t_sdlcontext *sdl, const char *text, t_point pos, uint32_t color);

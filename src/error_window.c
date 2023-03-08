@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 14:59:55 by raho              #+#    #+#             */
-/*   Updated: 2023/03/07 16:23:51 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/08 21:01:53 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,8 +113,8 @@ void	error_window(char *str)
 	ft_bzero(&p, sizeof(t_parent));
 	ft_putendl_fd(str, 2);
 	init_sdl_error_window(&p.sdl);
-	editor_load_fonts(&p.sdl.font);
-	p.sdl.font.color = color32_to_sdlcolor(CLR_GREEN);
+	editor_load_fonts(&p.sdl, "assets/.font_list.txt");
+	p.sdl.font_default->color = color32_to_sdlcolor(CLR_GREEN);
 	parse_log(&p);
 	cache_log(&p, str);
 	while (1)

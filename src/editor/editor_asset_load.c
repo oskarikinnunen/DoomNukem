@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/08 15:08:26 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/08 21:13:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,110 +14,16 @@
 #include "objects.h"
 #include "tga.h"
 #include <dirent.h>
+#include "file_io.h"
 
-void	editor_allocate_object_count(t_sdlcontext *sdl)
+// returns a pointer to the start of the file's name without its path
+char	*extract_filename(const char *filepath)
 {
-	DIR				*d;
-	struct dirent	*dfile;
-	char path		[256] = "assets/objects";
-	int				i;
+	char	*filename;
 
-	d = opendir(path);
-	i = 0;
-	if (d)
-	{
-		dfile = readdir(d);
-		while (dfile != NULL)
-		{
-			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".obj") != NULL)
-				i++;
-			dfile = readdir(d);
-		}
-		closedir(d);
-	}
-	sdl->objectcount = i;
-	printf("Found %i .obj files \n", sdl->objectcount);
-	sdl->objects = ft_memalloc(sizeof(t_object) * sdl->objectcount);
-}
-
-void	editor_load_all_objects(t_sdlcontext *sdl)
-{
-	DIR				*d;
-	struct dirent	*dfile;
-	char path		[256] = "assets/objects";
-	char fullpath	[512];
-	int				i;
-
-	editor_allocate_object_count(sdl);
-	d = opendir(path);
-	i = 0;
-	if (d)
-	{
-		dfile = readdir(d);
-		while (dfile != NULL)
-		{
-			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".obj") != NULL)
-			{
-				snprintf(fullpath, 512, "%s/%s", path, dfile->d_name);
-				sdl->objects[i] = objparse(fullpath);
-				ft_strcpy(sdl->objects[i].name, dfile->d_name);
-				printf("	parsed objectfile: %s \n", fullpath);
-				i++;
-			}
-			dfile = readdir(d);
-		}
-		closedir(d);
-	}
-	printf("parsed %i objectfiles \n", i);
-}
-
-void	editor_allocate_image_count(t_sdlcontext *sdl)
-{
-	DIR				*d;
-	struct dirent	*dfile;
-	char path		[256] = "assets/images/tga";
-	int				i;
-
-	d = opendir(path); // TODO: is opendir allowed?
-	i = 0;
-	if (d)
-	{
-		dfile = readdir(d); // TODO: is readdir allowed?
-		while (dfile != NULL)
-		{
-			//if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".cng") != NULL)
-			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".tga") != NULL)
-				i++;
-			dfile = readdir(d);
-		}
-		closedir(d);
-	}
-	sdl->imagecount = i;
-	sdl->images = ft_memalloc(sizeof(t_img) * sdl->imagecount);
-}
-
-void	editor_allocate_env_texturecount(t_sdlcontext *sdl)
-{
-	DIR				*d;
-	struct dirent	*dfile;
-	char path		[256] = "assets/images/tga/env";
-	int				i;
-
-	d = opendir(path);
-	i = 0;
-	if (d)
-	{
-		dfile = readdir(d);
-		while (dfile != NULL)
-		{
-			if (dfile->d_type == DT_REG && ft_strstr(dfile->d_name, ".tga") != NULL)
-				i++;
-			dfile = readdir(d);
-		}
-		closedir(d);
-	}
-	sdl->env_texturecount = i;
-	sdl->env_textures = ft_memalloc(sizeof(t_img) * sdl->env_texturecount);
+	filename = ft_strrchr(filepath, '/');
+	filename++;
+	return (filename);
 }
 
 int	count_asset_list(char *filename)
@@ -147,19 +53,45 @@ int	count_asset_list(char *filename)
 	}
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, filename);
-	if (close(fd) == -1)
-		doomlog(LOG_EC_CLOSE, filename);
+	fileclose(fd, filename);
 	return (i);
 }
 
-// returns a pointer to the start of the file's name without its path
-char	*extract_filename(const char *filepath)
+void	editor_load_all_objects(t_sdlcontext *sdl, char *object_list)
 {
-	char	*filename;
+	char	*object_path;
+	int		ret;
+	int		fd;
+	int		i;
 
-	filename = ft_strrchr(filepath, '/');
-	filename++;
-	return (filename);
+	doomlog(LOG_NORMAL, "LOADING OBJECTS");
+	sdl->objectcount = count_asset_list(object_list);
+	doomlog_mul(LOG_NORMAL, (char *[4]){object_list, "size =", s_itoa(sdl->objectcount), NULL});
+	sdl->objects = ft_memalloc(sizeof(t_object) * sdl->objectcount);
+	if (sdl->objects == NULL)
+		doomlog(LOG_EC_MALLOC, "sdl->objects");
+	fd = fileopen(object_list, O_RDONLY);
+	object_path = NULL;
+	ret = get_next_line(fd, &object_path);
+	i = 0;
+	while (ret)
+	{
+		if (object_path)
+		{
+			sdl->objects[i] = objparse(object_path);
+			if (sdl->objects[i].vertices != NULL)
+				ft_strcpy(sdl->objects[i].name, extract_filename(object_path));
+			doomlog_mul(LOG_NORMAL, (char *[3]){"parsed .obj file:", sdl->objects[i].name, NULL});
+			free(object_path);
+			object_path = NULL;
+			i++;
+		}
+		ret = get_next_line(fd, &object_path);
+	}
+	if (ret == -1)
+		doomlog(LOG_EC_GETNEXTLINE, object_list);
+	fileclose(fd, object_list);
+	doomlog_mul(LOG_NORMAL, (char *[4]){"parsed", s_itoa(i), "objectfiles", NULL});
 }
 
 void	editor_load_all_images(t_sdlcontext *sdl, char *image_list)
@@ -169,15 +101,13 @@ void	editor_load_all_images(t_sdlcontext *sdl, char *image_list)
 	int		fd;
 	int		i;
 
-	printf("LOAD IMAGES! \n");
+	doomlog(LOG_NORMAL, "LOADING IMAGES");
 	sdl->imagecount = count_asset_list(image_list);
-	printf("%s size = %i\n", image_list, sdl->imagecount);
+	doomlog_mul(LOG_NORMAL, (char *[4]){image_list, "size =", s_itoa(sdl->imagecount), NULL});
 	sdl->images = ft_memalloc(sizeof(t_img) * sdl->imagecount);
 	if (sdl->images == NULL)
 		doomlog(LOG_EC_MALLOC, "sdl->images");
-	fd = open(image_list, O_RDONLY);
-	if (fd == -1)
-		doomlog(LOG_EC_OPEN, image_list);
+	fd = fileopen(image_list, O_RDONLY);
 	image_path = NULL;
 	ret = get_next_line(fd, &image_path);
 	i = 0;
@@ -188,7 +118,7 @@ void	editor_load_all_images(t_sdlcontext *sdl, char *image_list)
 			sdl->images[i] = tgaparse(image_path);
 			if (sdl->images[i].data != NULL)
 				ft_strcpy(sdl->images[i].name, extract_filename(image_path));
-			printf("	parsed tga file: %s \n", sdl->images[i].name);
+			doomlog_mul(LOG_NORMAL, (char *[3]){"parsed .tga file:", sdl->images[i].name, NULL});
 			free(image_path);
 			image_path = NULL;
 			i++;
@@ -197,6 +127,7 @@ void	editor_load_all_images(t_sdlcontext *sdl, char *image_list)
 	}
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, image_list);
+	fileclose(fd, image_list);
 	doomlog_mul(LOG_NORMAL, (char *[4]){"parsed", s_itoa(i), "imagefiles", NULL});
 }
 
@@ -207,15 +138,13 @@ void	editor_load_all_env_textures(t_sdlcontext *sdl, char *env_texture_list)
 	int		fd;
 	int		i;
 
-	printf("LOAD ENV_TEX! \n");
+	doomlog(LOG_NORMAL, "LOADING ENV_TEXTURES");
 	sdl->env_texturecount = count_asset_list(env_texture_list);
-	printf("%s size = %i\n", env_texture_list, sdl->env_texturecount);
+	doomlog_mul(LOG_NORMAL, (char *[4]){env_texture_list, "size =", s_itoa(sdl->env_texturecount), NULL});
 	sdl->env_textures = ft_memalloc(sizeof(t_img) * sdl->env_texturecount);
 	if (sdl->env_textures == NULL)
 		doomlog(LOG_EC_MALLOC, "sdl->env_textures");
-	fd = open(env_texture_list, O_RDONLY);
-	if (fd == -1)
-		doomlog(LOG_EC_OPEN, env_texture_list);
+	fd = fileopen(env_texture_list, O_RDONLY);
 	env_texture_path = NULL;
 	ret = get_next_line(fd, &env_texture_path);
 	i = 0;
@@ -226,7 +155,7 @@ void	editor_load_all_env_textures(t_sdlcontext *sdl, char *env_texture_list)
 			sdl->env_textures[i] = tgaparse(env_texture_path);
 			if (sdl->env_textures[i].data != NULL)
 				ft_strcpy(sdl->env_textures[i].name, extract_filename(env_texture_path));
-			printf("	parsed tga file: %s \n", sdl->env_textures[i].name);
+			doomlog_mul(LOG_NORMAL, (char *[3]){"parsed .tga file:", sdl->env_textures[i].name, NULL});
 			free(env_texture_path);
 			env_texture_path = NULL;
 			i++;
@@ -235,11 +164,9 @@ void	editor_load_all_env_textures(t_sdlcontext *sdl, char *env_texture_list)
 	}
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, env_texture_path);
-	if (close(fd) == -1)
-		doomlog(LOG_EC_CLOSE, env_texture_list);
+	fileclose(fd, env_texture_list);
 	doomlog_mul(LOG_NORMAL, (char *[4]){"parsed", s_itoa(i), "env_textures", NULL});
 }
-
 
 #include "file_io.h"
 
@@ -250,25 +177,24 @@ void	editor_parse_anim_legend(t_sdlcontext *sdl)
 	int					i;
 	uint32_t			prev_frame;
 	uint32_t			frame;
+	int					ret;
 
-	fd = open("assets/objects/animations/anim_legend.txt", O_RDONLY);
-	if (fd == -1)
+	fd = fileopen("assets/objects/animations/anim_legend.txt", O_RDONLY);
+	sdl->human_anims = ft_memalloc(sizeof(t_human_animation) * 30);
+	if (sdl->human_anims == NULL)
+		doomlog(LOG_EC_MALLOC, "sdl->human_anims");
+	sdl->human_anim_count = 0;
+	i = 0;
+	prev_frame = 0;
+	line = NULL;
+	ret = get_next_line(fd, &line);
+	while (ret)
 	{
-		//TODO: doom log "couldn't open anim legend, EC"
-	}
-	else
-	{
-		sdl->human_anims = ft_memalloc(sizeof(t_human_animation) * 30);
-		sdl->human_anim_count = 0;
-		i = 0;
-		prev_frame = 0;
-		printf("prev frame %i \n", prev_frame);
-		while (ft_get_next_line(fd, &line))
+		if (line)
 		{
 			if (i % 2 == 0)
 			{
 				ft_bzero(&sdl->human_anims[sdl->human_anim_count], sizeof(t_human_animation));
-				//ft_strcpy(sdl->human_anims[sdl->human_anim_count].name, line);
 				ft_memcpy(sdl->human_anims[sdl->human_anim_count].name, line, ft_strlen(line + 1));
 			}
 			else 
@@ -281,16 +207,20 @@ void	editor_parse_anim_legend(t_sdlcontext *sdl)
 			}
 			i++;
 			free(line);
+			line = NULL;
 		}
+		ret = get_next_line(fd, &line);
 	}
+	if (ret == -1)
+		doomlog(LOG_EC_GETNEXTLINE, "anim_legend.txt");
 }
 
 void	editor_load_assets(t_sdlcontext *sdl)
 {
 	editor_load_all_images(sdl, "assets/.image_list.txt");
 	editor_load_all_env_textures(sdl, "assets/.image_list_env.txt");
-	editor_load_all_objects(sdl);
-	editor_load_fonts(&sdl->font);
+	editor_load_all_objects(sdl, "assets/.object_list.txt");
+	editor_load_fonts(sdl, "assets/.font_list.txt");
 	editor_load_audio(&sdl->audio);
 	objects_init(sdl);
 	t_object *human = get_object_by_name(*sdl, "Human.obj");
@@ -302,6 +232,4 @@ void	editor_load_assets(t_sdlcontext *sdl)
 		printf("anim %s frames %i->%i\n", sdl->human_anims[i].name, sdl->human_anims[i].startframe, sdl->human_anims[i].endframe);
 		i++;
 	}
-	return ;
-	//object_
 }

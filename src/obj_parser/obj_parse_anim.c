@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   obj_parse_anim.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 19:44:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/22 13:32:59 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/08 18:59:28 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ void	parse_animframe(int fd, t_objectanimframe *frame, t_object *object)
 	vertices = list_to_ptr(verticelist, &vertexcount);
 	i = 0;
 	frame->deltavertices = ft_memalloc(sizeof(t_deltavertex) * vertexcount);
+	if (frame->deltavertices == NULL)
+		doomlog(LOG_EC_MALLOC, "frame->deltavertices");
 	while (i < vertexcount)
 	{
 		frame->deltavertices[i].delta = vector3_sub(vertices[i], object->vertices[i]);

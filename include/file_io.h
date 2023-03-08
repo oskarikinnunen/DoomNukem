@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   file_io.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 16:56:41 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/28 15:20:30 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/08 19:28:12 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ int				load_filecontent_fd(char	*worldname, char *fcname);
 
 void	save_editordata(t_editor *ed);
 int		fileopen(char *filename, int flags);
+void	fileclose(int fd, char *filename);
 
 
 void	generate_struct_datas();
