@@ -32,5 +32,6 @@ assets/images/tga/stone02.tga
 assets/images/tga/Transformer-Texture.tga
 assets/images/tga/trash.tga
 assets/images/tga/wall_concrete.tga
+assets/images/tga/welrod2.tga
 assets/images/tga/window.tga
 assets/images/tga/wood02.tga

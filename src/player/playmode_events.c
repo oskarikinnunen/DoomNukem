@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode_events.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 19:41:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/27 19:51:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/09 21:56:35 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ int	playmode_events(t_game *game)
 		mouse_event(e, &game->hid.mouse);
 		if (e.type == SDL_KEYDOWN)
 		{
+			if (iskey(e, SDLK_F1))
+				game->player.noclip = !game->player.noclip;
 			if (iskey(e, SDLK_ESCAPE))
 			{
 				if ((game->hid.keystate >> KEYS_SHIFTMASK) & 1)

@@ -85,7 +85,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	sdl.audio.sfx_volume = 1.0f;
 	game.world.player = &game.player;
 	protagonist_play_audio(&game.player, &game.world, "protag_letsdo.wav");
-	play_music(&sdl, "music_arp1_action.wav");
+	play_music(&sdl, "music_arp1_ambient.wav");
 	while (gr == game_continue)
 	{
 		if (game.player.health > 0)

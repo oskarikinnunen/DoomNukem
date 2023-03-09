@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/08 21:13:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/09 20:06:20 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	count_asset_list(char *filename)
 	return (i);
 }
 
-void	editor_load_all_objects(t_sdlcontext *sdl, char *object_list)
+void	editor_load_all_objects(t_sdlcontext *sdl)
 {
 	char	*object_path;
 	int		ret;
@@ -65,12 +65,12 @@ void	editor_load_all_objects(t_sdlcontext *sdl, char *object_list)
 	int		i;
 
 	doomlog(LOG_NORMAL, "LOADING OBJECTS");
-	sdl->objectcount = count_asset_list(object_list);
-	doomlog_mul(LOG_NORMAL, (char *[4]){object_list, "size =", s_itoa(sdl->objectcount), NULL});
+	sdl->objectcount = count_asset_list(OBJLISTPATH);
+	doomlog_mul(LOG_NORMAL, (char *[4]){OBJLISTPATH, "size =", s_itoa(sdl->objectcount), NULL});
 	sdl->objects = ft_memalloc(sizeof(t_object) * sdl->objectcount);
 	if (sdl->objects == NULL)
 		doomlog(LOG_EC_MALLOC, "sdl->objects");
-	fd = fileopen(object_list, O_RDONLY);
+	fd = fileopen(OBJLISTPATH, O_RDONLY);
 	object_path = NULL;
 	ret = get_next_line(fd, &object_path);
 	i = 0;
@@ -89,12 +89,12 @@ void	editor_load_all_objects(t_sdlcontext *sdl, char *object_list)
 		ret = get_next_line(fd, &object_path);
 	}
 	if (ret == -1)
-		doomlog(LOG_EC_GETNEXTLINE, object_list);
-	fileclose(fd, object_list);
+		doomlog(LOG_EC_GETNEXTLINE, OBJLISTPATH);
+	fileclose(fd, OBJLISTPATH);
 	doomlog_mul(LOG_NORMAL, (char *[4]){"parsed", s_itoa(i), "objectfiles", NULL});
 }
 
-void	editor_load_all_images(t_sdlcontext *sdl, char *image_list)
+void	editor_load_all_images(t_sdlcontext *sdl)
 {
 	char	*image_path;
 	int		ret;
@@ -102,12 +102,12 @@ void	editor_load_all_images(t_sdlcontext *sdl, char *image_list)
 	int		i;
 
 	doomlog(LOG_NORMAL, "LOADING IMAGES");
-	sdl->imagecount = count_asset_list(image_list);
-	doomlog_mul(LOG_NORMAL, (char *[4]){image_list, "size =", s_itoa(sdl->imagecount), NULL});
+	sdl->imagecount = count_asset_list(IMGLISTPATH);
+	doomlog_mul(LOG_NORMAL, (char *[4]){IMGLISTPATH, "size =", s_itoa(sdl->imagecount), NULL});
 	sdl->images = ft_memalloc(sizeof(t_img) * sdl->imagecount);
 	if (sdl->images == NULL)
 		doomlog(LOG_EC_MALLOC, "sdl->images");
-	fd = fileopen(image_list, O_RDONLY);
+	fd = fileopen(IMGLISTPATH, O_RDONLY);
 	image_path = NULL;
 	ret = get_next_line(fd, &image_path);
 	i = 0;
@@ -126,12 +126,12 @@ void	editor_load_all_images(t_sdlcontext *sdl, char *image_list)
 		ret = get_next_line(fd, &image_path);
 	}
 	if (ret == -1)
-		doomlog(LOG_EC_GETNEXTLINE, image_list);
-	fileclose(fd, image_list);
+		doomlog(LOG_EC_GETNEXTLINE, IMGLISTPATH);
+	fileclose(fd, IMGLISTPATH);
 	doomlog_mul(LOG_NORMAL, (char *[4]){"parsed", s_itoa(i), "imagefiles", NULL});
 }
 
-void	editor_load_all_env_textures(t_sdlcontext *sdl, char *env_texture_list)
+void	editor_load_all_env_textures(t_sdlcontext *sdl)
 {
 	char	*env_texture_path;
 	int		ret;
@@ -139,12 +139,12 @@ void	editor_load_all_env_textures(t_sdlcontext *sdl, char *env_texture_list)
 	int		i;
 
 	doomlog(LOG_NORMAL, "LOADING ENV_TEXTURES");
-	sdl->env_texturecount = count_asset_list(env_texture_list);
-	doomlog_mul(LOG_NORMAL, (char *[4]){env_texture_list, "size =", s_itoa(sdl->env_texturecount), NULL});
+	sdl->env_texturecount = count_asset_list(IMGENVLISTPATH);
+	doomlog_mul(LOG_NORMAL, (char *[4]){IMGENVLISTPATH, "size =", s_itoa(sdl->env_texturecount), NULL});
 	sdl->env_textures = ft_memalloc(sizeof(t_img) * sdl->env_texturecount);
 	if (sdl->env_textures == NULL)
 		doomlog(LOG_EC_MALLOC, "sdl->env_textures");
-	fd = fileopen(env_texture_list, O_RDONLY);
+	fd = fileopen(IMGENVLISTPATH, O_RDONLY);
 	env_texture_path = NULL;
 	ret = get_next_line(fd, &env_texture_path);
 	i = 0;
@@ -163,8 +163,8 @@ void	editor_load_all_env_textures(t_sdlcontext *sdl, char *env_texture_list)
 		ret = get_next_line(fd, &env_texture_path);
 	}
 	if (ret == -1)
-		doomlog(LOG_EC_GETNEXTLINE, env_texture_path);
-	fileclose(fd, env_texture_list);
+		doomlog(LOG_EC_GETNEXTLINE, IMGENVLISTPATH);
+	fileclose(fd, IMGENVLISTPATH);
 	doomlog_mul(LOG_NORMAL, (char *[4]){"parsed", s_itoa(i), "env_textures", NULL});
 }
 
@@ -217,10 +217,10 @@ void	editor_parse_anim_legend(t_sdlcontext *sdl)
 
 void	editor_load_assets(t_sdlcontext *sdl)
 {
-	editor_load_all_images(sdl, "assets/.image_list.txt");
-	editor_load_all_env_textures(sdl, "assets/.image_list_env.txt");
-	editor_load_all_objects(sdl, "assets/.object_list.txt");
-	editor_load_fonts(sdl, "assets/.font_list.txt");
+	editor_load_all_images(sdl);
+	editor_load_all_env_textures(sdl);
+	editor_load_all_objects(sdl);
+	editor_load_fonts(sdl);
 	editor_load_audio(&sdl->audio);
 	objects_init(sdl);
 	t_object *human = get_object_by_name(*sdl, "Human.obj");

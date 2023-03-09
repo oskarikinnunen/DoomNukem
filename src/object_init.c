@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 19:50:18 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/08 19:30:25 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/09 17:20:59 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,14 +60,14 @@ void	parseanim(t_object *object, char *animname)
 	char				*base;
 
 	i = 0;
+	fd = 0;
 	base = basename(object->name);
 	object->o_anim.framecount = 0;
-	fd = open(name, O_RDONLY);
 	while (fd != -1)
 	{
 		name = glue_anim_name(base, animname, i);
 		fd = open(name, O_RDONLY);
-		if (fd == -1)
+		if (fd != -1)
 		{
 			ft_strcpy(object->o_anim.name, animname);
 			parse_animframe(fd, &frame, object);

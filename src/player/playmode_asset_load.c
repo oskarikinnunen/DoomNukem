@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/08 21:09:10 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/09 21:35:33 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,8 +253,8 @@ void	playmode_load_assets(t_sdlcontext *sdl)
 	playmode_load_all_images(sdl);
 	playmode_load_all_env_textures(sdl);
 	playmode_load_all_objects(sdl);
-	editor_load_fonts(sdl, "assets/.font_list.txt");
-	playmode_load_audio(&sdl->audio);
+	editor_load_fonts(sdl);
+	editor_load_audio(&sdl->audio);
 	objects_init(sdl);
 	t_object *human = get_object_by_name(*sdl, "Human.obj");
 	parseanim(human, "anim");
@@ -265,6 +265,4 @@ void	playmode_load_assets(t_sdlcontext *sdl)
 		printf("anim %s frames %i->%i\n", sdl->human_anims[i].name, sdl->human_anims[i].startframe, sdl->human_anims[i].endframe);
 		i++;
 	}
-	return ;
-	//object_
 }

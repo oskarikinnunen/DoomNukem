@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/08 21:30:53 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/09 20:05:27 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,12 @@
 
 # define IMGPATH "assets/images/"
 # define OBJPATH "assets/objects/"
+# define IMGLISTPATH "assets/.image_list.txt"
+# define IMGENVLISTPATH "assets/.image_env_list.txt"
+# define OBJLISTPATH "assets/.object_list.txt"
+# define FONTLISTPATH "assets/.font_list.txt"
+# define SOUNDLISTPATH "assets/.sound_list.txt"
+# define MUSICLISTPATH "assets/.music_list.txt"
 
 # define TEXTBACKGROUND_BORDERPADDING 6
 # define PERFGRAPH_SAMPLES 64
@@ -256,8 +262,8 @@ void	apply_graphics_prefs(t_graphicprefs prefs);
 
 /* FONT.C */
 
-void	editor_load_fonts(t_sdlcontext *sdl, char *font_list);
-void	playmode_load_fonts(t_sdlcontext *sdl, char *font_list);
+void	editor_load_fonts(t_sdlcontext *sdl);
+void	playmode_load_fonts(t_sdlcontext *sdl);
 
 void	draw_black_background(t_sdlcontext *sdl, t_point pos, t_point size);
 
