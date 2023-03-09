@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 19:41:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/27 19:51:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/06 17:13:47 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ int	playmode_events(t_game *game)
 	SDL_GetRelativeMouseState(&game->hid.mouse.delta.x, &game->hid.mouse.delta.y);
 		/*if (ed->hid.mouse.safe_delta && ((ed->hid.mouse.delta.x) > 30 || ft_abs(ed->hid.mouse.delta.y) > 30))
 			ed->hid.mouse.delta = point_zero();*/
-		
 	while (SDL_PollEvent(&e))
 	{
 		toggle_keystates(&game->hid, e);

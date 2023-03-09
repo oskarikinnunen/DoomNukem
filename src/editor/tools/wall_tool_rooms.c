@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/03 18:26:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/08 14:28:38 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,7 +163,6 @@ static	bool correctangle(t_vector2 vs[3]) //TODO: takes 'fc', 'valid' array and 
 		printf("angle was nan or inf \n");
 		exit(0);
 	}
-
 	tr = transformed_around(vs[2], -angle, vs, 3);
 	return (tr[1].y >= tr[0].y && tr[1].y >= tr[2].y);
 }

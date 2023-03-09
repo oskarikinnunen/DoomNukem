@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lua_conf.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/03 19:21:21 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/09 19:32:14 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -251,8 +251,9 @@ void	load_assets(t_sdlcontext *sdl)
 	load_audio(&sdl->audio);
 	objects_init(sdl);
 	t_object *human = get_object_by_name(*sdl, "Human.obj");
-	parseanim(human, "anim");
-	parse_anim_legend(sdl);
+	//parseanim(human, "anim");
+	//parse_anim_legend(sdl);
+	return ;
 	int i = 0;
 	while (i < sdl->human_anim_count)
 	{

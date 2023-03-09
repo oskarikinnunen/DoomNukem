@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 18:03:40 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/27 19:25:08 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/09 19:33:58 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,7 +154,7 @@ bool	object_lookedat(t_editor *ed, t_sdlcontext sdl, t_object *obj)
 //	w = distance of ray hit
 // disable inverse normal hitting by removing fabs
 
-static bool raycast_tri(t_ray r, t_vector3_tri tri, float *dist)
+bool raycast_tri(t_ray r, t_vector3_tri tri, float *dist)
 {
 	t_vector3	e1;
 	t_vector3	e2;

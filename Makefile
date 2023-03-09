@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
+#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/03 19:20:55 by raho             ###   ########.fr        #
+#    Updated: 2023/03/09 18:55:26 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -148,6 +148,7 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		render/text.c \
 		entity/components/comp_mechasuit.c \
 		entity/components/comp_watercollider.c \
+		entity/components/comp_npc_state.c \
 		entity/components/comp_light.c \
 		entity/components/comp_healthpack.c \
 		entity/components/comp_npc_civilian.c \
@@ -178,7 +179,7 @@ INCLUDE= -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include \
 			-I$(INSTALLED_LIBS_DIR)/include/SDL2/ \
 			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
 CC= gcc
-CFLAGS= $(INCLUDE) -g #-finline-functions -O2 -MMD #-march=native
+CFLAGS= $(INCLUDE) -g -finline-functions -O2 -MMD #-march=native
 LDFLAGS = -Wl,-rpath $(INSTALLED_LIBS_DIR)/lib
 
 UNAME= $(shell uname)

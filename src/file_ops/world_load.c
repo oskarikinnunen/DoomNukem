@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 14:55:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/03 19:01:55 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/03 20:12:51 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,7 +220,6 @@ t_world	load_world_args(char *filename, t_sdlcontext *sdl, t_load_arg arg)
 	ft_strcpy(world.name, filename);
 	world_init(&world, sdl);
 	world_load_amap(&world);
-	//int fd = load_filecontent_fd("world", "sound.wav");
 	if (arg == LOAD_ARG_AMAP_AND_BASIC)
 		world_load_basic_ent(&world);
 	else if (arg == LOAD_ARG_FULL)

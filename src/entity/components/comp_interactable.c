@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 06:20:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/02 15:59:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/06 17:36:40 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 
 static void	update_physics(t_entity *entity, t_interactable *inter)
 {
-	
 	float				lerp;
 	static float		override;
 
