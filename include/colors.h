@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 19:49:03 by raho              #+#    #+#             */
-/*   Updated: 2023/03/03 19:01:58 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/07 12:55:48 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,5 @@ uint32_t	blend_colors_alpha(uint32_t bg, uint32_t fg, uint8_t alpha);
 
 // flips alpha values upside down
 uint32_t	flip_alpha(uint32_t clr);
-
-// flips blue and red channels with each other
-uint32_t	flip_channels(uint32_t clr);
 
 #endif

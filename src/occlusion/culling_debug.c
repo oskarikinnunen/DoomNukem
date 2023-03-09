@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   culling_debug.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 14:59:10 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/12 11:10:11 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/07 13:06:52 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void bitmask_to_pixels(t_sdlcontext *sdl)
 			Uint32 red = ((clr & 0x00FF0000) * p) >> 8;
 			Uint32 green = ((clr & 0x0000FF00) * p) >> 8;
 			Uint32 blue = ((clr & 0x000000FF) * p) >> 8;
-			clr = flip_channels(alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF));
+			clr = alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF);
 			((uint32_t *)sdl->surface->pixels)[sdl->window_w * y + x] = clr;
 		}
 	}

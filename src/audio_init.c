@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/27 10:42:33 by raho              #+#    #+#             */
-/*   Updated: 2023/02/07 15:41:49 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/07 16:20:45 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,20 @@ static void load_samples(t_audio *audio)
 	printf("loaded %i music \n", audio->music_count);
 }
 
-void	load_audio(t_audio *audio)
+void	playmode_load_audio(t_audio *audio)
+{
+	ft_bzero(audio, sizeof(t_audio));
+	audio->samplecount = 0;
+	audio->system = NULL; //todo: use the bzero but apply volume settings from sdl somehow
+	if (FMOD_System_Create(&audio->system, FMOD_VERSION) != FMOD_OK)
+		doomlog(LOG_EC_FMOD_SYSTEMCREATE, NULL);
+	if (FMOD_System_Init(audio->system, 30, FMOD_INIT_NORMAL, FMOD_OUTPUTTYPE_AUTODETECT) != FMOD_OK)
+		doomlog(LOG_EC_FMOD_SYSTEMINIT, NULL);
+	FMOD_System_Set3DSettings(audio->system, 1.0f, 100.0f, 2.0f);
+	load_samples(audio);
+}
+
+void	editor_load_audio(t_audio *audio)
 {
 	ft_bzero(audio, sizeof(t_audio));
 	audio->samplecount = 0;

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 13:42:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/01 18:20:18 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/07 12:56:50 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static t_img	*error_image()
 		{
 			if (i % 2 == 0)
 			{
-				data[i] = flip_channels(AMBER_2);
+				data[i] = AMBER_2;
 			}
 			i++;
 		}

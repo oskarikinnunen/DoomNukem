@@ -293,7 +293,8 @@ void			update_maxvolume(t_audio *audio);
 
 /* AUDIO */
 
-void	load_audio(t_audio *audio);
+void	editor_load_audio(t_audio *audio);
+void	playmode_load_audio(t_audio *audio);
 void	pause_audio(t_audio *audio, bool pause);
 void	close_audio(t_audio *audio);
 void	play_music(t_sdlcontext *sdl, char *musicname);

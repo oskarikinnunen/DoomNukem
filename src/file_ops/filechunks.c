@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/06 16:57:01 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/09 22:08:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,15 +183,18 @@ t_filecontent	load_filecontent(char	*worldname, char	*fc_name)
 		}
 		rbytes = read(fd, buf, CHUNKSIZE);
 	}
+	if (close(fd) == -1)
+		doomlog(LOG_EC_CLOSE, worldname);
 }
 
+// TODO: PROTECT
 int load_filecontent_fd(char	*worldname, char *fcname)
 {
 	t_filecontent	fc;
 	int				fd;
 
 	fc = load_filecontent(worldname, fcname);
-	fd = open(fcname, O_CREAT | O_RDWR | O_APPEND, 0666);
+	fd = open("temp.tga", O_CREAT | O_RDWR | O_APPEND, 0666);
 	write(fd, fc.content, fc.length);
 	return (fd);
 }
