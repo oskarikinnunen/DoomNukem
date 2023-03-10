@@ -42,6 +42,7 @@ static void sample_pixel(int x, int y, int index, t_entity *entity)
 	light = entity->map->lightmap[y * entity->map->size.x + x];
 	light = ft_clamp(light, 0, 255);
 	clr = img->data[(y % (img->size.y)) * img->size.x + (x % (img->size.x))];
+
 	entity->map[index].data[y * entity->map[index].size.x + x] = update_pixel_brightness(light, clr);
 }
 
@@ -91,6 +92,7 @@ void create_lightmap_for_entity(t_entity *entity, struct s_world *world)
 	if (entity->map == NULL)
 		doomlog(LOG_FATAL, "Malloc fail in bake_lighting.c");
 	lighting.world = world;
+	lighting.entity = entity;
 	i = 0;
 	start = 0;
 	max.x = 0.0f;
@@ -132,10 +134,14 @@ void create_lightmap_for_entity(t_entity *entity, struct s_world *world)
 				for (int vertex = 0; vertex < 3; vertex++)
 				{
 					t_vector2 uv = obj->uvs[obj->faces[start].uv_indices[vertex] - 1];
-					uv.x = roundf(uv.x * (float)(entity->obj->materials[index].img->size.x));
-					uv.y = roundf(uv.y * (float)(entity->obj->materials[index].img->size.y));
+					uv.x = (uv.x * (float)(entity->obj->materials[index].img->size.x));
+					uv.y = (uv.y * (float)(entity->obj->materials[index].img->size.y));
 					temp.t[vertex] = entity->world_triangles[start].p[vertex].v;
+					temp.p[vertex].x = entity->world_triangles[start].t[vertex].x;
+					temp.p[vertex].y = entity->world_triangles[start].t[vertex].y;
 					temp.p[vertex] = uv;
+				//	temp.p[vertex].x = ft_clamp(floorf(temp.p[vertex].x), 0, lighting.map->size.x - 1);
+				//	temp.p[vertex].y = ft_clamp(floorf(temp.p[vertex].y), 0, lighting.map->size.y - 1);
 				}
 				rasterize_light(temp, &lighting);
 				start++;

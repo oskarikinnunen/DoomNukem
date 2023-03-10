@@ -16,8 +16,8 @@ inline static void scanline(int ax, int bx, int y, t_vector2*p, t_vector3 *t, t_
 	float		dist;
 	float		steps;
 
-	left = barycentric_coordinates(p, vector2_add_xy((t_vector2){ax, y}, 0.5f));
-	right = barycentric_coordinates(p, vector2_add_xy((t_vector2){bx, y}, 0.5f));
+	left = barycentric_coordinates(p, (t_vector2){ax, y});
+	right = barycentric_coordinates(p, (t_vector2){bx, y});
 	bary = left;
 	dist = ft_flerp(t[0].z, t[1].z, bary.x) + ((t[2].z - t[0].z) * bary.y);
 	int start = ax;

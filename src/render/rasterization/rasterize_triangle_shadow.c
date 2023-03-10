@@ -10,33 +10,37 @@ static void sample_img(t_lighting *lighting, int x, int y, t_point_triangle poly
 	lighting->map->lightmap[y * (lighting->map->size.x) + x] = light_amount;
 }
 
+static void sample_pixel(t_lighting *lighting, int ax, int y, int start, int bx)
+{
+	ax = ft_clamp(ax, 0, lighting->map->size.x - 1);
+	y = ft_clamp(y, 0, lighting->map->size.y - 1);
+	if (lighting->map->lightmap[y * lighting->map->size.x + ax] != 0)
+	{
+		lighting->map->lightmap[y * lighting->map->size.x + ax] = 1;
+	}
+	else
+	{
+		if (ax == start)
+			lighting->map->lightmap[y * lighting->map->size.x + ax] = 100;
+		else if (ax + 1 == bx)
+		{
+			lighting->map->lightmap[y * lighting->map->size.x + ax] = 101;
+		}
+		else
+			lighting->map->lightmap[y * lighting->map->size.x + ax] = 255;
+	}
+}
+
 inline static void scanline(int ax, int bx, int y, t_lighting *lighting, t_point_triangle poly)
 {
-	t_vector3	tex;
-	t_vector2	bary;
-	t_vector2	left;
-	t_vector2	right;
-	float		dist;
-	float		steps;
-	t_vector2	*p = poly.p;
-	t_vector2	*t = poly.p;
-
-	left = barycentric_coordinates(p, (t_vector2){ax + 0.5f, y + 0.5f});
-	right = barycentric_coordinates(p, (t_vector2){bx + 0.5f, y + 0.5f});
-	bary = left;
+	ax--;
+	bx++;
 	int start = ax;
-	steps = bx - start;
-	while(ax < bx)
+
+	while(ax <= bx)
 	{
-		int tempx = ft_flerp(t[0].x, t[1].x, bary.x) + ((t[2].x - t[0].x) * bary.y);
-		int tempy = ft_flerp(t[0].y, t[1].y, bary.x) + ((t[2].y - t[0].y) * bary.y);
-		tempx = ft_clamp(tempx, 0, lighting->map->size.x - 1);
-		tempy = ft_clamp(tempy, 0, lighting->map->size.y - 1);
-		sample_img(lighting, ax, y, poly);
-		if (tempy != y || tempx != ax)
-			sample_img(lighting, tempx, tempy, poly);
+		sample_pixel(lighting, ax, y, start, bx);
 		ax++;
-		bary = vector2_lerp(left, right, (float)(ax - start) / steps);
 	}
 }
 
@@ -53,13 +57,18 @@ static void fill_point_tri_top(t_lighting *lighting, t_point_triangle triangle)
 	steps = p[0].y - p[1].y;
 	left = make_slope(p[1].x, p[0].x, steps);
 	right = make_slope(p[2].x, p[0].x, steps);
-	y = ceilf(p[1].y - 0.5f);
-	endy = ceilf(p[0].y - 0.5f);
-	while (y < endy)
-	{
+	y = ceilf(p[2].y - 0.5f);
+	endy = ceilf(p[0].y + 0.5f) + 1;
+	//left.location = left.step * ((float)y + 0.5f - p[1].y) + left.location;
+	//right.location = right.step * ((float)y + 0.5f - p[1].y) + right.location;
+	while (y <= endy)
+	{	
 		left.location = left.step * ((float)y + 0.5f - p[1].y) + p[1].x;
 		right.location = right.step * ((float)y + 0.5f - p[2].y) + p[2].x;
-		scanline(ceilf(left.location - 0.5f), ceilf(right.location + 0.5f), y, lighting, triangle);
+		int tempax = floorf(left.location - 0.5f);
+		int tempbx = ceilf(right.location + 0.5f);
+
+		scanline(tempax, tempbx, y, lighting, triangle);
 		y++;
 	}
 }
@@ -73,17 +82,329 @@ static void fill_point_tri_bot(t_lighting *lighting, t_point_triangle triangle)
 	t_step			right;
 	int				endy;
 
-	p = triangle.p;
+	p = triangle.p;		
 	steps = p[1].y - p[0].y;
 	left = make_slope(p[0].x, p[1].x, steps);
 	right = make_slope(p[0].x, p[2].x, steps);
 	y = ceilf(p[0].y - 0.5f);
-	endy = ceilf(p[1].y - 0.5f);
-	while (y < endy)
-	{
+	endy = ceilf(p[2].y + 0.5f) + 1;
+//	left.location = left.step * ((float)y + 0.5f - p[0].y) + left.location;
+	//right.location = right.step * ((float)y + 0.5f - p[0].y) + right.location;
+	while (y <= endy)
+	{	
 		left.location = left.step * ((float)y + 0.5f - p[0].y) + p[0].x;
 		right.location = right.step * ((float)y + 0.5f - p[0].y) + p[0].x;
-		scanline(ceilf(left.location - 0.5f), ceilf(right.location + 0.5f), y, lighting, triangle);
+		int tempax = floorf(left.location - 0.5f);
+		int tempbx = ceilf(right.location + 0.5f);
+
+		scanline(tempax, tempbx, y, lighting, triangle);
+		y++;
+	}
+}
+
+static void sample_pix(t_lighting *lighting, int ax, int y)
+{
+	ax = ft_clamp(ax, 0, lighting->map->size.x - 1);
+	y = ft_clamp(y, 0, lighting->map->size.y - 1);
+	lighting->map->lightmap[y * lighting->map->size.x + ax] = 255;
+}
+
+static float clockwise(t_vector2 *p)
+{
+	return ((p[1].x - p[0].x) * (p[2].y - p[0].y) - (p[2].x - p[0].x) * (p[1].y - p[0].y));
+}
+
+static bool less1(t_vector2 a, t_vector2 b, t_vector2 center)
+{
+	if (a.x - center.x >= 0 && b.x - center.x < 0)
+        return true;
+    if (a.x - center.x < 0 && b.x - center.x >= 0)
+        return false;
+    if (a.x - center.x == 0 && b.x - center.x == 0) {
+        if (a.y - center.y >= 0 || b.y - center.y >= 0)
+            return a.y > b.y;
+        return b.y > a.y;
+    }
+
+    // compute the cross product of vectors (center -> a) x (center -> b)
+    int det = (a.x - center.x) * (b.y - center.y) - (b.x - center.x) * (a.y - center.y);
+    if (det < 0)
+        return true;
+    if (det > 0)
+        return false;
+
+    // points a and b are on the same line from the center
+    // check which point is closer to the center
+    int d1 = (a.x - center.x) * (a.x - center.x) + (a.y - center.y) * (a.y - center.y);
+    int d2 = (b.x - center.x) * (b.x - center.x) + (b.y - center.y) * (b.y - center.y);
+    return d1 > d2;
+}
+
+void	rasterize_light(t_point_triangle triangle, t_lighting *lighting)
+{
+	t_vector2 min;
+	t_vector2 max;
+
+	//printf("%f\n", clockwise(triangle.p));
+	sort_point_uv_tri(triangle.p, triangle.t);
+	if (clockwise(triangle.p) <= -1.09f)
+	{
+		ft_swap(&triangle.p[0], &triangle.p[2], sizeof(t_vector2));
+		ft_swap(&triangle.t[0], &triangle.t[2], sizeof(t_vector3));
+	}
+	min = triangle.p[0];
+	max = triangle.p[0];
+	for (int i = 0; i < 3; i++)
+	{
+		if (max.x < triangle.p[i].x)
+			max.x = triangle.p[i].x;
+		if (max.y < triangle.p[i].y)
+			max.y = triangle.p[i].y;
+		if (min.x > triangle.p[i].x)
+			min.x = triangle.p[i].x;
+		if (min.y > triangle.p[i].y)
+			min.y = triangle.p[i].y;
+	}
+	//print_vector2(min);
+	//print_vector2(max);
+	printf("\n");
+	min.x = floorf(min.x - 0.5f);
+	min.y = floorf(min.y - 0.5f);
+	max.x = ceilf(max.x + 0.5f);
+	max.y = ceilf(max.y + 0.5f);
+	t_vector2 offset;
+	offset = vector2_sub(barycentric_coordinates(triangle.p, (t_vector2){0, 0}), barycentric_coordinates(triangle.p, (t_vector2){1, 1}));
+	offset = vector2_abs(offset);
+	offset = vector2_negative(offset);
+	bool test = false;
+	for (int y = min.y; y < max.y; y++)
+	{
+		for (int x = min.x; x < max.x; x++)
+		{
+			t_vector2 bary = barycentric_coordinates(triangle.p, (t_vector2){x, y});
+			bary = vector2_abs(bary);
+			if (bary.x >= offset.x && bary.y >= offset.y && bary.x + bary.y <= 1.0f -(offset.x + offset.y))
+			{
+				sample_img(lighting, ft_clamp(x, 0, lighting->map->size.x - 1), ft_clamp(y, 0, lighting->map->size.y - 1), triangle);
+			}
+		}
+	}
+}
+
+/*
+void	rasterize_light(t_point_triangle triangle, t_lighting *lighting)
+{
+	t_vector2 min;
+	t_vector2 max;
+
+	//printf("%f\n", clockwise(triangle.p));
+	t_vector2 center;
+	center = vector2_div(vector2_add(vector2_add(triangle.p[0], triangle.p[1]), triangle.p[2]), 3.0f);
+	t_vector2 *p = triangle.p;
+	t_vector3 *t = triangle.t;
+	int			s_x;
+	int			s_j;
+	t_vector2	temp_p;
+	t_vector3	temp_t;
+
+	s_x = 0;
+	s_j = 0;
+	while (s_x < 2)
+	{
+		while (s_j < 2 - s_x)
+		{
+			if (!less(p[s_j], p[s_j + 1], center))
+			{
+				temp_p = p[s_j];
+				p[s_j] = p[s_j + 1];
+				p[s_j + 1] = temp_p;
+
+				temp_t = t[s_j];
+				t[s_j] = t[s_j + 1];
+				t[s_j + 1] = temp_t;
+			}
+			s_j++;
+		}
+		s_j = 0;
+		s_x++;
+	}
+	min = triangle.p[0];
+	max = triangle.p[0];
+	for (int i = 1; i < 3; i++)
+	{
+		if (max.x < triangle.p[i].x)
+			max.x = triangle.p[i].x;
+		if (max.y < triangle.p[i].y)
+			max.y = triangle.p[i].y;
+		if (min.x > triangle.p[i].x)
+			min.x = triangle.p[i].x;
+		if (min.y > triangle.p[i].y)
+			min.y = triangle.p[i].y;
+	}
+	//print_vector2(min);
+	//print_vector2(max);
+	printf("\n");
+	min.x = floorf(min.x - 0.5f);
+	min.y = floorf(min.y - 0.5f);
+	max.x = ceilf(max.x + 0.5f);
+	max.y = ceilf(max.y + 0.5f);
+	t_vector2 offset;
+	offset = vector2_sub(barycentric_coordinates(triangle.p, (t_vector2){0, 0}), barycentric_coordinates(triangle.p, (t_vector2){1, 1}));
+	offset = vector2_abs(offset);
+	offset = vector2_negative(offset);
+	bool test = false;
+	for (int y = min.y; y < max.y; y++)
+	{
+		for (int x = min.x; x < max.x; x++)
+		{
+			t_vector2 bary = barycentric_coordinates(triangle.p, (t_vector2){x, y});
+			bary = vector2_abs(bary);
+			if (bary.x >= offset.x && bary.y >= offset.y && bary.x + bary.y <= 1.0f -(offset.x + offset.y))
+			{
+				test = true;
+				sample_pix(lighting, x, y);
+			}
+		}
+	}
+	if (test == false)
+	{
+		printf("%s %s\n\n", lighting->entity->object_name.str, lighting->entity->obj->name);
+		for (int i = 0; i < 3; i++)
+		{
+			print_vector2(triangle.p[i]);
+		}
+	}
+}
+void	rasterize_light(t_point_triangle triangle, t_lighting *lighting)
+{
+	t_vector2 min;
+	t_vector2 max;
+
+	//printf("%f\n", clockwise(triangle.p));
+	sort_point_uv_tri(triangle.p, triangle.t);
+	if (clockwise(triangle.p) <= -1.09f)
+	{
+		ft_swap(&triangle.p[1], &triangle.p[2], sizeof(t_vector2));
+		ft_swap(&triangle.t[1], &triangle.t[2], sizeof(t_vector3));
+	}
+	if (clockwise(triangle.p) == 0.0f)
+	{
+		for (int y = 0; y < lighting->map->size.y; y++)
+		{
+			for (int x = 0; x < lighting->map->size.x; x++)
+			{
+				lighting->map->lightmap[y * lighting->map->size.x + x] = 101;
+			}
+		}
+		return;
+	}
+	min = triangle.p[0];
+	max = triangle.p[0];
+	for (int i = 0; i < 3; i++)
+	{
+		if (max.x < triangle.p[i].x)
+			max.x = triangle.p[i].x;
+		if (max.y < triangle.p[i].y)
+			max.y = triangle.p[i].y;
+		if (min.x > triangle.p[i].x)
+			min.x = triangle.p[i].x;
+		if (min.y > triangle.p[i].y)
+			min.y = triangle.p[i].y;
+	}
+	//print_vector2(min);
+	//print_vector2(max);
+	printf("\n");
+	min.x = floorf(min.x - 0.5f);
+	min.y = floorf(min.y - 0.5f);
+	max.x = ceilf(max.x + 0.5f);
+	max.y = ceilf(max.y + 0.5f);
+	t_vector2 offset;
+	offset = vector2_sub(barycentric_coordinates(triangle.p, (t_vector2){0, 0}), barycentric_coordinates(triangle.p, (t_vector2){1, 1}));
+	offset = vector2_abs(offset);
+	offset = vector2_negative(offset);
+	bool test = false;
+	for (int y = min.y; y < max.y; y++)
+	{
+		for (int x = min.x; x < max.x; x++)
+		{
+			t_vector2 bary = barycentric_coordinates(triangle.p, (t_vector2){x, y});
+			bary = vector2_abs(bary);
+			if (bary.x >= offset.x && bary.y >= offset.y && bary.x + bary.y <= 1.0f -(offset.x + offset.y))
+			{
+				test = true;
+				sample_pix(lighting, x, y);
+			}
+		}
+	}
+	if (test == false)
+	{
+		printf("%s %s\n\n", lighting->entity->object_name.str, lighting->entity->obj->name);
+		for (int i = 0; i < 3; i++)
+		{
+			print_vector2(triangle.p[i]);
+		}
+	}
+}
+t_vector2 bary = barycentric_coordinates(triangle.p, (t_vector2){x, y});
+			bary = vector2_abs(bary);
+			if (bary.x >= offset.x && bary.y >= offset.y && bary.x + bary.y <= 1.0f -(offset.x + offset.y))
+			{
+				sample_pix(lighting, x, y);
+			}
+static void fill_point_tri_top(t_lighting *lighting, t_point_triangle triangle)
+{
+	t_vector2		*p;
+	int				y;
+	float			steps;
+	t_step			left;
+	t_step			right;
+	int				endy;
+
+	p = triangle.p;
+	steps = p[0].y - p[1].y;
+	left = make_slope(p[1].x, p[0].x, steps);
+	right = make_slope(p[2].x, p[0].x, steps);
+	y = ceilf(p[2].y - 0.5f);
+	endy = ceilf(p[0].y + 0.5f) + 1;
+	//left.location = left.step * ((float)y + 0.5f - p[1].y) + left.location;
+	//right.location = right.step * ((float)y + 0.5f - p[1].y) + right.location;
+	while (y <= endy)
+	{	
+		left.location = left.step * ((float)y + 0.5f - p[1].y) + p[1].x;
+		right.location = right.step * ((float)y + 0.5f - p[2].y) + p[2].x;
+		int tempax = floorf(left.location - 0.5f);
+		int tempbx = ceilf(right.location + 0.5f);
+
+		scanline(tempax, tempbx, y, lighting, triangle);
+		y++;
+	}
+}
+
+static void fill_point_tri_bot(t_lighting *lighting, t_point_triangle triangle)
+{
+	t_vector2		*p;
+	int				y;
+	float			steps;
+	t_step			left;
+	t_step			right;
+	int				endy;
+
+	p = triangle.p;		
+	steps = p[1].y - p[0].y;
+	left = make_slope(p[0].x, p[1].x, steps);
+	right = make_slope(p[0].x, p[2].x, steps);
+	y = ceilf(p[0].y - 0.5f);
+	endy = ceilf(p[2].y + 0.5f) + 1;
+//	left.location = left.step * ((float)y + 0.5f - p[0].y) + left.location;
+	//right.location = right.step * ((float)y + 0.5f - p[0].y) + right.location;
+	while (y <= endy)
+	{	
+		left.location = left.step * ((float)y + 0.5f - p[0].y) + p[0].x;
+		right.location = right.step * ((float)y + 0.5f - p[0].y) + p[0].x;
+		int tempax = floorf(left.location - 0.5f);
+		int tempbx = ceilf(right.location + 0.5f);
+
+		scanline(tempax, tempbx, y, lighting, triangle);
 		y++;
 	}
 }
@@ -106,7 +427,6 @@ void	rasterize_light(t_point_triangle triangle, t_lighting *lighting)
 	}
 }
 
-/*
 static void fill_point_tri_top(t_lighting *lighting, t_point_triangle triangle)
 {
 	t_vector2		*p;
