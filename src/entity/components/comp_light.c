@@ -159,6 +159,14 @@ void	comp_light_gui_edit(t_entity *entity, t_autogui *gui, t_world *world)
 					printf("\n");
 				}
 				light->cm_state = i + 1;
+				if (light->cm_state == cm_1)
+					light->clr = INT_MAX;
+				else if (light->cm_state == cm_2)
+					light->clr = CLR_RED;
+				else if (light->cm_state == cm_3)
+					light->clr = CLR_BLUE;
+				else if (light->cm_state == cm_4)
+					light->clr = CLR_GREEN;
 			}
 			i++;
 		}
@@ -214,6 +222,7 @@ void	comp_light_allocate(t_entity *entity, t_world *world)
 	light->cubemap.resolution.x = 2000;
 	light->cubemap.resolution.y = 2000;
 	light->ignoreself = false;
+	light->clr = INT_MAX;
 	matproj = matrix_makeprojection(90.0f, light->cubemap.resolution.y / light->cubemap.resolution.x, 2.0f, 1000.0f);
 	i = 0;
 	while (i < 6)

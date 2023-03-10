@@ -83,8 +83,6 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 		ent = world->entitycache.sorted_entities[i];
 		if (ent->status != es_free)
 		{
-			if (ent->id == 13)
-				draw_map(ent, sdl);
 			if(ent->component.func_update != NULL)
 				ent->component.func_update(ent, world);
 			if (ent->status == es_active && !ent->hidden)

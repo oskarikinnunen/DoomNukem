@@ -28,21 +28,20 @@ uint8_t	average(t_point sample, t_map map)
 		}
 		subsample.y++;
 	}
-	return ((uint8_t)(avg / hit));
+	return ((uint8_t)ft_clamp(avg / hit, 0, 255));
 }
 
 static void sample_pixel(int x, int y, int index, t_entity *entity)
 {
-	uint8_t		light;
+	uint32_t	light;
 	uint32_t	clr;
 	t_img		*img;
 
 	img = entity->obj->materials[index].img;
-//	light = average((t_point){x, y}, entity->map[index]);
+	//light = average((t_point){x, y}, entity->map[index]);
 	light = entity->map->lightmap[y * entity->map->size.x + x];
-	light = ft_clamp(light, 0, 255);
 	clr = img->data[(y % (img->size.y)) * img->size.x + (x % (img->size.x))];
-
+	//light = 200;
 	entity->map[index].data[y * entity->map[index].size.x + x] = update_pixel_brightness(light, clr);
 }
 

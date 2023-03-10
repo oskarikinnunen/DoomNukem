@@ -7,99 +7,8 @@ static void sample_img(t_lighting *lighting, int x, int y, t_point_triangle poly
 
 	loc = texcoord_to_loc(poly.t, poly.p, vector2_add_xy((t_vector2){x, y}, 0.0f));
 	light_amount = get_lighting_for_pixel(&lighting->world->entitycache, loc);
+	//lighting->map->lightmap[y * lighting->map->size.x + x] += 122;
 	lighting->map->lightmap[y * (lighting->map->size.x) + x] = light_amount;
-}
-
-static void sample_pixel(t_lighting *lighting, int ax, int y, int start, int bx)
-{
-	ax = ft_clamp(ax, 0, lighting->map->size.x - 1);
-	y = ft_clamp(y, 0, lighting->map->size.y - 1);
-	if (lighting->map->lightmap[y * lighting->map->size.x + ax] != 0)
-	{
-		lighting->map->lightmap[y * lighting->map->size.x + ax] = 1;
-	}
-	else
-	{
-		if (ax == start)
-			lighting->map->lightmap[y * lighting->map->size.x + ax] = 100;
-		else if (ax + 1 == bx)
-		{
-			lighting->map->lightmap[y * lighting->map->size.x + ax] = 101;
-		}
-		else
-			lighting->map->lightmap[y * lighting->map->size.x + ax] = 255;
-	}
-}
-
-inline static void scanline(int ax, int bx, int y, t_lighting *lighting, t_point_triangle poly)
-{
-	ax--;
-	bx++;
-	int start = ax;
-
-	while(ax <= bx)
-	{
-		sample_pixel(lighting, ax, y, start, bx);
-		ax++;
-	}
-}
-
-static void fill_point_tri_top(t_lighting *lighting, t_point_triangle triangle)
-{
-	t_vector2		*p;
-	int				y;
-	float			steps;
-	t_step			left;
-	t_step			right;
-	int				endy;
-
-	p = triangle.p;
-	steps = p[0].y - p[1].y;
-	left = make_slope(p[1].x, p[0].x, steps);
-	right = make_slope(p[2].x, p[0].x, steps);
-	y = ceilf(p[2].y - 0.5f);
-	endy = ceilf(p[0].y + 0.5f) + 1;
-	//left.location = left.step * ((float)y + 0.5f - p[1].y) + left.location;
-	//right.location = right.step * ((float)y + 0.5f - p[1].y) + right.location;
-	while (y <= endy)
-	{	
-		left.location = left.step * ((float)y + 0.5f - p[1].y) + p[1].x;
-		right.location = right.step * ((float)y + 0.5f - p[2].y) + p[2].x;
-		int tempax = floorf(left.location - 0.5f);
-		int tempbx = ceilf(right.location + 0.5f);
-
-		scanline(tempax, tempbx, y, lighting, triangle);
-		y++;
-	}
-}
-
-static void fill_point_tri_bot(t_lighting *lighting, t_point_triangle triangle)
-{
-	t_vector2		*p;
-	int				y;
-	float			steps;
-	t_step			left;
-	t_step			right;
-	int				endy;
-
-	p = triangle.p;		
-	steps = p[1].y - p[0].y;
-	left = make_slope(p[0].x, p[1].x, steps);
-	right = make_slope(p[0].x, p[2].x, steps);
-	y = ceilf(p[0].y - 0.5f);
-	endy = ceilf(p[2].y + 0.5f) + 1;
-//	left.location = left.step * ((float)y + 0.5f - p[0].y) + left.location;
-	//right.location = right.step * ((float)y + 0.5f - p[0].y) + right.location;
-	while (y <= endy)
-	{	
-		left.location = left.step * ((float)y + 0.5f - p[0].y) + p[0].x;
-		right.location = right.step * ((float)y + 0.5f - p[0].y) + p[0].x;
-		int tempax = floorf(left.location - 0.5f);
-		int tempbx = ceilf(right.location + 0.5f);
-
-		scanline(tempax, tempbx, y, lighting, triangle);
-		y++;
-	}
 }
 
 static void sample_pix(t_lighting *lighting, int ax, int y)
@@ -109,35 +18,10 @@ static void sample_pix(t_lighting *lighting, int ax, int y)
 	lighting->map->lightmap[y * lighting->map->size.x + ax] = 255;
 }
 
+//>= 1.0f == counterclockwise, <= -1.0f == clockwise and 0.0f is collinear
 static float clockwise(t_vector2 *p)
 {
 	return ((p[1].x - p[0].x) * (p[2].y - p[0].y) - (p[2].x - p[0].x) * (p[1].y - p[0].y));
-}
-
-static bool less1(t_vector2 a, t_vector2 b, t_vector2 center)
-{
-	if (a.x - center.x >= 0 && b.x - center.x < 0)
-        return true;
-    if (a.x - center.x < 0 && b.x - center.x >= 0)
-        return false;
-    if (a.x - center.x == 0 && b.x - center.x == 0) {
-        if (a.y - center.y >= 0 || b.y - center.y >= 0)
-            return a.y > b.y;
-        return b.y > a.y;
-    }
-
-    // compute the cross product of vectors (center -> a) x (center -> b)
-    int det = (a.x - center.x) * (b.y - center.y) - (b.x - center.x) * (a.y - center.y);
-    if (det < 0)
-        return true;
-    if (det > 0)
-        return false;
-
-    // points a and b are on the same line from the center
-    // check which point is closer to the center
-    int d1 = (a.x - center.x) * (a.x - center.x) + (a.y - center.y) * (a.y - center.y);
-    int d2 = (b.x - center.x) * (b.x - center.x) + (b.y - center.y) * (b.y - center.y);
-    return d1 > d2;
 }
 
 void	rasterize_light(t_point_triangle triangle, t_lighting *lighting)
@@ -145,16 +29,15 @@ void	rasterize_light(t_point_triangle triangle, t_lighting *lighting)
 	t_vector2 min;
 	t_vector2 max;
 
-	//printf("%f\n", clockwise(triangle.p));
 	sort_point_uv_tri(triangle.p, triangle.t);
-	if (clockwise(triangle.p) <= -1.09f)
+	if (clockwise(triangle.p) >= -1.0f)
 	{
 		ft_swap(&triangle.p[0], &triangle.p[2], sizeof(t_vector2));
 		ft_swap(&triangle.t[0], &triangle.t[2], sizeof(t_vector3));
 	}
 	min = triangle.p[0];
 	max = triangle.p[0];
-	for (int i = 0; i < 3; i++)
+	for (int i = 1; i < 3; i++)
 	{
 		if (max.x < triangle.p[i].x)
 			max.x = triangle.p[i].x;
@@ -165,24 +48,19 @@ void	rasterize_light(t_point_triangle triangle, t_lighting *lighting)
 		if (min.y > triangle.p[i].y)
 			min.y = triangle.p[i].y;
 	}
-	//print_vector2(min);
-	//print_vector2(max);
-	printf("\n");
-	min.x = floorf(min.x - 0.5f);
-	min.y = floorf(min.y - 0.5f);
-	max.x = ceilf(max.x + 0.5f);
-	max.y = ceilf(max.y + 0.5f);
+	min.x = floorf(min.x);
+	min.y = floorf(min.y);
+	max.x = ceilf(max.x);
+	max.y = ceilf(max.y);
 	t_vector2 offset;
 	offset = vector2_sub(barycentric_coordinates(triangle.p, (t_vector2){0, 0}), barycentric_coordinates(triangle.p, (t_vector2){1, 1}));
 	offset = vector2_abs(offset);
 	offset = vector2_negative(offset);
-	bool test = false;
 	for (int y = min.y; y < max.y; y++)
 	{
 		for (int x = min.x; x < max.x; x++)
 		{
 			t_vector2 bary = barycentric_coordinates(triangle.p, (t_vector2){x, y});
-			bary = vector2_abs(bary);
 			if (bary.x >= offset.x && bary.y >= offset.y && bary.x + bary.y <= 1.0f -(offset.x + offset.y))
 			{
 				sample_img(lighting, ft_clamp(x, 0, lighting->map->size.x - 1), ft_clamp(y, 0, lighting->map->size.y - 1), triangle);

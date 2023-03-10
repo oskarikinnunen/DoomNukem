@@ -36,6 +36,7 @@ typedef struct	s_light
 	t_cubemap_state	cm_state;	
 	t_cubemap		cubemap;
 	bool			ignoreself;
+	uint32_t		clr;
 }	t_light;
 
 typedef struct s_pointlight

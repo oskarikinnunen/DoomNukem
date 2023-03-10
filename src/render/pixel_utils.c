@@ -1,11 +1,12 @@
 #include "doomnukem.h"
 
-uint32_t	update_pixel_brightness(uint8_t light, uint32_t clr)
+uint32_t	update_pixel_brightness(uint32_t light, uint32_t clr)
 {
-    Uint32 alpha = clr & 0xFF000000;
-    Uint32 red = ((clr & 0x00FF0000) * light) >> 8;
-    Uint32 green = ((clr & 0x0000FF00) * light) >> 8;
-    Uint32 blue = ((clr & 0x000000FF) * light) >> 8;
+   // light = CLR_BLUE;
+    uint32_t alpha = clr & 0xFF000000;
+    uint32_t red = ((clr & 0x00FF0000) * (uint8_t)((light & 0xFF0000) >> 16)) >> 8;
+    uint32_t green = ((clr & 0x0000FF00) * (uint8_t)((light & 0xFF00) >> 8)) >> 8;
+    uint32_t blue = ((clr & 0x000000FF) * (uint8_t)((light & 0xFF))) >> 8;
 
     clr = alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF);
     return(clr);
@@ -75,10 +76,25 @@ uint32_t	get_lighting_for_pixel(t_entitycache *cache, t_vector3 location)
                 p.y = ft_clamp(p.y, 0, light->cubemap.resolution.y);
 
                 int test = p.y * light->cubemap.resolution.x + p.x;
-                if (1.0f / q.w >= light->cubemap.shadowmaps[j][test] * 0.98f && q.w < light->radius)
+                if (1.0f / q.w >= light->cubemap.shadowmaps[j][test] * 0.98f && q.w < light->radius) //vector distance q.w is wrong as it is the plane distance
                 {
                     float delta = 1.0f - (q.w / light->radius);
-                    light_amount += delta * 255.0f;
+                    uint32_t clr = light->clr;
+                    uint8_t lum = ft_clamp(delta * 255.0f, 0, 255);
+
+                    uint32_t alpha = clr & 0xFF000000;
+                    uint32_t red = ((clr & 0x00FF0000) * lum) >> 8;
+                    uint32_t green = ((clr & 0x0000FF00) * lum) >> 8;
+                    uint32_t blue = ((clr & 0x000000FF) * lum) >> 8;
+                    clr = alpha | (red & 0x00FF0000) | (green & 0x0000FF00) | (blue & 0x000000FF);
+
+                    uint8_t channel1 = ft_clamp((clr & 0xFF) + (light_amount & 0xFF), 0, 255);
+                    uint8_t channel2 = ft_clamp(((clr >> 8) & 0xFF) + ((light_amount >> 8) & 0xFF), 0, 255);
+                    uint8_t channel3 = ft_clamp(((clr >> 16) & 0xFF) + ((light_amount >> 16) & 0xFF), 0, 255);
+                    uint8_t channel4 = ft_clamp(((clr >> 24) & 0xFF) + ((light_amount >> 24) & 0xFF), 0, 255);
+
+                    light_amount = channel1 | (channel2 << 8) | (channel3 << 16) | (channel4 << 24);
+                   // light_amount = CLR_GREEN;
                 }
 			}
 			found++;
