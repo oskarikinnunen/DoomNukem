@@ -143,6 +143,7 @@ void	draw_triangle(t_sdlcontext *sdl, t_point p1, t_point p2, t_point p3, uint32
 	drawline(*sdl, p3, p1, clr);
 }*/
 
+//TODO: maybe rename scale to size
 void	draw_image(t_sdlcontext sdl, t_point pos, t_img img, t_point scale)
 {
 	t_point		pixel;

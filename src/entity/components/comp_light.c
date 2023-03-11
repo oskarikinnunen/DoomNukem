@@ -179,6 +179,29 @@ void	comp_light_gui_edit(t_entity *entity, t_autogui *gui, t_world *world)
 		render_gizmo3d(world->sdl, vector3_add(entity->transform.position, light->origin), 50, CLR_RED);
 		render_ray3D(world->sdl, vector3_add(entity->transform.position, light->origin), vector3_add(vector3_mul(light->cubemap.cameras[light->cm_state - 1].lookdir, 25.0f), vector3_add(entity->transform.position, light->origin)), INT_MAX);
 	}
+	t_img *img = get_image_by_name(*world->sdl, "car_red.cng");
+	draw_image(*world->sdl, point_zero(), *img, img->size);
+
+	
+	t_buttonreturn	br;
+
+	br.rect.position = point_zero();
+	br.rect.size = img->size;
+	br.clicked = false;
+	if (pointrectanglecollision(gui->hid->mouse.pos, br.rect))
+	{
+		//drawrectangle(*gui->sdl, br.rect, AMBER_2);
+		if (mouse_clicked(gui->hid->mouse, MOUSE_LEFT))
+		{
+			br.clicked = true;
+			gui->hid->mouse.click_unhandled = false;
+		}
+	}
+	if (br.clicked)
+	{
+		light->clr = ((uint32_t *)world->sdl->surface->pixels)[gui->hid->mouse.pos.y * world->sdl->window_w + gui->hid->mouse.pos.x];
+	}
+	//free(img->data);
 	t_mat4x4 matproj = matrix_makeprojection(90.0f, light->cubemap.resolution.y / light->cubemap.resolution.x, 2.0f, 1000.0f);
 	i = 0;
 	while (i < 6)

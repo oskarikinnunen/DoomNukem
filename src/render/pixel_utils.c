@@ -12,13 +12,28 @@ uint32_t	update_pixel_brightness(uint32_t light, uint32_t clr)
     return(clr);
 }
 
-inline t_step	make_slope(float ax, float bx, float steps)
+inline t_step	make_slope(float start, float end, float steps)
 {
 	t_step temp;
 
-	temp.location = ax;
-	temp.step = (bx - ax) / steps;
+	temp.location = start;
+	temp.step = (end - start) / steps;
 	return(temp);
+}
+
+//TODO: can we use numbers in function names dunno
+inline t_stepv3 make_uv_slopev3(int start, int end, int y, t_point_triangle triangle)
+{
+	t_stepv3	slope;
+	t_vector2	left;
+	t_vector2	right;
+
+	left = barycentric_coordinates(triangle.p, (t_vector2){start + 0.5f, y + 0.5f});
+	right = barycentric_coordinates(triangle.p, (t_vector2){end + 0.5f, y + 0.5f});
+	slope.location = get_vector3_from_barycentric(triangle.t, left);
+	slope.step = get_vector3_from_barycentric(triangle.t, right);
+	slope.step = vector3_div(vector3_sub(slope.step, slope.location), end - start);
+	return(slope);
 }
 
 uint32_t	get_lighting_for_pixel(t_entitycache *cache, t_vector3 location)
@@ -72,8 +87,8 @@ uint32_t	get_lighting_for_pixel(t_entitycache *cache, t_vector3 location)
                 p.x = q.v.x * (light->cubemap.resolution.x * 0.5f);
                 p.y = q.v.y * (light->cubemap.resolution.y * 0.5f);
 
-                p.x = ft_clamp(p.x, 0, light->cubemap.resolution.x);
-                p.y = ft_clamp(p.y, 0, light->cubemap.resolution.y);
+                p.x = ft_clamp(p.x, 0, light->cubemap.resolution.x - 1);
+                p.y = ft_clamp(p.y, 0, light->cubemap.resolution.y - 1);
 
                 int test = p.y * light->cubemap.resolution.x + p.x;
                 if (1.0f / q.w >= light->cubemap.shadowmaps[j][test] * 0.98f && q.w < light->radius) //vector distance q.w is wrong as it is the plane distance

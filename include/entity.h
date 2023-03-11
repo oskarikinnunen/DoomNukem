@@ -126,7 +126,8 @@ void	create_dynamic_map_for_entity(t_entity *entity, struct s_world *world);
 uint32_t	update_pixel_brightness(uint32_t light, uint32_t clr);
 uint32_t	get_lighting_for_pixel(t_entitycache *cache, t_vector3 location);
 t_vector3	texcoord_to_loc(t_vector3 ws[3], t_vector2 uv[3], t_vector2 p);
-t_step		make_slope(float ax, float bx, float steps);
+t_step		make_slope(float start, float end, float steps);
+t_stepv3	make_uv_slopev3(int start, int end, int y, t_point_triangle triangle);
 
 /* LIGHTING */
 void render_zbuffer(t_lighting *lighting, t_entity *entity);
