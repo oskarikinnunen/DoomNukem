@@ -87,7 +87,11 @@ void create_lightmap_for_entity(t_entity *entity, struct s_world *world)
 		entity->map = NULL;
 		return;
 	}
-	entity->map = malloc(sizeof(t_map) * entity->obj->material_count);
+	if (!entity->map)
+	{
+		entity->map = malloc(sizeof(t_map) * entity->obj->material_count);
+		bzero(entity->map, sizeof(t_map) * entity->obj->material_count);
+	}
 	if (entity->map == NULL)
 		doomlog(LOG_FATAL, "Malloc fail in bake_lighting.c");
 	lighting.world = world;
@@ -118,6 +122,10 @@ void create_lightmap_for_entity(t_entity *entity, struct s_world *world)
 			max.y = fmaxf(max.y, 1.0f);
 			entity->map[index].size = (t_point){ceilf(max.x), ceilf(max.y)};
 			entity->map[index].img_size = img->size;
+			if (entity->map[index].data)
+				free(entity->map[index].data);
+			if (entity->map[index].lightmap)
+				free(entity->map[index].lightmap);
 			entity->map[index].data = malloc(sizeof(uint32_t) * entity->map[index].size.x * entity->map[index].size.y);
 			entity->map[index].lightmap = malloc(sizeof(uint32_t) * entity->map[index].size.x * entity->map[index].size.y);
 			if (entity->map[index].data == NULL)
