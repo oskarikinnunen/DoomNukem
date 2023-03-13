@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/13 17:23:53 by raho             ###   ########.fr        #
+#    Updated: 2023/03/13 17:26:52 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -156,6 +156,7 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		render/text.c \
 		entity/components/comp_mechasuit.c \
 		entity/components/comp_watercollider.c \
+		entity/components/comp_npc_state.c \
 		entity/components/comp_light.c \
 		entity/components/comp_healthpack.c \
 		entity/components/comp_npc_civilian.c \

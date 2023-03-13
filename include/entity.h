@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/02 14:29:32 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/07 13:07:20 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ typedef enum e_entitystatus
 }	t_entitystatus;
 
 #include "gamestring.h"
+
 typedef struct s_entity
 {
 	t_gamestring	object_name;

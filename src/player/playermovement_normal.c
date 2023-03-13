@@ -28,13 +28,17 @@ static float	current_maxvelocity(t_player *player)
 	return (PLAYER_WALKSPEED + (player->input.run * (PLAYER_RUNSPEED - PLAYER_WALKSPEED)));
 }
 
+t_bound	get_bound(t_characterphysics *cp, t_world *world);
+
 static void	crouchupdate(t_player *player, t_world *world)
 {
+	t_bound	bound;
+
 	if (player->input.crouch)
 	{
-		if (!player->crouchjumped && !player->isgrounded && player->cp.new_velocity.z >= 0)
+		if (!player->crouchjumped && !player->isgrounded && player->cp.velocity.z >= 0)
 		{
-			player->cp.new_velocity.z = 0.125f;
+			player->cp.velocity.z = 0.125f;
 			player->crouchjumped = true;
 		}
 		player->height = ft_fmovetowards(player->height, PLAYER_CROUCHHEIGHT, PLAYER_CROUCHSPEED * world->clock.delta);
@@ -44,6 +48,11 @@ static void	crouchupdate(t_player *player, t_world *world)
 		player->height = ft_fmovetowards(player->height, PLAYER_HEIGHT, PLAYER_CROUCHSPEED * world->clock.delta);
 		if (player->isgrounded)
 			player->crouchjumped = false;
+	}
+	if (world->clock.time > 1000)
+	{
+		bound = get_bound(&player->cp, world);
+		player->height = ft_clampf(player->height, PLAYER_CROUCHHEIGHT, bound.max - player->cp.position->z);
 	}
 }
 
@@ -92,9 +101,9 @@ void	play_footstepsound(t_player *player, t_world *world)
 		source.play_always = true;
 		_audiosource_start(world->sdl, &source, &player->transform.position);
 	}
-	float lerp = vector2_magnitude(v3tov2(player->cp.new_velocity)) * 10.0f; //TODO: use phys
+	float lerp = vector2_magnitude(v3tov2(player->cp.velocity)) * 10.0f; //TODO: use phys
 	source.volume = lerp * 0.20f;
-	if (!player->cp.new_isgrounded)
+	if (!player->cp.isgrounded)
 	{
 		source.volume = 0.0f;
 		return ;
@@ -125,7 +134,7 @@ void	play_landingsound(t_player *player, t_world *world)
 	static	t_audiosource source;
 	float	vlerp;
 	
-	if (player->cp.new_impactvelocity.z > 0.0f)
+	if (player->cp.impactvelocity.z > 0.0f)
 	{
 		source.volume = 0.2f;
 		source.sample = random_climbsound(world);
@@ -134,7 +143,7 @@ void	play_landingsound(t_player *player, t_world *world)
 	}
 	else
 	{
-		float vlerp = player->cp.new_impactvelocity.z / (GRAVITY);
+		float vlerp = player->cp.impactvelocity.z / (GRAVITY);
 		source.volume = ft_clampf(vlerp, 0.2f, 0.4f);
 		source._realrange = ft_flerp(40.0f, 160.0f, vlerp);
 		if (vlerp < 0.38f)
@@ -145,41 +154,59 @@ void	play_landingsound(t_player *player, t_world *world)
 	}
 }
 
-void	playermovement_normal(t_player *player, t_world *world)
+void	player_rotate(t_player *player)
 {
-	t_vector2	velocity_xy;
-	t_vector2	add_velocity;
-
 	player->transform.rotation = vector3_sub(player->transform.rotation, v2tov3(player->input.turn));
 	player->transform.rotation.y = ft_clampf(player->transform.rotation.y, -RAD90 * 0.99f, RAD90 * 0.99f);
 	player->lookdir = lookdirection((t_vector2){player->transform.rotation.x, player->transform.rotation.y});
+}
+
+void	player_move(t_player *player, t_world *world)
+{
+	t_vector2	velocity_xy;
+	
 	velocity_xy = vector2_mul(normalized_inputvector(player->input, *player), PLAYER_ACCELERATION * world->clock.delta);
 	capsule_add_xy_velocity(velocity_xy, &player->cp, world);
-	crouchupdate(player, world);
-	if (player->input.jump && player->cp.new_isgrounded && world->clock.time > player->lastjumptime + JUMP_DELAY)
+}
+
+void	player_jump(t_player *player, t_world *world)
+{
+	if (player->input.jump && player->cp.isgrounded && world->clock.time > player->lastjumptime + JUMP_DELAY)
 	{
-		/*if (vector2_magnitude(velocity_xy) > PLAYER_WALKSPEED)
-			player->velocity.z = 0.12f;
-		else
-		{
-			add_velocity = vector2_mul(normalized_inputvector(player->input, *player), 0.005f * world->clock.delta);
-			player->velocity.x += add_velocity.x;
-			player->velocity.y += add_velocity.y;
-			//player->velocity.z = 0.065f;
-		}*/
-		player->cp.new_velocity.z = 0.065f;
+		player->cp.velocity.z = 0.065f;
 		player->transform.position.z += 0.1f;
 		start_anim(&player->jump, anim_forwards);
 		player->lastjumptime = world->clock.time;
 	}
 	if (player->jump.active)
 		update_anim(&player->jump, world->clock.delta);
-	//collision_movement(player, vector3_mul(player->velocity, world->clock.delta), world);
+}
+
+void	player_update_animations(t_player *player, t_world *world)
+{
+	if (player->jump.active)
+		update_anim(&player->jump, world->clock.delta);
+}
+
+void	player_ceiling_check(t_player *player)
+{
+	if (player->cp.ceilingtrigger)
+	{
+		player->jump.active = false;
+		player->cp.ceilingtrigger = false;
+	}
+}
+
+void	playermovement_normal(t_player *player, t_world *world)
+{
+	player_update_physics(player, world);
+	player_rotate(player);
+	player_move(player, world);
+	crouchupdate(player, world);
+	player_jump(player, world);
+	player_update_animations(player, world);
 	player_update_physics(player, world);
 	capsule_applygravity_new(&player->cp, world);
-	//capsule_applygravity(player_physics(player), world);
-	//if (player->landingtrigger && (player->landingtrigger = false, 1))
-	//	play_landingsound(player, world);
 	play_footstepsound(player, world);
-	capsule_damp(&player->cp, world);
+	player_ceiling_check(player);
 }

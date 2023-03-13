@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/28 15:29:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/07 16:11:00 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,11 @@ t_vector2	vector2_abs(t_vector2 v);
 
 //returns true if v1 == v2 in the error range of epsilon
 bool		vector2_cmp_epsilon(t_vector2 v1, t_vector2 v2, float epsilon);
+
+
+struct s_line;
+//returns distance of vec along line
+float	vector2_dist_along_line(t_vector2 vec, struct s_line line);
 
 //returns float from 0 to 1 depending on where the line intersected plane. Pass t_vector3 plane_p location and t_vector3 plane_n normalised, currently function does normalise plane_n just in case, but it will be changed later.
 float	vector2_line_intersect_plane(t_vector2 plane_p, t_vector2 plane_n, t_vector2 start, t_vector2 end);

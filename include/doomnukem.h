@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/13 17:23:27 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/13 17:27:00 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ typedef enum e_gamemode
 	MODE_PLAY,
 	MODE_EDITOR
 }	t_gamemode;
-
+//
 typedef struct s_world
 {
 	char				name[32];
@@ -122,6 +122,7 @@ typedef struct s_world
 	t_list				*prefabs; //TODO: move to editor
 	t_lighting			lighting;
 	t_list				*roomlist;
+	t_list				*ramps;
 	t_entitycache		entitycache;
 	t_entity			skybox;
 	bool				ceiling_toggle;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector2_complex.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 11:43:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/21 17:13:26 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/08 14:50:37 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,24 @@ float vector2_fdist_to_plane(t_vector2 p, t_vector2 plane_n, t_vector2 plane_p)
 t_vector2	vector2_abs(t_vector2 v)
 {
 	return((t_vector2){fabsf(v.x), fabsf(v.y)});
+}
+
+
+static t_vector2 vector2_realdot(t_vector2 vec)
+{
+	
+}
+
+#include "room.h" //Has line definition... TODO: move line to shapes.h
+
+float	vector2_dist_along_line(t_vector2 vec, t_line line)
+{
+	t_vector2	line_s;
+	t_vector2	vec_s;
+
+	line_s = vector2_sub(line.start, line.end);
+	vec_s = vector2_sub(vec, line.start);
+	return (ft_clampf(-vector2_dot(vec_s, line_s) / vector2_dot(line_s, line_s), 0.0f, 1.0f));
 }
 
 bool		vector2_cmp_epsilon(t_vector2 v1, t_vector2 v2, float epsilon)

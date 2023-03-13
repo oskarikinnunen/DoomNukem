@@ -71,6 +71,30 @@ static int handleinput(t_hid_info	*hid)
 }
 
 #include "input.h"
+static void debug_ramps(t_game *game)
+{
+	t_list			*l;
+	t_vector3_tri	*tri;
+	int				i;
+
+	l = game->world.ramps;
+	i = 0;
+	while (l != NULL)
+	{
+		tri = (t_vector3_tri *)l->content;
+		if (i % 2 == 0)
+		{
+			render_ray3D(game->world.sdl, tri->c, tri->a, CLR_RED);
+		} else {
+			render_ray3D(game->world.sdl, tri->b, tri->c, CLR_BLUE);
+		}
+			
+		//render_ray3D(game->world.sdl, tri->b, tri->c, CLR_RED);
+		//render_ray3D(game->world.sdl, tri->c, tri->a, CLR_RED);
+		i++;
+		l = l->next;
+	}
+}
 /*main game loop*/
 static int gameloop(t_sdlcontext sdl, t_game game)
 {
@@ -96,6 +120,7 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 			update_world3d(&game.world, &sdl.render);
 			//FPS COUNTER
 			print_text(&sdl, s_itoa(game.world.clock.fps), (t_point){sdl.window_w - 80, 10});
+			debug_ramps(&game);
 			draw_player_hud(&game.world);
 			memcpy(sdl.window_surface->pixels, sdl.surface->pixels, sizeof(uint32_t) * sdl.window_w * sdl.window_h);
 			if (SDL_UpdateWindowSurface(sdl.window) < 0)
@@ -141,7 +166,47 @@ static t_vector3 find_playerspawn(t_world *world)
 	return (result);
 }
 
+//TODO: this can use entity->worldvertices once that is in the main branch, for now this'll use this
+//Defined in editor_raycast.c
+t_vector3_tri	worldspace_tri(t_entity *entity, int index);
 
+static void world_add_ramp(t_world *world, t_entity *entity)
+{
+	int				i;
+	t_vector3_tri	tri;
+
+	i = 0;
+	while (i < entity->obj->face_count)
+	{
+		if (i == 4 || i == 7)
+		{
+			tri = worldspace_tri(entity, i);
+			list_push(&world->ramps, &tri, sizeof(tri));
+		}
+		i++;
+	}
+}
+
+//Find Ramp colliders?
+static void ramps_create(t_world *world)
+{
+	t_entitycache	*cache;
+	t_object		*ramp;
+
+	int				i;
+	//Go through all the objects, if the name has "_ramp", then go through the triangles
+	cache = &world->entitycache;
+	i = 0;
+	ramp = get_object_by_name(*world->sdl, "concrete_ramp.obj");
+	while (i < cache->alloc_count)
+	{
+		if (cache->entities[i].obj == ramp)
+		{
+			world_add_ramp(world, &cache->entities[i]);
+		}
+		i++;
+	}
+}
 //Resetlevel??
 /*setup and call gameloop*/
 int playmode(t_sdlcontext sdl)
@@ -156,6 +221,7 @@ int playmode(t_sdlcontext sdl)
 	game.world = load_world_args("leveltest_bu", &sdl, LOAD_ARG_FULL);
 	game.world.gamemode = MODE_PLAY;
 	create_navmesh(&game.world);
+	ramps_create(&game.world);
 	player_init(&game.player, &sdl, &game.world);
 	game.player.transform.position = find_playerspawn(&game.world);
 	sdl.fog = true;

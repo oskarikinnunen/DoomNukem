@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/03 16:39:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/09 19:15:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,18 +97,18 @@ void player_gun_raycast(t_player *player, t_world *world)
 					npc_play_sound(info.hit_entity, world, "npc_death2.wav");
 			}
 			hit_npc->hit = true;
-			hit_npc->phys.new_velocity = vector3_normalise(vector3_sub(info.hit_entity->transform.position, player->headposition));
-			hit_npc->phys.new_velocity = vector3_mul(hit_npc->phys.new_velocity, 0.3f);
-			hit_npc->phys.new_velocity.z = 0.0f;
+			hit_npc->phys.velocity = vector3_normalise(vector3_sub(info.hit_entity->transform.position, player->headposition));
+			hit_npc->phys.velocity = vector3_mul(hit_npc->phys.velocity, 0.3f);
+			hit_npc->phys.velocity.z = 0.0f;
 			if (hit_npc->state == NPC_STATE_DEAD)
 			{
-				hit_npc->phys.new_velocity = vector3_mul(hit_npc->phys.new_velocity, 0.25f);
-				hit_npc->phys.new_velocity.z = 0.055f;
+				hit_npc->phys.velocity = vector3_mul(hit_npc->phys.velocity, 0.25f);
+				hit_npc->phys.velocity.z = 0.055f;
 			}
 				
 			else
 			{
-				hit_npc->phys.new_velocity = vector3_mul(hit_npc->phys.new_velocity, 0.38f);
+				hit_npc->phys.velocity = vector3_mul(hit_npc->phys.velocity, 0.38f);
 			}
 			printf("hit_npc health %i \n", hit_npc->health);
 		}
@@ -226,7 +226,7 @@ void	updateguntransform(t_player *player, t_world *world)
 		gun->entity->transform.position = vector3_add(gun->entity->transform.position, vector3_mul(vector3_up(), gun->shoot_anim.lerp * gun->stats.recoiljump.y));
 	//bobbing:
 		gun->entity->transform.position.z += vector2_magnitude(player->input.move) * cosf((world->clock.time * 0.007f)) * 0.05f;
-		gun->entity->transform.position.z = ft_fmovetowards(gun->entity->transform.position.z, gun->entity->transform.position.z + player->cp.new_velocity.z, world->clock.delta * 0.1f);
+		gun->entity->transform.position.z = ft_fmovetowards(gun->entity->transform.position.z, gun->entity->transform.position.z + player->cp.velocity.z, world->clock.delta * 0.1f);
 		gun->entity->transform.rotation.z += vector2_magnitude(player->input.move) * cosf((world->clock.time * 0.007f)) * ft_degtorad(0.15f);
 		//recoilrecovery:
 		gun->entity->transform.rotation.y = fmovetowards(gun->entity->transform.rotation.y, ft_degtorad(player->input.move.y * 1.15f), gun->stats.anglerecovery * world->clock.delta);
