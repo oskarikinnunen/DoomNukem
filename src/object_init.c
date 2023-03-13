@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 19:50:18 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/09 17:20:59 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/13 14:01:55 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static char	*glue_anim_name(char *base, char *animname, int i)
 	return (ft_strcpy(newname, name));
 }
 
-void	parseanim(t_object *object, char *animname)
+void	editor_parseanim(t_object *object, char *animname)
 {
 	int					i;
 	int					fd;

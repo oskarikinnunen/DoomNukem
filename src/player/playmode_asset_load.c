@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/09 21:35:33 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/13 14:03:17 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -257,7 +257,7 @@ void	playmode_load_assets(t_sdlcontext *sdl)
 	editor_load_audio(&sdl->audio);
 	objects_init(sdl);
 	t_object *human = get_object_by_name(*sdl, "Human.obj");
-	parseanim(human, "anim");
+	editor_parseanim(human, "anim");
 	playmode_parse_anim_legend(sdl);
 	int i = 0;
 	while (i < sdl->human_anim_count)

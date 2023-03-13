@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 14:55:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/07 15:40:57 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/13 14:54:39 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,14 +103,16 @@ void	world_load_amap(t_world *world)
 	fd = open(amap_fname, O_RDONLY);
 	if (fd != -1)
 	{
-		printf("	found .amap for world %s \n", world->name);
+		doomlog_mul(LOG_NORMAL, (char *[3]){\
+			"found .amap for world:", world->name, NULL});
 		world->roomlist = load_chunk(amap_fname, "AREA", sizeof(t_area));
 		_world_sanitize_all_room_pointers(world);
 		_world_init_rooms(world);
 	}
 	else
 	{
-		printf("	!No .amap for world %s \n", world->name);
+		doomlog_mul(LOG_WARNING, (char *[3]){\
+			"no .amap for world:", world->name, NULL});
 	}
 }
 
@@ -177,7 +179,8 @@ void	world_load_basic_ent(t_world *world)
 	fd = open(bent_fname, O_RDONLY);
 	if (fd != -1)
 	{
-		printf("	found .basic_ent for world %s \n", world->name);
+		doomlog_mul(LOG_NORMAL, (char *[3]){\
+			"found .basic_ent for world:", world->name, NULL});
 		e_list = load_chunk(bent_fname, "BENT", sizeof(t_transform) + sizeof(t_gamestring));
 		load_basic_ent_cache_from_list(world, e_list);
 		//world->roomlist = load_chunk(amap_fname, "AREA", sizeof(t_area));
@@ -186,7 +189,8 @@ void	world_load_basic_ent(t_world *world)
 	}
 	else
 	{
-		printf("	!No .amap for world %s \n", world->name);
+		doomlog_mul(LOG_WARNING, (char *[3]){\
+			"no .amap for world:", world->name, NULL});
 	}
 }
 
@@ -200,13 +204,15 @@ void	world_load_full_ent(t_world *world)
 	fd = open(bent_fname, O_RDONLY);
 	if (fd != -1)
 	{
-		printf("	found .full_ent for world %s \n", world->name);
+		doomlog_mul(LOG_NORMAL, (char *[3]){\
+			"found .full_ent for world:", world->name, NULL});
 		e_list = load_chunk(bent_fname, "FENT", sizeof(t_entity));
 		load_full_ent_cache_from_list(world, e_list);
 	}
 	else
 	{
-		printf("	!No .amap for world %s \n", world->name);
+		doomlog_mul(LOG_WARNING, (char *[3]){\
+			"no .amap for world:", world->name, NULL});
 	}
 }
 
@@ -214,6 +220,7 @@ t_world	load_world_args(char *filename, t_sdlcontext *sdl, t_load_arg arg)
 {
 	t_world	world;
 
+	doomlog(LOG_NORMAL, "LOADING WORLD");
 	ft_bzero(&world, sizeof(t_world));
 	//ft_strcpy(world.name, worldname(filename));
 	//worldname(filen)
@@ -225,32 +232,5 @@ t_world	load_world_args(char *filename, t_sdlcontext *sdl, t_load_arg arg)
 		world_load_basic_ent(&world);
 	else if (arg == LOAD_ARG_FULL)
 		world_load_full_ent(&world);
-	return (world);
-}
-
-t_world	load_world(char *filename, t_sdlcontext *sdl)
-{
-	t_world	world;
-
-	ft_bzero(&world, sizeof(t_world));
-	//ft_strcpy(world.name, worldname(filename));
-	//worldname(filen)
-	ft_strcpy(world.name, filename);
-	world_init(&world, sdl);
-	world_load_amap(&world);
-	return (world);
-	/*world.guns = load_chunk(filename, "GUNS", sizeof(t_gun));
-	t_list	*entitylist = load_chunk(filename, "ENT_", sizeof(t_entity));
-	printf("loaded %i entities from worldfile. \n", ft_listlen(entitylist));
-	load_cache_from_list(filename, &world, entitylist);
-	for_all_entities(&world, init_entity);
-	
-	world.roomlist = load_chunk(filename, "RMNM", sizeof(t_area));
-	load_rooms(&world, filename, sdl);
-	init_guns(&world, sdl);*/
-	
-	
-	
-	//create_navmesh(&world);
 	return (world);
 }

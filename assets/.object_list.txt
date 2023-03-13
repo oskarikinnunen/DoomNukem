@@ -1,9 +1,9 @@
-assets/objects/Human.obj
 assets/objects/barrel.obj
 assets/objects/bench.obj
 assets/objects/cube.obj
 assets/objects/cube_tex.obj
 assets/objects/grenadelauncher.obj
+assets/objects/Human.obj
 assets/objects/light.obj
 assets/objects/lightbar.obj
 assets/objects/tex_cube.obj

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/03 19:21:17 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/13 14:54:14 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,27 +34,6 @@ void	editor_load_world_args(t_editor *ed, char	*worldname, t_sdlcontext *sdl, t_
 {
 	ed->world = load_world_args(worldname, sdl, args);
 	ed->world.gamemode = MODE_EDITOR;
-	*(ed->world.debug_gui) = init_gui(sdl, &ed->hid, &ed->player, sdl->screensize, "Debugging menu (F2)");
-	
-	ed->toolbar_gui = init_gui(sdl, &ed->hid, &ed->player, (t_point){5, 5}, "Toolbar (F1)");
-	ed->toolbar_gui.minimum_size = (t_point){165, 20};
-	ed->toolbar_gui.locked = true;
-	
-	ed->graphics_gui = init_gui(sdl, &ed->hid, &ed->player, sdl->screensize, "Graphics (F3)");
-	ed->graphics_gui.minimum_size = (t_point){200, 200};
-	ed->graphics_gui.rect.position = point_div(sdl->screensize, 2);
-	//ed->graphics_gui.locked = true;
-	ed->player.noclip = true;
-	player_init(&ed->player, sdl, &ed->world);
-	ed->player.gun->disabled = true;
-	ed->world.debug_gui->hidden = true;
-	ed->graphics_gui.hidden = true;
-	ed->world.player = &ed->player;
-}
-
-void	editor_load_world(t_editor *ed, char	*worldname, t_sdlcontext *sdl)
-{
-	ed->world = load_world(world_fullpath(worldname), sdl);
 	*(ed->world.debug_gui) = init_gui(sdl, &ed->hid, &ed->player, sdl->screensize, "Debugging menu (F2)");
 	
 	ed->toolbar_gui = init_gui(sdl, &ed->hid, &ed->player, (t_point){5, 5}, "Toolbar (F1)");

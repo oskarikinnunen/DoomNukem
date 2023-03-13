@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   walls.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/03 17:54:40 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/13 14:47:48 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -301,7 +301,8 @@ void	room_init(t_area *room, t_world *world)
 		if (room->ceiling_enabled)
 			room_makeceilings(world, room);
 	}
-	printf("area has %i floors %i walls %i ceilings after creation \n", room->floorcount, room->floorcount, room->wallcount);
+	doomlog_mul(LOG_NORMAL, (char *[3]){\
+		"initialized area:", room->name, NULL});
 }
 
 void	room_init_shallow(t_area *room, t_world *world)

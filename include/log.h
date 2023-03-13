@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 20:21:24 by raho              #+#    #+#             */
-/*   Updated: 2023/03/08 17:04:42 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/13 14:19:23 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ typedef struct s_parent
 /* code defines start with LOG */
 void	doomlog(int code, char *str);
 
-/* example: doomlog_mul(LOG_NORMAL, (char *[32]){
+/* example: doomlog_mul(LOG_NORMAL, (char *[4]){
 			"parsed", s_itoa(i), "imagefiles", NULL}); */
 void	doomlog_mul(int code, char **str);
 

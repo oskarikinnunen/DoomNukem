@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/09 20:06:20 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/13 14:13:32 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,10 @@ void	editor_parse_anim_legend(t_sdlcontext *sdl)
 	uint32_t			frame;
 	int					ret;
 
+	doomlog(LOG_NORMAL, "LOADING ANIMATIONS");
 	fd = fileopen("assets/objects/animations/anim_legend.txt", O_RDONLY);
+	if (fd == -1)
+		return ; // TODO: or doomlog error?
 	sdl->human_anims = ft_memalloc(sizeof(t_human_animation) * 30);
 	if (sdl->human_anims == NULL)
 		doomlog(LOG_EC_MALLOC, "sdl->human_anims");
@@ -213,6 +216,7 @@ void	editor_parse_anim_legend(t_sdlcontext *sdl)
 	}
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "anim_legend.txt");
+	fileclose(fd, "assets/objects/animations/anim_legend.txt");
 }
 
 void	editor_load_assets(t_sdlcontext *sdl)
@@ -224,12 +228,15 @@ void	editor_load_assets(t_sdlcontext *sdl)
 	editor_load_audio(&sdl->audio);
 	objects_init(sdl);
 	t_object *human = get_object_by_name(*sdl, "Human.obj");
-	parseanim(human, "anim");
+	editor_parseanim(human, "anim");
 	editor_parse_anim_legend(sdl);
+	doomlog_mul(LOG_NORMAL, (char *[4]){\
+		"loaded", s_itoa(sdl->human_anim_count), "animations:", NULL});
 	int i = 0;
 	while (i < sdl->human_anim_count)
 	{
-		printf("anim %s frames %i->%i\n", sdl->human_anims[i].name, sdl->human_anims[i].startframe, sdl->human_anims[i].endframe);
+		doomlog_mul(LOG_NORMAL, (char *[2]){\
+			sdl->human_anims[i].name, NULL});
 		i++;
 	}
 }
