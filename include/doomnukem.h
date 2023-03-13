@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/09 20:05:27 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/13 17:23:27 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,11 @@ void		toggle_ceilings(t_world *world);
 enum e_load_arg;
 t_world		load_world_args(char *filename, t_sdlcontext *sdl, enum e_load_arg arg);
 t_world		load_world(char *filename, t_sdlcontext *sdl);
+void		editor_load_images(t_sdlcontext *sdl);
+void		editor_load_env_textures(t_sdlcontext *sdl);
+void		editor_load_objects(t_sdlcontext *sdl);
+void		editor_load_anims(t_object *object, char *anim_name, int i);
+void		editor_load_anim_legend(t_sdlcontext *sdl);
 
 
 void		destroy_entity(t_world *world, t_entity *ent);

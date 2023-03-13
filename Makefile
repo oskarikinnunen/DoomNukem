@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/08 21:32:22 by raho             ###   ########.fr        #
+#    Updated: 2023/03/13 17:23:53 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,6 +40,10 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		editor/editor_events.c \
 		editor/editor_preferences.c \
 		editor/editor_asset_load.c \
+		editor/editor_load_anims.c \
+		editor/editor_load_anim_legend.c \
+		editor/editor_load_images.c \
+		editor/editor_load_objects.c \
 		editor/tools/entity_tool.c \
 		editor/tools/entity_tool_gui_inits.c \
 		editor/tools/wall_tool_rooms.c \
@@ -98,7 +102,6 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		obj_parser/obj_parse_vertex.c \
 		obj_parser/obj_parse_faces.c \
 		obj_parser/obj_parse_uvs.c \
-		obj_parser/obj_parse_anim.c \
 		tga_parser/tga.c \
 		tga_parser/image_data.c \
 		tga_parser/preliminary_data.c \

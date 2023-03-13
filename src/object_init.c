@@ -6,79 +6,13 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 19:50:18 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/13 14:01:55 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/13 16:51:53 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "objects.h"
 #include "file_io.h"
-
-char	*basename(char *filename)
-{
-	char	**split;
-	char	*result;
-	int		i;
-
-	split = ft_strsplit(filename, '.');
-	if (split == NULL)
-		doomlog(LOG_EC_MALLOC, "parseanim basename");
-	i = 1;
-	while (split[i] != NULL)
-	{
-		free(split[i]);
-		i++;
-	}
-	result = split[0];
-	free(split);
-	return (result);
-}
-
-static char	*glue_anim_name(char *base, char *animname, int i)
-{
-	char	name[256];
-	char	*newname;
-
-	ft_strcpy(name, "assets/objects/animations/");
-	ft_strcat(name, base);
-	ft_strcat(name, "_");
-	ft_strcat(name, animname);
-	ft_strcat(name, s_itoa(i));
-	ft_strcat(name, ".obj");
-	newname = ft_memalloc(sizeof(name));
-	if (newname == NULL)
-		doomlog(LOG_EC_MALLOC, "parseanim anim_name");
-	return (ft_strcpy(newname, name));
-}
-
-void	editor_parseanim(t_object *object, char *animname)
-{
-	int					i;
-	int					fd;
-	char				*name;
-	t_objectanimframe	frame;
-	char				*base;
-
-	i = 0;
-	fd = 0;
-	base = basename(object->name);
-	object->o_anim.framecount = 0;
-	while (fd != -1)
-	{
-		name = glue_anim_name(base, animname, i);
-		fd = open(name, O_RDONLY);
-		if (fd != -1)
-		{
-			ft_strcpy(object->o_anim.name, animname);
-			parse_animframe(fd, &frame, object);
-			ptr_add((void **)&object->o_anim.frames, &object->o_anim.framecount, sizeof(t_objectanimframe), &frame);
-			fileclose(fd, name);
-		}
-		free(name);
-		i++;
-	}
-	free(base);
-}
 
 void	objects_init(t_sdlcontext *sdl)
 {
