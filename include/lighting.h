@@ -5,7 +5,7 @@
 
 typedef struct s_map
 {
-	uint32_t	*data;
+	uint32_t	*texture;
 	uint32_t	*lightmap;
 	t_point		img_size;
 	t_point		size;
@@ -37,31 +37,23 @@ typedef struct	s_light
 	t_cubemap		cubemap;
 	bool			ignoreself;
 	uint32_t		clr;
+	float			ambient;
+	float			intensity;
 }	t_light;
-
-typedef struct s_pointlight
-{
-	t_vector3	origin;
-	float		radius;
-	bool		shadows;
-	bool		done;
-	bool		ignoreself;
-	uint32_t	lastmovetime;
-}	t_pointlight;
 
 typedef struct s_lighting
 {
-	t_triangle			*world_triangles;
-	uint32_t			end;
-	t_camera			camera;
-	float				*zbuffer;
-	t_v2rectangle		screen_edge;
 	struct s_world		*world;
-	t_map				*map;
-	uint32_t			*img;
-	t_vector2			resolution;
+	t_triangle			*world_triangles;
 	t_light				*light;
-	struct s_entity		*entity;
+	struct s_entity		*light_ent;
+	bool				*overdraw;
+	float				*zbuffer;
+	t_map				*map;
+	t_vector2			resolution;
+	t_v2rectangle		screen_edge;
+	t_camera			camera;
+	t_vector3			triangle_normal;
 }	t_lighting;
 
 #endif

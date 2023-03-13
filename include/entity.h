@@ -95,6 +95,8 @@ typedef struct s_entitycache
 void	entity_set_component(t_entity *entity, t_componenttype type, struct s_world *world);
 
 
+t_vector3	get_entity_world_position(t_entity *entity);
+
 /* OCCLUSION*/
 void	render_bitmask_row(int ax, int bx, float aw, float bw, int y, t_sdlcontext *sdl);
 void	update_frustrum_culling(struct s_world *world, t_sdlcontext *sdl, t_render *render);
@@ -119,12 +121,12 @@ void	render_worldspace(t_render *render, t_entity *entity);
 void	render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 void	render_entity_worldtriangles(t_entity *entity, struct s_world *world);
 
-void	create_lightmap_for_entity(t_entity *entity, struct s_world *world);
+void	calculate_light_for_entity(t_entity *entity, t_lighting *lighting);
 void	create_map_for_entity(t_entity *entity, struct s_world *world);
 void	create_dynamic_map_for_entity(t_entity *entity, struct s_world *world);
 
 uint32_t	update_pixel_brightness(uint32_t light, uint32_t clr);
-uint32_t	get_lighting_for_pixel(t_entitycache *cache, t_vector3 location);
+uint32_t	get_lighting_for_pixel(t_lighting *lighting, uint32_t light_amount, t_vector3 location);
 t_vector3	texcoord_to_loc(t_vector3 ws[3], t_vector2 uv[3], t_vector2 p);
 t_step		make_slope(float start, float end, float steps);
 t_stepv3	make_uv_slopev3(int start, int end, int y, t_point_triangle triangle);

@@ -15,7 +15,7 @@ static void render_shadowmap(t_world *world, t_lighting *lighting)
 		{
 			if (ent->status == es_active && !ent->hidden)
 			{
-				if (lighting->light->ignoreself == false || (lighting->light->ignoreself && ent->id != lighting->entity->id))
+				if (lighting->light->ignoreself == false || (lighting->light->ignoreself && ent->id != lighting->light_ent->id))
 					render_zbuffer(lighting, ent);
 			}
 			found++;
@@ -31,7 +31,7 @@ static void calculate_pointlight(t_world *world, t_entity *entity)
 
 	lighting.light = entity->component.data;
 	lighting.resolution = lighting.light->cubemap.resolution;
-	lighting.entity = entity;
+	lighting.light_ent = entity;
 	index = 0;
 	while (index < 6)
 	{

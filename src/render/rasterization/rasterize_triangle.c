@@ -7,7 +7,7 @@ inline static uint32_t sample_img(t_render *render, uint32_t xsample, uint32_t y
 	//xsample = ft_clamp(xsample, 0, render->map.size.x - 1);
 	//ysample = ft_clamp(ysample, 0, render->map.size.y - 1);
 	ysample = ft_min(ysample, render->map.size.y - 1);
-	return(render->map.data[ysample * render->map.size.x + xsample]);
+	return(render->map.texture[ysample * render->map.size.x + xsample]);
 }
 
 inline static void scanline(int start, int end, int y, t_point_triangle triangle, t_sdlcontext *sdl)

@@ -246,6 +246,8 @@ void	comp_light_allocate(t_entity *entity, t_world *world)
 	light->cubemap.resolution.y = 2000;
 	light->ignoreself = false;
 	light->clr = INT_MAX;
+	light->ambient = 0.5f;
+	light->intensity = 1.0f;
 	matproj = matrix_makeprojection(90.0f, light->cubemap.resolution.y / light->cubemap.resolution.x, 2.0f, 1000.0f);
 	i = 0;
 	while (i < 6)

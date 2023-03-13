@@ -365,24 +365,6 @@ void	list_prefabs(t_prefab_editor *pe, t_world *world)
 	}
 }
 
-void	edit_prefab_subtype(t_prefab_editor *pe)
-{
-	t_autogui	*gui;
-
-	gui = &pe->subtype_gui;
-	if (pe->prefab->prefabtype == COMP_LIGHT)
-	{
-		t_pointlight	*light;
-		light = pe->prefab->data;
-
-		gui_start(gui);
-		gui_labeled_float_slider("Light radius:", &light->radius, 2.0f, gui);
-		gui_end(gui);
-		gui->sdl->render.gizmocolor = AMBER_2;
-		render_ball(gui->sdl, pe->preview_entity.transform.position, light->radius, AMBER_3);
-	}
-}
-
 void	entity_tool_edit_prefab(t_editor *ed, t_entitytooldata *dat)
 {
 	t_sdlcontext	*sdl;
@@ -418,9 +400,6 @@ void	entity_tool_edit_prefab(t_editor *ed, t_entitytooldata *dat)
 		gui_preset_transform(&pe->prefab->offset, gui);
 		//select_prefab_type(pe);
 		gui_end(gui);
-
-		if (pe->prefab->prefabtype != COMP_NONE)
-			edit_prefab_subtype(pe);
 		//TODO: split
 		gui = &pe->object_select;
 		gui_start(gui);

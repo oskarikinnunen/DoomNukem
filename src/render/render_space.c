@@ -113,7 +113,7 @@ t_triangle	triangle_to_viewspace(t_triangle tritransformed, t_mat4x4 matview)
 	return(tritransformed);
 }
 
-static t_vector3 normal_calc(t_triangle tritransformed)
+static t_vector3	normal_calc(t_triangle tritransformed)
 {
 	t_vector3 normal, line1, line2;
 
@@ -169,7 +169,7 @@ static void clip_and_render_triangles(t_sdlcontext *sdl, t_render *render)
 	clipped_point_triangle(render, *sdl);
 	render_buffer(sdl, render);
 	render->screenspace_ptri_count = 0;
-	render->map.data = NULL;
+	render->map.texture = NULL;
 	render->img = NULL;
 }
 

@@ -75,6 +75,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		png.c lua_conf.c list_helper.c \
 		spaceconversions.c \
 		structsaver/structsaver.c \
+		entity/entity_transform.c \
 		entity/entity_animate.c \
 		entity/component_init.c \
 		entity/components/component_definitions.c \
@@ -115,6 +116,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		render/render_space.c \
 		lighting/bake_lighting.c \
 		lighting/point_light.c \
+		lighting/fragment_light.c \
 		npc/civilian/civilian_action.c \
 		npc/civilian/civilian_anim.c \
 		npc/civilian/civilian_movement.c \

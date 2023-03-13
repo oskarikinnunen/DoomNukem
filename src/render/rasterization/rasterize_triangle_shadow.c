@@ -5,9 +5,13 @@ static void sample_img(t_lighting *lighting, int x, int y, t_point_triangle poly
     t_vector3       loc;
 	uint32_t		light_amount;
 
+	if (lighting->overdraw[y * lighting->map->size.x + x])
+		return;
+	else
+		lighting->overdraw[y * lighting->map->size.x + x] = true;
 	loc = texcoord_to_loc(poly.t, poly.p, vector2_add_xy((t_vector2){x, y}, 0.0f));
-	light_amount = get_lighting_for_pixel(&lighting->world->entitycache, loc);
-	//lighting->map->lightmap[y * lighting->map->size.x + x] += 122;
+	light_amount = lighting->map->lightmap[y * (lighting->map->size.x) + x];
+	light_amount = get_lighting_for_pixel(lighting, light_amount, loc);
 	lighting->map->lightmap[y * (lighting->map->size.x) + x] = light_amount;
 }
 
@@ -24,11 +28,24 @@ static float clockwise(t_vector2 *p)
 	return ((p[1].x - p[0].x) * (p[2].y - p[0].y) - (p[2].x - p[0].x) * (p[1].y - p[0].y));
 }
 
+static t_vector3	normal_calc(t_vector3 p[3])
+{
+	t_vector3 normal, line1, line2;
+
+	line1 = vector3_sub(p[1], p[0]);
+	line2 = vector3_sub(p[2], p[0]);
+	normal = vector3_crossproduct(line1, line2);
+	normal = vector3_normalise(normal);
+
+	return (normal);
+}
+
 void	rasterize_light(t_point_triangle triangle, t_lighting *lighting)
 {
 	t_vector2 min;
 	t_vector2 max;
 
+	lighting->triangle_normal = normal_calc(triangle.t);
 	sort_point_uv_tri(triangle.p, triangle.t);
 	if (clockwise(triangle.p) >= -1.0f)
 	{
@@ -63,7 +80,7 @@ void	rasterize_light(t_point_triangle triangle, t_lighting *lighting)
 			t_vector2 bary = barycentric_coordinates(triangle.p, (t_vector2){x, y});
 			if (bary.x >= offset.x && bary.y >= offset.y && bary.x + bary.y <= 1.0f -(offset.x + offset.y))
 			{
-				sample_img(lighting, ft_clamp(x, 0, lighting->map->size.x - 1), ft_clamp(y, 0, lighting->map->size.y - 1), triangle);
+				sample_img(lighting, ft_clamp(x + 0.5f, 0, lighting->map->size.x - 1), ft_clamp(y + 0.5f, 0, lighting->map->size.y - 1), triangle);
 			}
 		}
 	}

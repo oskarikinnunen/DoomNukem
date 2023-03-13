@@ -67,7 +67,7 @@ void render_solid_triangle(t_sdlcontext *sdl, t_render *render)
 		img.size.x = 1;
 		img.size.y = 1;
 		img.length = 1;
-		render->map.data = img.data;
+		render->map.texture = img.data;
 		render->map.img_size = img.size;
 		//render_triangle_wrap(sdl, render, index);
 		render->img = NULL;
@@ -77,7 +77,7 @@ void render_solid_triangle(t_sdlcontext *sdl, t_render *render)
 
 void render_buffer(t_sdlcontext *sdl, t_render *render)
 {
-	if (!render->wireframe && (render->map.data != NULL || render->img != NULL) && !sdl->global_wireframe)
+	if (!render->wireframe && (render->map.texture != NULL || render->img != NULL) && !sdl->global_wireframe)
 		render_buffer_triangles(sdl, render);
 	if (render->wireframe/* || sdl->global_wireframe*/)
 		render_buffer_triangle_wireframes(sdl, render);
