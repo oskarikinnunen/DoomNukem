@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 13:57:45 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/13 14:50:59 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/14 14:43:07 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,29 +200,28 @@ static void _world_save_full_ent(t_world world)
 	save_chunk(filename, "FENT", entitylist);
 }
 
-static void	_world_save_images(t_world *world, char *image_list)
+static void	_world_save_asset_files(char *asset_list)
 {
 	int		fd;
 	int		ret;
 	char	*filename;
 
-	(void)world;
 	filename = NULL;
-	fd = fileopen(image_list, O_RDONLY);
+	fd = fileopen(asset_list, O_RDONLY);
 	ret = get_next_line(fd, &filename);
 	while (ret)
 	{
 		if (filename)
 		{
-			force_pack_file(".tgapack", filename);
+			force_pack_file(LEVEL0FILE, filename);
 			free(filename);
 			filename = NULL;
 		}
 		ret = get_next_line(fd, &filename);
 	}
 	if (ret == -1)
-		doomlog(LOG_EC_GETNEXTLINE, "_world_save_images");
-	fileclose(fd, image_list);
+		doomlog(LOG_EC_GETNEXTLINE, "_world_save_asset_files");
+	fileclose(fd, asset_list);
 }
 
 void	world_save_to_file(t_world world)
@@ -232,8 +231,19 @@ void	world_save_to_file(t_world world)
 	_world_save_basic_ent(world);
 	_world_save_full_ent(world);
 	_world_init_rooms(&world);
-	//_world_save_images(&world, "assets/.image_list.txt");
-	//_world_save_images(&world, "assets/.image_list_env.txt");
+	force_pack_file(LEVEL0FILE, FONTLISTPATH);
+	_world_save_asset_files(FONTLISTPATH);
+	force_pack_file(LEVEL0FILE, OBJLISTPATH);
+	_world_save_asset_files(OBJLISTPATH);
+	_world_save_asset_files(MTLLISTPATH);
+	force_pack_file(LEVEL0FILE, IMGLISTPATH);
+	_world_save_asset_files(IMGLISTPATH);
+	force_pack_file(LEVEL0FILE, IMGENVLISTPATH);
+	_world_save_asset_files(IMGENVLISTPATH);
+	force_pack_file(LEVEL0FILE, MUSICLISTPATH);
+	_world_save_asset_files(MUSICLISTPATH);
+	force_pack_file(LEVEL0FILE, SOUNDLISTPATH);
+	_world_save_asset_files(SOUNDLISTPATH);
 }
 
 void	save_world(char *namename, t_world world)

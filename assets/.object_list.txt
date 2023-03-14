@@ -1,5 +1,7 @@
 assets/objects/barrel.obj
 assets/objects/bench.obj
+assets/objects/concrete_ramp.obj
+assets/objects/concrete_stairs_ramp.obj
 assets/objects/cube.obj
 assets/objects/cube_tex.obj
 assets/objects/grenadelauncher.obj

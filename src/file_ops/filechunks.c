@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   filechunks.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/09 22:08:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/14 15:04:58 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,6 +156,7 @@ uint64_t	read_len(int fd)
 	return (res);
 }
 
+// TODO: OPTIMIZE
 t_filecontent	load_filecontent(char	*worldname, char	*fc_name)
 {
 	int				fd;
@@ -187,16 +188,28 @@ t_filecontent	load_filecontent(char	*worldname, char	*fc_name)
 		doomlog(LOG_EC_CLOSE, worldname);
 }
 
-// TODO: PROTECT
-int load_filecontent_fd(char	*worldname, char *fcname)
+// TODO: PROTECT, rename to load_and_write_filecontent_fd and add filename as an argument
+int load_filecontent_fd(char *worldname, char *fcname)
 {
 	t_filecontent	fc;
 	int				fd;
 
 	fc = load_filecontent(worldname, fcname);
-	fd = open("temp.tga", O_CREAT | O_RDWR | O_APPEND, 0666);
+	fd = open(".temptest", O_CREAT | O_RDWR | O_APPEND, 0666);
 	write(fd, fc.content, fc.length);
 	return (fd);
+}
+
+void	load_and_write_filecontent(char *worldname, char *fcname, \
+									char *filename)
+{
+	t_filecontent	fc;
+	int				fd;
+
+	fc = load_filecontent(worldname, fcname);
+	fd = open(filename, O_CREAT | O_RDWR | O_TRUNC, 0666);
+	write(fd, fc.content, fc.length);
+	fileclose(fd, filename);
 }
 
 char	*uint64_to_char(uint64_t	u64)

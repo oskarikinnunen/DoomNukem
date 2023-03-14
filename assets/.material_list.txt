@@ -1,0 +1,15 @@
+assets/objects/barrel.mtl
+assets/objects/bench.mtl
+assets/objects/concrete_ramp.mtl
+assets/objects/concrete_stairs_ramp.mtl
+assets/objects/cube.mtl
+assets/objects/cube_tex.mtl
+assets/objects/grenadelauncher.mtl
+assets/objects/Human.mtl
+assets/objects/light.mtl
+assets/objects/lightbar.mtl
+assets/objects/tex_cube.mtl
+assets/objects/trash.mtl
+assets/objects/untitled.mtl
+assets/objects/welrod.mtl
+assets/objects/window.mtl

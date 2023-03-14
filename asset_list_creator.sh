@@ -5,3 +5,4 @@ find assets/fonts -type f -name "*.ttf" > assets/.font_list.txt
 find assets/images/tga -type f -name "*.tga" | grep -v "/env/" > assets/.image_list.txt
 find assets/images/tga/env -type f -name "*.tga" > assets/.image_env_list.txt
 find assets/objects -type f -name "*.obj" | grep -v "/animations/" > assets/.object_list.txt
+find assets/objects -type f -name "*.mtl" > assets/.material_list.txt
