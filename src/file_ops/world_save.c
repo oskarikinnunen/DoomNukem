@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 13:57:45 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 14:43:07 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/14 15:24:21 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,7 +231,10 @@ void	world_save_to_file(t_world world)
 	_world_save_basic_ent(world);
 	_world_save_full_ent(world);
 	_world_init_rooms(&world);
-	force_pack_file(LEVEL0FILE, FONTLISTPATH);
+	
+	// For playmode loading
+	// TODO: clean world file, dont just always append
+	/* force_pack_file(LEVEL0FILE, FONTLISTPATH);
 	_world_save_asset_files(FONTLISTPATH);
 	force_pack_file(LEVEL0FILE, OBJLISTPATH);
 	_world_save_asset_files(OBJLISTPATH);
@@ -243,7 +246,7 @@ void	world_save_to_file(t_world world)
 	force_pack_file(LEVEL0FILE, MUSICLISTPATH);
 	_world_save_asset_files(MUSICLISTPATH);
 	force_pack_file(LEVEL0FILE, SOUNDLISTPATH);
-	_world_save_asset_files(SOUNDLISTPATH);
+	_world_save_asset_files(SOUNDLISTPATH); */
 }
 
 void	save_world(char *namename, t_world world)
