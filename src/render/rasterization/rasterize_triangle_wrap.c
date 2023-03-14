@@ -30,7 +30,7 @@ inline static void scanline(int start, int end, int y, t_point_triangle triangle
 		}
 		x++;
 	}
-	//render_bitmask_row(start, end, 1.0f / slope.location.z, 1.0f / tex.z, y, sdl);
+	render_bitmask_row(start, end, 1.0f / slope.location.z, 1.0f / tex.z, y, sdl);
 }
 
 inline static void render_flat_top_tri(t_sdlcontext *sdl, t_point_triangle triangle)

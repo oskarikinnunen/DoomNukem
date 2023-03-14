@@ -44,9 +44,9 @@ bool is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *e
 
 	chunk = entity->occlusion.box;
 	w = entity->occlusion.z_dist[1];
-	chunk.min.x = chunk.min.x / 8;
+	chunk.min.x = floorf((float)chunk.min.x / 8.0f);
 	chunk.max.x = ceilf((float)chunk.max.x / 8.0f);
-	chunk.min.y = chunk.min.y / 8;
+	chunk.min.y = floorf((float)chunk.min.y / 8.0f);
 	chunk.max.y = ceilf((float)chunk.max.y / 8.0f);
 	entity->occlusion.is_occluded = true;
 	entity->occlusion.clip.max.x = 0;
@@ -59,7 +59,7 @@ bool is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *e
 		x = chunk.min.x;
 		while (x <= chunk.max.x)
 		{
-			if (w < sdl->bitmask.tile[y * sdl->bitmask.tile_chunks.x + x].max0)
+			if (w <= sdl->bitmask.tile[y * sdl->bitmask.tile_chunks.x + x].max0)
 			{
 				entity->occlusion.is_occluded = false;
 				if (entity->occlusion.clip.max.x < x)
@@ -77,13 +77,13 @@ bool is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *e
 	}
 	if (entity->occlusion.is_occluded == false)
 	{
-		//entity->occlusion.clip.max = point_add_xy(entity->occlusion.clip.max, 1);
-		print_point(entity->occlusion.clip.min);
-		print_point(entity->occlusion.clip.max);
+		entity->occlusion.clip.max = point_add_xy(entity->occlusion.clip.max, 1);
 		entity->occlusion.clip.min = point_mul(entity->occlusion.clip.min, 8);
 		entity->occlusion.clip.max = point_mul(entity->occlusion.clip.max, 8);
+		entity->occlusion.clip.max.x = ft_min(entity->occlusion.clip.max.x, sdl->window_w - 1);
+		entity->occlusion.clip.max.y = ft_min(entity->occlusion.clip.max.y, sdl->window_h - 1);
 		//entity->occlusion.clip.min = point_sub(entity->occlusion.clip.min, point_one());
-		entity->occlusion.clip.max = point_sub(entity->occlusion.clip.max, point_one());
+		//entity->occlusion.clip.max = point_sub(entity->occlusion.clip.max, point_one());
 	}
 	return (entity->occlusion.is_occluded); // unnecessary to return anything
 }
