@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/14 17:34:40 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/01 16:22:02 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/02 18:18:56 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,6 @@ t_quaternion	quaternion_mul(t_quaternion a, t_quaternion b)
 		a.w * b.v.z + a.v.x * b.v.y - a.v.y * b.v.x + a.v.z * b.w
 	}
 	);
-}
-
-t_texture lerp_texture(t_texture from, t_texture to, float delta)
-{
-	from.u = ft_flerp(from.u, to.u, delta);
-	from.v = ft_flerp(from.v, to.v, delta);
-	from.w = ft_flerp(from.w, to.w, delta);
-
-	return(from);
 }
 
 t_quaternion lerp_quaternion(t_quaternion from, t_quaternion to, float delta)

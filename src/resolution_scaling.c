@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   resolution_scaling.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 06:55:31 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/03 17:54:24 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/14 16:21:22 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void	rescale_surface(t_sdlcontext *sdl)
 	t_point			sample;
 	uint32_t		pstride;
 
-	if (sdl->resolution_scaling > 1.0f || sdl->resolution_scaling < 0.25f)
+	if (sdl->resolution_scaling >= 1.0f || sdl->resolution_scaling < 0.25f)
 		return ;
 	surface_fog(sdl);
 	p.y = 0;

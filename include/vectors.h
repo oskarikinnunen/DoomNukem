@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vectors.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/07 16:11:00 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/14 12:58:55 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -305,16 +305,6 @@ t_quaternion	quaternion_intersectplane(t_vector3 plane_p, t_vector3 plane_n, t_q
 //returns quaternion lerped from, to by delta
 t_quaternion	lerp_quaternion(t_quaternion from, t_quaternion to, float delta);
 
-typedef struct s_texture
-{
-	float	u;
-	float	v;
-	float	w;
-} t_texture;
-
-//returns texture lerped from, to by delta
-t_texture		lerp_texture(t_texture from, t_texture to, float delta);
-
 typedef struct s_mat4x4
 {
 	float	m[4][4];
@@ -389,7 +379,7 @@ t_vector2		point_to_vector2(t_point point);
 //Returns static str for given vector3
 char			*vector_string(t_vector3 vec);
 
-t_texture		vector2_to_texture(t_vector2 v);
+t_vector3		vector2_to_texture(t_vector2 v);
 
 typedef struct s_ray
 {
@@ -397,5 +387,10 @@ typedef struct s_ray
 	t_vector3 dir;
 }	t_ray;
 
+//normal barycentric coordinats x is delta value between p0 and p1 and y is delta between p1 and p2
+t_vector2		barycentric_coordinates(t_vector2 *p, t_vector2 v);
+
+//returns vector3 location from 3 t_vector3 points, using t_vector2 as barycentric coordinates for w1 and w2;
+t_vector3		get_vector3_from_barycentric(t_vector3 *p, t_vector2 bary);
 
 #endif

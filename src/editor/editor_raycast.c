@@ -222,7 +222,9 @@ bool raycast_entity(t_ray r, t_raycastinfo *info, t_entity *entity)
 	{
 		t_vector3_tri	tri;
 
-		tri = worldspace_tri(entity, i);
+		tri.a = entity->world_triangles[i].p[0].v;
+		tri.b = entity->world_triangles[i].p[1].v;
+		tri.c = entity->world_triangles[i].p[2].v;
 		if (raycast_tri(r, tri, &info->distance))
 		{
 			info->hit_pos = vector3_add(r.origin, vector3_mul(r.dir, info->distance));

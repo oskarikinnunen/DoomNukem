@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/13 14:54:14 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/14 14:02:36 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,7 +266,6 @@ int	editorloop(t_sdlcontext sdl)
 	editor_load_prefs(&ed, &sdl);
 	ed.gamereturn = game_continue;
 	sdl.lighting_toggled = false;
-	ed.world.lighting.calculated = false;
 	ed.player.gun->entity->hidden = true;
 	//play_music(&sdl, "music_arp1_ambient.wav");
 	sdl.render.occlusion.occlusion = false;
@@ -275,14 +274,8 @@ int	editorloop(t_sdlcontext sdl)
 	{
 		update_deltatime(&ed.world.clock);
 		ed.gamereturn = editor_events(&ed);
-		bake_lights(&sdl.render, &ed.world);
 		if (!ed.player.locked)
 			moveplayer(&ed.player, &ed.hid.input, &ed.world);
-		//update_render(&sdl.render, &ed.player);
-		//screen_blank(sdl);
-		//render_start(&sdl.render);
-		//update_frustrum_culling(&ed.world, &sdl, &sdl.render);
-		//clear_occlusion_buffer(&sdl);
 		update_world3d(&ed.world, &sdl.render);
 		update_editor_toolbar(&ed, &ed.toolbar_gui);
 		if (ed.tool != NULL)
@@ -291,7 +284,6 @@ int	editorloop(t_sdlcontext sdl)
 		char *fps = ft_itoa(ed.world.clock.fps);
 		print_text(&sdl, fps, (t_point){sdl.window_w - 80, 10});
 		drawcircle(sdl, point_div(sdl.screensize, 2), 4, CLR_BLUE);
-
 		//draw_image(sdl, point_zero(), tgaparse("assets/images/stone02.tga"), (t_point){400, 400});
 
 		free(fps);

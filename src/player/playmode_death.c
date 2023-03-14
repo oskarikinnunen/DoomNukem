@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode_death.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 15:32:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/08 16:54:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/14 13:13:13 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,11 @@ static t_entity	*spawn_playerdeathmodel(t_world *world)
 {
 	t_entity	*pl_ent;
 
-	pl_ent = spawn_entity(world);
+	pl_ent = spawn_entity(world, get_object_by_name(*world->sdl, "Human.obj"));
 	pl_ent->transform = world->player->transform;
 	pl_ent->transform.rotation.x -= RAD90;
 	pl_ent->transform.rotation.y = 0.0f;
 	pl_ent->transform.rotation.z = 0.0f;
-	entity_assign_object(world, pl_ent,
-		get_object_by_name(*world->sdl, "Human.obj"));
 	start_human_anim(pl_ent, "Death3", world);
 	pl_ent->animation.framerate /= 5;
 	world->player->gun->entity->hidden = true;

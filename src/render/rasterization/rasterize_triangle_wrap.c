@@ -1,254 +1,250 @@
 #include "doomnukem.h"
 
-static uint32_t sample_img_dynamic(t_render *render, t_texture t)
+inline static uint32_t sample_img_dynamic(t_render *render, uint32_t xsample, uint32_t ysample)
 {
-	uint32_t	xsample;
-	uint32_t	ysample;
-/*
-	static uint8_t	x8b;
-	static uint8_t	y8b;
-	x8b = (t.u / t.w) * 255;
-	xsample = (x8b * (render->img->size.x - 1)) / 255;
-	y8b = (t.v / t.w) * 255;
-	ysample = (y8b * (render->img->size.y - 1)) / 255;
-*/
-	xsample = (t.u / t.w) * render->img->size.x;
-	xsample = xsample % render->img->size.x;
-	ysample = (t.v / t.w) * (render->img->size.y);
-	ysample = ysample % render->img->size.y;
-	return((render->img->data[(ysample * render->img->size.x) + xsample]));
+	xsample = xsample % (render->img->size.x);
+	ysample = ysample % (render->img->size.y);
+	return((render->img->data[ysample * render->img->size.x + xsample]));
 }
 
-static uint32_t sample_img_dynamic2(t_render *render, t_texture t)
+inline static void scanline(int start, int end, int y, t_point_triangle triangle, t_sdlcontext *sdl)
 {
-	static uint8_t	x8b;
-	static uint8_t	y8b;
-	uint8_t	xsample;
-	uint8_t	ysample;
+	t_vector3	tex;
+	float		dist;
+	t_stepv3	slope;
+	int			x;
 
-	x8b = (t.u * t.w) * 255;
-	xsample = (x8b * (render->img->size.x - 1)) / 255;
-	y8b = (t.v * t.w) * 255;
-	ysample = (y8b * (render->img->size.y - 1)) / 255;
-
-	return((render->img->data[(ysample * render->img->size.x) + xsample]));
-}
-
-typedef struct s_barycentric
-{
-	float	v1;
-	float	v2;
-	float	v3;
-	float	v4;
-	float	v5;
-	float	b1;
-	float	b2;
-	float	b3;
-}	t_barycentric;
-
-//	w1 = ((float)p[0].x * (float)(p[2].y - p[0].y) + (float)(y - p[0].y) * (float)(p[2].x - p[0].x) - (float)ax * (float)(p[2].y - p[0].y)) / (float)((float)(p[1].y - p[0].y) * (float)(p[2].x - p[0].x) - (float)(p[1].x - p[0].x) * (float)(p[2].y - p[0].y));
-//	w2 = (float)(y - p[0].y - w1 * (float)(p[1].y - p[0].y)) / (float)(p[2].y - p[0].y);
-
-static void fill_point_tri_bot(t_sdlcontext *sdl, t_point_triangle triangle, t_render *render)
-{
-	t_point			*p;
-	t_texture		*t;
-	float			step[2];
-	t_texture		t_step[3];
-	int				ax;
-	int				bx;
-	int				y;
-	float			delta;
-	float			w1;
-	float			w2;
-	t_texture		t_temp;
-	t_texture		temp;
-	t_barycentric	bary;
-
-	p = triangle.p;
-	t = triangle.t;
-	delta = p[1].y - p[0].y;
-	step[0] = (p[0].x - p[1].x) / delta;
-	step[1] = (p[0].x - p[2].x) / delta;
-
-	bary.b1 = p[2].y - p[0].y;
-	bary.b2	= p[2].x - p[0].x;
-	bary.b3 = p[1].y - p[0].y;
-
-	bary.v1 = p[0].x * bary.b1;
-	bary.v2 = bary.b3 * bary.b2 - (float)(p[1].x - p[0].x) * bary.b1;
-	y = p[1].y;
-	while (y >= p[0].y)
+	slope = make_uv_slopev3(start, end, y, triangle);
+	x = start;
+	while(x < end)
 	{
-		delta = p[1].y - y;
-		ax = p[1].x + (step[0] * delta);
-		bx = p[2].x + (step[1] * delta);
-	
-		float b_temp = bary.v1 + (float)(y - p[0].y) * bary.b2;
-		w1 = (b_temp - ax * bary.b1) / bary.v2;
-		w2 = (float)(y - p[0].y - w1 * bary.b3) / bary.b1;
-		temp.u = ft_flerp(t[0].u, t[1].u, w1);
-		temp.u += ((t[2].u - t[0].u) * w2);
-		temp.v = ft_flerp(t[0].v, t[1].v, w1);
-		temp.v += ((t[2].v - t[0].v) * w2);
-		temp.w = ft_flerp(t[0].w, t[1].w, w1);
-		temp.w += ((t[2].w - t[0].w) * w2);
-
-		w1 = (b_temp - bx * bary.b1) / bary.v2;
-		w2 = (float)(y - p[0].y - w1 * bary.b3) / bary.b1;
-		t_temp.u = ft_flerp(t[0].u, t[1].u, w1);
-		t_temp.u += ((t[2].u - t[0].u) * w2);
-		t_temp.v = ft_flerp(t[0].v, t[1].v, w1);
-		t_temp.v += ((t[2].v - t[0].v) * w2);
-		t_temp.w = ft_flerp(t[0].w, t[1].w, w1);
-		t_temp.w += ((t[2].w - t[0].w) * w2);
-
-		render_bitmask_row(ax, bx, 1.0f / temp.w, 1.0f / t_temp.w, y, sdl);
-		delta = bx - ax;
-		t_step[0].u = (t_temp.u - temp.u) / delta;
-		t_step[0].v = (t_temp.v - temp.v) / delta;
-		t_step[0].w = (t_temp.w - temp.w) / delta;
-		while(ax <= bx)
+		float test = x - start;
+		tex.z = slope.location.z + test * slope.step.z;
+		if (tex.z > sdl->zbuffer[x + y * sdl->window_w])
 		{
-			if (temp.w > sdl->zbuffer[ax + y * sdl->window_w])
-			{
-				sdl->zbuffer[ax + y * sdl->window_w] = temp.w;
-				((uint32_t *)sdl->surface->pixels)[ax + y * sdl->window_w] =
-					sample_img_dynamic(render, temp);
-			}
-			temp.u += t_step[0].u;
-			temp.v += t_step[0].v;
-			temp.w += t_step[0].w;
-			ax++;
+			tex.x = slope.location.x + test * slope.step.x;
+			tex.y = slope.location.y + test * slope.step.y;
+			sdl->zbuffer[x + y * sdl->window_w] = tex.z;
+			((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] =
+				sample_img_dynamic(&sdl->render, tex.x / tex.z, tex.y / tex.z);
 		}
-		y--;
+		x++;
 	}
+	render_bitmask_row(start, end, 1.0f / slope.location.z, 1.0f / tex.z, y, sdl);
 }
 
-static t_texture calc_step_texture2(t_texture *t, float delta)
-{	
-	t_texture step;
-	step.u = (t[2].u - t[1].u) / delta;
-	step.v = (t[2].v - t[1].v) / delta;
-	step.w = (t[2].w - t[1].w) / delta;
-	return(step);
-}
-
-#include <assert.h>
-
-static void fill_point_tri_top(t_sdlcontext *sdl, t_point_triangle triangle, t_render *render)
+inline static void render_flat_top_tri(t_sdlcontext *sdl, t_point_triangle triangle)
 {
-	t_point			*p;
-	t_texture		*t;
-	float			step[2];
-	t_texture		t_step[3];
-	int				ax;
-	int				bx;
+	t_vector2		*p;
+	t_vector3		*t;
 	int				y;
-	float			delta;
-	float			w1;
-	float			w2;
-	t_texture		t_temp;
-	t_texture		temp;
-	t_barycentric	bary;
+	float			steps;
+	t_step			left;
+	t_step			right;
+	int				endy;
 
 	p = triangle.p;
 	t = triangle.t;
-	delta = p[0].y - p[1].y;
-	step[0] = (p[0].x - p[1].x) / delta;
-	step[1] = (p[0].x - p[2].x) / delta;
-
-	bary.b1 = p[2].y - p[0].y;
-	bary.b2	= p[2].x - p[0].x;
-	bary.b3 = p[1].y - p[0].y;
-
-	bary.v1 = p[0].x * bary.b1;
-	bary.v2 = bary.b3 * bary.b2 - (float)(p[1].x - p[0].x) * bary.b1;
-
-	y = p[1].y;
-	while (y <= p[0].y)
+	steps = p[0].y - p[1].y;
+	left = make_slope(p[1].x, p[0].x, steps);
+	right = make_slope(p[2].x, p[0].x, steps);
+	y = ceilf(p[2].y - 0.5f);
+	endy = ceilf(p[0].y - 0.5f);
+	while (y < endy)
 	{
-		delta = y - p[1].y;
-		ax = p[1].x + (step[0] * delta);
-		bx = p[2].x + (step[1] * delta);
-	
-		float b_temp = bary.v1 + (float)(y - p[0].y) * bary.b2;
-		w1 = (b_temp - ax * bary.b1) / bary.v2;
-		w2 = (float)(y - p[0].y - w1 * bary.b3) / bary.b1;
-		temp.u = ft_flerp(t[0].u, t[1].u, w1);
-		temp.u += ((t[2].u - t[0].u) * w2);
-		temp.v = ft_flerp(t[0].v, t[1].v, w1);
-		temp.v += ((t[2].v - t[0].v) * w2);
-		temp.w = ft_flerp(t[0].w, t[1].w, w1);
-		temp.w += ((t[2].w - t[0].w) * w2);
-
-		w1 = (b_temp - bx * bary.b1) / bary.v2;
-		w2 = (float)(y - p[0].y - w1 * bary.b3) / bary.b1;
-		t_temp.u = ft_flerp(t[0].u, t[1].u, w1);
-		t_temp.u += ((t[2].u - t[0].u) * w2);
-		t_temp.v = ft_flerp(t[0].v, t[1].v, w1);
-		t_temp.v += ((t[2].v - t[0].v) * w2);
-		t_temp.w = ft_flerp(t[0].w, t[1].w, w1);
-		t_temp.w += ((t[2].w - t[0].w) * w2);
-
-		render_bitmask_row(ax, bx, 1.0f / temp.w, 1.0f / t_temp.w, y, sdl);
-
-		delta = bx - ax;
-		t_step[0].u = (t_temp.u - temp.u) / delta;
-		t_step[0].v = (t_temp.v - temp.v) / delta;
-		t_step[0].w = (t_temp.w - temp.w) / delta;
-		while(ax <= bx)
-		{
-			if (temp.w > sdl->zbuffer[ax + y * sdl->window_w])
-			{
-				sdl->zbuffer[ax + y * sdl->window_w] = temp.w;
-				((uint32_t *)sdl->surface->pixels)[ax + y * sdl->window_w] =
-					sample_img_dynamic(render, temp);
-			}
-			temp.u += t_step[0].u;
-			temp.v += t_step[0].v;
-			temp.w += t_step[0].w;
-			ax++;
-		}
+		left.location = left.step * ((float)y + 0.5f - p[1].y) + p[1].x;
+		right.location = right.step * ((float)y + 0.5f - p[2].y) + p[2].x;
+		scanline(ceilf(left.location - 0.5f), ceilf(right.location - 0.5f), y, triangle, sdl);
 		y++;
 	}
 }
 
+inline static void render_flat_bot_tri(t_sdlcontext *sdl, t_point_triangle triangle)
+{
+	t_vector2			*p;
+	t_vector3		*t;
+	int				y;
+	float			steps;
+	t_step			left;
+	t_step			right;
+	int				endy;
+
+	p = triangle.p;
+	t = triangle.t;
+	steps = p[1].y - p[0].y;
+	left = make_slope(p[0].x, p[1].x, steps);
+	right = make_slope(p[0].x, p[2].x, steps);
+	y = ceilf(p[0].y - 0.5f);
+	endy = ceilf(p[2].y - 0.5f);
+	while (y < endy)
+	{
+		left.location = left.step * ((float)y + 0.5f - p[0].y) + p[0].x;
+		right.location = right.step * ((float)y + 0.5f - p[0].y) + p[0].x;
+		scanline(ceilf(left.location - 0.5f), ceilf(right.location - 0.5f), y, triangle, sdl);
+		y++;
+	}
+}
 
 void	render_triangle_unlit(t_sdlcontext *sdl, t_render *render, int index)
 {
 	t_point_triangle	triangle;
-	t_point				p_split;
-	t_texture			t_split;
-	t_texture			t_temp;
-	t_point				p_temp;
-	t_point				*p;
-	float				lerp;
+	t_point_triangle	tris[2];
+	int	res;
 
 	triangle = render->screenspace_ptris[index];
 	if (sdl->ps1_tri_div > 1)
 		triangle = ps1(triangle, sdl->ps1_tri_div);
-	p = triangle.p;
-	sort_point_uv_tri(triangle.p, triangle.t);
-	lerp = ((float)p[1].y - (float)p[2].y) / ((float)p[0].y - (float)p[2].y);
-	p_split.x = p[2].x + (lerp * ((float)p[0].x - (float)p[2].x));
-	p_split.y = p[1].y;
-	t_split.u = ft_flerp(triangle.t[2].u, triangle.t[0].u, lerp);
-	t_split.v = ft_flerp(triangle.t[2].v, triangle.t[0].v, lerp);
-	t_split.w = ft_flerp(triangle.t[2].w, triangle.t[0].w, lerp);
-	if (p_split.x < p[1].x)
+
+	res = triangle_to_flat(triangle, tris);
+	if (res == 0)
+		render_flat_top_tri(sdl, tris[0]);
+	else if (res == 1)
+		render_flat_bot_tri(sdl, tris[0]);
+	else
 	{
-		ft_swap(&p[1], &p_split, sizeof(t_point));
-		ft_swap(&triangle.t[1], &t_split, sizeof(t_texture));
+		render_flat_top_tri(sdl, tris[0]);
+		render_flat_bot_tri(sdl, tris[1]);
 	}
-	p_temp = p[2];
-	t_temp = triangle.t[2];
-	p[2] = p_split;
-	triangle.t[2] = t_split;
-	if (p[0].y != p[1].y)
-		fill_point_tri_top(sdl, triangle, render);
-	p[0] = p_temp;
-	triangle.t[0] = t_temp;
-	if (p[0].y != p[1].y)
-		fill_point_tri_bot(sdl, triangle, render);
 }
+
+/*
+lerp = ((float)p[1].y - (float)p[2].y) / ((float)p[0].y - (float)p[2].y);
+		p_split.x = p[2].x + (lerp * ((float)p[0].x - (float)p[2].x));
+		p_split.y = p[1].y;
+		t_split.x = ft_flerp(triangle.t[2].x, triangle.t[0].x, lerp);
+		t_split.v = ft_flerp(triangle.t[2].v, triangle.t[0].v, lerp);
+		t_split.z = ft_flerp(triangle.t[2].z, triangle.t[0].z, lerp);
+		if (p_split.x < p[1].x)
+		{
+			ft_swap(&p[1], &p_split, sizeof(vector2));
+			ft_swap(&triangle.t[1], &t_split, sizeof(t_vector3));
+		}
+		p_temp = p[2];
+		t_temp = triangle.t[2];
+		p[2] = p_split;
+		triangle.t[2] = t_split;
+		if (p[0].y != p[1].y && p[1].x != p[2].x)
+			render_flat_top_tri(sdl, triangle);
+		p[0] = p_temp;
+		triangle.t[0] = t_temp;
+		if (p[0].y != p[1].y && p[1].x != p[2].x)
+			render_flat_bot_tri(sdl, triangle);
+	t_vector2		*p;
+	t_vector3		*t;
+	int				y;
+	float			delta;
+	t_step			left;
+	t_step			right;
+	int				endy;
+
+	p = triangle.p;
+	t = triangle.t;
+	left.step = (p[0].x - p[1].x) / (p[0].y - p[1].y);
+	right.step = (p[0].x - p[2].x) / (p[0].y - p[2].y);
+	y = ceilf(p[2].y - 0.5f);
+	endy = ceilf(p[0].y - 0.5f);
+
+	t_vector3 tcedgel, tcedger, tcbottom;
+
+	tcedgel = t[1];
+	tcedger = t[2];
+	tcbottom = t[0];
+
+	t_stepv3	tleft;
+	t_stepv3	tright;
+
+
+	tleft.step = vector3_div(vector3_sub(tcbottom, tcedgel), p[0].y - p[1].y);
+	tright.step = vector3_div(vector3_sub(tcbottom, tcedger), p[0].y - p[2].y);
+
+	tcedgel = vector3_add(tcedgel, vector3_mul(tleft.step, (float)y + 0.5f - p[1].y));
+	tcedger = vector3_add(tcedger, vector3_mul(tright.step, (float)y + 0.5f - p[1].y));
+
+	float tex_width = sdl->render.img->size.x;
+	float tex_height = sdl->render.img->size.y;
+	float tex_clamp_x = tex_width - 1.0f;
+	float tex_clamp_y = tex_height - 1.0f;
+
+	while (y < endy)
+	{
+		left.location = left.step * ((float)y + 0.5f - p[1].y) + p[1].x;
+		right.location = right.step * ((float)y + 0.5f - p[2].y) + p[2].x;
+
+		int ax, bx;
+		ax = ceilf(left.location - 0.5f);
+		bx = ceilf(right.location - 0.5f);
+		t_vector3 tcscanstep = vector3_div(vector3_sub(tcedger, tcedgel), right.step - left.step);
+		t_vector3 tc = vector3_mul(tcscanstep, (float)ax + 0.5f - left.step);
+		for (int x = ax; x < bx; x++)
+		{
+			if (tc.z > sdl->zbuffer[ax + y * sdl->window_w])
+			{
+				int tempx = (tc.x / tc.z) * sdl->render.img->size.x;
+				int tempy = (tc.y / tc.z) * sdl->render.img->size.y;
+				sdl->zbuffer[x + y * sdl->window_w] = tc.z;
+				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] =
+					sample_img_dynamic(&sdl->render, tempx, tempy);
+			}
+			tc = vector3_add(tc, tcscanstep);
+		}
+		scanline(ceilf(left.location - 0.5f), ceilf(right.location - 0.5f), y, p, t, sdl);
+		tcedgel = vector3_add(tcedgel, tleft.step);
+		tcedger = vector3_add(tcedgel, tright.step);
+		y++;
+	}
+
+	inline static void render_flat_top_tri(t_sdlcontext *sdl, t_point_triangle triangle)
+{
+	t_vector2			*p;
+	t_vector3		*t;
+	int				y;
+	float			delta;
+	float			w1;
+	float			w2;
+	t_step			left;
+	t_step			right;
+	int				endy;
+
+	p = triangle.p;
+	t = triangle.t;
+	left.step = (p[0].x - p[1].x) / (p[0].y - p[1].y);
+	right.step = (p[0].x - p[2].x) / (p[0].y - p[2].y);
+	y = ceilf(p[2].y - 0.5f);
+	endy = ceilf(p[0].y - 0.5f);
+	while (y < endy)
+	{
+		left.location = left.step * ((float)y + 0.5f - p[1].y) + p[1].x;
+		right.location = right.step * ((float)y + 0.5f - p[2].y) + p[2].x;
+		scanline(ceilf(left.location - 0.5f), ceilf(right.location - 0.5f), y, p, t, sdl);
+		y++;
+	}
+}
+
+inline static void render_flat_bot_tri(t_sdlcontext *sdl, t_point_triangle triangle)
+{
+	t_vector2			*p;
+	t_vector3		*t;
+	int				y;
+	float			delta;
+	float			w1;
+	float			w2;
+	t_step			left;
+	t_step			right;
+	int				endy;
+
+	p = triangle.p;
+	t = triangle.t;
+	left.step = (p[1].x - p[0].x) / (p[1].y - p[0].y);
+	right.step = (p[2].x - p[0].x) / (p[2].y - p[0].y);
+	y = ceilf(p[0].y - 0.5f);
+	endy = ceilf(p[2].y - 0.5f);
+	while (y < endy)
+	{
+		left.location = left.step * ((float)y + 0.5f - p[0].y) + p[0].x;
+		right.location = right.step * ((float)y + 0.5f - p[0].y) + p[0].x;
+		scanline(ceilf(left.location - 0.5f), ceilf(right.location - 0.5f), y, p, t, sdl);
+		y++;
+	}
+}
+
+		*/

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/08 19:45:05 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/14 13:11:19 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,8 @@ void	doomnukem(int argc, char **argv)
 	}*/
 }
 
+/*
+
 int	main(int argc, char **argv)
 {
 	/* pid_t	pid;
@@ -139,13 +141,22 @@ int	main(int argc, char **argv)
 		doomlog(LOG_EC_FORK, "couldn't create a process for the game");
 		error_window("couldn't launch the game due to a process fork fail");
 	}
-	if (pid == 0) // child process is always pid 0
+	if (pid == 0) // child process is always pid 0*//*
 		doomnukem(argc, argv);
 	else
 	{
 		wait(&wait_status);
 		handle_exit(wait_status);
-	} */
+	} 
+	doomnukem(argc, argv);
+	return (0);
+}
+*/
+int	main(int argc, char **argv)
+{
+	pid_t	pid;
+	int		wait_status;
+
 	doomnukem(argc, argv);
 	return (0);
 }

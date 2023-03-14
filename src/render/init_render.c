@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_render.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/02 19:34:35 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/14 16:14:06 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ t_render	init_render(t_sdlcontext sdl)
 	render.camera.aspectratio = (float)(sdl.window_h) / (float)(sdl.window_w);
 	render.camera.matproj = matrix_makeprojection(90.0f, \
 								render.camera.aspectratio, 2.0f, 1000.0f);
-	render.worldspace_ptris = malloc(sizeof(t_point_triangle) * 10000);
 	render.screenspace_ptris = malloc(sizeof(t_point_triangle) * 10000);
 	render.q = malloc(sizeof(t_quaternion) * 10000);
 	render.debug_img = get_image_by_name(sdl, "");
@@ -32,6 +31,15 @@ t_render	init_render(t_sdlcontext sdl)
 	render.occlusion.occluder_box = false;
 	render.occlusion.draw_occlusion = false;
 	return (render);
+}
+
+void	calculate_matview(t_camera *camera)
+{
+	t_vector3	vtarget;
+
+	vtarget = vector3_add(camera->position, camera->lookdir);
+	camera->matview = matrix_lookat(camera->position, \
+										vtarget, (t_vector3){0.0f, 0.0f, 1.0f});
 }
 
 void	render_start_new(t_sdlcontext *sdl, t_player *player)
@@ -46,9 +54,7 @@ void	render_start_new(t_sdlcontext *sdl, t_player *player)
 	fov_rad = fov_deg_to_fov_rad(player->fov);
 	render->camera.matproj.m[0][0] = render->camera.aspectratio * fov_rad;
 	render->camera.matproj.m[1][1] = fov_rad;
-	vtarget = vector3_add(render->camera.position, render->camera.lookdir);
-	render->camera.matview = matrix_lookat(render->camera.position, \
-										vtarget, (t_vector3){0.0f, 0.0f, 1.0f});
+	calculate_matview(&render->camera);
 	ft_bzero(sdl->surface->pixels,
 		sizeof(uint32_t) * sdl->window_h * sdl->window_w);
 	ft_bzero(sdl->ui_surface->pixels,
@@ -59,8 +65,6 @@ void	render_start_new(t_sdlcontext *sdl, t_player *player)
 
 void	free_render(t_render render)
 {
-	if (render.worldspace_ptris != NULL)
-		free(render.worldspace_ptris);
 	if (render.screenspace_ptris != NULL)
 		free(render.screenspace_ptris);
 	free(render.q);

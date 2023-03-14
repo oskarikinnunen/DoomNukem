@@ -110,9 +110,6 @@ t_gamereturn	editor_events(t_editor *ed)
 		mouse_event(e, &ed->hid.mouse);
 		if (e.type == SDL_KEYDOWN)
 		{
-			t_pointlight t;
-			/*if (iskey(e, SDLK_p))//TODO: temp shortcut for baking lighting
-				bake_lighting_shadows(&sdl->render, &ed->world);*/
 			if (iskey(e, SDLK_ESCAPE))
 			{
 				if ((ed->hid.keystate >> KEYS_SHIFTMASK) & 1)

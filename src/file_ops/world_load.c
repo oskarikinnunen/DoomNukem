@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world_load.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 14:55:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/13 17:27:16 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/14 13:28:43 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ void	world_init(t_world *world, t_sdlcontext *sdl)
 	world->debugconsole = debugconsole_default();
 	world->entitycache = entitycache_empty(1024);
 	_world_init_skybox(world);
-	world->lighting.ambient_light = 20;
 	world->nav.clip_size = 250.0f;
 	world->debug_gui = ft_memalloc(sizeof(t_autogui));
 }
@@ -120,6 +119,7 @@ void	load_basic_ent_cache_from_list(t_world *world, t_list *l)
 {
 	t_entity	*list_entity;
 	t_entity	*world_entity;
+	t_object	*obj;
 	char		comp_filename[64];
 	char		*str;
 
@@ -132,11 +132,10 @@ void	load_basic_ent_cache_from_list(t_world *world, t_list *l)
 		}*/
 		//list_entity
 		//load_filecontent(filename, "")
-		world_entity = spawn_entity(world);
+		world_entity = spawn_entity(world, get_object_by_name(*world->sdl, list_entity->object_name.str));
 		world_entity->object_name = list_entity->object_name;
 		world_entity->transform = list_entity->transform;
 		world_entity->transform.parent = NULL; //TODO: Might be fine if we don't allow parenting in the editor
-		world_entity->obj = get_object_by_name(*world->sdl, world_entity->object_name.str);
 		l = l->next;
 	}
 }
@@ -157,14 +156,14 @@ void	load_full_ent_cache_from_list(t_world *world, t_list *l)
 		}*/
 		//list_entity
 		//load_filecontent(filename, "")
-		world_entity = spawn_entity(world);
+		world_entity = spawn_entity(world, get_object_by_name(*world->sdl, list_entity->object_name.str));
 		world_entity->object_name = list_entity->object_name;
 		world_entity->transform = list_entity->transform;
 		world_entity->transform.parent = NULL; //TODO: Might be fine if we don't allow parenting in the editor
 		world_entity->component.type = list_entity->component.type;
 		//world_entity->comp
 		entity_set_component_functions(world_entity, world);
-		world_entity->obj = get_object_by_name(*world->sdl, world_entity->object_name.str);
+		//world_entity->obj = get_object_by_name(*world->sdl, world_entity->object_name.str);
 		l = l->next;
 	}
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/09 21:04:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/14 16:48:40 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,18 +38,47 @@ void	lateupdate_entitycache(t_sdlcontext *sdl, t_world *world)
 	}
 }
 
+static void	draw_map(t_entity *entity, t_sdlcontext *sdl)
+{
+	int x;
+	int y;
+	int	width;
+	t_point	size;
+	float	w;
+
+	if (!entity->map)
+		return;
+	size.x = entity->map->size.x;
+	size.y = entity->map->size.y;
+	width = sdl->window_w - size.x;
+	y = 0;
+	while (y < size.y)
+	{	
+		x = 0;
+		while (x < size.x)
+		{
+			float tempx = (float)x/(float)size.x;
+			float tempy = (float)y/(float)size.y;
+			tempx = tempx * entity->map->size.x;
+			tempy = tempy * entity->map->size.y;
+
+			uint32_t clr = entity->map->texture[(int)(tempy * entity->map->size.x + tempx)];
+			((uint32_t *)sdl->surface->pixels)[((y) * (sdl->window_w)) + x + 700] = clr;
+			x++;
+		}
+		y++;
+	}
+}
+
 void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 {
 	int			i;
 	int			found;
 	t_entity	*ent;
-	int		test1;
 	
 	i = 0;
 	found = 0;
-	bool test = false;
-	while (found < world->entitycache.existing_entitycount
-		/*&& i < world->entitycache.alloc_count*/)
+	while (found < world->entitycache.existing_entitycount)
 	{
 		ent = world->entitycache.sorted_entities[i];
 		if (ent->status != es_free)
@@ -106,6 +135,7 @@ void update_world3d(t_world *world, t_render *render)
 	sdl = world->sdl;
 	
 	// Blanking / setup for screen
+	for_all_active_entities(world, render_entity_worldtriangles);
 	render_start_new(world->sdl, world->player);
 	// Occlusion start?
 	clear_occlusion_buffer(sdl);
@@ -170,7 +200,6 @@ void	init_entity(t_entity *entity, t_world *world)
 	int						i;
 
 	entity->obj = get_object_by_name(*world->sdl, entity->object_name.str);
-	entity->lightmap = NULL;
 	entity->map = NULL; //TODO: load maps here
 	defs = get_component_definitions();
 	i = 0;
@@ -214,9 +243,6 @@ void	scale_skybox_uvs(t_object *obj)
 	}
 }
 
-
-
-
 void	init_guns(t_world *world, t_sdlcontext *sdl)
 {
 	t_list	*l;
@@ -239,6 +265,7 @@ void		destroy_entity(t_world *world, t_entity *ent)
 	//protect id here? if greater than alloccount
 	cache->entities[ent->id].status = es_free;
 	cache->entities[ent->id].obj = NULL;
+	free(ent->world_triangles);
 	if (cache->existing_entitycount == 0)
 		doomlog(LOG_EC_MALLOC, "Tried to remove entity -1\n");
 	cache->existing_entitycount--;
@@ -269,7 +296,7 @@ t_entity	*find_entity_with_comp(t_world	*world, t_componenttype comp)
 	return (NULL);
 }
 
-t_entity	*spawn_entity(t_world	*world)
+t_entity	*spawn_entity(t_world *world, t_object *obj)
 {
 	int	i;
 	t_entitycache	*cache;
@@ -287,7 +314,7 @@ t_entity	*spawn_entity(t_world	*world)
 			cache->entities[i].id = i;
 			cache->entities[i].hidden = false;
 			ft_bzero(&cache->entities[i].component, sizeof(t_component));
-			//cache->entities[i].transform.scale = vector3_zero();
+			entity_assign_object(world, &cache->entities[i], obj);
 			cache->existing_entitycount++;
 			if (cache->existing_entitycount >= cache->alloc_count)
 				doomlog(LOG_EC_MALLOC, NULL);
@@ -303,8 +330,13 @@ t_entity	*spawn_entity(t_world	*world)
 
 void		entity_assign_object(t_world *world, t_entity *entity, t_object *obj)
 {
+	if (obj == NULL)
+		return;
 	ft_strcpy(entity->object_name.str, obj->name);
 	entity->obj = obj;
+	entity->world_triangles = (t_triangle *)malloc(sizeof(t_triangle) * obj->face_count);
+	if (!entity->world_triangles)
+		doomlog(LOG_WARNING, "Non-fatal malloc error on entity_assign_object");
 	//create_lightmap_for_entity(entity, world);
 	//create_map_for_entity(entity, world);
 }
@@ -312,9 +344,10 @@ void		entity_assign_object(t_world *world, t_entity *entity, t_object *obj)
 t_entity	*spawn_basic_entity(t_world *world, char *objectname, t_vector3 position) //UNUSED
 {
 	t_entity	*ent;
+	t_object	*obj;
 
-	ent = spawn_entity(world);
-	ent->obj = get_object_by_name(*world->sdl, objectname);
+	obj = get_object_by_name(*world->sdl, objectname);
+	ent = spawn_entity(world, obj);
 	ent->transform.position = position;
 	ent->transform.scale = vector3_one();
 	return (ent);
@@ -339,6 +372,30 @@ void	for_all_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *world
 		i++;
 	}
 }
+
+void	void_for_all_active_entities(t_world	*world, void *ptr, void	(*func)(t_entity *ent, void *ptr))
+{
+	int				i;
+	int				found;
+	t_entitycache	*cache;
+
+	i = 0;
+	found = 0;
+	cache = &world->entitycache;
+	while (found < cache->existing_entitycount)
+	{
+		if (cache->entities[i].status != es_free)
+		{
+			if (cache->entities[i].status == es_active)
+			{
+				func(&cache->entities[i], ptr);
+			}
+			found++;
+		}
+		i++;
+	}
+}
+
 
 void	for_all_active_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *world))
 {
@@ -407,7 +464,7 @@ void	load_cache_from_list(char *filename, t_world *world, t_list *l)
 		}
 		//list_entity
 		//load_filecontent(filename, "")
-		world_entity = spawn_entity(world);
+		world_entity = spawn_entity(world, NULL);
 		ft_memcpy(world_entity, list_entity, sizeof(t_entity));
 		l = l->next;
 	}

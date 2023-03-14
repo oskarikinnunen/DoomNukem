@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   player.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 14:31:10 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/03 15:30:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/14 13:13:24 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,7 @@ t_gun	*debug_gun(t_player *player, t_sdlcontext *sdl, t_world *world)
 	gun = ft_memalloc(sizeof(t_gun));
 	//gun->entity->obj = 
 	//entity_assign_object(world, &gun->entity, get_object_by_name(*sdl, "grenadelauncher.obj"));
-	gun->entity = spawn_entity(world);
-	entity_assign_object(world, gun->entity, get_object_by_name(*sdl, "grenadelauncher.obj"));
+	gun->entity = spawn_entity(world, get_object_by_name(*sdl, "grenadelauncher.obj"));
 	gun->entity->ignore_raycasts = true;
 	gun->entity->transform.scale = vector3_one();
 	gun->entity->transform.parent = &player->transform;

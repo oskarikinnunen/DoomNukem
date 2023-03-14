@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
+#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/13 17:26:52 by raho             ###   ########.fr        #
+#    Updated: 2023/03/14 15:07:22 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -81,6 +81,7 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		list_helper.c \
 		spaceconversions.c \
 		structsaver/structsaver.c \
+		entity/entity_transform.c \
 		entity/entity_animate.c \
 		entity/component_init.c \
 		entity/components/component_definitions.c \
@@ -131,6 +132,7 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		render/render_space.c \
 		lighting/bake_lighting.c \
 		lighting/point_light.c \
+		lighting/fragment_light.c \
 		npc/civilian/civilian_action.c \
 		npc/civilian/civilian_anim.c \
 		npc/civilian/civilian_movement.c \
@@ -143,10 +145,9 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		npc/enemy/enemy_take_damage.c \
 		npc/navigation/pathfind.c \
 		npc/navigation/navmesh.c \
+		render/rasterization/rasterize_zbuffer.c \
 		render/rasterization/rasterize_triangle_wrap.c \
 		render/rasterization/rasterize_triangle.c \
-		render/rasterization/rasterize_triangle_uv.c \
-		render/rasterization/rasterize_triangle_dynamic.c \
 		render/draw.c \
 		render/draw_rectangle.c \
 		render/draw_shapes.c \
@@ -154,6 +155,9 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		render/surface_tools.c \
 		render/colors.c \
 		render/text.c \
+		render/rasterization/rasterize_triangle_shadow.c \
+		render/render_zbuffer.c \
+		render/pixel_utils.c \
 		entity/components/comp_mechasuit.c \
 		entity/components/comp_watercollider.c \
 		entity/components/comp_npc_state.c \
@@ -175,7 +179,8 @@ VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		matrix_shorthands.c matrix_rotations.c \
 		matrix_transform.c \
 		matrix_functions.c matrix_functions2.c \
-		debug_vectors.c point_more.c
+		debug_vectors.c point_more.c \
+		barycentric.c
 VECTORSRC= $(addprefix src/vectors/,$(VECTORSRCFILES))
 SRC= $(addprefix src/,$(SRCFILES))
 SRC+= $(VECTORSRC)
@@ -187,7 +192,7 @@ INCLUDE= -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include \
 			-I$(INSTALLED_LIBS_DIR)/include/SDL2/ \
 			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
 CC= gcc
-CFLAGS= $(INCLUDE) -g #-finline-functions -O2 -MMD #-march=native
+CFLAGS= $(INCLUDE) -g -finline-functions -O2 -MMD #-march=native
 LDFLAGS = -Wl,-rpath $(INSTALLED_LIBS_DIR)/lib
 
 UNAME= $(shell uname)
