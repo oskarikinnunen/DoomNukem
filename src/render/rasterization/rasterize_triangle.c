@@ -4,9 +4,7 @@
 
 inline static uint32_t sample_img(t_render *render, uint32_t xsample, uint32_t ysample)
 {
-	//xsample = ft_clamp(xsample, 0, render->map.size.x - 1);
-	//ysample = ft_clamp(ysample, 0, render->map.size.y - 1);
-	ysample = ft_min(ysample, render->map.size.y - 1);
+	//ysample = ft_min(ysample, render->map.size.y - 1); //TODO: check that it doesnt crash
 	return(render->map.texture[ysample * render->map.size.x + xsample]);
 }
 

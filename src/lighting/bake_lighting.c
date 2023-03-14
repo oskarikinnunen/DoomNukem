@@ -150,7 +150,7 @@ void	calculate_entities_for_light(t_world *world, t_entity *src)
 
 static void allocate_map(t_map *map, t_point size, t_vector2 max)
 {
-	map->size = (t_point){ceilf(max.x), ceilf(max.y)};
+	map->size = (t_point){ceilf(max.x), ceilf(max.y) + 1};
 	map->img_size = size;
 	map->texture = malloc(sizeof(uint32_t) * map->size.x * map->size.y);
 	map->lightmap = malloc(sizeof(uint32_t) * map->size.x * map->size.y);
