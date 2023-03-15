@@ -1,48 +1,47 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vector2_complex.c                                  :+:      :+:    :+:   */
+/*   vector2_complex2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 11:43:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 11:07:01 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/14 11:07:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vectors.h"
 #include "room.h" //Has line definition... TODO: move line to shapes.h
 
-float	vector2_sqr_magnitude(t_vector2 vec)
+float	vector2_dot(t_vector2 first, t_vector2 second)
 {
-	return ((vec.x * vec.x) + (vec.y * vec.y));
+	return ((first.x * second.x) + (first.y * second.y));
 }
 
-float	vector2_sqr_dist(t_vector2 first, t_vector2 second)
+float	vector2_cross(t_vector2 first, t_vector2 second)
 {
-	t_vector2	diff;
-
-	diff = vector2_sub(first, second);
-	return (vector2_sqr_magnitude(diff));
+	return ((first.x * second.y) + (first.y * second.x));
 }
 
-t_vector2	vector2_normalise(t_vector2 vec)
+t_vector2	vector2_lerp(t_vector2 v1, t_vector2 v2, float lerp)
 {
-	float	l;
+	t_vector2	result;
 
-	l = vector2_magnitude(vec);
-	return ((t_vector2){vec.x / l, vec.y / l});
+	result.x = v1.x - (lerp * (v1.x - v2.x));
+	result.y = v1.y - (lerp * (v1.y - v2.y));
+	return (result);
 }
 
-float	vector2_magnitude(t_vector2 vec)
+t_vector2	vector2_crossproduct(t_vector2 v1, t_vector2 v2)
 {
-	return (sqrt((vec.x * vec.x) + (vec.y * vec.y)));
+	t_vector2	v;
+
+	v.x = v1.y * v2.x - v1.x * v2.y;
+	v.y = v1.x * v2.y - v1.y * v2.x;
+	return (v);
 }
 
-float	vector2_dist(t_vector2 first, t_vector2 second)
+bool	vector2_cmp(t_vector2 first, t_vector2 second)
 {
-	return (
-		sqrt
-		((first.x - second.x) * (first.x - second.x)
-			+ (first.y - second.y) * (first.y - second.y)));
+	return ((first.x == second.x) && (first.y == second.y));
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/07 16:11:35 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/15 13:01:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,6 @@ void	create_sdlcontext(t_sdlcontext	*sdl, t_gamemode mode)
 		|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0 \
 		|| TTF_Init() < 0)
 		doomlog(LOG_EC_SDL_INIT, NULL);
-	
 	set_sdl_settings(sdl);
 	if (mode == MODE_EDITOR)
 		editor_load_assets(sdl);

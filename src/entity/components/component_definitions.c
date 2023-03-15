@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   component_definitions.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 20:11:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/03 14:06:24 by kfum             ###   ########.fr       */
+/*   Updated: 2023/03/13 17:19:44 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,18 +30,12 @@ t_componentdefinition	*get_component_definitions()
 			.func_assign_component = assign_component_audiosource},
 		(t_componentdefinition){.type = COMP_INTERACTABLE, .name = "Interactable",
 			.func_assign_component = assign_component_interactable},
-		(t_componentdefinition){.type = COMP_MECHASUIT, .name = "Mechasuit",
-			.func_assign_component = assign_component_mechasuit},
-		(t_componentdefinition){.type = COMP_WATERCOLLIDER, .name = "Watercollider",
-			.func_assign_component = assign_component_watercollider},
 		(t_componentdefinition){.type = COMP_LIGHT, .name = "Light",
 			.func_assign_component = assign_component_light},
 		(t_componentdefinition){.type = COMP_HEALTHPACK, .name = "Healthpack",
 			.func_assign_component = assign_component_healthpack},
 		(t_componentdefinition){.type = COMP_NPC, .name = "NPC",
 			.func_assign_component = assign_component_npc},
-		(t_componentdefinition){.type = COMP_NPC_CIVILIAN, .name = "Npc_civilian",
-			.func_assign_component = assign_component_npc_civilian},
 		(t_componentdefinition){.type = COMP_PLAYERSPAWN, .name = "Playerspawn",
 			.func_assign_component = assign_component_playerspawn},
 		(t_componentdefinition){.type = COMP_GUN_PICKUP, .name = "Gun_pickup",

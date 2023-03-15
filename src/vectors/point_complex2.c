@@ -1,32 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vector2_shorthands.c                               :+:      :+:    :+:   */
+/*   point_complex.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/13 11:34:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/13 17:31:14 by okinnune         ###   ########.fr       */
+/*   Created: 2022/10/13 11:43:53 by okinnune          #+#    #+#             */
+/*   Updated: 2022/10/13 12:06:14 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vectors.h"
 
-t_vector2	vector2_zero(void)
+int	point_sqr_magnitude(t_point point)
 {
-	return ((t_vector2){0, 0});
+	return ((point.x * point.x) + (point.y * point.y));
 }
 
-t_vector2	vector2_one(void)
+float	point_sqr_fmagnitude(t_point point)
 {
-	return ((t_vector2){1, 1});
+	return ((point.x * point.x) + (point.y * point.y));
 }
 
-t_vector2	vector2_negative(t_vector2 vec)
+t_point	point_normalise(t_point point)
 {
-	t_vector2	result;
+	t_vector2	v2;
 
-	result.x = -vec.x;
-	result.y = -vec.y;
-	return (result);
+	v2 = point_to_vector2(point);
+	v2 = vector2_normalise(v2);
+	v2 = vector2_mul(v2, 3.0f);
+	return (vector2_to_point(v2));
 }

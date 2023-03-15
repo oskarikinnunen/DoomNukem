@@ -33,7 +33,6 @@ typedef struct s_player
 	t_input				input;
 	bool				noclip;
 	bool				locked;
-	bool				isgrounded;
 	bool				crouchjumped;
 	float				speed; //read-only player speed used for animations etc
 	t_vector3			lookdir;

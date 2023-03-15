@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 15:32:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/08 16:54:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/14 13:15:18 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ static inline void	show_surface(t_sdlcontext *sdl)
 		doomlog(LOG_EC_SDL_UPDATEWINDOWSURFACE, NULL);
 }
 
+//TODO: add game_reload_level at the end of this
 void	playmode_death(t_game *game)
 {
 	static uint32_t	deathtime;
@@ -110,5 +111,4 @@ void	playmode_death(t_game *game)
 		show_surface(game->world.sdl);
 		update_audio(&game->world);
 	}
-	//TODO: add game_reload_level here
 }

@@ -6,16 +6,11 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/07 01:54:00 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/11 15:58:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/14 11:44:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vectors.h"
-
-int			int_snap(int i, int interval)
-{
-	
-}
 
 t_vector2	vector2_snap(t_vector2 vec, int interval)
 {
@@ -40,9 +35,20 @@ static bool	vector2_nan_or_inf(t_vector2 vec)
 	return (false);
 }
 
-float vector2_anglebetween(t_vector2 first, t_vector2 second)
+t_vector2	vector2_add_xy(t_vector2 vec, float add)
 {
-	t_vector2 temp = vector2_sub(second, first);
+	t_vector2	result;
+
+	result.x = vec.x + add;
+	result.y = vec.y + add;
+	return (result);
+}
+
+float	vector2_anglebetween(t_vector2 first, t_vector2 second)
+{
+	t_vector2	temp;
+
+	temp = vector2_sub(second, first);
 	if (vector2_nan_or_inf(first) || vector2_nan_or_inf(second))
 	{
 		exit(0);

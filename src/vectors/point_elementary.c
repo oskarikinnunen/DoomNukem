@@ -48,11 +48,12 @@ t_point	point_mul(t_point vec, int mul)
 	return (result);
 }
 
+//TODO: maybe log this error or something
 t_point	point_div(t_point vec, int div)
 {
 	t_point	result;
 
-	if (div == 0) //TODO: maybe log this error or something
+	if (div == 0)
 		return (point_zero());
 	result.x = vec.x / div;
 	result.y = vec.y / div;

@@ -83,14 +83,9 @@ static void debug_ramps(t_game *game)
 	{
 		tri = (t_vector3_tri *)l->content;
 		if (i % 2 == 0)
-		{
 			render_ray3D(game->world.sdl, tri->c, tri->a, CLR_RED);
-		} else {
+		else
 			render_ray3D(game->world.sdl, tri->b, tri->c, CLR_BLUE);
-		}
-			
-		//render_ray3D(game->world.sdl, tri->b, tri->c, CLR_RED);
-		//render_ray3D(game->world.sdl, tri->c, tri->a, CLR_RED);
 		i++;
 		l = l->next;
 	}
