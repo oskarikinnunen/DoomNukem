@@ -14,6 +14,8 @@ inline static void scanline(int start, int end, int y, t_point_triangle triangle
 	t_stepv3	slope;
 	int			x;
 
+
+	//printf("start: %i end: %i\n", start, end);
 	slope = make_uv_slopev3(start, end, y, triangle);
 	x = start;
 	while(x < end)

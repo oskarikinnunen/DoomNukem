@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/15 13:21:33 by okinnune         ###   ########.fr        #
+#    Updated: 2023/03/15 14:06:39 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -165,9 +165,7 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		render/rasterization/rasterize_triangle_shadow.c \
 		render/render_zbuffer.c \
 		render/pixel_utils.c \
-		entity/components/comp_mechasuit.c \
-		entity/components/comp_watercollider.c \
-		entity/components/comp_npc_state.c \
+		entity/entity_transform.c \
 		entity/components/comp_light.c \
 		entity/components/comp_healthpack.c \
 		entity/components/comp_playerspawn.c \
@@ -202,7 +200,8 @@ VECTORSRCFILES= conversions.c \
 		vector3_complex.c \
 		vector3_elementary.c \
 		vector3_more.c \
-		vector3_shorthands.c
+		vector3_shorthands.c \
+		barycentric.c
 VECTORSRC= $(addprefix src/vectors/,$(VECTORSRCFILES))
 SRC= $(addprefix src/,$(SRCFILES))
 SRC+= $(VECTORSRC)

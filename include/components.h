@@ -31,6 +31,7 @@ struct s_world;
 typedef struct s_component
 {
 	t_componenttype		type;
+	uint32_t			data_preset;
 	size_t				data_size;
 	void				(*func_take_damage)(struct s_entity *,struct s_world *);
 	void				(*func_allocate)(struct s_entity *,struct s_world *);

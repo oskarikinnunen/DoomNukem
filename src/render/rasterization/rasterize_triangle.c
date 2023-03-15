@@ -34,7 +34,8 @@ inline static void scanline(int start, int end, int y, t_point_triangle triangle
 		}
 		x++;
 	}
-	render_bitmask_row(start, end, 1.0f / slope.location.z, 1.0f / tex.z, y, sdl);
+	if (sdl->render.occlusion.occlusion)
+		render_bitmask_row(start, end, 1.0f / slope.location.z, 1.0f / tex.z, y, sdl);
 }
 
 

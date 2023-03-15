@@ -6,14 +6,14 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 12:51:01 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/01 21:55:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/15 16:24:35 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "entity.h"
 #include "player.h"
 
-t_gunstats	gun_machinegun()
+t_gunstats	gun_machinegun(void)
 {
 	t_gunstats	stats;
 
@@ -37,7 +37,7 @@ t_gunstats	gun_machinegun()
 	return (stats);
 }
 
-t_gunstats	gun_sniper()
+t_gunstats	gun_sniper(void)
 {
 	t_gunstats	stats;
 
@@ -63,8 +63,8 @@ t_gunstats	gun_sniper()
 
 void	change_gun_preset(t_gun *gun, t_sdlcontext *sdl, int index)
 {
-	static t_gunstats (*preset_funcs[20])(void) =
-	{
+	static t_gunstats	(*preset_funcs[20])(void)
+		= {
 		gun_machinegun,
 		gun_sniper,
 		NULL

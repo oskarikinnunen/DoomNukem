@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode_asset_load.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/13 17:19:40 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/15 14:23:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -260,8 +260,8 @@ void	playmode_load_assets(t_sdlcontext *sdl)
 	editor_load_audio(&sdl->audio);
 	objects_init(sdl);
 	human = get_object_by_name(*sdl, "Human.obj");
-	editor_load_anims(human, "anim", 0);
-	editor_load_anim_legend(sdl);
+	//editor_load_anims(human, "anim", 0);
+	//editor_load_anim_legend(sdl);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 		"loaded", s_itoa(sdl->human_anim_count), "animations:", NULL});
 	i = 0;
