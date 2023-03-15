@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/01 17:29:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/14 16:03:19 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,18 +100,24 @@ void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 		gui_end(&dat->entitygui);*/
 		findbounds(dat->ent);
 		dat->ent->transform.position = dat->info.hit_pos;
+		dat->ent->world_triangles = malloc(sizeof(t_triangle) * dat->ent->obj->face_count); // this is horrible
+		if (!dat->ent->world_triangles)
+			doomlog(LOG_FATAL, "Malloc failed in entity_tool.c");
 		//dat->ent->transform.position = raycast(ed);//vector3_movetowards(ent->transform.position, dir, ed->clock.delta * 1.0f);
 		dat->ent->transform.position.z -= dat->ent->z_bound.min * dat->ent->transform.scale.z;
 		dat->ent->transform.rotation.x += ed->hid.mouse.scroll_delta * 0.261799388f;
 		sdl->render.wireframe = true;
 		sdl->render.gizmocolor = AMBER_3;
+		render_entity_worldtriangles(dat->ent, &ed->world);
 		render_entity(sdl, &sdl->render, dat->ent);
 		sdl->render.wireframe = false;
+		free(dat->ent->world_triangles); // this is horrible
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT) && ed->hid.mouse.relative && dat->ent != NULL)
 	{
-		t_entity *went = spawn_entity(&ed->world);
-		entity_assign_object(&ed->world, went, dat->ent->obj);
+		t_entity *went = spawn_entity(&ed->world, dat->ent->obj);
+		/*went->obj = dat->ent->obj;*/
+		//ft_strcpy(went->object_name, dat->ent->object_name); //TODO: fix in world save or in assign object
 		went->transform = dat->ent->transform;
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT) && dat->ent != NULL)
@@ -147,6 +153,7 @@ static void gui_entitymode(t_entity *entity, t_autogui *gui, t_world *world)
 		if (gui_highlighted_button_if(defs[i].name, gui,
 			entity->component.type == defs[i].type))
 		{
+			entity->component.type = defs[i].type;
 			entity_set_component_functions(entity, world);
 			printf("set component to %s \n",defs[i].name);
 		}
@@ -178,7 +185,7 @@ static void gui_entitymode(t_entity *entity, t_autogui *gui, t_world *world)
 	}
 	if (gui_highlighted_button_if("Audio", gui, entity->component.type == pft_audiosource))
 	{
-		///*protected_free(entity->component.data);
+		//protected_free(entity->component.data);
 		//assign_component_audiosource(&entity->component);
 		//entity->component.func_allocate(entity, world);
 	}
@@ -229,9 +236,8 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 		gui_endhorizontal(gui);
 		if (gui_button("Clone", gui))
 		{
-			t_entity *clone = spawn_entity(&ed->world);
+			t_entity *clone = spawn_entity(&ed->world, ent->obj);
 			
-			entity_assign_object(&ed->world, clone, ent->obj);
 			clone->component.type = ent->component.type;
 			entity_set_component_functions(clone, &ed->world);
 			clone->transform.position = ent->transform.position;
@@ -249,11 +255,6 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 				ent->transform.rotation = vector3_zero();
 			if (gui_button("Reset scale", gui))
 				ent->transform.scale = vector3_one();
-		}
-		if (ent->lightmap != NULL)
-		{
-			gui_labeled_bool_edit("Dynamic lighting: ", &ent->lightmap->dynamic, gui);
-			gui_labeled_int("Cur light: ", ent->lightmap->dynamic_data, gui);
 		}
 		if (gui_highlighted_button_if("Edit component", gui, dat->entityeditor.component_toggle))
 			dat->entityeditor.component_toggle = !dat->entityeditor.component_toggle;
@@ -374,24 +375,6 @@ void	list_prefabs(t_prefab_editor *pe, t_world *world)
 	}
 }
 
-void	edit_prefab_subtype(t_prefab_editor *pe)
-{
-	t_autogui	*gui;
-
-	gui = &pe->subtype_gui;
-	if (pe->prefab->prefabtype == COMP_LIGHT)
-	{
-		t_pointlight	*light;
-		light = pe->prefab->data;
-
-		gui_start(gui);
-		gui_labeled_float_slider("Light radius:", &light->radius, 2.0f, gui);
-		gui_end(gui);
-		gui->sdl->render.gizmocolor = AMBER_2;
-		render_ball(gui->sdl, pe->preview_entity.transform.position, light->radius, AMBER_3);
-	}
-}
-
 void	entity_tool_edit_prefab(t_editor *ed, t_entitytooldata *dat)
 {
 	t_sdlcontext	*sdl;
@@ -427,9 +410,6 @@ void	entity_tool_edit_prefab(t_editor *ed, t_entitytooldata *dat)
 		gui_preset_transform(&pe->prefab->offset, gui);
 		//select_prefab_type(pe);
 		gui_end(gui);
-
-		if (pe->prefab->prefabtype != COMP_NONE)
-			edit_prefab_subtype(pe);
 		//TODO: split
 		gui = &pe->object_select;
 		gui_start(gui);

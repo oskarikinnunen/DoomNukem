@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 12:32:25 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/07 15:32:56 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/08 21:14:20 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,18 +19,11 @@ void	list_push(t_list **head, void *content, size_t content_size)
 
 	node = ft_lstnew(content, content_size);
 	if (node == NULL)
-		doomlog(LOG_EC_MALLOC, NULL);
+		doomlog(LOG_EC_MALLOC, "list_push");
 	if (*head == NULL)
-	{
-		//printf("List was null, making the node the head \n");
 		*head = node;
-	}
-	else {
-		//printf("List wasnt null, appending normally \n");
+	else
 		ft_lstapp(head, node);
-		
-	}
-		
 }
 
 void	*list_findlast(t_list *head)
@@ -123,7 +116,7 @@ void	*list_to_ptr(t_list *source, uint32_t *set_length)
 		return (NULL);
 	result = ft_memalloc((ft_listlen(source) + 1) * source->content_size); //assumes the linked list only contains equal sized contents
 	if (result == NULL)
-		return (result);
+		doomlog(LOG_EC_MALLOC, "list_to_ptr");
 	l = source;
 	i = 0;
 	
@@ -131,13 +124,12 @@ void	*list_to_ptr(t_list *source, uint32_t *set_length)
 	{
 		if (l->content_size != source->content_size)
 		{
-			printf("list node %i content size doesn't match with initial lists' content size!\n", i); //TODO: log
-			break ;
+			doomlog_mul(LOG_FATAL, (char *[4]){\
+				"list node", s_itoa(i), \
+				"content size doesn't match with initial lists' content size!", \
+				NULL});
 		}
 		ft_memcpy(result + (i * l->content_size), l->content, l->content_size);
-		/*printf("content size %lu \n", l->content_size);
-		printf("l      %i content %f %f %f \n", i, (*(t_vector3 *)l->content).x, (*(t_vector3 *)l->content).y, (*(t_vector3 *)l->content).z);
-		printf("result %i content %f %f %f \n\n", i, ((t_vector3 *)result)[i].x, ((t_vector3 *)result)[i].y, ((t_vector3 *)result)[i].z);*/
 		l = l->next;
 		i++;
 	}

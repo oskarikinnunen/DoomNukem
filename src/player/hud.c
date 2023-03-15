@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   hud.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 14:50:05 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/02 22:47:10 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/08 21:08:31 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static t_point draw_ammo_hud(t_world *world)
 
 	origin = (t_point){20, world->sdl->screensize.y - 40};
 	pos_ammo = origin;
-	world->sdl->font.color = color32_to_sdlcolor(AMBER_2);
+	world->sdl->font_default->color = color32_to_sdlcolor(AMBER_2);
 	print_text(world->sdl, "Ammo:", pos_ammo);
 	pos_ammo.y += 14;
 	if (world->player->gun->reload_anim.active)
@@ -51,7 +51,6 @@ static t_point draw_ammo_hud(t_world *world)
 	pos_ammo.x += 10;
 	uint8_t ammocount = world->player->ammo_union.ammo_arr[world->player->gun->stats.ammomask];
 	print_text(world->sdl, s_itoa(ammocount), pos_ammo);
-	world->sdl->font.font = world->sdl->font.font_sizes[0];
 	return (origin);
 }
 
@@ -66,9 +65,9 @@ static void draw_reload_hud(t_world *world)
 	if (world->player->gun->bullets == 0)
 	{
 		if (world->player->input.shoot && sin(world->clock.time * 0.0185f) < 0.0f)
-			world->sdl->font.color = color32_to_sdlcolor(CLR_RED);
+			world->sdl->font_default->color = color32_to_sdlcolor(CLR_RED);
 		print_text_boxed(world->sdl, "![R]eload", pos_reload);
-		world->sdl->font.color = color32_to_sdlcolor(AMBER_2);
+		world->sdl->font_default->color = color32_to_sdlcolor(AMBER_2);
 	}
 }
 

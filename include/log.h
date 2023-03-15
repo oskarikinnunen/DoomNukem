@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   log.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 20:21:24 by raho              #+#    #+#             */
-/*   Updated: 2023/03/01 18:38:52 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/14 12:58:18 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@
 # define LOG_EC_GETNEXTLINE 34
 # define LOG_EC_FORK 35
 # define LOG_EC_READ 36
+# define LOG_EC_LSEEK 37
 # define LOG_EC_FMOD_SYSTEMCREATE 50
 # define LOG_EC_FMOD_SYSTEMINIT 51
 # define LOG_EC_FMOD_SYSTEMCLOSE 52
@@ -75,7 +76,7 @@ typedef struct s_parent
 /* code defines start with LOG */
 void	doomlog(int code, char *str);
 
-/* example: doomlog_mul(LOG_NORMAL, (char *[32]){
+/* example: doomlog_mul(LOG_NORMAL, (char *[4]){
 			"parsed", s_itoa(i), "imagefiles", NULL}); */
 void	doomlog_mul(int code, char **str);
 

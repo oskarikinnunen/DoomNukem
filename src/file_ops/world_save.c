@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 13:57:45 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/07 16:31:42 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/13 14:50:59 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,16 +61,6 @@ char	*world_filename(char *worldname, char *suffix)
 	ft_strcat(full, suffix);
 	return (full);
 }
-
-void	save_room(t_area room) //Todo: DEPRECATE
-{
-	int		fd;
-
-	printf("saving room '%s' \n", room.name);
-	fd = fileopen(room.name, O_RDWR | O_CREAT | O_TRUNC); //Empty the file or create a new one if it doesn't exist
-	close(fd);
-}
-
 
 t_list	*entitycache_to_list(t_entitycache *cache)
 {
@@ -145,7 +135,8 @@ static void	_world_save_basic_entities(t_world world)
 	char	*filename;
 
 	filename = world_filename(world.name, ".basic_ent");
-	printf("saving .basic_ent to '%s'\n", filename);
+	doomlog_mul(LOG_NORMAL, (char *[3]){\
+		"saving .basic_ent to", filename, NULL});
 	fd = fileopen(filename, O_RDWR | O_CREAT | O_TRUNC);
 	//_world_remove_all_room_entities()
 	//_world_remove_all_room_entities(&world);
@@ -159,7 +150,8 @@ static void	_world_save_amap(t_world world)
 	char	*filename;
 
 	filename = world_filename(world.name, ".amap");
-	printf("saving .amap to '%s'\n", filename);
+	doomlog_mul(LOG_NORMAL, (char *[3]){\
+		"saving .amap to", filename, NULL});
 	fd = fileopen(filename, O_RDWR | O_CREAT | O_TRUNC);
 	_world_remove_all_room_entities(&world);
 	_world_sanitize_all_room_pointers(&world);
@@ -186,7 +178,8 @@ static void _world_save_basic_ent(t_world world)
 	t_list	*entitylist;
 
 	filename = world_filename(world.name, ".basic_ent");
-	printf("saving .basic_ent to '%s'\n", filename);
+	doomlog_mul(LOG_NORMAL, (char *[3]){\
+		"saving .basic_ent to", filename, NULL});
 	fd = fileopen(filename, O_RDWR | O_CREAT | O_TRUNC);
 	entitylist = entitycache_to_list(&world.entitycache);
 	_entitylist_basicify(entitylist);
@@ -200,7 +193,8 @@ static void _world_save_full_ent(t_world world)
 	t_list	*entitylist;
 
 	filename = world_filename(world.name, ".full_ent");
-	printf("saving .full_ent to '%s'\n", filename);
+	doomlog_mul(LOG_NORMAL, (char *[3]){\
+		"saving .full_ent to", filename, NULL});
 	fd = fileopen(filename, O_RDWR | O_CREAT | O_TRUNC);
 	entitylist = entitycache_to_list(&world.entitycache);
 	save_chunk(filename, "FENT", entitylist);
@@ -215,8 +209,6 @@ static void	_world_save_images(t_world *world, char *image_list)
 	(void)world;
 	filename = NULL;
 	fd = fileopen(image_list, O_RDONLY);
-	if (fd == -1)
-		doomlog(LOG_EC_OPEN, image_list);
 	ret = get_next_line(fd, &filename);
 	while (ret)
 	{
@@ -230,12 +222,12 @@ static void	_world_save_images(t_world *world, char *image_list)
 	}
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "_world_save_images");
-	if (close(fd) == -1)
-		doomlog(LOG_EC_CLOSE, image_list);
+	fileclose(fd, image_list);
 }
 
 void	world_save_to_file(t_world world)
 {
+	doomlog(LOG_NORMAL, "SAVING WORLD");
 	_world_save_amap(world);
 	_world_save_basic_ent(world);
 	_world_save_full_ent(world);

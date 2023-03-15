@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/03 19:21:17 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/14 14:02:36 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,27 +34,6 @@ void	editor_load_world_args(t_editor *ed, char	*worldname, t_sdlcontext *sdl, t_
 {
 	ed->world = load_world_args(worldname, sdl, args);
 	ed->world.gamemode = MODE_EDITOR;
-	*(ed->world.debug_gui) = init_gui(sdl, &ed->hid, &ed->player, sdl->screensize, "Debugging menu (F2)");
-	
-	ed->toolbar_gui = init_gui(sdl, &ed->hid, &ed->player, (t_point){5, 5}, "Toolbar (F1)");
-	ed->toolbar_gui.minimum_size = (t_point){165, 20};
-	ed->toolbar_gui.locked = true;
-	
-	ed->graphics_gui = init_gui(sdl, &ed->hid, &ed->player, sdl->screensize, "Graphics (F3)");
-	ed->graphics_gui.minimum_size = (t_point){200, 200};
-	ed->graphics_gui.rect.position = point_div(sdl->screensize, 2);
-	//ed->graphics_gui.locked = true;
-	ed->player.noclip = true;
-	player_init(&ed->player, sdl, &ed->world);
-	ed->player.gun->disabled = true;
-	ed->world.debug_gui->hidden = true;
-	ed->graphics_gui.hidden = true;
-	ed->world.player = &ed->player;
-}
-
-void	editor_load_world(t_editor *ed, char	*worldname, t_sdlcontext *sdl)
-{
-	ed->world = load_world(world_fullpath(worldname), sdl);
 	*(ed->world.debug_gui) = init_gui(sdl, &ed->hid, &ed->player, sdl->screensize, "Debugging menu (F2)");
 	
 	ed->toolbar_gui = init_gui(sdl, &ed->hid, &ed->player, (t_point){5, 5}, "Toolbar (F1)");
@@ -287,7 +266,6 @@ int	editorloop(t_sdlcontext sdl)
 	editor_load_prefs(&ed, &sdl);
 	ed.gamereturn = game_continue;
 	sdl.lighting_toggled = false;
-	ed.world.lighting.calculated = false;
 	ed.player.gun->entity->hidden = true;
 	//play_music(&sdl, "music_arp1_ambient.wav");
 	sdl.render.occlusion.occlusion = false;
@@ -296,14 +274,8 @@ int	editorloop(t_sdlcontext sdl)
 	{
 		update_deltatime(&ed.world.clock);
 		ed.gamereturn = editor_events(&ed);
-		bake_lights(&sdl.render, &ed.world);
 		if (!ed.player.locked)
 			moveplayer(&ed.player, &ed.hid.input, &ed.world);
-		//update_render(&sdl.render, &ed.player);
-		//screen_blank(sdl);
-		//render_start(&sdl.render);
-		//update_frustrum_culling(&ed.world, &sdl, &sdl.render);
-		//clear_occlusion_buffer(&sdl);
 		update_world3d(&ed.world, &sdl.render);
 		update_editor_toolbar(&ed, &ed.toolbar_gui);
 		if (ed.tool != NULL)
@@ -312,7 +284,6 @@ int	editorloop(t_sdlcontext sdl)
 		char *fps = ft_itoa(ed.world.clock.fps);
 		print_text(&sdl, fps, (t_point){sdl.window_w - 80, 10});
 		drawcircle(sdl, point_div(sdl.screensize, 2), 4, CLR_BLUE);
-
 		//draw_image(sdl, point_zero(), tgaparse("assets/images/stone02.tga"), (t_point){400, 400});
 
 		free(fps);

@@ -1,11 +1,11 @@
 #include "doomnukem.h"
 
-static void sort_quat_tex_by_dist(float dist[3], t_quaternion q[3], t_texture t[3])
+static void sort_quat_tex_by_dist(float dist[3], t_quaternion q[3], t_vector3 t[3])
 {
 	int i, j;
 	float			key;
 	t_quaternion	temp_q;
-	t_texture		temp_t;
+	t_vector3		temp_t;
 
 	for (i = 1; i < 3; i++)
 	{
@@ -48,13 +48,13 @@ static void sort_quat_by_dist(float dist[3], t_quaternion q[3])
 	}
 }
 
-static void sort_point_and_tex_by_dist(float dist[3], t_point p[3], t_texture t[3])
+static void sort_point_and_tex_by_dist(float dist[3], t_vector2 p[3], t_vector3 t[3])
 {
 	int 			i;
 	int				j;
 	float			key;
-	t_point			temp_p;
-	t_texture		temp_t;
+	t_vector2		temp_p;
+	t_vector3		temp_t;
 
 	for (i = 1; i < 3; i++)
 	{
@@ -82,10 +82,10 @@ static int clip_triangle(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri
 	out_tri->clr = in_tri.clr;
 	t = line_intersect_plane(plane_p, plane_n, in_tri.p[0].v, in_tri.p[2].v);
 	out_tri->p[0] = lerp_quaternion(in_tri.p[0], in_tri.p[2], t);
-	out_tri->t[0] = lerp_texture(in_tri.t[0], in_tri.t[2], t);
+	out_tri->t[0] = vector3_lerp(in_tri.t[0], in_tri.t[2], t);
 	t = line_intersect_plane(plane_p, plane_n, in_tri.p[1].v, in_tri.p[2].v);
 	out_tri->p[1] = lerp_quaternion(in_tri.p[1], in_tri.p[2], t);
-	out_tri->t[1] = lerp_texture(in_tri.t[1], in_tri.t[2], t);
+	out_tri->t[1] = vector3_lerp(in_tri.t[1], in_tri.t[2], t);
 	out_tri->p[2] = in_tri.p[2];
 	out_tri->t[2] = in_tri.t[2];
 
@@ -100,14 +100,14 @@ static int clip_quad_to_triangles(t_vector3 plane_p, t_vector3 plane_n, t_triang
 	out_tri[1].clr = in_tri.clr;
 	t = line_intersect_plane(plane_p, plane_n, in_tri.p[0].v, in_tri.p[1].v);
 	out_tri[0].p[0] = lerp_quaternion(in_tri.p[0], in_tri.p[1], t);
-	out_tri[0].t[0] = lerp_texture(in_tri.t[0], in_tri.t[1], t);
+	out_tri[0].t[0] = vector3_lerp(in_tri.t[0], in_tri.t[1], t);
 	t = line_intersect_plane(plane_p, plane_n, in_tri.p[0].v, in_tri.p[2].v);
 	out_tri[0].p[1] = lerp_quaternion(in_tri.p[0], in_tri.p[2], t);
-	out_tri[0].t[1] = lerp_texture(in_tri.t[0], in_tri.t[2], t);
+	out_tri[0].t[1] = vector3_lerp(in_tri.t[0], in_tri.t[2], t);
 	out_tri[0].p[2] = in_tri.p[1];
 	out_tri[0].t[2] = in_tri.t[1];
 	out_tri[1].p[0] = lerp_quaternion(in_tri.p[0], in_tri.p[2], t);
-	out_tri[1].t[0] = lerp_texture(in_tri.t[0], in_tri.t[2], t);
+	out_tri[1].t[0] = vector3_lerp(in_tri.t[0], in_tri.t[2], t);
 	out_tri[1].p[1] = in_tri.p[1];
 	out_tri[1].t[1] = in_tri.t[1];
 	out_tri[1].p[2] = in_tri.p[2];
@@ -122,11 +122,11 @@ static int point_clip_triangle(t_vector2 plane_p, t_vector2 plane_n, t_point_tri
 
 	out_tri->clr = in_tri.clr;
 	t = vector2_line_intersect_plane(plane_p, plane_n, (t_vector2){in_tri.p[0].x, in_tri.p[0].y}, (t_vector2){in_tri.p[2].x, in_tri.p[2].y});
-	out_tri->p[0] = lerp_point(in_tri.p[0], in_tri.p[2], t);
-	out_tri->t[0] = lerp_texture(in_tri.t[0], in_tri.t[2], t);
+	out_tri->p[0] = vector2_lerp(in_tri.p[0], in_tri.p[2], t);
+	out_tri->t[0] = vector3_lerp(in_tri.t[0], in_tri.t[2], t);
 	t = vector2_line_intersect_plane(plane_p, plane_n, (t_vector2){in_tri.p[1].x, in_tri.p[1].y}, (t_vector2){in_tri.p[2].x, in_tri.p[2].y});
-	out_tri->p[1] = lerp_point(in_tri.p[1], in_tri.p[2], t);
-	out_tri->t[1] = lerp_texture(in_tri.t[1], in_tri.t[2], t);
+	out_tri->p[1] = vector2_lerp(in_tri.p[1], in_tri.p[2], t);
+	out_tri->t[1] = vector3_lerp(in_tri.t[1], in_tri.t[2], t);
 	out_tri->p[2] = in_tri.p[2];
 	out_tri->t[2] = in_tri.t[2];
 
@@ -140,15 +140,15 @@ static int point_clip_quad_to_triangles(t_vector2 plane_p, t_vector2 plane_n, t_
 	out_tri[0].clr = in_tri.clr;
 	out_tri[1].clr = in_tri.clr;
 	t = vector2_line_intersect_plane(plane_p, plane_n, (t_vector2){in_tri.p[0].x, in_tri.p[0].y}, (t_vector2){in_tri.p[1].x, in_tri.p[1].y});
-	out_tri[0].p[0] = lerp_point(in_tri.p[0], in_tri.p[1], t);
-	out_tri[0].t[0] = lerp_texture(in_tri.t[0], in_tri.t[1], t);
+	out_tri[0].p[0] = vector2_lerp(in_tri.p[0], in_tri.p[1], t);
+	out_tri[0].t[0] = vector3_lerp(in_tri.t[0], in_tri.t[1], t);
 	t = vector2_line_intersect_plane(plane_p, plane_n, (t_vector2){in_tri.p[0].x, in_tri.p[0].y}, (t_vector2){in_tri.p[2].x, in_tri.p[2].y});
-	out_tri[0].p[1] = lerp_point(in_tri.p[0], in_tri.p[2], t);
-	out_tri[0].t[1] = lerp_texture(in_tri.t[0], in_tri.t[2], t);
+	out_tri[0].p[1] = vector2_lerp(in_tri.p[0], in_tri.p[2], t);
+	out_tri[0].t[1] = vector3_lerp(in_tri.t[0], in_tri.t[2], t);
 	out_tri[0].p[2] = in_tri.p[1];
 	out_tri[0].t[2] = in_tri.t[1];
-	out_tri[1].p[0] = lerp_point(in_tri.p[0], in_tri.p[2], t);
-	out_tri[1].t[0] = lerp_texture(in_tri.t[0], in_tri.t[2], t);
+	out_tri[1].p[0] = vector2_lerp(in_tri.p[0], in_tri.p[2], t);
+	out_tri[1].t[0] = vector3_lerp(in_tri.t[0], in_tri.t[2], t);
 	out_tri[1].p[1] = in_tri.p[1];
 	out_tri[1].t[1] = in_tri.t[1];
 	out_tri[1].p[2] = in_tri.p[2];
@@ -169,7 +169,7 @@ int point_clip_triangle_against_plane(t_vector2 plane_p, t_vector2 plane_n, t_po
 	i = 0;
 	while (i < 3)
 	{
-		dist[i] = vector2_fdist_to_plane((t_vector2){in_tri.p[i].x, in_tri.p[i].y}, plane_n, plane_p);
+		dist[i] = vector2_fdist_to_plane(in_tri.p[i], plane_n, plane_p);
 		if (dist[i] < 0.0f)
 			outside++;
 		i++;
@@ -316,16 +316,29 @@ int clip_bitmask_triangle_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_
 
 void clipped_point_triangle(t_render *render, t_sdlcontext sdl)
 {
-	int i = 0;
+	t_point_triangle	triangles[200];
+	t_point_triangle	clipped[2];
+	int i = render->start_index;
 	int start = 0;
 	int end = 0;
 
-	t_point_triangle	triangles[200];
-	t_point_triangle	clipped[2];
-	while (i < render->worldspace_ptri_count)
+	if (!render->world_triangles)
+		return;
+	while (i <= render->end_index)
 	{
-		triangles[end++] = render->worldspace_ptris[i];
-		int nnewtriangles = 1;
+		t_triangle world_tri;
+
+		world_tri = render->world_triangles[i];
+		int nnewtriangles = 0;
+		if (!is_triangle_backface(world_tri, render))
+		{
+			t_triangle clipped[2];
+			world_tri = triangle_to_viewspace(world_tri, render->camera.matview);
+			int nclippedtriangles = clip_triangle_against_plane((t_vector3){.z = 0.1f}, (t_vector3){.z = 1.0f}, world_tri, clipped);
+			for (int n = 0; n < nclippedtriangles; n++)
+				triangles[end++] = triangle_to_screenspace_point_triangle(render->camera.matproj, clipped[n], sdl);
+			nnewtriangles = nclippedtriangles;
+		}
 		for (int p = 0; p < 4; p++)
 		{
 			int ntristoadd = 0;

@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   ft_ftoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 11:53:37 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/21 17:01:11 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/08 17:15:12 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include <stdio.h>
 
-
+//TODO: don't use snprintf
 char	*ft_ftoa(float f, int dec)
 {
 	char	*str;

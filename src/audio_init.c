@@ -6,13 +6,14 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/27 10:42:33 by raho              #+#    #+#             */
-/*   Updated: 2023/03/07 16:20:45 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/09 21:37:36 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
 #include "doomnukem.h"
 #include <dirent.h>
+#include "file_io.h"
 
 bool	is_sample(char	*audioname)
 {
@@ -25,127 +26,99 @@ bool	is_music(char *audioname)
 	return (ft_strstr(audioname, "music") != NULL);
 }
 
-static void	allocate_sample_count(t_audio *audio)
+FMOD_MODE	get_mask(char *sound_path)
 {
-	DIR				*d;
-	struct dirent	*dfile;
-	char path		[256] = "assets/audio";
-	int				s_i;
-	int				m_i;
-
-	d = opendir(path);
-	s_i = 0;
-	m_i	= 0;
-	if (d)
-	{
-		dfile = readdir(d);
-		while (dfile != NULL)
-		{
-			if (dfile->d_type == DT_REG
-				&& is_sample(dfile->d_name))
-			{
-				if (is_music(dfile->d_name))
-					m_i++;
-				else
-					s_i++;
-			}
-			dfile = readdir(d);
-		}
-		closedir(d);
-	}
-	audio->samples = ft_memalloc(s_i * sizeof(t_audiosample));
-	audio->music = ft_memalloc(m_i * sizeof(t_audiosample));
-	audio->samplecount = s_i;
-	audio->music_count = m_i;
-	//printf("alloc %i samples \n", s_i);
-	//printf("alloc %i samples \n", s_i);
+	if (ft_strstr(sound_path, "loop") != NULL)
+		return (FMOD_3D | FMOD_LOOP_NORMAL);
+	return (FMOD_3D | FMOD_LOOP_OFF);
 }
 
-static void load_samples(t_audio *audio)
+static void load_sound(t_audio *audio)
 {
-	DIR				*d;
-	struct dirent	*dfile;
-	char path		[256] = "assets/audio";
-	char fullpath	[512];
-	int				s_i;
-	int				m_i;
+	char	*sound_path;
+	int		ret;
+	int		fd;
+	int		i;
 
-	allocate_sample_count(audio);
-	d = opendir(path);
-	s_i = 0;
-	m_i = 0;
-	
-	if (d)
+	doomlog(LOG_NORMAL, "LOADING SOUNDS");
+	audio->samplecount = count_asset_list(SOUNDLISTPATH);
+	doomlog_mul(LOG_NORMAL, (char *[4]){SOUNDLISTPATH, "samplecount =", s_itoa(audio->samplecount), NULL});
+	audio->samples = ft_memalloc(sizeof(t_audiosample) * audio->samplecount);
+	if (audio->samples == NULL)
+		doomlog(LOG_EC_MALLOC, "audio->samples");
+	fd = fileopen(SOUNDLISTPATH, O_RDONLY);
+	sound_path = NULL;
+	ret = get_next_line(fd, &sound_path);
+	i = 0;
+	while (ret)
 	{
-		dfile = readdir(d);
-		while (dfile != NULL)
+		if (sound_path)
 		{
-			if (dfile->d_type == DT_REG
-				&& is_sample(dfile->d_name))
-			{
-				ft_strcpy(fullpath, path);
-				ft_strcat(fullpath, "/");
-				ft_strcat(fullpath, dfile->d_name);
-				printf("loading audio sample %s \n", fullpath);
-				int	mask = FMOD_3D | FMOD_LOOP_OFF;
-				if (!is_music(dfile->d_name))
-				{
-					bool looped = ft_strstr(dfile->d_name, "loop") != NULL;
-					if (looped)
-					{
-						mask = FMOD_3D | FMOD_LOOP_NORMAL;
-						printf("loading %s as looped 3d audio \n", dfile->d_name);
-					}
-						
-					if (FMOD_System_CreateSound(audio->system, fullpath, mask, NULL, &audio->samples[s_i].sound) != FMOD_OK)
-					{
-						doomlog(LOG_EC_FMOD_SYSTEMCREATE, NULL);
-					}
-					ft_strcpy(audio->samples[s_i].name, dfile->d_name); //TODO: protect, strncpy
-					s_i++;
-				}
-				else
-				{
-					mask = FMOD_2D | FMOD_LOOP_NORMAL;
-					if (FMOD_System_CreateSound(audio->system, fullpath, mask, NULL, &audio->music[m_i].sound) != FMOD_OK)
-					{
-						doomlog(LOG_EC_FMOD_SYSTEMCREATE, NULL);
-					}
-					ft_strcpy(audio->music[m_i].name, dfile->d_name); //TODO: protect, strncpy
-					m_i++;
-				}
-			}
-			dfile = readdir(d);
+			if (FMOD_System_CreateSound(audio->system, sound_path, get_mask(sound_path), NULL, &audio->samples[i].sound) != FMOD_OK)
+				doomlog(LOG_EC_FMOD_SYSTEMCREATE, NULL);
+			if (audio->samples[i].sound != NULL)
+				ft_strncpy(audio->samples[i].name, extract_filename(sound_path), sizeof(audio->samples[i].name));
+			doomlog_mul(LOG_NORMAL, (char *[3]){"loaded sound file:", audio->samples[i].name, NULL});
+			free(sound_path);
+			sound_path = NULL;
+			i++;
 		}
-		closedir(d);
+		ret = get_next_line(fd, &sound_path);
 	}
-	//audio->samplecount = i;
-	printf("loaded %i samples \n", audio->samplecount);
-	printf("loaded %i music \n", audio->music_count);
+	if (ret == -1)
+		doomlog(LOG_EC_GETNEXTLINE, SOUNDLISTPATH);
+	fileclose(fd, SOUNDLISTPATH);
+	doomlog_mul(LOG_NORMAL, (char *[4]){"loaded", s_itoa(i), "sound files", NULL});
 }
 
-void	playmode_load_audio(t_audio *audio)
+static void load_music(t_audio *audio)
 {
-	ft_bzero(audio, sizeof(t_audio));
-	audio->samplecount = 0;
-	audio->system = NULL; //todo: use the bzero but apply volume settings from sdl somehow
-	if (FMOD_System_Create(&audio->system, FMOD_VERSION) != FMOD_OK)
-		doomlog(LOG_EC_FMOD_SYSTEMCREATE, NULL);
-	if (FMOD_System_Init(audio->system, 30, FMOD_INIT_NORMAL, FMOD_OUTPUTTYPE_AUTODETECT) != FMOD_OK)
-		doomlog(LOG_EC_FMOD_SYSTEMINIT, NULL);
-	FMOD_System_Set3DSettings(audio->system, 1.0f, 100.0f, 2.0f);
-	load_samples(audio);
+	char	*music_path;
+	int		ret;
+	int		fd;
+	int		i;
+
+	doomlog(LOG_NORMAL, "LOADING MUSIC");
+	audio->music_count = count_asset_list(MUSICLISTPATH);
+	doomlog_mul(LOG_NORMAL, (char *[4]){MUSICLISTPATH, "music_count =", s_itoa(audio->samplecount), NULL});
+	audio->music = ft_memalloc(sizeof(t_audiosample) * audio->music_count);
+	if (audio->music == NULL)
+		doomlog(LOG_EC_MALLOC, "audio->music");
+	fd = fileopen(MUSICLISTPATH, O_RDONLY);
+	music_path = NULL;
+	ret = get_next_line(fd, &music_path);
+	i = 0;
+	while (ret)
+	{
+		if (music_path)
+		{
+			if (FMOD_System_CreateSound(audio->system, music_path, FMOD_2D | FMOD_LOOP_NORMAL, NULL, &audio->music[i].sound) != FMOD_OK)
+				doomlog(LOG_EC_FMOD_SYSTEMCREATE, NULL);
+			if (audio->music[i].sound != NULL)
+				ft_strncpy(audio->music[i].name, extract_filename(music_path), sizeof(audio->music[i].name));
+			doomlog_mul(LOG_NORMAL, (char *[3]){"loaded music file:", audio->music[i].name, NULL});
+			free(music_path);
+			music_path = NULL;
+			i++;
+		}
+		ret = get_next_line(fd, &music_path);
+	}
+	if (ret == -1)
+		doomlog(LOG_EC_GETNEXTLINE, MUSICLISTPATH);
+	fileclose(fd, MUSICLISTPATH);
+	doomlog_mul(LOG_NORMAL, (char *[4]){"loaded", s_itoa(i), "music files", NULL});
 }
 
 void	editor_load_audio(t_audio *audio)
 {
 	ft_bzero(audio, sizeof(t_audio));
-	audio->samplecount = 0;
-	audio->system = NULL; //todo: use the bzero but apply volume settings from sdl somehow
+	audio->system = NULL; // TODO: use the bzero but apply volume settings from sdl somehow
+	doomlog(LOG_NORMAL, "LOADING AUDIO");
 	if (FMOD_System_Create(&audio->system, FMOD_VERSION) != FMOD_OK)
 		doomlog(LOG_EC_FMOD_SYSTEMCREATE, NULL);
-	if (FMOD_System_Init(audio->system, 30, FMOD_INIT_NORMAL, FMOD_OUTPUTTYPE_AUTODETECT) != FMOD_OK)
+	if (FMOD_System_Init(audio->system, 30, FMOD_INIT_NORMAL, NULL) != FMOD_OK)
 		doomlog(LOG_EC_FMOD_SYSTEMINIT, NULL);
 	FMOD_System_Set3DSettings(audio->system, 1.0f, 100.0f, 2.0f);
-	load_samples(audio);
+	load_sound(audio);
+	load_music(audio);
 }

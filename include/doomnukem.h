@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/09 22:08:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/14 12:58:09 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@
 # include "input.h"
 # include "debug.h"
 # include "navigation.h"
+# include <pthread.h>
+# include <SDL_thread.h>
 
 # define PI	3.14159265359
 # define FULLRAD M_PI * 2.0
@@ -41,6 +43,12 @@
 
 # define IMGPATH "assets/images/"
 # define OBJPATH "assets/objects/"
+# define IMGLISTPATH "assets/.image_list.txt"
+# define IMGENVLISTPATH "assets/.image_env_list.txt"
+# define OBJLISTPATH "assets/.object_list.txt"
+# define FONTLISTPATH "assets/.font_list.txt"
+# define SOUNDLISTPATH "assets/.sound_list.txt"
+# define MUSICLISTPATH "assets/.music_list.txt"
 
 # define TEXTBACKGROUND_BORDERPADDING 6
 # define PERFGRAPH_SAMPLES 64
@@ -90,7 +98,8 @@ typedef enum e_gamereturn
 	void	update_npcs(t_world *world) //moves npcs towards their destination, updates their animations
 */
 
-struct s_autogui;
+struct	s_autogui;
+enum	e_load_arg;
 
 typedef struct s_log
 {
@@ -127,19 +136,23 @@ typedef struct s_world
 
 t_vector2	flipped_uv(t_vector2 og);
 void		for_all_active_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *world));
+void		void_for_all_active_entities(t_world	*world, void *ptr, void	(*func)(t_entity *ent, void *ptr));
 void		for_all_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *world));
 void		update_world3d(t_world *world, t_render *render);
 void		toggle_ceilings(t_world *world);
 
-
-enum e_load_arg;
 t_world		load_world_args(char *filename, t_sdlcontext *sdl, enum e_load_arg arg);
 t_world		load_world(char *filename, t_sdlcontext *sdl);
+void		editor_load_images(t_sdlcontext *sdl);
+void		editor_load_env_textures(t_sdlcontext *sdl);
+void		editor_load_objects(t_sdlcontext *sdl);
+void		editor_load_anims(t_object *object, char *anim_name, int i);
+void		editor_load_anim_legend(t_sdlcontext *sdl);
 
 
 void		destroy_entity(t_world *world, t_entity *ent);
-t_entity	*spawn_entity(t_world	*world);
 t_entity	*find_entity_with_comp(t_world	*world, t_componenttype comp);
+t_entity	*spawn_entity(t_world *world, t_object *obj);
 t_entity	*spawn_basic_entity(t_world *world, char *objectname, t_vector3 position);
 void		entity_assign_object(t_world *world, t_entity *entity, t_object *obj);
 void		save_world(char *filename, t_world world);
@@ -162,6 +175,11 @@ typedef struct s_game
 	t_hid_info		hid;
 	t_player		player;
 } t_game;
+
+/* ASSETS */
+
+int		count_asset_list(char *filename);
+char	*extract_filename(const char *filepath);
 
 /* LOG.C */
 int		init_log(void);
@@ -252,8 +270,8 @@ void	apply_graphics_prefs(t_graphicprefs prefs);
 
 /* FONT.C */
 
-void	editor_load_fonts(t_font *font);
-void	playmode_load_fonts(t_font *font);
+void	editor_load_fonts(t_sdlcontext *sdl);
+void	playmode_load_fonts(t_sdlcontext *sdl);
 
 void	draw_black_background(t_sdlcontext *sdl, t_point pos, t_point size);
 
@@ -264,11 +282,13 @@ t_line	line_shorten(t_line line);
 
 // Prints text and returns the rectangle of the printed text
 // Font size and color can be set using:
-// sdl->font->font = sdl->font->font_sizes[x] where x can be 0-3
-// sdl->font->color = color32_to_sdlcolor(CLR_GREEN)
+// sdl->font_default->size_default = sdl->font_default->font_sizes[x] where x can be 0-3
+// sdl->font_default->color = color32_to_sdlcolor(CLR_GREEN)
 t_rectangle	print_text(t_sdlcontext *sdl, const char *text, t_point pos);
 
 // Does the same as print_ftext but also fills in the background for the text
+// Background can be changed with:
+// sdl->font_default->box_color = sdl->font_default->background_colors.'color'
 t_rectangle	print_text_boxed(t_sdlcontext *sdl, const char *text, t_point pos);
 
 t_rectangle	print_text_colored(t_sdlcontext *sdl, const char *text, t_point pos, uint32_t color);
@@ -302,22 +322,17 @@ void	free_roomwalls(t_world *world, t_area *room);
 void	set_nullentities(t_wall **ptr, int count);
 
 //TODO: temp for lights
-void	start_lightbake(t_render *render, t_world *world);
-void	bake_lights(t_render *render, t_world *world);
 void	recalculate_lighting(t_world *world);
-
-void	rasterize_lightpoly(t_lightpoly triangle, t_world *world);
-
-
-uint8_t *smooth_lightmap(t_lightmap *lmap);
+void	recalculate_pointlight(t_world *world);
+void	rasterize_zbuffer(t_lighting *lighting, t_point_triangle triangle);
 
 void	bake_lighting(t_render *render, t_world *world);
 void	bake_lighting_shadows(t_render *render, t_world *world);
 void	render_entity_depth_buffer(t_sdlcontext sdl, t_render *render, t_entity *entity);
 void	update_arealights_for_entity(t_sdlcontext sdl, t_render *render, t_entity *entity);
 void	update_pointlight_for_entity(t_sdlcontext sdl, t_render *render, t_entity *entity);
-void	calculate_pointlight(t_pointlight *pointlight, t_world *world, t_render *render);
-void	calculate_pointlight_step(t_pointlight *pointlight, t_world *world, t_render *render);
+
+void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render);
 //
 
 //Pathfind

@@ -98,13 +98,17 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 
 	gr = game_continue;
 	sdl.lighting_toggled = false;
-	game.world.lighting.calculated = false;
 	sdl.render.occlusion.occlusion = false;
 	game.world.sdl = &sdl;
 	sdl.audio.sfx_volume = 1.0f;
 	game.world.player = &game.player;
 	protagonist_play_audio(&game.player, &game.world, "protag_letsdo.wav");
-	play_music(&sdl, "music_arp1_action.wav");
+	play_music(&sdl, "music_arp1_ambient.wav");
+	/* LIGHTING
+	for_all_active_entities(&game.world, render_entity_worldtriangles);
+	recalculate_lighting(&game.world);
+	sdl.lighting_toggled = true;
+	*/
 	while (gr == game_continue)
 	{
 		if (game.player.health > 0)

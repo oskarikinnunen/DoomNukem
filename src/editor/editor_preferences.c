@@ -5,14 +5,18 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-result"
 
+
+// TODO: Protect?
 void	editor_load_prefs(t_editor *ed, t_sdlcontext *sdl)
 {
 	char			*prefpath;
-	char			*pref_filename;
+	char			pref_filename[256];
 	t_editorprefs	prefs;
 	int				fd;
+
+	ft_bzero(pref_filename, sizeof(pref_filename));
+	ft_bzero(&prefs, sizeof(t_editorprefs));
 	prefpath = SDL_GetPrefPath("temp", "stark");
-	pref_filename = ft_strnew(256);
 	ft_strcpy(pref_filename, prefpath);
 	ft_strcat(pref_filename, "editor.pref");
 	fd = open(pref_filename, O_RDONLY);
@@ -21,25 +25,25 @@ void	editor_load_prefs(t_editor *ed, t_sdlcontext *sdl)
 		read(fd, &prefs, sizeof(t_editorprefs));
 		close(fd);
 		ed->player.transform.position = prefs.playerpos;
-		printf("loading prefs from '%s' , worldname %s \n", prefpath, prefs.worldname);
+		doomlog_mul(LOG_NORMAL, (char *[5]){"loaded prefs from", prefpath, \
+			"- worldname:", prefs.worldname, NULL});
 		editor_load_world_args(ed, prefs.worldname, sdl, LOAD_ARG_FULL);
 	}
 	else
 		editor_load_world_args(ed, "default", sdl, LOAD_ARG_FULL);
 	SDL_free(prefpath);
-	free(pref_filename);
 }
 
 void	editor_save_prefs(t_editor *ed)
 {
 	char			*prefpath;
-	char			*pref_filename;
+	char			pref_filename[256];
 	t_editorprefs	prefs;
 	int				fd;
+
+	ft_bzero(pref_filename, sizeof(pref_filename));
+	ft_bzero(&prefs, sizeof(t_editorprefs));
 	prefpath = SDL_GetPrefPath("temp", "stark");
-	ft_bzero(&prefs, sizeof(prefs));
-	
-	pref_filename = ft_strnew(256);
 	ft_strcpy(pref_filename, prefpath);
 	ft_strcat(pref_filename, "editor.pref");
 	fd = open(pref_filename, O_RDWR | O_CREAT | O_TRUNC, 0666);
@@ -48,12 +52,12 @@ void	editor_save_prefs(t_editor *ed)
 		ft_strcpy(prefs.worldname, ed->world.name);
 		prefs.playerpos = ed->player.transform.position;
 		write(fd, &prefs, sizeof(prefs));
-		//editor_load_and_init_world(ed, prefs.worldname, sdl);
 		close(fd);
-		printf("saved prefs to '%s', worldname was %s \n", pref_filename, prefs.worldname);
+		doomlog_mul(LOG_NORMAL, (char *[5]){\
+			"saved prefs to", pref_filename, \
+			"worldname:", prefs.worldname, NULL});
 	}
 	SDL_free(prefpath);
-	free(pref_filename);
 }
 
 #pragma GCC diagnostic pop

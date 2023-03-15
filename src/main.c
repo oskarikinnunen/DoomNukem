@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/15 13:01:23 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/15 13:11:35 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ void	set_sdl_settings(t_sdlcontext *sdl)
 	sdl->window_h = prefs.resolution_y;
 	sdl->resolution_scaling = ft_clampf(prefs.resolutionscale, 0.25f, 1.0f);
 	sdl->audio.sfx_volume = prefs.volume;
-	printf("prefs volume was %f \n", prefs.volume);
 	create_sdl_window(sdl, prefs.screenmode);
 	sdl->surface = SDL_CreateRGBSurfaceWithFormat(SDL_SWSURFACE, sdl->window_w, sdl->window_h, 32, SDL_PIXELFORMAT_ARGB8888);
 	if (sdl->surface == NULL)
@@ -92,8 +91,6 @@ void	create_sdlcontext(t_sdlcontext	*sdl, t_gamemode mode)
 		editor_load_assets(sdl);
 	else
 		playmode_load_assets(sdl);
-	printf("audio volume %f \n", sdl->audio.sfx_volume);
-	printf("audio volume2 %f \n", sdl->audio.sfx_volume);
 }
 
 void	checkargs(int argc, char **argv)
@@ -130,6 +127,8 @@ void	doomnukem(int argc, char **argv)
 	}*/
 }
 
+/*
+
 int	main(int argc, char **argv)
 {
 	/* pid_t	pid;
@@ -141,13 +140,22 @@ int	main(int argc, char **argv)
 		doomlog(LOG_EC_FORK, "couldn't create a process for the game");
 		error_window("couldn't launch the game due to a process fork fail");
 	}
-	if (pid == 0) // child process is always pid 0
+	if (pid == 0) // child process is always pid 0*//*
 		doomnukem(argc, argv);
 	else
 	{
 		wait(&wait_status);
 		handle_exit(wait_status);
-	} */
+	} 
+	doomnukem(argc, argv);
+	return (0);
+}
+*/
+int	main(int argc, char **argv)
+{
+	pid_t	pid;
+	int		wait_status;
+
 	doomnukem(argc, argv);
 	return (0);
 }

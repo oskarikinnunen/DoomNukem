@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   debug_vectors.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <eino.oskari.kinnunen@gmail.co    +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 13:13:28 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/06 17:30:10 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/02 18:19:07 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,13 +69,6 @@ void print_tri(t_triangle tri)
 	print_quat(tri.p[0]);
 	print_quat(tri.p[1]);
 	print_quat(tri.p[2]);
-}
-
-void print_texture(t_texture t)
-{
-	if (DEBUG_ON == 0)
-		return;
-	printf("%f, %f, %f\n", t.u, t.v, t.w);
 }
 
 void print_face(void *face)

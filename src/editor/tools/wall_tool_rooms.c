@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wall_tool_rooms.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/08 14:28:38 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/14 13:44:05 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -721,6 +721,7 @@ void	_room_triangulate_floors(t_world *world, t_area *room)
 	t_floorcalc	fc;
 	t_wall		*w;
 	t_meshtri	*mtri;
+	t_object	*obj;
 	int			i;
 
 	ft_bzero(&fc, sizeof(fc));
@@ -740,10 +741,8 @@ void	_room_triangulate_floors(t_world *world, t_area *room)
 	while (i < fc.facecount)
 	{
 		mtri = &room->floors[i];
-		mtri->entity = spawn_entity(world);
-		mtri->entity->rigid = true;
-		mtri->entity->obj = object_tri(world->sdl);
-		mtri->entity->obj->materials->img = get_image_by_name(*world->sdl, room->s_floortex.str);
+		obj = object_tri(world->sdl);
+		obj->materials->img = get_image_by_name(*world->sdl, room->s_floortex.str);
 		mtri->v[0] = v2tov3(fc.edges[fc.faces[i].v_indices[0]]);
 		mtri->v[1] = v2tov3(fc.edges[fc.faces[i].v_indices[1]]);
 		mtri->v[2] = v2tov3(fc.edges[fc.faces[i].v_indices[2]]);
@@ -756,7 +755,9 @@ void	_room_triangulate_floors(t_world *world, t_area *room)
 		mtri->uv[0] = vector2_div(mtri->uv[0], 100.0f);
 		mtri->uv[1] = vector2_div(mtri->uv[1], 100.0f);
 		mtri->uv[2] = vector2_div(mtri->uv[2], 100.0f);
-		applytrimesh(*mtri, mtri->entity->obj);
+		applytrimesh(*mtri, obj);
+		mtri->entity = spawn_entity(world, obj);
+		mtri->entity->rigid = true;
 		update_floor_bounds(mtri);
 		
 		//printf("uv 1: %f %f2: %f %f 3: %f %f\n", mtri->uv[0].x, mtri->uv[0].y, mtri->uv[1].x, mtri->uv[1].y, mtri->uv[2].x, mtri->uv[2].y);
@@ -776,15 +777,14 @@ void	room_makeceilings(t_world *world, t_area *room)
 {
 	int			i;
 	t_meshtri	*mtri;
+	t_object	*obj;
 
 	i = 0;
 	while (i < room->floorcount)
 	{
 		mtri = &room->ceilings[i];
-		mtri->entity = spawn_entity(world);
-		mtri->entity->rigid = true;
-		mtri->entity->obj = object_tri(world->sdl);
-		mtri->entity->obj->materials->img = get_image_by_name(*world->sdl, room->s_ceiltex.str);
+		obj = object_tri(world->sdl);
+		obj->materials->img = get_image_by_name(*world->sdl, room->s_ceiltex.str);
 		mtri->v[0] = room->floors[i].v[0];
 		mtri->v[1] = room->floors[i].v[1];
 		mtri->v[2] = room->floors[i].v[2];
@@ -794,7 +794,9 @@ void	room_makeceilings(t_world *world, t_area *room)
 		mtri->uv[0] = room->floors[i].uv[0];
 		mtri->uv[1] = room->floors[i].uv[1];
 		mtri->uv[2] = room->floors[i].uv[2];
-		applytrimesh(*mtri, mtri->entity->obj);
+		applytrimesh(*mtri, obj);
+		mtri->entity = spawn_entity(world, obj);
+		mtri->entity->rigid = true;
 		update_floor_bounds(mtri);
 		i++;
 	}

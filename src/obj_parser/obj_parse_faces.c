@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   obj_parse_faces.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 15:55:15 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/22 09:48:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/08 18:57:24 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,12 @@ t_face	parse_face(char *line)
 
 	ft_bzero(&result, sizeof(t_face));
 	f_strs = ft_strsplit(line, ' ');
+	if (f_strs == NULL)
+		doomlog(LOG_EC_MALLOC, "parse_face");
 	i = 0;
 	while (i < 3 && f_strs[i] != NULL)
 	{
+		// TODO: make own version of atof()
 		result.v_indices[i] = atoi(f_strs[i]); //Only takes the first number, so '3/2/9' would return 3 here.
 		if (ft_strlen(f_strs[i]) > 2 && ft_strstr(f_strs[i], "/") != NULL)
 			result.uv_indices[i] = ft_atoi(ft_strstr(f_strs[i], "/") + 1);
@@ -36,7 +39,7 @@ t_face	parse_face(char *line)
 	}
 	free(f_strs);
 	if (i != 3)
-		printf("invalid face string!\n"); //TODO: log?
+		doomlog(LOG_FATAL, "invalid face string!");
 	return (result);
 }
 
@@ -84,28 +87,34 @@ t_list	*get_face_list(int fd, t_list *materials)
 	t_face		face;
 	t_material	*mat;
 	int			mat_index;
+	int			ret;
 
 	list = NULL;
+	line = NULL;
 	mat_index = 0;
-	while (ft_get_next_line(fd, &line))
+	ret = get_next_line(fd, &line);
+	while (ret)
 	{
-		if (ft_strnstr(line, "usemtl ", sizeof("usemtl")))
+		if (line)
 		{
-			//mat = find_materialmatch(line + sizeof("usemtl"), materials);
-			mat_index = find_materialindex(line + sizeof("usemtl"), materials);
-			//printf("face kd %i \n", mat->kd & 0xFF);
+			if (ft_strnstr(line, "usemtl ", sizeof("usemtl")))
+			{
+				mat_index = find_materialindex(line + sizeof("usemtl"), materials);
+			}
+			if (ft_strnstr(line, "f ", sizeof("f")))
+			{
+				face = parse_face(line + (sizeof("f")));
+				face.materialindex = mat_index;
+				list_push(&list, &face, sizeof(t_face));
+			}
+			free(line);
+			line = NULL;
 		}
-			
-		if (ft_strnstr(line, "f ", sizeof("f")))
-		{
-			face = parse_face(line + (sizeof("f")));
-			//face.material = mat;
-			face.materialindex = mat_index;
-			//printf("	sface kd %i\n", face.material->kd & 0xFF);
-			list_push(&list, &face, sizeof(t_face));
-		}
-		free(line);
+		ret = get_next_line(fd, &line);
 	}
-	lseek(fd, 0, SEEK_SET);
+	if (ret == -1)
+		doomlog(LOG_EC_GETNEXTLINE, "get_face_list");
+	if (lseek(fd, 0, SEEK_SET) == -1)
+		doomlog(LOG_EC_LSEEK, "get_face_list");
 	return (list);
 }

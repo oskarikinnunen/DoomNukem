@@ -88,12 +88,6 @@ typedef struct	s_watercollider
 	float	TESTVARIABLE;
 }	t_watercollider;
 
-typedef struct	s_light
-{
-	float		radius;
-	t_vector3	origin;
-	//t_entity	**
-}	t_light;
 typedef struct	s_healthpack
 {
 	float	TESTVARIABLE;

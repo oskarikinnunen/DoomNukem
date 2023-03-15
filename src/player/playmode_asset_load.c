@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/07 16:27:22 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/13 17:19:40 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,24 @@ void	playmode_allocate_env_texturecount(t_sdlcontext *sdl)
 	sdl->env_textures = ft_memalloc(sizeof(t_img) * sdl->env_texturecount);
 }
 
+#include "tga.h"
+t_img	unpack_img(char *image_name)
+{
+	t_img	img;
+	int		fd;
+	int		writefd;
+
+	fd = load_filecontent_fd(".tgapack", image_name);
+	if (fd == -1)
+		doomlog(LOG_EC_OPEN, ".tgapack");
+	//load_filecontent()
+	img = tgaparse("temp.tga");
+
+	if (close(fd) == -1)
+		doomlog(LOG_EC_CLOSE, "temp.tga");
+	return (img);
+}
+
 void	playmode_load_all_images(t_sdlcontext *sdl)
 {
 	DIR				*d;
@@ -188,7 +206,7 @@ void	playmode_load_all_env_textures(t_sdlcontext *sdl)
 
 #include "file_io.h"
 
-void	playmode_parse_anim_legend(t_sdlcontext *sdl)
+void	playmode_load_anim_legend(t_sdlcontext *sdl)
 {
 	int					fd;
 	char				*line;
@@ -230,41 +248,27 @@ void	playmode_parse_anim_legend(t_sdlcontext *sdl)
 	}
 }
 
-#include "tga.h"
-t_img	unpack_img(char *image_name)
-{
-	t_img	img;
-	int		fd;
-	int		writefd;
-
-	fd = load_filecontent_fd(".tgapack", image_name);
-	if (fd == -1)
-		doomlog(LOG_EC_OPEN, ".tgapack");
-	//load_filecontent()
-	img = tgaparse("temp.tga");
-
-	if (close(fd) == -1)
-		doomlog(LOG_EC_CLOSE, "temp.tga");
-	return (img);
-}
-
 void	playmode_load_assets(t_sdlcontext *sdl)
 {
-	playmode_load_all_images(sdl);
-	playmode_load_all_env_textures(sdl);
-	playmode_load_all_objects(sdl);
-	playmode_load_fonts(&sdl->font);
-	playmode_load_audio(&sdl->audio);
+	t_object	*human;
+	int			i;
+
+	editor_load_images(sdl);
+	editor_load_env_textures(sdl);
+	editor_load_objects(sdl);
+	editor_load_fonts(sdl);
+	editor_load_audio(&sdl->audio);
 	objects_init(sdl);
-	t_object *human = get_object_by_name(*sdl, "Human.obj");
-	parseanim(human, "anim");
-	playmode_parse_anim_legend(sdl);
-	int i = 0;
+	human = get_object_by_name(*sdl, "Human.obj");
+	editor_load_anims(human, "anim", 0);
+	editor_load_anim_legend(sdl);
+	doomlog_mul(LOG_NORMAL, (char *[4]){\
+		"loaded", s_itoa(sdl->human_anim_count), "animations:", NULL});
+	i = 0;
 	while (i < sdl->human_anim_count)
 	{
-		printf("anim %s frames %i->%i\n", sdl->human_anims[i].name, sdl->human_anims[i].startframe, sdl->human_anims[i].endframe);
+		doomlog_mul(LOG_NORMAL, (char *[2]){\
+			sdl->human_anims[i].name, NULL});
 		i++;
 	}
-	return ;
-	//object_
 }

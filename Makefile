@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/15 12:48:38 by okinnune         ###   ########.fr        #
+#    Updated: 2023/03/15 13:21:33 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,6 +41,10 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		editor/key_events.c \
 		editor/editor_preferences.c \
 		editor/editor_asset_load.c \
+		editor/editor_load_anims.c \
+		editor/editor_load_anim_legend.c \
+		editor/editor_load_images.c \
+		editor/editor_load_objects.c \
 		editor/tools/entity_tool.c \
 		editor/tools/entity_tool_gui_inits.c \
 		editor/tools/wall_tool_rooms.c \
@@ -106,7 +110,6 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		obj_parser/obj_parse_vertex.c \
 		obj_parser/obj_parse_faces.c \
 		obj_parser/obj_parse_uvs.c \
-		obj_parser/obj_parse_anim.c \
 		tga_parser/tga.c \
 		tga_parser/image_data.c \
 		tga_parser/preliminary_data.c \
@@ -136,6 +139,7 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		render/render_space.c \
 		lighting/bake_lighting.c \
 		lighting/point_light.c \
+		lighting/fragment_light.c \
 		npc/civilian/civilian_action.c \
 		npc/civilian/civilian_anim.c \
 		npc/civilian/civilian_movement.c \
@@ -148,10 +152,9 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		npc/enemy/enemy_take_damage.c \
 		npc/navigation/pathfind.c \
 		npc/navigation/navmesh.c \
+		render/rasterization/rasterize_zbuffer.c \
 		render/rasterization/rasterize_triangle_wrap.c \
 		render/rasterization/rasterize_triangle.c \
-		render/rasterization/rasterize_triangle_uv.c \
-		render/rasterization/rasterize_triangle_dynamic.c \
 		render/draw.c \
 		render/draw_rectangle.c \
 		render/draw_shapes.c \
@@ -159,6 +162,12 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		render/surface_tools.c \
 		render/colors.c \
 		render/text.c \
+		render/rasterization/rasterize_triangle_shadow.c \
+		render/render_zbuffer.c \
+		render/pixel_utils.c \
+		entity/components/comp_mechasuit.c \
+		entity/components/comp_watercollider.c \
+		entity/components/comp_npc_state.c \
 		entity/components/comp_light.c \
 		entity/components/comp_healthpack.c \
 		entity/components/comp_playerspawn.c \

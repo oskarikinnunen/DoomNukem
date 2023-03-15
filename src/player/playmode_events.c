@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 19:41:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 13:14:34 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/15 13:20:36 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ int	playmode_events(t_game *game)
 		mouse_event(e, &game->hid.mouse);
 		if (e.type == SDL_KEYDOWN)
 		{
+			if (iskey(e, SDLK_F1))
+				game->player.noclip = !game->player.noclip;
 			if (iskey(e, SDLK_ESCAPE))
 			{
 				if ((game->hid.keystate >> KEYS_SHIFTMASK) & 1)
