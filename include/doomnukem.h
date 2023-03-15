@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 12:58:09 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/15 13:08:09 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -325,6 +325,7 @@ void	set_nullentities(t_wall **ptr, int count);
 void	recalculate_lighting(t_world *world);
 void	recalculate_pointlight(t_world *world);
 void	rasterize_zbuffer(t_lighting *lighting, t_point_triangle triangle);
+void	update_cubemap_cameras(t_entity *entity);
 
 void	bake_lighting(t_render *render, t_world *world);
 void	bake_lighting_shadows(t_render *render, t_world *world);

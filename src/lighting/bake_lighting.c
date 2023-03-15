@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   bake_lighting.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/15 16:00:29 by vlaine            #+#    #+#             */
+/*   Updated: 2023/03/15 16:31:26 by vlaine           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "doomnukem.h"
 
 static void sample_pixel(int x, int y, int index, t_entity *entity)
@@ -121,13 +133,11 @@ void	calculate_entities_for_light(t_world *world, t_entity *src)
 	t_entitycache	*cache;
 	t_entity		*ent;
 	t_light			*light;
-	t_vector3		light_pos;
 	float			dist;
 	t_lighting		lighting;
 
 	lighting.light_ent = src;
 	light = src->component.data;
-	light_pos = vector3_add(get_entity_world_position(src), light->origin);
 	i = 0;
 	found = 0;
 	cache = &world->entitycache;
@@ -139,7 +149,7 @@ void	calculate_entities_for_light(t_world *world, t_entity *src)
 		{
 			if	(ent->status == es_active && ent->obj && ent->map)
 			{
-				dist = fmaxf(vector3_dist(light_pos, get_entity_world_position(ent)) - ent->obj->bounds.radius, 0.0f);
+				dist = fmaxf(vector3_dist(light->world_position, get_entity_world_position(ent)) - ent->obj->bounds.radius, 0.0f);
 				if (dist < light->radius)
 					calculate_light_for_entity(ent, &lighting);
 			}
@@ -151,6 +161,8 @@ void	calculate_entities_for_light(t_world *world, t_entity *src)
 
 static void allocate_map(t_map *map, t_point size, t_vector2 max)
 {
+	uint32_t clr;
+
 	map->size = (t_point){ceilf(max.x) + 1, ceilf(max.y) + 1};
 	map->img_size = size;
 	map->texture = malloc(sizeof(uint32_t) * map->size.x * map->size.y);
@@ -158,13 +170,16 @@ static void allocate_map(t_map *map, t_point size, t_vector2 max)
 	if (map->texture == NULL || map->lightmap == NULL)
 		doomlog(LOG_FATAL, "Malloc fail in bake_lighting.c");
 	ft_bzero(map->texture, sizeof(uint32_t) * map->size.x * map->size.y);
-	ft_bzero(map->lightmap, sizeof(uint32_t) * map->size.x * map->size.y);
+	clr = get_light_amount(LIGHT_AMBIENT, INT_MAX, 0);
+	ft_memset(map->lightmap, clr, sizeof(uint32_t) * map->size.x * map->size.y);
 }
 
 static void clear_map_for_entity(t_entity *entity)
 {
 	int i;
 
+	if (entity->map == NULL)
+		return;
 	i = 0;
 	while (i < entity->obj->material_count)
 	{

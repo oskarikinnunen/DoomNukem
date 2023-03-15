@@ -3,6 +3,8 @@
 
 #include "render_utils.h"
 
+# define LIGHT_AMBIENT 0.15f
+
 typedef struct s_map
 {
 	uint32_t	*texture;
@@ -33,12 +35,13 @@ typedef struct	s_light
 {
 	float			radius;
 	t_vector3		origin;
-	t_cubemap_state	cm_state;	
+	t_vector3		world_position;
+	t_cubemap_state	cm_state;
 	t_cubemap		cubemap;
 	bool			ignoreself;
 	uint32_t		clr;
-	float			ambient;
 	float			intensity;
+	float			ambient;
 }	t_light;
 
 typedef struct s_lighting

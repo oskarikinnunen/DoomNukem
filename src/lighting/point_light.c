@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   point_light.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/15 16:01:16 by vlaine            #+#    #+#             */
+/*   Updated: 2023/03/15 16:01:17 by vlaine           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "doomnukem.h"
 
 static void render_shadowmap(t_world *world, t_lighting *lighting)
@@ -29,6 +41,7 @@ static void calculate_pointlight(t_world *world, t_entity *entity)
 	int				index;
 	t_lighting		lighting;
 
+	update_cubemap_cameras(entity);
 	lighting.light = entity->component.data;
 	lighting.resolution = lighting.light->cubemap.resolution;
 	lighting.light_ent = entity;
@@ -40,6 +53,28 @@ static void calculate_pointlight(t_world *world, t_entity *entity)
 		ft_bzero(lighting.zbuffer, sizeof(float) * lighting.light->cubemap.resolution.x * lighting.light->cubemap.resolution.y);
 		render_shadowmap(world, &lighting);
 		index++;
+	}
+}
+
+void	update_cubemap_cameras(t_entity *entity)
+{
+	t_light		*light;
+	t_mat4x4	matproj;
+	int			i;
+
+	light = entity->component.data;
+	if (light == NULL)
+		return;
+	light->world_position = transformed_vector3(entity->transform, light->origin).v;
+	matproj = matrix_makeprojection(90.0f, light->cubemap.resolution.y / light->cubemap.resolution.x, 2.0f, 1000.0f);
+	i = 0;
+	while (i < 6)
+	{
+		light->cubemap.shadowmaps[i] = (float *)malloc(sizeof(float) * (light->cubemap.resolution.x * light->cubemap.resolution.y));
+		light->cubemap.cameras[i].position = light->world_position;
+		light->cubemap.cameras[i].matproj = matproj;
+		calculate_matview(&light->cubemap.cameras[i]);
+		i++;
 	}
 }
 

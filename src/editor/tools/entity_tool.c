@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 16:03:19 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/15 16:26:28 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,7 +240,7 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat)
 			
 			clone->component.type = ent->component.type;
 			entity_set_component_functions(clone, &ed->world);
-			clone->transform.position = ent->transform.position;
+			clone->transform = ent->transform;
 			dat->sel_ent = clone;
 			return ;
 			//dat->se

@@ -28,8 +28,8 @@ inline t_stepv3 make_uv_slopev3(int start, int end, int y, t_point_triangle tria
 	t_vector2	left;
 	t_vector2	right;
 
-	left = barycentric_coordinates(triangle.p, (t_vector2){start, y});
-	right = barycentric_coordinates(triangle.p, (t_vector2){end, y});
+	left = barycentric_coordinates(triangle.p, (t_vector2){start + 0.5f, y + 0.5f});
+	right = barycentric_coordinates(triangle.p, (t_vector2){end + 0.5f, y + 0.5f});
 	slope.location = get_vector3_from_barycentric(triangle.t, left);
 	slope.step = get_vector3_from_barycentric(triangle.t, right);
 	slope.step = vector3_div(vector3_sub(slope.step, slope.location), end - start);

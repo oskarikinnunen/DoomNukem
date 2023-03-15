@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   rasterize_triangle_wrap.c                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/15 15:59:32 by vlaine            #+#    #+#             */
+/*   Updated: 2023/03/15 15:59:34 by vlaine           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "doomnukem.h"
 
 inline static uint32_t sample_img_dynamic(t_render *render, uint32_t xsample, uint32_t ysample)

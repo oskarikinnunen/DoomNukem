@@ -1,15 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   rasterize_triangle_shadow.c                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/15 15:59:23 by vlaine            #+#    #+#             */
+/*   Updated: 2023/03/15 16:44:44 by vlaine           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "doomnukem.h"
 
 static void sample_img(t_lighting *lighting, int x, int y, t_point_triangle poly)
 {
-    t_vector3       loc;
-	uint32_t		light_amount;
+	t_vector3	loc;
+	uint32_t	light_amount;
 
 	if (lighting->overdraw[y * lighting->map->size.x + x])
 		return;
 	else
 		lighting->overdraw[y * lighting->map->size.x + x] = true;
-	loc = texcoord_to_loc(poly.t, poly.p, vector2_add_xy((t_vector2){x, y}, 0.0f));
+	loc = texcoord_to_loc(poly.t, poly.p, (t_vector2){x, y});
 	light_amount = lighting->map->lightmap[y * (lighting->map->size.x) + x];
 	light_amount = get_lighting_for_pixel(lighting, light_amount, loc);
 	lighting->map->lightmap[y * (lighting->map->size.x) + x] = light_amount;
@@ -75,12 +87,21 @@ void	rasterize_light(t_point_triangle triangle, t_lighting *lighting)
 	offset = vector2_negative(offset);
 	for (int y = min.y; y < max.y; y++)
 	{
+		bool row = false;
 		for (int x = min.x; x < max.x; x++)
 		{
 			t_vector2 bary = barycentric_coordinates(triangle.p, (t_vector2){x, y});
 			if (bary.x >= offset.x && bary.y >= offset.y && bary.x + bary.y <= 1.0f -(offset.x + offset.y))
 			{
+				if (row == false)
+					sample_img(lighting, ft_clamp(x - 1, 0, lighting->map->size.x - 1), ft_clamp(y, 0, lighting->map->size.y - 1), triangle);
+				row = true;
 				sample_img(lighting, ft_clamp(x, 0, lighting->map->size.x - 1), ft_clamp(y, 0, lighting->map->size.y - 1), triangle);
+			}
+			else if (row == true)
+			{
+				sample_img(lighting, ft_clamp(x, 0, lighting->map->size.x - 1), ft_clamp(y, 0, lighting->map->size.y - 1), triangle);
+				row = false;
 			}
 		}
 	}

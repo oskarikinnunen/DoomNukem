@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fragment_light.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/15 16:00:33 by vlaine            #+#    #+#             */
+/*   Updated: 2023/03/15 16:46:47 by vlaine           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "doomnukem.h"
 
 static int  get_cubemap_face(t_vector3 dir)
@@ -22,12 +34,11 @@ static int  get_cubemap_face(t_vector3 dir)
     return(face);
 }
 
-static t_vector3 get_direction_to_pixel(t_entity *src, t_light *light, t_vector3 pixel_loc)
+static t_vector3 get_direction_to_pixel(t_light *light, t_vector3 pixel_loc)
 {
-    t_vector3 dir;
-    dir = vector3_add(get_entity_world_position(src), light->origin);
-    dir = vector3_add(dir, light->origin);
-    dir = vector3_sub(pixel_loc, dir);
+    t_vector3	dir;
+
+    dir = vector3_sub(pixel_loc, light->world_position);
     dir = vector3_normalise(dir);
     return(dir);
 }
@@ -72,15 +83,12 @@ uint32_t	get_lighting_for_pixel(t_lighting *lighting, uint32_t light_amount, t_v
 	float			dist;
 
     light = lighting->light_ent->component.data;
-
-    //t_vector3 dir = get_direction_to_pixel(lighting->entity, light, pixel_loc);
 	t_vector3 dir;
-    dir = vector3_add(get_entity_world_position(lighting->light_ent), light->origin);
-    dir = vector3_add(dir, light->origin);
-	dist = vector3_dist(dir, pixel_loc);
+
+	dist = vector3_dist(light->world_position, pixel_loc);
 	if (dist > light->radius)
 		return(light_amount);
-    dir = vector3_sub(pixel_loc, dir);
+    dir = vector3_sub(pixel_loc, light->world_position);
     dir = vector3_normalise(dir);
 	float temp = fabsf(vector3_dot(dir, lighting->triangle_normal));
     j = get_cubemap_face(dir);
@@ -91,10 +99,9 @@ uint32_t	get_lighting_for_pixel(t_lighting *lighting, uint32_t light_amount, t_v
 	int test = p.y * light->cubemap.resolution.x + p.x;
     if (1.0f / q.w >= light->cubemap.shadowmaps[j][test] * 0.98f)
 	{
-		dist = ft_clampf((1.0f - (dist / light->radius)) * temp, 0.0f, 1.0f);
+		dist = ft_clampf((1.0f - (dist / light->radius)), 0.0f, 1.0f);
+		dist = temp * dist * light->intensity + light->ambient * dist;
+		light_amount = get_light_amount(ft_clampf(dist, 0.0f, 1.0f), light->clr, light_amount);
 	}
-	else
-		dist = 0;
-	light_amount = get_light_amount(dist, light->clr, light_amount);
     return(light_amount);
 }

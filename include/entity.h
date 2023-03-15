@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 16:41:16 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/15 13:08:39 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,7 @@ void	create_dynamic_map_for_entity(t_entity *entity, struct s_world *world);
 
 uint32_t	update_pixel_brightness(uint32_t light, uint32_t clr);
 uint32_t	get_lighting_for_pixel(t_lighting *lighting, uint32_t light_amount, t_vector3 location);
+uint32_t	get_light_amount(float delta, uint32_t clr, uint32_t light_amount);
 t_vector3	texcoord_to_loc(t_vector3 ws[3], t_vector2 uv[3], t_vector2 p);
 t_step		make_slope(float start, float end, float steps);
 t_stepv3	make_uv_slopev3(int start, int end, int y, t_point_triangle triangle);
