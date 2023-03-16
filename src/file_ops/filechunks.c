@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 15:04:58 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/16 18:05:05 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,12 +127,37 @@ t_list *load_chunk(char *filename, char *chunkname, size_t size)
 	return (NULL);
 }
 
-int		ft_fileread(int fd, t_filecontent *f)
+//TODO: make fancier version
+int	ft_fileread(int fd, t_filecontent *f)
 {
-	char buf[300000]; //TODO: make fancier version
+	char	buf[300000];
 
 	f->length = read(fd, buf, 300000);
 	f->content = ft_memdup(buf, f->length);
+	return (f->length);
+}
+
+int		ft_fileread_rene(int fd, t_filecontent *f)
+{
+	char	*temp;
+	void	*temp2;
+	char	buf[32000];
+	size_t	len;
+
+	len = read(fd, buf, sizeof(buf));
+	while (len)
+	{
+		temp = ft_memdup(buf, len); // TODO: PROTECT
+		temp2 = ft_memjoin(f->content, (const void *)temp, f->length, len);
+		if (f->content)
+			free(f->content);
+		f->content = temp2;
+		//printf("ft_fileread len: %zu\nft_fileread f->length: %llu\n\n", len, f->length);
+		f->length += len;
+		len = read(fd, buf, sizeof(buf));
+	}
+	if (len == -1)
+		doomlog(LOG_EC_READ, "ft_fileread");
 	return (f->length);
 }
 
@@ -208,6 +233,7 @@ void	load_and_write_filecontent(char *worldname, char *fcname, \
 
 	fc = load_filecontent(worldname, fcname);
 	fd = open(filename, O_CREAT | O_RDWR | O_TRUNC, 0666);
+	printf("fc.length: %llu\n", fc.length);
 	write(fd, fc.content, fc.length);
 	fileclose(fd, filename);
 }
@@ -231,7 +257,8 @@ void	pack_file(char	*packname, char *filename)
 	int				fd;
 	void			*temp;
 	t_filecontent	fc;
-	
+
+	ft_bzero(&fc, sizeof(t_filecontent));
 	fd = open(filename, O_RDONLY, 0666);
 	if (fd == -1)
 		return ;
@@ -258,6 +285,7 @@ void	force_pack_file(char	*packname, char *filename)
 	void			*temp;
 	t_filecontent	fc;
 	
+	ft_bzero(&fc, sizeof(t_filecontent));
 	fd = open(filename, O_RDONLY, 0666);
 	if (fd == -1)
 		return ;
@@ -266,13 +294,36 @@ void	force_pack_file(char	*packname, char *filename)
 	close(fd);
 	fd = open(packname, O_RDWR | O_APPEND, 0666);
 	if (fd == -1)
-		fd = open(packname, O_CREAT | O_RDWR | O_APPEND, 0666); //TODO: protect after this
+		fd = open(packname, O_CREAT | O_RDWR | O_APPEND, 0666); //TODO: protect after this (or remove this)
 	write(fd, "FCNK", 4);
 	write(fd, fc.name, sizeof(char) * 128);
 	write(fd, uint64_to_char(fc.length), 8);
 	write(fd, fc.content, sizeof(char) * fc.length);
 	write(fd, "PADD", fc.length % 4);
 	close(fd);
+}
+
+void	pack_file_to_level(char *level, char *file)
+{
+	int				fd;
+	void			*temp;
+	t_filecontent	fc;
+
+	ft_bzero(&fc, sizeof(t_filecontent));
+	fd = fileopen(file, O_RDONLY);
+	ft_fileread_rene(fd, &fc);
+	ft_strcpy(fc.name, file);
+	fileclose(fd, file);
+	fileopen(level, O_RDWR | O_APPEND);
+	write(fd, "FCNK", 4);
+	write(fd, fc.name, sizeof(char) * 128);
+	write(fd, uint64_to_char(fc.length), 8);
+	printf("fc.length: %llu\nuint64_to_char length: %s\n\n", fc.length, uint64_to_char(fc.length));
+	write(fd, fc.content, sizeof(char) * fc.length);
+	write(fd, "PADD", (5 + fc.length % 4));
+	fileclose(fd, level);
+	doomlog_mul(LOG_NORMAL, (char *[5]){\
+			"packed file:", file, "to level:", level, NULL});
 }
 
 #pragma GCC diagnostic pop

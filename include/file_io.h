@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 16:56:41 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 12:58:19 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/15 13:33:41 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ t_filecontent	load_filecontent(char *worldname, char *fc_name);
 //Loads a filecontent structure from a world file and writes it out to an actual file, returns an open fd
 int				load_filecontent_fd(char *worldname, char *fcname);
 void			load_and_write_filecontent(char *worldname, char *fcname, char *filename);
+void			pack_file_to_level(char *level, char *file);
 
 
 void	save_editordata(t_editor *ed);

@@ -6,13 +6,14 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 13:57:45 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 15:24:21 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/16 17:46:22 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "file_io.h"
 #include "objects.h"
 #include "editor_tools.h"
+#include "filechunks.h"
 
 static void	save_entities(char *filename, t_list	*entitylist)
 {
@@ -200,7 +201,9 @@ static void _world_save_full_ent(t_world world)
 	save_chunk(filename, "FENT", entitylist);
 }
 
-static void	_world_save_asset_files(char *asset_list)
+void	pack_file_to_level(char *level, char *file);
+
+static void	_world_save_asset_files_rene(char *asset_list)
 {
 	int		fd;
 	int		ret;
@@ -213,15 +216,22 @@ static void	_world_save_asset_files(char *asset_list)
 	{
 		if (filename)
 		{
-			force_pack_file(LEVEL0FILE, filename);
+			pack_file_to_level(LEVEL0FILE, filename);
 			free(filename);
 			filename = NULL;
 		}
 		ret = get_next_line(fd, &filename);
 	}
 	if (ret == -1)
-		doomlog(LOG_EC_GETNEXTLINE, "_world_save_asset_files");
+		doomlog(LOG_EC_GETNEXTLINE, asset_list);
 	fileclose(fd, asset_list);
+}
+
+void	clean_create_level_file(char *level)
+{
+	fileclose(fileopen(level, O_CREAT | O_RDWR | O_TRUNC), level);
+	doomlog_mul(LOG_NORMAL, (char *[5]){\
+			"cleaned/created the level:", level, "succesfully"});
 }
 
 void	world_save_to_file(t_world world)
@@ -232,21 +242,21 @@ void	world_save_to_file(t_world world)
 	_world_save_full_ent(world);
 	_world_init_rooms(&world);
 	
-	// For playmode loading
-	// TODO: clean world file, dont just always append
-	/* force_pack_file(LEVEL0FILE, FONTLISTPATH);
-	_world_save_asset_files(FONTLISTPATH);
-	force_pack_file(LEVEL0FILE, OBJLISTPATH);
-	_world_save_asset_files(OBJLISTPATH);
-	_world_save_asset_files(MTLLISTPATH);
-	force_pack_file(LEVEL0FILE, IMGLISTPATH);
-	_world_save_asset_files(IMGLISTPATH);
-	force_pack_file(LEVEL0FILE, IMGENVLISTPATH);
-	_world_save_asset_files(IMGENVLISTPATH);
-	force_pack_file(LEVEL0FILE, MUSICLISTPATH);
-	_world_save_asset_files(MUSICLISTPATH);
-	force_pack_file(LEVEL0FILE, SOUNDLISTPATH);
-	_world_save_asset_files(SOUNDLISTPATH); */
+	clean_create_level_file(LEVEL0FILE);
+	//pack_file_to_level(LEVEL0FILE, "assets/abtest");
+	pack_file_to_level(LEVEL0FILE, FONTLISTPATH);
+	_world_save_asset_files_rene(FONTLISTPATH);
+	pack_file_to_level(LEVEL0FILE, OBJLISTPATH);
+	_world_save_asset_files_rene(OBJLISTPATH);
+	_world_save_asset_files_rene(MTLLISTPATH);
+	pack_file_to_level(LEVEL0FILE, IMGLISTPATH);
+	_world_save_asset_files_rene(IMGLISTPATH);
+	pack_file_to_level(LEVEL0FILE, IMGENVLISTPATH);
+	_world_save_asset_files_rene(IMGENVLISTPATH);
+	pack_file_to_level(LEVEL0FILE, MUSICLISTPATH);
+	_world_save_asset_files_rene(MUSICLISTPATH);
+	pack_file_to_level(LEVEL0FILE, SOUNDLISTPATH);
+	_world_save_asset_files_rene(SOUNDLISTPATH);
 }
 
 void	save_world(char *namename, t_world world)

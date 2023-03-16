@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 15:19:09 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/16 15:51:31 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@ void	playmode_load_assets(t_sdlcontext *sdl)
 	int			i;
 
 	// These 3 playmode load functions are working but are terribly optimized. TODO: Optimize them
-	//playmode_load_images(sdl);
-	//playmode_load_env_textures(sdl);
-	//playmode_load_objects(sdl);
-	editor_load_images(sdl);
-	editor_load_env_textures(sdl);
-	editor_load_objects(sdl);
+	playmode_load_images(sdl);
+	playmode_load_env_textures(sdl);
+	playmode_load_objects(sdl);
+	//editor_load_images(sdl);
+	//editor_load_env_textures(sdl);
+	//editor_load_objects(sdl);
 	editor_load_fonts(sdl);
 	editor_load_audio(&sdl->audio);
 	objects_init(sdl);
