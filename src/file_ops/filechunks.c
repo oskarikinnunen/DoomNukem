@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/16 18:05:05 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/16 20:00:20 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,6 +199,7 @@ t_filecontent	load_filecontent(char	*worldname, char	*fc_name)
 		if (ft_strncmp(buf, "FCNK", 4) == 0)
 		{
 			read(fd, fc.name, 128);
+			printf("fc_name: %s\npacked_fc_name: %s\n\n", fc_name, fc.name);
 			if (ft_strcmp(fc.name, fc_name) == 0)
 			{
 				fc.length = read_len(fd);
@@ -233,7 +234,6 @@ void	load_and_write_filecontent(char *worldname, char *fcname, \
 
 	fc = load_filecontent(worldname, fcname);
 	fd = open(filename, O_CREAT | O_RDWR | O_TRUNC, 0666);
-	printf("fc.length: %llu\n", fc.length);
 	write(fd, fc.content, fc.length);
 	fileclose(fd, filename);
 }
@@ -318,9 +318,8 @@ void	pack_file_to_level(char *level, char *file)
 	write(fd, "FCNK", 4);
 	write(fd, fc.name, sizeof(char) * 128);
 	write(fd, uint64_to_char(fc.length), 8);
-	printf("fc.length: %llu\nuint64_to_char length: %s\n\n", fc.length, uint64_to_char(fc.length));
 	write(fd, fc.content, sizeof(char) * fc.length);
-	write(fd, "PADD", (5 + fc.length % 4));
+	write(fd, "PADDING", fc.length % 4);
 	fileclose(fd, level);
 	doomlog_mul(LOG_NORMAL, (char *[5]){\
 			"packed file:", file, "to level:", level, NULL});

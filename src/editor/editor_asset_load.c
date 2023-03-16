@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/13 17:27:06 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/16 22:02:08 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,9 @@ void	editor_load_assets(t_sdlcontext *sdl)
 	editor_load_env_textures(sdl);
 	editor_load_objects(sdl);
 	editor_load_fonts(sdl);
-	editor_load_audio(&sdl->audio);
+	create_audio(&sdl->audio);
+	editor_load_sounds(&sdl->audio);
+	editor_load_music(&sdl->audio);
 	objects_init(sdl);
 	human = get_object_by_name(*sdl, "Human.obj");
 	editor_load_anims(human, "anim", 0);

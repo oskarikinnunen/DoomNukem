@@ -6,14 +6,13 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:32:20 by raho              #+#    #+#             */
-/*   Updated: 2023/03/14 15:17:21 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/16 22:41:31 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "file_io.h"
-
-t_material	parsemat(int fd, char *name);
+#include "objects.h"
 
 static void	playmode_parse_mtllib(t_list **list)
 {
@@ -22,9 +21,7 @@ static void	playmode_parse_mtllib(t_list **list)
 	t_material	mat;
 	int			ret;
 
-	fd = open(TEMPMTL, O_RDONLY);
-	if (fd == -1)
-		doomlog(LOG_EC_OPEN, "playmode_load_objects");
+	fd = fileopen(TEMPMTL, O_RDONLY);
 	line = NULL;
 	ret = get_next_line(fd, &line);
 	while (ret)
@@ -43,37 +40,51 @@ static void	playmode_parse_mtllib(t_list **list)
 	}
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, TEMPMTL);
-	if (close(fd) == -1)
-		doomlog(LOG_EC_CLOSE, TEMPMTL);
+	fileclose(fd, TEMPMTL);
 }
 
-// changes the extension from .obj to .mtl
-static void	change_extension(char *filename)
+// returns a string with a different extension.
+// both extensions needs to be 3 characters long
+static char	*replace_extension(char *file, char *extension)
 {
-	
+	char	*new;
+	char	*temp;
+	int		len;
+
+	len = ft_strlen(file);
+	new = (char *)malloc(sizeof(char) * len + 1);
+	if (new != NULL)
+	{
+		ft_strcpy(new, file);
+		ft_strcpy(&new[len - 3], extension);
+	}
+	printf("original: %s\nreplaced: %s\n\n", file, new);
+	return (new);
 }
 
 // material needs to be the same name as the object in the directory
-static void	unpack_and_load_object(t_sdlcontext *sdl, char *object_name)
+static void	unpack_and_load_object(int obj_i, char *object_name,
+									t_sdlcontext *sdl)
 {
-	static int	i = 0;
 	t_list		*materials;
-	char		material_name[256];
-	char		*occurance;
+	char		*material_name;
 
 	materials = NULL;
-	ft_strcpy(material_name, "assets/objects/barrel.mtl"); // TODO: copy object name and replace extension with .mtl
+	material_name = replace_extension(object_name, "mtl"); // TODO: copy object name and replace extension with .mtl
+	if (material_name == NULL)
+		doomlog(LOG_EC_MALLOC, "couldn't replace object_name extension to mtl");
 	load_and_write_filecontent(LEVEL0FILE, object_name, TEMPOBJ);
 	load_and_write_filecontent(LEVEL0FILE, material_name, TEMPMTL);
-	sdl->objects[i] = objparse(TEMPOBJ);
-	if (sdl->objects[i].vertices != NULL)
-		ft_strcpy(sdl->objects[i].name, extract_filename(object_name));
-	free(sdl->objects[i].materials); // TODO: remove this and fix the material malloc in objparse
+	sdl->objects[obj_i] = objparse(TEMPOBJ);
+	if (sdl->objects[obj_i].vertices != NULL)
+		ft_strcpy(sdl->objects[obj_i].name, extract_filename(object_name));
+	free(material_name);
+	free(sdl->objects[obj_i].materials); // TODO: remove this and fix the material malloc in objparse
 	playmode_parse_mtllib(&materials);
-	sdl->objects[i].materials = list_to_ptr(materials, &sdl->objects[i].material_count);
+	sdl->objects[obj_i].materials = \
+			list_to_ptr(materials, &sdl->objects[obj_i].material_count);
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
-				"unpacked and loaded .obj file:", sdl->objects[i].name, NULL});
-	i++;
+			"unpacked and loaded .obj file:", sdl->objects[obj_i].name, NULL});
 	remove(TEMPOBJ);
 	remove(TEMPMTL);
 }
@@ -81,17 +92,20 @@ static void	unpack_and_load_object(t_sdlcontext *sdl, char *object_name)
 static int	parse_object_list(int fd, t_sdlcontext *sdl)
 {
 	int		ret;
+	int		i;
 	char	*object_name;
 
+	i = 0;
 	object_name = NULL;
 	ret = get_next_line(fd, &object_name);
 	while (ret)
 	{
 		if (object_name)
 		{
-			unpack_and_load_object(sdl, object_name);
+			unpack_and_load_object(i, object_name, sdl);
 			free(object_name);
 			object_name = NULL;
+			i++;
 		}
 		ret = get_next_line(fd, &object_name);
 	}

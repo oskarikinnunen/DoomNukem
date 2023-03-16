@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/16 15:51:31 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/16 22:29:59 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,22 @@ void	playmode_load_assets(t_sdlcontext *sdl)
 	t_object	*human;
 	int			i;
 
-	// These 3 playmode load functions are working but are terribly optimized. TODO: Optimize them
-	playmode_load_images(sdl);
-	playmode_load_env_textures(sdl);
-	playmode_load_objects(sdl);
-	//editor_load_images(sdl);
-	//editor_load_env_textures(sdl);
-	//editor_load_objects(sdl);
+	// TODO: Optimize playmode loading
+	// THESE NEED TO BE IN THE SAME ORDER AS SAVING ATM
+	//playmode_load_images(sdl);
+	//playmode_load_env_textures(sdl);
+	//playmode_load_objects(sdl);
+	//playmode_load_fonts(sdl);
+	// create_audio(&sdl->audio);
+	// playmode_load_sounds(&sdl->audio);
+	// playmode_load_music(&sdl->audio);
+	editor_load_images(sdl);
+	editor_load_env_textures(sdl);
+	editor_load_objects(sdl);
 	editor_load_fonts(sdl);
-	editor_load_audio(&sdl->audio);
+	create_audio(&sdl->audio);
+	editor_load_sounds(&sdl->audio);
+	editor_load_music(&sdl->audio);
 	objects_init(sdl);
 	human = get_object_by_name(*sdl, "Human.obj");
 	editor_load_anims(human, "anim", 0);

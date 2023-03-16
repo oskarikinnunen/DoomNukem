@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 14:41:12 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/16 21:34:54 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,7 +203,7 @@ void	editor_load_images(t_sdlcontext *sdl);
 void	editor_load_env_textures(t_sdlcontext *sdl);
 void	editor_load_objects(t_sdlcontext *sdl);
 void	editor_load_fonts(t_sdlcontext *sdl);
-void	editor_load_audio(t_audio *audio);
+void	editor_load_audio(t_sdlcontext *sdl);
 void	editor_load_anims(t_object *object, char *anim_name, int i);
 void	editor_load_anim_legend(t_sdlcontext *sdl);
 
@@ -292,6 +292,7 @@ void	apply_graphics_prefs(t_graphicprefs prefs);
 
 /* FONT.C */
 
+t_font	font_parse(char *file_name);
 void	draw_black_background(t_sdlcontext *sdl, t_point pos, t_point size);
 
 //TEMP, TODO: move

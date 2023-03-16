@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/16 15:49:24 by raho             ###   ########.fr        #
+#    Updated: 2023/03/16 22:03:58 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,6 +44,9 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		editor/editor_load_anim_legend.c \
 		editor/editor_load_images.c \
 		editor/editor_load_objects.c \
+		editor/editor_load_fonts.c \
+		editor/editor_load_sounds.c \
+		editor/editor_load_music.c \
 		editor/tools/entity_tool.c \
 		editor/tools/entity_tool_gui_inits.c \
 		editor/tools/wall_tool_rooms.c \
@@ -95,6 +98,9 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		player/playmode_load_images.c \
 		player/playmode_load_env_textures.c \
 		player/playmode_load_objects.c \
+		player/playmode_load_fonts.c \
+		player/playmode_load_sounds.c \
+		player/playmode_load_music.c \
 		player/playmode_death.c \
 		player/playmode_events.c \
 		player/hud.c \
@@ -109,7 +115,6 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		tga_parser/image_data.c \
 		tga_parser/preliminary_data.c \
 		game_random.c \
-		font.c \
 		object_init.c \
 		object_primitives.c \
 		world.c \

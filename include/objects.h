@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 12:41:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/13 14:01:31 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/16 22:36:46 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ struct s_world;
 struct s_sdlcontext;
 
 t_object		objparse(char *filename);
+t_material		parsemat(int fd, char *name);
 struct s_list	*get_uv_list(int fd);
 struct s_list	*get_vertex_list(int fd);
 t_list			*get_face_list(int fd, t_list *materials);
