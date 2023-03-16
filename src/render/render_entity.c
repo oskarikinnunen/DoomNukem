@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/15 16:36:34 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/16 12:56:30 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,8 @@ void render_entity_worldtriangles(t_entity *entity, t_world *world)
 			for (int e = 0; e < 3; e++)
 			{
 				t_vector2 uv = obj->uvs[obj->faces[i].uv_indices[e] - 1];
-				uv.x = truncf(uv.x * (float)(entity->obj->materials[index].img->size.x));
-				uv.y = truncf(uv.y * (float)(entity->obj->materials[index].img->size.y));
+				uv.x = truncf(uv.x * (float)(entity->obj->materials[index].img->size.x)) + 0.5f;
+				uv.y = truncf(uv.y * (float)(entity->obj->materials[index].img->size.y)) + 0.5f;
 				tritransformed.t[e] = (t_vector3){uv.x, uv.y, 1.0f};
 			}
 		}

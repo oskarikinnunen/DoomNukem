@@ -6,7 +6,7 @@
 #    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/14 15:07:22 by vlaine           ###   ########.fr        #
+#    Updated: 2023/03/16 15:09:31 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -133,6 +133,8 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		lighting/bake_lighting.c \
 		lighting/point_light.c \
 		lighting/fragment_light.c \
+		thread/thread.c \
+		thread/thread_lighting.c \
 		npc/civilian/civilian_action.c \
 		npc/civilian/civilian_anim.c \
 		npc/civilian/civilian_movement.c \

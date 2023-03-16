@@ -50,6 +50,7 @@ typedef struct s_lighting
 	t_triangle			*world_triangles;
 	t_light				*light;
 	struct s_entity		*light_ent;
+	struct s_img		*img;
 	bool				*overdraw;
 	float				*zbuffer;
 	t_map				*map;

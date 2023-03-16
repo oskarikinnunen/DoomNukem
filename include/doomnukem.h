@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/15 13:08:09 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/16 15:03:34 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@
 # include "input.h"
 # include "debug.h"
 # include "navigation.h"
-# include <pthread.h>
 # include <SDL_thread.h>
+# include "thread.h"
 
 # define PI	3.14159265359
 # define FULLRAD M_PI * 2.0

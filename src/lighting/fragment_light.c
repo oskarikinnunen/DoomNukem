@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:00:33 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/15 16:46:47 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/16 13:26:16 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ uint32_t	get_light_amount(float delta, uint32_t clr, uint32_t light_amount)
 
 uint32_t	get_lighting_for_pixel(t_lighting *lighting, uint32_t light_amount, t_vector3 pixel_loc)
 {
-    int             j;
+    int             face;
     int				i;
 	int				found;
     t_quaternion    q;
@@ -91,13 +91,13 @@ uint32_t	get_lighting_for_pixel(t_lighting *lighting, uint32_t light_amount, t_v
     dir = vector3_sub(pixel_loc, light->world_position);
     dir = vector3_normalise(dir);
 	float temp = fabsf(vector3_dot(dir, lighting->triangle_normal));
-    j = get_cubemap_face(dir);
-    q = location_to_screenspace(vector3_to_quaternion(pixel_loc), light->cubemap.cameras[j], light->cubemap.resolution);
+    face = get_cubemap_face(dir);
+    q = location_to_screenspace(vector3_to_quaternion(pixel_loc), light->cubemap.cameras[face], light->cubemap.resolution);
     t_point p;
 	p.x = ft_clamp(q.v.x, 0, light->cubemap.resolution.x - 1.0f);
     p.y = ft_clamp(q.v.y, 0, light->cubemap.resolution.y - 1.0f);
 	int test = p.y * light->cubemap.resolution.x + p.x;
-    if (1.0f / q.w >= light->cubemap.shadowmaps[j][test] * 0.98f)
+    if (1.0f / q.w >= light->cubemap.shadowmaps[face][test] * 0.98f)
 	{
 		dist = ft_clampf((1.0f - (dist / light->radius)), 0.0f, 1.0f);
 		dist = temp * dist * light->intensity + light->ambient * dist;

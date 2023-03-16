@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 13:11:19 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/16 16:11:59 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,6 @@ void	doomnukem(int argc, char **argv)
 }
 
 /*
-
 int	main(int argc, char **argv)
 {
 	/* pid_t	pid;
@@ -152,6 +151,7 @@ int	main(int argc, char **argv)
 	return (0);
 }
 */
+
 int	main(int argc, char **argv)
 {
 	pid_t	pid;
@@ -160,3 +160,19 @@ int	main(int argc, char **argv)
 	doomnukem(argc, argv);
 	return (0);
 }
+
+/*
+t_img *ptr;
+	t_thread test;
+	test.structs = malloc(sizeof(t_img) * THREAD);
+	test.struct_size = sizeof(t_img);
+	for (int i = 0; i < THREAD; i++)
+	{
+		ptr = &(((t_img *)test.structs)[i]);
+		ptr->size.x = i;
+	}
+	test.func = temp_remove;
+	test.init = init_remove;
+	thread_set(&test);
+	exit(0);
+	*/

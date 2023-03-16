@@ -6,11 +6,24 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 15:59:23 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/15 16:44:44 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/16 13:15:19 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
+
+static void sample_pixel(int x, int y, int index, t_entity *entity)
+{
+	uint32_t	light;
+	uint32_t	clr;
+	t_img		*img;
+
+	img = entity->obj->materials[index].img;
+	light = entity->map->lightmap[y * entity->map->size.x + x];
+	clr = img->data[(y % (img->size.y)) * img->size.x + (x % (img->size.x))];
+	clr = update_pixel_brightness(light, clr);
+	entity->map[index].texture[y * entity->map[index].size.x + x] = clr;
+}
 
 static void sample_img(t_lighting *lighting, int x, int y, t_point_triangle poly)
 {
@@ -25,6 +38,15 @@ static void sample_img(t_lighting *lighting, int x, int y, t_point_triangle poly
 	light_amount = lighting->map->lightmap[y * (lighting->map->size.x) + x];
 	light_amount = get_lighting_for_pixel(lighting, light_amount, loc);
 	lighting->map->lightmap[y * (lighting->map->size.x) + x] = light_amount;
+
+	uint32_t	light;
+	uint32_t	clr;
+
+	//light = lighting->map->lightmap[y * lighting->map->size.x + x];
+	clr = lighting->img->data[(y % (lighting->img->size.y)) * lighting->img->size.x + (x % (lighting->img->size.x))];
+	light = light_amount;
+	clr = update_pixel_brightness(light, clr);
+	lighting->map->texture[y * lighting->map->size.x + x] = clr;
 }
 
 static void sample_pix(t_lighting *lighting, int ax, int y)

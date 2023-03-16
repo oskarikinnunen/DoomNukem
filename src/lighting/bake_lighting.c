@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:00:29 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/15 16:31:26 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/16 16:31:05 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,7 @@ void calculate_light_for_entity(t_entity *entity, t_lighting *lighting)
 			max.x = fmaxf(max.x, 1.0f);
 			max.y = fmaxf(max.y, 1.0f);
 			lighting->map = &entity->map[index];
+			lighting->img = entity->obj->materials[index].img;
 			buffer_triangles(start, i, lighting, entity);
 			max = vector2_zero();
 		}
@@ -126,8 +127,17 @@ void calculate_light_for_entity(t_entity *entity, t_lighting *lighting)
 	}
 }
 
-void	calculate_entities_for_light(t_world *world, t_entity *src)
+typedef struct s_test
 {
+	t_world *world;
+	t_entity *entity;
+} t_test;
+
+void	calculate_light_for_entities(void *ptr)
+{
+	t_test *test = ptr;
+	t_world *world = test->world;
+	t_entity *light_ent = test->entity;
 	int				i;
 	int				found;
 	t_entitycache	*cache;
@@ -136,8 +146,10 @@ void	calculate_entities_for_light(t_world *world, t_entity *src)
 	float			dist;
 	t_lighting		lighting;
 
-	lighting.light_ent = src;
-	light = src->component.data;
+	if (world == NULL)
+		return;
+	lighting.light_ent = light_ent;
+	light = light_ent->component.data;
 	i = 0;
 	found = 0;
 	cache = &world->entitycache;
@@ -149,7 +161,7 @@ void	calculate_entities_for_light(t_world *world, t_entity *src)
 		{
 			if	(ent->status == es_active && ent->obj && ent->map)
 			{
-				dist = fmaxf(vector3_dist(light->world_position, get_entity_world_position(ent)) - ent->obj->bounds.radius, 0.0f);
+				dist = vector3_dist(light->world_position, get_entity_world_position(ent)) - ent->obj->bounds.radius;
 				if (dist < light->radius)
 					calculate_light_for_entity(ent, &lighting);
 			}
@@ -169,7 +181,6 @@ static void allocate_map(t_map *map, t_point size, t_vector2 max)
 	map->lightmap = malloc(sizeof(uint32_t) * map->size.x * map->size.y);
 	if (map->texture == NULL || map->lightmap == NULL)
 		doomlog(LOG_FATAL, "Malloc fail in bake_lighting.c");
-	ft_bzero(map->texture, sizeof(uint32_t) * map->size.x * map->size.y);
 	clr = get_light_amount(LIGHT_AMBIENT, INT_MAX, 0);
 	ft_memset(map->lightmap, clr, sizeof(uint32_t) * map->size.x * map->size.y);
 }
@@ -183,8 +194,10 @@ static void clear_map_for_entity(t_entity *entity)
 	i = 0;
 	while (i < entity->obj->material_count)
 	{
-		free(entity->map[i].texture);
-		free(entity->map[i].lightmap);
+		if (entity->map[i].texture)
+			free(entity->map[i].texture);
+		if (entity->map[i].lightmap)
+			free(entity->map[i].lightmap);
 		i++;
 	}
 	free(entity->map);
@@ -234,11 +247,17 @@ void	calculate_lighting(t_world *world)
 	t_entity		*ent;
     uint32_t        light_amount;
     t_quaternion    q;
+	int e = 0;
 
 	for_all_active_entities(world, create_lightmap_for_entity);
 	light_amount = 0;
 	i = 0;
 	found = 0;
+	t_thread test;
+	test.func = thread_func_lighting;
+	test.init = thread_init_lighting;
+	test.struct_size = sizeof(t_test);
+	test.structs = malloc(sizeof(t_test) * THREAD);
 	while (found < world->entitycache.existing_entitycount
 		&& i < world->entitycache.alloc_count)
 	{
@@ -247,11 +266,25 @@ void	calculate_lighting(t_world *world)
 		{
 			if	(ent->status == es_active && ent->component.type == COMP_LIGHT)
 			{
-				calculate_entities_for_light(world, ent);
+				t_test *ptr;
+				ptr = &(((t_test *)test.structs)[e]);
+				ptr->entity = ent;
+				ptr->world = world;
+				//calculate_light_for_entities(world, ent);
+				e++;
+			}
+			if (e == 6)
+			{
+				thread_set(&test);
+				e = 0;
 			}
 			found++;
 		}
 		i++;
+	}
+	if (e != 0)
+	{
+		thread_set(&test);
 	}
 }
 
@@ -264,6 +297,7 @@ void	recalculate_lighting(t_world *world)
 
 	recalculate_pointlight(world);
 	calculate_lighting(world);
+	return;
 	i = 0;
 	found = 0;
 	cache = &world->entitycache;
