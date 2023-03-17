@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/17 15:03:19 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/17 16:37:01 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,6 +205,15 @@ t_filecontent	load_filecontent(char	*worldname, char	*fc_name)
 				fc.content = malloc(fc.length);
 				read(fd, fc.content, fc.length);
 				return (fc);
+			}
+			else
+			{
+				uint64_t	curr_len;
+				curr_len = read_len(fd);
+				// printf("tried to find: %s but found: %s\n", fc_name, fc.name);
+				// printf("found unwanted filechunk: %s | len: %llu\n", fc.name, curr_len);
+				if (lseek(fd, curr_len + (4 - (curr_len % 4)), SEEK_CUR) == -1)
+					doomlog(LOG_EC_LSEEK, "load_filecontent");
 			}
 		}
 		rbytes = read(fd, buf, CHUNKSIZE);

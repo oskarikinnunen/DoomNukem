@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/17 14:38:59 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/17 16:20:21 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	playmode_load_assets(t_sdlcontext *sdl)
 	t_object	*human;
 	int			i;
 
+	// PROTECT IN CASE WORLD LEVEL DOESNT EXIST
 	// TODO: Optimize playmode loading
 	// THESE NEED TO BE IN THE SAME ORDER AS SAVING ATM
 	playmode_load_images(sdl);

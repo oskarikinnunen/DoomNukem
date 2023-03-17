@@ -6,13 +6,12 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 22:05:25 by raho              #+#    #+#             */
-/*   Updated: 2023/03/17 15:09:43 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/17 16:42:45 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "render.h"
-#include <dirent.h>
 #include "file_io.h"
 
 static void	unpack_and_save_music(int music_i, char *music_name, t_audio *audio)
