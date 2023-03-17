@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:32:20 by raho              #+#    #+#             */
-/*   Updated: 2023/03/16 22:41:31 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/17 15:26:46 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ static char	*replace_extension(char *file, char *extension)
 		ft_strcpy(new, file);
 		ft_strcpy(&new[len - 3], extension);
 	}
-	printf("original: %s\nreplaced: %s\n\n", file, new);
 	return (new);
 }
 

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/16 20:00:20 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/17 15:03:19 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,7 +199,6 @@ t_filecontent	load_filecontent(char	*worldname, char	*fc_name)
 		if (ft_strncmp(buf, "FCNK", 4) == 0)
 		{
 			read(fd, fc.name, 128);
-			printf("fc_name: %s\npacked_fc_name: %s\n\n", fc_name, fc.name);
 			if (ft_strcmp(fc.name, fc_name) == 0)
 			{
 				fc.length = read_len(fd);
@@ -319,7 +318,7 @@ void	pack_file_to_level(char *level, char *file)
 	write(fd, fc.name, sizeof(char) * 128);
 	write(fd, uint64_to_char(fc.length), 8);
 	write(fd, fc.content, sizeof(char) * fc.length);
-	write(fd, "PADDING", fc.length % 4);
+	write(fd, "PADD", 4 - (fc.length % 4));
 	fileclose(fd, level);
 	doomlog_mul(LOG_NORMAL, (char *[5]){\
 			"packed file:", file, "to level:", level, NULL});

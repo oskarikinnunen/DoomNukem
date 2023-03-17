@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   moveplayer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/09 19:15:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/17 15:33:30 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,6 @@ void player_gun_raycast(t_player *player, t_world *world)
 		if (info.hit_entity != NULL && info.hit_entity->component.type == COMP_NPC)
 		{
 			hit_npc = (t_npc *)info.hit_entity->component.data;
-			printf("cur health = %i \n", hit_npc->health);
-			printf("future health = %i \n", (hit_npc->health - player->gun->stats.damage));
 			hit_npc->health -= player->gun->stats.damage;
 			protagonist_play_audio(player, world, "hitmarker.wav");
 			if (hit_npc->health <= 0 && hit_npc->state != NPC_STATE_DEAD)
@@ -110,7 +108,6 @@ void player_gun_raycast(t_player *player, t_world *world)
 			{
 				hit_npc->phys.velocity = vector3_mul(hit_npc->phys.velocity, 0.38f);
 			}
-			printf("hit_npc health %i \n", hit_npc->health);
 		}
 	}
 }
@@ -183,7 +180,6 @@ void	updateguntransform(t_player *player, t_world *world)
 	{
 		start_anim(&gun->shoot_anim, anim_forwards);
 		start_anim(&gun->view_anim, anim_forwards);
-		printf("shot delta %i \n", world->clock.time - gun->lastshottime);
 		gun->readytoshoot = false;
 		gun->lastshottime = world->clock.time;
 		gun->bullets--;

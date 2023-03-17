@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_npc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 18:57:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/09 19:15:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/17 15:32:41 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,8 +223,6 @@ static void	comp_npc_update(t_entity *entity, t_world *world)
 			npc_update_pushanim(entity, npc, world);
 		lookaround(entity, npc, world);
 		npc_pathfind_step(entity, npc, world);
-	} else {
-		printf("npc dead state in npc_update! \n\n");
 	}
 	npc_update_physics(npc, entity);
 	capsule_applygravity_new(&npc->phys, world);

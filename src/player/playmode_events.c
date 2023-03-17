@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 19:41:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/13 17:27:22 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/17 14:46:28 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,7 @@ int	playmode_events(t_game *game)
 			if (iskey(e, SDLK_F1))
 				game->player.noclip = !game->player.noclip;
 			if (iskey(e, SDLK_ESCAPE))
-			{
-				if ((game->hid.keystate >> KEYS_SHIFTMASK) & 1)
-					exit(0);
-				return (game_exit);
-			}
-			else if (((game->hid.keystate >> KEYS_SHIFTMASK) & 1)
-				&& iskey(e, SDLK_RETURN))
-				return(game_switchmode);
+				exit(0);
 		}
 		if (e.type == SDL_CONTROLLERBUTTONDOWN)
 		{
