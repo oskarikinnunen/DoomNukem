@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 22:05:25 by raho              #+#    #+#             */
-/*   Updated: 2023/03/17 16:42:45 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/17 20:07:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 #include "render.h"
 #include "file_io.h"
 
-static void	unpack_and_save_music(int music_i, char *music_name, t_audio *audio)
+static void	unpack_and_load_music(int music_i, char *music_name, t_audio *audio)
 {
 	load_and_write_filecontent(LEVEL0FILE, music_name, TEMPMUSIC);
 	create_music(music_i, TEMPMUSIC, audio);
 	if (audio->music[music_i].sound != NULL)
 		ft_strcpy(audio->music[music_i].name, extract_filename(music_name));
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
-			"unpacked and saved music file:", \
+			"unpacked and loaded music file:", \
 			audio->music[music_i].name, NULL});
 	remove(TEMPMUSIC);
 }
@@ -39,7 +39,7 @@ static int	parse_music_list(int fd, t_audio *audio)
 	{
 		if (music_path)
 		{
-			unpack_and_save_music(i, music_path, audio);
+			unpack_and_load_music(i, music_path, audio);
 			free(music_path);
 			music_path = NULL;
 			i++;

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 13:57:45 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/16 21:33:12 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/17 20:26:37 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,19 +244,22 @@ void	world_save_to_file(t_world world)
 
 	clean_create_level_file(LEVEL0FILE);
 	// THESE NEED TO BE IN THE SAME ORDER AS LOADING ATM
+	pack_file_to_level(LEVEL0FILE, FONTLISTPATH);
+	_world_save_asset_files_rene(FONTLISTPATH);
 	pack_file_to_level(LEVEL0FILE, IMGLISTPATH);
 	_world_save_asset_files_rene(IMGLISTPATH);
 	pack_file_to_level(LEVEL0FILE, IMGENVLISTPATH);
 	_world_save_asset_files_rene(IMGENVLISTPATH);
-	pack_file_to_level(LEVEL0FILE, OBJLISTPATH);
-	_world_save_asset_files_rene(OBJLISTPATH);
-	_world_save_asset_files_rene(MTLLISTPATH);
-	pack_file_to_level(LEVEL0FILE, FONTLISTPATH);
-	_world_save_asset_files_rene(FONTLISTPATH);
 	pack_file_to_level(LEVEL0FILE, SOUNDLISTPATH);
 	_world_save_asset_files_rene(SOUNDLISTPATH);
 	pack_file_to_level(LEVEL0FILE, MUSICLISTPATH);
 	_world_save_asset_files_rene(MUSICLISTPATH);
+	pack_file_to_level(LEVEL0FILE, OBJLISTPATH);
+	_world_save_asset_files_rene(OBJLISTPATH);
+	_world_save_asset_files_rene(MTLLISTPATH);
+	pack_file_to_level(LEVEL0FILE, ANIMLISTPATH);
+	_world_save_asset_files_rene(ANIMLISTPATH);
+	pack_file_to_level(LEVEL0FILE, ANIMLEGENDPATH);
 }
 
 void	save_world(char *namename, t_world world)

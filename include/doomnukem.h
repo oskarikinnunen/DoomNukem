@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/16 21:34:54 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/17 20:22:37 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@
 # define FONTLISTPATH "assets/.font_list.txt"
 # define SOUNDLISTPATH "assets/.sound_list.txt"
 # define MUSICLISTPATH "assets/.music_list.txt"
+# define ANIMLISTPATH "assets/.anim_list.txt"
+# define ANIMLEGENDPATH "assets/objects/animations/anim_legend.txt"
 
 # define TEMPIMGLIST "assets/.temp_image_list"
 # define TEMPIMGENVLIST "assets/.temp_image_env_list"
@@ -56,6 +58,7 @@
 # define TEMPFONTLIST "assets/.temp_font_list"
 # define TEMPSOUNDLIST "assets/.temp_sound_list"
 # define TEMPMUSICLIST "assets/.temp_music_list"
+# define TEMPANIMLIST "assets/.temp_anim_list"
 
 # define TEMPIMG "assets/.temp_image"
 # define TEMPIMGENV "assets/.temp_image_env"
@@ -64,6 +67,8 @@
 # define TEMPFONT "assets/.temp_font"
 # define TEMPSOUND "assets/.temp_sound"
 # define TEMPMUSIC "assets/.temp_music"
+# define TEMPANIM "assets/.temp_anim"
+# define TEMPANIMLEGEND "assets/.temp_anim_legend"
 
 # define LEVEL0FILE "worlds/renes_world"
 
@@ -203,8 +208,9 @@ void	editor_load_images(t_sdlcontext *sdl);
 void	editor_load_env_textures(t_sdlcontext *sdl);
 void	editor_load_objects(t_sdlcontext *sdl);
 void	editor_load_fonts(t_sdlcontext *sdl);
-void	editor_load_audio(t_sdlcontext *sdl);
-void	editor_load_anims(t_object *object, char *anim_name, int i);
+void	editor_load_sounds(t_audio *audio);
+void	editor_load_music(t_audio *audio);
+void	editor_load_anims(char *anim_name, t_object *object);
 void	editor_load_anim_legend(t_sdlcontext *sdl);
 
 /* EDITOR_EVENTS.C */
@@ -253,10 +259,11 @@ void	playmode_death(t_game *game);
 void	playmode_load_images(t_sdlcontext *sdl);
 void	playmode_load_env_textures(t_sdlcontext *sdl);
 void	playmode_load_objects(t_sdlcontext *sdl);
-// void	playmode_load_fonts(t_sdlcontext *sdl);
-// void	playmode_load_audio(t_sdlcontext *sdl);
-// void	playmode_load_anims(t_sdlcontext *sdl);
-// void	playmode_load_anim_legend(t_sdlcontext *sdl);
+void	playmode_load_fonts(t_sdlcontext *sdl);
+void	playmode_load_sounds(t_audio *audio);
+void	playmode_load_music(t_audio *audio);
+void	playmode_load_anims(char *anim_name, t_object *object);
+void	playmode_load_anim_legend(t_sdlcontext *sdl);
 
 
 /* PLAYER.C */
@@ -315,7 +322,6 @@ t_rectangle	print_text_colored(t_sdlcontext *sdl, const char *text, t_point pos,
 void			entity_start_anim(t_entity *entity, char *animname);
 /* LIST_HELPER.C TODO: MOVE THESE TO LIBFT*/
 t_list	*ptr_to_list(void	*src, uint32_t len, size_t size);
-void	ptr_add(void **ptr, uint32_t *len, size_t size, void *add);
 void	list_push(t_list **head, void *content, size_t content_size);
 void	*list_findlast(t_list *head);
 void	*list_to_ptr(t_list *source, uint32_t *set_length);

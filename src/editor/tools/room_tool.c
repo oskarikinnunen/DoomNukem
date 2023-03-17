@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/01 22:04:30 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/17 19:30:48 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,30 +101,6 @@ static void render_connect(t_editor *ed, t_sdlcontext sdl, t_roomtooldata dat)
 			sdl->render.gizmocolor = CLR_GREEN;
 		render_ray(sdl, sdl->render, from, to);
 	}*/
-}
-
-void ptr_add(void **ptr, uint32_t *len, size_t size, void *add)
-{
-	void	*newptr;
-
-	newptr = ft_memalloc((*len + 1) * size);
-	if (newptr == NULL)
-		doomlog(LOG_EC_MALLOC, NULL);
-	if (*ptr != NULL)
-	{
-		ft_memcpy(newptr, *ptr, *len * size);
-		free (*ptr);
-	}
-	//printf("newptr loc %lu catting mem to %lu \n", newptr, newptr + ((*len) * size));
-	ft_memcpy(newptr + ((*len) * size), add, size);
-	*len = *len + 1;
-	*ptr = newptr;
-}
-
-static void ptr_removelast(void *ptr, uint32_t *len)
-{
-	/*free(ptr + (*len - 1));
-	*len = *len - 1;*/
 }
 
 static void renderroom(t_editor *ed, t_sdlcontext *sdl, t_area *room)

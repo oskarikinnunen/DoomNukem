@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:07:37 by raho              #+#    #+#             */
-/*   Updated: 2023/03/16 22:34:22 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/17 20:07:05 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "file_io.h"
 #include "tga.h"
 
-static void	unpack_and_save_texture(int txtr_i, char *env_texture,
+static void	unpack_and_load_texture(int txtr_i, char *env_texture,
 									t_sdlcontext *sdl)
 {
 	load_and_write_filecontent(LEVEL0FILE, env_texture, TEMPIMGENV);
@@ -23,7 +23,7 @@ static void	unpack_and_save_texture(int txtr_i, char *env_texture,
 		ft_strcpy(sdl->env_textures[txtr_i].name, \
 					extract_filename(env_texture));
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
-			"unpacked and saved .tga file:", \
+			"unpacked and loaded .tga file:", \
 			sdl->env_textures[txtr_i].name, NULL});
 	remove(TEMPIMGENV);
 }
@@ -41,7 +41,7 @@ static int	parse_image_env_list(int fd, t_sdlcontext *sdl)
 	{
 		if (env_texture)
 		{
-			unpack_and_save_texture(i, env_texture, sdl);
+			unpack_and_load_texture(i, env_texture, sdl);
 			free(env_texture);
 			env_texture = NULL;
 			i++;

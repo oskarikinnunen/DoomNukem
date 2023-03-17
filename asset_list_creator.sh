@@ -6,3 +6,4 @@ find assets/images/tga -type f -name "*.tga" | grep -v "/env/" > assets/.image_l
 find assets/images/tga/env -type f -name "*.tga" > assets/.image_env_list.txt
 find assets/objects -type f -name "*.obj" | grep -v "/animations/" > assets/.object_list.txt
 find assets/objects -type f -name "*.mtl" > assets/.material_list.txt
+find assets/objects/animations -type f -name "*.obj" | sort -V > assets/.anim_list.txt

@@ -6,13 +6,12 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/16 22:02:08 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/17 18:52:45 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "objects.h"
-#include <dirent.h>
 #include "file_io.h"
 
 // returns a pointer to the start of the file's name without its path
@@ -59,16 +58,16 @@ void	editor_load_assets(t_sdlcontext *sdl)
 	t_object	*human;
 	int			i;
 
+	editor_load_fonts(sdl);
 	editor_load_images(sdl);
 	editor_load_env_textures(sdl);
-	editor_load_objects(sdl);
-	editor_load_fonts(sdl);
 	create_audio(&sdl->audio);
 	editor_load_sounds(&sdl->audio);
 	editor_load_music(&sdl->audio);
+	editor_load_objects(sdl);
 	objects_init(sdl);
 	human = get_object_by_name(*sdl, "Human.obj");
-	editor_load_anims(human, "anim", 0);
+	editor_load_anims("anim", human);
 	editor_load_anim_legend(sdl);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 		"loaded", s_itoa(sdl->human_anim_count), "animations:", NULL});

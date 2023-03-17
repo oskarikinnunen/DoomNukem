@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 22:05:13 by raho              #+#    #+#             */
-/*   Updated: 2023/03/16 22:41:47 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/17 20:08:19 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <dirent.h>
 #include "file_io.h"
 
-static void	unpack_and_save_sound(int sample_i, char *sound_name,
+static void	unpack_and_load_sound(int sample_i, char *sound_name,
 									t_audio *audio)
 {
 	load_and_write_filecontent(LEVEL0FILE, sound_name, TEMPSOUND);
@@ -23,7 +23,7 @@ static void	unpack_and_save_sound(int sample_i, char *sound_name,
 	if (audio->samples[sample_i].sound != NULL)
 		ft_strcpy(audio->samples[sample_i].name, extract_filename(sound_name));
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
-			"unpacked and saved sound file:", \
+			"unpacked and loaded sound file:", \
 			audio->samples[sample_i].name, NULL});
 	remove(TEMPSOUND);
 }
@@ -41,7 +41,7 @@ static int	parse_sound_list(int fd, t_audio *audio)
 	{
 		if (sound_path)
 		{
-			unpack_and_save_sound(i, sound_path, audio);
+			unpack_and_load_sound(i, sound_path, audio);
 			free(sound_path);
 			sound_path = NULL;
 			i++;

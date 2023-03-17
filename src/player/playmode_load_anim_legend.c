@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   editor_load_anim_legend.c                          :+:      :+:    :+:   */
+/*   playmode_load_anim_legend.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/13 16:36:10 by raho              #+#    #+#             */
-/*   Updated: 2023/03/17 19:34:17 by raho             ###   ########.fr       */
+/*   Created: 2023/03/17 20:09:06 by raho              #+#    #+#             */
+/*   Updated: 2023/03/17 20:26:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,19 +59,20 @@ static int	parse_lines(int fd, t_sdlcontext *sdl)
 	return (ret);
 }
 
-void	editor_load_anim_legend(t_sdlcontext *sdl)
+void	playmode_load_anim_legend(t_sdlcontext *sdl)
 {
 	int	fd;
 	int	ret;
 
-	doomlog(LOG_NORMAL, "LOADING ANIMATIONS");
-	fd = fileopen(ANIMLEGENDPATH, O_RDONLY);
+	doomlog(LOG_NORMAL, "UNPACKING ANIMATIONS");
+	load_and_write_filecontent(LEVEL0FILE, ANIMLEGENDPATH, TEMPANIMLEGEND);
+	fd = fileopen(TEMPANIMLEGEND, O_RDONLY);
 	sdl->human_anims = ft_memalloc(sizeof(t_human_animation) * 30);
 	if (sdl->human_anims == NULL)
-		doomlog(LOG_EC_MALLOC, "sdl->human_anims");
+		doomlog(LOG_EC_MALLOC, "playmode_load_anim_legend");
 	sdl->human_anim_count = 0;
 	ret = parse_lines(fd, sdl);
 	if (ret == -1)
-		doomlog(LOG_EC_GETNEXTLINE, "editor_load_anim_legend");
+		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_anim_legend");
 	fileclose(fd, ANIMLEGENDPATH);
 }

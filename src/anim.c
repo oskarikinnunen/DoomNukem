@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   anim.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:56:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/28 14:05:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/17 20:03:43 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "libft.h"
 #include "render.h"
 #include <stdio.h>
+#include "file_io.h"
 
 void	anim_setframe(t_anim *anim, uint32_t frame)
 {
@@ -112,4 +113,42 @@ void	start_anim(t_anim *anim, t_anim_mode mode)
 		printf("ERROR: ANIM MODE NOT IMPLEMENTED! \n");
 		exit(0);
 	}
+}
+
+void	parse_animframe(int fd, t_objectanimframe *frame, t_object *object)
+{
+	t_list		*verticelist;
+	t_vector3	*vertices;
+	uint32_t	vertexcount;
+	int			i;
+
+	vertexcount = 0;
+	verticelist = get_vertex_list(fd);
+	vertices = list_to_ptr(verticelist, &vertexcount);
+	i = 0;
+	frame->deltavertices = ft_memalloc(sizeof(t_deltavertex) * vertexcount);
+	if (frame->deltavertices == NULL)
+		doomlog(LOG_EC_MALLOC, "parse_animframe deltavertices");
+	while (i < vertexcount)
+	{
+		frame->deltavertices[i].delta = vector3_sub(vertices[i], \
+													object->vertices[i]);
+		frame->deltavertices[i].v_index = i;
+		i++;
+	}
+	frame->vertcount = vertexcount;
+}
+
+void	parse_anim(char *anim_path, char *anim_name, t_object *object)
+{
+	int					fd;
+	t_objectanimframe	frame;
+
+	ft_bzero(&frame, sizeof(t_objectanimframe));
+	fd = fileopen(anim_path, O_RDONLY);
+	ft_strcpy(object->o_anim.name, anim_name);
+	parse_animframe(fd, &frame, object);
+	object->o_anim.frames[object->o_anim.framecount] = frame;
+	object->o_anim.framecount++;
+	fileclose(fd, anim_path);
 }

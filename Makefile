@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/17 15:25:42 by raho             ###   ########.fr        #
+#    Updated: 2023/03/17 20:23:57 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -101,6 +101,8 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		player/playmode_load_fonts.c \
 		player/playmode_load_sounds.c \
 		player/playmode_load_music.c \
+		player/playmode_load_anims.c \
+		player/playmode_load_anim_legend.c \
 		player/playmode_death.c \
 		player/playmode_events.c \
 		player/hud.c \
@@ -195,7 +197,7 @@ INCLUDE= -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include \
 			-I$(INSTALLED_LIBS_DIR)/include/SDL2/ \
 			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
 CC= gcc
-CFLAGS= $(INCLUDE) -g #-finline-functions -O2 -MMD #-march=native
+CFLAGS= $(INCLUDE) -g -finline-functions -O2 -MMD #-march=native
 LDFLAGS = -Wl,-rpath $(INSTALLED_LIBS_DIR)/lib
 
 UNAME= $(shell uname)

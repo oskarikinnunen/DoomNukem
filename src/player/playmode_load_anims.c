@@ -1,18 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   editor_load_anims.c                                :+:      :+:    :+:   */
+/*   playmode_load_anims.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/13 16:51:14 by raho              #+#    #+#             */
-/*   Updated: 2023/03/17 20:01:12 by raho             ###   ########.fr       */
+/*   Created: 2023/03/17 17:49:29 by raho              #+#    #+#             */
+/*   Updated: 2023/03/17 20:10:04 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "file_io.h"
 #include "objects.h"
+
+static void	unpack_and_load_anim(char *anim_path, char *anim_name,
+									t_object *object)
+{
+	load_and_write_filecontent(LEVEL0FILE, anim_path, TEMPANIM);
+	parse_anim(TEMPANIM, anim_name, object);
+	doomlog_mul(LOG_NORMAL, (char *[3]){\
+			"unpacked and loaded anim:", extract_filename(anim_path), NULL});
+	remove(TEMPIMG);
+}
 
 static int	parse_anim_list(int fd, char *anim_name, t_object *object)
 {
@@ -25,9 +35,7 @@ static int	parse_anim_list(int fd, char *anim_name, t_object *object)
 	{
 		if (anim_path)
 		{
-			parse_anim(anim_path, anim_name, object);
-			doomlog_mul(LOG_NORMAL, (char *[3]){\
-					"parsed anim file:", extract_filename(anim_path), NULL});
+			unpack_and_load_anim(anim_path, anim_name, object);
 			free(anim_path);
 			anim_path = NULL;
 		}
@@ -36,23 +44,25 @@ static int	parse_anim_list(int fd, char *anim_name, t_object *object)
 	return (ret);
 }
 
-void	editor_load_anims(char *anim_name, t_object *object)
+void	playmode_load_anims(char *anim_name, t_object *object)
 {
 	int	fd;
 	int	ret;
 	int	frame_malloc_count;
 
-	doomlog(LOG_NORMAL, "LOADING ANIMATIONS");
-	frame_malloc_count = count_asset_list(ANIMLISTPATH);
+	doomlog(LOG_NORMAL, "UNPACKING ANIMS");
+	load_and_write_filecontent(LEVEL0FILE, ANIMLISTPATH, TEMPANIMLIST);
+	frame_malloc_count = count_asset_list(TEMPANIMLIST);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
-			ANIMLISTPATH, "framecount =", s_itoa(frame_malloc_count), NULL});
+			TEMPANIMLIST, "framecount =", s_itoa(frame_malloc_count), NULL});
 	object->o_anim.frames = \
 			ft_memalloc(sizeof(t_objectanimframe) * frame_malloc_count);
 	if (object->o_anim.frames == NULL)
-		doomlog(LOG_EC_MALLOC, "editor_load_anims");
-	fd = fileopen(ANIMLISTPATH, O_RDONLY);
+		doomlog(LOG_EC_MALLOC, "playmode_load_anims");
+	fd = fileopen(TEMPANIMLIST, O_RDONLY);
 	ret = parse_anim_list(fd, anim_name, object);
 	if (ret == -1)
-		doomlog(LOG_EC_GETNEXTLINE, ANIMLISTPATH);
-	fileclose(fd, ANIMLISTPATH);
+		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_anims");
+	fileclose(fd, TEMPANIMLIST);
+	remove(TEMPANIMLIST);
 }

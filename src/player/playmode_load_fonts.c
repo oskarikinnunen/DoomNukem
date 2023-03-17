@@ -6,14 +6,14 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:48:10 by raho              #+#    #+#             */
-/*   Updated: 2023/03/16 22:34:55 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/17 20:07:24 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "file_io.h"
 
-static void	unpack_and_save_font(int font_i, char *font_name,
+static void	unpack_and_load_font(int font_i, char *font_name,
 								t_sdlcontext *sdl)
 {
 	load_and_write_filecontent(LEVEL0FILE, font_name, TEMPFONT);
@@ -21,7 +21,7 @@ static void	unpack_and_save_font(int font_i, char *font_name,
 	if (sdl->fonts[font_i].sizes[0] != NULL)
 		ft_strcpy(sdl->fonts[font_i].name, extract_filename(font_name));
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
-			"unpacked and saved .ttf file:", sdl->fonts[font_i].name, NULL});
+			"unpacked and loaded .ttf file:", sdl->fonts[font_i].name, NULL});
 	remove(TEMPFONT);
 }
 
@@ -38,7 +38,7 @@ static int	parse_font_list(int fd, t_sdlcontext *sdl)
 	{
 		if (font_name)
 		{
-			unpack_and_save_font(i, font_name, sdl);
+			unpack_and_load_font(i, font_name, sdl);
 			free(font_name);
 			font_name = NULL;
 			i++;

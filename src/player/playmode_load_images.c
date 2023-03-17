@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:01:27 by raho              #+#    #+#             */
-/*   Updated: 2023/03/16 22:35:17 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/17 20:07:37 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "file_io.h"
 #include "tga.h"
 
-static void	unpack_and_save_image(int img_i, char *image_name,
+static void	unpack_and_load_image(int img_i, char *image_name,
 									t_sdlcontext *sdl)
 {
 	load_and_write_filecontent(LEVEL0FILE, image_name, TEMPIMG);
@@ -22,7 +22,7 @@ static void	unpack_and_save_image(int img_i, char *image_name,
 	if (sdl->images[img_i].data != NULL)
 		ft_strcpy(sdl->images[img_i].name, extract_filename(image_name));
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
-			"unpacked and saved .tga file:", sdl->images[img_i].name, NULL});
+			"unpacked and loaded .tga file:", sdl->images[img_i].name, NULL});
 	remove(TEMPIMG);
 }
 
@@ -39,7 +39,7 @@ static int	parse_image_list(int fd, t_sdlcontext *sdl)
 	{
 		if (image_name)
 		{
-			unpack_and_save_image(i, image_name, sdl);
+			unpack_and_load_image(i, image_name, sdl);
 			free(image_name);
 			image_name = NULL;
 			i++;
