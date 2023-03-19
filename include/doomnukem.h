@@ -32,6 +32,7 @@
 # include "navigation.h"
 # include <SDL_thread.h>
 # include "thread.h"
+# include "decal.h"
 
 # define PI	3.14159265359
 # define FULLRAD M_PI * 2.0

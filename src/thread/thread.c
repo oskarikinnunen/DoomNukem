@@ -8,7 +8,6 @@ void	thread_set(t_thread *thread)
 	i = 0;
 	while (i < THREAD)
 	{
-		thread->init(&(thread->structs[i * thread->struct_size]));
 		pthread_create(&thread->threads[i], NULL, thread->func, &(thread->structs[i * thread->struct_size]));
 		i++;
 	}

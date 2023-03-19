@@ -146,7 +146,7 @@ void update_world3d(t_world *world, t_render *render)
 	bitmask_to_pixels(sdl);
 	rescale_surface(sdl);
 	lateupdate_entitycache(sdl, world);
-	if (world->gamemode == MODE_EDITOR && !world->debug_gui->hidden)
+	if (world->gamemode == MODE_EDITOR && !world->debug_gui->hidden) //TODO: Call these from editor.c as they are only editor debugs
 	{
 		show_navmesh(world);
 		gui_start(world->debug_gui);
@@ -170,6 +170,18 @@ void update_world3d(t_world *world, t_render *render)
 			world->sdl->global_wireframe = !world->sdl->global_wireframe;
 		if (gui_shortcut_button("Toggle Lighting", 'L', world->debug_gui))
 			sdl->lighting_toggled = !sdl->lighting_toggled;
+		if (gui_shortcut_button("Decal test", 'G', world->debug_gui))
+		{
+			t_ray r;
+			t_decal d;
+			t_raycastinfo ri;
+
+			r.dir = world->sdl->render.camera.lookdir;
+			r.origin = world->sdl->render.camera.position;
+
+			if (raycast_new(r, &ri, world))
+				decal(world, (t_decal){.position = ri.hit_pos, .normal = ri.face_normal});
+		}
 		if (gui_shortcut_button("Toggle Skybox", 'H', world->debug_gui))
 			world->skybox.hidden = !world->skybox.hidden;
 		if (gui_shortcut_button("Draw Occlusion Buffer", 'Y', world->debug_gui))

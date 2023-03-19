@@ -62,7 +62,8 @@ static float clockwise(t_vector2 *p)
 	return ((p[1].x - p[0].x) * (p[2].y - p[0].y) - (p[2].x - p[0].x) * (p[1].y - p[0].y));
 }
 
-static t_vector3	normal_calc(t_vector3 p[3])
+//TODO: move this to vector lib after merge
+t_vector3	normal_calc(t_vector3 p[3])
 {
 	t_vector3 normal, line1, line2;
 

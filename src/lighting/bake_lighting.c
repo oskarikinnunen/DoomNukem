@@ -127,17 +127,8 @@ void calculate_light_for_entity(t_entity *entity, t_lighting *lighting)
 	}
 }
 
-typedef struct s_test
+void	calculate_light_for_entities(t_test *ptr)
 {
-	t_world *world;
-	t_entity *entity;
-} t_test;
-
-void	calculate_light_for_entities(void *ptr)
-{
-	t_test *test = ptr;
-	t_world *world = test->world;
-	t_entity *light_ent = test->entity;
 	int				i;
 	int				found;
 	t_entitycache	*cache;
@@ -146,13 +137,13 @@ void	calculate_light_for_entities(void *ptr)
 	float			dist;
 	t_lighting		lighting;
 
-	if (world == NULL)
+	if (ptr->world == NULL)
 		return;
-	lighting.light_ent = light_ent;
-	light = light_ent->component.data;
+	lighting.light_ent = ptr->entity;
+	light = ptr->entity->component.data;
 	i = 0;
 	found = 0;
-	cache = &world->entitycache;
+	cache = &ptr->world->entitycache;
 	while (found < cache->existing_entitycount
 		&& i < cache->alloc_count)
 	{
@@ -270,10 +261,9 @@ void	calculate_lighting(t_world *world)
 				ptr = &(((t_test *)test.structs)[e]);
 				ptr->entity = ent;
 				ptr->world = world;
-				//calculate_light_for_entities(world, ent);
 				e++;
 			}
-			if (e == 6)
+			if (e == THREAD)
 			{
 				thread_set(&test);
 				e = 0;
@@ -283,9 +273,8 @@ void	calculate_lighting(t_world *world)
 		i++;
 	}
 	if (e != 0)
-	{
 		thread_set(&test);
-	}
+	free(test.structs);
 }
 
 void	recalculate_lighting(t_world *world)

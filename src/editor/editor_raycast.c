@@ -229,6 +229,7 @@ bool raycast_entity(t_ray r, t_raycastinfo *info, t_entity *entity)
 		{
 			info->hit_pos = vector3_add(r.origin, vector3_mul(r.dir, info->distance));
 			info->hit_entity = entity;
+			info->face_normal = normal_calc_quaternion(entity->world_triangles[i].p);
 			hit = true;
 		}
 		i++;

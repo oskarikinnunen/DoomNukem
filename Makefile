@@ -130,6 +130,7 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		render/render_triangle.c \
 		render/init_render.c \
 		render/render_space.c \
+		decal/decal.c \
 		lighting/bake_lighting.c \
 		lighting/point_light.c \
 		lighting/fragment_light.c \

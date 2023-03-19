@@ -14,7 +14,13 @@ typedef struct s_thread
 	size_t		struct_size;
 }	t_thread;
 
-void	calculate_light_for_entities(void *ptr);
+typedef struct s_test
+{
+	struct s_world *world;
+	struct s_entity *entity;
+} t_test;
+
+void	calculate_light_for_entities(t_test *ptr);
 
 void	thread_set(t_thread *thread);
 void	*thread_func_lighting(void *ptr);

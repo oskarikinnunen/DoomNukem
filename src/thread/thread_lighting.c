@@ -8,5 +8,6 @@ void *thread_func_lighting(void *ptr)
 
 void thread_init_lighting(void *ptr)
 {
+	
 	return;
 }

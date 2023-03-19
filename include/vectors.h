@@ -393,4 +393,10 @@ t_vector2		barycentric_coordinates(t_vector2 *p, t_vector2 v);
 //returns vector3 location from 3 t_vector3 points, using t_vector2 as barycentric coordinates for w1 and w2;
 t_vector3		get_vector3_from_barycentric(t_vector3 *p, t_vector2 bary);
 
+//returns normal for 3  vector3 points
+t_vector3	normal_calc(t_vector3 p[3]);
+
+//returns normal for 3 quaternion points
+t_vector3	normal_calc_quaternion(t_quaternion p[3]);
+
 #endif
