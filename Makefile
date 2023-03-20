@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/17 20:23:57 by raho             ###   ########.fr        #
+#    Updated: 2023/03/20 15:32:04 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,6 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		editor/editor.c \
 		editor/editor_mouse.c \
 		editor/editor_events.c \
-		editor/editor_preferences.c \
 		editor/editor_asset_load.c \
 		editor/editor_load_anims.c \
 		editor/editor_load_anim_legend.c \
@@ -65,7 +64,6 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		editor/editor_instant_button.c \
 		editor/editor_raycast.c \
 		preferences/graphicsprefs.c \
-		debug/debugconsole.c \
 		debug/debug_rendering.c \
 		inputhelper.c \
 		walls.c file_open.c \
@@ -117,6 +115,7 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		tga_parser/image_data.c \
 		tga_parser/preliminary_data.c \
 		game_random.c \
+		logging/prot_memalloc.c \
 		object_init.c \
 		object_primitives.c \
 		world.c \
@@ -197,7 +196,7 @@ INCLUDE= -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include \
 			-I$(INSTALLED_LIBS_DIR)/include/SDL2/ \
 			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
 CC= gcc
-CFLAGS= $(INCLUDE) -g -finline-functions -O2 -MMD #-march=native
+CFLAGS= $(INCLUDE) -g #-finline-functions -O2 -MMD #-march=native
 LDFLAGS = -Wl,-rpath $(INSTALLED_LIBS_DIR)/lib
 
 UNAME= $(shell uname)

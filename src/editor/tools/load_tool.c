@@ -166,7 +166,6 @@ void	load_tool_update(t_editor *ed, t_sdlcontext *sdl)
 		ed->world.lastsavetime = ed->world.clock.time;
 		return ;
 		load_tool_init(ed, sdl);
-		debugconsole_addmessage(&ed->world.debugconsole, "Saved world!");
 	}
 	if (gui_button("Save backup", gui))
 	{
@@ -180,7 +179,6 @@ void	load_tool_update(t_editor *ed, t_sdlcontext *sdl)
 		world_save_to_file(ed->world);
 		load_tool_init(ed, sdl);
 		return ;
-		debugconsole_addmessage(&ed->world.debugconsole, "Saved backup world!");
 	}
 	gui_emptyvertical(10, gui);
 	gui_label("Load:", gui);
@@ -190,12 +188,13 @@ void	load_tool_update(t_editor *ed, t_sdlcontext *sdl)
 		gui_starthorizontal(gui);
 		if (gui_button(dat->files[i].name.str, gui))
 		{
-			editor_load_world_args(ed, dat->files[i].name.str, ed->world.sdl, LOAD_ARG_FULL);
+			//editor_world_setup(ed, dat->files[i].name.str, ed->world.sdl, LOAD_ARG_FULL);
 			return ;
 		}
 		gui_label(file_status_str(dat->files[i]), gui);
 		gui_endhorizontal(gui);
 		i++;
+		printf("drawing file: %i button\n", i);
 	}
 	gui_end(gui);
 

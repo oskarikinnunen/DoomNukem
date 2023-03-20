@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/17 20:22:37 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 15:25:35 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@
 # define TEMPANIM "assets/.temp_anim"
 # define TEMPANIMLEGEND "assets/.temp_anim_legend"
 
-# define LEVEL0FILE "worlds/renes_world"
+# define LEVEL0FILE "worlds/level0"
 
 # define TEXTBACKGROUND_BORDERPADDING 6
 # define PERFGRAPH_SAMPLES 64
@@ -163,8 +163,7 @@ void		toggle_ceilings(t_world *world);
 
 
 enum e_load_arg;
-t_world		load_world_args(char *filename, t_sdlcontext *sdl, enum e_load_arg arg);
-t_world		load_world(char *filename, t_sdlcontext *sdl);
+t_world		load_world(char *level, t_sdlcontext *sdl);
 
 
 void		destroy_entity(t_world *world, t_entity *ent);
@@ -193,6 +192,10 @@ typedef struct s_game
 	t_player		player;
 } t_game;
 
+/* TOOLS */
+// Protected ft_memalloc that calls doomlog with error code in case of an error
+void	*prot_memalloc(size_t size);
+
 /* LOG.C */
 int		init_log(void);
 
@@ -203,7 +206,7 @@ void	handle_exit(int	wait_status);
 char	*combine_strings(char **str);
 
 /* EDITOR.C */
-int		editorloop(t_sdlcontext sdl);
+int		editorloop(char *level, t_sdlcontext sdl);
 void	editor_load_images(t_sdlcontext *sdl);
 void	editor_load_env_textures(t_sdlcontext *sdl);
 void	editor_load_objects(t_sdlcontext *sdl);
@@ -254,7 +257,7 @@ uint32_t	game_random_range(t_world *world, uint32_t min, uint32_t max);
 bool		game_random_coinflip(t_world *world);
 
 /* PLAYMODE.C */
-int		playmode(t_sdlcontext sdl);
+int		playmode(char *level, t_sdlcontext sdl);
 void	playmode_death(t_game *game);
 void	playmode_load_images(t_sdlcontext *sdl);
 void	playmode_load_env_textures(t_sdlcontext *sdl);

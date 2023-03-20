@@ -88,7 +88,6 @@ void calculate_pointlight_step(t_pointlight *pointlight, t_world *world, t_rende
 			{
 				char msg[256];
 				sprintf(msg, "LIGHT CALC %i/%i \n", ent->id + 1, l.entities_count);
-				debugconsole_addmessage(&world->debugconsole, msg);
 				// printf("ent %i done \n", ent->id);
 				ent->lightmap->done = true;
 				create_map_for_entity(ent, world);

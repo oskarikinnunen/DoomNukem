@@ -209,7 +209,7 @@ static void ramps_create(t_world *world)
 }
 //Resetlevel??
 /*setup and call gameloop*/
-int playmode(t_sdlcontext sdl)
+int playmode(char *level, t_sdlcontext sdl)
 {
 	t_game			game;
 	t_gamereturn	gr;
@@ -218,7 +218,7 @@ int playmode(t_sdlcontext sdl)
 	//Locks mouse
 	if (SDL_SetRelativeMouseMode(SDL_TRUE) < 0)
 		doomlog(LOG_EC_SDL_SETRELATIVEMOUSEMODE, NULL);
-	game.world = load_world_args("leveltest_bu", &sdl, LOAD_ARG_FULL);
+	game.world = load_world(level, &sdl);
 	game.world.gamemode = MODE_PLAY;
 	create_navmesh(&game.world);
 	ramps_create(&game.world);

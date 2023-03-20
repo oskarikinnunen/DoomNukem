@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/13 14:54:14 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 15:35:11 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,22 +30,10 @@ char	*world_fullpath(char	*filename)
 	return	(fullname);
 }
 
-void	editor_load_world_args(t_editor *ed, char	*worldname, t_sdlcontext *sdl, t_load_arg args)
+void	editor_player_init(t_editor *ed)
 {
-	ed->world = load_world_args(worldname, sdl, args);
-	ed->world.gamemode = MODE_EDITOR;
-	*(ed->world.debug_gui) = init_gui(sdl, &ed->hid, &ed->player, sdl->screensize, "Debugging menu (F2)");
-	
-	ed->toolbar_gui = init_gui(sdl, &ed->hid, &ed->player, (t_point){5, 5}, "Toolbar (F1)");
-	ed->toolbar_gui.minimum_size = (t_point){165, 20};
-	ed->toolbar_gui.locked = true;
-	
-	ed->graphics_gui = init_gui(sdl, &ed->hid, &ed->player, sdl->screensize, "Graphics (F3)");
-	ed->graphics_gui.minimum_size = (t_point){200, 200};
-	ed->graphics_gui.rect.position = point_div(sdl->screensize, 2);
-	//ed->graphics_gui.locked = true;
 	ed->player.noclip = true;
-	player_init(&ed->player, sdl, &ed->world);
+	player_init(&ed->player, ed->world.sdl, &ed->world);
 	ed->player.gun->disabled = true;
 	ed->world.debug_gui->hidden = true;
 	ed->graphics_gui.hidden = true;
@@ -238,32 +226,25 @@ char	*seconds_since_last_save_str(t_world *world)
 	return (str);
 }
 
-void	draw_level_info(t_sdlcontext *sdl, t_world *world)
-{
-	static t_point real_c;
-	char	*time_str;
-
-	return ;
-	if (real_c.x == 0)
-	{
-		real_c = print_text_boxed(sdl, world->name, (t_point){30, 0}).size;
-		real_c = point_sub(point_div(sdl->screensize, 2), real_c);
-		real_c.y = sdl->screensize.y - 30;
-	}
-	print_text_boxed(sdl, world->name, real_c);
-	time_str = seconds_since_last_save_str(world);
-	print_text_boxed(sdl, time_str, point_add(real_c, (t_point){0, 15}));
-}
-
-t_img	tgaparse(char *filename);
-
-int	editorloop(t_sdlcontext sdl)
+int	editorloop(char *level, t_sdlcontext sdl)
 {
 	t_editor	ed;
 	bool		audio = 0;
 
 	bzero(&ed, sizeof(t_editor));
-	editor_load_prefs(&ed, &sdl);
+	ed.world = load_world(level, &sdl);
+	ed.world.gamemode = MODE_EDITOR;
+	editor_player_init(&ed);
+	//split these to their own file
+	*(ed.world.debug_gui) = init_gui(&sdl, &ed.hid, &ed.player, sdl.screensize, "Debugging menu (F2)");
+	ed.toolbar_gui = init_gui(&sdl, &ed.hid, &ed.player, (t_point){5, 5}, "Toolbar (F1)");
+	ed.toolbar_gui.minimum_size = (t_point){165, 20};
+	ed.toolbar_gui.locked = true;
+	ed.graphics_gui = init_gui(&sdl, &ed.hid, &ed.player, sdl.screensize, "Graphics (F3)");
+	ed.graphics_gui.minimum_size = (t_point){200, 200};
+	ed.graphics_gui.rect.position = point_div(sdl.screensize, 2);
+	//
+	
 	ed.gamereturn = game_continue;
 	sdl.lighting_toggled = false;
 	ed.world.lighting.calculated = false;
@@ -278,11 +259,6 @@ int	editorloop(t_sdlcontext sdl)
 		bake_lights(&sdl.render, &ed.world);
 		if (!ed.player.locked)
 			moveplayer(&ed.player, &ed.hid.input, &ed.world);
-		//update_render(&sdl.render, &ed.player);
-		//screen_blank(sdl);
-		//render_start(&sdl.render);
-		//update_frustrum_culling(&ed.world, &sdl, &sdl.render);
-		//clear_occlusion_buffer(&sdl);
 		update_world3d(&ed.world, &sdl.render);
 		update_editor_toolbar(&ed, &ed.toolbar_gui);
 		if (ed.tool != NULL)
@@ -295,9 +271,7 @@ int	editorloop(t_sdlcontext sdl)
 		//draw_image(sdl, point_zero(), tgaparse("assets/images/stone02.tga"), (t_point){400, 400});
 
 		free(fps);
-		draw_level_info(&sdl, &ed.world);
 		update_editor_lateguis(&ed);
-		update_debugconsole(&ed.world.debugconsole, &sdl, ed.world.clock.delta);
 		ed.hid.mouse.click_unhandled = false;
 		memcpy(sdl.window_surface->pixels, sdl.surface->pixels, sizeof(uint32_t) * sdl.window_w * sdl.window_h);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)
@@ -306,7 +280,6 @@ int	editorloop(t_sdlcontext sdl)
 	}
 	if (ed.player.gun->entity != NULL)
 		destroy_entity(&ed.world, ed.player.gun->entity);
-	editor_save_prefs(&ed);
 	save_graphics_prefs(&sdl);
 	//save_world(ed.world.name, ed.world);
 	world_save_to_file(ed.world);

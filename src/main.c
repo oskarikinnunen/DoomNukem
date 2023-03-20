@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/08 19:45:05 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 15:18:25 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	quit_game(t_sdlcontext *sdl)
 
 void	alloc_occlusion(t_sdlcontext *sdl)
 {
-	sdl->bitmask.tile = ft_memalloc(sizeof(t_tile) * ((sdl->window_h * sdl->window_w) / 64)); //TODO: free
+	sdl->bitmask.tile = prot_memalloc(sizeof(t_tile) * ((sdl->window_h * sdl->window_w) / 64)); //TODO: free
 	sdl->bitmask.bitmask_chunks.x = sdl->window_w / 16;
 	sdl->bitmask.bitmask_chunks.y = sdl->window_h / 8;
 	sdl->bitmask.tile_chunks.x = sdl->window_w / 8;
@@ -72,8 +72,8 @@ void	set_sdl_settings(t_sdlcontext *sdl)
 	sdl->ui_surface = SDL_CreateRGBSurfaceWithFormat(SDL_SWSURFACE, sdl->window_w, sdl->window_h, 32, SDL_PIXELFORMAT_ARGB8888);
 	if (sdl->ui_surface == NULL)
 		doomlog(LOG_EC_SDL_CREATERGBSURFACE, NULL);
-	sdl->zbuffer = ft_memalloc(sdl->window_w * sdl->window_h * sizeof(float));
-	sdl->scaling_buffer = ft_memalloc(sdl->window_w * sdl->window_w * sizeof(uint32_t));
+	sdl->zbuffer = prot_memalloc(sdl->window_w * sdl->window_h * sizeof(float));
+	sdl->scaling_buffer = prot_memalloc(sdl->window_w * sdl->window_w * sizeof(uint32_t));
 	alloc_occlusion(sdl);
 	sdl->render = init_render(*sdl);
 }
@@ -111,15 +111,30 @@ void	doomnukem(int argc, char **argv)
 
 	checkargs(argc, argv);
 	gr = game_switchmode;
-	if (argc == 2 && ft_strcmp(argv[1], "-editor") == 0)
+	if (argc == 3 && ft_strcmp(argv[1], "-editor") == 0)
 	{
 		create_sdlcontext(&sdl, MODE_EDITOR);
-		gr = editorloop(sdl);
+		gr = editorloop(argv[2], sdl);
+	}
+	else if (argc == 2 && ft_strcmp(argv[1], "-editor") == 0)
+	{
+		create_sdlcontext(&sdl, MODE_EDITOR);
+		gr = editorloop("default", sdl);
+	}
+	else if (argc == 3 && ft_strcmp(argv[1], "-level") == 0)
+	{
+		create_sdlcontext(&sdl, MODE_PLAY);
+		gr = playmode(argv[2], sdl);
+	}
+	else if (argc == 1)
+	{
+		create_sdlcontext(&sdl, MODE_PLAY);
+		gr = playmode("default", sdl);
 	}
 	else
 	{
-		create_sdlcontext(&sdl, MODE_PLAY);
-		gr = playmode(sdl);
+		ft_putendl_fd("usage: ./DoomNukem [-editor | [-level level_file]] ", 2);
+		exit (1);
 	}
 	/*while (gr == game_switchmode)
 	{

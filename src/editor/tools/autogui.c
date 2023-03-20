@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   autogui.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/02 22:27:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/20 15:42:20 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ t_autogui	init_gui(t_sdlcontext *sdl, t_hid_info *hid, t_player *player, t_point
 	t_autogui	gui;
 
 	ft_bzero(&gui, sizeof(t_autogui));
+	printf("initializing ui: %s sdl-> == %p\n", title, sdl);
 	gui.sdl = sdl;
 	gui.hid = hid;
 	gui.player = player;
@@ -177,6 +178,7 @@ void	gui_end(t_autogui *gui)
 			draw_rectangle(*gui->sdl, dragbar, AMBER_1);
 		if (gui->hid->mouse.held == MOUSE_LEFT && pointrectanglecollision(gui->hid->mouse.pos, dragbar) && !gui->hid->mouse.dragging_ui)
 		{
+			printf("dragging ui mouse pos x: %i\n", gui->hid->mouse.pos.x);
 			//gui->hid->mouse.dragging_ui = true;
 			gui->move_held = true;
 		}
@@ -197,7 +199,7 @@ void	gui_end(t_autogui *gui)
 			draw_rect_tri(gui->sdl, dragcorner, AMBER_1);
 		if (gui->hid->mouse.held == MOUSE_LEFT && pointrectanglecollision(gui->hid->mouse.pos, dragcorner) && !gui->hid->mouse.dragging_ui)
 		{
-			//gui->hid->mouse.dragging_ui = true;
+			gui->hid->mouse.dragging_ui = true;
 			gui->drag_held = true;
 		}
 		if (gui->drag_held)

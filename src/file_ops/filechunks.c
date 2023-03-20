@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/17 17:33:45 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 14:16:05 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,10 @@ int		find_chunk_count(int fd)
 		count++;
 		br = read(fd, buf, CHUNKSIZE);
 	}
-	lseek(fd, -(count + 1) * CHUNKSIZE, SEEK_CUR);
+	if (br == -1)
+		doomlog(LOG_EC_READ, "find_chunk_count");
+	if (lseek(fd, -(count + 1) * CHUNKSIZE, SEEK_CUR) == -1)
+		doomlog(LOG_EC_LSEEK, "find_chunk_count");
 	return (count);
 }
 
@@ -45,9 +48,7 @@ t_list	*parse_chunk(int fd, size_t size)
 	t_list		*node;
 	int			count;
 
-	buf = ft_memalloc(size);
-	if (buf == NULL)
-		doomlog(LOG_EC_MALLOC, NULL);
+	buf = prot_memalloc(size);
 	count = find_chunk_count(fd);
 	count = (count * CHUNKSIZE) / size;
 	// printf("found %i chunks \n", count); //TODO: don't remove, going to be used when logging is implemented in the near future
@@ -59,6 +60,8 @@ t_list	*parse_chunk(int fd, size_t size)
 		count--;
 		br = read(fd, buf, size);
 	}
+	if (br == -1)
+		doomlog(LOG_EC_READ, "parse_chunk");
 	free(buf);
 	return (head);
 }
@@ -71,11 +74,6 @@ void	save_chunk(char *filename, char *chunkname, t_list *content)
 
 	l = content;
 	fd = fileopen(filename, O_RDWR | O_APPEND);
-	if (fd == -1)
-	{
-		printf("LOGW: FAILED TO SAVE CHUNK %s TO FILE %s\n", chunkname, filename);
-		return ;
-	}
 	written = 0;
 	write(fd, chunkname, CHUNKSIZE);
 	while (l != NULL)
@@ -89,7 +87,7 @@ void	save_chunk(char *filename, char *chunkname, t_list *content)
 		write(fd, "PADD", CHUNKSIZE - (written % CHUNKSIZE));
 	}
 	write(fd, "CEND", CHUNKSIZE);
-	close(fd);
+	fileclose(fd, filename);
 }
 
 t_list *load_chunk(char *filename, char *chunkname, size_t size)
@@ -100,30 +98,22 @@ t_list *load_chunk(char *filename, char *chunkname, size_t size)
 	t_list	*result;
 	int		i;
 
-	fd = open(filename, O_RDONLY, 0666);
-	if (fd == -1)
-	{
-		//printf("couldn't open file %s for chunk reading \n", filename);
-		return (NULL);
-	}
-	else
-	{
-		//printf("opened file %s for chunk %s reading \n", filename, chunkname);
-	}
+	fd = fileopen(filename, O_RDONLY);
 	ft_bzero(buf, CHUNKSIZE + 1);
 	br = read(fd, buf, CHUNKSIZE);
 	while (br > 0)
 	{
 		if (ft_strcmp(chunkname, buf) == 0)
 		{
-			//printf("found chunk %s \n", chunkname);
 			result = parse_chunk(fd, size);
-			close(fd);
+			fileclose(fd, filename);
 			return (result);
 		}
 		br = read(fd, buf, CHUNKSIZE);
 	}
-	close(fd);
+	if (br == -1)
+		doomlog(LOG_EC_READ, filename);
+	fileclose(fd, filename);
 	return (NULL);
 }
 
@@ -157,7 +147,7 @@ int		ft_fileread_rene(int fd, t_filecontent *f)
 		len = read(fd, buf, sizeof(buf));
 	}
 	if (len == -1)
-		doomlog(LOG_EC_READ, "ft_fileread");
+		doomlog(LOG_EC_READ, "ft_fileread_rene");
 	return (f->length);
 }
 
@@ -167,6 +157,8 @@ int		ft_nfileread(int fd, t_filecontent *f, size_t size)
 
 	f->length = read(fd, buf, size);
 	f->content = ft_memdup(buf, size);
+	if (f->content == NULL)
+		doomlog(LOG_EC_MALLOC, "f->content");
 	return (f->length);
 }
 
@@ -176,7 +168,8 @@ uint64_t	read_len(int fd)
 	char		clen[8];
 	int			i;
 
-	read(fd, clen, 8);
+	if (read(fd, clen, 8) == -1)
+		doomlog(LOG_EC_READ, "filecontent read_len");
 	res = *(uint64_t *)clen;
 	return (res);
 }
@@ -190,20 +183,20 @@ t_filecontent	load_filecontent(char	*worldname, char	*fc_name)
 	char			buf[CHUNKSIZE + 1];
 
 	ft_bzero(&fc, sizeof(t_filecontent));
-	fd = open(worldname, O_RDONLY);
-	if (fd == -1)
-		return (fc);
+	fd = fileopen(worldname, O_RDONLY);
 	rbytes = read(fd, buf, CHUNKSIZE);
 	while (rbytes > 0)
 	{
 		if (ft_strncmp(buf, "FCNK", 4) == 0)
 		{
-			read(fd, fc.name, 128);
+			if (read(fd, fc.name, 128) == -1)
+				doomlog(LOG_EC_READ, worldname);
 			if (ft_strcmp(fc.name, fc_name) == 0)
 			{
 				fc.length = read_len(fd);
-				fc.content = malloc(fc.length);
-				read(fd, fc.content, fc.length);
+				fc.content = prot_memalloc(fc.length);
+				if (read(fd, fc.content, fc.length) == -1)
+					doomlog(LOG_EC_READ, worldname);
 				return (fc);
 			}
 			else
@@ -218,6 +211,8 @@ t_filecontent	load_filecontent(char	*worldname, char	*fc_name)
 		}
 		rbytes = read(fd, buf, CHUNKSIZE);
 	}
+	if (rbytes == -1)
+		doomlog(LOG_EC_READ, "load_filecontent");
 	if (close(fd) == -1)
 		doomlog(LOG_EC_CLOSE, worldname);
 }
@@ -229,7 +224,7 @@ int load_filecontent_fd(char *worldname, char *fcname)
 	int				fd;
 
 	fc = load_filecontent(worldname, fcname);
-	fd = open(".temptest", O_CREAT | O_RDWR | O_APPEND, 0666);
+	fd = fileopen(".temptest", O_CREAT | O_RDWR | O_APPEND);
 	write(fd, fc.content, fc.length);
 	return (fd);
 }
@@ -241,7 +236,7 @@ void	load_and_write_filecontent(char *worldname, char *fcname, \
 	int				fd;
 
 	fc = load_filecontent(worldname, fcname);
-	fd = open(filename, O_CREAT | O_RDWR | O_TRUNC, 0666);
+	fd = fileopen(filename, O_CREAT | O_RDWR | O_TRUNC);
 	write(fd, fc.content, fc.length);
 	fileclose(fd, filename);
 }
@@ -265,18 +260,15 @@ void	pack_file(char	*packname, char *filename)
 	int				fd;
 	void			*temp;
 	t_filecontent	fc;
+	size_t			total;
 
 	ft_bzero(&fc, sizeof(t_filecontent));
-	fd = open(filename, O_RDONLY, 0666);
-	if (fd == -1)
-		return ;
+	fd = fileopen(filename, O_RDONLY);
 	ft_fileread(fd, &fc);
 	ft_strcpy(fc.name, filename);
-	close(fd);
-	fd = open(packname, O_RDWR | O_APPEND, 0666);
-	if (fd == -1)
-		return ;
-	size_t total = 0;
+	fileclose(fd, packname);
+	fd = fileopen(packname, O_RDWR | O_APPEND);
+	total = 0;
 	total += write(fd, "FCNK", 4);
 	total += write(fd, fc.name, sizeof(char) * 128);	
 	total += write(fd, uint64_to_char(fc.length), 8);
@@ -284,7 +276,7 @@ void	pack_file(char	*packname, char *filename)
 	//TODO: ensure that this fits the 4 byte alignment of the chunk reader
 	//total += write(fd, "PADD", fc.length % 4);
 	//printf("wrote packed file content len %lu \n", total); 
-	close(fd);
+	fileclose(fd, packname);
 }
 
 void	force_pack_file(char	*packname, char *filename)
@@ -320,7 +312,7 @@ void	pack_file_to_level(char *level, char *file)
 	ft_bzero(&fc, sizeof(t_filecontent));
 	fd = fileopen(file, O_RDONLY);
 	ft_fileread_rene(fd, &fc);
-	ft_strcpy(fc.name, file);
+	ft_strncpy(fc.name, file, 127);
 	fileclose(fd, file);
 	fileopen(level, O_RDWR | O_APPEND);
 	write(fd, "FCNK", 4);
