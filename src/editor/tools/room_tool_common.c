@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:53:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/03 15:35:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/17 18:56:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	toggle_ceilings(t_world *world)
 	t_area	*r;
 	int		i;
 
-	l = world->roomlist;
+	l = world->arealist;
 	while (l != NULL)
 	{
 		r = l->content;
@@ -207,7 +207,7 @@ bool	is_joined(t_vector2 edge, t_area	*room, t_world *world)
 {
 	t_list	*l;
 	t_area	*other;
-	l = world->roomlist;
+	l = world->arealist;
 	while (l != NULL)
 	{
 		other = l->content;

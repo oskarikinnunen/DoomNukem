@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/15 15:41:06 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/16 13:30:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,6 @@ void render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 	t_world	w;
 	w.sdl = sdl;
 	render_entity_worldtriangles(entity, &w);
-	printf("entity obj %s pos %f %f\n", entity->obj->name, entity->transform.position.x, entity->transform.position.y);
 	if ((point_cmp(entity->occlusion.clip.max, point_zero()) && point_cmp(entity->occlusion.clip.min, point_zero()))
 		|| !render->occlusion.occlusion)
 	{

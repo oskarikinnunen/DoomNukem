@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/15 15:12:48 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/20 12:08:43 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,10 +97,10 @@ typedef struct s_gun
 	uint32_t	lastshottime;
 	uint32_t	bullets;
 	bool		readytoshoot;
+	bool		player_owned;
 	bool		disabled;
+	float		aim_lerp;
 }	t_gun;
-
-void	change_gun_preset(t_gun *gun, t_sdlcontext *sdl, int index);
 
 typedef struct s_entitycache
 {

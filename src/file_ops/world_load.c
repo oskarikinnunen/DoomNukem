@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 14:55:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/15 16:18:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/17 18:56:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void	_world_init_rooms(t_world *world)
 	t_area	temp;
 	int		i;
 
-	l = world->roomlist;
+	l = world->arealist;
 	_world_sanitize_all_room_pointers(world);
 	while (l != NULL)
 	{
@@ -83,7 +83,7 @@ void	_world_init_rooms(t_world *world)
 		room_init_shallow(r, world);
 		l = l->next;
 	}
-	l = world->roomlist;
+	l = world->arealist;
 	while (l != NULL)
 	{
 		r = (t_area *)l->content;
@@ -103,7 +103,7 @@ void	world_load_amap(t_world *world)
 	{
 		doomlog_mul(LOG_NORMAL, (char *[3]){\
 			"found .amap for world:", world->name, NULL});
-		world->roomlist = load_chunk(amap_fname, "AREA", sizeof(t_area));
+		world->arealist = load_chunk(amap_fname, "AREA", sizeof(t_area));
 		_world_sanitize_all_room_pointers(world);
 		_world_init_rooms(world);
 	}
@@ -133,6 +133,7 @@ void	load_basic_ent_cache_from_list(t_world *world, t_list *l)
 		world_entity->component.data_preset
 			= list_entity->component.data_preset;
 		world_entity->transform.parent = NULL;
+		entity_set_component_functions(world_entity, world);
 		l = l->next;
 	}
 }

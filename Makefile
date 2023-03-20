@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/15 14:06:39 by okinnune         ###   ########.fr        #
+#    Updated: 2023/03/20 12:18:28 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -117,7 +117,6 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		font.c \
 		object_init.c \
 		object_primitives.c \
-		world.c \
 		resolution_scaling.c \
 		controller.c \
 		controller_init.c \
@@ -165,6 +164,9 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		render/rasterization/rasterize_triangle_shadow.c \
 		render/render_zbuffer.c \
 		render/pixel_utils.c \
+		world/entitycache.c \
+		world/entitycache_2.c \
+		world/world.c \
 		entity/entity_transform.c \
 		entity/components/comp_light.c \
 		entity/components/comp_healthpack.c \
@@ -172,7 +174,7 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		entity/components/comp_gun_pickup.c \
 		entity/components/comp_auto_door.c #.ENDSRC. CREATECOMPONENT SCRIPT DEPENDS ON THIS SO DONT REMOVE
 VECTORSRCFILES= conversions.c \
-		debug_vectors.c \
+		conversions2.c \
 		matrix_functions3.c \
 		matrix_functions2.c \
 		matrix_functions.c \

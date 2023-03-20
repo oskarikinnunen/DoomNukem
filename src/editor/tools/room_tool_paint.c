@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 14:52:25 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/02 21:27:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/17 18:56:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ t_area	*get_floor_room(t_world *world, t_entity *entity)
 	t_area	*r;
 	int		i;
 
-	l = world->roomlist;
+	l = world->arealist;
 	r = NULL;
 	while (l != NULL)
 	{
@@ -80,7 +80,7 @@ static t_area	*_world_get_room_with_entity(t_world *world, t_entity *entitymatch
 	t_list	*l;
 	t_area	*room;
 
-	l = world->roomlist;
+	l = world->arealist;
 	while (l != NULL)
 	{
 		room = l->content;
@@ -97,7 +97,7 @@ static t_wall	*_world_get_wall_with_entity(t_world *world, t_entity *entitymatch
 	t_area	*room;
 	t_wall	*found;
 
-	l = world->roomlist;
+	l = world->arealist;
 	while (l != NULL)
 	{
 		room = l->content;
@@ -115,7 +115,7 @@ static t_wall	*_world_get_floor_with_entity(t_world *world, t_entity *entitymatc
 	t_area	*room;
 	t_wall	*found;
 
-	l = world->roomlist;
+	l = world->arealist;
 	while (l != NULL)
 	{
 		room = l->content;
@@ -132,7 +132,7 @@ static void paint_room(t_entity *hit_ent, t_img *tex, t_world *world)
 	t_list	*l;
 	int		i;
 
-	l = world->roomlist;
+	l = world->arealist;
 	while (l != NULL)
 	{
 		t_area *area = l->content;

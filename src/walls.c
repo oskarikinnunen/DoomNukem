@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   walls.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 13:52:35 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/17 18:56:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ void	clamp_wall_areaheight(t_wall *wall, t_area *room, t_world *world)
 	t_list	*l;
 	t_wall	*other_w;
 
-	l = world->roomlist;
+	l = world->arealist;
 	wall->entity->hidden = false;
 	wall->ceilingwall = false;
 	wall->height = room->ceiling_height;

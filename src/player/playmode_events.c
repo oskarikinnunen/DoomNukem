@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 19:41:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/15 13:20:36 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/17 17:47:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ int	playmode_events(t_game *game)
 				return (game_exit);
 			}
 		}
+		controller_events(e, &game->hid);
 	}
 	updateinput_new(&game->hid.input, game->hid);
 	return (game_continue);

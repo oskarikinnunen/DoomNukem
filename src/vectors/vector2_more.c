@@ -6,11 +6,12 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/07 01:54:00 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 11:44:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/17 18:39:26 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vectors.h"
+#include "render.h"
 
 t_vector2	vector2_snap(t_vector2 vec, int interval)
 {
@@ -54,4 +55,9 @@ float	vector2_anglebetween(t_vector2 first, t_vector2 second)
 		exit(0);
 	}
 	return (atan2f(temp.y, temp.x));
+}
+
+t_point	screenlerp(float xlerp, float ylerp, t_sdlcontext *sdl)
+{
+	return ((t_point){sdl->screensize.x * xlerp, sdl->screensize.y * ylerp});
 }

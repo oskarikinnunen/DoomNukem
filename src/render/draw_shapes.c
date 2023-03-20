@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 21:39:40 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/02 21:46:10 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/16 14:14:13 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,15 @@ void	draw_triangle(t_sdlcontext *sdl,
 	drawline(*sdl, p3, p1, clr);
 }
 
+static void	drawl(t_sdlcontext sdl, t_point pos, uint32_t clr)
+{
+	if (pos.x < 0 || pos.x >= sdl.surface->w - 2
+		|| pos.y < 0 || pos.y >= sdl.surface->h - 2)
+		return ;
+	((uint32_t *)sdl.surface->pixels)[pos.x + (pos.y * sdl.surface->w)] = clr;
+	(sdl.zbuffer)[pos.x + (pos.y * sdl.surface->w)] = 1.0f;
+}
+
 void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr)
 {
 	static t_bresenham	b;
@@ -55,6 +64,6 @@ void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr)
 	populate_bresenham(&b, from, to);
 	draw(sdl, b.local, clr);
 	while (step_bresenham(&b) != 1)
-		draw(sdl, b.local, clr);
+		drawl(sdl, b.local, clr);
 	draw(sdl, b.local, clr);
 }

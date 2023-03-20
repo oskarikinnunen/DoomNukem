@@ -103,7 +103,7 @@ typedef struct	s_playerspawn
 }	t_playerspawn;
 typedef struct	s_gun_pickup
 {
-	float	TESTVARIABLE;
+	float	original_z;
 }	t_gun_pickup;
 typedef struct	s_auto_door
 {

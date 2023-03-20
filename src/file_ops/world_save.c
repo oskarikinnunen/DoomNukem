@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 13:57:45 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/15 16:23:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/17 18:56:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static void	_world_remove_all_room_entities(t_world *world)
 	t_list	*l;
 	t_area	*room;
 
-	l = world->roomlist;
+	l = world->arealist;
 	while (l != NULL)
 	{
 		room = (t_area *)l->content;
@@ -72,7 +72,7 @@ void	_world_sanitize_all_room_pointers(t_world *world)
 	t_area	*room;
 	int		i;
 
-	l = world->roomlist;
+	l = world->arealist;
 	while (l != NULL)
 	{
 		room = (t_area *)l->content;
@@ -98,7 +98,7 @@ static void	_world_save_amap(t_world world)
 	fd = fileopen(filename, O_RDWR | O_CREAT | O_TRUNC);
 	_world_remove_all_room_entities(&world);
 	_world_sanitize_all_room_pointers(&world);
-	save_chunk(filename, "AREA", world.roomlist);
+	save_chunk(filename, "AREA", world.arealist);
 }
 
 static void	_entitylist_basicify(t_list *ent_list)

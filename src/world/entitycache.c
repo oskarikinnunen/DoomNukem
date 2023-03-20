@@ -1,0 +1,127 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   entitycache.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/20 11:13:16 by okinnune          #+#    #+#             */
+/*   Updated: 2023/03/20 12:02:20 by okinnune         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "doomnukem.h"
+#include "file_io.h"
+#include "objects.h"
+#include "editor_tools.h"
+
+t_entity	*spawn_entity(t_world *world, t_object *obj)
+{
+	int				i;
+	t_entitycache	*cache;
+
+	cache = &world->entitycache;
+	i = 0;
+	while (i < cache->alloc_count)
+	{
+		if (cache->entities[i].status == es_free)
+		{
+			ft_bzero(&cache->entities[i], sizeof(t_entity));
+			cache->entities[i].status = es_active;
+			cache->entities[i].transform.scale = vector3_one();
+			cache->entities[i].id = i;
+			cache->entities[i].hidden = false;
+			ft_bzero(&cache->entities[i].component, sizeof(t_component));
+			entity_assign_object(world, &cache->entities[i], obj);
+			cache->existing_entitycount++;
+			if (cache->existing_entitycount >= cache->alloc_count)
+				doomlog(LOG_EC_MALLOC, NULL);
+			return (&cache->entities[i]);
+		}
+		i++;
+	}
+	doomlog(LOG_EC_MALLOC, NULL);
+	return (NULL);
+}
+
+//TODO: is this nonfatal?
+void	entity_assign_object(t_world *world, t_entity *entity, t_object *obj)
+{
+	if (obj == NULL)
+		return ;
+	ft_strcpy(entity->object_name.str, obj->name);
+	entity->obj = obj;
+	entity->world_triangles = (t_triangle *)malloc(sizeof(t_triangle)
+			* obj->face_count);
+	if (!entity->world_triangles)
+		doomlog(LOG_WARNING, "Non-fatal malloc error on entity_assign_object");
+}
+
+void	for_all_entities(t_world	*world,
+			void (*func)(t_entity *ent, t_world *world))
+{
+	int				i;
+	int				found;
+	t_entitycache	*cache;
+
+	i = 0;
+	found = 0;
+	cache = &world->entitycache;
+	while (found < cache->existing_entitycount)
+	{
+		if (cache->entities[i].status != es_free)
+		{
+			func(&cache->entities[i], world);
+			found++;
+		}
+		i++;
+	}
+}
+
+void	void_for_all_active_entities(t_world	*world,
+		void *ptr, void (*func)(t_entity *ent, void *ptr))
+{
+	int				i;
+	int				found;
+	t_entitycache	*cache;
+
+	i = 0;
+	found = 0;
+	cache = &world->entitycache;
+	while (found < cache->existing_entitycount)
+	{
+		if (cache->entities[i].status != es_free)
+		{
+			if (cache->entities[i].status == es_active)
+			{
+				func(&cache->entities[i], ptr);
+			}
+			found++;
+		}
+		i++;
+	}
+}
+
+void	for_all_active_entities(t_world	*world,
+		void (*func)(t_entity *ent, t_world *world))
+{
+	int				i;
+	int				found;
+	t_entitycache	*cache;
+
+	i = 0;
+	found = 0;
+	cache = &world->entitycache;
+	while (found < cache->existing_entitycount)
+	{
+		if (cache->entities[i].status != es_free)
+		{
+			if (cache->entities[i].status == es_active)
+			{
+				func(&cache->entities[i], world);
+			}
+			found++;
+		}
+		i++;
+	}
+}

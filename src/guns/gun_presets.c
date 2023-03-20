@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 12:51:01 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/15 16:24:35 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/17 17:58:19 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,18 +59,4 @@ t_gunstats	gun_sniper(void)
 	stats.reloadtime = 25;
 	stats.fullauto = false;
 	return (stats);
-}
-
-void	change_gun_preset(t_gun *gun, t_sdlcontext *sdl, int index)
-{
-	static t_gunstats	(*preset_funcs[20])(void)
-		= {
-		gun_machinegun,
-		gun_sniper,
-		NULL
-	};
-
-	index = ft_clamp(index, 0, 1);
-	gun->stats = (preset_funcs[index])();
-	gun->entity->obj = get_object_by_name(*sdl, gun->stats.object_name);
 }

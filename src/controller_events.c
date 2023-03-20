@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   controller_events.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 19:49:59 by raho              #+#    #+#             */
-/*   Updated: 2023/03/03 19:04:36 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 11:09:44 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ static void	handle_new_controller(SDL_Event e, t_hid_info *hid, int c)
 			doomlog(LOG_EC_SDL_GAMECONTROLLEROPEN, NULL);
 		joystick_id = SDL_GameControllerGetJoystick(
 				hid->controller[c].gamecontroller);
-		// TODO: controller's action states could be updated here if needed
 		hid->controller[c].instance_id = SDL_JoystickInstanceID(joystick_id);
 		if (hid->controller[c].instance_id < 0)
 			doomlog(LOG_EC_SDL_JOYSTICKINSTANCEID, NULL);

@@ -25,6 +25,12 @@ pistol,
 grenade
 */
 
+typedef struct s_gui_notification
+{
+	uint32_t		starttime;
+	t_gamestring	str;
+}	t_gui_notification;
+
 typedef struct s_player
 {
 	t_transform			transform;
@@ -44,12 +50,8 @@ typedef struct s_player
 	uint32_t			lasthurttime;
 	t_vector3			lasthurtpos;
 	uint8_t				gun_selection;
-	union ammo_union
-	{
-		t_ammo_u8	ammo_u8;
-		uint8_t		ammo_arr[4];
-		uint32_t	mask;
-	} ammo_union;
+	uint8_t				ammo_arr[4];
+	t_gui_notification	gui_notif;
 	uint8_t				gun_ammos[GUNPRESETCOUNT];
 	t_gun				guns[GUNPRESETCOUNT];
 	float				height;
@@ -59,6 +61,9 @@ typedef struct s_player
 }	t_player;
 
 struct s_world;
+
+t_gunstats	gun_machinegun(void);
+t_gunstats	gun_sniper(void);
 
 void	draw_player_hud(struct s_world *world);
 void	playermovement_normal(t_player *player, struct s_world *world);

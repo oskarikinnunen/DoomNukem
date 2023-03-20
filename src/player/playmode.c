@@ -6,16 +6,13 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:44:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/15 16:53:43 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/17 18:11:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "file_io.h"
 #include "objects.h"
-//	Good resource for remembering bitwise operations:
-//			https://stackoverflow.com/a/47990/1725220
-//	TODO: move playermode events to separate file
 /*place holder for inits*/
 
 #include "input.h"
@@ -169,6 +166,7 @@ int playmode(t_sdlcontext sdl)
 		doomlog(LOG_EC_SDL_SETRELATIVEMOUSEMODE, NULL);
 	game.world = load_world_args("leveltest_bu", &sdl, LOAD_ARG_FULL);
 	game.world.gamemode = MODE_PLAY;
+	initialize_controllers(&game.hid);
 	create_navmesh(&game.world);
 	playmode_preprocess_world(&game.world);
 	player_init(&game.player, &sdl, &game.world);

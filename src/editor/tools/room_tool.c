@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/01 22:04:30 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/17 18:56:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static void	init_roomwalls_shallow(t_world *world, t_area *room)
 void world_remove_room(t_world *world, t_area *room)
 {
 	room_remove_entities(room, world);
-	list_remove(&world->roomlist, room, sizeof(t_area));
+	list_remove(&world->arealist, room, sizeof(t_area));
 }
 
 void	room_assign_unique_name(t_area *room, t_world *world)
@@ -54,7 +54,7 @@ t_area	*world_add_room(t_world *world, t_area *room)
 	t_area	*worldroom;
 
 	ft_bzero(roomname, 64);
-	snprintf(roomname, 64, "area(%i)", ft_listlen(world->roomlist));
+	snprintf(roomname, 64, "area(%i)", ft_listlen(world->arealist));
 	ft_strcpy(room->name, roomname);
 	worldroom = ft_memalloc(sizeof(t_area));
 	ft_strcpy(worldroom->s_floortex.str, room->s_floortex.str);
@@ -72,9 +72,9 @@ t_area	*world_add_room(t_world *world, t_area *room)
 	ft_strcpy(worldroom->name, room->name);
 	worldroom->height = room->height;
 	
-	list_push(&world->roomlist, worldroom, sizeof(t_area));
+	list_push(&world->arealist, worldroom, sizeof(t_area));
 	free(worldroom);
-	worldroom = list_findlast(world->roomlist);
+	worldroom = list_findlast(world->arealist);
 	//construct_edges(worldroom);
 	
 	//room_init(room, world);
@@ -309,7 +309,7 @@ static void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 			{
 				dat->rtm = rtm_modify;
 				world_add_room(&ed->world, dat->room);
-				dat->room = list_findlast(ed->world.roomlist);
+				dat->room = list_findlast(ed->world.arealist);
 				return ;
 			}
 		}
@@ -417,7 +417,7 @@ t_edgereturn	get_other_edge(t_vector2 *edge, t_area *room, t_world *world)
 	t_edgereturn	er;
 
 	ft_bzero(&er, sizeof(er));
-	l = world->roomlist;
+	l = world->arealist;
 	while (l != NULL)
 	{
 		other = l->content;
@@ -491,7 +491,7 @@ void	recalculate_joined_rooms(t_world *world, t_area *room)
 	t_area	*other;
 	int		i;
 
-	l = world->roomlist;
+	l = world->arealist;
 
 	while (l != NULL)
 	{
@@ -580,7 +580,7 @@ void	recalculate_rooms(t_editor *ed, t_vector2 *edge)
 	t_area	*r;
 	int		i;
 
-	l = ed->world.roomlist;
+	l = ed->world.arealist;
 	while (l != NULL)
 	{
 		r = l->content;
@@ -600,7 +600,7 @@ t_vector2	*other_room_edge(t_editor *ed, t_roomtooldata *dat)
 	t_vector2	*result;
 
 	result = NULL;
-	l = ed->world.roomlist;
+	l = ed->world.arealist;
 	while (l != NULL)
 	{
 		other = l->content;
@@ -989,7 +989,7 @@ t_area	*find_entity_room(t_world *world, t_entity *ent)
 	t_area	*room;
 	int		i;
 
-	l = world->roomlist;
+	l = world->arealist;
 	if (ent == NULL)
 		return (NULL);
 	while (l != NULL)
@@ -1028,7 +1028,7 @@ void	room_tool_combine(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 			t_area	newroom;
 			newroom = combined_room(dat->room, other);
 			world_add_room(&ed->world, &newroom);
-			t_area	*world_room = list_findlast(ed->world.roomlist);
+			t_area	*world_room = list_findlast(ed->world.arealist);
 			world_room->ceiling_height = dat->room->ceiling_height; //TODO: min/max
 			world_room->height = dat->room->height;
 			room_init(world_room, &ed->world);
@@ -1223,7 +1223,7 @@ t_area	*get_raycast_room(t_raycastinfo info, t_world *world)
 	int		i;
 	if (info.hit_entity == NULL)
 		return (NULL);
-	l = world->roomlist;
+	l = world->arealist;
 	while (l != NULL)
 	{
 		room = (t_area *)l->content;
@@ -1270,7 +1270,7 @@ void	room_tool_update(t_editor *ed, t_sdlcontext *sdl)
 	}*/
 	t_list	*l;
 
-	l = ed->world.roomlist;
+	l = ed->world.arealist;
 	while (l != NULL)
 	{
 		highlight_room(ed, sdl, (t_area *)l->content, AMBER_1);

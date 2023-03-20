@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 12:58:09 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/20 11:50:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,10 +121,9 @@ typedef struct s_world
 	struct s_autogui	*debug_gui;
 	t_log				log;
 	t_sdlcontext		*sdl;
-	t_list				*guns;
-	t_list				*prefabs; //TODO: move to editor
+	t_list				*prefabs; //TODO: REMOVE
 	t_lighting			lighting;
-	t_list				*roomlist;
+	t_list				*arealist;
 	t_list				*ramps;
 	t_entitycache		entitycache;
 	t_entity			skybox;

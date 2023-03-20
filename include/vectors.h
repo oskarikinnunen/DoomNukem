@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vectors.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 12:58:55 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/17 18:46:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -375,6 +375,10 @@ t_point			vector2_to_point(t_vector2 vec);
 
 //Returns t_point 'point' casted to t_vector2. (Shorthand for '*(t_vector2 *)&point').
 t_vector2		point_to_vector2(t_point point);
+
+//Returns a point on the screen that is calculated by interpolating the screen size with the given x and y values using linear interpolation.
+struct	s_sdlcontext;
+t_point			screenlerp(float xlerp, float ylerp, struct s_sdlcontext *sdl);
 
 //Returns static str for given vector3
 char			*vector_string(t_vector3 vec);
