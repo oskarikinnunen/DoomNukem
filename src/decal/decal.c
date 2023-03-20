@@ -65,6 +65,7 @@ plane->vertices[0] = (t_vector3){0.0f, 0.0f, 0.0f};
 	plane->vertices[3] = (t_vector3){10.0f, 0.0f, 10.0f};
 (t_vector3){0.0f, 0.0f, 1.0f}
 	*/
+/*
 t_vector3 rotationmatrixtoeuler(t_mat4x4 r)
 {
 	t_vector3	v;
@@ -168,21 +169,56 @@ void get_triangles(t_world *world, t_decal *decal)
 	decal->entity->obj->faces = malloc(sizeof(t_face) * decal->entity->obj->face_count);
 	ft_bzero(decal->entity->obj->faces, sizeof(t_face) * decal->entity->obj->face_count);
 	decal->entity->matworld = make_transform_matrix(decal->entity->transform);
+}*/
+
+/*
+
+// Calculate new forward direction
+	t_vector3 newForward = vector3_sub(target, pos);
+	newForward = vector3_normalise(newForward);
+
+	// Calculate new Up direction
+	t_vector3 a = vector3_mul(newForward, vector3_dot(up, newForward));
+	t_vector3 newUp = vector3_sub(up, a);
+	newUp = vector3_normalise(newUp);
+
+	// New Right direction is easy, its just cross product
+	t_vector3 newRight = vector3_crossproduct(newUp, newForward);
+
+	plane->vertices[0] = (t_vector3){0.0f, 0.0f, 0.0f};
+	plane->vertices[1] = (t_vector3){10.0f, 0.0f, 0.0f};
+	plane->vertices[2] = (t_vector3){0.0f, 0.0f, 10.0f};
+	plane->vertices[3] = (t_vector3){10.0f, 0.0f, 10.0f};
+	*/
+
+#define DECAL_FOV 0.546302f
+
+static void set_vertex_positions(t_vector3 vertices[4], t_vector3 pos, t_vector3 y, t_vector3 x)
+{
+	vertices[0] = vector3_sub(vector3_sub(pos, y), x); //bottomleft
+	vertices[1] = vector3_sub(vector3_add(pos, y), x); //bottomright
+	vertices[2] = vector3_add(vector3_sub(pos, y), x); //topleft
+	vertices[3] = vector3_add(vector3_add(pos, y), x); //topright
 }
 
 void decal(struct s_world *world, t_decal decal)
 {
 	t_object	*obj;
-	t_entity	*entity;
-	t_vector3	normal;
+	t_vector3	newUp;
+	t_vector3	newRight;
+	float		nearside;
 
 	obj = object_plane(world->sdl);
-	obj->materials->img = get_image_by_name(*world->sdl, "car_red.cng");
-	decal.entity = spawn_entity(world, obj);
-	decal.entity->transform.position = decal.position;
-	decal.size = 150;
-	decal.frustrum[0] = vector3_add(decal.position, vector3_mul(decal.normal, decal.size));
-	decal.frustrum[1] = vector3_add(decal.position, vector3_mul(vector3_negative(decal.normal), decal.size));
-	get_triangles(world, &decal);
-	make_uv(world, &decal);
+	obj->materials->img = decal.img;
+	spawn_entity(world, obj);
+	if (vector3_dot(decal.normal, world->sdl->render.camera.lookdir) >= 0.0f)
+		decal.normal = vector3_negative(decal.normal);
+	decal.position = vector3_add(decal.position, decal.normal);
+	decal.normal = vector3_negative(decal.normal);
+	newUp = vector3_sub((t_vector3){0.01f, 0.0f, 0.99f}, \
+	vector3_mul(decal.normal, vector3_dot((t_vector3){0.01f, 0.0f, 0.99f}, decal.normal)));
+	newUp = vector3_normalise(newUp);
+	newRight = vector3_crossproduct(newUp, decal.normal);
+	nearside = DECAL_FOV * decal.size;
+	set_vertex_positions(obj->vertices, decal.position, vector3_mul(newUp, nearside), vector3_mul(newRight, nearside));
 }

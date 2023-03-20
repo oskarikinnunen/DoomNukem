@@ -180,7 +180,13 @@ void update_world3d(t_world *world, t_render *render)
 			r.origin = world->sdl->render.camera.position;
 
 			if (raycast_new(r, &ri, world))
-				decal(world, (t_decal){.position = ri.hit_pos, .normal = ri.face_normal});
+			{
+				d.position = ri.hit_pos;
+				d.normal = ri.face_normal;
+				d.size = 25.0f;
+				d.img = get_image_by_name(*world->sdl, "car_red.cng");
+				decal(world, d);
+			}
 		}
 		if (gui_shortcut_button("Toggle Skybox", 'H', world->debug_gui))
 			world->skybox.hidden = !world->skybox.hidden;
