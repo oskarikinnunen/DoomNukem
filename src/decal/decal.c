@@ -184,5 +184,5 @@ void decal(struct s_world *world, t_decal decal)
 	decal.frustrum[0] = vector3_add(decal.position, vector3_mul(decal.normal, decal.size));
 	decal.frustrum[1] = vector3_add(decal.position, vector3_mul(vector3_negative(decal.normal), decal.size));
 	get_triangles(world, &decal);
-	make_uv(world, decal);
+	make_uv(world, &decal);
 }
