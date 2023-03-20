@@ -132,6 +132,7 @@ typedef struct s_render
 	bool				wireframe;
 	uint32_t			gizmocolor;
 	t_img				*debug_img;
+	bool				transparent;
 	t_render_statistics	rs;
 }	t_render;
 
@@ -293,6 +294,7 @@ bool				is_triangle_backface(t_triangle tritransformed, t_render *render);
 void				render_triangle_lit(t_sdlcontext *sdl, t_render *render, int index);
 void				render_triangle_uv(t_lighting l, t_point_triangle triangle);
 void				render_triangle_unlit(t_sdlcontext *sdl, t_render *render, int index);
+void				render_triangle_transparent(t_sdlcontext *sdl, t_render *render, int index);
 void				render_triangle_dynamic(t_sdlcontext *sdl, t_render *render, int index);
 void				rasterize_light(t_point_triangle triangle, t_lighting *lighting);
 

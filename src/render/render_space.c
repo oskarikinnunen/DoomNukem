@@ -215,6 +215,7 @@ void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 				//render->map.size = point_sub(render->map.size, (t_point){1, 1});
 				render->lightmode = lm_lit;
 			}
+			render->transparent = render->img->transparency;
 			render->end_index = i;
 			clip_and_render_triangles(sdl, render);
 			render->start_index = i + 1;

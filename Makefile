@@ -151,6 +151,7 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		render/rasterization/rasterize_zbuffer.c \
 		render/rasterization/rasterize_triangle_wrap.c \
 		render/rasterization/rasterize_triangle.c \
+		render/rasterization/rasterize_triangle_transparent.c \
 		render/draw.c \
 		render/draw_rectangle.c \
 		render/draw_shapes.c \

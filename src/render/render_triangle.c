@@ -13,6 +13,29 @@
 #include "doomnukem.h"
 #include "bresenham.h"
 
+static void unlit_render(t_sdlcontext *sdl, t_render *render)
+{
+	int index;
+
+	index = 0;
+	if (render->transparent)
+	{
+		while (index < render->screenspace_ptri_count)
+		{
+			render_triangle_transparent(sdl, render, index);
+			index++;
+		}
+	}
+	else
+	{
+		while (index < render->screenspace_ptri_count)
+		{
+			render_triangle_unlit(sdl, render, index);
+			index++;
+		}
+	}
+}
+
 void render_buffer_triangles(t_sdlcontext *sdl, t_render *render)
 {
 	int index;
@@ -20,11 +43,7 @@ void render_buffer_triangles(t_sdlcontext *sdl, t_render *render)
 	index = 0;
 	if (render->lightmode == lm_unlit || !sdl->lighting_toggled)
 	{
-		while (index < render->screenspace_ptri_count)
-		{
-			render_triangle_unlit(sdl, render, index);
-			index++;
-		}
+		unlit_render(sdl, render);
 	}
 	else if (render->lightmode == lm_lit)
 	{

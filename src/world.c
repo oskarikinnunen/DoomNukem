@@ -70,18 +70,30 @@ static void	draw_map(t_entity *entity, t_sdlcontext *sdl)
 	}
 }
 
-void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
+bool	entity_has_transparent_mat(t_entity *entity)
+{
+	int i;
+
+	i = 0;
+	while (i < entity->obj->material_count)
+	{
+		if (entity->obj->materials[i].img->transparency == true)
+			return(true);
+		i++;
+	}
+	return(false);
+}
+
+void	update_transparent(t_sdlcontext *sdl, t_world *world, t_render *render)
 {
 	int			i;
-	int			found;
 	t_entity	*ent;
 	
-	i = 0;
-	found = 0;
-	while (found < world->entitycache.existing_entitycount)
+	i = world->entitycache.alloc_count - 1;
+	while (i >= 0)
 	{
 		ent = world->entitycache.sorted_entities[i];
-		if (ent->status != es_free)
+		if (ent->status != es_free && entity_has_transparent_mat(ent))
 		{
 			if(ent->component.func_update != NULL)
 				ent->component.func_update(ent, world);
@@ -90,10 +102,34 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 				if (is_entity_culled(sdl, render, ent) == false)
 					render_entity(sdl, render, ent);
 			}
-			found++;
+		}
+		i--;
+	}
+}
+
+void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
+{
+	int			i;
+	t_entity	*ent;
+	
+	i = 0;
+	while (i < world->entitycache.alloc_count)
+	{
+		ent = world->entitycache.sorted_entities[i];
+
+		if (ent->status != es_free && entity_has_transparent_mat(ent) == false)
+		{
+			if(ent->component.func_update != NULL)
+				ent->component.func_update(ent, world);
+			if (ent->status == es_active && !ent->hidden)
+			{
+				if (is_entity_culled(sdl, render, ent) == false)
+					render_entity(sdl, render, ent);
+			}
 		}
 		i++;
 	}
+	update_transparent(sdl, world, render);
 	sdl->render.occlusion.slow_render = false;
 }
 
