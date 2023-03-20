@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 20:09:06 by raho              #+#    #+#             */
-/*   Updated: 2023/03/20 15:06:54 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 17:58:27 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,22 +59,19 @@ static int	parse_lines(int fd, t_sdlcontext *sdl)
 	return (ret);
 }
 
-void	playmode_load_anim_legend(t_sdlcontext *sdl)
+void	playmode_load_anim_legend(char *level_path, t_sdlcontext *sdl)
 {
 	int	fd;
 	int	ret;
 
 	doomlog(LOG_NORMAL, "UNPACKING ANIMATIONS");
-	load_and_write_filecontent(LEVEL0FILE, ANIMLEGENDPATH, TEMPANIMLEGEND);
+	load_and_write_filecontent(level_path, ANIMLEGENDPATH, TEMPANIMLEGEND);
 	fd = fileopen(TEMPANIMLEGEND, O_RDONLY);
-	sdl->human_anims = ft_memalloc(sizeof(t_human_animation) * 30);
-	if (sdl->human_anims == NULL)
-		doomlog(LOG_EC_MALLOC, "playmode_load_anim_legend");
+	sdl->human_anims = prot_memalloc(sizeof(t_human_animation) * 30);
 	sdl->human_anim_count = 0;
 	ret = parse_lines(fd, sdl);
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_anim_legend");
 	fileclose(fd, ANIMLEGENDPATH);
-	// 
 	remove(TEMPANIMLEGEND);
 }

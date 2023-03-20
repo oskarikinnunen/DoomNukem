@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 17:57:33 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/16 14:56:12 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 18:52:25 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,7 @@ void			ft_lstapp(t_list **alst, t_list *new);/*extra*/
 int				ft_listlen(t_list *lst);
 
 char			*ft_strcdup(const char *str, char c);
+char			*ft_strncpy_term(char *dest, const char *src, size_t num);
 int				get_next_line(const int fd, char **line);
 
 #endif

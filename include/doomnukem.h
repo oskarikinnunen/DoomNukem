@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 15:25:35 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 19:28:23 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@
 # define TEMPANIM "assets/.temp_anim"
 # define TEMPANIMLEGEND "assets/.temp_anim_legend"
 
-# define LEVEL0FILE "worlds/level0"
+# define DEFAULTLEVEL "level0"
 
 # define TEXTBACKGROUND_BORDERPADDING 6
 # define PERFGRAPH_SAMPLES 64
@@ -127,12 +127,20 @@ typedef struct s_log
 	int	fd;
 }	t_log;
 
-typedef enum e_gamemode
+typedef enum e_app_mode
 {
-	MODE_PLAY,
-	MODE_EDITOR
-}	t_gamemode;
-//
+	APPMODE_INVALID,
+	APPMODE_EDIT,
+	APPMODE_PLAY,
+	APPMODE_GFX_RESET
+}	t_app_mode;
+
+typedef struct s_app_argument
+{
+	t_app_mode	app_mode;
+	char		level_name[128];
+}	t_app_argument;
+
 typedef struct s_world
 {
 	char				name[32];
@@ -152,7 +160,7 @@ typedef struct s_world
 	bool				ceiling_toggle;
 	t_navigation		nav;
 	uint32_t			lastsavetime;
-	t_gamemode			gamemode;
+	t_app_mode			app_mode;
 }	t_world;
 
 t_vector2	flipped_uv(t_vector2 og);
@@ -191,6 +199,9 @@ typedef struct s_game
 	t_hid_info		hid;
 	t_player		player;
 } t_game;
+
+
+t_app_argument	get_app_argument(int argc, char **argv);
 
 /* TOOLS */
 // Protected ft_memalloc that calls doomlog with error code in case of an error
@@ -259,14 +270,14 @@ bool		game_random_coinflip(t_world *world);
 /* PLAYMODE.C */
 int		playmode(char *level, t_sdlcontext sdl);
 void	playmode_death(t_game *game);
-void	playmode_load_images(t_sdlcontext *sdl);
-void	playmode_load_env_textures(t_sdlcontext *sdl);
-void	playmode_load_objects(t_sdlcontext *sdl);
-void	playmode_load_fonts(t_sdlcontext *sdl);
-void	playmode_load_sounds(t_audio *audio);
-void	playmode_load_music(t_audio *audio);
-void	playmode_load_anims(char *anim_name, t_object *object);
-void	playmode_load_anim_legend(t_sdlcontext *sdl);
+void	playmode_load_images(char *level_path, t_sdlcontext *sdl);
+void	playmode_load_env_textures(char *level_path, t_sdlcontext *sdl);
+void	playmode_load_objects(char *level_path, t_sdlcontext *sdl);
+void	playmode_load_fonts(char *level_path, t_sdlcontext *sdl);
+void	playmode_load_sounds(char *level_path, t_audio *audio);
+void	playmode_load_music(char *level_path, t_audio *audio);
+void	playmode_load_anims(char *level_path, char *anim_name, t_object *object);
+void	playmode_load_anim_legend(char *level_path, t_sdlcontext *sdl);
 
 
 /* PLAYER.C */
@@ -292,7 +303,7 @@ bool	alaiwan_collision(t_world *world, t_player *player, t_vector3 potential_pos
 void	error_log(int error_code);
 
 /* SDL */
-void	create_sdlcontext(t_sdlcontext	*sdl, t_gamemode mode);
+void	create_sdlcontext(char *level, t_sdlcontext	*sdl, t_app_mode app_mode);
 void	create_sdl_window(t_sdlcontext *sdl, t_screenmode mode);
 void	set_sdl_settings(t_sdlcontext *sdl);
 void	init_sdl_error_window(t_sdlcontext *sdl);

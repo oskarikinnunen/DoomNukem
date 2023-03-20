@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 15:35:11 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 19:18:22 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,7 +233,7 @@ int	editorloop(char *level, t_sdlcontext sdl)
 
 	bzero(&ed, sizeof(t_editor));
 	ed.world = load_world(level, &sdl);
-	ed.world.gamemode = MODE_EDITOR;
+	ed.world.app_mode = APPMODE_EDIT;
 	editor_player_init(&ed);
 	//split these to their own file
 	*(ed.world.debug_gui) = init_gui(&sdl, &ed.hid, &ed.player, sdl.screensize, "Debugging menu (F2)");
@@ -243,6 +243,9 @@ int	editorloop(char *level, t_sdlcontext sdl)
 	ed.graphics_gui = init_gui(&sdl, &ed.hid, &ed.player, sdl.screensize, "Graphics (F3)");
 	ed.graphics_gui.minimum_size = (t_point){200, 200};
 	ed.graphics_gui.rect.position = point_div(sdl.screensize, 2);
+
+	SDL_SetRelativeMouseMode(ed.hid.mouse.relative);
+	ed.player.locked = !ed.hid.mouse.relative;
 	//
 	
 	ed.gamereturn = game_continue;

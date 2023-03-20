@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 14:55:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 15:30:08 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 19:28:58 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	world_init(t_world *world, t_sdlcontext *sdl)
 	world->lighting.ambient_light = 20;
 	world->nav.clip_size = 250.0f;
 	world->debug_gui = prot_memalloc(sizeof(t_autogui));
-	ft_strcpy(world->name, "default");
+	ft_strcpy(world->name, DEFAULTLEVEL);
 }
 
 void	_world_init_rooms(t_world *world)
@@ -168,14 +168,20 @@ t_world	load_world(char *level_name, t_sdlcontext *sdl)
 {
 	t_world	world;
 	char	level_path[256];
+	int		fd;
 
 	ft_strcpy(level_path, "worlds/");
 	ft_strncat(level_path, level_name, 200);
 	doomlog(LOG_NORMAL, "LOADING WORLD");
 	world_init(&world, sdl);
 	ft_strcpy(world.name, level_name);
-	world_load_amap(level_path, &world);
-	world_load_basic_ent(level_path, &world);
-	world_load_full_ent(level_path, &world);
+	fd = open(level_path, O_RDONLY, 0666);
+	if (fd != -1)
+	{
+		world_load_amap(level_path, &world);
+		world_load_basic_ent(level_path, &world);
+		world_load_full_ent(level_path, &world);
+		fileclose(fd, level_path);
+	}
 	return (world);
 }

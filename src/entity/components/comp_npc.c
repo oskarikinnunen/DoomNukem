@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 18:57:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/17 15:32:41 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 19:18:22 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,7 +205,7 @@ static void	comp_npc_update(t_entity *entity, t_world *world)
 	t_npc	*npc;
 
 	npc = entity->component.data;
-	if (npc == NULL || world->gamemode == MODE_EDITOR
+	if (npc == NULL || world->app_mode == APPMODE_EDIT
 		|| world->player->health == 0)
 		return ;
 	update_anim(&entity->animation, world->clock.delta);
@@ -252,7 +252,7 @@ static void	comp_npc_ui_update(t_entity *entity, t_world *world)
 	t_npc			*npc;
 	int				i;
 
-	if (world->gamemode == MODE_EDITOR || 1)
+	if (world->app_mode == APPMODE_EDIT || 1)
 		return ;
 	npc = entity->component.data;
 	render_ray3D(world->sdl, entity->transform.position,

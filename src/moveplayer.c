@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/17 15:33:30 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 19:17:08 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -277,7 +277,7 @@ void	moveplayer(t_player *player, t_input *input, t_world *world)
 
 	player->gun->entity->transform.parent = &player->head_transform;
 	player->input = *input; //TODO: move to update_input?;
-	if (world->gamemode == MODE_PLAY)
+	if (world->app_mode == APPMODE_PLAY)
 		updateguntransform(player, world);
 	if (!player->locked)
 	{

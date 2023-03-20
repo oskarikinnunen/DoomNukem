@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 13:42:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/08 19:34:37 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 19:27:07 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ static t_img	*error_image()
 			i++;
 		}
 		err_img.data = data;
-		doomlog(LOG_WARNING, "created an error img");
 	}
 	return (&err_img);
 }

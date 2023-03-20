@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:01:27 by raho              #+#    #+#             */
-/*   Updated: 2023/03/17 20:07:37 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 17:26:34 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 #include "file_io.h"
 #include "tga.h"
 
-static void	unpack_and_load_image(int img_i, char *image_name,
-									t_sdlcontext *sdl)
+static void	unpack_and_load_image(int img_i, char *level_path,
+									char *image_name, t_sdlcontext *sdl)
 {
-	load_and_write_filecontent(LEVEL0FILE, image_name, TEMPIMG);
+	load_and_write_filecontent(level_path, image_name, TEMPIMG);
 	sdl->images[img_i] = tgaparse(TEMPIMG);
 	if (sdl->images[img_i].data != NULL)
 		ft_strcpy(sdl->images[img_i].name, extract_filename(image_name));
@@ -26,7 +26,7 @@ static void	unpack_and_load_image(int img_i, char *image_name,
 	remove(TEMPIMG);
 }
 
-static int	parse_image_list(int fd, t_sdlcontext *sdl)
+static int	parse_image_list(int fd, char *level_path, t_sdlcontext *sdl)
 {
 	int		ret;
 	int		i;
@@ -39,7 +39,7 @@ static int	parse_image_list(int fd, t_sdlcontext *sdl)
 	{
 		if (image_name)
 		{
-			unpack_and_load_image(i, image_name, sdl);
+			unpack_and_load_image(i, level_path, image_name, sdl);
 			free(image_name);
 			image_name = NULL;
 			i++;
@@ -49,21 +49,19 @@ static int	parse_image_list(int fd, t_sdlcontext *sdl)
 	return (ret);
 }
 
-void	playmode_load_images(t_sdlcontext *sdl)
+void	playmode_load_images(char *level_path, t_sdlcontext *sdl)
 {
 	int	fd;
 	int	ret;
 
 	doomlog(LOG_NORMAL, "UNPACKING IMAGES");
-	load_and_write_filecontent(LEVEL0FILE, IMGLISTPATH, TEMPIMGLIST);
+	load_and_write_filecontent(level_path, IMGLISTPATH, TEMPIMGLIST);
 	sdl->imagecount = count_asset_list(TEMPIMGLIST);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 			TEMPIMGLIST, "size =", s_itoa(sdl->imagecount), NULL});
-	sdl->images = ft_memalloc(sizeof(t_img) * sdl->imagecount);
-	if (sdl->images == NULL)
-		doomlog(LOG_EC_MALLOC, "playmode_load_images");
+	sdl->images = prot_memalloc(sizeof(t_img) * sdl->imagecount);
 	fd = fileopen(TEMPIMGLIST, O_RDONLY);
-	ret = parse_image_list(fd, sdl);
+	ret = parse_image_list(fd, level_path, sdl);
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_images");
 	fileclose(fd, TEMPIMGLIST);

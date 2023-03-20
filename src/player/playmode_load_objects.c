@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:32:20 by raho              #+#    #+#             */
-/*   Updated: 2023/03/17 16:17:45 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 17:26:15 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,18 +62,18 @@ static char	*replace_extension(char *file, char *extension)
 }
 
 // material needs to be the same name as the object in the directory
-static void	unpack_and_load_object(int obj_i, char *object_name,
-									t_sdlcontext *sdl)
+static void	unpack_and_load_object(int obj_i, char *level_path,
+									char *object_name, t_sdlcontext *sdl)
 {
 	t_list		*materials;
 	char		*material_name;
 
 	materials = NULL;
-	material_name = replace_extension(object_name, "mtl"); // TODO: copy object name and replace extension with .mtl
+	material_name = replace_extension(object_name, "mtl");
 	if (material_name == NULL)
 		doomlog(LOG_EC_MALLOC, "couldn't replace object_name extension to mtl");
-	load_and_write_filecontent(LEVEL0FILE, object_name, TEMPOBJ);
-	load_and_write_filecontent(LEVEL0FILE, material_name, TEMPMTL);
+	load_and_write_filecontent(level_path, object_name, TEMPOBJ);
+	load_and_write_filecontent(level_path, material_name, TEMPMTL);
 	sdl->objects[obj_i] = objparse(TEMPOBJ);
 	if (sdl->objects[obj_i].vertices != NULL)
 		ft_strcpy(sdl->objects[obj_i].name, extract_filename(object_name));
@@ -88,7 +88,7 @@ static void	unpack_and_load_object(int obj_i, char *object_name,
 	remove(TEMPMTL);
 }
 
-static int	parse_object_list(int fd, t_sdlcontext *sdl)
+static int	parse_object_list(int fd, char *level_path, t_sdlcontext *sdl)
 {
 	int		ret;
 	int		i;
@@ -101,7 +101,7 @@ static int	parse_object_list(int fd, t_sdlcontext *sdl)
 	{
 		if (object_name)
 		{
-			unpack_and_load_object(i, object_name, sdl);
+			unpack_and_load_object(i, level_path, object_name, sdl);
 			free(object_name);
 			object_name = NULL;
 			i++;
@@ -111,21 +111,19 @@ static int	parse_object_list(int fd, t_sdlcontext *sdl)
 	return (ret);
 }
 
-void	playmode_load_objects(t_sdlcontext *sdl)
+void	playmode_load_objects(char *level_path, t_sdlcontext *sdl)
 {
 	int	fd;
 	int	ret;
 
 	doomlog(LOG_NORMAL, "UNPACKING OBJECTS");
-	load_and_write_filecontent(LEVEL0FILE, OBJLISTPATH, TEMPOBJLIST);
+	load_and_write_filecontent(level_path, OBJLISTPATH, TEMPOBJLIST);
 	sdl->objectcount = count_asset_list(TEMPOBJLIST);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 			TEMPOBJLIST, "size =", s_itoa(sdl->objectcount), NULL});
-	sdl->objects = ft_memalloc(sizeof(t_object) * sdl->objectcount);
-	if (sdl->objects == NULL)
-		doomlog(LOG_EC_MALLOC, "playmode_load_objects");
+	sdl->objects = prot_memalloc(sizeof(t_object) * sdl->objectcount);
 	fd = fileopen(TEMPOBJLIST, O_RDONLY);
-	ret = parse_object_list(fd, sdl);
+	ret = parse_object_list(fd, level_path, sdl);
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_objects");
 	fileclose(fd, TEMPOBJLIST);

@@ -219,7 +219,7 @@ int playmode(char *level, t_sdlcontext sdl)
 	if (SDL_SetRelativeMouseMode(SDL_TRUE) < 0)
 		doomlog(LOG_EC_SDL_SETRELATIVEMOUSEMODE, NULL);
 	game.world = load_world(level, &sdl);
-	game.world.gamemode = MODE_PLAY;
+	game.world.app_mode = APPMODE_PLAY;
 	create_navmesh(&game.world);
 	ramps_create(&game.world);
 	player_init(&game.player, &sdl, &game.world);

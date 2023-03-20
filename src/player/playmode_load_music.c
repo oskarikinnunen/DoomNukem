@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 22:05:25 by raho              #+#    #+#             */
-/*   Updated: 2023/03/17 20:07:49 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 17:23:39 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,10 @@
 #include "render.h"
 #include "file_io.h"
 
-static void	unpack_and_load_music(int music_i, char *music_name, t_audio *audio)
+static void	unpack_and_load_music(int music_i, char *level_path,
+									char *music_name, t_audio *audio)
 {
-	load_and_write_filecontent(LEVEL0FILE, music_name, TEMPMUSIC);
+	load_and_write_filecontent(level_path, music_name, TEMPMUSIC);
 	create_music(music_i, TEMPMUSIC, audio);
 	if (audio->music[music_i].sound != NULL)
 		ft_strcpy(audio->music[music_i].name, extract_filename(music_name));
@@ -26,7 +27,7 @@ static void	unpack_and_load_music(int music_i, char *music_name, t_audio *audio)
 	remove(TEMPMUSIC);
 }
 
-static int	parse_music_list(int fd, t_audio *audio)
+static int	parse_music_list(int fd, char *level_path, t_audio *audio)
 {
 	int		ret;
 	int		i;
@@ -39,7 +40,7 @@ static int	parse_music_list(int fd, t_audio *audio)
 	{
 		if (music_path)
 		{
-			unpack_and_load_music(i, music_path, audio);
+			unpack_and_load_music(i, level_path, music_path, audio);
 			free(music_path);
 			music_path = NULL;
 			i++;
@@ -49,21 +50,19 @@ static int	parse_music_list(int fd, t_audio *audio)
 	return (ret);
 }
 
-void	playmode_load_music(t_audio *audio)
+void	playmode_load_music(char *level_path, t_audio *audio)
 {
 	int	fd;
 	int	ret;
 
 	doomlog(LOG_NORMAL, "UNPACKING MUSIC");
-	load_and_write_filecontent(LEVEL0FILE, MUSICLISTPATH, TEMPMUSICLIST);
+	load_and_write_filecontent(level_path, MUSICLISTPATH, TEMPMUSICLIST);
 	audio->music_count = count_asset_list(TEMPMUSICLIST);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 			TEMPMUSICLIST, "music_count =", s_itoa(audio->music_count), NULL});
-	audio->music = ft_memalloc(sizeof(t_audiosample) * audio->music_count);
-	if (audio->music == NULL)
-		doomlog(LOG_EC_MALLOC, "playmode_load_music");
+	audio->music = prot_memalloc(sizeof(t_audiosample) * audio->music_count);
 	fd = fileopen(TEMPMUSICLIST, O_RDONLY);
-	ret = parse_music_list(fd, audio);
+	ret = parse_music_list(fd, level_path, audio);
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_music");
 	fileclose(fd, TEMPMUSICLIST);

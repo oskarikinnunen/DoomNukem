@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/20 15:32:04 by raho             ###   ########.fr        #
+#    Updated: 2023/03/20 19:19:44 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,6 +32,7 @@ LIBFT = libft/libft.a
 
 #Source files:
 SRCFILES= main.c img.c deltatime.c anim.c \
+		app_argument.c \
 		file_ops/filechunks.c	\
 		file_ops/world_save.c	\
 		file_ops/world_load.c	\

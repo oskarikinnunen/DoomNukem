@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 15:18:25 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 19:17:39 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void	set_sdl_settings(t_sdlcontext *sdl)
 	sdl->render = init_render(*sdl);
 }
 
-void	create_sdlcontext(t_sdlcontext	*sdl, t_gamemode mode)
+void	create_sdlcontext(char *level, t_sdlcontext	*sdl, t_app_mode app_mode)
 {
 	ft_bzero(sdl, sizeof(t_sdlcontext));
 	if (SDL_Init(SDL_INIT_VIDEO) < 0 \
@@ -88,79 +88,33 @@ void	create_sdlcontext(t_sdlcontext	*sdl, t_gamemode mode)
 		doomlog(LOG_EC_SDL_INIT, NULL);
 	
 	set_sdl_settings(sdl);
-	if (mode == MODE_EDITOR)
+	if (app_mode == APPMODE_EDIT)
 		editor_load_assets(sdl);
-	else
-		playmode_load_assets(sdl);
-}
-
-void	checkargs(int argc, char **argv)
-{
-	if (argc == 2 && ft_strcmp(argv[1], "-gfxreset") == 0)
-		reset_graphics_prefs();
-	if (argc == 2 && ft_strcmp(argv[1], "-mapreset") == 0)
-	{
-		
-	}
-}
-
-void	doomnukem(int argc, char **argv)
-{
-	t_sdlcontext	sdl;
-	t_gamereturn	gr;
-
-	checkargs(argc, argv);
-	gr = game_switchmode;
-	if (argc == 3 && ft_strcmp(argv[1], "-editor") == 0)
-	{
-		create_sdlcontext(&sdl, MODE_EDITOR);
-		gr = editorloop(argv[2], sdl);
-	}
-	else if (argc == 2 && ft_strcmp(argv[1], "-editor") == 0)
-	{
-		create_sdlcontext(&sdl, MODE_EDITOR);
-		gr = editorloop("default", sdl);
-	}
-	else if (argc == 3 && ft_strcmp(argv[1], "-level") == 0)
-	{
-		create_sdlcontext(&sdl, MODE_PLAY);
-		gr = playmode(argv[2], sdl);
-	}
-	else if (argc == 1)
-	{
-		create_sdlcontext(&sdl, MODE_PLAY);
-		gr = playmode("default", sdl);
-	}
-	else
-	{
-		ft_putendl_fd("usage: ./DoomNukem [-editor | [-level level_file]] ", 2);
-		exit (1);
-	}
-	/*while (gr == game_switchmode)
-	{
-		//gr = editorloop(sdl); // quit & exit is handled inside the loop
-		gr = playmode(sdl); // quit & exit is handled inside the loop
-	}*/
+	else if (app_mode == APPMODE_PLAY)
+		playmode_load_assets(level, sdl);
 }
 
 int	main(int argc, char **argv)
 {
-	/* pid_t	pid;
-	int		wait_status;
+	t_sdlcontext	sdl;
+	t_app_argument	app_argument;
 
-	pid = fork();
-	if (pid == -1)
+	app_argument = get_app_argument(argc, argv);
+	if (app_argument.app_mode == APPMODE_GFX_RESET)
 	{
-		doomlog(LOG_EC_FORK, "couldn't create a process for the game");
-		error_window("couldn't launch the game due to a process fork fail");
+		reset_graphics_prefs();
+		ft_putendl("graphics reset succesfully");
+		return (0);
 	}
-	if (pid == 0) // child process is always pid 0
-		doomnukem(argc, argv);
-	else
+	create_sdlcontext(app_argument.level_name, &sdl, app_argument.app_mode);
+	if (app_argument.app_mode == APPMODE_EDIT)
+		editorloop(app_argument.level_name, sdl);
+	else if (app_argument.app_mode == APPMODE_PLAY)
+		playmode(app_argument.level_name, sdl);
+	else if (app_argument.app_mode == APPMODE_INVALID)
 	{
-		wait(&wait_status);
-		handle_exit(wait_status);
-	} */
-	doomnukem(argc, argv);
+		ft_putendl_fd("usage: ./DoomNukem [[-edit | -play] level_file] | -gfxreset", 2);
+		return (1);
+	}
 	return (0);
 }

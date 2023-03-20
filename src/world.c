@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/09 21:04:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/20 19:18:22 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ void update_world3d(t_world *world, t_render *render)
 	bitmask_to_pixels(sdl);
 	rescale_surface(sdl);
 	lateupdate_entitycache(sdl, world);
-	if (world->gamemode == MODE_EDITOR && !world->debug_gui->hidden)
+	if (world->app_mode == APPMODE_EDIT && !world->debug_gui->hidden)
 	{
 		show_navmesh(world);
 		gui_start(world->debug_gui);

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:07:37 by raho              #+#    #+#             */
-/*   Updated: 2023/03/17 20:07:05 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 17:21:59 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 #include "file_io.h"
 #include "tga.h"
 
-static void	unpack_and_load_texture(int txtr_i, char *env_texture,
-									t_sdlcontext *sdl)
+static void	unpack_and_load_texture(int txtr_i, char *level_path,
+									char *env_texture, t_sdlcontext *sdl)
 {
-	load_and_write_filecontent(LEVEL0FILE, env_texture, TEMPIMGENV);
+	load_and_write_filecontent(level_path, env_texture, TEMPIMGENV);
 	sdl->env_textures[txtr_i] = tgaparse(TEMPIMGENV);
 	if (sdl->env_textures[txtr_i].data != NULL)
 		ft_strcpy(sdl->env_textures[txtr_i].name, \
@@ -28,7 +28,7 @@ static void	unpack_and_load_texture(int txtr_i, char *env_texture,
 	remove(TEMPIMGENV);
 }
 
-static int	parse_image_env_list(int fd, t_sdlcontext *sdl)
+static int	parse_image_env_list(int fd, char *level_path, t_sdlcontext *sdl)
 {
 	int		ret;
 	int		i;
@@ -41,7 +41,7 @@ static int	parse_image_env_list(int fd, t_sdlcontext *sdl)
 	{
 		if (env_texture)
 		{
-			unpack_and_load_texture(i, env_texture, sdl);
+			unpack_and_load_texture(i, level_path, env_texture, sdl);
 			free(env_texture);
 			env_texture = NULL;
 			i++;
@@ -51,21 +51,19 @@ static int	parse_image_env_list(int fd, t_sdlcontext *sdl)
 	return (ret);
 }
 
-void	playmode_load_env_textures(t_sdlcontext *sdl)
+void	playmode_load_env_textures(char *level_path, t_sdlcontext *sdl)
 {
 	int	fd;
 	int	ret;
 
 	doomlog(LOG_NORMAL, "UNPACKING ENV_TEXTURES");
-	load_and_write_filecontent(LEVEL0FILE, IMGENVLISTPATH, TEMPIMGENVLIST);
+	load_and_write_filecontent(level_path, IMGENVLISTPATH, TEMPIMGENVLIST);
 	sdl->env_texturecount = count_asset_list(TEMPIMGENVLIST);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 			TEMPIMGENVLIST, "size =", s_itoa(sdl->env_texturecount), NULL});
-	sdl->env_textures = ft_memalloc(sizeof(t_img) * sdl->env_texturecount);
-	if (sdl->env_textures == NULL)
-		doomlog(LOG_EC_MALLOC, "playmode_load_env_textures");
+	sdl->env_textures = prot_memalloc(sizeof(t_img) * sdl->env_texturecount);
 	fd = fileopen(TEMPIMGENVLIST, O_RDONLY);
-	ret = parse_image_env_list(fd, sdl);
+	ret = parse_image_env_list(fd, level_path, sdl);
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_env_textures");
 	fileclose(fd, TEMPIMGENVLIST);
