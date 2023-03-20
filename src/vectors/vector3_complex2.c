@@ -3,28 +3,31 @@
 /*                                                        :::      ::::::::   */
 /*   vector3_complex2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 19:06:07 by vlaine            #+#    #+#             */
-/*   Updated: 2022/12/27 14:40:00 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/13 17:30:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vectors.h"
 
-t_vector3 vector3_normalise(t_vector3 v)
+t_vector3	vector3_normalise(t_vector3 v)
 {
-	float l = vector3_magnitude(v);
-	return((t_vector3){ v.x / l, v.y / l, v.z / l});
+	float	l;
+
+	l = vector3_magnitude(v);
+	return ((t_vector3){v.x / l, v.y / l, v.z / l});
 }
 
-t_vector3 vector3_crossproduct(t_vector3 v1, t_vector3 v2)
+t_vector3	vector3_crossproduct(t_vector3 v1, t_vector3 v2)
 {
-	t_vector3 v;
+	t_vector3	v;
+
 	v.x = v1.y * v2.z - v1.z * v2.y;
 	v.y = v1.z * v2.x - v1.x * v2.z;
 	v.z = v1.x * v2.y - v1.y * v2.x;
-	return v;
+	return (v);
 }
 
 t_vector3	vector3_mul_vector3(t_vector3 v1, t_vector3 v2)
@@ -44,8 +47,12 @@ t_vector3	vector3_clamp_magnitude(t_vector3 vec, float max_magnitude)
 	return ((t_vector3){vec.x * mul, vec.y * mul, vec.z * mul});
 }
 
-float vector3_fdist_to_plane(t_vector3 p, t_vector3 plane_n, t_vector3 plane_p)
+float	vector3_fdist_to_plane(t_vector3 p,
+	t_vector3 plane_n, t_vector3 plane_p)
 {
-	t_vector3 n = vector3_normalise(p);
-	return (plane_n.x * p.x + plane_n.y * p.y + plane_n.z * p.z - vector3_dot(plane_n, plane_p));
+	t_vector3	n;
+
+	n = vector3_normalise(p);
+	return (plane_n.x * p.x + plane_n.y * p.y + plane_n.z * p.z
+		- vector3_dot(plane_n, plane_p));
 }

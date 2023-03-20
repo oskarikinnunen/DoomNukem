@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 14:16:05 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 19:43:15 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,19 @@
 #include "file_io.h"
 #include "editor_tools.h"
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-result"
-
-int		find_chunk_count(int fd)
+int	find_chunk_count(int fd)
 {
-	char	buf[CHUNKSIZE + 1] = { };
+	char	buf[CHUNKSIZE + 1];
 	int		br;
 	int		count;
 
+	buf[CHUNKSIZE] = '\0';
 	br = read(fd, buf, CHUNKSIZE);
 	count = 0;
 	while (br > 0)
 	{
 		if (ft_strcmp(buf, "CEND") == 0)
-			break;
+			break ;
 		count++;
 		br = read(fd, buf, CHUNKSIZE);
 	}
@@ -51,7 +49,6 @@ t_list	*parse_chunk(int fd, size_t size)
 	buf = prot_memalloc(size);
 	count = find_chunk_count(fd);
 	count = (count * CHUNKSIZE) / size;
-	// printf("found %i chunks \n", count); //TODO: don't remove, going to be used when logging is implemented in the near future
 	head = NULL;
 	br = read(fd, buf, size);
 	while (count > 0)
@@ -66,6 +63,7 @@ t_list	*parse_chunk(int fd, size_t size)
 	return (head);
 }
 
+//TODO: No need for padding because compiler does padding?
 void	save_chunk(char *filename, char *chunkname, t_list *content)
 {
 	t_list		*l;
@@ -81,16 +79,13 @@ void	save_chunk(char *filename, char *chunkname, t_list *content)
 		written += write(fd, l->content, l->content_size);
 		l = l->next;
 	}
-	if (written % CHUNKSIZE != 0) //No need for padding since struct size 'should be' always multiple of 4? (Compiler does padding for structs) TODO: research more, will this happen when compiling for other platforms?
-	{
-		//printf("pad size = %i \n", CHUNKSIZE - (written % CHUNKSIZE)); //TODO: don't remove, going to be used for logging
+	if (written % CHUNKSIZE != 0)
 		write(fd, "PADD", CHUNKSIZE - (written % CHUNKSIZE));
-	}
 	write(fd, "CEND", CHUNKSIZE);
 	fileclose(fd, filename);
 }
 
-t_list *load_chunk(char *filename, char *chunkname, size_t size)
+t_list	*load_chunk(char *filename, char *chunkname, size_t size)
 {
 	int		fd;
 	int		br;
@@ -153,7 +148,7 @@ int		ft_fileread_rene(int fd, t_filecontent *f)
 
 int		ft_nfileread(int fd, t_filecontent *f, size_t size)
 {
-	char buf[300000];
+	char	buf[300000];
 
 	f->length = read(fd, buf, size);
 	f->content = ft_memdup(buf, size);
@@ -244,6 +239,7 @@ void	load_and_write_filecontent(char *worldname, char *fcname, \
 char	*uint64_to_char(uint64_t	u64)
 {
 	static char	size[8];
+
 	size[0] = u64 & 0xFF;
 	size[1] = u64 >> 8 & 0xFF;
 	size[2] = u64 >> 16 & 0xFF;
@@ -270,7 +266,7 @@ void	pack_file(char	*packname, char *filename)
 	fd = fileopen(packname, O_RDWR | O_APPEND);
 	total = 0;
 	total += write(fd, "FCNK", 4);
-	total += write(fd, fc.name, sizeof(char) * 128);	
+	total += write(fd, fc.name, sizeof(char) * 128);
 	total += write(fd, uint64_to_char(fc.length), 8);
 	total += write(fd, fc.content, sizeof(char) * fc.length);
 	//TODO: ensure that this fits the 4 byte alignment of the chunk reader
@@ -324,5 +320,3 @@ void	pack_file_to_level(char *level, char *file)
 	doomlog_mul(LOG_NORMAL, (char *[5]){\
 			"packed file:", file, "to level:", level, NULL});
 }
-
-#pragma GCC diagnostic pop

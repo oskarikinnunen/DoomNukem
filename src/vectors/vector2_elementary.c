@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector2_elementary.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 11:28:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/12 22:46:00 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/14 11:44:10 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,6 @@ t_vector2	vector2_sub(t_vector2 first, t_vector2 second)
 
 	result.x = first.x - second.x;
 	result.y = first.y - second.y;
-	return (result);
-}
-
-t_vector2	vector2_add_xy(t_vector2 vec, float add)
-{
-	t_vector2	result;
-
-	result.x = vec.x + add;
-	result.y = vec.y + add;
 	return (result);
 }
 

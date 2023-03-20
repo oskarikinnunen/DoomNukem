@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_gun_pickup.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/02 16:54:58 by kfum             ###   ########.fr       */
+/*   Updated: 2023/03/20 19:48:28 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,27 @@ void	comp_gun_pickup_update(t_entity *entity, t_world *world)
 	t_gun_pickup	*gun_pickup;
 	
 	gun_pickup = entity->component.data;
-	
-	if (vector3_sqr_dist(world->player->transform.position, entity->transform.position) < 1500.0f)
+	if (gun_pickup == NULL || world->app_mode == APPMODE_EDIT)
+		return ;
+	entity->transform.rotation.x += world->clock.delta * 0.001f;
+	entity->transform.position.z = gun_pickup->original_z + (sinf(world->clock.time * 0.001f) * 10.0f);
+	if (vector3_sqr_dist(world->player->transform.position, entity->transform.position) < 1000.0f)
 	{
+		int	i;
+
+		i = 0;
+		while (i < GUNPRESETCOUNT)
+		{
+			if (ft_strcmp(world->player->guns[i].stats.object_name, entity->obj->name) == 0)
+			{
+				world->player->guns[i].player_owned = true;
+			}
+			i++;
+		}
+		ft_strcpy(world->player->gui_notif.str.str, "You picked up a new gun");
+		world->player->gui_notif.starttime = world->clock.time;
 		destroy_entity(world, entity);
 	}
-	
-	if (gun_pickup == NULL)
-		return ;
 }
 
 /* Called once per frame after the 3D world has been drawn, use this to draw gizmos/rays/whatever*/
@@ -71,7 +84,7 @@ void	comp_gun_pickup_allocate(t_entity *entity, t_world *world)
 	entity->component.data = ft_memalloc(sizeof(t_gun_pickup));
 	entity->component.data_size = sizeof(t_gun_pickup);
 	gun_pickup = (t_gun_pickup *)entity->component.data;
-	
+	gun_pickup->original_z = entity->transform.position.z;
 }
 
 /*	Internal function that's used to link this components behaviour

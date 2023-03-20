@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_entity.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/03 19:22:28 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/16 13:30:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,43 @@ uint32_t shade(uint32_t clr, float norm)
 }
 
 
+void render_entity_worldtriangles(t_entity *entity, t_world *world)
+{
+	t_triangle		tritransformed;
+	t_render		*render;
+	t_object		*obj;
+	int				i;
+	int				index;
+
+	obj = entity->obj;
+	render = &world->sdl->render;
+	render_worldspace(render, entity);
+	i = 0;
+	while (i < obj->face_count)
+	{
+		index = obj->faces[i].materialindex;
+		tritransformed = (t_triangle){render->q[obj->faces[i].v_indices[0] - 1], render->q[obj->faces[i].v_indices[1] - 1], render->q[obj->faces[i].v_indices[2] - 1]};
+		if (obj->uv_count != 0)
+		{
+			for (int e = 0; e < 3; e++)
+			{
+				t_vector2 uv = obj->uvs[obj->faces[i].uv_indices[e] - 1];
+				uv.x = truncf(uv.x * (float)(entity->obj->materials[index].img->size.x)) + 0.5f;
+				uv.y = truncf(uv.y * (float)(entity->obj->materials[index].img->size.y)) + 0.5f;
+				tritransformed.t[e] = (t_vector3){uv.x, uv.y, 1.0f};
+			}
+		}
+		entity->world_triangles[i] = tritransformed;
+		i++;
+	}
+}
 
 void render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 {
-	render->worldspace_ptri_count = 0;
 	render->screenspace_ptri_count = 0;
-
+	t_world	w;
+	w.sdl = sdl;
+	render_entity_worldtriangles(entity, &w);
 	if ((point_cmp(entity->occlusion.clip.max, point_zero()) && point_cmp(entity->occlusion.clip.min, point_zero()))
 		|| !render->occlusion.occlusion)
 	{
@@ -68,10 +99,8 @@ void render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 		render->screen_edge.min = point_to_vector2(entity->occlusion.clip.min);
 		render->screen_edge.max = point_to_vector2(entity->occlusion.clip.max);
 	}
-	render_worldspace(render, entity);
 	render_quaternions(sdl, render, entity);
 }
-
 
 static t_vector2 proj_quaternion_to_screenspace(t_sdlcontext *sdl, t_quaternion proj_q)
 {

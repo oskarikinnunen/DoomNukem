@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/07 13:07:20 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/20 12:08:43 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,17 +42,17 @@ typedef struct s_entity
 {
 	t_gamestring	object_name;
 	t_transform		transform;
+	t_component		component;
 	uint16_t		id;
 	bool			ignore_raycasts;
 	bool			rigid;
 	bool			hidden;
-	t_component		component;
 	t_entitystatus	status;
 	t_bound			z_bound;
 	t_anim			animation;
 	t_object		*obj;
 	t_occlusion		occlusion;
-	t_lightmap		*lightmap;
+	t_triangle		*world_triangles;
 	t_map			*map;
 }	t_entity;
 
@@ -97,10 +97,10 @@ typedef struct s_gun
 	uint32_t	lastshottime;
 	uint32_t	bullets;
 	bool		readytoshoot;
+	bool		player_owned;
 	bool		disabled;
+	float		aim_lerp;
 }	t_gun;
-
-void	change_gun_preset(t_gun *gun, t_sdlcontext *sdl, int index);
 
 typedef struct s_entitycache
 {
@@ -112,6 +112,8 @@ typedef struct s_entitycache
 
 void	entity_set_component_functions(t_entity *entity, struct s_world *world);
 
+
+t_vector3	get_entity_world_position(t_entity *entity);
 
 /* OCCLUSION*/
 void	render_bitmask_row(int ax, int bx, float aw, float bw, int y, t_sdlcontext *sdl);
@@ -135,9 +137,18 @@ void	highlight_entity(t_sdlcontext *sdl, t_entity *entity, uint32_t color);
 void	render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 void	render_worldspace(t_render *render, t_entity *entity);
 void	render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity);
+void	render_entity_worldtriangles(t_entity *entity, struct s_world *world);
 
+void	calculate_light_for_entity(t_entity *entity, t_lighting *lighting);
 void	create_map_for_entity(t_entity *entity, struct s_world *world);
 void	create_dynamic_map_for_entity(t_entity *entity, struct s_world *world);
-void	create_lightmap_for_entity(t_entity *entity, struct s_world *world);
 
+uint32_t	update_pixel_brightness(uint32_t light, uint32_t clr);
+uint32_t	get_lighting_for_pixel(t_lighting *lighting, uint32_t light_amount, t_vector3 location);
+t_vector3	texcoord_to_loc(t_vector3 ws[3], t_vector2 uv[3], t_vector2 p);
+t_step		make_slope(float start, float end, float steps);
+t_stepv3	make_uv_slopev3(int start, int end, int y, t_point_triangle triangle);
+
+/* LIGHTING */
+void render_zbuffer(t_lighting *lighting, t_entity *entity);
 # endif

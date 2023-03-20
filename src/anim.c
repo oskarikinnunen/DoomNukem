@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:56:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/17 20:03:43 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 19:35:10 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,14 @@
 #include <stdio.h>
 #include "file_io.h"
 
-void	anim_setframe(t_anim *anim, uint32_t frame)
+static void	anim_end(t_anim *anim)
 {
-	anim->frame = frame;
-	//anim->time = 
-	anim->lerp = ((float)anim->frame / (float)anim->lastframe);
-	anim->time = anim->lerp * anim->framerate;
+	if (!anim->loop && !anim->persist)
+		anim->active = false;
+	else
+		anim->time = 0;
+	if (anim->persist)
+		anim->frame = anim->lastframe;
 }
 
 void	update_anim(t_anim *anim, uint32_t delta)
@@ -37,29 +39,15 @@ void	update_anim(t_anim *anim, uint32_t delta)
 	{
 		if (anim->frame >= anim->lastframe)
 		{
-			if (!anim->loop && !anim->persist)
-				anim->active = false;
-			else
-				anim->time = 0;
-			if (anim->persist)
-				anim->frame = anim->lastframe;
+			anim_end(anim);
 		}
-		else 
-		{
-			anim->frame = (int)(anim->framerate * now_second) + anim->startframe;
-			anim->frame = ft_clampf(anim->frame, anim->startframe, anim->lastframe);
-		}
-		/* if (anim->audioevent != NULL && anim->frame == anim->audioevent->frame)
-		{
-			force_play_audio(*anim->audioevent->audio);
-		} */
-	}
-	if (anim->mode == anim_backwards)
-	{
-		if (anim->frame < 0)
-			anim->active = false;
 		else
-			anim->frame = anim->lastframe - (int)(anim->framerate * now_second);
+		{
+			anim->frame = (int)(anim->framerate * now_second)
+				+ anim->startframe;
+			anim->frame = ft_clampf(anim->frame,
+					anim->startframe, anim->lastframe);
+		}
 	}
 	anim->lerp = ((float)anim->frame / (float)anim->lastframe);
 	anim->lerp = ft_clampf(anim->lerp, 0.0f, 1.0f);
@@ -94,17 +82,12 @@ void	start_human_anim(t_entity *entity, char *name, t_world *world)
 	}
 }
 
-t_human_animation	*human_anims()
-{
-	return (NULL);
-}
-
 void	start_anim(t_anim *anim, t_anim_mode mode)
 {
 	anim->mode = mode;
 	anim->time = 0;
 	anim->active = true;
-	if (anim->mode == anim_forwards) //TODO: loop
+	if (anim->mode == anim_forwards)
 		anim->frame = anim->startframe;
 	else if (anim->mode == anim_backwards)
 		anim->frame = anim->lastframe;

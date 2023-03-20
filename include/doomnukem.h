@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 19:28:23 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 19:40:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@
 # include "input.h"
 # include "debug.h"
 # include "navigation.h"
+# include <pthread.h>
+# include <SDL_thread.h>
 
 # define PI	3.14159265359
 # define FULLRAD M_PI * 2.0
@@ -120,7 +122,8 @@ typedef enum e_gamereturn
 	void	update_npcs(t_world *world) //moves npcs towards their destination, updates their animations
 */
 
-struct s_autogui;
+struct	s_autogui;
+enum	e_load_arg;
 
 typedef struct s_log
 {
@@ -150,10 +153,9 @@ typedef struct s_world
 	struct s_autogui	*debug_gui;
 	t_log				log;
 	t_sdlcontext		*sdl;
-	t_list				*guns;
-	t_list				*prefabs; //TODO: move to editor
+	t_list				*prefabs; //TODO: REMOVE
 	t_lighting			lighting;
-	t_list				*roomlist;
+	t_list				*arealist;
 	t_list				*ramps;
 	t_entitycache		entitycache;
 	t_entity			skybox;
@@ -165,21 +167,19 @@ typedef struct s_world
 
 t_vector2	flipped_uv(t_vector2 og);
 void		for_all_active_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *world));
+void		void_for_all_active_entities(t_world	*world, void *ptr, void	(*func)(t_entity *ent, void *ptr));
 void		for_all_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *world));
 void		update_world3d(t_world *world, t_render *render);
 void		toggle_ceilings(t_world *world);
 
 
-enum e_load_arg;
-t_world		load_world(char *level, t_sdlcontext *sdl);
-
+t_world		load_world(char *level_name, t_sdlcontext *sdl);
 
 void		destroy_entity(t_world *world, t_entity *ent);
-t_entity	*spawn_entity(t_world	*world);
 t_entity	*find_entity_with_comp(t_world	*world, t_componenttype comp);
+t_entity	*spawn_entity(t_world *world, t_object *obj);
 t_entity	*spawn_basic_entity(t_world *world, char *objectname, t_vector3 position);
 void		entity_assign_object(t_world *world, t_entity *entity, t_object *obj);
-void		save_world(char *filename, t_world world);
 
 
 void		world_save_to_file(t_world world);
@@ -360,22 +360,17 @@ void	free_roomwalls(t_world *world, t_area *room);
 void	set_nullentities(t_wall **ptr, int count);
 
 //TODO: temp for lights
-void	start_lightbake(t_render *render, t_world *world);
-void	bake_lights(t_render *render, t_world *world);
 void	recalculate_lighting(t_world *world);
-
-void	rasterize_lightpoly(t_lightpoly triangle, t_world *world);
-
-
-uint8_t *smooth_lightmap(t_lightmap *lmap);
+void	recalculate_pointlight(t_world *world);
+void	rasterize_zbuffer(t_lighting *lighting, t_point_triangle triangle);
 
 void	bake_lighting(t_render *render, t_world *world);
 void	bake_lighting_shadows(t_render *render, t_world *world);
 void	render_entity_depth_buffer(t_sdlcontext sdl, t_render *render, t_entity *entity);
 void	update_arealights_for_entity(t_sdlcontext sdl, t_render *render, t_entity *entity);
 void	update_pointlight_for_entity(t_sdlcontext sdl, t_render *render, t_entity *entity);
-void	calculate_pointlight(t_pointlight *pointlight, t_world *world, t_render *render);
-void	calculate_pointlight_step(t_pointlight *pointlight, t_world *world, t_render *render);
+
+void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render);
 //
 
 //Pathfind

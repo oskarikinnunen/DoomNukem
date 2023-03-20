@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 14:03:50 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/31 15:55:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/14 11:53:41 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ t_point	point_abs(t_point point)
 	return ((t_point){ft_abs(point.x), ft_abs(point.y)});
 }
 
-t_point		point_mod(t_point point, int	mod)
+t_point	point_mod(t_point point, int mod)
 {
-	return ((t_point) {point.x % mod, point.y % mod});
+	return ((t_point){point.x % mod, point.y % mod});
 }
 
 t_point	point_snap(t_point point, int interval)

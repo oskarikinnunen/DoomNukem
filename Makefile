@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/20 19:19:44 by raho             ###   ########.fr        #
+#    Updated: 2023/03/20 19:37:21 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,6 +39,7 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		editor/editor.c \
 		editor/editor_mouse.c \
 		editor/editor_events.c \
+		editor/key_events.c \
 		editor/editor_asset_load.c \
 		editor/editor_load_anims.c \
 		editor/editor_load_anim_legend.c \
@@ -50,7 +51,6 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		editor/tools/entity_tool.c \
 		editor/tools/entity_tool_gui_inits.c \
 		editor/tools/wall_tool_rooms.c \
-		editor/tools/npc_tool.c \
 		editor/tools/load_tool.c \
 		editor/tools/room_tool.c \
 		editor/tools/room_tool_connect.c \
@@ -64,6 +64,7 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		editor/editor_new_buttons.c \
 		editor/editor_instant_button.c \
 		editor/editor_raycast.c \
+		editor/entity_raycast.c \
 		preferences/graphicsprefs.c \
 		debug/debug_rendering.c \
 		inputhelper.c \
@@ -82,7 +83,6 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		perfgraph.c \
 		list_helper.c \
 		spaceconversions.c \
-		structsaver/structsaver.c \
 		entity/entity_animate.c \
 		entity/component_init.c \
 		entity/components/component_definitions.c \
@@ -91,6 +91,8 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		entity/components/comp_interactable.c \
 		physics/capsulephysics.c \
 		player/playermovement_normal.c \
+		player/playermovement_normal1.c \
+		player/playermovement_normal2.c \
 		player/playermovement_noclip.c \
 		player/playmode.c \
 		player/playmode_asset_load.c \
@@ -107,6 +109,12 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		player/hud.c \
 		player/player.c \
 		entity/components/comp_npc.c \
+		entity/components/comp_npc_state.c \
+		entity/components/comp_npc_states_1.c \
+		entity/components/comp_npc_raycast.c \
+		entity/components/comp_npc_funcs.c \
+		entity/components/comp_npc_helpers.c \
+		entity/components/comp_npc_anims.c \
 		guns/gun_presets.c \
 		obj_parser/obj_parse.c \
 		obj_parser/obj_parse_vertex.c \
@@ -119,7 +127,6 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		logging/prot_memalloc.c \
 		object_init.c \
 		object_primitives.c \
-		world.c \
 		resolution_scaling.c \
 		controller.c \
 		controller_init.c \
@@ -141,6 +148,7 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		render/render_space.c \
 		lighting/bake_lighting.c \
 		lighting/point_light.c \
+		lighting/fragment_light.c \
 		npc/civilian/civilian_action.c \
 		npc/civilian/civilian_anim.c \
 		npc/civilian/civilian_movement.c \
@@ -153,10 +161,9 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		npc/enemy/enemy_take_damage.c \
 		npc/navigation/pathfind.c \
 		npc/navigation/navmesh.c \
+		render/rasterization/rasterize_zbuffer.c \
 		render/rasterization/rasterize_triangle_wrap.c \
 		render/rasterization/rasterize_triangle.c \
-		render/rasterization/rasterize_triangle_uv.c \
-		render/rasterization/rasterize_triangle_dynamic.c \
 		render/draw.c \
 		render/draw_rectangle.c \
 		render/draw_shapes.c \
@@ -164,28 +171,49 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		render/surface_tools.c \
 		render/colors.c \
 		render/text.c \
-		entity/components/comp_mechasuit.c \
-		entity/components/comp_watercollider.c \
-		entity/components/comp_npc_state.c \
+		render/rasterization/rasterize_triangle_shadow.c \
+		render/render_zbuffer.c \
+		render/pixel_utils.c \
+		world/entitycache.c \
+		world/entitycache_2.c \
+		world/world.c \
+		entity/entity_transform.c \
 		entity/components/comp_light.c \
 		entity/components/comp_healthpack.c \
-		entity/components/comp_npc_civilian.c \
 		entity/components/comp_playerspawn.c \
 		entity/components/comp_gun_pickup.c \
 		entity/components/comp_auto_door.c #.ENDSRC. CREATECOMPONENT SCRIPT DEPENDS ON THIS SO DONT REMOVE
-VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
-		vector3_complex.c vector3_complex2.c vector3_more.c \
-		vector2_elementary.c vector2_shorthands.c \
-		vector2_complex.c vector2_clamp.c \
-		vector2_more.c \
-		point_elementary.c point_shorthands.c \
-		point_complex.c point_float_ops.c \
-		conversions.c vector3_complex3.c \
-		quaternion_shorthands.c quaternions.c \
-		matrix_shorthands.c matrix_rotations.c \
+VECTORSRCFILES= conversions.c \
+		conversions2.c \
+		matrix_functions3.c \
+		matrix_functions2.c \
+		matrix_functions.c \
+		matrix_rotations.c \
+		matrix_shorthands.c \
 		matrix_transform.c \
-		matrix_functions.c matrix_functions2.c \
-		debug_vectors.c point_more.c
+		point_complex2.c \
+		point_complex.c \
+		point_elementary.c \
+		point_float_ops.c \
+		point_more.c \
+		point_shorthands.c \
+		quaternions.c \
+		quaternion_shorthands.c \
+		vector2_clamp.c \
+		vector2_complex2.c \
+		vector2_complex3.c \
+		vector2_complex.c \
+		vector2_elementary.c \
+		vector2_more.c \
+		vector2_shorthands.c \
+		vector3_cmp.c \
+		vector3_complex2.c \
+		vector3_complex3.c \
+		vector3_complex.c \
+		vector3_elementary.c \
+		vector3_more.c \
+		vector3_shorthands.c \
+		barycentric.c
 VECTORSRC= $(addprefix src/vectors/,$(VECTORSRCFILES))
 SRC= $(addprefix src/,$(SRCFILES))
 SRC+= $(VECTORSRC)
@@ -197,7 +225,7 @@ INCLUDE= -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include \
 			-I$(INSTALLED_LIBS_DIR)/include/SDL2/ \
 			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
 CC= gcc
-CFLAGS= $(INCLUDE) -g #-finline-functions -O2 -MMD #-march=native
+CFLAGS= $(INCLUDE) -g -finline-functions -O2 -MMD #-march=native
 LDFLAGS = -Wl,-rpath $(INSTALLED_LIBS_DIR)/lib
 
 UNAME= $(shell uname)

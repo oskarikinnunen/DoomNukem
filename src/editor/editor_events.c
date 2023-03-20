@@ -6,76 +6,12 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 17:32:48 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 19:38:06 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "editor_tools.h"
-
-bool		check_alpha_key(uint32_t alphakeystate, char c)
-{
-	c = ft_tolower(c);
-	if (!ft_isalpha(c))
-		return (false); //And log something?
-	return ((alphakeystate >> (c - 'a')) & 1);
-}
-
-void		toggle_keystates(t_hid_info *hid, SDL_Event e)
-{
-	char	c;
-	//SDL_KE
-	if (e.type == SDL_KEYDOWN)
-	{
-		hid->keystate |= keyismoveleft(e) << KEYS_LEFTMASK;
-		hid->keystate |= keyismoveright(e) << KEYS_RIGHTMASK;
-		hid->keystate |= keyismoveup(e) << KEYS_UPMASK;
-		hid->keystate |= keyismovedown(e) << KEYS_DOWNMASK;
-		hid->keystate |= iskey(e, SDLK_LCTRL) << KEYS_CTRLMASK;
-		hid->keystate |= iskey(e, SDLK_SPACE) << KEYS_SPACEMASK;
-		hid->keystate |= iskey(e, SDLK_LSHIFT) << KEYS_SHIFTMASK;
-		hid->keystate |= iskey(e, SDLK_LALT) << KEYS_LALTMASK;
-		hid->keystate |= iskey(e, SDLK_DELETE) << KEYS_DELETEMASK;
-		hid->keystate |= iskey(e, SDLK_1) << KEYS_1MASK;
-		hid->keystate |= iskey(e, SDLK_2) << KEYS_2MASK;
-		hid->keystate |= iskey(e, SDLK_3) << KEYS_3MASK;
-		hid->keystate |= iskey(e, SDLK_4) << KEYS_4MASK;
-		hid->keystate |= iskey(e, SDLK_RETURN) << KEYS_ENTERMASK;
-		//hid->keystate |= iskey(e, SDLK_v) << KEYS_VMASK;
-		c = 'a';
-		while (c <= 'z')
-		{
-			hid->alphakeystate |= iskey(e, c) << (c - 'a');
-			if ((hid->alphakeystate >> (c - 'a')) & 1 == 1)
-				hid->alphakey_pressed |= iskey(e, c) << (c - 'a');
-			c++; //Not the language
-		}
-	}
-	if (e.type == SDL_KEYUP)
-	{
-		hid->keystate &= ~(keyismoveleft(e)) << KEYS_LEFTMASK;
-		hid->keystate &= ~(keyismoveright(e) << KEYS_RIGHTMASK);
-		hid->keystate &= ~(keyismoveup(e) << KEYS_UPMASK);
-		hid->keystate &= ~(keyismovedown(e) << KEYS_DOWNMASK);
-		hid->keystate &= ~(iskey(e, SDLK_LCTRL) << KEYS_CTRLMASK);
-		hid->keystate &= ~(iskey(e, SDLK_SPACE) << KEYS_SPACEMASK);
-		hid->keystate &= ~(iskey(e, SDLK_LSHIFT) << KEYS_SHIFTMASK);
-		hid->keystate &= ~(iskey(e, SDLK_LALT) << KEYS_LALTMASK);
-		hid->keystate &= ~(iskey(e, SDLK_DELETE) << KEYS_DELETEMASK);
-		hid->keystate &= ~(iskey(e, SDLK_1) << KEYS_1MASK);
-		hid->keystate &= ~(iskey(e, SDLK_2) << KEYS_2MASK);
-		hid->keystate &= ~(iskey(e, SDLK_3) << KEYS_3MASK);
-		hid->keystate &= ~(iskey(e, SDLK_4) << KEYS_4MASK);
-		hid->keystate &= ~(iskey(e, SDLK_RETURN) << KEYS_ENTERMASK);
-		//hid->keystate &= ~(iskey(e, SDLK_v) << KEYS_VMASK);
-		c = 'a';
-		while (c <= 'z')
-		{
-			hid->alphakeystate &= ~(iskey(e, c) << (c - 'a'));
-			c++;
-		}
-	}
-}
 
 void	force_mouseunlock(t_hid_info *hid)
 {
@@ -92,61 +28,50 @@ void	force_mouselock(t_hid_info *hid)
 	hid->mouse.pos = point_zero();
 }
 
+static void	editor_key_down(t_editor *ed, SDL_Event e)
+{
+	if (iskey(e, SDLK_TAB))
+	{
+		ed->hid.mouse.relative = !ed->hid.mouse.relative;
+		SDL_SetRelativeMouseMode(ed->hid.mouse.relative);
+		ed->player.locked = !ed->hid.mouse.relative;
+		ed->hid.mouse.delta = point_zero();
+	}
+	if (iskey(e, SDLK_F1))
+		ed->toolbar_gui.hidden = !ed->toolbar_gui.hidden;
+	if (iskey(e, SDLK_F2))
+		ed->world.debug_gui->hidden = !ed->world.debug_gui->hidden;
+	if (iskey(e, SDLK_F3))
+		ed->graphics_gui.hidden = !ed->graphics_gui.hidden;
+	if (iskey(e, SDLK_F5))
+	{
+		world_save_to_file(ed->world);
+		ed->world.lastsavetime = ed->world.clock.time;
+	}
+}
+
 t_gamereturn	editor_events(t_editor *ed)
 {
 	static SDL_Event	e;
-	
-	ed->hid.mouse.scroll_delta = 0; //Needs to be reset
-	ed->hid.alphakey_pressed = 0; //Needs to be reset
+
+	ed->hid.mouse.scroll_delta = 0;
+	ed->hid.alphakey_pressed = 0;
 	SDL_GetRelativeMouseState(&ed->hid.mouse.delta.x, &ed->hid.mouse.delta.y);
 	if (!ed->hid.mouse.dragging_ui && ed->player.locked)
 		SDL_GetMouseState(&ed->hid.mouse.pos.x, &ed->hid.mouse.pos.y);
-		/*if (ed->hid.mouse.safe_delta && ((ed->hid.mouse.delta.x) > 30 || ft_abs(ed->hid.mouse.delta.y) > 30))
-			ed->hid.mouse.delta = point_zero();*/
-		
 	while (SDL_PollEvent(&e))
 	{
 		toggle_keystates(&ed->hid, e);
 		mouse_event(e, &ed->hid.mouse);
 		if (e.type == SDL_KEYDOWN)
 		{
-			t_pointlight t;
-			/*if (iskey(e, SDLK_p))//TODO: temp shortcut for baking lighting
-				bake_lighting_shadows(&sdl->render, &ed->world);*/
 			if (iskey(e, SDLK_ESCAPE))
 			{
 				if ((ed->hid.keystate >> KEYS_SHIFTMASK) & 1)
 					exit(0);
 				return (game_exit);
 			}
-			if (iskey(e, SDLK_TAB))
-			{
-				ed->hid.mouse.relative = !ed->hid.mouse.relative;
-				SDL_SetRelativeMouseMode(ed->hid.mouse.relative);
-				ed->player.locked = !ed->hid.mouse.relative;
-				ed->hid.mouse.delta = point_zero();
-			}
-			else if (((ed->hid.keystate >> KEYS_SHIFTMASK) & 1)
-				&& iskey(e, SDLK_RETURN))
-				return(game_switchmode);
-			if (iskey(e, SDLK_F1))
-				ed->toolbar_gui.hidden = !ed->toolbar_gui.hidden;
-			if (iskey(e, SDLK_F2))
-				ed->world.debug_gui->hidden = !ed->world.debug_gui->hidden;
-			if (iskey(e, SDLK_F3))
-				ed->graphics_gui.hidden = !ed->graphics_gui.hidden;
-			if (iskey(e, SDLK_F5))
-			{
-				world_save_to_file(ed->world);
-				ed->world.lastsavetime = ed->world.clock.time;
-			}
-		}
-		if (e.type == SDL_CONTROLLERBUTTONDOWN)
-		{
-			if (e.cbutton.button == SDL_CONTROLLER_BUTTON_BACK)
-				return (game_switchmode);
-			if (e.cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE)
-				return (game_exit);
+			editor_key_down(ed, e);
 		}
 	}
 	updateinput_new(&ed->hid.input, ed->hid);

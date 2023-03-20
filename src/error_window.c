@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error_window.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 14:59:55 by raho              #+#    #+#             */
-/*   Updated: 2023/03/09 21:35:12 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 11:10:47 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,8 +119,8 @@ void	error_window(char *str)
 	cache_log(&p, str);
 	while (1)
 	{
-		p.ew.hid.mouse.scroll_delta = 0; // TODO: Still needs to be reset?
-		p.ew.hid.alphakey_pressed = 0; // TODO: Still needs to be reset?
+		p.ew.hid.mouse.scroll_delta = 0;
+		p.ew.hid.alphakey_pressed = 0;
 		SDL_GetRelativeMouseState(&p.ew.hid.mouse.delta.x, \
 									&p.ew.hid.mouse.delta.y);
 		error_window_events(&p);

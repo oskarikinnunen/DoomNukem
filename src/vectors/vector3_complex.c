@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 11:43:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/22 16:55:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/14 11:44:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,16 +35,12 @@ float	vector3_dist(t_vector3 first, t_vector3 second)
 	return (
 		sqrt
 		((first.x - second.x) * (first.x - second.x)
-		+ (first.y - second.y) * (first.y - second.y)
-		+ (first.z - second.z) * (first.z - second.z)));
+			+ (first.y - second.y) * (first.y - second.y)
+			+ (first.z - second.z) * (first.z - second.z)));
 }
 
 float	vector3_dot(t_vector3 first, t_vector3 second)
 {
-	return ((first.x * second.x) + (first.y * second.y) + (first.z * second.z));
-}
-
-bool	vector3_cmp(t_vector3 first, t_vector3 second)
-{
-	return ((first.x == second.x) && (first.y == second.y) && (first.z == second.z));
+	return ((first.x * second.x)
+		+ (first.y * second.y) + (first.z * second.z));
 }

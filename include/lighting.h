@@ -1,67 +1,59 @@
 #ifndef LIGHTING_H
 # define LIGHTING_H
 
-#include "vectors.h"
-
-typedef struct s_triangle_polygon //TODO: Renam this to light triangle or smt similar
-{
-	t_point		p2[3];
-	t_vector3	p3[3];
-	t_vector2	uv[3];
-}	t_triangle_polygon;
-
-struct s_lightmap;
-struct s_light;
-
-typedef struct s_lightpoly //TODO: Renam this to light triangle or smt similar
-{
-	t_point				tex_coord[3];
-	t_vector3			world_coord[3];
-	t_vector2			uv_coord[3];
-	struct s_lightmap	*lmap;
-	struct s_light		*light;
-}	t_lightpoly;
+#include "render_utils.h"
 
 typedef struct s_map
 {
-	uint32_t	*data;
+	uint32_t	*texture;
+	uint32_t	*lightmap;
 	t_point		img_size;
 	t_point		size;
 }	t_map;
 
-typedef struct s_lightmap
+typedef enum e_cubemap_state
 {
-	bool		dynamic;
-	uint32_t	progress; //tri_index
-	bool		done;
-	t_point		size;
-	uint8_t		dynamic_data;
-	//uint32_t	color;
-	uint8_t		*data;
-	//uint8_t		*draw_buffer;
-}	t_lightmap;
+	cm_default,
+	cm_1,
+	cm_2,
+	cm_3,
+	cm_4,
+	cm_5,
+	cm_6
+}	t_cubemap_state;
 
-typedef struct s_pointlight
+typedef struct s_cubemap
 {
-	t_vector3	origin;
-	float		radius;
-	bool		shadows;
-	bool		done;
-	bool		ignoreself;
-	uint32_t	lastmovetime;
-}	t_pointlight;
+	t_vector2	resolution;
+	float		*shadowmaps[6];
+	t_camera	cameras[6];
+}	t_cubemap;
+
+typedef struct	s_light
+{
+	float			radius;
+	t_vector3		origin;
+	t_cubemap_state	cm_state;	
+	t_cubemap		cubemap;
+	bool			ignoreself;
+	uint32_t		clr;
+	float			ambient;
+	float			intensity;
+}	t_light;
 
 typedef struct s_lighting
 {
-	t_lightmap			*lightmap;
-	uint16_t			entity_id;
-	bool				*drawnbuff;
-	t_triangle_polygon	**triangles;
-    struct s_entity		**entities;
-	uint32_t			entities_count;
-	t_pointlight		*pointlight;
-	uint8_t				ambient_light;
-	bool				calculated;
+	struct s_world		*world;
+	t_triangle			*world_triangles;
+	t_light				*light;
+	struct s_entity		*light_ent;
+	bool				*overdraw;
+	float				*zbuffer;
+	t_map				*map;
+	t_vector2			resolution;
+	t_v2rectangle		screen_edge;
+	t_camera			camera;
+	t_vector3			triangle_normal;
 }	t_lighting;
 
 #endif

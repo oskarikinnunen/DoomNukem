@@ -31,6 +31,7 @@ struct s_world;
 typedef struct s_component
 {
 	t_componenttype		type;
+	uint32_t			data_preset;
 	size_t				data_size;
 	void				(*func_take_damage)(struct s_entity *,struct s_world *);
 	void				(*func_allocate)(struct s_entity *,struct s_world *);
@@ -88,12 +89,6 @@ typedef struct	s_watercollider
 	float	TESTVARIABLE;
 }	t_watercollider;
 
-typedef struct	s_light
-{
-	float		radius;
-	t_vector3	origin;
-	//t_entity	**
-}	t_light;
 typedef struct	s_healthpack
 {
 	float	TESTVARIABLE;
@@ -108,7 +103,7 @@ typedef struct	s_playerspawn
 }	t_playerspawn;
 typedef struct	s_gun_pickup
 {
-	float	TESTVARIABLE;
+	float	original_z;
 }	t_gun_pickup;
 typedef struct	s_auto_door
 {

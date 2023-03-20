@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 19:17:39 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 19:35:28 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,6 @@ void	create_sdlcontext(char *level, t_sdlcontext	*sdl, t_app_mode app_mode)
 		|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0 \
 		|| TTF_Init() < 0)
 		doomlog(LOG_EC_SDL_INIT, NULL);
-	
 	set_sdl_settings(sdl);
 	if (app_mode == APPMODE_EDIT)
 		editor_load_assets(sdl);

@@ -9,6 +9,7 @@
 # include "lighting.h"
 # include "occlusion.h"
 # include "colors.h"
+# include "render_utils.h"
 
 # include "fmod.h"
 
@@ -33,6 +34,24 @@
 # define CLEARSCREEN "\e[1;1H\e[2J"
 # define DEFAULT_FONT_SIZE 8
 # define FONT_SIZE_COUNT 4
+
+typedef struct s_step
+{
+	float	location;
+	float	step;
+}	t_step;
+
+typedef struct s_stepv3
+{
+	t_vector3	step;
+	t_vector3	location;
+}	t_stepv3;
+
+typedef struct s_stepv2
+{
+	t_vector2	step;
+	t_vector2	location;
+}	t_stepv2;
 
 typedef enum e_platform
 {
@@ -90,15 +109,6 @@ typedef struct s_debug_occlusion
 	bool		slow_render;
 }	t_debug_occlusion;
 
-typedef struct s_camera
-{
-	t_mat4x4			matview;
-	t_mat4x4			matproj;
-	t_vector3			position;
-	t_vector3			lookdir;
-	float				aspectratio;
-}	t_camera;
-
 typedef enum e_rend_lightmode
 {
 	lm_unlit,
@@ -109,25 +119,22 @@ typedef enum e_rend_lightmode
 typedef struct s_render
 {
 	t_camera			camera;
-	t_point_triangle	*worldspace_ptris;
-	t_point_triangle	*screenspace_ptris;
-	uint32_t			worldspace_ptri_count;
-	uint32_t			screenspace_ptri_count;
+	t_map				map;
 	t_img				*img;
-	t_img				*debug_img;
 	t_quaternion		*q;
+	t_triangle			*world_triangles;
+	uint32_t			start_index;
+	uint32_t			end_index;
+	t_point_triangle	*screenspace_ptris;
+	uint32_t			screenspace_ptri_count;
+	t_rend_lightmode	lightmode;
+	uint32_t			dynamic_light;
+	t_debug_occlusion	occlusion;
+	t_v2rectangle		screen_edge;
 	bool				wireframe;
 	uint32_t			gizmocolor;
+	t_img				*debug_img;
 	t_render_statistics	rs;
-	struct s_world		*world;
-	t_debug_occlusion	occlusion;
-	t_map				map;
-	uint32_t			dynamic_light;
-	t_rend_lightmode	lightmode;
-	t_v2rectangle		screen_edge;
-	/*bool				is_wrap;
-	bool				dynamic_light;*/
-	//struct s_sdlcontext	*sdl;
 }	t_render;
 
 typedef struct s_audiosample
@@ -267,7 +274,7 @@ void	draw_triangle(t_sdlcontext *sdl, t_point p1, t_point p2, t_point p3, uint32
 /* INIT_RENDER.C */
 t_render	init_render(t_sdlcontext sdl);
 void		free_render(t_render render);
-void		render_start(t_render *render);
+void		calculate_matview(t_camera *camera);
 
 /* RENDER */
 void				render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size);
@@ -286,9 +293,10 @@ t_point_triangle	triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_tria
 bool				is_triangle_backface(t_triangle tritransformed, t_render *render);
 /* RASTERIZER */
 void				render_triangle_lit(t_sdlcontext *sdl, t_render *render, int index);
-void				render_triangle_uv(t_lighting l, t_triangle_polygon triangle);
+void				render_triangle_uv(t_lighting l, t_point_triangle triangle);
 void				render_triangle_unlit(t_sdlcontext *sdl, t_render *render, int index);
 void				render_triangle_dynamic(t_sdlcontext *sdl, t_render *render, int index);
+void				rasterize_light(t_point_triangle triangle, t_lighting *lighting);
 
 /* AUDIO TOOLS */
 
@@ -336,12 +344,13 @@ void	set_square_from_triangles(t_occlusion *occl, t_point_triangle *t, int count
 void	render_bitmask(t_sdlcontext *sdl, t_render *render);
 
 /*Render helper*/
+int					triangle_to_flat(t_point_triangle triangle, t_point_triangle tris[2]);
 t_point_triangle	wf_tri(t_point_triangle in, float scaling);
-t_texture			calc_step_texture(t_texture *t, float delta);
-void				calc_points_step(float x_step[2], t_texture t_step[2], t_point *p, t_texture *t, float delta);
-void				sort_point_uv_tri(t_point *p, t_texture *t);
-void				sort_polygon_tri(t_point *p2, t_vector2 *t, t_vector3 *p3);
-void				sort_point_tri(t_point *p2, float *w);
+t_vector3			calc_step_texture(t_vector3 *t, float delta);
+void				calc_points_step(float x_step[2], t_vector3 t_step[2], t_vector2 *p, t_vector3 *t, float delta);
+void				sort_point_uv_tri(t_vector2 *p, t_vector3 *t);
+void				sort_polygon_tri(t_vector2 *p2, t_vector2 *t, t_vector3 *p3);
+void				sort_point_tri(t_vector2 *p2, float *w);
 void				ft_swap(void * a, void * b, size_t len);
 t_point_triangle	ps1(t_point_triangle in, int div);
 
