@@ -60,7 +60,8 @@ void render_entity_worldtriangles(t_entity *entity, t_world *world)
 
 	obj = entity->obj;
 	render = &world->sdl->render;
-	render_worldspace(render, entity);
+	if (render_worldspace(render, entity) == false)
+		return;
 	i = 0;
 	while (i < obj->face_count)
 	{

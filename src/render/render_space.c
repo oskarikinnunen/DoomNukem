@@ -79,7 +79,7 @@ inline static void update_bounds_world_triangles(t_entity *entity, t_mat4x4 matw
 		update_world_triangle_ignore(transformed, entity->occlusion.world_tri);
 }
 
-void render_worldspace(t_render *render, t_entity *entity)
+bool render_worldspace(t_render *render, t_entity *entity)
 {
 	t_object *obj;
 	int index;
@@ -87,8 +87,11 @@ void render_worldspace(t_render *render, t_entity *entity)
 
 	obj = entity->obj;
 	if (obj == NULL) // TODO: Is this needed?
-		return;
+		return(false);
 	matworld = make_transform_matrix(entity->transform);
+	if (entity->animation.active == false && ft_memcmp(&matworld, &entity->matworld, sizeof(t_mat4x4)) == 0)
+		return(false);
+	entity->matworld = matworld;
 	index = 0;
 	while (index < obj->vertice_count)
 	{
@@ -100,6 +103,7 @@ void render_worldspace(t_render *render, t_entity *entity)
 		index++;
 	}
 	update_bounds_world_triangles(entity, matworld);
+	return(true);
 }
 
 t_triangle triangle_to_viewspace(t_triangle tritransformed, t_mat4x4 matview)

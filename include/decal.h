@@ -11,6 +11,7 @@ typedef struct s_decal
     t_vector3   rotation;
     t_vector3   normal;
     t_entity    *entity;
+    t_vector3   frustrum[2];
 }   t_decal;
 
 void decal(struct s_world *world, t_decal decal);

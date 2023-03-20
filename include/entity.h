@@ -54,6 +54,7 @@ typedef struct s_entity
 	t_occlusion		occlusion;
 	t_triangle		*world_triangles;
 	t_map			*map;
+	t_mat4x4		matworld;
 }	t_entity;
 
 typedef struct s_prefab
@@ -135,7 +136,7 @@ void	draw_entity_icon(t_entity *entity, t_img *img, struct s_world *world);
 void	draw_worldspace_icon(t_vector3 pos, t_img *img, struct s_world *world);
 void	highlight_entity(t_sdlcontext *sdl, t_entity *entity, uint32_t color);
 void	render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity);
-void	render_worldspace(t_render *render, t_entity *entity);
+bool	render_worldspace(t_render *render, t_entity *entity);
 void	render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 void	render_entity_worldtriangles(t_entity *entity, struct s_world *world);
 

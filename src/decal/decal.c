@@ -94,6 +94,82 @@ t_vector3 degreeturn(t_vector3 v)
 	return(v);
 }
 
+static void make_uv(t_world *world, t_decal *decal)
+{
+	t_camera camera;
+
+}
+
+static void entity_triangles(t_entity *entity, t_decal *decal)
+{
+	t_triangle out_tri[4];
+	int i;
+	t_point a;
+	t_point b;
+	t_triangle *temp_buffer;
+	int e = 0;
+
+	temp_buffer = malloc(sizeof(t_triangle) * entity->obj->face_count * 4);
+	if (temp_buffer == NULL)
+		doomlog(LOG_FATAL, "Malloc failed in entity_triangles.c");
+	i = 0;
+	while (i < entity->obj->face_count)
+	{
+		a.y = clip_triangle_against_plane(decal->frustrum[0], (t_vector3){0.0f, 0.0f, 1.0f}, entity->world_triangles[i], out_tri);
+		a.x = 0;
+		while (a.x < a.y)
+		{
+			b.y = clip_triangle_against_plane(decal->frustrum[1], (t_vector3){0.0f, 0.0f, 1.0f}, out_tri[a.x], &out_tri[2]);
+			b.x = 0;
+			while (b.x < b.y)
+			{
+				temp_buffer[e++] = out_tri[2 + b.x];
+				b.x++;
+			}
+			a.x++;
+		}
+		i++;
+	}
+	t_triangle *temp;
+	temp = decal->entity->world_triangles;
+	decal->entity->world_triangles = malloc((decal->entity->obj->face_count + e) * sizeof(t_triangle));
+	if (decal->entity->world_triangles == NULL)
+		doomlog(LOG_FATAL, "Malloc failed in decal.c");
+	ft_memcpy(decal->entity->world_triangles, temp, sizeof(t_triangle) * decal->entity->obj->face_count);
+	ft_memcpy(&decal->entity->world_triangles[decal->entity->obj->face_count], temp_buffer, sizeof(t_triangle) * e);
+	decal->entity->obj->face_count += e;
+	free(temp);
+	free(temp_buffer);
+}
+
+void get_triangles(t_world *world, t_decal *decal)
+{
+	int			i;
+	int			found;
+	t_entity	*ent;
+	
+	i = 0;
+	found = 0;
+	while (found < world->entitycache.existing_entitycount)
+	{
+		ent = &world->entitycache.entities[i];
+		if (ent->status != es_free)
+		{
+			if (ent->status == es_active && !ent->hidden)
+			{
+				if (vector3_dist(decal->position, get_entity_world_position(ent)) - ent->obj->bounds.radius < decal->size)
+					entity_triangles(ent, decal);
+			}
+			found++;
+		}
+		i++;
+	}
+	free(decal->entity->obj->faces);
+	decal->entity->obj->faces = malloc(sizeof(t_face) * decal->entity->obj->face_count);
+	ft_bzero(decal->entity->obj->faces, sizeof(t_face) * decal->entity->obj->face_count);
+	decal->entity->matworld = make_transform_matrix(decal->entity->transform);
+}
+
 void decal(struct s_world *world, t_decal decal)
 {
 	t_object	*obj;
@@ -102,10 +178,11 @@ void decal(struct s_world *world, t_decal decal)
 
 	obj = object_plane(world->sdl);
 	obj->materials->img = get_image_by_name(*world->sdl, "car_red.cng");
-	entity = spawn_entity(world, obj);
-
-	obj->vertices[1] = vector3_mul((t_vector3){.x = decal.normal.x, .y = decal.normal.y}, 10.0f);
-	obj->vertices[2] = vector3_mul((t_vector3){.z = decal.normal.z}, 10.0f);
-	obj->vertices[3] = vector3_mul((t_vector3){.x = decal.normal.x, .z = decal.normal.z}, 10.0f);
-	entity->transform.position = decal.position;
+	decal.entity = spawn_entity(world, obj);
+	decal.entity->transform.position = decal.position;
+	decal.size = 150;
+	decal.frustrum[0] = vector3_add(decal.position, vector3_mul(decal.normal, decal.size));
+	decal.frustrum[1] = vector3_add(decal.position, vector3_mul(vector3_negative(decal.normal), decal.size));
+	get_triangles(world, &decal);
+	make_uv(world, decal);
 }
