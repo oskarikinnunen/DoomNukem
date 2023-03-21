@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 12:32:25 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/08 21:14:20 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/21 12:33:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,12 +114,9 @@ void	*list_to_ptr(t_list *source, uint32_t *set_length)
 	*set_length = 0;
 	if (source == NULL || source->content_size == 0)
 		return (NULL);
-	result = ft_memalloc((ft_listlen(source) + 1) * source->content_size); //assumes the linked list only contains equal sized contents
-	if (result == NULL)
-		doomlog(LOG_EC_MALLOC, "list_to_ptr");
+	result = prot_memalloc((ft_listlen(source) + 1) * source->content_size); //assumes the linked list only contains equal sized contents
 	l = source;
 	i = 0;
-	
 	while (l != NULL)
 	{
 		if (l->content_size != source->content_size)

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:56:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 19:35:10 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/21 12:46:26 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,10 +108,9 @@ void	parse_animframe(int fd, t_objectanimframe *frame, t_object *object)
 	vertexcount = 0;
 	verticelist = get_vertex_list(fd);
 	vertices = list_to_ptr(verticelist, &vertexcount);
+	listdel(&verticelist);
 	i = 0;
-	frame->deltavertices = ft_memalloc(sizeof(t_deltavertex) * vertexcount);
-	if (frame->deltavertices == NULL)
-		doomlog(LOG_EC_MALLOC, "parse_animframe deltavertices");
+	frame->deltavertices = prot_memalloc(sizeof(t_deltavertex) * vertexcount);
 	while (i < vertexcount)
 	{
 		frame->deltavertices[i].delta = vector3_sub(vertices[i], \
@@ -119,6 +118,7 @@ void	parse_animframe(int fd, t_objectanimframe *frame, t_object *object)
 		frame->deltavertices[i].v_index = i;
 		i++;
 	}
+	free(vertices);
 	frame->vertcount = vertexcount;
 }
 
@@ -129,7 +129,7 @@ void	parse_anim(char *anim_path, char *anim_name, t_object *object)
 
 	ft_bzero(&frame, sizeof(t_objectanimframe));
 	fd = fileopen(anim_path, O_RDONLY);
-	ft_strcpy(object->o_anim.name, anim_name);
+	ft_strncpy_term(object->o_anim.name, anim_name, 120);
 	parse_animframe(fd, &frame, object);
 	object->o_anim.frames[object->o_anim.framecount] = frame;
 	object->o_anim.framecount++;

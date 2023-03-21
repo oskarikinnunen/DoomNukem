@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:32:20 by raho              #+#    #+#             */
-/*   Updated: 2023/03/20 17:26:15 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/21 12:43:46 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ static void	unpack_and_load_object(int obj_i, char *level_path,
 	playmode_parse_mtllib(&materials);
 	sdl->objects[obj_i].materials = \
 			list_to_ptr(materials, &sdl->objects[obj_i].material_count);
+	listdel(&materials);
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
 			"unpacked and loaded .obj file:", sdl->objects[obj_i].name, NULL});
 	remove(TEMPOBJ);

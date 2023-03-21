@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 19:43:15 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/21 12:23:05 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,11 @@ int	find_chunk_count(int fd)
 
 t_list	*parse_chunk(int fd, size_t size)
 {
-	char		*buf;
-	int			br;
-	t_list		*head;
-	t_list		*node;
-	int			count;
+	char	*buf;
+	int		br;
+	t_list	*head;
+	t_list	*node;
+	int		count;
 
 	buf = prot_memalloc(size);
 	count = find_chunk_count(fd);
@@ -98,6 +98,7 @@ t_list	*load_chunk(char *filename, char *chunkname, size_t size)
 	br = read(fd, buf, CHUNKSIZE);
 	while (br > 0)
 	{
+		buf[CHUNKSIZE] = '\0';
 		if (ft_strcmp(chunkname, buf) == 0)
 		{
 			result = parse_chunk(fd, size);
@@ -182,6 +183,7 @@ t_filecontent	load_filecontent(char	*worldname, char	*fc_name)
 	rbytes = read(fd, buf, CHUNKSIZE);
 	while (rbytes > 0)
 	{
+		buf[CHUNKSIZE] = '\0';
 		if (ft_strncmp(buf, "FCNK", 4) == 0)
 		{
 			if (read(fd, fc.name, 128) == -1)
@@ -201,15 +203,15 @@ t_filecontent	load_filecontent(char	*worldname, char	*fc_name)
 				// printf("tried to find: %s but found: %s\n", fc_name, fc.name);
 				// printf("found unwanted filechunk: %s | len: %llu\n", fc.name, curr_len);
 				if (lseek(fd, curr_len + (4 - (curr_len % 4)), SEEK_CUR) == -1)
-					doomlog(LOG_EC_LSEEK, "load_filecontent");
+					doomlog(LOG_EC_LSEEK, worldname);
 			}
 		}
 		rbytes = read(fd, buf, CHUNKSIZE);
 	}
 	if (rbytes == -1)
-		doomlog(LOG_EC_READ, "load_filecontent");
-	if (close(fd) == -1)
-		doomlog(LOG_EC_CLOSE, worldname);
+		doomlog(LOG_EC_READ, worldname);
+	fileclose(fd, worldname);
+	return (fc);
 }
 
 // TODO: PROTECT, rename to load_and_write_filecontent_fd and add filename as an argument
@@ -234,6 +236,7 @@ void	load_and_write_filecontent(char *worldname, char *fcname, \
 	fd = fileopen(filename, O_CREAT | O_RDWR | O_TRUNC);
 	write(fd, fc.content, fc.length);
 	fileclose(fd, filename);
+	free(fc.content);
 }
 
 char	*uint64_to_char(uint64_t	u64)
