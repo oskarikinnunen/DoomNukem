@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/21 12:23:05 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/21 13:11:34 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,17 +113,7 @@ t_list	*load_chunk(char *filename, char *chunkname, size_t size)
 	return (NULL);
 }
 
-//TODO: make fancier version
-int	ft_fileread(int fd, t_filecontent *f)
-{
-	char	buf[300000];
-
-	f->length = read(fd, buf, 300000);
-	f->content = ft_memdup(buf, f->length);
-	return (f->length);
-}
-
-int		ft_fileread_rene(int fd, t_filecontent *f)
+int		ft_fileread(int fd, t_filecontent *f)
 {
 	char	*temp;
 	void	*temp2;
@@ -138,23 +128,11 @@ int		ft_fileread_rene(int fd, t_filecontent *f)
 		if (f->content)
 			free(f->content);
 		f->content = temp2;
-		//printf("ft_fileread len: %zu\nft_fileread f->length: %llu\n\n", len, f->length);
 		f->length += len;
 		len = read(fd, buf, sizeof(buf));
 	}
 	if (len == -1)
-		doomlog(LOG_EC_READ, "ft_fileread_rene");
-	return (f->length);
-}
-
-int		ft_nfileread(int fd, t_filecontent *f, size_t size)
-{
-	char	buf[300000];
-
-	f->length = read(fd, buf, size);
-	f->content = ft_memdup(buf, size);
-	if (f->content == NULL)
-		doomlog(LOG_EC_MALLOC, "f->content");
+		doomlog(LOG_EC_READ, "ft_fileread");
 	return (f->length);
 }
 
@@ -202,7 +180,7 @@ t_filecontent	load_filecontent(char	*worldname, char	*fc_name)
 				curr_len = read_len(fd);
 				// printf("tried to find: %s but found: %s\n", fc_name, fc.name);
 				// printf("found unwanted filechunk: %s | len: %llu\n", fc.name, curr_len);
-				if (lseek(fd, curr_len + (4 - (curr_len % 4)), SEEK_CUR) == -1)
+				if (lseek(fd, curr_len + (CHUNKSIZE - (curr_len % CHUNKSIZE)), SEEK_CUR) == -1)
 					doomlog(LOG_EC_LSEEK, worldname);
 			}
 		}
@@ -212,18 +190,6 @@ t_filecontent	load_filecontent(char	*worldname, char	*fc_name)
 		doomlog(LOG_EC_READ, worldname);
 	fileclose(fd, worldname);
 	return (fc);
-}
-
-// TODO: PROTECT, rename to load_and_write_filecontent_fd and add filename as an argument
-int load_filecontent_fd(char *worldname, char *fcname)
-{
-	t_filecontent	fc;
-	int				fd;
-
-	fc = load_filecontent(worldname, fcname);
-	fd = fileopen(".temptest", O_CREAT | O_RDWR | O_APPEND);
-	write(fd, fc.content, fc.length);
-	return (fd);
 }
 
 void	load_and_write_filecontent(char *worldname, char *fcname, \
@@ -239,7 +205,7 @@ void	load_and_write_filecontent(char *worldname, char *fcname, \
 	free(fc.content);
 }
 
-char	*uint64_to_char(uint64_t	u64)
+static char	*uint64_to_char(uint64_t	u64)
 {
 	static char	size[8];
 
@@ -254,54 +220,6 @@ char	*uint64_to_char(uint64_t	u64)
 	return (size);
 }
 
-void	pack_file(char	*packname, char *filename)
-{
-	int				fd;
-	void			*temp;
-	t_filecontent	fc;
-	size_t			total;
-
-	ft_bzero(&fc, sizeof(t_filecontent));
-	fd = fileopen(filename, O_RDONLY);
-	ft_fileread(fd, &fc);
-	ft_strcpy(fc.name, filename);
-	fileclose(fd, packname);
-	fd = fileopen(packname, O_RDWR | O_APPEND);
-	total = 0;
-	total += write(fd, "FCNK", 4);
-	total += write(fd, fc.name, sizeof(char) * 128);
-	total += write(fd, uint64_to_char(fc.length), 8);
-	total += write(fd, fc.content, sizeof(char) * fc.length);
-	//TODO: ensure that this fits the 4 byte alignment of the chunk reader
-	//total += write(fd, "PADD", fc.length % 4);
-	//printf("wrote packed file content len %lu \n", total); 
-	fileclose(fd, packname);
-}
-
-void	force_pack_file(char	*packname, char *filename)
-{
-	int				fd;
-	void			*temp;
-	t_filecontent	fc;
-	
-	ft_bzero(&fc, sizeof(t_filecontent));
-	fd = open(filename, O_RDONLY, 0666);
-	if (fd == -1)
-		return ;
-	ft_fileread(fd, &fc);
-	ft_strcpy(fc.name, filename);
-	close(fd);
-	fd = open(packname, O_RDWR | O_APPEND, 0666);
-	if (fd == -1)
-		fd = open(packname, O_CREAT | O_RDWR | O_APPEND, 0666); //TODO: protect after this (or remove this)
-	write(fd, "FCNK", 4);
-	write(fd, fc.name, sizeof(char) * 128);
-	write(fd, uint64_to_char(fc.length), 8);
-	write(fd, fc.content, sizeof(char) * fc.length);
-	write(fd, "PADD", fc.length % 4);
-	close(fd);
-}
-
 void	pack_file_to_level(char *level, char *file)
 {
 	int				fd;
@@ -310,7 +228,7 @@ void	pack_file_to_level(char *level, char *file)
 
 	ft_bzero(&fc, sizeof(t_filecontent));
 	fd = fileopen(file, O_RDONLY);
-	ft_fileread_rene(fd, &fc);
+	ft_fileread(fd, &fc);
 	ft_strncpy(fc.name, file, 127);
 	fileclose(fd, file);
 	fileopen(level, O_RDWR | O_APPEND);
@@ -318,7 +236,7 @@ void	pack_file_to_level(char *level, char *file)
 	write(fd, fc.name, sizeof(char) * 128);
 	write(fd, uint64_to_char(fc.length), 8);
 	write(fd, fc.content, sizeof(char) * fc.length);
-	write(fd, "PADD", 4 - (fc.length % 4));
+	write(fd, "PADD", CHUNKSIZE - (fc.length % CHUNKSIZE));
 	fileclose(fd, level);
 	doomlog_mul(LOG_NORMAL, (char *[5]){\
 			"packed file:", file, "to level:", level, NULL});

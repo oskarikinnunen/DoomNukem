@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 19:40:49 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/21 14:06:43 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@
 # define TEMPMTL "assets/.temp_mtl"
 # define TEMPFONT "assets/.temp_font"
 # define TEMPSOUND "assets/.temp_sound"
+# define TEMPSOUNDLOOP "assets/.temp_sound_loop"
 # define TEMPMUSIC "assets/.temp_music"
 # define TEMPANIM "assets/.temp_anim"
 # define TEMPANIMLEGEND "assets/.temp_anim_legend"

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entitycache_2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 11:51:01 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 12:03:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/21 13:07:13 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,50 +48,4 @@ t_entity	*find_entity_with_comp(t_world	*world, t_componenttype comp)
 		i++;
 	}
 	return (NULL);
-}
-
-void	load_component(t_entity	*entity, char	*filename)
-{
-	t_list	*temp;
-	int		fd;
-	char	*str;
-	char	comp_filename[64];
-
-	printf("trying to load component\n");
-	str = ft_itoa(entity->id);
-	ft_strcpy(comp_filename, str);
-	free(str);
-	ft_strcat(comp_filename, ".comp");
-	fd = load_filecontent_fd(filename, comp_filename);
-	if (fd != -1)
-	{
-		close(fd);
-		temp = load_chunk(comp_filename, "COMP", entity->component.data_size);
-		if (temp != NULL && temp->content != NULL)
-		{
-			printf("found component \n");
-			entity->component.data = temp->content;
-		}
-		remove(comp_filename);
-	}
-}
-
-void	load_cache_from_list(char *filename, t_world *world, t_list *l)
-{
-	t_entity	*list_entity;
-	t_entity	*world_entity;
-	char		comp_filename[64];
-	char		*str;
-
-	while (l != NULL)
-	{
-		list_entity = l->content;
-		if (list_entity->component.type != COMP_NONE)
-		{
-			load_component(list_entity, filename);
-		}
-		world_entity = spawn_entity(world, NULL);
-		ft_memcpy(world_entity, list_entity, sizeof(t_entity));
-		l = l->next;
-	}
 }

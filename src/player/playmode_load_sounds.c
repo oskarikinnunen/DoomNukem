@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 22:05:13 by raho              #+#    #+#             */
-/*   Updated: 2023/03/20 17:26:05 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/21 14:11:44 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,23 @@
 static void	unpack_and_load_sound(int sample_i, char *level_path,
 									char *sound_name, t_audio *audio)
 {
-	load_and_write_filecontent(level_path, sound_name, TEMPSOUND);
-	create_sound(sample_i, TEMPSOUND, audio);
+	if (ft_strstr(sound_name, "loop") != NULL)
+	{
+		load_and_write_filecontent(level_path, sound_name, TEMPSOUNDLOOP);
+		create_sound(sample_i, TEMPSOUNDLOOP, audio);
+		remove(TEMPSOUNDLOOP);
+	}
+	else
+	{
+		load_and_write_filecontent(level_path, sound_name, TEMPSOUND);
+		create_sound(sample_i, TEMPSOUND, audio);
+		remove(TEMPSOUND);
+	}
 	if (audio->samples[sample_i].sound != NULL)
 		ft_strcpy(audio->samples[sample_i].name, extract_filename(sound_name));
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
 			"unpacked and loaded sound file:", \
 			audio->samples[sample_i].name, NULL});
-	remove(TEMPSOUND);
 }
 
 static int	parse_sound_list(int fd, char *level_path, t_audio *audio)
