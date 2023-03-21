@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:01:16 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/15 16:01:17 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/21 14:21:39 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,27 +36,7 @@ static void render_shadowmap(t_world *world, t_lighting *lighting)
 	}
 }
 
-static void calculate_pointlight(t_world *world, t_entity *entity)
-{
-	int				index;
-	t_lighting		lighting;
-
-	update_cubemap_cameras(entity);
-	lighting.light = entity->component.data;
-	lighting.resolution = lighting.light->cubemap.resolution;
-	lighting.light_ent = entity;
-	index = 0;
-	while (index < 6)
-	{
-		lighting.camera = lighting.light->cubemap.cameras[index];
-		lighting.zbuffer = lighting.light->cubemap.shadowmaps[index];
-		ft_bzero(lighting.zbuffer, sizeof(float) * lighting.light->cubemap.resolution.x * lighting.light->cubemap.resolution.y);
-		render_shadowmap(world, &lighting);
-		index++;
-	}
-}
-
-void	update_cubemap_cameras(t_entity *entity)
+static void	update_cubemap_cameras(t_entity *entity)
 {
 	t_light		*light;
 	t_mat4x4	matproj;
@@ -75,6 +55,26 @@ void	update_cubemap_cameras(t_entity *entity)
 		light->cubemap.cameras[i].matproj = matproj;
 		calculate_matview(&light->cubemap.cameras[i]);
 		i++;
+	}
+}
+
+static void calculate_pointlight(t_world *world, t_entity *entity)
+{
+	int				index;
+	t_lighting		lighting;
+
+	update_cubemap_cameras(entity);
+	lighting.light = entity->component.data;
+	lighting.resolution = lighting.light->cubemap.resolution;
+	lighting.light_ent = entity;
+	index = 0;
+	while (index < 6)
+	{
+		lighting.camera = lighting.light->cubemap.cameras[index];
+		lighting.zbuffer = lighting.light->cubemap.shadowmaps[index];
+		ft_bzero(lighting.zbuffer, sizeof(float) * lighting.light->cubemap.resolution.x * lighting.light->cubemap.resolution.y);
+		render_shadowmap(world, &lighting);
+		index++;
 	}
 }
 
@@ -103,4 +103,3 @@ void	recalculate_pointlight(t_world *world)
 		i++;
 	}
 }
-

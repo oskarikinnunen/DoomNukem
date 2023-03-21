@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/15 15:28:32 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/21 14:28:18 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,7 +240,6 @@ void	comp_light_allocate(t_entity *entity, t_world *world)
 	light->clr = INT_MAX;
 	light->intensity = 1.0f;
 	light->origin = (t_vector3){0.0f, -25.0f, -10.0f};
-	update_cubemap_cameras(entity);
 }
 
 /*	Internal function that's used to link this components behaviour

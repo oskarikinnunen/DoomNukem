@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 15:36:10 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/14 14:04:48 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/21 16:23:47 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,18 @@ t_vector3	normal_calc_quaternion(t_quaternion p[3])
 
 	line1 = vector3_sub(p[1].v, p[0].v);
 	line2 = vector3_sub(p[2].v, p[0].v);
+	normal = vector3_crossproduct(line1, line2);
+	normal = vector3_normalise(normal);
+
+	return (normal);
+}
+
+t_vector3	normal_calc(t_vector3 p[3])
+{
+	t_vector3 normal, line1, line2;
+
+	line1 = vector3_sub(p[1], p[0]);
+	line2 = vector3_sub(p[2], p[0]);
 	normal = vector3_crossproduct(line1, line2);
 	normal = vector3_normalise(normal);
 

@@ -113,7 +113,6 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	for_all_active_entities(&game.world, render_entity_worldtriangles);
 	recalculate_lighting(&game.world);
 	sdl.lighting_toggled = true;
-	
 	while (gr == game_continue)
 	{
 		if (game.player.health > 0)

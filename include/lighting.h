@@ -2,6 +2,7 @@
 # define LIGHTING_H
 
 #include "render_utils.h"
+#include "shapes.h"
 
 # define LIGHT_AMBIENT 0.15f
 
@@ -60,4 +61,7 @@ typedef struct s_lighting
 	t_vector3			triangle_normal;
 }	t_lighting;
 
+t_v2rectangle	get_bounds(t_point_triangle *triangle);
+t_vector2		get_barycentric_offset(t_vector2 p[3]);
+void			rasterize_texture(t_point_triangle triangle, t_lighting *lighting);
 #endif

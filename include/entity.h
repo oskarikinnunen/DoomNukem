@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/15 13:08:39 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/21 14:24:35 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,10 +139,6 @@ void	render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 bool	render_worldspace(t_render *render, t_entity *entity);
 void	render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 void	render_entity_worldtriangles(t_entity *entity, struct s_world *world);
-
-void	calculate_light_for_entity(t_entity *entity, t_lighting *lighting);
-void	create_map_for_entity(t_entity *entity, struct s_world *world);
-void	create_dynamic_map_for_entity(t_entity *entity, struct s_world *world);
 
 uint32_t	update_pixel_brightness(uint32_t light, uint32_t clr);
 uint32_t	get_lighting_for_pixel(t_lighting *lighting, uint32_t light_amount, t_vector3 location);

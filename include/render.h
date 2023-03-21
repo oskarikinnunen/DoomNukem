@@ -291,6 +291,7 @@ t_triangle			triangle_to_viewspace(t_triangle tritransformed, t_mat4x4 matview);
 t_point_triangle	triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_triangle clipped, t_sdlcontext sdl);
 bool				is_triangle_backface(t_triangle tritransformed, t_render *render);
 /* RASTERIZER */
+void				rasterize_zbuffer(t_lighting *lighting, t_point_triangle triangle);
 void				render_triangle_lit(t_sdlcontext *sdl, t_render *render, int index);
 void				render_triangle_uv(t_lighting l, t_point_triangle triangle);
 void				render_triangle_unlit(t_sdlcontext *sdl, t_render *render, int index);

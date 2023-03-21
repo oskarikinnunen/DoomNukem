@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 12:58:55 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/21 17:10:49 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,15 @@ typedef struct s_vector2
 	float	x;
 	float	y;
 }	t_vector2;
+
+//returns closest flo
+t_vector2	vector2_ceilf();
+
+t_vector2	vector2_floorf();
+
+t_vector2	vector2_roundf();
+
+t_vector2	vector2_truncf();
 
 //shorthand for (t_vector2){0, 0}
 t_vector2	vector2_zero();
@@ -379,13 +388,13 @@ t_vector2		point_to_vector2(t_point point);
 //Returns static str for given vector3
 char			*vector_string(t_vector3 vec);
 
-t_vector3		vector2_to_texture(t_vector2 v);
-
 typedef struct s_ray
 {
 	t_vector3 origin;
 	t_vector3 dir;
 }	t_ray;
+
+// triangle math functions
 
 //normal barycentric coordinats x is delta value between p0 and p1 and y is delta between p1 and p2
 t_vector2		barycentric_coordinates(t_vector2 *p, t_vector2 v);
@@ -394,9 +403,21 @@ t_vector2		barycentric_coordinates(t_vector2 *p, t_vector2 v);
 t_vector3		get_vector3_from_barycentric(t_vector3 *p, t_vector2 bary);
 
 //returns normal for 3  vector3 points
-t_vector3	normal_calc(t_vector3 p[3]);
+t_vector3		normal_calc(t_vector3 p[3]);
 
 //returns normal for 3 quaternion points
-t_vector3	normal_calc_quaternion(t_quaternion p[3]);
+t_vector3		normal_calc_quaternion(t_quaternion p[3]);
+
+//returns max values from 3 t_vector2 points
+t_vector2		get_max_from_vector2_triangle(t_vector2 p[3]);
+
+//returns min values from 3 t_vector2 points
+t_vector2		get_min_from_vector2_triangle(t_vector2 p[3]);
+
+//returns max x and y from 3 t_vector3
+t_vector2	get_max_vector2_from_vector3_triangle(t_vector2 max, t_vector3 t[3]);
+
+//>= 1.0f == counterclockwise, <= -1.0f == clockwise and 0.0f is collinear
+float		clockwise(t_vector2 p[3]);
 
 #endif

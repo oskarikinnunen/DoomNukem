@@ -6,7 +6,7 @@
 #    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/16 15:09:31 by vlaine           ###   ########.fr        #
+#    Updated: 2023/03/21 18:04:39 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -131,9 +131,17 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		render/init_render.c \
 		render/render_space.c \
 		decal/decal.c \
+		lighting/allocate_map.c \
 		lighting/bake_lighting.c \
+		lighting/calculate_lightmap.c \
+		lighting/calculate_texture.c \
 		lighting/point_light.c \
 		lighting/fragment_light.c \
+		lighting/rasterize_lighting/render_zbuffer.c \
+		lighting/rasterize_lighting/rasterize_zbuffer.c \
+		lighting/rasterize_lighting/rasterize_triangle_shadow.c \
+		lighting/rasterize_lighting/rasterize_texture.c \
+		lighting/rasterize_lighting/rasterize_light_utils.c \
 		thread/thread.c \
 		thread/thread_lighting.c \
 		npc/civilian/civilian_action.c \
@@ -148,7 +156,6 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		npc/enemy/enemy_take_damage.c \
 		npc/navigation/pathfind.c \
 		npc/navigation/navmesh.c \
-		render/rasterization/rasterize_zbuffer.c \
 		render/rasterization/rasterize_triangle_wrap.c \
 		render/rasterization/rasterize_triangle.c \
 		render/rasterization/rasterize_triangle_transparent.c \
@@ -159,8 +166,6 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		render/surface_tools.c \
 		render/colors.c \
 		render/text.c \
-		render/rasterization/rasterize_triangle_shadow.c \
-		render/render_zbuffer.c \
 		render/pixel_utils.c \
 		entity/components/comp_mechasuit.c \
 		entity/components/comp_watercollider.c \
@@ -175,7 +180,7 @@ VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		vector3_complex.c vector3_complex2.c vector3_more.c \
 		vector2_elementary.c vector2_shorthands.c \
 		vector2_complex.c vector2_clamp.c \
-		vector2_more.c \
+		vector2_more.c vector2_round.c \
 		point_elementary.c point_shorthands.c \
 		point_complex.c point_float_ops.c \
 		conversions.c vector3_complex3.c \
@@ -184,7 +189,8 @@ VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
 		matrix_transform.c \
 		matrix_functions.c matrix_functions2.c \
 		debug_vectors.c point_more.c \
-		barycentric.c
+		barycentric.c \
+		triangle_functions.c
 VECTORSRC= $(addprefix src/vectors/,$(VECTORSRCFILES))
 SRC= $(addprefix src/,$(SRCFILES))
 SRC+= $(VECTORSRC)
