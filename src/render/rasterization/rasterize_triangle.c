@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 15:59:40 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/15 16:33:02 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/21 18:39:45 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #define FOG 0.0025f
 
-inline static uint32_t sample_img(t_render *render, uint32_t xsample, uint32_t ysample)
+inline static uint32_t sample_img(t_render *render, int xsample, int ysample)
 {
 	xsample = ft_min(xsample, render->map.size.x - 1);
 	ysample = ft_min(ysample, render->map.size.y - 1); //TODO: check that it doesnt crash

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 13:07:06 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/21 18:22:57 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/21 18:34:15 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,7 @@ static void sample_pixel(t_point xy, t_lighting *lighting)
 	uint32_t	clr;
 	t_img		*img;
 
-	if (lighting->overdraw[xy.y * lighting->map->size.x + xy.x])
-		return ;
-	else
-		lighting->overdraw[xy.y * lighting->map->size.x + xy.x] = true;
+
 	img = lighting->img;
 	light = lighting->map->lightmap[xy.y * lighting->map->size.x + xy.x];
 	clr = img->data[(xy.y % (img->size.y)) * img->size.x + (xy.x % (img->size.x))];
