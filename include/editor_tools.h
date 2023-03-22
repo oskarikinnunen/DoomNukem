@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_tools.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 15:31:29 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 14:49:34 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,14 +92,6 @@ typedef struct s_tool
 	t_img		*icon;
 }	t_tool;
 
-typedef struct s_objectgui
-{
-	t_autogui	gui;
-	//bool		allocate_on_select;
-	bool		indicate_current;
-	bool		autoclose;
-}	t_objectgui;
-
 //struct	s_sdlcontext;
 struct	s_mouse;
 //struct	s_editor;
@@ -113,7 +105,6 @@ void				editor_world_setup(t_editor *ed, char	*worldname, t_sdlcontext *sdl, enu
 void				editor_save_prefs(t_editor *ed);
 
 bool				object_lookedat(t_editor *ed, t_sdlcontext sdl, t_object *obj);
-void				objectgui_update(t_objectgui *ogui, t_entity **ent);
 
 //Call this only once, returns a gui with correctly initialized values
 t_autogui			init_gui(t_sdlcontext *sdl, t_hid_info *hid, t_player *player, t_point origin, char *title);
@@ -158,8 +149,6 @@ bool				gui_labeled_bool(char *str, bool b, t_autogui *gui);
 bool				gui_int_slider(int *i, float mul, t_autogui *gui);
 //Draws a float slider which allows modifying the floats value, returns true if the float changed
 bool				gui_float_slider(float	*f, float mul, t_autogui *gui);
-//Draws a vector3 slider which allows modifying the vectors value, returns true if the vector changed
-void				gui_vector3_slider(t_vector3 *vec, float mul, t_autogui *gui);
 
 //TODO: document
 bool				gui_labeled_bool_edit(char *str, bool *b, t_autogui *gui);
@@ -177,14 +166,8 @@ void				gui_labeled_vector3_slider(char *str, t_vector3 *vec, float mul, t_autog
 bool				gui_hoverlabel(char *str, t_autogui *gui);
 
 void				gui_autosize(t_autogui *gui);
-
-void				point_tool_delete(struct s_editor *ed, t_point crd);
 //TODO: rename and write documentation
 void				update_editor_buttons(t_editor *ed, t_sdlcontext *sdl); //TODO: move somewhere else so game can use it aswell?
-bool				instantbutton(struct s_rectangle rect, struct s_mouse *m, struct s_sdlcontext sdl, char *imgname);
-int					object_selector(t_editor *ed, struct s_sdlcontext sdl, int	original);
-// Combines print_text_boxed and instantbutton to make a button out of the text
-bool				instant_text_button(t_sdlcontext sdl, t_mouse *m, const char *str, t_point pos);
 void				empty_click_func(t_editor *ed);
 t_tool				*get_gun_tool();
 t_tool				*get_room_tool(void);

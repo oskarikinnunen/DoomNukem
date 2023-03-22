@@ -2,6 +2,8 @@
 
 bool is_entity_frustrum_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 {
+	if (entity->obj == NULL)
+		return (true);
 	calculate_triangles(*sdl, render, entity);
 	set_square_from_triangles(&entity->occlusion, render->screenspace_ptris, render->screenspace_ptri_count);
 	if (render->screenspace_ptri_count > 0)

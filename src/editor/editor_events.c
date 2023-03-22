@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 17:52:37 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 19:19:03 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,6 @@ t_gamereturn	editor_events(t_editor *ed)
 			editor_key_down(ed, e);
 		}
 	}
-	updateinput_new(&ed->hid.input, ed->hid);
+	update_input(&ed->hid.input, ed->hid);
 	return (game_continue);
 }

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 13:57:45 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 19:09:21 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 19:19:55 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,6 @@
 #include "objects.h"
 #include "editor_tools.h"
 #include "filechunks.h"
-
-static void	save_entities(char *filename, t_list	*entitylist)
-{
-	save_chunk(filename, "ENT_", entitylist);
-}
 
 char	*world_filename(char *worldname, char *suffix)
 {

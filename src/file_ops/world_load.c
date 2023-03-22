@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world_load.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 14:55:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/21 12:18:29 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 16:14:20 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,8 @@ void	world_load_basic_ent(char *level, t_world *world)
 	t_list	*e_list;
 
 	doomlog(LOG_NORMAL, "LOADING BASIC_ENT");
-	e_list = load_chunk(level, "BENT", sizeof(t_transform) + sizeof(t_gamestring));
+	e_list = load_chunk(level, "BENT", sizeof(t_gamestring)
+			+ sizeof(t_transform) + sizeof(t_componenttype) + sizeof(uint32_t));
 	load_basic_ent_cache_from_list(world, e_list);
 	listdel(&e_list);
 }

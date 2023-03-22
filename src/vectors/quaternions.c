@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/14 17:34:40 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/15 13:21:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/20 18:28:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,5 @@ t_quaternion	lerp_quaternion(t_quaternion from, t_quaternion to, float delta)
 	from.v.y = ft_flerp(from.v.y, to.v.y, delta);
 	from.v.z = ft_flerp(from.v.z, to.v.z, delta);
 	from.w = ft_flerp(from.w, to.w, delta);
-	return (from);
-}
-
-t_point	lerp_point(t_point from, t_point to, float delta)
-{
-	from.x = ft_flerp(from.x, to.x, delta);
-	from.y = ft_flerp(from.y, to.y, delta);
 	return (from);
 }

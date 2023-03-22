@@ -15,13 +15,6 @@ static void sample_img(t_lighting *lighting, int x, int y, t_point_triangle poly
 	lighting->map->lightmap[y * (lighting->map->size.x) + x] = light_amount;
 }
 
-static void sample_pix(t_lighting *lighting, int ax, int y)
-{
-	ax = ft_clamp(ax, 0, lighting->map->size.x - 1);
-	y = ft_clamp(y, 0, lighting->map->size.y - 1);
-	lighting->map->lightmap[y * lighting->map->size.x + ax] = 255;
-}
-
 //>= 1.0f == counterclockwise, <= -1.0f == clockwise and 0.0f is collinear
 static float clockwise(t_vector2 *p)
 {

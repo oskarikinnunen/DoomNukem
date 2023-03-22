@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:22:51 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/14 12:57:14 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/20 18:25:28 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,19 +25,6 @@ t_quaternion	quaternion_mul_matrix(t_mat4x4 m, t_quaternion i)
 	v.w = i.v.x * m.m[0][3] + i.v.y * m.m[1][3] + i.v.z * m.m[2][3]
 		+ i.w * m.m[3][3];
 	return (v);
-}
-
-t_vector3	lookdirection_3(t_vector3 angle)
-{
-	t_quaternion	temp;
-	t_mat4x4		matcamerarot;
-
-	matcamerarot = matrix_makerotationy(angle.y);
-	temp = quaternion_mul_matrix(matcamerarot,
-			(t_quaternion){1.0f, 0.0f, 0.0f, 1.0f});
-	matcamerarot = matrix_makerotationz(angle.x);
-	temp = quaternion_mul_matrix(matcamerarot, temp);
-	return (temp.v);
 }
 
 t_vector3	lookdirection(t_vector2 angle)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   occlusion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 14:40:03 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/14 13:05:50 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/21 14:35:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,7 @@ void update_object_bounds(t_object *obj)
 	obj->bounds.box.v[6] = (t_vector3){.x = min.x, .y = min.y, max.z};
 	obj->bounds.box.v[7] = (t_vector3){.x = min.x, .y = max.y, max.z};
 	obj->bounds.height = max.z - min.z;
+	obj->bounds.min_z = min.z;
 	obj->bounds.count = 8;
 	obj->bounds.type = bt_box;
 }

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 18:11:40 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 19:18:57 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,9 +212,6 @@ void	*prot_memalloc(size_t size);
 /* LOG.C */
 int		init_log(void);
 
-/* HANDLE_EXIT.C */
-// Handles the game's (child process's) exit signal / status
-void	handle_exit(int	wait_status);
 // combines given array of strings to a singular string and returns a pointer to it
 char	*combine_strings(char **str);
 
@@ -333,9 +330,6 @@ t_rectangle	print_text(t_sdlcontext *sdl, const char *text, t_point pos);
 t_rectangle	print_text_boxed(t_sdlcontext *sdl, const char *text, t_point pos);
 
 t_rectangle	print_text_colored(t_sdlcontext *sdl, const char *text, t_point pos, uint32_t color);
-
-
-void			entity_start_anim(t_entity *entity, char *animname);
 /* LIST_HELPER.C TODO: MOVE THESE TO LIBFT*/
 t_list	*ptr_to_list(void	*src, uint32_t len, size_t size);
 void	list_push(t_list **head, void *content, size_t content_size);

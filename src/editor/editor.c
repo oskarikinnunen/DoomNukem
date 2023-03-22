@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 17:52:33 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 19:19:35 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,35 +197,6 @@ void	update_audio(t_world *world)
 	FMOD_System_Update(sdl->audio.system);
 }
 
-char	*seconds_since_last_save_str(t_world *world)
-{
-	static char str[128];
-	uint32_t	time_m;
-	uint32_t	time_s;
-	char		*temp;
-
-	time_s = world->clock.time - world->lastsavetime;
-	time_s = time_s / 1000;
-	time_m = 0;
-	if (world->lastsavetime == 0)
-		ft_strcpy(str, "Loaded ");
-	else
-		ft_strcpy(str, "Saved  ");
-	if (time_s > 60)
-	{
-		time_m = floorf((float)time_s / 60.0f);
-		temp = ft_itoa(time_m);
-		ft_strcat(str, temp);
-		free(temp);
-		ft_strcat(str, "m ");
-	}
-	temp = ft_itoa(time_s - (time_m * 60));
-	ft_strcat(str, temp);
-	free(temp);
-	ft_strcat(str, "s ago");
-	return (str);
-}
-
 int	editorloop(char *level, t_sdlcontext sdl)
 {
 	t_editor	ed;
@@ -246,7 +217,6 @@ int	editorloop(char *level, t_sdlcontext sdl)
 
 	SDL_SetRelativeMouseMode(ed.hid.mouse.relative);
 	ed.player.locked = !ed.hid.mouse.relative;
-	//
 	
 	ed.gamereturn = game_continue;
 	sdl.lighting_toggled = false;
@@ -268,7 +238,6 @@ int	editorloop(char *level, t_sdlcontext sdl)
 		char *fps = ft_itoa(ed.world.clock.fps);
 		print_text(&sdl, fps, (t_point){sdl.window_w - 80, 10});
 		drawcircle(sdl, point_div(sdl.screensize, 2), 4, CLR_BLUE);
-
 		free(fps);
 		update_editor_lateguis(&ed);
 		ed.hid.mouse.click_unhandled = false;
@@ -280,7 +249,6 @@ int	editorloop(char *level, t_sdlcontext sdl)
 	if (ed.player.gun->entity != NULL)
 		destroy_entity(&ed.world, ed.player.gun->entity);
 	save_graphics_prefs(&sdl);
-	//save_world(ed.world.name, ed.world);
 	world_save_to_file(ed.world);
 	if (ed.gamereturn == game_exit)
 	{

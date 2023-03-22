@@ -6,51 +6,13 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/17 18:56:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/20 19:03:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "objects.h"
 #include "doomnukem.h"
 #include "editor_tools.h"
-
-void	render_snapgrid(t_editor *ed, t_sdlcontext *sdl, t_vector2 wallpos, bool shift, bool hover)
-{
-	t_point		indexer;
-	t_vector3	origin;
-	t_vector3	ws;
-	float		clen;
-
-	indexer = point_zero();
-	origin = (t_vector3){wallpos.x - 40.0f, wallpos.y - 40.0f, 0.0f};
-	clen = 40 + (shift && !hover) * 220;
-	sdl->render.gizmocolor = CLR_GRAY;
-	while (indexer.y < 90)
-	{
-		indexer.x = 0;
-		while (indexer.x < 90)
-		{
-			ws = (t_vector3){origin.x + indexer.x, origin.y + indexer.y, 0.0f};
-			if (indexer.x == 40 && indexer.y == 40)
-			{
-				if (hover)
-					sdl->render.gizmocolor = CLR_RED;
-				else
-					sdl->render.gizmocolor = CLR_PRPL;
-				render_ray(sdl, ws, (t_vector3){ws.x, ws.y, clen});
-				render_ray(sdl, ws, (t_vector3){ws.x + clen, ws.y, 0.0f});
-				render_ray(sdl, ws, (t_vector3){ws.x - clen, ws.y, 0.0f});
-				render_ray(sdl, ws, (t_vector3){ws.x, ws.y + clen, 0.0f});
-				render_ray(sdl, ws, (t_vector3){ws.x, ws.y - clen, 0.0f});
-			}
-			else
-				sdl->render.gizmocolor = CLR_GRAY;
-			render_gizmo(*sdl, sdl->render, ws, 2);
-			indexer.x += 10;
-		}
-		indexer.y += 10;
-	}
-}
 
 void	free_walls(t_area *room, t_world *world)
 {
@@ -92,14 +54,6 @@ t_wall	*find_wall(t_wall wall, t_area *room)
 		i++;
 	}
 	return (NULL);	
-}
-
-bool	basicly_identical(t_wall *wall1, t_wall *wall2, t_area *room1, t_area *room2)
-{
-	return (wall1->height == wall2->height
-			&& wall1->z_offset == wall2->z_offset
-			&& room1->height == room2->height
-			&& room1->ceiling_height == room2->ceiling_height);
 }
 
 void	clamp_wall_areaheight(t_wall *wall, t_area *room, t_world *world)
@@ -326,24 +280,4 @@ void	applytrimesh(t_meshtri tri, t_object *obj)
 	obj->uvs[0] = tri.uv[0];
 	obj->uvs[1] = tri.uv[1];
 	obj->uvs[2] = tri.uv[2];
-}
-
-void	init_room_meshes(t_area *room, t_sdlcontext *sdl, t_world *world)
-{
-	int	i;
-
-	i = 0;
-	while (i < room->floorcount)
-	{
-		//room->floors[i].entity = raise_entity(world);
-		room->floors[i].entity->obj = object_tri(sdl);
-		applytrimesh(room->floors[i], room->floors[i].entity->obj);
-		default_floor_occlusion_settings(&room->floors[i], NULL);
-		update_floor_bounds(&room->floors[i]);
-		/*room->walls[i].entity->transform.position = vector3_zero();
-		room->walls[i].entity->transform.scale = vector3_one();
-		room->walls[i].entity->obj = object_plane(sdl);
-		applywallmesh(&room->walls[i]);*/
-		i++;
-	}
 }

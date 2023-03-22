@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   physics.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 13:52:50 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/27 15:22:51 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/20 17:56:25 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,6 @@ bool	pointrectanglecollision(t_point p, t_rectangle rect) //dunno if this should
 {
 	return (p.x > rect.position.x && p.x < rect.position.x + rect.size.x
 		&& p.y > rect.position.y && p.y < rect.position.y + rect.size.y);
-}
-
-bool	pointcirclecollision(t_vector2 p, t_vector2 cp, float r)
-{
-	return (vector2_dist(p, cp) <= r);
 }
 
 float sign (t_point p1, t_vector3 p2, t_vector3 p3)
@@ -103,19 +98,4 @@ bool linelineintersect(t_line line1, t_line line2)
 		}
 	}
 	return (false);
-}
-
-bool pointtrianglecollisionp(t_point point, t_point t1, t_point t2, t_point t3)
-{
-    float d1, d2, d3;
-    bool has_neg, has_pos;
-
-    d1 = sign2(point, t1, t2);
-    d2 = sign2(point, t2, t3);
-    d3 = sign2(point, t3, t1);
-
-    has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
-    has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
-
-    return !(has_neg && has_pos);
 }

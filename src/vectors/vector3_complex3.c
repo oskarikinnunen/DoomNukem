@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:21:41 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/13 17:27:58 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/20 14:35:35 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,22 +26,6 @@ t_quaternion	quaternion_rotate_euler(t_vector3 original, t_vector3 eulers)
 	matrotation = matrix_makerotationx(eulers.z);
 	temp = quaternion_mul_matrix(matrotation, temp);
 	return (temp);
-}
-
-t_vector3	vector3_rotate_euler(t_vector3 original, t_vector3 eulers)
-{
-	t_quaternion	temp;
-	t_mat4x4		matrotation;
-
-	matrotation = matrix_makerotationy(eulers.y);
-	temp.v = original;
-	temp.w = 1.0f;
-	temp = quaternion_mul_matrix(matrotation, temp);
-	matrotation = matrix_makerotationz(eulers.x);
-	temp = quaternion_mul_matrix(matrotation, temp);
-	matrotation = matrix_makerotationx(eulers.z);
-	temp = quaternion_mul_matrix(matrotation, temp);
-	return (temp.v);
 }
 
 t_vector3	vector3_lerp(t_vector3 v1, t_vector3 v2, float lerp)

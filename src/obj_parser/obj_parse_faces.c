@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   obj_parse_faces.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 15:55:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/08 18:57:24 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 18:35:22 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,23 +41,6 @@ t_face	parse_face(char *line)
 	if (i != 3)
 		doomlog(LOG_FATAL, "invalid face string!");
 	return (result);
-}
-
-t_material	*find_materialmatch(char *matname, t_list *materials)
-{
-	t_material	*mat;
-	t_list		*l;
-
-	mat = NULL;
-	l = materials;
-	while (l != NULL)
-	{
-		mat = (t_material *)l->content;
-		if (ft_strcmp(matname, mat->name) == 0)
-			return (mat);
-		l = l->next;
-	}
-	return (NULL);
 }
 
 int			find_materialindex(char *matname, t_list *materials)

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:53:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/17 18:56:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 14:38:24 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,23 +121,6 @@ void highlight_roomborders(t_editor *ed, t_sdlcontext *sdl, t_area *room)
 		i++;
 	}
 	i = 0;
-	/*sdl->render.gizmocolor = CLR_RED;
-	while (i < edgecount)
-	{
-		if (i == edgecount - 1)
-		{
-			//render_ray(*sdl, sdl->render, vector2_to_vector3(room->edges[i]), vector2_to_vector3(room->edges[0]));
-
-			render_ray(*sdl, sdl->render, edges[i], edges[0]);
-		}
-		else
-		{
-			//render_ray(*sdl, sdl->render, vector2_to_vector3(room->edges[i]), vector2_to_vector3(room->edges[i + 1]));
-			render_ray(*sdl, sdl->render, edges[i], edges[i + 1]);
-		}
-			
-		i++;
-	}*/
 }
 
 bool	edge_exists(t_vector2 edge, t_area	*room)
@@ -165,14 +148,6 @@ void highlight_entity(t_sdlcontext *sdl, t_entity *entity, uint32_t color)
 	render_entity(sdl, &sdl->render, entity);
 	sdl->render.wireframe = false;
 	sdl->render.gizmocolor = temp;
-}
-
-void highlight_room_edgelines(t_editor *ed, t_sdlcontext *sdl, t_area *room)
-{
-	int	i;
-
-	i = 0;
-	//while (i < )
 }
 
 void rendergrid(t_world *world, t_vector3 position, int size, uint32_t color)
@@ -218,75 +193,50 @@ bool	is_joined(t_vector2 edge, t_area	*room, t_world *world)
 	return (false);
 }
 
+static void	highlight_area_walls(t_editor *ed, t_sdlcontext *sdl, t_area *area, uint32_t color)
+{
+	int	i;
+	t_vector3	ws;
+	t_vector3	ws2;
+
+	i = 0;
+	while (i < area->wallcount)
+	{
+		if (area->walls[i].edgeline.start != NULL && area->walls[i].edgeline.end != NULL)
+		{
+			ws = v2tov3(*area->walls[i].edgeline.start);
+			ws2 = v2tov3(*area->walls[i].edgeline.start);
+			ws.z = area->height;
+			ws2.z = area->height + area->walls[i].height;
+			render_ray3D(sdl, ws, ws2, color);
+			//ws.z = 
+		}
+		i++;
+	}
+}
+
 void highlight_room(t_editor *ed, t_sdlcontext *sdl, t_area *room, uint32_t color)
 {
 	int	i;
 
 	i = 0;
-	t_vector3	ws;
 	while (i < room->edgecount)
-	{
-		ws = (t_vector3){room->edges[i].x, room->edges[i].y, room->height};
-		if (color == AMBER_3)
-			rendergrid(&ed->world, ws, 10, CLR_GRAY);
-		else if (sdl->render_grid)
-			rendergrid(&ed->world, ws, 10, CLR_BLACKGRAY);
-		i++;
-	}
-	i = 0;
-	sdl->render.wireframe = true;
-	sdl->render.gizmocolor = color;
-	while (i < room->wallcount && room->walls_enabled)
-	{
-		t_wall	w;
-
-		w = room->walls[i];
-		//render_entity(sdl, &sdl->render, room->walls[i].entity);
-		if (w.edgeline.end != NULL && w.edgeline.start != NULL)
-		{
-			float zl = room->height + w.z_offset;
-			float zh = room->height + w.z_offset + w.height;
-			if (is_joined(*w.edgeline.start, room, &ed->world)
-				&& is_joined(*w.edgeline.end, room, &ed->world))
-			{
-				render_gizmo3d(sdl, vector3_add(v2tov3(*w.edgeline.start),(t_vector3){.z = zl}), 2, CLR_GREEN);
-				render_gizmo3d(sdl, vector3_add(v2tov3(*w.edgeline.end),(t_vector3){.z = zl}), 2, CLR_GREEN);
-				render_gizmo3d(sdl, vector3_add(v2tov3(*w.edgeline.start),(t_vector3){.z = zh}), 2, CLR_GREEN);
-				render_gizmo3d(sdl, vector3_add(v2tov3(*w.edgeline.end),(t_vector3){.z = zh}), 2, CLR_GREEN);
-			}
-			render_ray(sdl,
-				vector3_add(v2tov3(*w.edgeline.start),(t_vector3){.z = zh}),
-				vector3_add(v2tov3(*w.edgeline.end),(t_vector3){.z = zh}));
-			render_ray(sdl,
-				vector3_add(v2tov3(*w.edgeline.start),(t_vector3){.z = zl}),
-				vector3_add(v2tov3(*w.edgeline.end),(t_vector3){.z = zl}));
-			render_ray(sdl,
-				vector3_add(v2tov3(*w.edgeline.start),(t_vector3){.z = zl}),
-				vector3_add(v2tov3(*w.edgeline.start),(t_vector3){.z = zh}));
-			render_ray(sdl,
-				vector3_add(v2tov3(*w.edgeline.end),(t_vector3){.z = zl}),
-				vector3_add(v2tov3(*w.edgeline.end),(t_vector3){.z = zh}));
-		}
-		i++;
-	}
-	i = 0;
-	while (i < room->edgecount/* && room->floor_enabled*/)
 	{
 		t_vector3	ws;
 		t_vector3	ws2;
 		t_vector2	start;
 
 		start = room->edges[i];
-		if (is_joined(start, room, &ed->world))
-			sdl->render.gizmocolor = CLR_GREEN;
 		ws = (t_vector3){start.x, start.y, room->height};
-		render_gizmo(*sdl, sdl->render, ws, 2);
+		render_gizmo3d(sdl, ws, 2, color);
 		sdl->render.gizmocolor = color;
 		ws2 = v2tov3(next_edge(room, i));
 		ws2.z = room->height;
-		render_ray(sdl, ws, ws2);
+		if (!room->loop && i == room->edgecount - 1)
+			;
+		else
+			render_ray3D(sdl, ws, ws2, color);
 		i++;
 	}
-	sdl->render.wireframe = false;
-	highlight_roomborders(ed, sdl, room);
+	highlight_area_walls(ed, sdl, room, color);
 }

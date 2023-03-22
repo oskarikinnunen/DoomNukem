@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 19:48:28 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 14:55:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,8 @@ static void	sort_entitycache(t_world *world, t_vector3 location)
 						= world->entitycache.sorted_entities[j];
 				j--;
 			}
-			world->entitycache.sorted_entities[j + 1] = (found++, key);
+			found++;
+			world->entitycache.sorted_entities[j + 1] = key;
 		}
 		i++;
 	}

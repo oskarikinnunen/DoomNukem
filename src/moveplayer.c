@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   moveplayer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 19:36:57 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 14:56:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,6 +193,7 @@ static void gun_update_transform(t_player *player, t_gun *gun, t_clock c)
 	float	zturn = player->input.move.x * 2.0f;
 	if (!player->input.aim)
 		zturn += player->input.turn.x * 5.0f;
+
 	zturn = ft_clampf(zturn, ft_degtorad(-2.5f), ft_degtorad(2.5f));
 	if (player->locked)
 		return ;
@@ -200,17 +201,24 @@ static void gun_update_transform(t_player *player, t_gun *gun, t_clock c)
 	if (gun->view_anim.active)
 		player->transform.rotation.y += gun->view_anim.lerp * c.delta * gun->stats.viewrecoil.y;
 }
-
-void	updateguntransform(t_player *player, t_world *world)
+static void gun_update_reload_status(t_player *player, t_gun *gun, t_world *world)
 {
-	t_gun			*gun;
-	t_vector3		neutralpos;
+	if (gun->bullets != gun->stats.magazinecapacity
+		&& player->input.reload && !gun->reload_anim.active)
+	{
+		if (player->ammo_arr[gun->stats.ammomask] > 0)
+		{
+			gun->reload_anim.framerate = 30;
+			gun->reload_anim.lastframe = gun->stats.reloadtime;
+			player->ammo_arr[gun->stats.ammomask] += gun->bullets;
+			start_anim(&gun->reload_anim, anim_forwards);
+			play_gun_reload_audio(world);
+		}
+	}
+}
 
-	if (player->gun == NULL || player->gun->disabled)
-		return ;
-	gun = player->gun;
-	gun->entity->transform.position = gun->stats.holsterpos;
-	//gun_update_shoot_status
+static void gun_update_shoot_status(t_player *player, t_gun *gun, t_world *world)
+{
 	if ((!player->input.shoot || gun->stats.fullauto)
 		&& world->clock.time > gun->lastshottime + gun->stats.firedelay)
 		gun->readytoshoot = true;
@@ -226,51 +234,70 @@ void	updateguntransform(t_player *player, t_world *world)
 		play_gun_audio(gun, world);
 		player_gun_raycast(player, world);
 	}
-	//gun_update_reload_status
-	if (gun->bullets != gun->stats.magazinecapacity
-		&& player->input.reload && !gun->reload_anim.active)
+}
+
+static void gun_update_reload_anim(t_player *player, t_gun *gun, t_world *world)
+{
+	uint32_t	bullets_added;
+	float		midlerp;
+
+	update_anim(&gun->reload_anim, world->clock.delta);
+	if (!gun->reload_anim.active)
 	{
-		if (player->ammo_arr[gun->stats.ammomask] > 0)
-		{
-			gun->reload_anim.framerate = 30;
-			gun->reload_anim.lastframe = gun->stats.reloadtime;
-			player->ammo_arr[gun->stats.ammomask] += gun->bullets;
-			start_anim(&gun->reload_anim, anim_forwards);
-			play_gun_reload_audio(world);
-		}
+		bullets_added = ft_min(player->ammo_arr[gun->stats.ammomask], gun->stats.magazinecapacity);
+		gun->bullets = bullets_added;
+		player->ammo_arr[gun->stats.ammomask] -= bullets_added;
 	}
-	//gun_update_anims
+	midlerp = 1.0f - (ft_absf(0.5f - gun->reload_anim.lerp) * 2.0f);
+	gun->entity->transform.position.z -= midlerp * 2.2f;
+	gun->entity->transform.rotation.x = ft_degtorad(25.0f * midlerp);
+	gun->entity->transform.rotation.z = ft_degtorad(30.0f * midlerp);
+}
+
+void	updateguntransform(t_player *player, t_world *world)
+{
+	t_gun			*gun;
+	t_vector3		neutralpos;
+
+	if (player->gun == NULL || player->gun->disabled)
+		return ;
+	gun = player->gun;
+	gun->entity->transform.position = gun->stats.holsterpos;
+	gun_update_shoot_status(player, gun, world);
+	gun_update_reload_status(player, gun, world);
 	if (gun->shoot_anim.active)
 		update_anim(&gun->shoot_anim, world->clock.delta);
 	else
 		gun->shoot_anim.lerp = 0.0f;
 	update_anim(&gun->view_anim, world->clock.delta);
 	if (!gun->reload_anim.active)
-	{
 		gun_update_transform(player, gun, world->clock);
-	}
 	else
-	{
-		//gun_update_reload
-		update_anim(&gun->reload_anim, world->clock.delta);
-		if (!gun->reload_anim.active)
-		{
-			uint32_t bullets_added;
-
-			bullets_added = ft_min(player->ammo_arr[gun->stats.ammomask], gun->stats.magazinecapacity);
-			gun->bullets = bullets_added;
-			player->ammo_arr[gun->stats.ammomask] -= bullets_added;
-		}
-		float midlerp = 1.0f - (ft_absf(0.5f - gun->reload_anim.lerp) * 2.0f);
-		gun->entity->transform.position.z -= midlerp * 2.2f;
-		gun->entity->transform.rotation.x = ft_degtorad(25.0f * midlerp);
-		gun->entity->transform.rotation.z = ft_degtorad(30.0f * midlerp);
-	}
+		gun_update_reload_anim(player, gun, world);
 }
 
 static void	noclip_movement(t_player *player, t_vector3 move_vector, t_world *world)
 {
 	player->transform.position = vector3_add(player->transform.position, move_vector);
+}
+
+static void	player_changegun(t_player *player)
+{
+	player->gun_ammos[player->gun_selection] = player->gun->bullets;
+	player->gun_selection += player->input.nextgun;
+	player->gun_selection -= player->input.prevgun;
+	player->gun_selection %= GUNPRESETCOUNT;
+	//Switching gun, hiding all the other player gun entities
+	if (player->guns[player->gun_selection].player_owned == false) //TODO: fix this logic so it works with more than 2 guns
+		player->gun_selection = 0;
+	player->gun = &player->guns[player->gun_selection];
+	int i = 0;
+	while (i < GUNPRESETCOUNT)
+	{
+		player->guns[i].entity->hidden = true;
+		i++;
+	}
+	player->gun->entity->hidden = false;
 }
 
 void	moveplayer(t_player *player, t_input *input, t_world *world)
@@ -279,36 +306,16 @@ void	moveplayer(t_player *player, t_input *input, t_world *world)
 	float		angle;
 
 	player->gun->entity->transform.parent = &player->head_transform;
-	player->input = *input; //TODO: move to update_input?;
-	if ((player->input.nextgun || player->input.prevgun) && !player->gun->reload_anim.active)
-	{
-		player->gun_ammos[player->gun_selection] = player->gun->bullets;
-		player->gun_selection += player->input.nextgun;
-		player->gun_selection -= player->input.prevgun;
-		player->gun_selection %= GUNPRESETCOUNT;
-		//Switching gun, hiding all the other player gun entities
-		if (player->guns[player->gun_selection].player_owned == false) //TODO: fix this logic so it works with more than 2 guns
-			player->gun_selection = 0;
-		player->gun = &player->guns[player->gun_selection];
-		int i = 0;
-		while (i < GUNPRESETCOUNT)
-		{
-			player->guns[i].entity->hidden = true;
-			i++;
-		}
-		player->gun->entity->hidden = false;
-	}
+	player->input = *input;
+	if ((player->input.nextgun || player->input.prevgun)
+		&& !player->gun->reload_anim.active && world->app_mode == APPMODE_PLAY)
+		player_changegun(player);
 	if (world->app_mode == APPMODE_PLAY)
 		updateguntransform(player, world);
 	if (!player->locked)
 	{
 		if (!player->noclip)
-		{
-			if (player->health > 0)
-				playermovement_normal(player, world);
-			else
-				playermovement_death(player, world);
-		}
+			playermovement_normal(player, world);
 		else
 			playermovement_noclip(player, world);
 	}

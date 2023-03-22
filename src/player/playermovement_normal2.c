@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:23:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 16:19:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 16:24:25 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,11 @@ void	crouchupdate(t_player *player, t_world *world)
 		if (!player->crouchjumped
 			&& !player->cp.isgrounded && player->cp.velocity.z >= 0)
 		{
-			player->cp.velocity.z = 0.55f;
+			player->cp.velocity.z = 0.22f;
 			player->crouchjumped = true;
 		}
-		player->height = ft_fmovetowards(player->height,
+		if (player->cp.isgrounded)
+			player->height = ft_fmovetowards(player->height,
 				PLAYER_CROUCHHEIGHT, PLAYER_CROUCHSPEED * world->clock.delta);
 	}
 	else
@@ -58,17 +59,6 @@ void	crouchupdate(t_player *player, t_world *world)
 	bound = get_bound(&player->cp, world);
 	player->height = ft_clampf(player->height,
 			PLAYER_CROUCHHEIGHT, bound.max - player->cp.position->z);
-}
-
-void	player_init_physics(t_player *player)
-{
-	float				lerp;
-	static float		override;
-
-	ft_bzero(&player->cp, sizeof(player->cp));
-	player->cp.position = &player->transform.position;
-	player->cp.radius = 15.0f;
-	player->cp.gravity_override = NULL;
 }
 
 void	player_update_physics(t_player *player, t_world *world)

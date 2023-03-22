@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 11:37:18 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/17 18:56:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 15:12:06 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ t_vector2	*closest_edge(t_area *room, t_vector3 rc)
 	{
 		edge = &room->edges[i];
 		edge_3d = (t_vector3){edge->x, edge->y, room->height};
-		if (vector3_sqr_dist(rc, edge_3d) < 500.0f && vector3_sqr_dist(rc, edge_3d) < prev_dist)
+		if (vector3_sqr_dist(rc, edge_3d) < 1000.0f && vector3_sqr_dist(rc, edge_3d) < prev_dist)
 		{
 			looked = edge;
 			prev_dist = vector3_sqr_dist(rc, edge_3d);

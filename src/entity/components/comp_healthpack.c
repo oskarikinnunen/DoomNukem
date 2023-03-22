@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/02 14:33:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 15:03:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,42 +19,18 @@ void	comp_healthpack_update(t_entity *entity, t_world *world)
 {
 	t_healthpack	*healthpack;
 
-	//if 
-	//world->player->health += 
-	//destroy_entity()
 	healthpack = entity->component.data;
-	if (healthpack == NULL)
+	if (healthpack == NULL || world->app_mode == APPMODE_EDIT)
 		return ;
-}
-
-/* Called once per frame after the 3D world has been drawn, use this to draw gizmos/rays/whatever*/
-void	comp_healthpack_ui_update(t_entity *entity, t_world *world)
-{
-	t_healthpack	*healthpack;
-
-	healthpack = entity->component.data;
-	if (healthpack == NULL)
-		return ;
-}
-
-/* Used to edit component values */
-void	comp_healthpack_gui_edit(t_entity *entity, t_autogui *gui, t_world *world)
-{
-	t_healthpack	*healthpack;
-	//entity->particleimages[particleanim.];
-	healthpack = entity->component.data;
-	gui_label("GUI for healthpack not implemented", gui);
-	if (healthpack == NULL)
-		return ;
-}
-
-/*	This is called during load_world, use only if your component
-	NEEDS to gather assets (sounds etc.) at this time.
-*/
-void	comp_healthpack_loadassets(t_entity *entity, t_world *world)
-{
-	t_healthpack	*healthpack;
-	healthpack = entity->component.data;
+	if (world->player->health < MAXHEALTH
+		&& vector3_sqr_dist(entity->transform.position,
+			world->player->transform.position) < 2000.0f)
+	{
+		world->player->health += 20;
+		world->player->health
+			= ft_clampf(world->player->health, 40, MAXHEALTH);
+		destroy_entity(world, entity);
+	}
 }
 
 /*	Set default values of your component here.
@@ -79,7 +55,7 @@ void	assign_component_healthpack(t_component *component)
 	component->data_size = sizeof(t_healthpack);
 	component->func_allocate = comp_healthpack_allocate;
 	component->func_update = comp_healthpack_update;
-	component->func_gui_edit = comp_healthpack_gui_edit;
-	component->func_ui_update = comp_healthpack_ui_update;
-	component->func_loadassets = comp_healthpack_loadassets;
+	component->func_gui_edit = NULL;
+	component->func_ui_update = NULL;
+	component->func_loadassets = NULL;
 }

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 11:11:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 11:12:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/20 18:33:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,4 @@ uint32_t	game_random_range(t_world *world, uint32_t min, uint32_t max)
 	result = r % (max - min);
 	result += min;
 	return (result);
-}
-
-bool	game_random_coinflip(t_world *world)
-{
-	uint32_t	r;
-
-	r = game_random_range(world, 0, 10000);
-	return (r % 2 == 0);
 }

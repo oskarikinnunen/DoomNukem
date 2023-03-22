@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:49:59 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/01 13:33:58 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/20 18:32:19 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,6 @@
 #include "doomnukem.h"
 #include "objects.h"
 #include "file_io.h"
-
-void	gun_tool_draw_offsetgui(t_editor *ed, t_guntooldata *dat)
-{
-	t_autogui		*gui;
-
-	
-}
 
 void	gun_tool_update(t_editor *ed, t_sdlcontext *sdl)
 {

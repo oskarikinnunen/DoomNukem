@@ -26,28 +26,6 @@ static void sort_quat_tex_by_dist(float dist[3], t_quaternion q[3], t_vector3 t[
 	}
 }
 
-static void sort_quat_by_dist(float dist[3], t_quaternion q[3])
-{
-	int i, j;
-	float			key;
-	t_quaternion	temp_q;
-
-	for (i = 1; i < 3; i++)
-	{
-		key = dist[i];
-		temp_q = q[i];
-		j = i - 1;
-		while (j >= 0 && dist[j] > key)
-		{
-			dist[j + 1] = dist[j];
-			q[j + 1] = q[j];
-			j = j - 1;
-		}
-		dist[j + 1] = key;
-		q[j + 1] = temp_q;
-	}
-}
-
 static void sort_point_and_tex_by_dist(float dist[3], t_vector2 p[3], t_vector3 t[3])
 {
 	int 			i;

@@ -72,6 +72,13 @@ typedef struct s_wall
 /*
 	split floors and ceilings to separate arrays
 */
+typedef struct s_areastatus
+{
+	bool	is_floor;
+	bool	is_exterior;
+	bool	is_room;
+}	t_areastatus;
+
 typedef struct s_room
 {
 	char			name[32];
@@ -107,7 +114,6 @@ void			_room_triangulate_floors(struct s_world *world, t_area *room);
 t_area			*world_add_room(struct s_world *world, t_area *room);
 void			applywallmesh(t_wall *wall, t_area *room, struct s_world *world);
 void			applytrimesh(t_meshtri tri, t_object *obj);
-void			init_room_meshes(t_area *room, t_sdlcontext *sdl, struct s_world *world);
 void			walls_init(struct s_world *world, struct s_sdlcontext *sdl);
 
 #endif

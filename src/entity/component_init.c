@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   component_init.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:34:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 13:01:52 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/20 18:41:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,32 +41,6 @@ void	component_empty_function_pointers(t_component	*component)
 	component->func_ui_update = NULL;
 	component->func_gui_edit = NULL;
 	//render_gizmo2d()
-}
-
-void	component_init(t_entity	*entity)
-{
-	
-	/*if (entity->component.type == pft_none)
-	{
-		entity->component.func_update = NULL;
-		entity->component.func_ui_update = NULL;
-	}
-	if (entity->component.type == pft_audiosource)
-	{
-		assign_component_audiosource(&entity->component);
-	}
-	if (entity->component.type == pft_interactable)
-	{
-		entity->component.func_update = comp_interactable_update;
-		entity->component.func_ui_update = comp_interactable_ui_update;
-	}
-	if (entity->component.type == pft_light)
-	{
-		entity->component.func_update = NULL;
-		entity->component.func_ui_update = comp_light_ui_update;
-		t_pointlight *light = entity->component.data;
-		light->done = true;
-	}*/
 }
 
 void	entity_set_component_functions(t_entity *entity, t_world *world)

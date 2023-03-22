@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_triangle.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/14 14:06:25 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/20 16:54:13 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,28 +47,6 @@ void render_buffer_triangle_wireframes(t_sdlcontext *sdl, t_render *render)
 		drawline(*sdl, vector2_to_point(t1.p[0]), vector2_to_point(t1.p[1]), render->gizmocolor);
 		drawline(*sdl, vector2_to_point(t1.p[1]), vector2_to_point(t1.p[2]), render->gizmocolor);
 		drawline(*sdl, vector2_to_point(t1.p[2]), vector2_to_point(t1.p[0]), render->gizmocolor);
-		index++;
-	}
-}
-
-//TODO: Gona be deprecated one year
-void render_solid_triangle(t_sdlcontext *sdl, t_render *render)
-{
-	int	index;
-
-	index = 0;
-	while (index < render->screenspace_ptri_count)
-	{
-		t_img	img;
-
-		img.data = (uint32_t [1]) {render->screenspace_ptris[index].clr};
-		img.size.x = 1;
-		img.size.y = 1;
-		img.length = 1;
-		render->map.texture = img.data;
-		render->map.img_size = img.size;
-		//render_triangle_wrap(sdl, render, index);
-		render->img = NULL;
 		index++;
 	}
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:44:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/21 14:18:58 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 17:35:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,6 +149,8 @@ static void playmode_preprocess_world(t_world *world)
 			world_add_ramp(world, &cache->entities[i]);
 		if (cache->entities[i].transform.position.x > 20000000.0f || cache->entities[i].transform.position.y > 20000000.0f)
 			destroy_entity(world, &cache->entities[i]);
+		if (cache->entities[i].component.type == COMP_STORYEVENT)
+			entity_assign_object(world, &cache->entities[i], NULL);
 		i++;
 	}
 }

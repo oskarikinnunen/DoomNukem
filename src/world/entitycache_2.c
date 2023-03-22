@@ -3,14 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   entitycache_2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/20 11:51:01 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/21 13:07:13 by raho             ###   ########.fr       */
+/*   Created: 2023/03/22 14:55:11 by okinnune          #+#    #+#             */
+/*   Updated: 2023/03/22 14:55:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "doomnukem.h"
 #include "file_io.h"
 #include "objects.h"
 #include "editor_tools.h"

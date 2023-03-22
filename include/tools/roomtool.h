@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:42:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/27 18:45:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/21 18:35:21 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,14 +40,14 @@ typedef struct s_roomtooldata
 	t_autogui		paint_gui;
 	t_raycastinfo	raycastinfo;
 	t_area			*room;
-	t_wall			wall;
-	t_wall			*ed_wall;
 	t_vector2		*held_edge;
 	t_vector2		*temp_edges;
 	uint32_t		temp_height;
 	bool			room_should_recalculate;
 	t_floorcalc		fc;
 }	t_roomtooldata;
+
+void		room_tool_update(t_editor *ed, t_sdlcontext *sdl);
 
 bool		isconnect(t_vector2 v2, t_area *room);
 t_vector2	vector2_flipxy(t_vector2 vec);
@@ -66,6 +66,8 @@ bool	potentialnode(t_vector3 cursor, t_roomtooldata *dat, t_editor *ed);
 /* ROOM_TOOL_NODE.C */
 void		room_tool_node(t_vector3 cursor, t_roomtooldata *dat, t_editor *ed);
 t_vector2	*closest_edge(t_area *room, t_vector3 rc);
+
+t_area	*get_raycast_room(t_raycastinfo info, t_world *world);
 
 
 # endif

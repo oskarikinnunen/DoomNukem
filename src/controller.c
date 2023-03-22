@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:36:01 by raho              #+#    #+#             */
-/*   Updated: 2023/03/20 11:09:24 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/20 19:20:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,26 +49,9 @@ static void	controller_movement(t_input *input, t_controller *controller)
 	input->shoot += controller->righttrigger;
 }
 
-void	updateinput_new(t_input *input, t_hid_info info)
+void	update_input(t_input *input, t_hid_info info)
 {
 	input->move = vector2_zero();
 	keyboard_movement(input, info.mouse, info.keystate, info.alphakey_pressed);
 	controller_movement(input, info.controller);
-}
-
-void	updateinput(t_input *input, int keystate,
-					t_mouse m, t_controller *controller)
-{
-	input->move = vector2_zero();
-	input->turn = vector2_mul(point_to_vector2(m.delta), MOUSESPEED);
-	input->move.x += controller->leftanalog.x;
-	input->move.y += controller->leftanalog.y;
-	input->crouch += controller->b;
-	input->jump += controller->a;
-	input->turn = vector2_add(input->turn, \
-					vector2_mul(controller->rightanalog, CONTROLLER_SENS));
-	input->aim = m.heldstate >> MOUSE_RIGHT & 1;
-	input->aim += controller->lefttrigger;
-	input->shoot = m.heldstate >> MOUSE_LEFT & 1;
-	input->shoot += controller->righttrigger;
 }

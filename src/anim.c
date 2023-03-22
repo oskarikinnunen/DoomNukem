@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   anim.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:56:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/21 12:46:26 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 14:49:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,6 @@ void	update_anim(t_anim *anim, uint32_t delta)
 	}
 	anim->lerp = ((float)anim->frame / (float)anim->lastframe);
 	anim->lerp = ft_clampf(anim->lerp, 0.0f, 1.0f);
-}
-
-void	update_anim_dir(t_anim *anim, uint32_t delta, t_anim_mode mode)
-{
-	anim->mode = mode;
-	update_anim(anim, delta);
 }
 
 void	start_human_anim(t_entity *entity, char *name, t_world *world)

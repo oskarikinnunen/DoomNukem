@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode_events.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 19:41:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 19:41:41 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 14:54:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,6 @@ int	playmode_events(t_game *game)
 		}
 		controller_events(e, &game->hid);
 	}
-	updateinput_new(&game->hid.input, game->hid);
+	update_input(&game->hid.input, game->hid);
 	return (game_continue);
 }

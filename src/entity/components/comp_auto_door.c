@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_auto_door.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/03 12:26:08 by kfum             ###   ########.fr       */
+/*   Updated: 2023/03/22 17:49:13 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,28 +18,19 @@
 void	comp_auto_door_update(t_entity *entity, t_world *world)
 {
 	t_auto_door	*auto_door;
+	float		dist;
+	t_vector3	og_pos;
 
 	auto_door = entity->component.data;
-	if (vector3_dist(world->player->transform.position, entity->transform.position) < 100.0f)
-	{
-		entity->transform.position.z = ft_fmovetowards(entity->transform.position.z, 100.0f, 0.02f * world->clock.delta);
-	}
+	if (auto_door == NULL)
+		return ;
+	og_pos = entity->transform.position;
+	og_pos.z = auto_door->original_z;
+	dist = vector3_sqr_dist(og_pos, world->player->transform.position);
+	if (dist < 5000.0f)
+		entity->transform.position.z = ft_fmovetowards(entity->transform.position.z, auto_door->original_z + 100.0f, 0.05f * world->clock.delta);
 	else
-	{
-		entity->transform.position.z = ft_fmovetowards(entity->transform.position.z, 0.0f, 0.02f * world->clock.delta);
-	}
-	if (auto_door == NULL)
-		return ;
-}
-
-/* Called once per frame after the 3D world has been drawn, use this to draw gizmos/rays/whatever*/
-void	comp_auto_door_ui_update(t_entity *entity, t_world *world)
-{
-	t_auto_door	*auto_door;
-
-	auto_door = entity->component.data;
-	if (auto_door == NULL)
-		return ;
+		entity->transform.position.z = ft_fmovetowards(entity->transform.position.z, auto_door->original_z, 0.05f * world->clock.delta);
 }
 
 /* Used to edit component values */
@@ -73,7 +64,7 @@ void	comp_auto_door_allocate(t_entity *entity, t_world *world)
 	entity->component.data = ft_memalloc(sizeof(t_auto_door));
 	entity->component.data_size = sizeof(t_auto_door);
 	auto_door = (t_auto_door *)entity->component.data;
-	
+	auto_door->original_z = entity->transform.position.z;
 }
 
 /*	Internal function that's used to link this components behaviour
@@ -82,9 +73,9 @@ void	comp_auto_door_allocate(t_entity *entity, t_world *world)
 void	assign_component_auto_door(t_component *component)
 {
 	component->data_size = sizeof(t_auto_door);
+	component_empty_function_pointers(component);
 	component->func_allocate = comp_auto_door_allocate;
 	component->func_update = comp_auto_door_update;
 	component->func_gui_edit = comp_auto_door_gui_edit;
-	component->func_ui_update = comp_auto_door_ui_update;
 	component->func_loadassets = comp_auto_door_loadassets;
 }
