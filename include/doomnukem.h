@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 18:37:06 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 14:49:27 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,37 @@
 
 # define IMGPATH "assets/images/"
 # define OBJPATH "assets/objects/"
+
 # define IMGLISTPATH "assets/.image_list.txt"
 # define IMGENVLISTPATH "assets/.image_env_list.txt"
 # define OBJLISTPATH "assets/.object_list.txt"
+# define MTLLISTPATH "assets/.material_list.txt"
 # define FONTLISTPATH "assets/.font_list.txt"
 # define SOUNDLISTPATH "assets/.sound_list.txt"
 # define MUSICLISTPATH "assets/.music_list.txt"
+# define ANIMLISTPATH "assets/.anim_list.txt"
+# define ANIMLEGENDPATH "assets/objects/animations/anim_legend.txt"
+
+# define TEMPIMGLIST "assets/.temp_image_list"
+# define TEMPIMGENVLIST "assets/.temp_image_env_list"
+# define TEMPOBJLIST "assets/.temp_object_list"
+# define TEMPFONTLIST "assets/.temp_font_list"
+# define TEMPSOUNDLIST "assets/.temp_sound_list"
+# define TEMPMUSICLIST "assets/.temp_music_list"
+# define TEMPANIMLIST "assets/.temp_anim_list"
+
+# define TEMPIMG "assets/.temp_image"
+# define TEMPIMGENV "assets/.temp_image_env"
+# define TEMPOBJ "assets/.temp_object"
+# define TEMPMTL "assets/.temp_mtl"
+# define TEMPFONT "assets/.temp_font"
+# define TEMPSOUND "assets/.temp_sound"
+# define TEMPSOUNDLOOP "assets/.temp_sound_loop"
+# define TEMPMUSIC "assets/.temp_music"
+# define TEMPANIM "assets/.temp_anim"
+# define TEMPANIMLEGEND "assets/.temp_anim_legend"
+
+# define DEFAULTLEVEL "level0"
 
 # define TEXTBACKGROUND_BORDERPADDING 6
 # define PERFGRAPH_SAMPLES 64
@@ -106,12 +131,20 @@ typedef struct s_log
 	int	fd;
 }	t_log;
 
-typedef enum e_gamemode
+typedef enum e_app_mode
 {
-	MODE_PLAY,
-	MODE_EDITOR
-}	t_gamemode;
-//
+	APPMODE_INVALID,
+	APPMODE_EDIT,
+	APPMODE_PLAY,
+	APPMODE_GFX_RESET
+}	t_app_mode;
+
+typedef struct s_app_argument
+{
+	t_app_mode	app_mode;
+	char		level_name[128];
+}	t_app_argument;
+
 typedef struct s_world
 {
 	char				name[32];
@@ -130,7 +163,7 @@ typedef struct s_world
 	bool				ceiling_toggle;
 	t_navigation		nav;
 	uint32_t			lastsavetime;
-	t_gamemode			gamemode;
+	t_app_mode			app_mode;
 }	t_world;
 
 t_vector2	flipped_uv(t_vector2 og);
@@ -140,21 +173,14 @@ void		for_all_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *worl
 void		update_world3d(t_world *world, t_render *render);
 void		toggle_ceilings(t_world *world);
 
-t_world		load_world_args(char *filename, t_sdlcontext *sdl, enum e_load_arg arg);
-t_world		load_world(char *filename, t_sdlcontext *sdl);
-void		editor_load_images(t_sdlcontext *sdl);
-void		editor_load_env_textures(t_sdlcontext *sdl);
-void		editor_load_objects(t_sdlcontext *sdl);
-void		editor_load_anims(t_object *object, char *anim_name, int i);
-void		editor_load_anim_legend(t_sdlcontext *sdl);
 
+t_world		load_world(char *level_name, t_sdlcontext *sdl);
 
 void		destroy_entity(t_world *world, t_entity *ent);
 t_entity	*find_entity_with_comp(t_world	*world, t_componenttype comp);
 t_entity	*spawn_entity(t_world *world, t_object *obj);
 t_entity	*spawn_basic_entity(t_world *world, char *objectname, t_vector3 position);
 void		entity_assign_object(t_world *world, t_entity *entity, t_object *obj);
-void		save_world(char *filename, t_world world);
 
 
 void		world_save_to_file(t_world world);
@@ -175,10 +201,12 @@ typedef struct s_game
 	t_player		player;
 } t_game;
 
-/* ASSETS */
 
-int		count_asset_list(char *filename);
-char	*extract_filename(const char *filepath);
+t_app_argument	get_app_argument(int argc, char **argv);
+
+/* TOOLS */
+// Protected ft_memalloc that calls doomlog with error code in case of an error
+void	*prot_memalloc(size_t size);
 
 /* LOG.C */
 int		init_log(void);
@@ -187,7 +215,15 @@ int		init_log(void);
 char	*combine_strings(char **str);
 
 /* EDITOR.C */
-int		editorloop(t_sdlcontext sdl);
+int		editorloop(char *level, t_sdlcontext sdl);
+void	editor_load_images(t_sdlcontext *sdl);
+void	editor_load_env_textures(t_sdlcontext *sdl);
+void	editor_load_objects(t_sdlcontext *sdl);
+void	editor_load_fonts(t_sdlcontext *sdl);
+void	editor_load_sounds(t_audio *audio);
+void	editor_load_music(t_audio *audio);
+void	editor_load_anims(char *anim_name, t_object *object);
+void	editor_load_anim_legend(t_sdlcontext *sdl);
 
 /* EDITOR_EVENTS.C */
 bool			iskey(SDL_Event e, int keycode);
@@ -230,8 +266,17 @@ uint32_t	game_random_range(t_world *world, uint32_t min, uint32_t max);
 bool		game_random_coinflip(t_world *world);
 
 /* PLAYMODE.C */
-int		playmode(t_sdlcontext sdl);
+int		playmode(char *level, t_sdlcontext sdl);
 void	playmode_death(t_game *game);
+void	playmode_load_images(char *level_path, t_sdlcontext *sdl);
+void	playmode_load_env_textures(char *level_path, t_sdlcontext *sdl);
+void	playmode_load_objects(char *level_path, t_sdlcontext *sdl);
+void	playmode_load_fonts(char *level_path, t_sdlcontext *sdl);
+void	playmode_load_sounds(char *level_path, t_audio *audio);
+void	playmode_load_music(char *level_path, t_audio *audio);
+void	playmode_load_anims(char *level_path, char *anim_name, t_object *object);
+void	playmode_load_anim_legend(char *level_path, t_sdlcontext *sdl);
+
 
 /* PLAYER.C */
 void	player_init(t_player *player, t_sdlcontext *sdl, t_world *world);
@@ -256,7 +301,7 @@ bool	alaiwan_collision(t_world *world, t_player *player, t_vector3 potential_pos
 void	error_log(int error_code);
 
 /* SDL */
-void	create_sdlcontext(t_sdlcontext	*sdl, t_gamemode mode);
+void	create_sdlcontext(char *level, t_sdlcontext	*sdl, t_app_mode app_mode);
 void	create_sdl_window(t_sdlcontext *sdl, t_screenmode mode);
 void	set_sdl_settings(t_sdlcontext *sdl);
 void	init_sdl_error_window(t_sdlcontext *sdl);
@@ -266,9 +311,7 @@ void	apply_graphics_prefs(t_graphicprefs prefs);
 
 /* FONT.C */
 
-void	editor_load_fonts(t_sdlcontext *sdl);
-void	playmode_load_fonts(t_sdlcontext *sdl);
-
+t_font	font_parse(char *file_name);
 void	draw_black_background(t_sdlcontext *sdl, t_point pos, t_point size);
 
 //TEMP, TODO: move
@@ -278,19 +321,16 @@ t_line	line_shorten(t_line line);
 
 // Prints text and returns the rectangle of the printed text
 // Font size and color can be set using:
-// sdl->font_default->size_default = sdl->font_default->font_sizes[x] where x can be 0-3
-// sdl->font_default->color = color32_to_sdlcolor(CLR_GREEN)
+// sdl->font->font = sdl->font->font_sizes[x] where x can be 0-3
+// sdl->font->color = color32_to_sdlcolor(CLR_GREEN)
 t_rectangle	print_text(t_sdlcontext *sdl, const char *text, t_point pos);
 
 // Does the same as print_ftext but also fills in the background for the text
-// Background can be changed with:
-// sdl->font_default->box_color = sdl->font_default->background_colors.'color'
 t_rectangle	print_text_boxed(t_sdlcontext *sdl, const char *text, t_point pos);
 
 t_rectangle	print_text_colored(t_sdlcontext *sdl, const char *text, t_point pos, uint32_t color);
 /* LIST_HELPER.C TODO: MOVE THESE TO LIBFT*/
 t_list	*ptr_to_list(void	*src, uint32_t len, size_t size);
-void	ptr_add(void **ptr, uint32_t *len, size_t size, void *add);
 void	list_push(t_list **head, void *content, size_t content_size);
 void	*list_findlast(t_list *head);
 void	*list_to_ptr(t_list *source, uint32_t *set_length);

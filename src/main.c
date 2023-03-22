@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 17:55:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 14:50:21 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	quit_game(t_sdlcontext *sdl)
 
 void	alloc_occlusion(t_sdlcontext *sdl)
 {
-	sdl->bitmask.tile = ft_memalloc(sizeof(t_tile) * ((sdl->window_h * sdl->window_w) / 64)); //TODO: free
+	sdl->bitmask.tile = prot_memalloc(sizeof(t_tile) * ((sdl->window_h * sdl->window_w) / 64)); //TODO: free
 	sdl->bitmask.bitmask_chunks.x = sdl->window_w / 16;
 	sdl->bitmask.bitmask_chunks.y = sdl->window_h / 8;
 	sdl->bitmask.tile_chunks.x = sdl->window_w / 8;
@@ -72,13 +72,13 @@ void	set_sdl_settings(t_sdlcontext *sdl)
 	sdl->ui_surface = SDL_CreateRGBSurfaceWithFormat(SDL_SWSURFACE, sdl->window_w, sdl->window_h, 32, SDL_PIXELFORMAT_ARGB8888);
 	if (sdl->ui_surface == NULL)
 		doomlog(LOG_EC_SDL_CREATERGBSURFACE, NULL);
-	sdl->zbuffer = ft_memalloc(sdl->window_w * sdl->window_h * sizeof(float));
-	sdl->scaling_buffer = ft_memalloc(sdl->window_w * sdl->window_w * sizeof(uint32_t));
+	sdl->zbuffer = prot_memalloc(sdl->window_w * sdl->window_h * sizeof(float));
+	sdl->scaling_buffer = prot_memalloc(sdl->window_w * sdl->window_w * sizeof(uint32_t));
 	alloc_occlusion(sdl);
 	sdl->render = init_render(*sdl);
 }
 
-void	create_sdlcontext(t_sdlcontext	*sdl, t_gamemode mode)
+void	create_sdlcontext(char *level, t_sdlcontext	*sdl, t_app_mode app_mode)
 {
 	ft_bzero(sdl, sizeof(t_sdlcontext));
 	if (SDL_Init(SDL_INIT_VIDEO) < 0 \
@@ -87,75 +87,33 @@ void	create_sdlcontext(t_sdlcontext	*sdl, t_gamemode mode)
 		|| TTF_Init() < 0)
 		doomlog(LOG_EC_SDL_INIT, NULL);
 	set_sdl_settings(sdl);
-	if (mode == MODE_EDITOR)
+	if (app_mode == APPMODE_EDIT)
 		editor_load_assets(sdl);
-	else
-		playmode_load_assets(sdl);
+	else if (app_mode == APPMODE_PLAY)
+		playmode_load_assets(level, sdl);
 }
 
-void	checkargs(int argc, char **argv)
-{
-	if (argc == 2 && ft_strcmp(argv[1], "-gfxreset") == 0)
-		reset_graphics_prefs();
-	if (argc == 2 && ft_strcmp(argv[1], "-mapreset") == 0)
-	{
-		
-	}
-}
-
-void	doomnukem(int argc, char **argv)
+int	main(int argc, char **argv)
 {
 	t_sdlcontext	sdl;
-	t_gamereturn	gr;
+	t_app_argument	app_argument;
 
-	checkargs(argc, argv);
-	gr = game_switchmode;
-	if (argc == 2 && ft_strcmp(argv[1], "-editor") == 0)
+	app_argument = get_app_argument(argc, argv);
+	if (app_argument.app_mode == APPMODE_GFX_RESET)
 	{
-		create_sdlcontext(&sdl, MODE_EDITOR);
-		gr = editorloop(sdl);
+		reset_graphics_prefs();
+		ft_putendl("graphics reset succesfully");
+		return (0);
 	}
-	else
+	create_sdlcontext(app_argument.level_name, &sdl, app_argument.app_mode);
+	if (app_argument.app_mode == APPMODE_EDIT)
+		editorloop(app_argument.level_name, sdl);
+	else if (app_argument.app_mode == APPMODE_PLAY)
+		playmode(app_argument.level_name, sdl);
+	else if (app_argument.app_mode == APPMODE_INVALID)
 	{
-		create_sdlcontext(&sdl, MODE_PLAY);
-		gr = playmode(sdl);
+		ft_putendl_fd("usage: ./DoomNukem [[-edit | -play] level_file] | -gfxreset", 2);
+		return (1);
 	}
-	/*while (gr == game_switchmode)
-	{
-		//gr = editorloop(sdl); // quit & exit is handled inside the loop
-		gr = playmode(sdl); // quit & exit is handled inside the loop
-	}*/
-}
-
-/*
-
-int	main(int argc, char **argv)
-{
-	/* pid_t	pid;
-	int		wait_status;
-
-	pid = fork();
-	if (pid == -1)
-	{
-		doomlog(LOG_EC_FORK, "couldn't create a process for the game");
-		error_window("couldn't launch the game due to a process fork fail");
-	}
-	if (pid == 0) // child process is always pid 0*//*
-		doomnukem(argc, argv);
-	else
-	{
-		wait(&wait_status);
-		handle_exit(wait_status);
-	} 
-	doomnukem(argc, argv);
-	return (0);
-}
-*/
-int	main(int argc, char **argv)
-{
-	pid_t	pid;
-	int		wait_status;
-
-	doomnukem(argc, argv);
 	return (0);
 }

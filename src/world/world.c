@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 13:07:47 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 14:55:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,6 @@ void	update_world3d(t_world *world, t_render *render)
 	bitmask_to_pixels(sdl);
 	rescale_surface(sdl);
 	lateupdate_entitycache(sdl, world);
-	if (world->gamemode == MODE_EDITOR && !world->debug_gui->hidden)
+	if (world->app_mode == APPMODE_EDIT && !world->debug_gui->hidden)
 		world_update_debug_gui(world, sdl, render);
 }

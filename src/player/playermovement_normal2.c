@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:23:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 17:56:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 16:24:25 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,11 @@ void	crouchupdate(t_player *player, t_world *world)
 		if (!player->crouchjumped
 			&& !player->cp.isgrounded && player->cp.velocity.z >= 0)
 		{
-			player->cp.velocity.z = 0.55f;
+			player->cp.velocity.z = 0.22f;
 			player->crouchjumped = true;
 		}
-		player->height = ft_fmovetowards(player->height,
+		if (player->cp.isgrounded)
+			player->height = ft_fmovetowards(player->height,
 				PLAYER_CROUCHHEIGHT, PLAYER_CROUCHSPEED * world->clock.delta);
 	}
 	else

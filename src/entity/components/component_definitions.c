@@ -41,7 +41,11 @@ t_componentdefinition	*get_component_definitions()
 		(t_componentdefinition){.type = COMP_GUN_PICKUP, .name = "Gun_pickup",
 			.func_assign_component = assign_component_gun_pickup},
 		(t_componentdefinition){.type = COMP_AUTO_DOOR, .name = "Auto_door",
-			.func_assign_component = assign_component_auto_door}
+			.func_assign_component = assign_component_auto_door},
+		(t_componentdefinition){.type = COMP_STORYEVENT, .name = "Storyevent",
+			.func_assign_component = assign_component_storyevent},
+		(t_componentdefinition){.type = COMP_BOUTTON, .name = "Boutton",
+			.func_assign_component = assign_component_boutton}
 	};
 	return (editables);
 }

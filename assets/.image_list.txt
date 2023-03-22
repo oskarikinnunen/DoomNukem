@@ -14,6 +14,7 @@ assets/images/tga/entity.tga
 assets/images/tga/barrel.tga
 assets/images/tga/grid.tga
 assets/images/tga/trash.tga
+assets/images/tga/boutton.tga
 assets/images/tga/light2.tga
 assets/images/tga/stone02.tga
 assets/images/tga/metal03.tga

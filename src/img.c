@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 13:42:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 19:20:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 14:49:59 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ static t_img	*error_image()
 			i++;
 		}
 		err_img.data = data;
-		doomlog(LOG_WARNING, "created an error img");
 	}
 	return (&err_img);
 }

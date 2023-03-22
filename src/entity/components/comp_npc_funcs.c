@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:22:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 16:54:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 14:53:55 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static void	comp_npc_ui_update(t_entity *entity, t_world *world)
 	t_npc			*npc;
 	int				i;
 
-	if (world->gamemode == MODE_EDITOR || 1)
+	if (world->app_mode == APPMODE_EDIT || 1)
 		return ;
 	npc = entity->component.data;
 	render_ray3D(world->sdl, entity->transform.position,

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_gun_pickup.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/16 14:16:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/20 19:48:28 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	comp_gun_pickup_update(t_entity *entity, t_world *world)
 	t_gun_pickup	*gun_pickup;
 	
 	gun_pickup = entity->component.data;
-	if (gun_pickup == NULL || world->gamemode == MODE_EDITOR)
+	if (gun_pickup == NULL || world->app_mode == APPMODE_EDIT)
 		return ;
 	entity->transform.rotation.x += world->clock.delta * 0.001f;
 	entity->transform.position.z = gun_pickup->original_z + (sinf(world->clock.time * 0.001f) * 10.0f);

@@ -10,6 +10,7 @@ assets/objects/tex_cube.obj
 assets/objects/concrete_stairs_ramp.obj
 assets/objects/grenadelauncher.obj
 assets/objects/bench.obj
+assets/objects/boutton.obj
 assets/objects/welrod.obj
 assets/objects/trash.obj
 assets/objects/concrete_ramp.obj

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 13:08:36 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 15:03:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	comp_healthpack_update(t_entity *entity, t_world *world)
 	t_healthpack	*healthpack;
 
 	healthpack = entity->component.data;
-	if (healthpack == NULL || world->gamemode == MODE_EDITOR)
+	if (healthpack == NULL || world->app_mode == APPMODE_EDIT)
 		return ;
 	if (world->player->health < MAXHEALTH
 		&& vector3_sqr_dist(entity->transform.position,

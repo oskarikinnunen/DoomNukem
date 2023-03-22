@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:44:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 13:06:58 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 17:35:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,13 +149,15 @@ static void playmode_preprocess_world(t_world *world)
 			world_add_ramp(world, &cache->entities[i]);
 		if (cache->entities[i].transform.position.x > 20000000.0f || cache->entities[i].transform.position.y > 20000000.0f)
 			destroy_entity(world, &cache->entities[i]);
+		if (cache->entities[i].component.type == COMP_STORYEVENT)
+			entity_assign_object(world, &cache->entities[i], NULL);
 		i++;
 	}
 }
 
 // Resetlevel??
 /*setup and call gameloop*/
-int playmode(t_sdlcontext sdl)
+int playmode(char *level, t_sdlcontext sdl)
 {
 	t_game game;
 	t_gamereturn gr;
@@ -164,9 +166,8 @@ int playmode(t_sdlcontext sdl)
 	// Locks mouse
 	if (SDL_SetRelativeMouseMode(SDL_TRUE) < 0)
 		doomlog(LOG_EC_SDL_SETRELATIVEMOUSEMODE, NULL);
-	game.world = load_world_args("leveltest_bu", &sdl, LOAD_ARG_FULL);
-	game.world.gamemode = MODE_PLAY;
-	initialize_controllers(&game.hid);
+	game.world = load_world(level, &sdl);
+	game.world.app_mode = APPMODE_PLAY;
 	create_navmesh(&game.world);
 	playmode_preprocess_world(&game.world);
 	player_init(&game.player, &sdl, &game.world);

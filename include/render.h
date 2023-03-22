@@ -32,6 +32,8 @@
 # define AMBER_3 0xff9b05
 # define AMBER_4 0xf5a845
 # define CLEARSCREEN "\e[1;1H\e[2J"
+# define DEFAULT_FONT_SIZE 8
+# define FONT_SIZE_COUNT 4
 
 typedef struct s_step
 {
@@ -304,8 +306,9 @@ void			update_maxvolume(t_audio *audio);
 
 /* AUDIO */
 
-void	editor_load_audio(t_audio *audio);
-void	playmode_load_audio(t_audio *audio);
+void	create_audio(t_audio *audio);
+void	editor_load_sounds(t_audio *audio);
+void	editor_load_music(t_audio *audio);
 void	pause_audio(t_audio *audio, bool pause);
 void	close_audio(t_audio *audio);
 void	play_music(t_sdlcontext *sdl, char *musicname);
@@ -314,6 +317,9 @@ void	change_music(t_sdlcontext *sdl, char *musicname);
 //void	play_worldsound(t_audio *audio, const char *name, t_vector3 *pos);
 void	pause_sound(t_audio *audio, const char *name, bool pause);
 //void	pause_all_sounds(t_audio *audio, bool pause);
+FMOD_MODE	get_mask(char *sound_path);
+void	create_sound(int sample_i, char *sound_path, t_audio *audio);
+void	create_music(int music_i, char *music_path, t_audio *audio);
 
 
 void	pause_music(t_audio *audio, bool pause);

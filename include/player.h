@@ -31,6 +31,7 @@ typedef struct s_gui_notification
 	t_gamestring	str;
 }	t_gui_notification;
 
+//TODO: add raycast_info
 typedef struct s_player
 {
 	t_transform			transform;

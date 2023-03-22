@@ -6,13 +6,14 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 13:57:45 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 14:53:32 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 14:54:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "file_io.h"
 #include "objects.h"
 #include "editor_tools.h"
+#include "filechunks.h"
 
 char	*world_filename(char *worldname, char *suffix)
 {
@@ -82,18 +83,19 @@ void	_world_sanitize_all_room_pointers(t_world *world)
 	}
 }
 
-static void	_world_save_amap(t_world world)
-{
-	int		fd;
-	char	*filename;
+/*
+Save .amap
+Save .basic_ent
+Save .full_ent
+*/
 
-	filename = world_filename(world.name, ".amap");
+static void	_world_save_amap(char *level, t_world world)
+{
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
-		"saving .amap to", filename, NULL});
-	fd = fileopen(filename, O_RDWR | O_CREAT | O_TRUNC);
+			"saving .amap to", level, NULL});
 	_world_remove_all_room_entities(&world);
 	_world_sanitize_all_room_pointers(&world);
-	save_chunk(filename, "AREA", world.arealist);
+	save_chunk(level, "AREA", world.arealist);
 }
 
 static void	_entitylist_basicify(t_list *ent_list)
@@ -111,52 +113,78 @@ static void	_entitylist_basicify(t_list *ent_list)
 	}
 }
 
-static void	_world_save_basic_ent(t_world world)
+static void _world_save_basic_ent(char *level, t_world world)
 {
-	int		fd;
-	char	*filename;
 	t_list	*entitylist;
 
-	filename = world_filename(world.name, ".basic_ent");
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
-		"saving .basic_ent to", filename, NULL});
-	fd = fileopen(filename, O_RDWR | O_CREAT | O_TRUNC);
+			"saving .basic_ent to", level, NULL});
 	entitylist = entitycache_to_list(&world.entitycache);
 	_entitylist_basicify(entitylist);
-	save_chunk(filename, "BENT", entitylist);
+	save_chunk(level, "BENT", entitylist);
 }
 
-static void	_world_save_images(t_world *world, char *image_list)
+static void	_world_save_asset_files_rene(char *level, char *asset_list)
 {
 	int		fd;
 	int		ret;
 	char	*filename;
 
 	filename = NULL;
-	fd = fileopen(image_list, O_RDONLY);
+	fd = fileopen(asset_list, O_RDONLY);
 	ret = get_next_line(fd, &filename);
 	while (ret)
 	{
 		if (filename)
 		{
-			force_pack_file(".tgapack", filename);
+			pack_file_to_level(level, filename);
 			free(filename);
 			filename = NULL;
 		}
 		ret = get_next_line(fd, &filename);
 	}
 	if (ret == -1)
-		doomlog(LOG_EC_GETNEXTLINE, "_world_save_images");
-	fileclose(fd, image_list);
+		doomlog(LOG_EC_GETNEXTLINE, asset_list);
+	fileclose(fd, asset_list);
+}
+
+void	clean_create_level_file(char *level)
+{
+	fileclose(fileopen(level, O_CREAT | O_RDWR | O_TRUNC), level);
+	doomlog_mul(LOG_NORMAL, (char *[5]){\
+			"cleaned/created the level:", level, "succesfully"});
 }
 
 void	world_save_to_file(t_world world)
 {
+	char	level_path[256];
+
+	ft_strcpy(level_path, "worlds/");
+	ft_strncat(level_path, world.name, 200);
+	
 	doomlog(LOG_NORMAL, "SAVING WORLD");
-	_world_save_amap(world);
-	_world_save_basic_ent(world);
-	//_world_save_full_ent(world);
+
+	clean_create_level_file(level_path);
+
+	_world_save_amap(level_path, world);
+	_world_save_basic_ent(level_path, world);
 	_world_init_rooms(&world);
-	//_world_save_images(&world, "assets/.image_list.txt");
-	//_world_save_images(&world, "assets/.image_list_env.txt");
+
+	// THESE NEED TO BE IN THE SAME ORDER AS LOADING ATM
+	pack_file_to_level(level_path, FONTLISTPATH);
+	_world_save_asset_files_rene(level_path, FONTLISTPATH);
+	pack_file_to_level(level_path, IMGLISTPATH);
+	_world_save_asset_files_rene(level_path, IMGLISTPATH);
+	pack_file_to_level(level_path, IMGENVLISTPATH);
+	_world_save_asset_files_rene(level_path, IMGENVLISTPATH);
+	pack_file_to_level(level_path, SOUNDLISTPATH);
+	_world_save_asset_files_rene(level_path, SOUNDLISTPATH);
+	pack_file_to_level(level_path, MUSICLISTPATH);
+	_world_save_asset_files_rene(level_path, MUSICLISTPATH);
+	pack_file_to_level(level_path, OBJLISTPATH);
+	_world_save_asset_files_rene(level_path, OBJLISTPATH);
+	_world_save_asset_files_rene(level_path, MTLLISTPATH);
+	pack_file_to_level(level_path, ANIMLISTPATH);
+	_world_save_asset_files_rene(level_path, ANIMLISTPATH);
+	pack_file_to_level(level_path, ANIMLEGENDPATH);
 }

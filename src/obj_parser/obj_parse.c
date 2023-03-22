@@ -66,8 +66,9 @@ void	parse_mtllib(t_list **list, char *filename)
 	ft_strcpy(mat_path, OBJPATH);
 	ft_strcat(mat_path, filename);
 	fd = open(mat_path, O_RDONLY);
+	
 	if (fd == -1)
-		doomlog(LOG_EC_CLOSE, mat_path);
+		return ;
 	line = NULL;
 	ret = get_next_line(fd, &line);
 	while (ret)
@@ -141,6 +142,8 @@ t_object	objparse(char *filename)
 	uvs = get_uv_list(fd);
 	faces = get_face_list(fd, materials);
 	result.materials = list_to_ptr(materials, &result.material_count);
+	if (result.materials == NULL)
+		result.materials = ft_memalloc(sizeof(t_material));
 	result.vertices = list_to_ptr(vertices, &result.vertice_count);
 	result.uvs = list_to_ptr(uvs, &result.uv_count);
 	result.faces = list_to_ptr(faces, &result.face_count);

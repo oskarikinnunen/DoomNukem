@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/21 18:09:40 by okinnune         ###   ########.fr        #
+#    Updated: 2023/03/22 14:49:04 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,6 +32,7 @@ LIBFT = libft/libft.a
 
 #Source files:
 SRCFILES= main.c img.c deltatime.c anim.c \
+		app_argument.c \
 		file_ops/filechunks.c	\
 		file_ops/world_save.c	\
 		file_ops/world_load.c	\
@@ -39,12 +40,14 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		editor/editor_mouse.c \
 		editor/editor_events.c \
 		editor/key_events.c \
-		editor/editor_preferences.c \
 		editor/editor_asset_load.c \
 		editor/editor_load_anims.c \
 		editor/editor_load_anim_legend.c \
 		editor/editor_load_images.c \
 		editor/editor_load_objects.c \
+		editor/editor_load_fonts.c \
+		editor/editor_load_sounds.c \
+		editor/editor_load_music.c \
 		editor/tools/entity_tool.c \
 		editor/tools/entity_tool_base.c \
 		editor/tools/entity_tool_modify.c \
@@ -94,6 +97,14 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		player/playermovement_noclip.c \
 		player/playmode.c \
 		player/playmode_asset_load.c \
+		player/playmode_load_images.c \
+		player/playmode_load_env_textures.c \
+		player/playmode_load_objects.c \
+		player/playmode_load_fonts.c \
+		player/playmode_load_sounds.c \
+		player/playmode_load_music.c \
+		player/playmode_load_anims.c \
+		player/playmode_load_anim_legend.c \
 		player/playmode_death.c \
 		player/playmode_events.c \
 		player/hud.c \
@@ -114,7 +125,7 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		tga_parser/image_data.c \
 		tga_parser/preliminary_data.c \
 		game_random.c \
-		font.c \
+		logging/prot_memalloc.c \
 		object_init.c \
 		object_primitives.c \
 		resolution_scaling.c \
@@ -162,7 +173,9 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		entity/components/comp_healthpack.c \
 		entity/components/comp_playerspawn.c \
 		entity/components/comp_gun_pickup.c \
-		entity/components/comp_auto_door.c #.ENDSRC. CREATECOMPONENT SCRIPT DEPENDS ON THIS SO DONT REMOVE
+		entity/components/comp_auto_door.c \
+		entity/components/comp_storyevent.c \
+		entity/components/comp_boutton.c #.ENDSRC. CREATECOMPONENT SCRIPT DEPENDS ON THIS SO DONT REMOVE
 VECTORSRCFILES= conversions.c \
 		conversions2.c \
 		matrix_functions3.c \

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 14:40:58 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 14:53:44 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,23 +57,6 @@ void	world_remove_room(t_world *world, t_area *room)
 {
 	room_remove_entities(room, world);
 	list_remove(&world->arealist, room, sizeof(t_area));
-}
-
-void	ptr_add(void **ptr, uint32_t *len, size_t size, void *add)
-{
-	void	*newptr;
-
-	newptr = ft_memalloc((*len + 1) * size);
-	if (newptr == NULL)
-		doomlog(LOG_EC_MALLOC, NULL);
-	if (*ptr != NULL)
-	{
-		ft_memcpy(newptr, *ptr, *len * size);
-		free (*ptr);
-	}
-	ft_memcpy(newptr + ((*len) * size), add, size);
-	*len = *len + 1;
-	*ptr = newptr;
 }
 
 static t_line	edgeline_to_line(t_edgeline edgeline)

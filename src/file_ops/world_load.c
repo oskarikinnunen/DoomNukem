@@ -6,26 +6,13 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 14:55:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/17 18:56:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 16:14:20 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "file_io.h"
 #include "objects.h"
 #include "editor_tools.h"
-
-t_debugconsole	debugconsole_default(void)
-{
-	t_debugconsole	console;
-
-	ft_bzero(&console, sizeof(t_debugconsole));
-	console.messages = ft_memalloc(sizeof(char *) * 1024);
-	console.messagecount = 0;
-	console.show_anim.framerate = 30;
-	console.show_anim.lastframe = 30 * 5;
-	console.hidden = true;
-	return (console);
-}
 
 t_entitycache	entitycache_empty(uint32_t cachesize)
 {
@@ -34,8 +21,8 @@ t_entitycache	entitycache_empty(uint32_t cachesize)
 
 	ft_bzero(&cache, sizeof(t_entitycache));
 	cache.alloc_count = cachesize;
-	cache.entities = ft_memalloc(cache.alloc_count * sizeof(t_entity));
-	cache.sorted_entities = ft_memalloc(cache.alloc_count * sizeof(t_entity *));
+	cache.entities = prot_memalloc(cache.alloc_count * sizeof(t_entity));
+	cache.sorted_entities = prot_memalloc(cache.alloc_count * sizeof(t_entity *));
 	cache.existing_entitycount = 0;
 	i = 0;
 	while (i < cache.alloc_count)
@@ -60,12 +47,12 @@ static void	_world_init_skybox(t_world *world)
 
 void	world_init(t_world *world, t_sdlcontext *sdl)
 {
+	ft_bzero(world, sizeof(t_world));
 	world->sdl = sdl;
-	world->debugconsole = debugconsole_default();
 	world->entitycache = entitycache_empty(1024);
-	_world_init_skybox(world);
 	world->nav.clip_size = 250.0f;
-	world->debug_gui = ft_memalloc(sizeof(t_autogui));
+	world->debug_gui = prot_memalloc(sizeof(t_autogui));
+	ft_strcpy(world->name, DEFAULTLEVEL);
 }
 
 void	_world_init_rooms(t_world *world)
@@ -92,26 +79,14 @@ void	_world_init_rooms(t_world *world)
 	}
 }
 
-void	world_load_amap(t_world *world)
+void	world_load_amap(char *level, t_world *world)
 {
-	int		fd;
-	char	*amap_fname;
+	int	fd;
 
-	amap_fname = world_filename(world->name, ".amap");
-	fd = open(amap_fname, O_RDONLY);
-	if (fd != -1)
-	{
-		doomlog_mul(LOG_NORMAL, (char *[3]){\
-			"found .amap for world:", world->name, NULL});
-		world->arealist = load_chunk(amap_fname, "AREA", sizeof(t_area));
-		_world_sanitize_all_room_pointers(world);
-		_world_init_rooms(world);
-	}
-	else
-	{
-		doomlog_mul(LOG_WARNING, (char *[3]){\
-			"no .amap for world:", world->name, NULL});
-	}
+	doomlog(LOG_NORMAL, "LOADING AMAP");
+	world->arealist = load_chunk(level, "AREA", sizeof(t_area));
+	_world_sanitize_all_room_pointers(world);
+	_world_init_rooms(world);
 }
 
 void	load_basic_ent_cache_from_list(t_world *world, t_list *l)
@@ -138,39 +113,35 @@ void	load_basic_ent_cache_from_list(t_world *world, t_list *l)
 	}
 }
 
-void	world_load_basic_ent(t_world *world)
+void	world_load_basic_ent(char *level, t_world *world)
 {
 	int		fd;
-	char	*bent_fname;
 	t_list	*e_list;
 
-	bent_fname = world_filename(world->name, ".basic_ent");
-	fd = open(bent_fname, O_RDONLY);
-	if (fd != -1)
-	{
-		doomlog_mul(LOG_NORMAL, (char *[3]){\
-			"found .basic_ent for world:", world->name, NULL});
-		e_list = load_chunk(bent_fname, "BENT",
-				sizeof(t_gamestring) + sizeof(t_transform)
-				+ sizeof(t_componenttype) + sizeof(uint32_t));
-		load_basic_ent_cache_from_list(world, e_list);
-	}
-	else
-	{
-		doomlog_mul(LOG_WARNING, (char *[3]){\
-			"no .bent for world:", world->name, NULL});
-	}
+	doomlog(LOG_NORMAL, "LOADING BASIC_ENT");
+	e_list = load_chunk(level, "BENT", sizeof(t_gamestring)
+			+ sizeof(t_transform) + sizeof(t_componenttype) + sizeof(uint32_t));
+	load_basic_ent_cache_from_list(world, e_list);
+	listdel(&e_list);
 }
 
-t_world	load_world_args(char *filename, t_sdlcontext *sdl, t_load_arg arg)
+t_world	load_world(char *level_name, t_sdlcontext *sdl)
 {
 	t_world	world;
+	char	level_path[256];
+	int		fd;
 
+	ft_strcpy(level_path, "worlds/");
+	ft_strncat(level_path, level_name, 200);
 	doomlog(LOG_NORMAL, "LOADING WORLD");
-	ft_bzero(&world, sizeof(t_world));
-	ft_strcpy(world.name, filename);
 	world_init(&world, sdl);
-	world_load_amap(&world);
-	world_load_basic_ent(&world);
+	ft_strcpy(world.name, level_name);
+	fd = open(level_path, O_RDONLY, 0666);
+	if (fd != -1)
+	{
+		world_load_amap(level_path, &world);
+		world_load_basic_ent(level_path, &world);
+		fileclose(fd, level_path);
+	}
 	return (world);
 }

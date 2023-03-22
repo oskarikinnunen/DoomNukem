@@ -20,7 +20,9 @@ typedef enum e_componenttype
 	COMP_NPC_CIVILIAN,
 	COMP_PLAYERSPAWN,
 	COMP_GUN_PICKUP,
-	COMP_AUTO_DOOR
+	COMP_AUTO_DOOR,
+	COMP_STORYEVENT,
+	COMP_BOUTTON
 }	t_componenttype;
 
 struct s_autogui;
@@ -107,8 +109,18 @@ typedef struct	s_gun_pickup
 }	t_gun_pickup;
 typedef struct	s_auto_door
 {
-	float	TESTVARIABLE;
+	float	original_z;
 }	t_auto_door;
+typedef struct	s_storyevent
+{
+	bool		triggered;
+	uint32_t	trigger_time;
+	char		text[128];
+}	t_storyevent;
+typedef struct	s_boutton
+{
+	float	dist;
+}	t_boutton;
 /*STRUCTDEF END, DONT REMOVE SINCE THE CREATECOMPONENT SCRIPT DEPENDS ON THIS*/
 
 /* AUDIOSOURCE FUNCTIONS */
@@ -123,6 +135,8 @@ void	assign_component_npc_civilian(t_component *component);
 void	assign_component_playerspawn(t_component *component);
 void	assign_component_gun_pickup(t_component *component);
 void	assign_component_auto_door(t_component *component);
+void	assign_component_storyevent(t_component *component);
+void	assign_component_boutton(t_component *component);
 /* ASSIGNFUNC END, DONT REMOVE SINCE THE CREATECOMPONENT SCRIPT DEPENDS ON THIS*/
 /* AUDIOSOURCE INTERNAL FUNCTIONS */
 void	_audiosource_start(t_sdlcontext *sdl, t_audiosource	*source, t_vector3 *pos);

@@ -5,12 +5,11 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/20 11:51:01 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 18:26:41 by okinnune         ###   ########.fr       */
+/*   Created: 2023/03/22 14:55:11 by okinnune          #+#    #+#             */
+/*   Updated: 2023/03/22 14:55:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "doomnukem.h"
 #include "file_io.h"
 #include "objects.h"
 #include "editor_tools.h"
@@ -48,30 +47,4 @@ t_entity	*find_entity_with_comp(t_world	*world, t_componenttype comp)
 		i++;
 	}
 	return (NULL);
-}
-
-void	load_component(t_entity	*entity, char	*filename)
-{
-	t_list	*temp;
-	int		fd;
-	char	*str;
-	char	comp_filename[64];
-
-	printf("trying to load component\n");
-	str = ft_itoa(entity->id);
-	ft_strcpy(comp_filename, str);
-	free(str);
-	ft_strcat(comp_filename, ".comp");
-	fd = load_filecontent_fd(filename, comp_filename);
-	if (fd != -1)
-	{
-		close(fd);
-		temp = load_chunk(comp_filename, "COMP", entity->component.data_size);
-		if (temp != NULL && temp->content != NULL)
-		{
-			printf("found component \n");
-			entity->component.data = temp->content;
-		}
-		remove(comp_filename);
-	}
 }

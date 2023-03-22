@@ -6,13 +6,12 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/21 13:17:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 14:51:48 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "objects.h"
-#include <dirent.h>
 #include "file_io.h"
 
 // returns a pointer to the start of the file's name without its path
@@ -59,11 +58,13 @@ void	editor_load_assets(t_sdlcontext *sdl)
 	t_object	*human;
 	int			i;
 
+	editor_load_fonts(sdl);
 	editor_load_images(sdl);
 	editor_load_env_textures(sdl);
+	create_audio(&sdl->audio);
+	editor_load_sounds(&sdl->audio);
+	editor_load_music(&sdl->audio);
 	editor_load_objects(sdl);
-	editor_load_fonts(sdl);
-	editor_load_audio(&sdl->audio);
 	objects_init(sdl);
 	human = get_object_by_name(*sdl, "Human.obj");
 	//editor_load_anims(human, "anim", 0);

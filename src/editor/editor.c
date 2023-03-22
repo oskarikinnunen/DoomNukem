@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 14:35:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 14:52:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,22 +18,22 @@
 #include "entity.h"
 #include "navigation.h"
 
-void	editor_load_world_args(t_editor *ed, char	*worldname, t_sdlcontext *sdl, t_load_arg args)
+
+char	*world_fullpath(char	*filename)
 {
-	ed->world = load_world_args(worldname, sdl, args);
-	ed->world.gamemode = MODE_EDITOR;
-	*(ed->world.debug_gui) = init_gui(sdl, &ed->hid, &ed->player, sdl->screensize, "Debugging menu (F2)");
-	
-	ed->toolbar_gui = init_gui(sdl, &ed->hid, &ed->player, (t_point){5, 5}, "Toolbar (F1)");
-	ed->toolbar_gui.minimum_size = (t_point){165, 20};
-	ed->toolbar_gui.locked = true;
-	
-	ed->graphics_gui = init_gui(sdl, &ed->hid, &ed->player, sdl->screensize, "Graphics (F3)");
-	ed->graphics_gui.minimum_size = (t_point){200, 200};
-	ed->graphics_gui.rect.position = point_div(sdl->screensize, 2);
-	//ed->graphics_gui.locked = true;
+	static char	fullname[128];
+
+	ft_bzero(fullname, sizeof(fullname));
+	ft_strcat(fullname, "worlds/");
+	ft_strcat(fullname, filename);
+	//ft_strcat(fullname, ".world");
+	return	(fullname);
+}
+
+void	editor_player_init(t_editor *ed)
+{
 	ed->player.noclip = true;
-	player_init(&ed->player, sdl, &ed->world);
+	player_init(&ed->player, ed->world.sdl, &ed->world);
 	ed->player.gun->disabled = true;
 	ed->world.debug_gui->hidden = true;
 	ed->graphics_gui.hidden = true;
@@ -197,13 +197,28 @@ void	update_audio(t_world *world)
 	FMOD_System_Update(sdl->audio.system);
 }
 
-int	editorloop(t_sdlcontext sdl)
+int	editorloop(char *level, t_sdlcontext sdl)
 {
 	t_editor	ed;
 	bool		audio = 0;
 
 	bzero(&ed, sizeof(t_editor));
-	editor_load_prefs(&ed, &sdl);
+	ed.world = load_world(level, &sdl);
+	ed.world.app_mode = APPMODE_EDIT;
+	editor_player_init(&ed);
+	//split these to their own file
+	*(ed.world.debug_gui) = init_gui(&sdl, &ed.hid, &ed.player, sdl.screensize, "Debugging menu (F2)");
+	ed.toolbar_gui = init_gui(&sdl, &ed.hid, &ed.player, (t_point){5, 5}, "Toolbar (F1)");
+	ed.toolbar_gui.minimum_size = (t_point){165, 20};
+	ed.toolbar_gui.locked = true;
+	ed.graphics_gui = init_gui(&sdl, &ed.hid, &ed.player, sdl.screensize, "Graphics (F3)");
+	ed.graphics_gui.minimum_size = (t_point){200, 200};
+	ed.graphics_gui.rect.position = point_div(sdl.screensize, 2);
+
+	SDL_SetRelativeMouseMode(ed.hid.mouse.relative);
+	ed.player.locked = !ed.hid.mouse.relative;
+	//
+	
 	ed.gamereturn = game_continue;
 	sdl.lighting_toggled = false;
 	ed.player.gun->entity->hidden = true;
@@ -235,7 +250,6 @@ int	editorloop(t_sdlcontext sdl)
 	}
 	if (ed.player.gun->entity != NULL)
 		destroy_entity(&ed.world, ed.player.gun->entity);
-	editor_save_prefs(&ed);
 	save_graphics_prefs(&sdl);
 	//save_world(ed.world.name, ed.world);
 	world_save_to_file(ed.world);

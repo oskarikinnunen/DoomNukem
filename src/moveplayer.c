@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/21 15:42:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 14:56:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,9 +79,6 @@ void	player_gun_raycast(t_player *player, t_world *world)
 			&& info.hit_entity->component.type == COMP_NPC)
 		{
 			hit_npc = (t_npc *)info.hit_entity->component.data;
-			printf("cur health = %i \n", hit_npc->health);
-			printf("future health = %i \n",
-				(hit_npc->health - player->gun->stats.damage));
 			hit_npc->health -= player->gun->stats.damage;
 			protagonist_play_audio(player, world, "hitmarker.wav");
 			if (hit_npc->health <= 0 && hit_npc->state != NPC_STATE_DEAD)
@@ -118,9 +115,9 @@ void	player_gun_raycast(t_player *player, t_world *world)
 				hit_npc->phys.velocity.z = 0.055f;
 			}
 			else
-				hit_npc->phys.velocity
-					= vector3_mul(hit_npc->phys.velocity, 0.38f);
-			printf("hit_npc health %i \n", hit_npc->health);
+			{
+				hit_npc->phys.velocity = vector3_mul(hit_npc->phys.velocity, 0.38f);
+			}
 		}
 	}
 }
@@ -311,9 +308,9 @@ void	moveplayer(t_player *player, t_input *input, t_world *world)
 	player->gun->entity->transform.parent = &player->head_transform;
 	player->input = *input;
 	if ((player->input.nextgun || player->input.prevgun)
-		&& !player->gun->reload_anim.active && world->gamemode == MODE_PLAY)
+		&& !player->gun->reload_anim.active && world->app_mode == APPMODE_PLAY)
 		player_changegun(player);
-	if (world->gamemode == MODE_PLAY)
+	if (world->app_mode == APPMODE_PLAY)
 		updateguntransform(player, world);
 	if (!player->locked)
 	{

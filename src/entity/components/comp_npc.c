@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 18:57:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 18:00:23 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 14:54:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void	comp_npc_update(t_entity *entity, t_world *world)
 	t_npc	*npc;
 
 	npc = entity->component.data;
-	if (npc == NULL || world->gamemode == MODE_EDITOR
+	if (npc == NULL || world->app_mode == APPMODE_EDIT
 		|| world->player->health == 0)
 		return ;
 	update_anim(&entity->animation, world->clock.delta);

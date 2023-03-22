@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 12:32:25 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 17:22:06 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 14:50:12 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,12 +98,9 @@ void	*list_to_ptr(t_list *source, uint32_t *set_length)
 	*set_length = 0;
 	if (source == NULL || source->content_size == 0)
 		return (NULL);
-	result = ft_memalloc((ft_listlen(source) + 1) * source->content_size); //assumes the linked list only contains equal sized contents
-	if (result == NULL)
-		doomlog(LOG_EC_MALLOC, "list_to_ptr");
+	result = prot_memalloc((ft_listlen(source) + 1) * source->content_size); //assumes the linked list only contains equal sized contents
 	l = source;
 	i = 0;
-	
 	while (l != NULL)
 	{
 		if (l->content_size != source->content_size)
