@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 15:59:23 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/21 18:27:29 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/22 14:15:20 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,7 @@ static void	scanline(t_point_triangle triangle, t_lighting *lighting,
 			sample_img(lighting, x, y, triangle);
 		}
 		else if (row == true)
-		{
-			sample_img(lighting, x, y, triangle);
-			row = false;
-		}
+			return (sample_img(lighting, x, y, triangle));
 		x++;
 	}
 }

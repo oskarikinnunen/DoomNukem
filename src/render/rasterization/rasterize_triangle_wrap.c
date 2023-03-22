@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 15:59:32 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/15 15:59:34 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/22 13:54:16 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,21 +25,23 @@ inline static void scanline(int start, int end, int y, t_point_triangle triangle
 	float		dist;
 	t_stepv3	slope;
 	int			x;
+	float		index;
 
 	slope = make_uv_slopev3(start, end, y, triangle);
 	x = start;
+	index = 0.5f;
 	while(x < end)
 	{
-		float test = x - start;
-		tex.z = slope.location.z + test * slope.step.z;
+		tex.z = slope.location.z + index * slope.step.z;
 		if (tex.z > sdl->zbuffer[x + y * sdl->window_w])
 		{
-			tex.x = slope.location.x + test * slope.step.x;
-			tex.y = slope.location.y + test * slope.step.y;
+			tex.x = slope.location.x + index * slope.step.x;
+			tex.y = slope.location.y + index * slope.step.y;
 			sdl->zbuffer[x + y * sdl->window_w] = tex.z;
 			((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] =
 				sample_img_dynamic(&sdl->render, tex.x / tex.z, tex.y / tex.z);
 		}
+		index += 1.0f;
 		x++;
 	}
 	render_bitmask_row(start, end, 1.0f / slope.location.z, 1.0f / tex.z, y, sdl);

@@ -201,9 +201,9 @@ t_triangle	*add_to_cliplist(t_triangle *arr, int start, int *end, int *size, int
 			exit(0);
 		*size += 1000;
 	}
-	*end += clip_triangle_against_plane(plane_p, plane_n, arr[start], &(arr[*end]));
+	*end += clip_triangle_plane(plane_p, plane_n, arr[start], &(arr[*end]));
 	plane_n = vector3_negative(plane_n);
-	*end += clip_triangle_against_plane(plane_p, plane_n, arr[start], &(arr[*end]));
+	*end += clip_triangle_plane(plane_p, plane_n, arr[start], &(arr[*end]));
 	return(arr);
 }	
 

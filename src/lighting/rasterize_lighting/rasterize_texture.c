@@ -6,13 +6,13 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 17:14:18 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/21 18:16:49 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/22 14:14:40 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-static void sample_pixel(t_point xy, t_lighting *lighting)
+static void	sample_pixel(t_point xy, t_lighting *lighting)
 {
 	uint32_t	light;
 	uint32_t	clr;
@@ -26,7 +26,7 @@ static void sample_pixel(t_point xy, t_lighting *lighting)
 		lighting->overdraw[xy.y * lighting->map->size.x + xy.x] = true;
 	img = lighting->img;
 	light = lighting->map->lightmap[xy.y * lighting->map->size.x + xy.x];
-	clr = img->data[(xy.y % (img->size.y)) * img->size.x + (xy.x % (img->size.x))];
+	clr = img->data[(xy.y % img->size.y) * img->size.x + (xy.x % img->size.x)];
 	clr = update_pixel_brightness(light, clr);
 	lighting->map->texture[xy.y * lighting->map->size.x + xy.x] = clr;
 }

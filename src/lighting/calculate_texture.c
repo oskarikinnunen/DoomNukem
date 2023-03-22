@@ -6,28 +6,26 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 13:07:06 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/21 18:34:15 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/22 17:35:52 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-static void sample_pixel(t_point xy, t_lighting *lighting)
+static void	sample_pixel(t_point xy, t_lighting *lighting)
 {
 	uint32_t	light;
 	uint32_t	clr;
 	t_img		*img;
 
-
 	img = lighting->img;
 	light = lighting->map->lightmap[xy.y * lighting->map->size.x + xy.x];
-	clr = img->data[(xy.y % (img->size.y)) * img->size.x + (xy.x % (img->size.x))];
+	clr = img->data[(xy.y % img->size.y) * img->size.x + (xy.x % img->size.x)];
 	clr = update_pixel_brightness(light, clr);
 	lighting->map->texture[xy.y * lighting->map->size.x + xy.x] = clr;
 }
 
-
-static void buffer_triangles(int start, int i, int index, t_entity *entity)
+static void	buffer_triangles(int start, int i, int index, t_entity *entity)
 {
 	t_point_triangle	temp;
 	int					vertex;
@@ -49,7 +47,7 @@ static void buffer_triangles(int start, int i, int index, t_entity *entity)
 		}
 	}
 	free(lighting.overdraw);
-	return;
+	return ; // early return;
 	if (lighting.overdraw == NULL)
 		doomlog(LOG_FATAL, "Malloc failed in calculate_texture.c");
 	ft_bzero(lighting.overdraw, size);
@@ -76,53 +74,44 @@ void	*calculate_texture_for_entity(t_entity *entity)
 	int			i;
 
 	if (entity->obj->uv_count == 0 || entity->world_triangles == NULL)
-		return(NULL);
+		return (NULL);
 	i = 0;
 	start = 0;
 	while (i < entity->obj->face_count)
 	{
 		index = entity->obj->faces[i].materialindex;
-		if (i + 1 == entity->obj->face_count || index != entity->obj->faces[i + 1].materialindex)
+		if (i + 1 == entity->obj->face_count
+			|| index != entity->obj->faces[i + 1].materialindex)
 			buffer_triangles(start, i, index, entity);
 		i++;
 	}
-	return(NULL);
+	return (NULL);
 }
 
-void calculate_texture_for_entities(t_world *world)
+void	calculate_texture_for_entities(t_world *world)
 {
 	int				i;
 	int				found;
-	t_entitycache	*cache;
 	t_entity		*ent;
+	t_thread		thread;
 
-	t_thread test;
-	test.func = (void *)calculate_texture_for_entity;
-	test.struct_size = sizeof(t_entity);
-	test.structs = malloc(sizeof(t_entity) * THREAD);
-	test.count = 0;
-	ft_bzero(test.structs, sizeof(t_entity) * THREAD);
+	thread.func = (void *)calculate_texture_for_entity;
+	thread.struct_size = sizeof(t_entity);
+	thread.structs = malloc(sizeof(t_entity) * THREAD);
+	thread.count = 0;
+	ft_bzero(thread.structs, sizeof(t_entity) * THREAD);
 	i = 0;
 	found = 0;
-	cache = &world->entitycache;
-	while (found < cache->existing_entitycount && i < cache->alloc_count)
+	while (found < world->entitycache.existing_entitycount
+		&& i < world->entitycache.alloc_count)
 	{
-		ent = &cache->entities[i];
+		ent = &world->entitycache.entities[i++];
 		if (ent->status != es_free)
 		{
-			if	(ent->status == es_active && ent->map != NULL)
-			{
-				(((t_entity *)test.structs)[test.count++]) = *ent;
-				if (test.count == THREAD)
-				{
-					thread_set(&test);
-					ft_bzero(test.structs, sizeof(t_entity) * THREAD);
-				}
-			}
+			set_lighting_texture_struct(&thread, ent);
 			found++;
 		}
-		i++;
 	}
-	thread_set(&test);
-	free(test.structs);
+	multithread_start(&thread);
+	free(thread.structs);
 }

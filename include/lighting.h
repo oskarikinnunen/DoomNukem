@@ -58,6 +58,7 @@ typedef struct s_lighting
 	t_vector2			resolution;
 	t_v2rectangle		screen_edge;
 	t_camera			camera;
+	t_point_triangle	triangle;
 	t_vector3			triangle_normal;
 }	t_lighting;
 

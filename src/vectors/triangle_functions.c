@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 16:37:35 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/21 16:42:27 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/22 16:55:46 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,4 +60,9 @@ t_vector2	get_min_from_vector2_triangle(t_vector2 p[3])
 		i++;
 	}
 	return(min);
+}
+
+float	clockwise(t_vector2 p[3])
+{
+	return ((p[1].x - p[0].x) * (p[2].y - p[0].y) - (p[2].x - p[0].x) * (p[1].y - p[0].y));
 }

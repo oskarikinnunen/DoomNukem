@@ -6,13 +6,14 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 14:14:49 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/21 18:31:41 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/22 17:30:21 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-static void buffer_triangles(int start, int i, t_lighting *lighting, t_entity *entity)
+static void	buffer_triangles(
+	int start, int i, t_lighting *lighting, t_entity *entity)
 {
 	t_point_triangle	temp;
 	int					vertex;
@@ -48,13 +49,14 @@ static void	calculate_light_for_entity(t_entity *entity, t_lighting *lighting)
 
 	obj = entity->obj;
 	if (obj->uv_count == 0 || entity->world_triangles == NULL)
-		return;
+		return ;
 	i = 0;
 	start = 0;
 	while (i < obj->face_count)
 	{
 		index = obj->faces[i].materialindex;
-		if (i + 1 == obj->face_count || index != obj->faces[i + 1].materialindex)
+		if (i + 1 == obj->face_count || \
+		index != obj->faces[i + 1].materialindex)
 		{
 			lighting->map = &entity->map[index];
 			lighting->img = entity->obj->materials[index].img;
@@ -64,20 +66,31 @@ static void	calculate_light_for_entity(t_entity *entity, t_lighting *lighting)
 	}
 }
 
+static void	calculate_if_valid(t_entity *entity, t_lighting *lighting)
+{
+	float	dist;
+
+	if (entity->status == es_active && entity->obj && entity->map)
+	{
+		dist = vector3_dist(lighting->light->world_position, \
+		get_entity_world_position(entity)) - entity->obj->bounds.radius;
+		if (dist < lighting->light->radius)
+			calculate_light_for_entity(entity, lighting);
+	}
+}
+
 void	*calculate_light_for_entities(t_test *ptr)
 {
 	int				i;
 	int				found;
 	t_entitycache	*cache;
 	t_entity		*ent;
-	t_light			*light;
-	float			dist;
 	t_lighting		lighting;
 
 	if (ptr->world == NULL)
-		return(NULL);
+		return (NULL);
 	lighting.light_ent = ptr->entity;
-	light = ptr->entity->component.data;
+	lighting.light = ptr->entity->component.data;
 	i = 0;
 	found = 0;
 	cache = &ptr->world->entitycache;
@@ -87,59 +100,39 @@ void	*calculate_light_for_entities(t_test *ptr)
 		ent = &cache->entities[i];
 		if (ent->status != es_free)
 		{
-			if	(ent->status == es_active && ent->obj && ent->map)
-			{
-				dist = vector3_dist(light->world_position, get_entity_world_position(ent)) - ent->obj->bounds.radius;
-				if (dist < light->radius)
-					calculate_light_for_entity(ent, &lighting);
-			}
+			calculate_if_valid(ent, &lighting);
 			found++;
 		}
 		i++;
 	}
-	return(NULL);
+	return (NULL);
 }
 
 void	calculate_lighting(t_world *world)
 {
-	int             j;
-    int				i;
+	int				j;
+	int				i;
 	int				found;
 	t_entity		*ent;
-    uint32_t        light_amount;
-    t_quaternion    q;
+	t_thread		thread;
 
-	light_amount = 0;
 	i = 0;
 	found = 0;
-	t_thread test;
-	test.func = (void *)calculate_light_for_entities;
-	test.struct_size = sizeof(t_test);
-	test.structs = malloc(sizeof(t_test) * THREAD);
-	test.count = 0;
-	ft_bzero(test.structs, sizeof(t_test) * THREAD);
+	thread.func = (void *)calculate_light_for_entities;
+	thread.struct_size = sizeof(t_test);
+	thread.structs = malloc(sizeof(t_test) * THREAD);
+	thread.count = 0;
+	ft_bzero(thread.structs, sizeof(t_test) * THREAD);
 	while (found < world->entitycache.existing_entitycount
 		&& i < world->entitycache.alloc_count)
 	{
-		ent = &world->entitycache.entities[i];
+		ent = &world->entitycache.entities[i++];
 		if (ent->status != es_free)
 		{
-			if	(ent->status == es_active && ent->component.type == COMP_LIGHT)
-			{
-				t_test *ptr;
-				ptr = &(((t_test *)test.structs)[test.count++]);
-				ptr->entity = ent;
-				ptr->world = world;
-				if (test.count == THREAD)
-				{
-					thread_set(&test);
-					ft_bzero(test.structs, sizeof(t_test) * THREAD);
-				}
-			}
+			set_light_thread_struct(&thread, ent, world);
 			found++;
 		}
-		i++;
 	}
-	thread_set(&test);
-	free(test.structs);
+	multithread_start(&thread);
+	free(thread.structs);
 }

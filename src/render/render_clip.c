@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 15:59:55 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/15 15:59:57 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/22 16:42:34 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,7 +233,7 @@ int clip_triangle_against_occluder_plane(t_vector2 plane_p, t_vector2 plane_n, t
 	return(0);
 }
 
-int clip_triangle_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2])
+int clip_triangle_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2])
 {
 	float		dist[3];
 	int			i;
@@ -346,7 +346,7 @@ void clipped_point_triangle(t_render *render, t_sdlcontext sdl)
 		{
 			t_triangle clipped[2];
 			world_tri = triangle_to_viewspace(world_tri, render->camera.matview);
-			int nclippedtriangles = clip_triangle_against_plane((t_vector3){.z = 0.1f}, (t_vector3){.z = 1.0f}, world_tri, clipped);
+			int nclippedtriangles = clip_triangle_plane((t_vector3){.z = 0.1f}, (t_vector3){.z = 1.0f}, world_tri, clipped);
 			for (int n = 0; n < nclippedtriangles; n++)
 				triangles[end++] = triangle_to_screenspace_point_triangle(render->camera.matproj, clipped[n], sdl);
 			nnewtriangles = nclippedtriangles;

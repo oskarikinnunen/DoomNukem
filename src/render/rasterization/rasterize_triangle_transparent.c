@@ -12,24 +12,25 @@ inline static void scanline(int start, int end, int y, t_point_triangle triangle
 {
 	uint32_t	clr;
 	t_vector3	tex;
-	float		dist;
 	t_stepv3	slope;
 	int			x;
+	float		index;
 
 	slope = make_uv_slopev3(start, end, y, triangle);
 	x = start;
+	index = 0.5f;
 	while(x < end)
 	{
-		float test = x - start;
-		tex.z = slope.location.z + test * slope.step.z;
+		tex.z = slope.location.z + index * slope.step.z;
 		if (tex.z > sdl->zbuffer[x + y * sdl->window_w])
 		{
-			tex.x = slope.location.x + test * slope.step.x;
-			tex.y = slope.location.y + test * slope.step.y;
+			tex.x = slope.location.x + index * slope.step.x;
+			tex.y = slope.location.y + index * slope.step.y;
 			clr = sample_img_dynamic(&sdl->render, tex.x / tex.z, tex.y / tex.z);
 			((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] =
 				blend_colors_alpha(((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w], clr, ((clr >> 24) & 0xFF));
 		}
+		index += 1.0f;
 		x++;
 	}
 }

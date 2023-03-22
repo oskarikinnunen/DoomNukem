@@ -1,7 +1,7 @@
 #include "doomnukem.h"
 
 //TODO: RENAME
-void	thread_set(t_thread *thread)
+void	multithread_start(t_thread *thread)
 {
 	int			i;
 	void		*ptr;
@@ -19,5 +19,6 @@ void	thread_set(t_thread *thread)
 		pthread_join(thread->threads[i], NULL);
 		i++;
 	}
+	ft_bzero(thread->structs, thread->struct_size * THREAD);
 	thread->count = 0;
 }

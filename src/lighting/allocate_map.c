@@ -6,13 +6,13 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 13:48:22 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/21 16:33:29 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/22 16:54:50 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-static void allocate_map(t_entity *entity, int index, t_vector2 max)
+static void	allocate_map(t_entity *entity, int index, t_vector2 max)
 {
 	uint32_t	clr;
 	t_map		*map;
@@ -28,12 +28,12 @@ static void allocate_map(t_entity *entity, int index, t_vector2 max)
 	ft_memset(map->lightmap, clr, sizeof(uint32_t) * map->size.x * map->size.y);
 }
 
-static void clear_map_for_entity(t_entity *entity)
+static void	clear_map_for_entity(t_entity *entity)
 {
-	int i;
+	int	i;
 
 	if (entity->map == NULL)
-		return;
+		return ;
 	i = 0;
 	while (i < entity->obj->material_count)
 	{
@@ -46,32 +46,23 @@ static void clear_map_for_entity(t_entity *entity)
 	free(entity->map);
 }
 
-static void	allocate_map_for_entity(t_entity *entity, t_world *world)
+static void	for_each_triangle(t_entity *entity)
 {
-	t_object	*obj;
-	t_vector2	max;
-	int			index;
 	int			i;
+	int			index;
+	t_vector2	max;
+	t_object	*obj;
 
 	obj = entity->obj;
-	if (obj->uv_count == 0 || entity->world_triangles == NULL)
-	{
-		entity->map = NULL;
-		return;
-	}
-	if (entity->map)
-		clear_map_for_entity(entity);
-	entity->map = malloc(sizeof(t_map) * entity->obj->material_count);
-	bzero(entity->map, sizeof(t_map) * entity->obj->material_count);
-	if (entity->map == NULL)
-		doomlog(LOG_FATAL, "Malloc fail in bake_lighting.c");
 	i = 0;
 	max = vector2_zero();
 	while (i < obj->face_count)
 	{
-		max = get_max_vector2_from_vector3_triangle(max, entity->world_triangles[i].t);
+		max = get_max_vector2_from_vector3_triangle(
+				max, entity->world_triangles[i].t);
 		index = obj->faces[i].materialindex;
-		if (i + 1 == obj->face_count || index != obj->faces[i + 1].materialindex)
+		if (i + 1 == obj->face_count || \
+		index != obj->faces[i + 1].materialindex)
 		{
 			max.x = fmaxf(max.x, 1.0f);
 			max.y = fmaxf(max.y, 1.0f);
@@ -82,7 +73,26 @@ static void	allocate_map_for_entity(t_entity *entity, t_world *world)
 	}
 }
 
-void allocate_map_for_entities(t_world *world)
+static void	allocate_map_for_entity(t_entity *entity, t_world *world)
+{
+	t_object	*obj;
+	t_vector2	max;
+	int			index;
+	int			i;
+
+	obj = entity->obj;
+	if (entity->map)
+		clear_map_for_entity(entity);
+	if (obj == NULL || obj->uv_count == 0 || entity->world_triangles == NULL)
+		return ;
+	entity->map = malloc(sizeof(t_map) * entity->obj->material_count);//TODO: Change to memalloc
+	bzero(entity->map, sizeof(t_map) * entity->obj->material_count);
+	if (entity->map == NULL)
+		doomlog(LOG_FATAL, "Malloc fail in bake_lighting.c");
+	for_each_triangle(entity);
+}
+
+void	allocate_map_for_entities(t_world *world)
 {
 	int				i;
 	int				found;
@@ -98,7 +108,7 @@ void allocate_map_for_entities(t_world *world)
 		ent = &cache->entities[i];
 		if (ent->status != es_free)
 		{
-			if	(ent->status == es_active)
+			if (ent->status == es_active)
 			{
 				allocate_map_for_entity(ent, world);
 			}

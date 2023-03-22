@@ -1,13 +1,25 @@
 #include "doomnukem.h"
 
-void *thread_func_lighting(void *ptr)
+void	set_light_thread_struct(
+	t_thread *thread, struct s_entity *ent, struct s_world *world)
 {
-	calculate_light_for_entities(ptr);
-	return(NULL);
+	t_test	*ptr;
+
+	if (ent->status != es_active && ent->component.type != COMP_LIGHT)
+		return ;
+	ptr = &(((t_test *)thread->structs)[thread->count++]);
+	ptr->entity = ent;
+	ptr->world = world;
+	if (thread->count == THREAD)
+		multithread_start(thread);
 }
 
-void thread_init_lighting(void *ptr)
+void	set_lighting_texture_struct(t_thread *thread, struct s_entity *ent)
 {
-	
-	return;
+	if	(ent->status == es_active && ent->map != NULL)
+	{
+		(((t_entity *)thread->structs)[thread->count++]) = *ent;
+		if (thread->count == THREAD)
+			multithread_start(thread);
+	}
 }
