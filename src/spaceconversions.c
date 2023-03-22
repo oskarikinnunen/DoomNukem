@@ -6,93 +6,69 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 13:31:43 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/27 19:20:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/20 12:39:40 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "vectors.h"
 
-/*
-t_quaternion quaternion_rotate_euler(t_vector3 original, t_vector3 eulers)
+static t_vector3	normalized_lookdir(t_vector2 vector2)
 {
-	t_quaternion	temp;
-	t_mat4x4		matrotation;
+	t_vector3	result;
 
-	temp.v = original;
-	temp.w = 1.0f;
-	matrotation = matrix_makerotationy(eulers.y);
-	temp = quaternion_mul_matrix(matrotation, temp);
-	matrotation = matrix_makerotationz(eulers.x);
-	temp = quaternion_mul_matrix(matrotation, temp);
-	matrotation = matrix_makerotationx(eulers.z);
-	temp = quaternion_mul_matrix(matrotation, temp);
-	return (temp);
+	result = lookdirection(vector2);
+	return (vector3_normalise(result));
 }
-*/
 
-
-t_quaternion	transformed_vector3(t_transform transform, t_vector3 v)
+t_quaternion	transformed_vector3(t_transform trsform, t_vector3 v)
 {
-	t_quaternion	result;
-	t_vector3		forward;
+	t_quaternion	res;
+	t_vector3		fwd;
 	t_vector3		right;
 	t_vector3		up;
 
-	result.v = vector3_mul_vector3(transform.scale, v);
-	result = quaternion_rotate_euler(result.v, transform.rotation);
-	if (transform.parent != NULL)
+	res.v = vector3_mul_vector3(trsform.scale, v);
+	res = quaternion_rotate_euler(res.v, trsform.rotation);
+	if (trsform.parent != NULL)
 	{
-		result = quaternion_rotate_euler(result.v, transform.parent->rotation);
-		forward = lookdirection((t_vector2){transform.parent->rotation.x, transform.parent->rotation.y});
-		up = lookdirection((t_vector2){transform.parent->rotation.x, transform.parent->rotation.y + RAD90});
-		right = vector3_crossproduct(forward, vector3_up());
-		forward = vector3_normalise(forward);
+		res = quaternion_rotate_euler(res.v, trsform.parent->rotation);
+		fwd = normalized_lookdir((t_vector2){trsform.parent->rotation.x,
+				trsform.parent->rotation.y});
+		up = normalized_lookdir((t_vector2){trsform.parent->rotation.x,
+				trsform.parent->rotation.y + RAD90});
+		right = vector3_crossproduct(fwd, vector3_up());
 		right = vector3_normalise(right);
-		up = vector3_normalise(up);
-		result.v = vector3_add(transform.parent->position, result.v);
-		result.v = vector3_add(result.v, vector3_mul(forward, transform.position.y));
-		result.v = vector3_add(result.v, vector3_mul(right, transform.position.x));
-		result.v = vector3_add(result.v, vector3_mul(up, transform.position.z));
+		res.v = vector3_add(trsform.parent->position, res.v);
+		res.v = vector3_add(res.v, vector3_mul(fwd, trsform.position.y));
+		res.v = vector3_add(res.v, vector3_mul(right, trsform.position.x));
+		res.v = vector3_add(res.v, vector3_mul(up, trsform.position.z));
 	}
 	else
-	{
-		result.v = vector3_add(transform.position, result.v);
-	}
-	return (result);
+		res.v = vector3_add(trsform.position, res.v);
+	return (res);
 }
 
-t_vector3	anim_transformed_vector3(t_entity *entity, t_vector3 v)
-{
-	/*t_vector3	result;
-
-	if (entity->animation.active)
-	{
-		result = vector3_add(entity->obj->o_anim.frames[entity->animation.frame].deltavertices[index].delta, temp.v);
-	}*/
-}
-
-t_point vector3_to_screenspace(t_vector3 vec, t_sdlcontext sdl) //TODO: clip
+//TODO: clip?
+t_point	vector3_to_screenspace(t_vector3 vec, t_sdlcontext sdl)
 {
 	t_camera		c;
 	t_quaternion	proj_q;
 	t_point			result;
+	t_vector3		voffsetview;
 
 	c = sdl.render.camera;
 	proj_q = vector3_to_quaternion(vec);
 	proj_q = quaternion_mul_matrix(c.matview, proj_q);
-	//clip
 	proj_q = quaternion_mul_matrix(c.matproj, proj_q);
 	proj_q.v = vector3_div(proj_q.v, proj_q.w);
 	proj_q.v = vector3_negative(proj_q.v);
-	t_vector3 voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
+	voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
 	proj_q.v = vector3_add(proj_q.v, voffsetview);
-
 	proj_q.v.x *= 0.5f * (float)sdl.window_w;
 	proj_q.v.y *= 0.5f * (float)sdl.window_h;
-
 	if (proj_q.w < 0.0f)
-		return ((t_point) {-100, -100});
+		return ((t_point){-100, -100});
 	result = (t_point){proj_q.v.x, proj_q.v.y};
-	return(result);
+	return (result);
 }

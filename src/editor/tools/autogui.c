@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/02 22:27:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/21 14:56:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,43 +239,6 @@ void	gui_end(t_autogui *gui)
 	//set_font_size(gui->sdl, 0);
 }
 
-void	objectgui_update(t_objectgui *ogui, t_entity **ent)
-{
-	t_object	*obj;
-	t_autogui	*gui;
-	int			i;
-
-	gui = &ogui->gui;
-	gui_start(gui);
-	i = 0;
-	gui_label("Selected:", gui);
-	if (*ent != NULL && ft_strlen((*ent)->object_name.str) > 0)
-		gui_label((*ent)->object_name.str, gui);
-	else
-		gui_emptyvertical(20, gui);
-	gui_emptyvertical(20, gui);
-	while (i < gui->sdl->objectcount)
-	{
-		obj = &gui->sdl->objects[i];
-		if (gui_button(obj->name, gui))
-		{
-			if (*ent == NULL)
-			{
-				printf("null entity in objectgui\n");
-				(*ent) = ft_memalloc(sizeof(t_entity));
-				(*ent)->transform.scale = vector3_one();
-			}
-			//entity_assign_object(ogui)
-			(*ent)->obj = obj; //TODO: use entity_assign_object..
-			ft_strcpy((*ent)->object_name.str, obj->name);
-			if (ogui->autoclose)
-				gui->hidden = true;
-		}
-		i++;
-	}
-	gui_end(gui);
-}
-
 static t_point gui_currentpos(t_autogui *gui)
 {
 	t_point	pos;
@@ -469,20 +432,6 @@ void	gui_labeled_vector3_slider(char *str, t_vector3 *vec, float mul, t_autogui 
 	gui_starthorizontal(gui);
 	gui_label(str, gui);
 	gui->min_x = 50;
-	gui_float_slider(&vec->x, mul, gui);
-	gui_float_slider(&vec->y, mul, gui);
-	gui_float_slider(&vec->z, mul, gui);
-	gui_endhorizontal(gui);
-	gui->min_x = temp_min_x;
-}
-
-void	gui_vector3_slider(t_vector3 *vec, float mul, t_autogui *gui)
-{
-	int	temp_min_x;
-
-	temp_min_x = gui->min_x;
-	gui->min_x = 50;
-	gui_starthorizontal(gui);
 	gui_float_slider(&vec->x, mul, gui);
 	gui_float_slider(&vec->y, mul, gui);
 	gui_float_slider(&vec->z, mul, gui);

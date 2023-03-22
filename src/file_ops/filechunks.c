@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/15 16:15:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/20 18:33:20 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,15 +122,6 @@ int	ft_fileread(int fd, t_filecontent *f)
 
 	f->length = read(fd, buf, 300000);
 	f->content = ft_memdup(buf, f->length);
-	return (f->length);
-}
-
-int	ft_nfileread(int fd, t_filecontent *f, size_t size)
-{
-	char	buf[300000];
-
-	f->length = read(fd, buf, size);
-	f->content = ft_memdup(buf, size);
 	return (f->length);
 }
 

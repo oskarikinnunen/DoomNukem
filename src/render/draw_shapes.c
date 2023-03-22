@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 21:39:40 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/16 14:14:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/21 17:36:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,6 @@ void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr)
 	populate_bresenham(&b, from, to);
 	draw(sdl, b.local, clr);
 	while (step_bresenham(&b) != 1)
-		drawl(sdl, b.local, clr);
+		draw(sdl, b.local, clr);
 	draw(sdl, b.local, clr);
 }

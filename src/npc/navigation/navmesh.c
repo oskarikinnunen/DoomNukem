@@ -1,17 +1,6 @@
 #include "doomnukem.h"
 #include "movement_defs.h"
 
-void	print_node(t_navnode n)
-{
-	printf("midpoint ");
-	printf("amount of neighbors %d\n", n.neighbors);
-	printf("list of neighbors\n");
-	for (int i = 0; i < n.neighbors; i++)
-	{
-		printf("%d\n", n.neighbors_id[i]);
-	}
-}
-
 bool	node_would_collide(t_world *world, t_vector3 midpoint)
 {
 	t_characterphysics	phys;

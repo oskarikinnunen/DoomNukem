@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/20 12:18:28 by okinnune         ###   ########.fr        #
+#    Updated: 2023/03/21 18:09:40 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,24 +46,26 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		editor/editor_load_images.c \
 		editor/editor_load_objects.c \
 		editor/tools/entity_tool.c \
+		editor/tools/entity_tool_base.c \
+		editor/tools/entity_tool_modify.c \
+		editor/tools/entity_tool_modify_2.c \
 		editor/tools/entity_tool_gui_inits.c \
 		editor/tools/wall_tool_rooms.c \
-		editor/tools/load_tool.c \
 		editor/tools/room_tool.c \
+		editor/tools/room_tool_create.c \
+		editor/tools/room_tool_raycast_room.c \
+		editor/tools/room_tool_init_and_get.c \
 		editor/tools/room_tool_connect.c \
 		editor/tools/room_tool_node.c \
 		editor/tools/room_tool_addnode.c \
 		editor/tools/room_tool_common.c \
 		editor/tools/room_tool_paint.c \
 		editor/tools/gun_tool.c \
-		editor/tools/tool_common_functions.c \
 		editor/tools/autogui.c \
 		editor/editor_new_buttons.c \
-		editor/editor_instant_button.c \
 		editor/editor_raycast.c \
 		editor/entity_raycast.c \
 		preferences/graphicsprefs.c \
-		debug/debugconsole.c \
 		debug/debug_rendering.c \
 		inputhelper.c \
 		walls.c file_open.c \
@@ -74,14 +76,12 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		error_messages.c \
 		error_window.c \
 		error_window_events.c \
-		handle_exit.c \
 		doomlog.c \
 		doomlog_messages.c \
 		physics.c \
-		perfgraph.c \
 		list_helper.c \
 		spaceconversions.c \
-		entity/entity_animate.c \
+		handle_exit.c \
 		entity/component_init.c \
 		entity/components/component_definitions.c \
 		entity/components/comp_audiosource.c \
@@ -139,16 +139,6 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		lighting/bake_lighting.c \
 		lighting/point_light.c \
 		lighting/fragment_light.c \
-		npc/civilian/civilian_action.c \
-		npc/civilian/civilian_anim.c \
-		npc/civilian/civilian_movement.c \
-		npc/civilian/civilian_update.c \
-		npc/civilian/civilian_take_damage.c \
-		npc/enemy/enemy_action.c \
-		npc/enemy/enemy_anim.c \
-		npc/enemy/enemy_movement.c \
-		npc/enemy/enemy_update.c \
-		npc/enemy/enemy_take_damage.c \
 		npc/navigation/pathfind.c \
 		npc/navigation/navmesh.c \
 		render/rasterization/rasterize_zbuffer.c \
@@ -215,7 +205,7 @@ INCLUDE= -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include \
 			-I$(INSTALLED_LIBS_DIR)/include/SDL2/ \
 			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
 CC= gcc
-CFLAGS= $(INCLUDE) -g -finline-functions -O2 -MMD #-march=native
+CFLAGS= $(INCLUDE) -g -O2 #-MMD #-march=native
 LDFLAGS = -Wl,-rpath $(INSTALLED_LIBS_DIR)/lib
 
 UNAME= $(shell uname)

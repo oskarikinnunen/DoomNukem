@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   comp_placeholder.c                                 :+:      :+:    :+:   */
+/*   comp_playerspawn.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/24 11:11:18 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/20 13:09:51 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ void	comp_playerspawn_allocate(t_entity *entity, t_world *world)
 	entity->component.data = ft_memalloc(sizeof(t_playerspawn));
 	entity->component.data_size = sizeof(t_playerspawn);
 	playerspawn = (t_playerspawn *)entity->component.data;
-	
 }
 
 /*	Internal function that's used to link this components behaviour
@@ -73,10 +72,6 @@ void	comp_playerspawn_allocate(t_entity *entity, t_world *world)
 */
 void	assign_component_playerspawn(t_component *component)
 {
-	component->data_size = sizeof(t_playerspawn);
-	component->func_allocate = comp_playerspawn_allocate;
-	component->func_update = comp_playerspawn_update;
-	component->func_gui_edit = comp_playerspawn_gui_edit;
-	component->func_ui_update = comp_playerspawn_ui_update;
-	component->func_loadassets = comp_playerspawn_loadassets;
+	component->data_size = 0;
+	component_empty_function_pointers(component);
 }

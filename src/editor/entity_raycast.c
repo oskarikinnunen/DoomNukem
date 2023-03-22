@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 17:47:07 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/15 12:48:00 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/21 13:15:37 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ bool	raycast_entity(t_ray r, t_raycastinfo *info, t_entity *entity)
 
 	i = 0;
 	hit = false;
-	if (entity->ignore_raycasts)
+	if (entity->ignore_raycasts || entity->obj == NULL)
 		return (hit);
 	while (i < entity->obj->face_count)
 	{

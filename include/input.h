@@ -99,8 +99,7 @@ typedef struct s_hid_info
 	t_input			input;
 }	t_hid_info;
 
-void	updateinput_new(t_input *input, t_hid_info info);
-void	updateinput(t_input *input, int keystate, t_mouse m, t_controller *controller);
+void	update_input(t_input *input, t_hid_info info);
 bool	iskey(SDL_Event e, int keycode);
 bool	check_alpha_key(uint32_t alphakeystate, char c);
 bool	mouse_clicked(t_mouse mouse, int button);

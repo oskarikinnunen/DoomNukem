@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 14:34:40 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 16:26:29 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/20 18:26:13 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,6 @@ void    update_editor_toolbar(t_editor *ed, t_autogui *toolbar)
 		changetool(ed, toolbar->sdl, get_entity_tool());
 	if (gui_button("[3]Guns", toolbar) || ed->hid.keystate >> KEYS_3MASK & 1)
 		changetool(ed, toolbar->sdl, get_gun_tool());
-	if (gui_shortcut_button("Load/Save", 'I', toolbar))
-		changetool(ed, toolbar->sdl, get_load_tool());
 	if (gui_shortcut_button("No tool", 't', toolbar))
 		ed->tool = NULL;
 	gui_endhorizontal(toolbar);

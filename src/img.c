@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   img.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 13:42:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/08 19:34:37 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 19:20:27 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ t_img	*get_image_by_index(t_sdlcontext sdl, int index)
 			return (&sdl.images[i]);
 		i++;
 	}
-	return (error_image()); //TODO: RETURN DEBUGIMAGE HERE
+	return (error_image());
 }
 
 
@@ -104,14 +104,4 @@ t_img	*get_image_by_name(t_sdlcontext sdl, char *name) //TODO: return pointer, t
 		i++;
 	}
 	return (error_image()); //TODO: RETURN DEBUGIMAGE HERE
-}
-
-void	alloc_image(t_img *img, int width, int height)
-{
-	img->size.x = width;
-	img->size.y = height;
-	img->length = width * height;
-	img->data = ft_memalloc(img->length * sizeof(uint32_t));
-	if (img->data == NULL)
-		doomlog(LOG_EC_MALLOC, NULL);
 }

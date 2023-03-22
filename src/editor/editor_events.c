@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 16:21:30 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/20 14:58:21 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,6 @@ t_gamereturn	editor_events(t_editor *ed)
 			editor_key_down(ed, e);
 		}
 	}
-	updateinput_new(&ed->hid.input, ed->hid);
+	update_input(&ed->hid.input, ed->hid);
 	return (game_continue);
 }

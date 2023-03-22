@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 11:13:16 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 12:02:20 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/21 14:02:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,11 @@ void	entity_assign_object(t_world *world, t_entity *entity, t_object *obj)
 		return ;
 	ft_strcpy(entity->object_name.str, obj->name);
 	entity->obj = obj;
+	if (entity->world_triangles != NULL)
+	{
+		free(entity->world_triangles);
+		entity->world_triangles = NULL;
+	}
 	entity->world_triangles = (t_triangle *)malloc(sizeof(t_triangle)
 			* obj->face_count);
 	if (!entity->world_triangles)

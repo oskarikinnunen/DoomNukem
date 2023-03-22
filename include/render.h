@@ -283,7 +283,6 @@ void				render_capsule(t_sdlcontext *sdl, t_vector3 pos, float height, float rad
 void				render_circle(t_sdlcontext *sdl, t_vector3 pos, float radius, uint32_t clr);
 void				render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to);
 void				render_ray3D(t_sdlcontext *sdl, t_vector3 from, t_vector3 to, uint32_t clr);
-void				draw_screen_to_worldspace_ray(t_sdlcontext sdl, t_render render, t_point origin, t_vector2 angle);
 void				clipped_point_triangle(t_render *render, t_sdlcontext sdl);
 void				render_buffer(t_sdlcontext *sdl, t_render *render);
 t_triangle			triangle_to_viewspace(t_triangle tritransformed, t_mat4x4 matview);

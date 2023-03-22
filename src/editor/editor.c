@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 14:02:36 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/20 14:35:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,6 @@
 #include "objects.h"
 #include "entity.h"
 #include "navigation.h"
-
-
-char	*world_fullpath(char	*filename)
-{
-	static char	fullname[128];
-
-	ft_bzero(fullname, sizeof(fullname));
-	ft_strcat(fullname, "worlds/");
-	ft_strcat(fullname, filename);
-	//ft_strcat(fullname, ".world");
-	return	(fullname);
-}
 
 void	editor_load_world_args(t_editor *ed, char	*worldname, t_sdlcontext *sdl, t_load_arg args)
 {
@@ -209,54 +197,6 @@ void	update_audio(t_world *world)
 	FMOD_System_Update(sdl->audio.system);
 }
 
-char	*seconds_since_last_save_str(t_world *world)
-{
-	static char str[128];
-	uint32_t	time_m;
-	uint32_t	time_s;
-	char		*temp;
-
-	time_s = world->clock.time - world->lastsavetime;
-	time_s = time_s / 1000;
-	time_m = 0;
-	if (world->lastsavetime == 0)
-		ft_strcpy(str, "Loaded ");
-	else
-		ft_strcpy(str, "Saved  ");
-	if (time_s > 60)
-	{
-		time_m = floorf((float)time_s / 60.0f);
-		temp = ft_itoa(time_m);
-		ft_strcat(str, temp);
-		free(temp);
-		ft_strcat(str, "m ");
-	}
-	temp = ft_itoa(time_s - (time_m * 60));
-	ft_strcat(str, temp);
-	free(temp);
-	ft_strcat(str, "s ago");
-	return (str);
-}
-
-void	draw_level_info(t_sdlcontext *sdl, t_world *world)
-{
-	static t_point real_c;
-	char	*time_str;
-
-	return ;
-	if (real_c.x == 0)
-	{
-		real_c = print_text_boxed(sdl, world->name, (t_point){30, 0}).size;
-		real_c = point_sub(point_div(sdl->screensize, 2), real_c);
-		real_c.y = sdl->screensize.y - 30;
-	}
-	print_text_boxed(sdl, world->name, real_c);
-	time_str = seconds_since_last_save_str(world);
-	print_text_boxed(sdl, time_str, point_add(real_c, (t_point){0, 15}));
-}
-
-t_img	tgaparse(char *filename);
-
 int	editorloop(t_sdlcontext sdl)
 {
 	t_editor	ed;
@@ -285,11 +225,8 @@ int	editorloop(t_sdlcontext sdl)
 		print_text(&sdl, fps, (t_point){sdl.window_w - 80, 10});
 		drawcircle(sdl, point_div(sdl.screensize, 2), 4, CLR_BLUE);
 		//draw_image(sdl, point_zero(), tgaparse("assets/images/stone02.tga"), (t_point){400, 400});
-
 		free(fps);
-		draw_level_info(&sdl, &ed.world);
 		update_editor_lateguis(&ed);
-		update_debugconsole(&ed.world.debugconsole, &sdl, ed.world.clock.delta);
 		ed.hid.mouse.click_unhandled = false;
 		memcpy(sdl.window_surface->pixels, sdl.surface->pixels, sizeof(uint32_t) * sdl.window_w * sdl.window_h);
 		if (SDL_UpdateWindowSurface(sdl.window) < 0)

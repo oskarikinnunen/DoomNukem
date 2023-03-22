@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 18:03:40 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/15 13:19:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 14:38:55 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ bool	raycast_plane(t_ray r, t_raycastinfo *info, float plane_z)
 	t_raycastinfo	internal_info;
 	bool			hit;
 
+	hit = false;
 	ft_bzero(&internal_info, sizeof(t_raycastinfo));
 	internal_info.distance = 100000.0f;
 	r.dir = vector3_normalise(r.dir);

@@ -1,20 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   object_primitives.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/20 12:50:46 by okinnune          #+#    #+#             */
+/*   Updated: 2023/03/20 12:53:08 by okinnune         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "objects.h"
 
-static t_material	*planemat()
-{
-	t_material	*mat;
-
-	mat = ft_memalloc(sizeof(t_material));
-	if (mat == NULL)
-		doomlog(LOG_EC_MALLOC, NULL);
-	ft_strcpy(mat->texturename, "metal03.cng");
-	mat->kd = INT_MAX;
-	return (mat);
-}
-
-static t_material	*trimat()
+static t_material	*default_mat(void)
 {
 	t_material	*mat;
 
@@ -57,8 +56,7 @@ t_object	*object_tri(t_sdlcontext *sdl)
 	tri->faces[0].uv_indices[0] = 1;
 	tri->faces[0].uv_indices[1] = 2;
 	tri->faces[0].uv_indices[2] = 3;
-
-	tri->materials = trimat();
+	tri->materials = default_mat();
 	tri->faces[0].material = &tri->materials[0];
 	tri->materials->img = get_image_by_name(*sdl, tri->materials->texturename);
 	tri->material_count = 1;
@@ -68,6 +66,45 @@ t_object	*object_tri(t_sdlcontext *sdl)
 	tri->uvs[1] = (t_vector2){1.0f, 0.0f};
 	tri->uvs[2] = (t_vector2){0.0f, 1.0f};
 	return (tri);
+}
+
+static void plane_make_faces(t_object *plane)
+{
+	plane->vertices[0] = (t_vector3){0.0f, 0.0f, 0.0f};
+	plane->vertices[1] = (t_vector3){10.0f, 0.0f, 0.0f};
+	plane->vertices[2] = (t_vector3){0.0f, 0.0f, 10.0f};
+	plane->vertices[3] = (t_vector3){10.0f, 0.0f, 10.0f};
+	plane->faces[0].v_indices[0] = 1;
+	plane->faces[0].v_indices[1] = 2;
+	plane->faces[0].v_indices[2] = 3;
+	plane->faces[0].uv_indices[0] = 1;
+	plane->faces[0].uv_indices[1] = 2;
+	plane->faces[0].uv_indices[2] = 3;
+	plane->faces[1].v_indices[0] = 2;
+	plane->faces[1].v_indices[1] = 3;
+	plane->faces[1].v_indices[2] = 4;
+	plane->faces[1].uv_indices[0] = 2;
+	plane->faces[1].uv_indices[1] = 3;
+	plane->faces[1].uv_indices[2] = 4;
+}
+
+static void plane_make_uvs_and_mats(t_object *plane, t_sdlcontext *sdl)
+{
+	plane->materials = default_mat();
+	plane->material_count = 1;
+	plane->faces[0].material = &plane->materials[0];
+	plane->faces[1].material = &plane->materials[0];
+	plane->materials->img = get_image_by_name(*sdl, plane->materials->texturename);
+	plane->uvs = ft_memalloc(sizeof(t_vector2) * 4);
+	plane->uv_count = 2;
+	plane->uvs[0] = (t_vector2){0.0f, 0.0f};
+	plane->uvs[1] = (t_vector2){0.0f, 1.0f};
+	plane->uvs[2] = (t_vector2){-1.0f, 0.0f};
+	plane->uvs[3] = (t_vector2){-1.0f, 1.0f};
+	//plane->uvs[0] = flipped_uv(plane->uvs[0]);
+	//plane->uvs[1] = flipped_uv(plane->uvs[1]);
+	//plane->uvs[2] = flipped_uv(plane->uvs[2]);
+	//plane->uvs[3] = flipped_uv(plane->uvs[3]);
 }
 
 t_object	*object_plane(t_sdlcontext *sdl)
@@ -82,42 +119,7 @@ t_object	*object_plane(t_sdlcontext *sdl)
 	strcpy(plane->name, "plane");
 	if (plane->vertices == NULL || plane->faces == NULL)
 		doomlog(LOG_EC_MALLOC, NULL);
-	plane->vertices[0] = (t_vector3){0.0f, 0.0f, 0.0f};
-	plane->vertices[1] = (t_vector3){10.0f, 0.0f, 0.0f};
-	plane->vertices[2] = (t_vector3){0.0f, 0.0f, 10.0f};
-	plane->vertices[3] = (t_vector3){10.0f, 0.0f, 10.0f};
-	//first tri:
-	plane->faces[0].v_indices[0] = 1;
-	plane->faces[0].v_indices[1] = 2;
-	plane->faces[0].v_indices[2] = 3;
-	plane->faces[0].uv_indices[0] = 1;
-	plane->faces[0].uv_indices[1] = 2;
-	plane->faces[0].uv_indices[2] = 3;
-	//second tri:
-	plane->faces[1].v_indices[0] = 2;
-	plane->faces[1].v_indices[1] = 3;
-	plane->faces[1].v_indices[2] = 4;
-	plane->faces[1].uv_indices[0] = 2;
-	plane->faces[1].uv_indices[1] = 3;
-	plane->faces[1].uv_indices[2] = 4;
-
-	plane->materials = planemat();
-	plane->material_count = 1;
-	plane->faces[0].material = &plane->materials[0];
-	plane->faces[1].material = &plane->materials[0];
-	plane->materials->img = get_image_by_name(*sdl, plane->materials->texturename);
-	plane->uvs = ft_memalloc(sizeof(t_vector2) * 4);
-	plane->uv_count = 2;
-	plane->uvs[0] = (t_vector2){0.0f, 0.0f};
-	plane->uvs[1] = (t_vector2){1.0f, 0.0f};
-	plane->uvs[2] = (t_vector2){0.0f, 1.0f};
-	plane->uvs[3] = (t_vector2){1.0f, 1.0f};
-	plane->uvs[0] = flipped_uv(plane->uvs[0]);
-	plane->uvs[1] = flipped_uv(plane->uvs[1]);
-	plane->uvs[2] = flipped_uv(plane->uvs[2]);
-	plane->uvs[3] = flipped_uv(plane->uvs[3]);
-
-	/*sizeof(t_wall);
-	sizeof(t_object);*/
+	plane_make_faces(plane);
+	plane_make_uvs_and_mats(plane, sdl);
 	return (plane);
 }

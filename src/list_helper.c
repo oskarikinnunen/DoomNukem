@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   list_helper.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 12:32:25 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/08 21:14:20 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 17:22:06 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,22 +85,6 @@ void	list_remove(t_list **head, void *match, size_t content_size)
 		prev = node;
 		node = node->next;
 	}
-}
-
-t_list	*ptr_to_list(void	*src, uint32_t len, size_t size)
-{
-	int		i;
-	t_list	*head;
-
-	i = 0;
-	head = NULL;
-	while (i < len)
-	{
-		void *cur = src + (size * i);
-		list_push(&head, cur, size);
-		i++;
-	}
-	return (head);
 }
 
 //Returns a mallocated and NULL terminated array of list contents.

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:56:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 13:08:29 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/20 14:51:27 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,6 @@ void	update_anim(t_anim *anim, uint32_t delta)
 	}
 	anim->lerp = ((float)anim->frame / (float)anim->lastframe);
 	anim->lerp = ft_clampf(anim->lerp, 0.0f, 1.0f);
-}
-
-void	update_anim_dir(t_anim *anim, uint32_t delta, t_anim_mode mode)
-{
-	anim->mode = mode;
-	update_anim(anim, delta);
 }
 
 void	start_human_anim(t_entity *entity, char *name, t_world *world)

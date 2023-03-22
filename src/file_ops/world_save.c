@@ -6,18 +6,13 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 13:57:45 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/17 18:56:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/20 14:53:32 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "file_io.h"
 #include "objects.h"
 #include "editor_tools.h"
-
-static void	save_entities(char *filename, t_list	*entitylist)
-{
-	save_chunk(filename, "ENT_", entitylist);
-}
 
 char	*world_filename(char *worldname, char *suffix)
 {

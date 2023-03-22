@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   audio_init.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/27 10:42:33 by raho              #+#    #+#             */
-/*   Updated: 2023/03/09 21:37:36 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/20 18:29:28 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,6 @@
 #include "doomnukem.h"
 #include <dirent.h>
 #include "file_io.h"
-
-bool	is_sample(char	*audioname)
-{
-	return (ft_strstr(audioname, ".wav") != NULL
-		|| ft_strstr(audioname, ".mp3") != NULL);
-}
-
-bool	is_music(char *audioname)
-{
-	return (ft_strstr(audioname, "music") != NULL);
-}
 
 FMOD_MODE	get_mask(char *sound_path)
 {

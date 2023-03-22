@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wall_tool_rooms.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 13:44:05 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/20 18:40:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,51 +109,6 @@ static bool intersect(t_line line1, t_vector2 *edges, int edgecount)
 	return (false);
 }
 
-static	bool correctangle_new(t_floorcalc fc, int *valid, int validcount) //TODO: takes 'fc', 'valid' array and 'validcount'
-{
-	t_vector2	*tr;
-	t_vector2	pool[MAXSELECTED];
-	float		angle;
-	t_vector2	first;
-	t_vector2	center;
-	t_vector2	second;
-	int			i;
-
-	first = fc.edges[valid[validcount - 1]];
-	center = fc.edges[valid[0]];
-	second = fc.edges[valid[1]];
-	angle = vector2_anglebetween(first, second);
-	i = 0;
-	while (i < validcount) 
-	{
-		pool[i] = fc.edges[valid[i]];
-		i++;
-	}
-	tr = transformed_around(second, -angle, pool, validcount);
-	float lowest = -100000.0f;
-	float highest = 100000.0f;
-	int		l_i = -2;
-	i = 0;
-	while (i < validcount)
-	{
-		if (tr[i].y > lowest)
-		{
-			lowest = tr[i].y;
-			l_i = i;
-		}
-		if (tr[i].y < highest)
-			highest = tr[i].y;
-		i++;
-	}
-	printf("lowest point in shape was %i, value: %f , center y %f HIGHEST: %f\n", valid[l_i], lowest, tr[valid[0]].y, highest);
-	if (valid[l_i] == valid[0])
-	{
-		printf("CENTER WAS LOWEST POINT");
-	}
-	return (valid[l_i] == valid[0]);
-	//return (tr[1].y >= tr[0].y && tr[1].y >= tr[2].y);
-}
-
 static	bool correctangle(t_vector2 vs[3]) //TODO: takes 'fc', 'valid' array and 'validcount'
 {
 	t_vector2	*tr;
@@ -164,21 +119,6 @@ static	bool correctangle(t_vector2 vs[3]) //TODO: takes 'fc', 'valid' array and 
 		exit(0);
 	}
 	tr = transformed_around(vs[2], -angle, vs, 3);
-	return (tr[1].y >= tr[0].y && tr[1].y >= tr[2].y);
-}
-
-static	bool correctangle_debug(t_vector2 vs[3]) //TODO: takes 'fc', 'valid' array and 'validcount'
-{
-	t_vector2	*tr;
-	float		angle = vector2_anglebetween(vs[0], vs[2]);
-	if (isinf(angle) || isnan(angle))
-	{
-		printf("angle was nan or inf \n");
-		exit(0);
-	}
-
-	tr = transformed_around(vs[2], -angle, vs, 3);
-	printf("0y: %f 5y: %f\n6 y: %f\n", tr[0].y, tr[2].y, tr[1].y);
 	return (tr[1].y >= tr[0].y && tr[1].y >= tr[2].y);
 }
 
@@ -195,147 +135,6 @@ static void indexesdebug(t_sdlcontext *sdl, t_floorcalc fc, int i)
 	free(str);
 }
 
-void	floorcalc_debugdraw(t_editor *ed, t_sdlcontext *sdl, t_floorcalc fc, int tri_i, float rad)
-{
-	int			i;
-	t_vector3	ws;
-	t_point		ss;
-	t_vector3	ws_to;
-	char		*str;
-
-	i = 0;
-	/*sprintf(str, "edges: %i", fc.edgecount);
-	print_text_boxed(sdl, str, (t_point) {30, 400});*/
-	while (i < fc.edgecount)
-	{
-		ws = (t_vector3){fc.edges[i].x, fc.edges[i].y, 0.0f};
-		ss = vector3_to_screenspace(ws, *sdl);
-		str = ft_itoa(i);
-		print_text_boxed(sdl, str, ss);
-		free (str);
-		sdl->render.gizmocolor = CLR_RED;
-		render_gizmo(*sdl, sdl->render, ws, 10);
-		i++;
-	}
-	i = tri_i;
-	sdl->render.gizmocolor = CLR_PRPL;
-	
-	/*CREATED LINE */
-	t_vector2 first = fc.edges[fc.faces[i].v_indices[0]];
-	t_vector2 center = fc.edges[fc.faces[i].v_indices[1]];
-	t_vector2 second = fc.edges[fc.faces[i].v_indices[2]];
-	indexesdebug(sdl, fc, i);
-
-	char *stra;
-	float a1 = vector2_anglebetween(first, second);
-	float a2 = vector2_anglebetween(first, center);
-	t_vector2 t1 = (t_vector2) {2.0f, 2.0f};
-	t_vector2 t2 = (t_vector2) {2.0f, 3.0f};
-	float a3 = vector2_anglebetween(t1, t2);
-	float aw1 = vector2_anglebetween(center, second);
-	float angleworld = vector2_anglebetween(vector2_sub(first, first), vector2_sub(second, first)); //'better' one
-	//float angleworld = anglebetween(vector2_sub(first, second), vector2_sub(first, center)); //demo one
-	stra = ft_itoa(radtodeg(a1)); //DIV with m_pi to get internal triangle angles
-	print_text_boxed(sdl, stra, (t_point) {300, 200});
-	free(stra);
-	stra = ft_itoa(radtodeg(a2)); //Internal angle M_PI - ((a1 / M_PI) + (a3 / M_PI)))
-	print_text_boxed(sdl, stra, (t_point) {350, 200});
-	free(stra);
-	stra = ft_itoa(radtodeg(a3));
-	print_text_boxed(sdl, stra, (t_point) {400, 200});
-	free(stra);
-	stra = ft_itoa(radtodeg(angleworld));
-	print_text_boxed(sdl, stra, (t_point) {400, 300});
-	free(stra);
-
-	//printf("M_PI MINUS %f, in deg %f\n", 0.0f, radtodeg(M_PI + a3));
-	t_vector2 *tr = transformed_around(second, -a1, fc.edges, fc.edgecount);
-	i = 0;
-	t_vector2 temp1;
-	t_vector2 temp2;
-	while (i < fc.edgecount)
-	{
-		temp1 = tr[i];
-		temp2 = tr[i + 1];
-		if (i == fc.edgecount - 1)
-			temp2 = tr[0];
-		temp1 = vector2_add(temp1, (t_vector2){sdl->window_w / 2, sdl->window_h / 2});
-		temp2 = vector2_add(temp2, (t_vector2){sdl->window_w / 2, sdl->window_h / 2});
-		drawline(*sdl, vector2_to_point(temp1), vector2_to_point(temp2), CLR_RED);
-		if (i == tri_i)
-		{
-			//draw the whatevs line
-		}
-		i++;
-	}
-	i = 0;
-	while (i <= tri_i) {
-		temp1 = vector2_add(tr[fc.faces[i].v_indices[2]],(t_vector2){sdl->window_w / 2, sdl->window_h / 2});
-		temp2 = vector2_add(tr[fc.faces[i].v_indices[0]],(t_vector2){sdl->window_w / 2, sdl->window_h / 2});
-		if (i == tri_i)
-			drawline(*sdl, vector2_to_point(temp1), vector2_to_point(temp2), CLR_BLUE);
-		else
-			drawline(*sdl, vector2_to_point(temp1), vector2_to_point(temp2), CLR_RED);
-		temp1 = vector2_add(tr[fc.faces[i].v_indices[1]],(t_vector2){sdl->window_w / 2, sdl->window_h / 2});
-		if (i == tri_i)
-			drawcircle(*sdl, vector2_to_point(temp1), 5, CLR_BLUE);
-		else
-			drawcircle(*sdl, vector2_to_point(temp1), 5, CLR_RED);
-		i++;
-	}
-
-	ft_bzero(sdl->surface->pixels, sizeof(uint32_t) * sdl->window_h * sdl->window_w);
-	i = 0;
-	while (i < fc.edgecount - 2)
-	{
-		temp1 = vector2_add(fc.edges[i],(t_vector2){sdl->window_w / 2, 0.0f});
-		temp2 = vector2_add(fc.edges[i + 1],(t_vector2){sdl->window_w / 2, 0.0f});
-		drawline(*sdl, vector2_to_point(temp1),
-			vector2_to_point(temp2), CLR_RED);
-		temp1 = vector2_add(fc.normals[i].start,(t_vector2){sdl->window_w / 2, 0.0f});
-		temp2 = vector2_add(fc.normals[i].end,(t_vector2){sdl->window_w / 2, 0.0f});
-		drawline(*sdl, vector2_to_point(temp1),
-			vector2_to_point(temp2), CLR_BLUE);
-		i++;
-	}
-	
-}
-
-/*static void gen_tris()
-{
-
-}*/
-
-static bool	isunique(t_floorcalc fc, t_vector2 v2)
-{
-	int		i;
-	bool	result;
-
-	i = 0;
-	if (fc.edgecount == 0)
-		return (true);
-	result = true;
-	while (i < fc.edgecount)
-	{
-		if (vector2_cmp(v2, fc.edges[i]))
-			result = false;
-		i++;
-	}
-	return (result);
-}
-
-static	int select_ni(int *valid, int i, int count)
-{
-	//rotates around if i < 
-	return (0);
-
-}
-
-static	int select_pi(int *valid, int i, int count)
-{
-	return (0);
-}
-
 static	void removevalid (int *valid, int count, int ri)
 {
 	int	i;
@@ -349,18 +148,6 @@ static	void removevalid (int *valid, int count, int ri)
 		i++;
 	}
 }
-
-static void printvalid(int valid[MAXSELECTED], int count)
-{
-	int	i;
-
-	printf("CURRENT VALID INDEXES: ");
-	i = 0;
-	while(i < count)
-		printf(" %i,", valid[i++]);
-	printf("\n");
-}
-
 
 static	void shiftvalid(int valid[32], int count)
 {
@@ -531,18 +318,6 @@ bool	points_collide(t_floorcalc *fc, t_vector2 tri[3])
 		i++;
 	}
 	return (false);*/
-}
-
-bool isany(int o, int i1, int i2, int i3)
-{
-	return (o == i1 || o == i2 || o == i3);
-}
-
-bool isvalid_any(int i1, int i2, int i3, int valid[32], int validcount)
-{
-	return (isany(valid[0], i1, i2, i3)
-			&& isany(valid[1], i1, i2, i3)
-			&& isany(valid[validcount - 1], i1, i2, i3));
 }
 
 t_line	line_shorten(t_line line) //lol

@@ -19,6 +19,7 @@ typedef struct s_bounds
 	t_box			box;
 	uint32_t		count;
 	t_bound_type	type;
+	float			min_z;
 	float			radius;
 	float			height;
 }	t_bounds;
