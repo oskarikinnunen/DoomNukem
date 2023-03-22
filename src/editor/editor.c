@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 19:38:12 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 17:52:33 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -268,7 +268,6 @@ int	editorloop(char *level, t_sdlcontext sdl)
 		char *fps = ft_itoa(ed.world.clock.fps);
 		print_text(&sdl, fps, (t_point){sdl.window_w - 80, 10});
 		drawcircle(sdl, point_div(sdl.screensize, 2), 4, CLR_BLUE);
-		//draw_image(sdl, point_zero(), tgaparse("assets/images/stone02.tga"), (t_point){400, 400});
 
 		free(fps);
 		update_editor_lateguis(&ed);

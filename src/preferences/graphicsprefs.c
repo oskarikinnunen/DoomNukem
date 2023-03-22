@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 14:37:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/08 19:40:19 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 16:58:50 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,11 +96,12 @@ void	apply_graphics_prefs(t_graphicprefs prefs)
 	prefpath = SDL_GetPrefPath("temp", "stark");
 	pref_filename = ft_strnew(ft_strlen(prefpath) + 20);
 	if (pref_filename == NULL)
-		doomlog(LOG_EC_MALLOC, "appply graphics pref filename");
+		doomlog(LOG_EC_MALLOC, "apply_graphics_prefs");
 	ft_strcpy(pref_filename, prefpath);
 	ft_strcat(pref_filename, "graphics.pref");
 	fd = fileopen(pref_filename, O_RDWR | O_CREAT | O_TRUNC);
-	write(fd, &prefs, sizeof(prefs));
+	if (write(fd, &prefs, sizeof(prefs)) == -1)
+		doomlog(LOG_EC_WRITE, "apply_graphics_prefs");
 	fileclose(fd, pref_filename);
 	SDL_free(prefpath);
 	free(pref_filename);
@@ -117,11 +118,12 @@ void	save_graphics_prefs(t_sdlcontext *sdl)
 	prefpath = SDL_GetPrefPath("temp", "stark");
 	pref_filename = ft_strnew(ft_strlen(prefpath) + 20);
 	if (pref_filename == NULL)
-		doomlog(LOG_EC_MALLOC, "save graphics pref filename");
+		doomlog(LOG_EC_MALLOC, "save_graphics_prefs");
 	ft_strcpy(pref_filename, prefpath);
 	ft_strcat(pref_filename, "graphics.pref");
 	fd = fileopen(pref_filename, O_RDWR | O_CREAT | O_TRUNC);
-	write(fd, &prefs, sizeof(prefs));
+	if (write(fd, &prefs, sizeof(prefs)) == -1)
+		doomlog(LOG_EC_WRITE, "apply_graphics_prefs");
 	fileclose(fd, pref_filename);
 	SDL_free(prefpath);
 	free(pref_filename);

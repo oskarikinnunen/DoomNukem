@@ -19,6 +19,7 @@ assets/images/tga/Keyboard.tga
 assets/images/tga/light.tga
 assets/images/tga/light2.tga
 assets/images/tga/light_icon.tga
+assets/images/tga/loading_screen.tga
 assets/images/tga/metal03.tga
 assets/images/tga/metal04.tga
 assets/images/tga/particle_icon.tga

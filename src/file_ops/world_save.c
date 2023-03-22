@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 13:57:45 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 19:45:43 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 19:09:21 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,6 +160,29 @@ void	clean_create_level_file(char *level)
 			"cleaned/created the level:", level, "succesfully"});
 }
 
+void	loading_screen_show(t_sdlcontext *sdl, char *loading_message)
+{
+	static t_img	*loading_image = NULL;
+	TTF_Font		*temp;
+	int				len;
+
+	if (loading_image == NULL)
+		loading_image = get_image_by_name(*sdl, "loading_screen.tga");
+	draw_image(*sdl, point_zero(), *loading_image, (t_point){sdl->window_w, sdl->window_h});
+	if (loading_message != NULL)
+	{
+		len = ft_strlen(loading_message);
+		temp = sdl->font_default->size_default;
+		sdl->font_default->size_default = sdl->font_default->sizes[1];
+		sdl->font_default->color = color32_to_sdlcolor(CLR_BLACK);
+		print_text(sdl, loading_message, (t_point){((sdl->window_w / 2) - (len / 2 * (2 * FONT_SIZE_DEFAULT))) - 5, (sdl->window_h - (sdl->window_h / 5))});
+		sdl->font_default->size_default = temp;
+	}
+	memcpy(sdl->window_surface->pixels, sdl->surface->pixels, sizeof(uint32_t) * sdl->window_w * sdl->window_h);
+	if (SDL_UpdateWindowSurface(sdl->window) < 0)
+		doomlog(LOG_EC_SDL_UPDATEWINDOWSURFACE, NULL);
+}
+
 void	world_save_to_file(t_world world)
 {
 	char	level_path[256];
@@ -171,25 +194,60 @@ void	world_save_to_file(t_world world)
 
 	clean_create_level_file(level_path);
 
+	loading_screen_show(world.sdl, "SAVING AREAS, ENTITIES AND ROOMS");
 	_world_save_amap(level_path, world);
 	_world_save_basic_ent(level_path, world);
 	_world_init_rooms(&world);
 
 	// THESE NEED TO BE IN THE SAME ORDER AS LOADING ATM
+	loading_screen_show(world.sdl, "SAVING FONTS");
 	pack_file_to_level(level_path, FONTLISTPATH);
 	_world_save_asset_files_rene(level_path, FONTLISTPATH);
+	
+	loading_screen_show(world.sdl, "SAVING IMAGES");
 	pack_file_to_level(level_path, IMGLISTPATH);
 	_world_save_asset_files_rene(level_path, IMGLISTPATH);
+
+	loading_screen_show(world.sdl, "SAVING ENV TEXTURES");
 	pack_file_to_level(level_path, IMGENVLISTPATH);
 	_world_save_asset_files_rene(level_path, IMGENVLISTPATH);
+
+	loading_screen_show(world.sdl, "SAVING SOUNDS");
 	pack_file_to_level(level_path, SOUNDLISTPATH);
 	_world_save_asset_files_rene(level_path, SOUNDLISTPATH);
+	
+	loading_screen_show(world.sdl, "SAVING MUSIC");
 	pack_file_to_level(level_path, MUSICLISTPATH);
 	_world_save_asset_files_rene(level_path, MUSICLISTPATH);
+	
+	loading_screen_show(world.sdl, "SAVING OBJECTS");
 	pack_file_to_level(level_path, OBJLISTPATH);
 	_world_save_asset_files_rene(level_path, OBJLISTPATH);
+
+	loading_screen_show(world.sdl, "SAVING MATERIALS");
 	_world_save_asset_files_rene(level_path, MTLLISTPATH);
+	
+	loading_screen_show(world.sdl, "SAVING ANIMATIONS");
 	pack_file_to_level(level_path, ANIMLISTPATH);
 	_world_save_asset_files_rene(level_path, ANIMLISTPATH);
 	pack_file_to_level(level_path, ANIMLEGENDPATH);
+
+	loading_screen_show(world.sdl, "PRESS ANY KEY TO CONTINUE");
+
+	static SDL_Event	e;
+
+	while (1)
+	{
+		while (SDL_PollEvent(&e))
+		{
+			if (e.type == SDL_KEYDOWN || e.type == SDL_MOUSEBUTTONDOWN)
+			{
+				if (iskey(e, SDLK_ESCAPE))
+					exit(0);
+				else
+					return ;
+			}
+		}
+	}
+	
 }

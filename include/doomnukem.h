@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 13:58:54 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 18:11:40 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,6 +203,7 @@ typedef struct s_game
 
 
 t_app_argument	get_app_argument(int argc, char **argv);
+void			loading_screen_show(t_sdlcontext *sdl, char *loading_message);
 
 /* TOOLS */
 // Protected ft_memalloc that calls doomlog with error code in case of an error

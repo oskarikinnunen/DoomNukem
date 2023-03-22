@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/21 13:11:34 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 16:57:20 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,22 +66,30 @@ t_list	*parse_chunk(int fd, size_t size)
 //TODO: No need for padding because compiler does padding?
 void	save_chunk(char *filename, char *chunkname, t_list *content)
 {
-	t_list		*l;
-	int			written;
-	int			fd;
+	t_list	*l;
+	int		written;
+	int		fd;
+	int		temp;
 
 	l = content;
 	fd = fileopen(filename, O_RDWR | O_APPEND);
 	written = 0;
-	write(fd, chunkname, CHUNKSIZE);
+	temp = 0;
+	if (write(fd, chunkname, CHUNKSIZE) == -1)
+		doomlog(LOG_EC_WRITE, "save_chunk");
 	while (l != NULL)
 	{
-		written += write(fd, l->content, l->content_size);
+		temp = write(fd, l->content, l->content_size);
+		if (temp == -1)
+			doomlog(LOG_EC_WRITE, "save_chunk");
+		written += temp;
 		l = l->next;
 	}
 	if (written % CHUNKSIZE != 0)
-		write(fd, "PADD", CHUNKSIZE - (written % CHUNKSIZE));
-	write(fd, "CEND", CHUNKSIZE);
+		if (write(fd, "PADD", CHUNKSIZE - (written % CHUNKSIZE) == -1))
+			doomlog(LOG_EC_WRITE, "save_chunk");
+	if (write(fd, "CEND", CHUNKSIZE) == -1)
+		doomlog(LOG_EC_WRITE, "save_chunk");
 	fileclose(fd, filename);
 }
 
@@ -200,7 +208,8 @@ void	load_and_write_filecontent(char *worldname, char *fcname, \
 
 	fc = load_filecontent(worldname, fcname);
 	fd = fileopen(filename, O_CREAT | O_RDWR | O_TRUNC);
-	write(fd, fc.content, fc.length);
+	if (write(fd, fc.content, fc.length) == -1)
+		doomlog(LOG_EC_WRITE, "load_and_write_filecontent");
 	fileclose(fd, filename);
 	free(fc.content);
 }
@@ -232,11 +241,16 @@ void	pack_file_to_level(char *level, char *file)
 	ft_strncpy(fc.name, file, 127);
 	fileclose(fd, file);
 	fileopen(level, O_RDWR | O_APPEND);
-	write(fd, "FCNK", 4);
-	write(fd, fc.name, sizeof(char) * 128);
-	write(fd, uint64_to_char(fc.length), 8);
-	write(fd, fc.content, sizeof(char) * fc.length);
-	write(fd, "PADD", CHUNKSIZE - (fc.length % CHUNKSIZE));
+	if (write(fd, "FCNK", 4) == -1)
+		doomlog(LOG_EC_WRITE, "save_chunk");
+	if (write(fd, fc.name, sizeof(char) * 128) == -1)
+		doomlog(LOG_EC_WRITE, "save_chunk");
+	if (write(fd, uint64_to_char(fc.length), 8) == -1)
+		doomlog(LOG_EC_WRITE, "save_chunk");
+	if (write(fd, fc.content, sizeof(char) * fc.length) == -1)
+		doomlog(LOG_EC_WRITE, "save_chunk");
+	if (write(fd, "PADD", CHUNKSIZE - (fc.length % CHUNKSIZE)) == -1)
+		doomlog(LOG_EC_WRITE, "save_chunk");
 	fileclose(fd, level);
 	doomlog_mul(LOG_NORMAL, (char *[5]){\
 			"packed file:", file, "to level:", level, NULL});

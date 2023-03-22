@@ -25,6 +25,7 @@
 # define CLR_BROWN 0xFF4C3228
 # define CLR_GREEN 3002977
 # define CLR_RED 0xFF2919
+# define CLR_BLUEGRAY 0x6A7382
 # define AMBER_0 0x551501
 # define AMBER_1 0x832d01
 //# define AMBER_2 0x831f00
@@ -32,7 +33,7 @@
 # define AMBER_3 0xff9b05
 # define AMBER_4 0xf5a845
 # define CLEARSCREEN "\e[1;1H\e[2J"
-# define DEFAULT_FONT_SIZE 8
+# define FONT_SIZE_DEFAULT 8
 # define FONT_SIZE_COUNT 4
 
 typedef struct s_step
@@ -84,7 +85,6 @@ typedef struct s_font
 	SDL_Color			color;
 	uint32_t			box_color;
 	TTF_Font			*sizes[4];
-	uint32_t			size_count;
 	TTF_Font			*size_default;
 	char				name[128];
 	char				*text;
