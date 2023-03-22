@@ -6,17 +6,18 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:01:16 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/21 14:21:39 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/22 18:24:20 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-static void render_shadowmap(t_world *world, t_lighting *lighting)
+static void	render_shadowmap(t_world *world, t_lighting *l)
 {
 	int			i;
 	int			found;
 	t_entity	*ent;
+	bool		is_valid;
 
 	i = 0;
 	found = 0;
@@ -27,8 +28,9 @@ static void render_shadowmap(t_world *world, t_lighting *lighting)
 		{
 			if (ent->status == es_active && !ent->hidden)
 			{
-				if (lighting->light->ignoreself == false || (lighting->light->ignoreself && ent->id != lighting->light_ent->id))
-					render_zbuffer(lighting, ent);
+				is_valid = (l->light->ignoreself && ent->id != l->entity->id);
+				if (l->light->ignoreself == false || is_valid)
+					render_zbuffer(l, ent);
 			}
 			found++;
 		}
@@ -44,13 +46,16 @@ static void	update_cubemap_cameras(t_entity *entity)
 
 	light = entity->component.data;
 	if (light == NULL)
-		return;
-	light->world_position = transformed_vector3(entity->transform, light->origin).v;
-	matproj = matrix_makeprojection(90.0f, light->cubemap.resolution.y / light->cubemap.resolution.x, 2.0f, 1000.0f);
+		return ;
+	light->world_position = \
+	transformed_vector3(entity->transform, light->origin).v;
+	matproj = matrix_makeprojection(90.0f, light->cubemap.resolution.y \
+	/ light->cubemap.resolution.x, 2.0f, 1000.0f);
 	i = 0;
 	while (i < 6)
 	{
-		light->cubemap.shadowmaps[i] = (float *)malloc(sizeof(float) * (light->cubemap.resolution.x * light->cubemap.resolution.y));
+		light->cubemap.shadowmaps[i] = (float *)malloc(sizeof(float) * \
+		(light->cubemap.resolution.x * light->cubemap.resolution.y));
 		light->cubemap.cameras[i].position = light->world_position;
 		light->cubemap.cameras[i].matproj = matproj;
 		calculate_matview(&light->cubemap.cameras[i]);
@@ -58,22 +63,23 @@ static void	update_cubemap_cameras(t_entity *entity)
 	}
 }
 
-static void calculate_pointlight(t_world *world, t_entity *entity)
+static void	calculate_pointlight(t_world *world, t_entity *entity)
 {
 	int				index;
-	t_lighting		lighting;
+	t_lighting		l;
 
 	update_cubemap_cameras(entity);
-	lighting.light = entity->component.data;
-	lighting.resolution = lighting.light->cubemap.resolution;
-	lighting.light_ent = entity;
+	l.light = entity->component.data;
+	l.resolution = l.light->cubemap.resolution;
+	l.entity = entity;
 	index = 0;
 	while (index < 6)
 	{
-		lighting.camera = lighting.light->cubemap.cameras[index];
-		lighting.zbuffer = lighting.light->cubemap.shadowmaps[index];
-		ft_bzero(lighting.zbuffer, sizeof(float) * lighting.light->cubemap.resolution.x * lighting.light->cubemap.resolution.y);
-		render_shadowmap(world, &lighting);
+		l.camera = l.light->cubemap.cameras[index];
+		l.zbuffer = l.light->cubemap.shadowmaps[index];
+		ft_bzero(l.zbuffer, sizeof(float) * l.light->cubemap.resolution.x \
+		* l.light->cubemap.resolution.y);
+		render_shadowmap(world, &l);
 		index++;
 	}
 }
@@ -91,15 +97,15 @@ void	recalculate_pointlight(t_world *world)
 	while (found < cache->existing_entitycount
 		&& i < cache->alloc_count)
 	{
-		ent = &cache->entities[i];
+		ent = &cache->entities[i++];
 		if (ent->status != es_free)
 		{
-			if	(ent->status == es_active && ent->component.type == COMP_LIGHT)
+			if (ent->status == es_active && \
+			ent->component.type == COMP_LIGHT)
 			{
 				calculate_pointlight(world, ent);
 			}
 			found++;
 		}
-		i++;
 	}
 }

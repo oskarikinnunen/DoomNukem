@@ -50,7 +50,7 @@ typedef struct s_lighting
 	struct s_world		*world;
 	t_triangle			*world_triangles;
 	t_light				*light;
-	struct s_entity		*light_ent;
+	struct s_entity		*entity;
 	struct s_img		*img;
 	bool				*overdraw;
 	float				*zbuffer;

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 14:14:49 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/22 17:30:21 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/22 18:22:33 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	*calculate_light_for_entities(t_test *ptr)
 
 	if (ptr->world == NULL)
 		return (NULL);
-	lighting.light_ent = ptr->entity;
+	lighting.entity = ptr->entity;
 	lighting.light = ptr->entity->component.data;
 	i = 0;
 	found = 0;

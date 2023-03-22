@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 13:48:22 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/22 16:54:50 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/22 18:26:44 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ static void	allocate_map_for_entity(t_entity *entity, t_world *world)
 		clear_map_for_entity(entity);
 	if (obj == NULL || obj->uv_count == 0 || entity->world_triangles == NULL)
 		return ;
-	entity->map = malloc(sizeof(t_map) * entity->obj->material_count);//TODO: Change to memalloc
+	entity->map = malloc(sizeof(t_map) * entity->obj->material_count);
 	bzero(entity->map, sizeof(t_map) * entity->obj->material_count);
 	if (entity->map == NULL)
 		doomlog(LOG_FATAL, "Malloc fail in bake_lighting.c");
