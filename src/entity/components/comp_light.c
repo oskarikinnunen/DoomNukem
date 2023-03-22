@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 17:42:08 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/21 14:28:18 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ void	comp_light_ui_update(t_entity *entity, t_world *world)
 
 		lpos = transformed_vector3(entity->transform, light->origin).v;
 		draw_worldspace_icon(lpos, icon, world);
+
 		//draw_worldspace_i_icon(entity, icon, world);
 	}
 	for_all_active_entities(world, highlight_bound);
@@ -130,7 +131,6 @@ void	comp_light_gui_edit(t_entity *entity, t_autogui *gui, t_world *world)
 	static bool	toggle_select;
 	char		cubemap_nb[2];
 	int			i;
-	
 
 	light = entity->component.data;
 	if (light == NULL)
@@ -138,6 +138,8 @@ void	comp_light_gui_edit(t_entity *entity, t_autogui *gui, t_world *world)
 	cubemap_nb[1] = '\0';
 	gui_labeled_float_slider("Radius: ", &light->radius, 0.1f, gui);
 	gui_labeled_vector3_slider("Offset:", &light->origin, 0.1f, gui);
+	gui_labeled_float_slider("Intensity", &light->intensity, 0.01f, gui);
+	gui_labeled_float_slider("Ambient", &light->ambient, 0.01f, gui);
 	render_ball(world->sdl, entity->transform.position, light->radius, AMBER_3);
 	if (gui_highlighted_button_if("CubeMap", gui, toggle_select))
 		toggle_select = !toggle_select;
@@ -201,16 +203,6 @@ void	comp_light_gui_edit(t_entity *entity, t_autogui *gui, t_world *world)
 	{
 		light->clr = ((uint32_t *)world->sdl->surface->pixels)[gui->hid->mouse.pos.y * world->sdl->window_w + gui->hid->mouse.pos.x];
 	}
-	//free(img->data);
-	t_mat4x4 matproj = matrix_makeprojection(90.0f, light->cubemap.resolution.y / light->cubemap.resolution.x, 2.0f, 1000.0f);
-	i = 0;
-	while (i < 6)
-	{
-		light->cubemap.cameras[i].position = transformed_vector3(entity->transform, light->origin).v;
-		light->cubemap.cameras[i].matproj = matproj;
-		calculate_matview(&light->cubemap.cameras[i]);
-		i++;
-	}
 }
 /*	This is called during load_world, use only if your component
 	NEEDS to gather assets (sounds etc.) at this time.
@@ -235,7 +227,7 @@ void	comp_light_allocate(t_entity *entity, t_world *world)
 	entity->component.data_size = sizeof(t_light);
 	light = (t_light *)entity->component.data;
 	//light->cubemap.shadowmaps = (float **)malloc(sizeof(float *) * 6);
-	light->radius = 500.0f;
+	light->radius = 300.0f;
 	light->cubemap.cameras[0].lookdir = (t_vector3){.x = 1.0f};
 	light->cubemap.cameras[1].lookdir = (t_vector3){.y = 1.0f};
 	light->cubemap.cameras[2].lookdir = (t_vector3){.x = 0.01f, .z = 0.99f};
@@ -246,19 +238,8 @@ void	comp_light_allocate(t_entity *entity, t_world *world)
 	light->cubemap.resolution.y = 2000;
 	light->ignoreself = false;
 	light->clr = INT_MAX;
-	light->ambient = 0.5f;
 	light->intensity = 1.0f;
-	light->origin = (t_vector3){0.0f, -10.0f, -10.0f};
-	matproj = matrix_makeprojection(90.0f, light->cubemap.resolution.y / light->cubemap.resolution.x, 2.0f, 1000.0f);
-	i = 0;
-	while (i < 6)
-	{
-		light->cubemap.shadowmaps[i] = (float *)malloc(sizeof(float) * (light->cubemap.resolution.x * light->cubemap.resolution.y));
-		light->cubemap.cameras[i].position = transformed_vector3(entity->transform, light->origin).v; 
-		light->cubemap.cameras[i].matproj = matproj;
-		calculate_matview(&light->cubemap.cameras[i]);
-		i++;
-	}
+	light->origin = (t_vector3){0.0f, -25.0f, -10.0f};
 }
 
 /*	Internal function that's used to link this components behaviour

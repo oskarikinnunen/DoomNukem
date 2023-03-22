@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 16:14:06 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/22 20:05:27 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_render	init_render(t_sdlcontext sdl)
 	render.screenspace_ptris = malloc(sizeof(t_point_triangle) * 10000);
 	render.q = malloc(sizeof(t_quaternion) * 10000);
 	render.debug_img = get_image_by_name(sdl, "");
-	render.occlusion.occlusion = true;
+	render.occlusion.occlusion = false;
 	render.occlusion.occluder_box = false;
 	render.occlusion.draw_occlusion = false;
 	return (render);
@@ -56,8 +56,6 @@ void	render_start_new(t_sdlcontext *sdl, t_player *player)
 	render->camera.matproj.m[1][1] = fov_rad;
 	calculate_matview(&render->camera);
 	ft_bzero(sdl->surface->pixels,
-		sizeof(uint32_t) * sdl->window_h * sdl->window_w);
-	ft_bzero(sdl->ui_surface->pixels,
 		sizeof(uint32_t) * sdl->window_h * sdl->window_w);
 	ft_bzero(sdl->zbuffer, sizeof(float) * sdl->window_h * sdl->window_w);
 	ft_bzero(&render->rs, sizeof(t_render_statistics));

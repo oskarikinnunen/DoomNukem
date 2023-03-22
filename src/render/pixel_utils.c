@@ -53,3 +53,22 @@ t_vector3 texcoord_to_loc(t_vector3 ws[3], t_vector2 uv[3], t_vector2 p)
 	r.z = ws[0].z + s * (ws[1].z - ws[0].z) + delta * (ws[2].z - ws[0].z);
 	return r;
 }
+
+uint32_t	get_light_amount(float delta, uint32_t clr, uint32_t light_amount)
+{
+	uint8_t	channel1;
+	uint8_t	channel2;
+	uint8_t	channel3;
+	uint8_t	channel4;
+
+	channel1 = ft_clamp((clr & 0xFF) * delta + (light_amount & 0xFF), 0, 255);
+	channel2 = ft_clamp(((clr >> 8) & 0xFF) * \
+	delta + ((light_amount >> 8) & 0xFF), 0, 255);
+	channel3 = ft_clamp(((clr >> 16) & 0xFF) * \
+	delta + ((light_amount >> 16) & 0xFF), 0, 255);
+	channel4 = ft_clamp(((clr >> 24) & 0xFF) + \
+	((light_amount >> 24) & 0xFF), 0, 255);
+	light_amount = \
+	channel1 | (channel2 << 8) | (channel3 << 16) | (channel4 << 24);
+	return (light_amount);
+}
