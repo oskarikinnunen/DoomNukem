@@ -12,14 +12,14 @@
 
 #include "vectors.h"
 
-t_point	point_zero()
+t_point	point_zero(void)
 {
-	return ((t_point) {0, 0});
+	return ((t_point){0, 0});
 }
 
-t_point	point_one()
+t_point	point_one(void)
 {
-	return ((t_point) {1, 1});
+	return ((t_point){1, 1});
 }
 
 t_point	point_negative(t_point vec)

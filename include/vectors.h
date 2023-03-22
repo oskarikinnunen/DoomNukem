@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vectors.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/17 14:20:08 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/17 18:46:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,11 @@ t_vector2	vector2_abs(t_vector2 v);
 
 //returns true if v1 == v2 in the error range of epsilon
 bool		vector2_cmp_epsilon(t_vector2 v1, t_vector2 v2, float epsilon);
+
+
+struct s_line;
+//returns distance of vec along line
+float	vector2_dist_along_line(t_vector2 vec, struct s_line line);
 
 //returns float from 0 to 1 depending on where the line intersected plane. Pass t_vector3 plane_p location and t_vector3 plane_n normalised, currently function does normalise plane_n just in case, but it will be changed later.
 float	vector2_line_intersect_plane(t_vector2 plane_p, t_vector2 plane_n, t_vector2 start, t_vector2 end);
@@ -300,16 +305,6 @@ t_quaternion	quaternion_intersectplane(t_vector3 plane_p, t_vector3 plane_n, t_q
 //returns quaternion lerped from, to by delta
 t_quaternion	lerp_quaternion(t_quaternion from, t_quaternion to, float delta);
 
-typedef struct s_texture
-{
-	float	u;
-	float	v;
-	float	w;
-} t_texture;
-
-//returns texture lerped from, to by delta
-t_texture		lerp_texture(t_texture from, t_texture to, float delta);
-
 typedef struct s_mat4x4
 {
 	float	m[4][4];
@@ -365,7 +360,9 @@ t_vector3	lookdirection_3(t_vector3 angle);
 t_vector3 vector3_mul_matrix(t_mat4x4 m, t_vector3 i);
 
 /* CONVERSIONS */
-float	radtodeg(float rad);
+float			fov_deg_to_fov_rad(float fovdeg);
+
+float			radtodeg(float rad);
 
 t_quaternion	vector3_to_quaternion(t_vector3 v);
 
@@ -379,10 +376,14 @@ t_point			vector2_to_point(t_vector2 vec);
 //Returns t_point 'point' casted to t_vector2. (Shorthand for '*(t_vector2 *)&point').
 t_vector2		point_to_vector2(t_point point);
 
+//Returns a point on the screen that is calculated by interpolating the screen size with the given x and y values using linear interpolation.
+struct	s_sdlcontext;
+t_point			screenlerp(float xlerp, float ylerp, struct s_sdlcontext *sdl);
+
 //Returns static str for given vector3
 char			*vector_string(t_vector3 vec);
 
-t_texture		vector2_to_texture(t_vector2 v);
+t_vector3		vector2_to_texture(t_vector2 v);
 
 typedef struct s_ray
 {
@@ -390,5 +391,10 @@ typedef struct s_ray
 	t_vector3 dir;
 }	t_ray;
 
+//normal barycentric coordinats x is delta value between p0 and p1 and y is delta between p1 and p2
+t_vector2		barycentric_coordinates(t_vector2 *p, t_vector2 v);
+
+//returns vector3 location from 3 t_vector3 points, using t_vector2 as barycentric coordinates for w1 and w2;
+t_vector3		get_vector3_from_barycentric(t_vector3 *p, t_vector2 bary);
 
 #endif

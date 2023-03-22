@@ -3,10 +3,10 @@
 # define PLAYERRADIUS 16
 
 //Global gravity for all capsulephysics entities
-#define GRAVITY -0.8f
+# define GRAVITY -0.66f
 
-# define EDITOR_FLYSPEED 0.175f
-# define EDITOR_FLYFASTSPEED 0.3f
+# define EDITOR_FLYSPEED 0.25f
+# define EDITOR_FLYFASTSPEED 0.65f
 
 # define PLAYER_WALKSPEED 0.1f
 # define PLAYER_RUNSPEED 0.2f

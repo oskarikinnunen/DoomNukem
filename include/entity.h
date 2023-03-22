@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/07 13:09:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/20 12:08:43 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,15 @@
 # include "lighting.h"
 # include "components.h"
 
+# define GUNPRESETCOUNT 2
+
 typedef struct s_bound
 {
 	float	min;
 	float	max;
 }	t_bound;
 
-typedef enum s_entitystatus
+typedef enum e_entitystatus
 {
 	es_free,
 	es_inactive,
@@ -35,21 +37,22 @@ typedef enum s_entitystatus
 }	t_entitystatus;
 
 #include "gamestring.h"
+
 typedef struct s_entity
 {
 	t_gamestring	object_name;
 	t_transform		transform;
+	t_component		component;
 	uint16_t		id;
 	bool			ignore_raycasts;
 	bool			rigid;
 	bool			hidden;
-	t_component		component;
 	t_entitystatus	status;
 	t_bound			z_bound;
 	t_anim			animation;
 	t_object		*obj;
 	t_occlusion		occlusion;
-	t_lightmap		*lightmap;
+	t_triangle		*world_triangles;
 	t_map			*map;
 }	t_entity;
 
@@ -64,24 +67,39 @@ typedef struct s_prefab
 	void				*data;
 }	t_prefab;
 
-typedef struct s_gun
+typedef struct s_gunstats
 {
-	t_entity	entity;
 	char		object_name[128];
-	char		preset_name[32];
-	t_anim		shoot_anim;
-	t_anim		view_anim;
+	char		audio_name[128];
 	t_vector3	holsterpos;
 	t_vector3	aimpos;
-	uint32_t	lastshottime;
-	bool		readytoshoot;
-	bool		disabled;
 	t_vector2	viewrecoil;
 	t_vector2	recoiljump;
 	t_vector2	recoilangle;
 	float		anglerecovery;
-	bool		fullauto;
+	float		fov_offset;
+	float		ads_speed;
+	uint32_t	damage;
+	uint32_t	magazinecapacity;
 	uint32_t	firedelay;
+	uint32_t	reloadtime;
+	uint32_t	ammomask;
+	bool		fullauto;
+}	t_gunstats;
+
+typedef struct s_gun
+{
+	t_entity	*entity;
+	t_gunstats	stats;
+	t_anim		shoot_anim;
+	t_anim		view_anim;
+	t_anim		reload_anim;
+	uint32_t	lastshottime;
+	uint32_t	bullets;
+	bool		readytoshoot;
+	bool		player_owned;
+	bool		disabled;
+	float		aim_lerp;
 }	t_gun;
 
 typedef struct s_entitycache
@@ -92,8 +110,10 @@ typedef struct s_entitycache
 	t_entity	**sorted_entities;
 }	t_entitycache;
 
-void	entity_set_component(t_entity *entity, t_componenttype type, struct s_world *world);
+void	entity_set_component_functions(t_entity *entity, struct s_world *world);
 
+
+t_vector3	get_entity_world_position(t_entity *entity);
 
 /* OCCLUSION*/
 void	render_bitmask_row(int ax, int bx, float aw, float bw, int y, t_sdlcontext *sdl);
@@ -117,9 +137,18 @@ void	highlight_entity(t_sdlcontext *sdl, t_entity *entity, uint32_t color);
 void	render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 void	render_worldspace(t_render *render, t_entity *entity);
 void	render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity);
+void	render_entity_worldtriangles(t_entity *entity, struct s_world *world);
 
+void	calculate_light_for_entity(t_entity *entity, t_lighting *lighting);
 void	create_map_for_entity(t_entity *entity, struct s_world *world);
 void	create_dynamic_map_for_entity(t_entity *entity, struct s_world *world);
-void	create_lightmap_for_entity(t_entity *entity, struct s_world *world);
 
+uint32_t	update_pixel_brightness(uint32_t light, uint32_t clr);
+uint32_t	get_lighting_for_pixel(t_lighting *lighting, uint32_t light_amount, t_vector3 location);
+t_vector3	texcoord_to_loc(t_vector3 ws[3], t_vector2 uv[3], t_vector2 p);
+t_step		make_slope(float start, float end, float steps);
+t_stepv3	make_uv_slopev3(int start, int end, int y, t_point_triangle triangle);
+
+/* LIGHTING */
+void render_zbuffer(t_lighting *lighting, t_entity *entity);
 # endif

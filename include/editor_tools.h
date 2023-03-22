@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_tools.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/14 11:18:50 by kfum             ###   ########.fr       */
+/*   Updated: 2023/03/20 15:31:29 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,12 +106,10 @@ struct	s_mouse;
 
 void				update_editor_toolbar(t_editor *ed, t_autogui *toolbar);
 t_gamereturn		editor_events(t_editor *ed);
-void				editor_load_world(t_editor *ed, char	*worldname, t_sdlcontext *sdl);
 enum	e_load_arg;
-void				editor_load_world_args(t_editor *ed, char	*worldname, t_sdlcontext *sdl, enum e_load_arg args);
+void				editor_world_setup(t_editor *ed, char	*worldname, t_sdlcontext *sdl, enum e_load_arg args);
 
 /* EDITORPREFERENCES.C */
-void				editor_load_prefs(t_editor *ed, t_sdlcontext *sdl);
 void				editor_save_prefs(t_editor *ed);
 
 bool				object_lookedat(t_editor *ed, t_sdlcontext sdl, t_object *obj);
@@ -206,6 +204,7 @@ typedef struct s_raycastinfo
 bool				raycast_new(t_ray r, t_raycastinfo *info, t_world *world);
 bool				raycast_plane(t_ray r, t_raycastinfo *info, float plane_z);
 bool				raycast_entity(t_ray r, t_raycastinfo *info, t_entity *entity);
+bool				raycast_tri(t_ray r, t_vector3_tri tri, float *dist);
 bool				entity_lookedat(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
 bool				triangle_lookedat(t_render r, t_triangle tri, t_sdlcontext sdl);
 int32_t				entity_lookedat_triangle_index(t_editor *ed, t_sdlcontext sdl, t_entity *entity);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/09 16:20:49 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/21 14:06:43 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "libft.h"
 # include "log.h"
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <errno.h>
 # include "limits.h" //TODO: remove mby? just define INT_MAX yourself
 # include <math.h>
@@ -29,6 +30,8 @@
 # include "input.h"
 # include "debug.h"
 # include "navigation.h"
+# include <pthread.h>
+# include <SDL_thread.h>
 
 # define PI	3.14159265359
 # define FULLRAD M_PI * 2.0
@@ -41,9 +44,38 @@
 # define IMGPATH "assets/images/"
 # define OBJPATH "assets/objects/"
 
-# define TEXTBACKGROUND_BORDERPADDING 6
+# define IMGLISTPATH "assets/.image_list.txt"
+# define IMGENVLISTPATH "assets/.image_env_list.txt"
+# define OBJLISTPATH "assets/.object_list.txt"
+# define MTLLISTPATH "assets/.material_list.txt"
+# define FONTLISTPATH "assets/.font_list.txt"
+# define SOUNDLISTPATH "assets/.sound_list.txt"
+# define MUSICLISTPATH "assets/.music_list.txt"
+# define ANIMLISTPATH "assets/.anim_list.txt"
+# define ANIMLEGENDPATH "assets/objects/animations/anim_legend.txt"
 
-void	screen_blank(t_sdlcontext sdl);
+# define TEMPIMGLIST "assets/.temp_image_list"
+# define TEMPIMGENVLIST "assets/.temp_image_env_list"
+# define TEMPOBJLIST "assets/.temp_object_list"
+# define TEMPFONTLIST "assets/.temp_font_list"
+# define TEMPSOUNDLIST "assets/.temp_sound_list"
+# define TEMPMUSICLIST "assets/.temp_music_list"
+# define TEMPANIMLIST "assets/.temp_anim_list"
+
+# define TEMPIMG "assets/.temp_image"
+# define TEMPIMGENV "assets/.temp_image_env"
+# define TEMPOBJ "assets/.temp_object"
+# define TEMPMTL "assets/.temp_mtl"
+# define TEMPFONT "assets/.temp_font"
+# define TEMPSOUND "assets/.temp_sound"
+# define TEMPSOUNDLOOP "assets/.temp_sound_loop"
+# define TEMPMUSIC "assets/.temp_music"
+# define TEMPANIM "assets/.temp_anim"
+# define TEMPANIMLEGEND "assets/.temp_anim_legend"
+
+# define DEFAULTLEVEL "level0"
+
+# define TEXTBACKGROUND_BORDERPADDING 6
 # define PERFGRAPH_SAMPLES 64
 
 typedef struct s_perfgraph
@@ -54,7 +86,7 @@ typedef struct s_perfgraph
 
 typedef struct s_clock
 {
-	Uint32	prev_time;
+	Uint32	time;
 	Uint32	delta;
 	Uint32	fps;
 } t_clock;
@@ -91,50 +123,64 @@ typedef enum e_gamereturn
 	void	update_npcs(t_world *world) //moves npcs towards their destination, updates their animations
 */
 
-struct s_autogui;
+struct	s_autogui;
+enum	e_load_arg;
 
 typedef struct s_log
 {
 	int	fd;
 }	t_log;
 
+typedef enum e_app_mode
+{
+	APPMODE_INVALID,
+	APPMODE_EDIT,
+	APPMODE_PLAY,
+	APPMODE_GFX_RESET
+}	t_app_mode;
+
+typedef struct s_app_argument
+{
+	t_app_mode	app_mode;
+	char		level_name[128];
+}	t_app_argument;
+
 typedef struct s_world
 {
 	char				name[32];
-	t_player			*player;
+	t_player			*player; //make this just a local player, not a pointer?
 	t_clock				clock;
 	t_debugconsole		debugconsole;
 	struct s_autogui	*debug_gui;
 	t_log				log;
 	t_sdlcontext		*sdl;
-	t_list				*guns;
-	t_list				*prefabs; //TODO: move to editor
+	t_list				*prefabs; //TODO: REMOVE
 	t_lighting			lighting;
-	t_list				*roomlist;
+	t_list				*arealist;
+	t_list				*ramps;
 	t_entitycache		entitycache;
 	t_entity			skybox;
 	bool				ceiling_toggle;
 	t_navigation		nav;
 	uint32_t			lastsavetime;
+	t_app_mode			app_mode;
 }	t_world;
 
 t_vector2	flipped_uv(t_vector2 og);
 void		for_all_active_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *world));
+void		void_for_all_active_entities(t_world	*world, void *ptr, void	(*func)(t_entity *ent, void *ptr));
 void		for_all_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *world));
 void		update_world3d(t_world *world, t_render *render);
 void		toggle_ceilings(t_world *world);
 
 
-enum e_load_arg;
-t_world		load_world_args(char *filename, t_sdlcontext *sdl, enum e_load_arg arg);
-t_world		load_world(char *filename, t_sdlcontext *sdl);
-
+t_world		load_world(char *level_name, t_sdlcontext *sdl);
 
 void		destroy_entity(t_world *world, t_entity *ent);
-t_entity	*spawn_entity(t_world	*world);
+t_entity	*find_entity_with_comp(t_world	*world, t_componenttype comp);
+t_entity	*spawn_entity(t_world *world, t_object *obj);
 t_entity	*spawn_basic_entity(t_world *world, char *objectname, t_vector3 position);
 void		entity_assign_object(t_world *world, t_entity *entity, t_object *obj);
-void		save_world(char *filename, t_world world);
 
 
 void		world_save_to_file(t_world world);
@@ -151,11 +197,16 @@ void		free_walls(t_area *room, t_world *world);
 typedef struct s_game
 {
 	t_world			world;
-	t_clock			clock;
 	t_hid_info		hid;
 	t_player		player;
-	t_cam_mode		cam_mode; //Unused but will be reimplemented?
 } t_game;
+
+
+t_app_argument	get_app_argument(int argc, char **argv);
+
+/* TOOLS */
+// Protected ft_memalloc that calls doomlog with error code in case of an error
+void	*prot_memalloc(size_t size);
 
 /* LOG.C */
 int		init_log(void);
@@ -167,7 +218,15 @@ void	handle_exit(int	wait_status);
 char	*combine_strings(char **str);
 
 /* EDITOR.C */
-int		editorloop(t_sdlcontext sdl);
+int		editorloop(char *level, t_sdlcontext sdl);
+void	editor_load_images(t_sdlcontext *sdl);
+void	editor_load_env_textures(t_sdlcontext *sdl);
+void	editor_load_objects(t_sdlcontext *sdl);
+void	editor_load_fonts(t_sdlcontext *sdl);
+void	editor_load_sounds(t_audio *audio);
+void	editor_load_music(t_audio *audio);
+void	editor_load_anims(char *anim_name, t_object *object);
+void	editor_load_anim_legend(t_sdlcontext *sdl);
 
 /* EDITOR_EVENTS.C */
 bool			iskey(SDL_Event e, int keycode);
@@ -197,6 +256,10 @@ void	drawperfgraph(t_perfgraph *graph, uint32_t delta, t_sdlcontext sdl);
 /* CONTROLLER.C */
 void	initialize_controllers(t_hid_info *hid);
 int		controller_events(SDL_Event e, t_hid_info *hid);
+void	controller_button_press(SDL_ControllerButtonEvent cbutton, t_hid_info *hid);
+void	controller_button_release(SDL_ControllerButtonEvent cbutton, t_hid_info *hid);
+
+
 
 /* GAME_RANDOM.C */
 //Generates a random number between 0 and UINT32_MAX
@@ -206,11 +269,22 @@ uint32_t	game_random_range(t_world *world, uint32_t min, uint32_t max);
 bool		game_random_coinflip(t_world *world);
 
 /* PLAYMODE.C */
-int		playmode(t_sdlcontext sdl);
+int		playmode(char *level, t_sdlcontext sdl);
+void	playmode_death(t_game *game);
+void	playmode_load_images(char *level_path, t_sdlcontext *sdl);
+void	playmode_load_env_textures(char *level_path, t_sdlcontext *sdl);
+void	playmode_load_objects(char *level_path, t_sdlcontext *sdl);
+void	playmode_load_fonts(char *level_path, t_sdlcontext *sdl);
+void	playmode_load_sounds(char *level_path, t_audio *audio);
+void	playmode_load_music(char *level_path, t_audio *audio);
+void	playmode_load_anims(char *level_path, char *anim_name, t_object *object);
+void	playmode_load_anim_legend(char *level_path, t_sdlcontext *sdl);
+
 
 /* PLAYER.C */
 void	player_init(t_player *player, t_sdlcontext *sdl, t_world *world);
-void	update_render(t_render *render, t_player *player);
+
+void	render_start_new(t_sdlcontext *sdl, t_player *player);
 
 /* MOVEPLAYER.C */
 void	moveplayer(t_player *player, t_input *input, t_world *world);
@@ -230,7 +304,7 @@ bool	alaiwan_collision(t_world *world, t_player *player, t_vector3 potential_pos
 void	error_log(int error_code);
 
 /* SDL */
-void	create_sdlcontext(t_sdlcontext	*sdl);
+void	create_sdlcontext(char *level, t_sdlcontext	*sdl, t_app_mode app_mode);
 void	create_sdl_window(t_sdlcontext *sdl, t_screenmode mode);
 void	set_sdl_settings(t_sdlcontext *sdl);
 void	init_sdl_error_window(t_sdlcontext *sdl);
@@ -240,8 +314,7 @@ void	apply_graphics_prefs(t_graphicprefs prefs);
 
 /* FONT.C */
 
-void	load_fonts(t_font *font);
-
+t_font	font_parse(char *file_name);
 void	draw_black_background(t_sdlcontext *sdl, t_point pos, t_point size);
 
 //TEMP, TODO: move
@@ -251,10 +324,8 @@ t_line	line_shorten(t_line line);
 
 // Prints text and returns the rectangle of the printed text
 // Font size and color can be set using:
-// sdl->font->font = sdll->font->font_sizes[x] where x can be 0-3
-// sdl->font->color = sdl->font->font_colors.x where x is the color
-SDL_Color	color32_to_sdlcolor(uint32_t color);
-
+// sdl->font->font = sdl->font->font_sizes[x] where x can be 0-3
+// sdl->font->color = color32_to_sdlcolor(CLR_GREEN)
 t_rectangle	print_text(t_sdlcontext *sdl, const char *text, t_point pos);
 
 // Does the same as print_ftext but also fills in the background for the text
@@ -266,7 +337,6 @@ t_rectangle	print_text_colored(t_sdlcontext *sdl, const char *text, t_point pos,
 void			entity_start_anim(t_entity *entity, char *animname);
 /* LIST_HELPER.C TODO: MOVE THESE TO LIBFT*/
 t_list	*ptr_to_list(void	*src, uint32_t len, size_t size);
-void	ptr_add(void **ptr, uint32_t *len, size_t size, void *add);
 void	list_push(t_list **head, void *content, size_t content_size);
 void	*list_findlast(t_list *head);
 void	*list_to_ptr(t_list *source, uint32_t *set_length);
@@ -291,22 +361,17 @@ void	free_roomwalls(t_world *world, t_area *room);
 void	set_nullentities(t_wall **ptr, int count);
 
 //TODO: temp for lights
-void	start_lightbake(t_render *render, t_world *world);
-void	bake_lights(t_render *render, t_world *world);
 void	recalculate_lighting(t_world *world);
-
-void	rasterize_lightpoly(t_lightpoly triangle, t_world *world);
-
-
-uint8_t *smooth_lightmap(t_lightmap *lmap);
+void	recalculate_pointlight(t_world *world);
+void	rasterize_zbuffer(t_lighting *lighting, t_point_triangle triangle);
 
 void	bake_lighting(t_render *render, t_world *world);
 void	bake_lighting_shadows(t_render *render, t_world *world);
 void	render_entity_depth_buffer(t_sdlcontext sdl, t_render *render, t_entity *entity);
 void	update_arealights_for_entity(t_sdlcontext sdl, t_render *render, t_entity *entity);
 void	update_pointlight_for_entity(t_sdlcontext sdl, t_render *render, t_entity *entity);
-void	calculate_pointlight(t_pointlight *pointlight, t_world *world, t_render *render);
-void	calculate_pointlight_step(t_pointlight *pointlight, t_world *world, t_render *render);
+
+void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render);
 //
 
 //Pathfind

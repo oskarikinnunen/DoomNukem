@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   physics.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 13:52:50 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/26 14:41:55 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/02/27 15:22:51 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ bool linelineintersect(t_line line1, t_line line2)
 	return (false);
 }
 
-bool pointtrianglecollisionp (t_point point, t_point	t1, t_point	t2, t_point	t3)
+bool pointtrianglecollisionp(t_point point, t_point t1, t_point t2, t_point t3)
 {
     float d1, d2, d3;
     bool has_neg, has_pos;

@@ -6,6 +6,7 @@
 
 typedef struct s_occlusion
 {
+	t_triangle			world_tri[12];
 	t_square			box;
 	t_square			clip;
 	float				z_dist[2];

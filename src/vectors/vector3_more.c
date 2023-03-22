@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   vector3_more.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 11:40:43 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/17 15:06:18 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/13 17:24:00 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vectors.h"
 
-t_vector3 vector3_snap(t_vector3 vec, int interval)
+t_vector3	vector3_snap(t_vector3 vec, int interval)
 {
 	t_vector3	result;
 	t_vector3	remains;
@@ -41,14 +41,15 @@ t_vector3	vector3_movetowards(t_vector3 vec, t_vector3 to, float delta)
 
 t_vector3	vector3_abs(t_vector3 v)
 {
-	return((t_vector3){fabsf(v.x), fabsf(v.y), fabsf(v.z)});
+	return ((t_vector3){fabsf(v.x), fabsf(v.y), fabsf(v.z)});
 }
 
-bool		vector3_cmp_epsilon(t_vector3 v1, t_vector3 v2, float epsilon)
+bool	vector3_cmp_epsilon(t_vector3 v1, t_vector3 v2, float epsilon)
 {
 	t_vector3	temp;
 
 	temp = vector3_sub(v1, v2);
 	temp = vector3_abs(temp);
-	return (temp.x - epsilon <= 0.0f && temp.y - epsilon <= 0.0f && temp.z - epsilon <= 0.0f);
+	return (temp.x - epsilon <= 0.0f
+		&& temp.y - epsilon <= 0.0f && temp.z - epsilon <= 0.0f);
 }

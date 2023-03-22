@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+         #
+#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/03 11:26:09 by kfum             ###   ########.fr        #
+#    Updated: 2023/03/21 14:21:33 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,28 +30,27 @@ FMOD = $(FMOD_DIR)/copied
 
 LIBFT = libft/libft.a
 
-SRC_PATH = src/
-OBJ_PATH = obj/
-# VEC_PATH = vectors/
-# EDITOR_PATH = editor/
-# TOOL_PATH = tools/
-# ENTITY_PATH = entity/
-# OBJ_PAR_PATH = obj_parser/
-
-LUAFOLDER= lua-5.3.6
-LUA= $(LUAFOLDER)/install/lib/liblua.a
-
 #Source files:
-SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
-		editor.c editor_mouse.c editor_events.c \
+SRCFILES= main.c img.c deltatime.c anim.c \
+		app_argument.c \
 		file_ops/filechunks.c	\
 		file_ops/world_save.c	\
 		file_ops/world_load.c	\
-		editor/editor_preferences.c \
+		editor/editor.c \
+		editor/editor_mouse.c \
+		editor/editor_events.c \
+		editor/key_events.c \
+		editor/editor_asset_load.c \
+		editor/editor_load_anims.c \
+		editor/editor_load_anim_legend.c \
+		editor/editor_load_images.c \
+		editor/editor_load_objects.c \
+		editor/editor_load_fonts.c \
+		editor/editor_load_sounds.c \
+		editor/editor_load_music.c \
 		editor/tools/entity_tool.c \
 		editor/tools/entity_tool_gui_inits.c \
 		editor/tools/wall_tool_rooms.c \
-		editor/tools/npc_tool.c \
 		editor/tools/load_tool.c \
 		editor/tools/room_tool.c \
 		editor/tools/room_tool_connect.c \
@@ -65,24 +64,25 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		editor/editor_new_buttons.c \
 		editor/editor_instant_button.c \
 		editor/editor_raycast.c \
+		editor/entity_raycast.c \
 		preferences/graphicsprefs.c \
-		debug/debugconsole.c \
 		debug/debug_rendering.c \
-		playmode.c inputhelper.c \
+		inputhelper.c \
 		walls.c file_open.c \
 		moveplayer.c \
 		collision.c \
 		init_sdl.c \
-		errors.c \
+		error_codes.c \
+		error_messages.c \
 		error_window.c \
 		error_window_events.c \
 		handle_exit.c \
 		doomlog.c \
+		doomlog_messages.c \
 		physics.c \
 		perfgraph.c \
-		png.c lua_conf.c list_helper.c \
+		list_helper.c \
 		spaceconversions.c \
-		structsaver/structsaver.c \
 		entity/entity_animate.c \
 		entity/component_init.c \
 		entity/components/component_definitions.c \
@@ -91,20 +91,47 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		entity/components/comp_interactable.c \
 		physics/capsulephysics.c \
 		player/playermovement_normal.c \
+		player/playermovement_normal1.c \
+		player/playermovement_normal2.c \
 		player/playermovement_noclip.c \
+		player/playmode.c \
+		player/playmode_asset_load.c \
+		player/playmode_load_images.c \
+		player/playmode_load_env_textures.c \
+		player/playmode_load_objects.c \
+		player/playmode_load_fonts.c \
+		player/playmode_load_sounds.c \
+		player/playmode_load_music.c \
+		player/playmode_load_anims.c \
+		player/playmode_load_anim_legend.c \
+		player/playmode_death.c \
+		player/playmode_events.c \
+		player/hud.c \
+		player/player.c \
 		entity/components/comp_npc.c \
+		entity/components/comp_npc_state.c \
+		entity/components/comp_npc_states_1.c \
+		entity/components/comp_npc_raycast.c \
+		entity/components/comp_npc_funcs.c \
+		entity/components/comp_npc_helpers.c \
+		entity/components/comp_npc_anims.c \
+		guns/gun_presets.c \
 		obj_parser/obj_parse.c \
 		obj_parser/obj_parse_vertex.c \
 		obj_parser/obj_parse_faces.c \
 		obj_parser/obj_parse_uvs.c \
-		obj_parser/obj_parse_anim.c\
+		tga_parser/tga.c \
+		tga_parser/image_data.c \
+		tga_parser/preliminary_data.c \
 		game_random.c \
-		font.c text.c \
+		logging/prot_memalloc.c \
 		object_init.c \
 		object_primitives.c \
-		world.c player.c \
 		resolution_scaling.c \
 		controller.c \
+		controller_init.c \
+		controller_events.c \
+		controller_events_buttons.c \
 		audio_init.c \
 		audio_tools.c \
 		audio_sounds.c \
@@ -114,8 +141,6 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		occlusion/occlusion_culling.c \
 		occlusion/culling_debug.c \
 		occlusion/bitmask_culling.c \
-		surface_tools.c \
-		colors.c \
 		render/render_entity.c \
 		render/render_clip.c \
 		render/render_triangle.c \
@@ -123,6 +148,7 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		render/render_space.c \
 		lighting/bake_lighting.c \
 		lighting/point_light.c \
+		lighting/fragment_light.c \
 		npc/civilian/civilian_action.c \
 		npc/civilian/civilian_anim.c \
 		npc/civilian/civilian_movement.c \
@@ -135,50 +161,71 @@ SRCFILES= main.c draw0.c img.c deltatime.c anim.c \
 		npc/enemy/enemy_take_damage.c \
 		npc/navigation/pathfind.c \
 		npc/navigation/navmesh.c \
+		render/rasterization/rasterize_zbuffer.c \
 		render/rasterization/rasterize_triangle_wrap.c \
 		render/rasterization/rasterize_triangle.c \
-		render/rasterization/rasterize_triangle_uv.c \
-		render/rasterization/rasterize_triangle_dynamic.c \
+		render/draw.c \
+		render/draw_rectangle.c \
+		render/draw_shapes.c \
 		render/render_helper.c \
-		render/flip_channel.c \
-		entity/components/comp_mechasuit.c \
-		entity/components/comp_watercollider.c \
+		render/surface_tools.c \
+		render/colors.c \
+		render/text.c \
+		render/rasterization/rasterize_triangle_shadow.c \
+		render/render_zbuffer.c \
+		render/pixel_utils.c \
+		world/entitycache.c \
+		world/entitycache_2.c \
+		world/world.c \
+		entity/entity_transform.c \
 		entity/components/comp_light.c \
 		entity/components/comp_healthpack.c \
-		entity/components/comp_npc_civilian.c \
+		entity/components/comp_playerspawn.c \
 		entity/components/comp_gun_pickup.c \
 		entity/components/comp_auto_door.c #.ENDSRC. CREATECOMPONENT SCRIPT DEPENDS ON THIS SO DONT REMOVE
-VECTORSRCFILES= vector3_elementary.c vector3_shorthands.c \
-		vector3_complex.c vector3_complex2.c vector3_more.c \
-		vector2_elementary.c vector2_shorthands.c \
-		vector2_complex.c vector2_clamp.c \
-		vector2_more.c \
-		point_elementary.c point_shorthands.c \
-		point_complex.c point_float_ops.c \
-		conversions.c vector3_complex3.c \
-		quaternion_shorthands.c quaternions.c \
-		matrix_shorthands.c matrix_rotations.c \
+VECTORSRCFILES= conversions.c \
+		conversions2.c \
+		matrix_functions3.c \
+		matrix_functions2.c \
+		matrix_functions.c \
+		matrix_rotations.c \
+		matrix_shorthands.c \
 		matrix_transform.c \
-		matrix_functions.c matrix_functions2.c \
-		debug_vectors.c point_more.c
-
-OBJ = $(patsubst %.c, $(OBJ_PATH)%.o, $(SRCFILES))
-VECTORSRC= $(addprefix vectors/, $(VECTORSRCFILES))
-VEC_OBJ = $(patsubst %.c, $(OBJ_PATH)%.o, $(VECTORSRC))
+		point_complex2.c \
+		point_complex.c \
+		point_elementary.c \
+		point_float_ops.c \
+		point_more.c \
+		point_shorthands.c \
+		quaternions.c \
+		quaternion_shorthands.c \
+		vector2_clamp.c \
+		vector2_complex2.c \
+		vector2_complex3.c \
+		vector2_complex.c \
+		vector2_elementary.c \
+		vector2_more.c \
+		vector2_shorthands.c \
+		vector3_cmp.c \
+		vector3_complex2.c \
+		vector3_complex3.c \
+		vector3_complex.c \
+		vector3_elementary.c \
+		vector3_more.c \
+		vector3_shorthands.c \
+		barycentric.c
+VECTORSRC= $(addprefix src/vectors/,$(VECTORSRCFILES))
+SRC= $(addprefix src/,$(SRCFILES))
+SRC+= $(VECTORSRC)
+OBJ= $(SRC:.c=.o)
 DEPENDS= $(OBJ:.o=.d)
-
-# VECTORSRC= $(addprefix src/vectors/,$(VECTORSRCFILES))
-# SRC= $(addprefix src/,$(SRCFILES))
-# SRC+= $(VECTORSRC)
-# OBJ= $(SRC:.c=.o)
-# DEPENDS= $(OBJ:.o=.d)
 
 #Compilation stuff:
 INCLUDE= -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include \
 			-I$(INSTALLED_LIBS_DIR)/include/SDL2/ \
 			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
 CC= gcc
-CFLAGS= $(INCLUDE) -g -finline-functions -O2 -MMD #-march=native
+CFLAGS= $(INCLUDE) -g #-finline-functions -O2 -MMD #-march=native
 LDFLAGS = -Wl,-rpath $(INSTALLED_LIBS_DIR)/lib
 
 UNAME= $(shell uname)
@@ -198,43 +245,17 @@ endif
 #multi:
 #	$(MAKE) -j6 all
 
-all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(FMOD) $(LUA) $(LIBFT) $(OBJ_PATH) $(OBJ) $(VEC_OBJ)
-	$(CC) $(OBJ) $(VEC_OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LUA) $(LDFLAGS)
+all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(FMOD) $(LIBFT) $(OBJ)
+	$(CC) $(OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LDFLAGS)
 
-$(OBJ_PATH):
-	@mkdir -p $(OBJ_PATH)/debug
-	@mkdir -p $(OBJ_PATH)/editor/tools
-	@mkdir -p $(OBJ_PATH)/entity/components
-	@mkdir -p $(OBJ_PATH)/file_ops
-	@mkdir -p $(OBJ_PATH)/guns
-	@mkdir -p $(OBJ_PATH)/lighting
-	@mkdir -p $(OBJ_PATH)/npc/civilian
-	@mkdir -p $(OBJ_PATH)/npc/enemy
-	@mkdir -p $(OBJ_PATH)/npc/navigation
-	@mkdir -p $(OBJ_PATH)/obj_parser
-	@mkdir -p $(OBJ_PATH)/occlusion
-	@mkdir -p $(OBJ_PATH)/physics
-	@mkdir -p $(OBJ_PATH)/player
-	@mkdir -p $(OBJ_PATH)/preferences
-	@mkdir -p $(OBJ_PATH)/render/rasterization
-	@mkdir -p $(OBJ_PATH)/structsaver
-	@mkdir -p $(OBJ_PATH)/vectors
-	
 #-include $(DEPENDS)
-
-$(OBJ_PATH)%.o: $(SRC_PATH)%.c
-	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ): Makefile include/*.h
 #	//$()
 
 clean:
-# rm -f $(OBJ)
-# rm -f $(DEPENDS)
-
-	@echo "$(RED)Cleaning obj folder...$(DEFAULT)"
-	@rm -rf $(OBJ_PATH)
-	@echo "$(GREEN)DONE.\n$(DEFAULT)"
+	rm -f $(OBJ)
+	rm -f $(DEPENDS)
 
 re: clean all
 
@@ -250,14 +271,6 @@ clean-libs:
 	rm $(FMOD)
 
 re-libs: clean-libs all
-
-clean-lua:
-	rm -rf $(LUAFOLDER)/install
-
-re-lua: clean-lua $(LUA)
-
-$(LUA):
-	cd $(LUAFOLDER) && make generic && make local
 
 $(FMOD):
 	cp $(FMOD_DIR)/libfmod.dylib $(INSTALLED_LIBS_DIR)/lib/
@@ -307,9 +320,3 @@ $(FREETYPE): $(FREETYPE_DIR)/ready_to_build
 
 $(SDL2_TTF): $(SDL2_TTF_DIR)/ready_to_build
 	cd $(SDL2_TTF_DIR) && make && make install
-
-
-# Output colors
-DEFAULT	:=\033[0m
-GREEN	:=\033[0;32m
-RED		:=\033[0;31m

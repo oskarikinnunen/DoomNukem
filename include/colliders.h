@@ -17,8 +17,10 @@ typedef struct s_bounds
 {
 	t_vector3		origin;
 	t_box			box;
+	uint32_t		count;
 	t_bound_type	type;
 	float			radius;
+	float			height;
 }	t_bounds;
 
 typedef struct s_limbcollider

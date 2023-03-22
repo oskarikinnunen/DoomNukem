@@ -1,40 +1,53 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   matrix_transform.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/14 12:07:19 by okinnune          #+#    #+#             */
+/*   Updated: 2023/03/14 12:11:52 by okinnune         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "vectors.h"
 
-t_mat4x4 matrix_makescale(t_vector3 v)
+t_mat4x4	matrix_makescale(t_vector3 v)
 {
-	t_mat4x4 matrix = matrix_makeidentity();
+	t_mat4x4	matrix;
+
+	matrix = matrix_makeidentity();
 	matrix.m[0][0] = v.x;
 	matrix.m[1][1] = v.y;
 	matrix.m[2][2] = v.z;
-	return matrix;
+	return (matrix);
 }
 
-t_mat4x4 matrix_maketranslation(t_vector3 v)
+t_mat4x4	matrix_maketranslation(t_vector3 v)
 {
-	t_mat4x4 matrix = matrix_makeidentity();
+	t_mat4x4	matrix;
+
+	matrix = matrix_makeidentity();
 	matrix.m[3][0] = v.x;
 	matrix.m[3][1] = v.y;
 	matrix.m[3][2] = v.z;
-	return matrix;
+	return (matrix);
 }
 
-t_mat4x4 make_transform_matrix(t_transform transform)
+static t_vector3	relative(t_vector2 angle, t_vector3 pos)
 {
-	t_mat4x4 matrotz, matroty, matrotx;
-	matrotz = matrix_makerotationz(transform.rotation.x);
-	matroty = matrix_makerotationy(transform.rotation.y);
-	matrotx = matrix_makerotationx(transform.rotation.z);
+	t_quaternion	temp;
+	t_mat4x4		matcamerarot;
 
-	t_mat4x4	matscale;
-	matscale = matrix_makescale(transform.scale);
+	matcamerarot = matrix_makerotationy(angle.y);
+	temp = quaternion_mul_matrix(matcamerarot,
+			(t_quaternion){pos.x, pos.y, pos.z, 1.0f});
+	matcamerarot = matrix_makerotationz(angle.x);
+	temp = quaternion_mul_matrix(matcamerarot, temp);
+	return (temp.v);
+}
 
-	t_mat4x4	matpos;
-	matpos = matrix_maketranslation(transform.position);
-	
-	t_mat4x4 matworld;
-	matworld = matrix_multiply_matrix(matrotz, matroty);
-	matworld = matrix_multiply_matrix(matworld, matrotx);
-	matworld = matrix_multiply_matrix(matworld, matscale);
-	matworld = matrix_multiply_matrix(matworld, matpos);
-	return(matworld);
+t_mat4x4	make_transform_matrix(t_transform transform)
+{
+	return (matrix_zero());
 }

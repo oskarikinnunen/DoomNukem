@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   anim.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:56:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/09 16:21:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/21 12:46:26 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,17 @@
 #include "libft.h"
 #include "render.h"
 #include <stdio.h>
+#include "file_io.h"
+
+static void	anim_end(t_anim *anim)
+{
+	if (!anim->loop && !anim->persist)
+		anim->active = false;
+	else
+		anim->time = 0;
+	if (anim->persist)
+		anim->frame = anim->lastframe;
+}
 
 void	update_anim(t_anim *anim, uint32_t delta)
 {
@@ -28,28 +39,15 @@ void	update_anim(t_anim *anim, uint32_t delta)
 	{
 		if (anim->frame >= anim->lastframe)
 		{
-			anim->frame = anim->startframe;
-			if (!anim->loop)
-				anim->active = false;
-			else
-				anim->time = 0;
+			anim_end(anim);
 		}
-		else 
-		{
-			anim->frame = (int)(anim->framerate * now_second) + anim->startframe;
-			anim->frame = ft_clampf(anim->frame, anim->startframe, anim->lastframe);
-		}
-		/* if (anim->audioevent != NULL && anim->frame == anim->audioevent->frame)
-		{
-			force_play_audio(*anim->audioevent->audio);
-		} */
-	}
-	if (anim->mode == anim_backwards)
-	{
-		if (anim->frame < 0)
-			anim->active = false;
 		else
-			anim->frame = anim->lastframe - (int)(anim->framerate * now_second);
+		{
+			anim->frame = (int)(anim->framerate * now_second)
+				+ anim->startframe;
+			anim->frame = ft_clampf(anim->frame,
+					anim->startframe, anim->lastframe);
+		}
 	}
 	anim->lerp = ((float)anim->frame / (float)anim->lastframe);
 	anim->lerp = ft_clampf(anim->lerp, 0.0f, 1.0f);
@@ -77,7 +75,6 @@ void	start_human_anim(t_entity *entity, char *name, t_world *world)
 			entity->animation.lastframe = anim.endframe;
 			entity->animation.framerate = 30;
 			entity->animation.loop = true;
-			printf("found anim %s, anim frames: %i-%i\n", name, entity->animation.startframe, entity->animation.lastframe);
 			start_anim(&entity->animation, anim_forwards);
 			return ;
 		}
@@ -85,17 +82,12 @@ void	start_human_anim(t_entity *entity, char *name, t_world *world)
 	}
 }
 
-t_human_animation	*human_anims()
-{
-	return (NULL);
-}
-
 void	start_anim(t_anim *anim, t_anim_mode mode)
 {
 	anim->mode = mode;
 	anim->time = 0;
 	anim->active = true;
-	if (anim->mode == anim_forwards) //TODO: loop
+	if (anim->mode == anim_forwards)
 		anim->frame = anim->startframe;
 	else if (anim->mode == anim_backwards)
 		anim->frame = anim->lastframe;
@@ -104,4 +96,42 @@ void	start_anim(t_anim *anim, t_anim_mode mode)
 		printf("ERROR: ANIM MODE NOT IMPLEMENTED! \n");
 		exit(0);
 	}
+}
+
+void	parse_animframe(int fd, t_objectanimframe *frame, t_object *object)
+{
+	t_list		*verticelist;
+	t_vector3	*vertices;
+	uint32_t	vertexcount;
+	int			i;
+
+	vertexcount = 0;
+	verticelist = get_vertex_list(fd);
+	vertices = list_to_ptr(verticelist, &vertexcount);
+	listdel(&verticelist);
+	i = 0;
+	frame->deltavertices = prot_memalloc(sizeof(t_deltavertex) * vertexcount);
+	while (i < vertexcount)
+	{
+		frame->deltavertices[i].delta = vector3_sub(vertices[i], \
+													object->vertices[i]);
+		frame->deltavertices[i].v_index = i;
+		i++;
+	}
+	free(vertices);
+	frame->vertcount = vertexcount;
+}
+
+void	parse_anim(char *anim_path, char *anim_name, t_object *object)
+{
+	int					fd;
+	t_objectanimframe	frame;
+
+	ft_bzero(&frame, sizeof(t_objectanimframe));
+	fd = fileopen(anim_path, O_RDONLY);
+	ft_strncpy_term(object->o_anim.name, anim_name, 120);
+	parse_animframe(fd, &frame, object);
+	object->o_anim.frames[object->o_anim.framecount] = frame;
+	object->o_anim.framecount++;
+	fileclose(fd, anim_path);
 }

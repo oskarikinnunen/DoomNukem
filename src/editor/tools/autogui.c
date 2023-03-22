@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   autogui.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/30 19:54:58 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/20 17:57:02 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,6 @@ t_autogui	init_gui(t_sdlcontext *sdl, t_hid_info *hid, t_player *player, t_point
 	gui.minimum_size.x = 240;
 	gui.minimum_size.y = 128;
 	return (gui);
-}
-
-void	gui_dock(t_autogui *gui, t_autogui *dockto)
-{
-	gui->dock = dockto;
 }
 
 static t_rectangle	empty_rect()
@@ -53,19 +48,16 @@ void	gui_start(t_autogui *gui)
 		return ;
 	if (!gui->hidden)
 	{
-		//draw_rectangle_filled(*gui->sdl, gui->rect, CLR_DARKGRAY);
-		//draw_rectangle_filled(*gui->sdl, gui->rect, 0);
 		draw_rectangle_raster(*gui->sdl, gui->rect, 1);
-		drawrectangle(*gui->sdl, gui->rect, AMBER_0);
+		draw_rectangle(*gui->sdl, gui->rect, AMBER_0);
 		t_rectangle	temp;
 		temp.position = point_sub(gui->rect.position, point_one());
 		temp.size = point_add(gui->rect.size, (t_point){2,2});
-		drawrectangle(*gui->sdl, temp, AMBER_1);
+		draw_rectangle(*gui->sdl, temp, AMBER_1);
 		temp.position = point_sub(temp.position, point_one());
 		temp.size = point_add(temp.size, (t_point){2,2});
-		drawrectangle(*gui->sdl, temp, AMBER_2);
+		draw_rectangle(*gui->sdl, temp, AMBER_2);
 	}
-	//gui->scrollable = false;
 	gui->overdraw = 0;
 	gui->offset.y = 32 + 5; //TODO: autogui_start
 	gui->offset.x = 5;
@@ -73,7 +65,6 @@ void	gui_start(t_autogui *gui)
 		gui->rect.size.x = gui->minimum_size.x;
 	if (gui->rect.size.y < gui->minimum_size.y)
 		gui->rect.size.y = gui->minimum_size.y;
-	//gui_limitrect(gui);
 	gui->x_maxdrawn = 0;
 }
 
@@ -94,11 +85,11 @@ static void update_scrollbar(t_autogui *gui)
 		lerp = (float)-gui->scroll.y / (float)gui->overdraw;
 	scrollrect.position.y += (float)max_y * lerp;
 	draw_rectangle_filled(*gui->sdl, scrollrect, INT_MAX);
-	drawrectangle(*gui->sdl, scrollrect, AMBER_0);
+	draw_rectangle(*gui->sdl, scrollrect, AMBER_0);
 	if (gui->hid->mouse.held == MOUSE_LEFT && pointrectanglecollision(gui->hid->mouse.pos, scrollrect))
 		gui->scroll_held = true;
 	if (pointrectanglecollision(gui->hid->mouse.pos, scrollrect))
-		drawrectangle(*gui->sdl, scrollrect, AMBER_1);
+		draw_rectangle(*gui->sdl, scrollrect, AMBER_1);
 	if (gui->scroll_held)
 		gui->scroll.y += (scrollrect.position.y + (scrollrect.size.y / 2)) - gui->hid->mouse.pos.y;
 }
@@ -107,6 +98,7 @@ static void draw_rect_tri(t_sdlcontext *sdl, t_rectangle rect, uint32_t clr)
 {
 	t_point	p;
 	int		linelen;
+
 	draw_triangle(sdl, point_add(rect.position, (t_point){.y = rect.size.y}),
 			point_add(rect.position, rect.size), point_add(rect.position, (t_point){.x = rect.size.x}), clr);
 	p = (t_point){0, 0};
@@ -135,11 +127,12 @@ static void update_hidecross(t_autogui *gui)
 	t_rectangle	hidecross;
 	t_point		p1;
 	t_point		p2;
+
 	hidecross.size = (t_point){32, 32};
 	hidecross.position = point_add(gui->rect.position, (t_point){.x = gui->rect.size.x});
 	hidecross.position.x -= hidecross.size.x;
 	draw_rectangle_filled(*gui->sdl, hidecross, AMBER_1);
-	drawrectangle(*gui->sdl, hidecross, AMBER_0);
+	draw_rectangle(*gui->sdl, hidecross, AMBER_0);
 	p1 = hidecross.position;
 	p2 = point_add(hidecross.position, hidecross.size);
 	drawline(*gui->sdl, p1, p2, AMBER_3);
@@ -175,13 +168,13 @@ void	gui_end(t_autogui *gui)
 	if (gui->dock != NULL)
 	{
 		gui->rect.position = point_add(gui->dock->rect.position, (t_point){.x = gui->dock->rect.size.x + 2});
-		drawrectangle(*gui->sdl, dragbar, CLR_DARKGRAY);
+		draw_rectangle(*gui->sdl, dragbar, CLR_DARKGRAY);
 	}
 	else if (!gui->locked)
 	{
-		drawrectangle(*gui->sdl, dragbar, AMBER_0);
+		draw_rectangle(*gui->sdl, dragbar, AMBER_0);
 		if (pointrectanglecollision(gui->hid->mouse.pos, dragbar) || gui->move_held)
-			drawrectangle(*gui->sdl, dragbar, AMBER_1);
+			draw_rectangle(*gui->sdl, dragbar, AMBER_1);
 		if (gui->hid->mouse.held == MOUSE_LEFT && pointrectanglecollision(gui->hid->mouse.pos, dragbar) && !gui->hid->mouse.dragging_ui)
 		{
 			//gui->hid->mouse.dragging_ui = true;
@@ -437,29 +430,24 @@ bool	gui_float_slider(float	*f, float mul, t_autogui *gui)
 	{
 		str = ft_ftoa(*f, 4);
 		rect = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
-		drawrectangle(*gui->sdl, rect, AMBER_0);
+		draw_rectangle(*gui->sdl, rect, AMBER_0);
 		if (pointrectanglecollision(gui->hid->mouse.pos, rect))
 		{
 			print_text_boxed(gui->sdl, "Drag to affect value", point_add(gui->hid->mouse.pos, (t_point){40, -10}));
-			drawrectangle(*gui->sdl, rect, AMBER_1);
+			draw_rectangle(*gui->sdl, rect, AMBER_1);
 			if (mouse_clicked(gui->hid->mouse, MOUSE_LEFT))
 			{
 				mousepos = gui->hid->mouse.pos;
 				force_mouselock(gui->hid);
 				gui->hid->mouse.pos = mousepos;
 				gui->hid->mouse.dragging_ui = true;
-				/*gui->player->locked = true;
-				gui->locking_player = true;*/
 			}
-			/*if (gui->hid->mouse.relative && gui->locking_player)
-			{*/
 			if (gui->hid->mouse.held == MOUSE_LEFT)
 			{
 				add += (float)gui->hid->mouse.delta.x * mul;
 				if (add != 0.0f)
 					modified = true;
 			}
-			//}
 			if ((gui->hid->keystate >> KEYS_SHIFTMASK) & 1)
 				add *= 2.0f;
 			if ((gui->hid->keystate >> KEYS_LALTMASK) & 1)
@@ -507,11 +495,11 @@ static t_buttonreturn	autogui_internal_colored_button(char *str, t_autogui *gui,
 	t_buttonreturn	br;
 
 	br.rect = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
-	drawrectangle(*gui->sdl, br.rect, AMBER_2);
+	draw_rectangle(*gui->sdl, br.rect, AMBER_2);
 	br.clicked = false;
 	if (pointrectanglecollision(gui->hid->mouse.pos, br.rect))
 	{
-		drawrectangle(*gui->sdl, br.rect, color);
+		draw_rectangle(*gui->sdl, br.rect, color);
 		if (mouse_clicked(gui->hid->mouse, MOUSE_LEFT))
 		{
 			br.clicked = true;
@@ -526,11 +514,11 @@ static t_buttonreturn	autogui_internal_button(char *str, t_autogui *gui)
 	t_buttonreturn	br;
 
 	br.rect = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
-	drawrectangle(*gui->sdl, br.rect, AMBER_0);
+	draw_rectangle(*gui->sdl, br.rect, AMBER_0);
 	br.clicked = false;
 	if (pointrectanglecollision(gui->hid->mouse.pos, br.rect))
 	{
-		drawrectangle(*gui->sdl, br.rect, AMBER_2);
+		draw_rectangle(*gui->sdl, br.rect, AMBER_2);
 		if (mouse_clicked(gui->hid->mouse, MOUSE_LEFT))
 		{
 			br.clicked = true;
@@ -587,12 +575,11 @@ bool	gui_imagebutton(t_img	*img, t_autogui *gui)
 	bool			ret;
 
 	imgrect = empty_rect();
-
 	ret = false;
 	if (gui_shoulddraw(gui))
 	{
-		draw_image(*gui->sdl, gui_currentpos(gui), *img, (t_point){32,32});
-		imgrect.size = (t_point){32,32};
+		draw_image(*gui->sdl, gui_currentpos(gui), *img, (t_point){32, 32});
+		imgrect.size = (t_point){32, 32};
 		imgrect.position = gui_currentpos(gui);
 		if (pointrectanglecollision(gui->hid->mouse.pos, imgrect))
 		{
@@ -637,29 +624,20 @@ bool	gui_hoverlabel(char *str, t_autogui *gui)
 	return (hovered);
 }
 
+//TODO: big norminette thing
 void	gui_string_edit(char *str, t_autogui	*gui)
 {
-	static bool	blink;
-	static int 	blinkframecounter;
+
 	SDL_Event	e;
 	bool		done;
 	t_rectangle	rect;
 	t_rectangle	orig;
 	t_point		start;
-	char		bstr[40] = {};
+	char		bstr[40];
 
-	blinkframecounter++;
-	if (blinkframecounter % 25 == 0)
-		blink = !blink;
-	if (blink)
-		sprintf(bstr, "\xE6 %s ", str);
-	else
-		sprintf(bstr, "\xE6 %s\xE4", str);
+	ft_strcpy(bstr, str);
 	done = false;
-	if (ft_strlen(str) != 0)
-		orig = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
-	else
-		orig = print_text_boxed(gui->sdl, " ", gui_currentpos(gui));
+	orig = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
 	rect = empty_rect();
 	if (gui_colored_button(bstr, gui, AMBER_4))
 	{
@@ -679,7 +657,6 @@ void	gui_string_edit(char *str, t_autogui	*gui)
 				ft_bzero(bstr, 40);
 				sprintf(bstr, "\xE6 %s ", str);
 				rect = print_text_boxed(gui->sdl, bstr, orig.position);
-				//join_surfaces(gui->sdl->window_surface, gui->sdl->ui_surface);
 				ft_memcpy(gui->sdl->window_surface->pixels, gui->sdl->surface->pixels, gui->sdl->window_w * gui->sdl->window_h * sizeof(uint32_t));
 				SDL_UpdateWindowSurface(gui->sdl->window);
 				if (e.type == SDL_MOUSEBUTTONDOWN
@@ -692,11 +669,11 @@ void	gui_string_edit(char *str, t_autogui	*gui)
 				}
 			}
 		}
+		SDL_StopTextInput();
 	}
-	SDL_StopTextInput();
 }
 
-bool	gui_highlighted_button(char *str, t_autogui *gui) //TODO, DRAWRECTANGLE AMBER3
+bool	gui_highlighted_button(char *str, t_autogui *gui)
 {
 	t_rectangle		rect;
 	t_buttonreturn	br;
@@ -707,7 +684,7 @@ bool	gui_highlighted_button(char *str, t_autogui *gui) //TODO, DRAWRECTANGLE AMB
 	{
 		br = autogui_internal_button(str, gui);
 	}
-	drawrectangle(*gui->sdl, br.rect, AMBER_3);
+	draw_rectangle(*gui->sdl, br.rect, AMBER_3);
 	gui_layout(gui, br.rect);
 	return (br.clicked);
 }
@@ -722,42 +699,27 @@ bool	gui_highlighted_button_if(char *str, t_autogui *gui, bool condition)
 
 bool	gui_labeled_bool(char *str, bool b, t_autogui *gui)
 {
-	char	tstr[12] = "true";
-	char	fstr[12] = "false";
 	gui_starthorizontal(gui);
 	gui_label(str, gui);
 	if (b)
-		gui_label(tstr, gui);
+		gui_label("True", gui);
 	else
-		gui_label(fstr, gui);
+		gui_label("False", gui);
 	gui_endhorizontal(gui);
 }
 
+//TODO: 'modified' is always false
 bool	gui_labeled_bool_edit(char *str, bool *b, t_autogui *gui)
 {
-	bool	modified = false;
+	bool	modified;
 
+	modified = false;
 	gui_starthorizontal(gui);
 	gui_label(str, gui);
-	if (*b)
-	{
-		gui_highlighted_button("True", gui);
-		if (gui_button("False", gui))
-		{
-			*b = false;
-			modified = true;
-		}
-			
-	}
-	else
-	{
-		if (gui_button("True", gui))
-		{
-			*b = true;
-			modified = true;
-		}
-		gui_highlighted_button("False", gui);
-	}
+	if (gui_highlighted_button_if("True", gui, *b))
+		*b = true;
+	if (gui_highlighted_button_if("False", gui, !*b))
+		*b = false;
 	gui_endhorizontal(gui);
 	return (modified);
 }
@@ -780,7 +742,7 @@ bool	gui_bool_edit(bool *b, t_autogui *gui)
 	gui_endhorizontal(gui);
 }
 
-void gui_int(int i, t_autogui *gui)
+void	gui_int(int i, t_autogui *gui)
 {
 	char		*str;
 	t_rectangle	rect;
@@ -795,7 +757,7 @@ void gui_int(int i, t_autogui *gui)
 	gui_layout(gui, rect);
 }
 
-void gui_point(t_point point, t_autogui *gui)
+void	gui_point(t_point point, t_autogui *gui)
 {
 	gui_starthorizontal(gui);
 	gui_int(point.x, gui);
@@ -803,7 +765,7 @@ void gui_point(t_point point, t_autogui *gui)
 	gui_endhorizontal(gui);
 }
 
-void gui_labeled_point(char *str, t_point point, t_autogui *gui)
+void	gui_labeled_point(char *str, t_point point, t_autogui *gui)
 {
 	gui_starthorizontal(gui);
 	gui_label(str, gui);
@@ -812,12 +774,44 @@ void gui_labeled_point(char *str, t_point point, t_autogui *gui)
 	gui_endhorizontal(gui);
 }
 
-void gui_labeled_int(char *str, int i, t_autogui *gui)
+void	gui_labeled_int(char *str, int i, t_autogui *gui)
 {
 	gui_starthorizontal(gui);
 	gui_label(str, gui);
 	gui_int(i, gui);
 	gui_endhorizontal(gui);
+}
+
+void	gui_lock_mouse(t_autogui *gui)
+{
+	t_point	mousepos;
+
+	mousepos = gui->hid->mouse.pos;
+	force_mouselock(gui->hid);
+	gui->hid->mouse.pos = mousepos;
+	gui->hid->mouse.dragging_ui = true;
+}
+
+bool	gui_int_slider_internal(int *i, float mul,
+								t_rectangle rect, t_autogui *gui)
+{
+	int		add;
+	bool	modified;
+
+	add = 0;
+	modified = 0;
+	print_text_boxed(gui->sdl, "Drag to affect value",
+		point_add(gui->hid->mouse.pos, (t_point){40, -10}));
+	draw_rectangle(*gui->sdl, rect, AMBER_1);
+	if (mouse_clicked(gui->hid->mouse, MOUSE_LEFT))
+		gui_lock_mouse(gui);
+	if (gui->hid->mouse.held == MOUSE_LEFT)
+	{
+		add = (float)gui->hid->mouse.delta.x;
+		modified = (add != 0);
+	}
+	*i = *i + add;
+	return (modified);
 }
 
 bool	gui_int_slider(int *i, float mul, t_autogui *gui)
@@ -831,35 +825,12 @@ bool	gui_int_slider(int *i, float mul, t_autogui *gui)
 	rect = empty_rect();
 	add = 0;
 	modified = false;
-	if (gui_shoulddraw(gui)) 
+	if (gui_shoulddraw(gui))
 	{
-		str = ft_itoa(*i);
-		rect = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
-		drawrectangle(*gui->sdl, rect, AMBER_0);
+		rect = print_text_boxed(gui->sdl, s_itoa(*i), gui_currentpos(gui));
+		draw_rectangle(*gui->sdl, rect, AMBER_0);
 		if (pointrectanglecollision(gui->hid->mouse.pos, rect))
-		{
-			print_text_boxed(gui->sdl, "Drag to affect value", point_add(gui->hid->mouse.pos, (t_point){40, -10}));
-			drawrectangle(*gui->sdl, rect, AMBER_1);
-			if (mouse_clicked(gui->hid->mouse, MOUSE_LEFT))
-			{
-				mousepos = gui->hid->mouse.pos;
-				force_mouselock(gui->hid);
-				gui->hid->mouse.pos = mousepos;
-				gui->hid->mouse.dragging_ui = true;
-			}
-			if (gui->hid->mouse.held == MOUSE_LEFT)
-			{
-				add = (float)gui->hid->mouse.delta.x;
-				if (add != 0)
-					modified = true;
-			}
-			/*if ((gui->hid->keystate >> KEYS_SHIFTMASK) & 1)
-				add *= 2.0f;
-			if ((gui->hid->keystate >> KEYS_LALTMASK) & 1)
-				add *= 0.5f;*/
-			*i = *i + add;
-		}
-		free(str);
+			modified = gui_int_slider_internal(i, mul, rect, gui);
 	}
 	gui_layout(gui, rect);
 	return (modified);
@@ -867,7 +838,9 @@ bool	gui_int_slider(int *i, float mul, t_autogui *gui)
 
 bool	gui_labeled_int_slider(char *str, int *i, float mul, t_autogui *gui)
 {
-	bool	modified = false;
+	bool	modified;
+
+	modified = false;
 	gui_starthorizontal(gui);
 	gui_label(str, gui);
 	modified = gui_int_slider(i, mul, gui);

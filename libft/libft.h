@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 17:57:33 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 20:04:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/21 12:21:21 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void			*ft_memccpy(void *dst, const void *src,
 					int c, size_t n);
 void			*ft_memmove(void *dst, const void *src, size_t len);
 char			*ft_memdup(const void *m, size_t n);
+void	*ft_memjoin(const void *dst, const void *src, size_t dst_len, size_t src_len);
 int				ft_memcmp(const void *ptr1, const void*ptr2, size_t num);
 void			ft_memdel(void **ap);
 void			*ft_memalloc(size_t size);
@@ -127,6 +128,7 @@ void			ft_lstapp(t_list **alst, t_list *new);/*extra*/
 int				ft_listlen(t_list *lst);
 
 char			*ft_strcdup(const char *str, char c);
+char			*ft_strncpy_term(char *dest, const char *src, size_t num);
 int				get_next_line(const int fd, char **line);
 
 #endif

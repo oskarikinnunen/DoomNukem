@@ -41,11 +41,12 @@ void	play_music(t_sdlcontext *sdl, char *musicname)
 	if (sample.sound != NULL)
 	{
 		printf("found sample for music %s \n", musicname);
-		FMOD_System_PlaySound(sdl->audio.system, sample.sound, NULL, false, &sdl->audio.music_channel);
+		FMOD_System_PlaySound(sdl->audio.system, sample.sound,
+			NULL, false, &sdl->audio.music_channel);
 	}
 }
 
 void	play_quick_audio(t_vector3 pos, char *samplename)
 {
-	
+	;
 }

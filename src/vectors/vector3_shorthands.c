@@ -6,30 +6,30 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 11:34:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/05 16:23:18 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/13 17:23:14 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vectors.h"
 
-t_vector3	vector3_zero()
+t_vector3	vector3_zero(void)
 {
-	return ((t_vector3) {0.0f, 0.0f, 0.0f});
+	return ((t_vector3){0.0f, 0.0f, 0.0f});
 }
 
-t_vector3	vector3_up()
+t_vector3	vector3_up(void)
 {
-	return ((t_vector3) {0.0f, 0.0f, 1.0f});
+	return ((t_vector3){0.0f, 0.0f, 1.0f});
 }
 
-t_vector3	vector3_down()
+t_vector3	vector3_down(void)
 {
-	return ((t_vector3) {0.0f, 0.0f, -1.0f});
+	return ((t_vector3){0.0f, 0.0f, -1.0f});
 }
 
-t_vector3	vector3_one()
+t_vector3	vector3_one(void)
 {
-	return ((t_vector3) {1.0f, 1.0f, 1.0f});
+	return ((t_vector3){1.0f, 1.0f, 1.0f});
 }
 
 t_vector3	vector3_negative(t_vector3 vec)
@@ -41,4 +41,3 @@ t_vector3	vector3_negative(t_vector3 vec)
 	result.z = -vec.z;
 	return (result);
 }
-

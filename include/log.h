@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   log.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 20:21:24 by raho              #+#    #+#             */
-/*   Updated: 2023/02/07 16:23:59 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/14 12:58:18 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LOG_H
 # define LOG_H
 
-#include "render.h"
-#include "input.h"
+# include "render.h"
+# include "input.h"
 
 # define LOG_NORMAL 0
 # define LOG_WARNING 1
@@ -38,6 +38,8 @@
 # define LOG_EC_MALLOC 33
 # define LOG_EC_GETNEXTLINE 34
 # define LOG_EC_FORK 35
+# define LOG_EC_READ 36
+# define LOG_EC_LSEEK 37
 # define LOG_EC_FMOD_SYSTEMCREATE 50
 # define LOG_EC_FMOD_SYSTEMINIT 51
 # define LOG_EC_FMOD_SYSTEMCLOSE 52
@@ -53,40 +55,53 @@
 
 typedef struct s_error_window
 {
-    SDL_Event	event;
+	SDL_Event	event;
 	t_hid_info	hid;
-	int         scroll;
-    int         i;
-    int         j;
-}   t_error_window;
+	int			scroll;
+	int			i;
+	int			j;
+}	t_error_window;
 
 typedef struct s_parent
 {
-    t_sdlcontext    sdl;
-    int             fd;
-    int             gnl;
-    char            *line;
-    int             message_count;
-    char            **messages;
-    t_error_window  ew;
-}   t_parent;
+	t_sdlcontext	sdl;
+	int				fd;
+	int				gnl;
+	char			*line;
+	int				message_count;
+	char			**messages;
+	t_error_window	ew;
+}	t_parent;
 
 /* code defines start with LOG */
 void	doomlog(int code, char *str);
 
-/* example: doomlog_mul(LOG_NORMAL, (char *[32]){"parsed", s_itoa(i), "imagefiles", NULL}); */
+/* example: doomlog_mul(LOG_NORMAL, (char *[4]){
+			"parsed", s_itoa(i), "imagefiles", NULL}); */
 void	doomlog_mul(int code, char **str);
 
 /* don't use this manually, call doomlog() instead */
 void	error_codes(int ec, int fd);
-
+/* don't use this manually, call doomlog() instead */
 void	normal_message_mul(int fd, char **str);
+/* don't use this manually, call doomlog() instead */
+void	warning_message(int fd, char *str);
+/* don't use this manually, call doomlog() instead */
+void	warning_message_mul(int fd, char **str);
+/* don't use this manually, call doomlog() instead */
+void	fatal_message(int fd, char *str);
+/* don't use this manually, call doomlog() instead */
+void	fatal_message_mul(int fd, char **str);
+/* don't use this manually, call doomlog() instead */
+void	error_message(int code, int fd, char *str);
+/* don't use this manually, call doomlog() instead */
+void	error_message_mul(int code, int fd, char **str);
 
 /* parent process's error window */
 void	error_window(char *str);
 void	error_window_events(t_parent *p);
 
 /* converts integer to a stack memory string */
-char *s_itoa(int i);
+char	*s_itoa(int i);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 14:52:25 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/04 21:09:36 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/17 18:56:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ t_area	*get_floor_room(t_world *world, t_entity *entity)
 	t_area	*r;
 	int		i;
 
-	l = world->roomlist;
+	l = world->arealist;
 	r = NULL;
 	while (l != NULL)
 	{
@@ -80,7 +80,7 @@ static t_area	*_world_get_room_with_entity(t_world *world, t_entity *entitymatch
 	t_list	*l;
 	t_area	*room;
 
-	l = world->roomlist;
+	l = world->arealist;
 	while (l != NULL)
 	{
 		room = l->content;
@@ -97,7 +97,7 @@ static t_wall	*_world_get_wall_with_entity(t_world *world, t_entity *entitymatch
 	t_area	*room;
 	t_wall	*found;
 
-	l = world->roomlist;
+	l = world->arealist;
 	while (l != NULL)
 	{
 		room = l->content;
@@ -115,7 +115,7 @@ static t_wall	*_world_get_floor_with_entity(t_world *world, t_entity *entitymatc
 	t_area	*room;
 	t_wall	*found;
 
-	l = world->roomlist;
+	l = world->arealist;
 	while (l != NULL)
 	{
 		room = l->content;
@@ -132,7 +132,7 @@ static void paint_room(t_entity *hit_ent, t_img *tex, t_world *world)
 	t_list	*l;
 	int		i;
 
-	l = world->roomlist;
+	l = world->arealist;
 	while (l != NULL)
 	{
 		t_area *area = l->content;
@@ -206,7 +206,7 @@ void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	
 	if (img_index != prev_img_index)
 	{
-		prev_changetime = ed->world.clock.prev_time;
+		prev_changetime = ed->world.clock.time;
 	}
 	t_point middle = point_div(sdl->screensize, 2);
 	middle = point_sub(middle, (t_point){16,16});
@@ -220,7 +220,7 @@ void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	int from = 0;
 	int	to = 1;
 	t_point cur;
-	if (ed->world.clock.prev_time < prev_changetime + 1000)
+	if (ed->world.clock.time < prev_changetime + 1000)
 	{
 		i = -5;
 		while (i < 6)
@@ -248,7 +248,7 @@ void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 		{
 			draw_image(*sdl, cur, sdl->env_textures[img_index + i], (t_point){32,32});
 			if (i == 0)
-				drawrectangle(*sdl, rect, AMBER_4);
+				draw_rectangle(*sdl, rect, AMBER_4);
 		}
 		i++;
 	}

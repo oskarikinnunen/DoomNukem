@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   occlusion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 14:40:03 by vlaine            #+#    #+#             */
-/*   Updated: 2023/01/24 11:36:14 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/14 13:05:50 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,12 @@ static void set_bounding_box(t_vector3 *max, t_vector3 *min, t_vector3 *vector, 
 	t_vector3 v;
 	int	i;
 
-	max->x = -1000000000;
-	max->y = -1000000000;
-	max->z = -1000000000;
-	min->x = 1000000000;
-	min->y = 1000000000;
-	min->z = 1000000000;
+	max->x = -10000000.0f;
+	max->y = -10000000.0f;
+	max->z = -10000000.0f;
+	min->x = 10000000.0f;
+	min->y = 10000000.0f;
+	min->z = 10000000.0f;
 	i = 0;
 	while (i < count)
 	{
@@ -99,17 +99,26 @@ void update_object_bounds(t_object *obj)
 	obj->bounds.box.v[5] = (t_vector3){.x = max.x, .y = min.y, max.z};
 	obj->bounds.box.v[6] = (t_vector3){.x = min.x, .y = min.y, max.z};
 	obj->bounds.box.v[7] = (t_vector3){.x = min.x, .y = max.y, max.z};
+	obj->bounds.height = max.z - min.z;
+	obj->bounds.count = 8;
 	obj->bounds.type = bt_box;
 }
 
+//expects there to be only one floor with 3 vertexes
 void update_floor_bounds(t_meshtri *f)
 {
 	t_vector3	min;
 	t_vector3	max;
+	t_object	*obj;
 
+	obj = f->entity->obj;
 	f->entity->obj->bounds.origin = vector3_div(vector3_add(vector3_add(f->entity->obj->vertices[0], f->entity->obj->vertices[1]), f->entity->obj->vertices[2]), 3.0f);
 	set_bounding_box(&max, &min, f->entity->obj->vertices, f->entity->obj->vertice_count);
 	f->entity->obj->bounds.radius = get_box_sphere_radius(f->entity->obj->bounds.origin, max, min);
+	obj->bounds.box.v[0] = obj->vertices[0];
+	obj->bounds.box.v[1] = obj->vertices[1];
+	obj->bounds.box.v[2] = obj->vertices[2];
+	f->entity->obj->bounds.count = 3;
 	f->entity->obj->bounds.type = bt_ignore;
 }
 
@@ -129,13 +138,10 @@ void update_wall_bounds(t_wall *w)
 		obj->bounds.box.v[i] = obj->vertices[i];
 		i++;
 	}
-	/*obj->bounds.box.v[0] = (t_vector3){start.x, start.y, 0.0f};
-	obj->bounds.box.v[1] = (t_vector3){end.x, end.y, 0.0f};
-	obj->bounds.box.v[2] = (t_vector3){start.x, start.y, w->height};
-	obj->bounds.box.v[3] = (t_vector3){end.x, end.y, w->height};*/
 	bzero(&obj->bounds.box.v[4], sizeof(t_vector3) * 4);
 	obj->bounds.origin = vector3_lerp(obj->bounds.box.v[0], obj->bounds.box.v[3], 0.5f);
 	obj->bounds.radius = get_wall_radius(obj->bounds);
+	obj->bounds.count = 4;
 	obj->bounds.type = bt_plane;
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   graphicsprefs.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 14:37:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 19:38:14 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/08 19:40:19 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ void	reset_graphics_prefs()
 
 	prefpath = SDL_GetPrefPath("temp", "stark");
 	pref_filename = ft_strnew(ft_strlen(prefpath) + 20);
+	if (pref_filename == NULL)
+		doomlog(LOG_EC_MALLOC, "reset graphics pref filename");
 	ft_strcpy(pref_filename, prefpath);
 	ft_strcat(pref_filename, "graphics.pref");
 	remove(pref_filename);
@@ -93,14 +95,13 @@ void	apply_graphics_prefs(t_graphicprefs prefs)
 
 	prefpath = SDL_GetPrefPath("temp", "stark");
 	pref_filename = ft_strnew(ft_strlen(prefpath) + 20);
+	if (pref_filename == NULL)
+		doomlog(LOG_EC_MALLOC, "appply graphics pref filename");
 	ft_strcpy(pref_filename, prefpath);
 	ft_strcat(pref_filename, "graphics.pref");
 	fd = fileopen(pref_filename, O_RDWR | O_CREAT | O_TRUNC);
-	if (fd != -1)
-	{
-		write(fd, &prefs, sizeof(prefs));
-		close(fd);
-	}
+	write(fd, &prefs, sizeof(prefs));
+	fileclose(fd, pref_filename);
 	SDL_free(prefpath);
 	free(pref_filename);
 }
@@ -115,14 +116,13 @@ void	save_graphics_prefs(t_sdlcontext *sdl)
 	prefs = get_prefs_from_sdl(sdl);
 	prefpath = SDL_GetPrefPath("temp", "stark");
 	pref_filename = ft_strnew(ft_strlen(prefpath) + 20);
+	if (pref_filename == NULL)
+		doomlog(LOG_EC_MALLOC, "save graphics pref filename");
 	ft_strcpy(pref_filename, prefpath);
 	ft_strcat(pref_filename, "graphics.pref");
 	fd = fileopen(pref_filename, O_RDWR | O_CREAT | O_TRUNC);
-	if (fd != -1)
-	{
-		write(fd, &prefs, sizeof(prefs));
-		close(fd);
-	}
+	write(fd, &prefs, sizeof(prefs));
+	fileclose(fd, pref_filename);
 	SDL_free(prefpath);
 	free(pref_filename);
 }
@@ -139,9 +139,11 @@ t_graphicprefs	load_graphicsprefs()
 	
 	prefpath = SDL_GetPrefPath("temp", "stark");
 	pref_filename = ft_strnew(ft_strlen(prefpath) + 20);
+	if (pref_filename == NULL)
+		doomlog(LOG_EC_MALLOC, "load_graphicsprefs filename");
 	ft_strcpy(pref_filename, prefpath);
 	ft_strcat(pref_filename, "graphics.pref");
-	fd = fileopen(pref_filename, O_RDONLY);
+	fd = open(pref_filename, O_RDONLY);
 	if (fd == -1)
 		prefs = defaultprefs();
 	else
@@ -149,10 +151,11 @@ t_graphicprefs	load_graphicsprefs()
 		int rd = read(fd, &prefs, sizeof(prefs));
 		if (rd != sizeof(prefs)) //TODO: add other protections?
 			prefs = defaultprefs();
-		close(fd);
+		fileclose(fd, pref_filename);
 	}
 	SDL_free(prefpath);
 	free(pref_filename);
-	printf("prefs res %i %i \n", prefs.resolution_x, prefs.resolution_y);
+	doomlog_mul(LOG_NORMAL, (char *[4]){\
+		"prefs resolution", s_itoa(prefs.resolution_x), s_itoa(prefs.resolution_y), NULL});
 	return (prefs);
 }

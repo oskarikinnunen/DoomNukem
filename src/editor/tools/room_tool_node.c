@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 11:37:18 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/27 18:45:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/17 18:56:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ void	remove_edge(t_world *world, t_area *room, t_vector2 *edge)
 	t_area	*cur;
 	t_vector2	orig;
 
-	l = world->roomlist;
+	l = world->arealist;
 	orig = *edge;
 	while (l != NULL)
 	{
@@ -147,7 +147,7 @@ static void	recalculate_rooms_with_edge(t_editor *ed, t_vector2 edge)
 	t_area	*r;
 	int		i;
 
-	l = ed->world.roomlist;
+	l = ed->world.arealist;
 	while (l != NULL)
 	{
 		r = l->content;
@@ -174,7 +174,7 @@ void	applyedgedrag_solo(t_vector2 *edge, t_vector2 snap, t_area *room, t_world *
 	if (vector2_cmp(*edge, snap))
 		return ;
 	legal = true;
-	l = world->roomlist;
+	l = world->arealist;
 	while (l != NULL)
 	{
 		cur = l->content;
@@ -217,7 +217,7 @@ void	applyedgedrag(t_vector2 *edge, t_vector2 cursor, t_area *room, t_world *wor
 	if (vector2_cmp(*edge, cursor))
 		return ;
 	legal = true;
-	l = world->roomlist;
+	l = world->arealist;
 	while (l != NULL)
 	{
 		cur = l->content;
@@ -235,7 +235,7 @@ void	applyedgedrag(t_vector2 *edge, t_vector2 cursor, t_area *room, t_world *wor
 
 	if (legal)
 	{
-		l = world->roomlist;
+		l = world->arealist;
 		while (l != NULL)
 		{
 			cur = l->content;

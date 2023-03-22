@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_audiosource.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/07 15:33:17 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/02 15:59:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,10 @@ void	comp_audiosource_update(t_entity *entity, t_world *world)
 				uint32_t	r = game_random_range(world,
 					source->random_delay_min * 1000,
 					source->random_delay_max * 1000);
-				source->_nextstart = world->clock.prev_time + r;
+				source->_nextstart = world->clock.time + r;
 				printf("pseudorandom was %i \n", r);
 			}
-			else if (world->clock.prev_time > source->_nextstart)
+			else if (world->clock.time > source->_nextstart)
 			{
 				source->_nextstart = 0;
 				source->queue_play = true;

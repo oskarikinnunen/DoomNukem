@@ -1,11 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   error_window.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/01/28 14:59:55 by raho              #+#    #+#             */
+/*   Updated: 2023/03/20 11:10:47 by okinnune         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "doomnukem.h"
 
-static void	save_messages(t_parent *p, char *str)
+static void	save_messages(t_parent *p, char *str, int i)
 {
-	int	i;
-
 	p->messages[0] = \
 			ft_strdup("GAME RAN INTO AN ERROR! DISPLAYING LOG ENTRIES:");
+	if (p->messages[0] == NULL)
+	{
+		ft_putstr_fd("malloc for error message failed - ", 2);
+		ft_putendl_fd(strerror(errno), 2);
+		exit (1);
+	}
 	i = 1;
 	p->gnl = get_next_line(p->fd, &p->line);
 	while (p->gnl)
@@ -16,7 +32,8 @@ static void	save_messages(t_parent *p, char *str)
 	}
 	if (p->gnl == -1)
 	{
-		ft_putendl_fd("game ran into an error and the parent process couldn't read the log for the error message", 2);
+		ft_putstr_fd("can't read doomlog for error message -", 2);
+		ft_putendl_fd(strerror(errno), 2);
 		exit(1);
 	}
 	p->messages[i++] = str;
@@ -28,18 +45,24 @@ static void	cache_log(t_parent *p, char *str)
 	p->messages = (char **)malloc(sizeof(char *) * (p->message_count + 1));
 	if (p->messages == NULL)
 	{
-		ft_putendl_fd("game ran into an error and the parent process's malloc for the error message failed", 2);
+		ft_putstr_fd("malloc for error message failed - ", 2);
+		ft_putendl_fd(strerror(errno), 2);
 		exit (1);
 	}
 	p->fd = open("doomlog.txt", O_RDONLY);
 	if (p->fd == -1)
 	{
-		ft_putendl_fd("game ran into an error and the parent process couldn't open the log for the error message", 2);
+		ft_putstr_fd("can't open doomlog for error message - ", 2);
+		ft_putendl_fd(strerror(errno), 2);
 		exit (1);
 	}
-	save_messages(p, str);
+	save_messages(p, str, 0);
 	if (close(p->fd) == -1)
-		ft_putendl_fd("couldn't close the log from the parent process", 2);
+	{
+		ft_putstr_fd("couldn't close doomlog - ", 2);
+		ft_putendl_fd(strerror(errno), 2);
+		exit (1);
+	}
 }
 
 static void	count_log_messages(t_parent *p)
@@ -56,10 +79,11 @@ static void	count_log_messages(t_parent *p)
 		p->gnl = get_next_line(p->fd, &p->line);
 	}
 	if (p->message_count > 0)
-		p->message_count += 2; // 2 extra messages for the title and the exit status
+		p->message_count += 2;
 	if (p->gnl == -1)
 	{
-		ft_putendl_fd("game ran into an error and the parent process couldn't read the log for the error message", 2);
+		ft_putstr_fd("can't read log for error message - ", 2);
+		ft_putendl_fd(strerror(errno), 2);
 		exit(1);
 	}
 }
@@ -69,12 +93,17 @@ static void	parse_log(t_parent *p)
 	p->fd = open("doomlog.txt", O_RDONLY);
 	if (p->fd == -1)
 	{
-		ft_putendl_fd("game ran into an error and the parent process couldn't open the doomlog for the error message", 2);
+		ft_putstr_fd("can't open doomlog for error message - ", 2);
+		ft_putendl_fd(strerror(errno), 2);
 		exit (1);
 	}
 	count_log_messages(p);
 	if (close(p->fd) == -1)
-		ft_putendl_fd("couldn't close the log from the parent process", 2);
+	{
+		ft_putstr_fd("couldn't close doomlog - ", 2);
+		ft_putendl_fd(strerror(errno), 2);
+		exit (1);
+	}
 }
 
 void	error_window(char *str)
@@ -84,14 +113,14 @@ void	error_window(char *str)
 	ft_bzero(&p, sizeof(t_parent));
 	ft_putendl_fd(str, 2);
 	init_sdl_error_window(&p.sdl);
-	load_fonts(&p.sdl.font);
-	p.sdl.font.color = color32_to_sdlcolor(CLR_GREEN);
+	editor_load_fonts(&p.sdl);
+	p.sdl.font_default->color = color32_to_sdlcolor(CLR_GREEN);
 	parse_log(&p);
 	cache_log(&p, str);
 	while (1)
 	{
-		p.ew.hid.mouse.scroll_delta = 0; //Needs to be reset
-		p.ew.hid.alphakey_pressed = 0; //Needs to be reset
+		p.ew.hid.mouse.scroll_delta = 0;
+		p.ew.hid.alphakey_pressed = 0;
 		SDL_GetRelativeMouseState(&p.ew.hid.mouse.delta.x, \
 									&p.ew.hid.mouse.delta.y);
 		error_window_events(&p);

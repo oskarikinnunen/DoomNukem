@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 13:54:44 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/30 19:53:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/02 21:27:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@ void int_slider_name(char *name, int *i, int mul, t_editor *ed, t_sdlcontext sdl
 	//rect = //print_text_boxed(&sdl, str, (t_point) {pos.x + 100, pos.y }, sdl.screensize);
 	if (pointrectanglecollision(ed->hid.mouse.pos, rect))
 	{
-		drawrectangle(sdl, rect, CLR_BLUE);
+		draw_rectangle(sdl, rect, CLR_BLUE);
 		if (moveamount != 0)
-			drawrectangle(sdl, rect, CLR_GREEN);
+			draw_rectangle(sdl, rect, CLR_GREEN);
 		*i = *i + moveamount;
 	}
 	free(str);
@@ -56,9 +56,9 @@ void float_slider_name(char *name, float *f, float mul, t_editor *ed, t_sdlconte
 	//rect = print_text_boxed(&sdl, str, (t_point) {pos.x + 150, pos.y }, sdl.screensize);
 	if (pointrectanglecollision(ed->hid.mouse.pos, rect))
 	{
-		drawrectangle(sdl, rect, CLR_BLUE);
+		draw_rectangle(sdl, rect, CLR_BLUE);
 		if (moveamount != 0)
-			drawrectangle(sdl, rect, CLR_GREEN);
+			draw_rectangle(sdl, rect, CLR_GREEN);
 		*f = *f + moveamount;
 	}
 	free(str);
@@ -80,9 +80,9 @@ void float_slider(float *f, float mul, t_editor *ed, t_sdlcontext sdl, t_point p
 	//rect = print_text_boxed(&sdl, str, pos, sdl.screensize);
 	if (pointrectanglecollision(ed->hid.mouse.pos, rect))
 	{
-		drawrectangle(sdl, rect, CLR_BLUE);
+		draw_rectangle(sdl, rect, CLR_BLUE);
 		if (moveamount != 0)
-			drawrectangle(sdl, rect, CLR_GREEN);
+			draw_rectangle(sdl, rect, CLR_GREEN);
 		*f = *f + moveamount;
 	}
 	free(str);
@@ -123,7 +123,7 @@ void	string_box(char *name, char *str, t_editor *ed, t_sdlcontext sdl, t_point p
 		{
 			while (SDL_PollEvent(&e) && !done)
 			{
-				screen_blank(sdl);
+				//screen_blank(sdl);
 				//print_text_boxed(&sdl, name, pos, sdl.screensize);
 				if (e.type == SDL_TEXTINPUT && ft_strlen(str) < 31)
 				{
@@ -133,7 +133,7 @@ void	string_box(char *name, char *str, t_editor *ed, t_sdlcontext sdl, t_point p
 				if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_BACKSPACE)
 					str[ft_strlen(str) - 1] = '\0';
 				//rect = print_text_boxed(&sdl, str, start, sdl.screensize);
-				drawrectangle(sdl, rect, CLR_GREEN);
+				draw_rectangle(sdl, rect, CLR_GREEN);
 				SDL_UpdateWindowSurface(sdl.window);
 				if (e.type == SDL_KEYDOWN && (e.key.keysym.sym == SDLK_RETURN || e.key.keysym.sym == SDLK_RETURN2)) {
 					done = true;

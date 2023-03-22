@@ -5,7 +5,7 @@
 	#include <inttypes.h>
 # endif
 
-#include "npc.h"
+
 
 typedef enum e_componenttype
 {
@@ -18,6 +18,7 @@ typedef enum e_componenttype
 	COMP_LIGHT,
 	COMP_HEALTHPACK,
 	COMP_NPC_CIVILIAN,
+	COMP_PLAYERSPAWN,
 	COMP_GUN_PICKUP,
 	COMP_AUTO_DOOR
 }	t_componenttype;
@@ -30,6 +31,7 @@ struct s_world;
 typedef struct s_component
 {
 	t_componenttype		type;
+	uint32_t			data_preset;
 	size_t				data_size;
 	void				(*func_take_damage)(struct s_entity *,struct s_world *);
 	void				(*func_allocate)(struct s_entity *,struct s_world *);
@@ -65,9 +67,11 @@ typedef struct s_audiosource
 	uint32_t		_nextstart;
 }	t_audiosource;
 
+#include "npc.h"
+
 typedef struct s_interactable
 {
-	//t_characterphysics	cphys;
+	t_characterphysics	phys;
 	t_anim		wiggle;
 	t_vector3	velocity;
 	float		radius;
@@ -85,12 +89,6 @@ typedef struct	s_watercollider
 	float	TESTVARIABLE;
 }	t_watercollider;
 
-typedef struct	s_light
-{
-	float		radius;
-	t_vector3	origin;
-	//t_entity	**
-}	t_light;
 typedef struct	s_healthpack
 {
 	float	TESTVARIABLE;
@@ -99,9 +97,13 @@ typedef struct	s_npc_civilian
 {
 	float	TESTVARIABLE;
 }	t_npc_civilian;
-typedef struct	s_gun_pickup
+typedef struct	s_playerspawn
 {
 	float	TESTVARIABLE;
+}	t_playerspawn;
+typedef struct	s_gun_pickup
+{
+	float	original_z;
 }	t_gun_pickup;
 typedef struct	s_auto_door
 {
@@ -118,11 +120,13 @@ void	assign_component_watercollider(t_component *component);
 void	assign_component_light(t_component *component);
 void	assign_component_healthpack(t_component *component);
 void	assign_component_npc_civilian(t_component *component);
+void	assign_component_playerspawn(t_component *component);
 void	assign_component_gun_pickup(t_component *component);
 void	assign_component_auto_door(t_component *component);
 /* ASSIGNFUNC END, DONT REMOVE SINCE THE CREATECOMPONENT SCRIPT DEPENDS ON THIS*/
 /* AUDIOSOURCE INTERNAL FUNCTIONS */
 void	_audiosource_start(t_sdlcontext *sdl, t_audiosource	*source, t_vector3 *pos);
+void	_audiosource_2D_start(t_sdlcontext *sdl, t_audiosource	*source);
 
 /*NPC*/
 void	assign_component_npc(t_component *component);

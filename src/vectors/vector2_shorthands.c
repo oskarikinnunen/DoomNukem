@@ -6,20 +6,20 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 11:34:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/14 17:54:22 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/13 17:31:14 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vectors.h"
 
-t_vector2	vector2_zero()
+t_vector2	vector2_zero(void)
 {
-	return ((t_vector2) {0, 0});
+	return ((t_vector2){0, 0});
 }
 
-t_vector2	vector2_one()
+t_vector2	vector2_one(void)
 {
-	return ((t_vector2) {1, 1});
+	return ((t_vector2){1, 1});
 }
 
 t_vector2	vector2_negative(t_vector2 vec)

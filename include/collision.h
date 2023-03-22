@@ -16,6 +16,12 @@ typedef struct s_vector3_tri
 	t_vector3	c;
 } t_vector3_tri;
 
+/*typedef struct s_ramp
+{
+	t_vector3_tri	tri_a;
+	t_vector3_tri	tri_b;
+}	t_ramp;*/
+
 /* PHYSICS.C */
 bool	vector_is_in_triangle(t_vector3 vec, t_vector3_tri tri);
 bool	pointrectanglecollision(t_point p, t_rectangle rect);

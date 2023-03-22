@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/02 14:53:58 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/08 18:18:49 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/09 19:16:01 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,12 @@ typedef struct s_characterphysics
 	float		radius;
 	float		*gravity_override;
 	t_vector3	*position;
-	t_vector3	new_velocity;
+	t_vector3	velocity;
 	float		max_velocity;
-	bool		new_isgrounded;
-	bool		new_landingtrigger;
-	t_vector3	new_impactvelocity;
+	bool		isgrounded;
+	bool		landingtrigger;
+	bool		ceilingtrigger;
+	t_vector3	impactvelocity;
 }	t_characterphysics;
 
 bool	check_collision_character(struct s_world *world, t_characterphysics cp, t_vector3 potential_pos, t_vector3 *new_pos);
