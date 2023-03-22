@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
+#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/22 14:49:04 by okinnune         ###   ########.fr        #
+#    Updated: 2023/03/22 22:05:20 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,14 +33,19 @@ LIBFT = libft/libft.a
 #Source files:
 SRCFILES= main.c img.c deltatime.c anim.c \
 		app_argument.c \
-		file_ops/filechunks.c	\
-		file_ops/world_save.c	\
-		file_ops/world_load.c	\
+		file_ops/file_chunks.c \
+		file_ops/file_tools.c \
+		file_ops/file_content.c \
+		file_ops/world_save.c \
+		file_ops/world_save_basic_ent.c \
+		file_ops/world_save_amap.c \
+		file_ops/world_load.c \
+		file_ops/world_init.c \
 		editor/editor.c \
 		editor/editor_mouse.c \
 		editor/editor_events.c \
 		editor/key_events.c \
-		editor/editor_asset_load.c \
+		editor/editor_load_assets.c \
 		editor/editor_load_anims.c \
 		editor/editor_load_anim_legend.c \
 		editor/editor_load_images.c \
@@ -96,7 +101,7 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		player/playermovement_normal2.c \
 		player/playermovement_noclip.c \
 		player/playmode.c \
-		player/playmode_asset_load.c \
+		player/playmode_load_assets.c \
 		player/playmode_load_images.c \
 		player/playmode_load_env_textures.c \
 		player/playmode_load_objects.c \

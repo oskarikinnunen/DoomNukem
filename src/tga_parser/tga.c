@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 16:12:58 by raho              #+#    #+#             */
-/*   Updated: 2023/03/16 21:15:56 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 21:12:21 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ static t_img	tga_to_simpleimg(char *file_name, t_tga *tga)
 	return (img);
 }
 
-t_img	tgaparse(char *file_name)
+t_img	tga_parse(char *file_name)
 {
 	int		fd;
 	int		ret;

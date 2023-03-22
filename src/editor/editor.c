@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 19:19:35 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 22:26:27 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,9 +203,11 @@ int	editorloop(char *level, t_sdlcontext sdl)
 	bool		audio = 0;
 
 	bzero(&ed, sizeof(t_editor));
+	editor_loading_screen("LOADING WORLD", &sdl);
 	ed.world = load_world(level, &sdl);
 	ed.world.app_mode = APPMODE_EDIT;
 	editor_player_init(&ed);
+	
 	//split these to their own file
 	*(ed.world.debug_gui) = init_gui(&sdl, &ed.hid, &ed.player, sdl.screensize, "Debugging menu (F2)");
 	ed.toolbar_gui = init_gui(&sdl, &ed.hid, &ed.player, (t_point){5, 5}, "Toolbar (F1)");
@@ -221,7 +223,6 @@ int	editorloop(char *level, t_sdlcontext sdl)
 	ed.gamereturn = game_continue;
 	sdl.lighting_toggled = false;
 	ed.player.gun->entity->hidden = true;
-	//play_music(&sdl, "music_arp1_ambient.wav");
 	sdl.render.occlusion.occlusion = false;
 	sdl.fog = false;
 	while (ed.gamereturn == game_continue)

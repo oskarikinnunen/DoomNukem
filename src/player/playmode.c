@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:44:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 17:35:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 22:25:57 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,6 +155,48 @@ static void playmode_preprocess_world(t_world *world)
 	}
 }
 
+void	playmode_loading_screen_loop(char *loading_message, t_sdlcontext *sdl)
+{
+	SDL_Event	e;
+	playmode_loading_screen(loading_message, sdl);
+	while (1)
+	{
+		while (SDL_PollEvent(&e))
+		{
+			if (e.type == SDL_KEYDOWN || e.type == SDL_MOUSEBUTTONDOWN)
+			{
+				if (iskey(e, SDLK_ESCAPE))
+					exit(0);
+				else
+					return ;
+			}
+		}
+	} 
+}
+
+void	playmode_loading_screen(char *loading_message, t_sdlcontext *sdl)
+{
+	static int		first_time = 1;
+	static t_img	*loading_image;
+	TTF_Font		*temp;
+	int				len;
+
+	if (first_time)
+		loading_image = get_image_by_name(*sdl, "loading_screen");
+	draw_image(*sdl, point_zero(), *loading_image, (t_point){sdl->window_w, sdl->window_h});
+	if (loading_message != NULL)
+	{
+		len = ft_strlen(loading_message);
+		temp = sdl->font_default->size_default;
+		sdl->font_default->size_default = sdl->font_default->sizes[1];
+		print_text_boxed(sdl, loading_message, (t_point){((sdl->window_w / 2) - (len / 2 * (2 * FONT_SIZE_DEFAULT))), (sdl->window_h - (sdl->window_h / 5))});
+		sdl->font_default->size_default = temp;
+	}
+	ft_memcpy(sdl->window_surface->pixels, sdl->surface->pixels, sizeof(uint32_t) * sdl->window_w * sdl->window_h);
+	if (SDL_UpdateWindowSurface(sdl->window) < 0)
+		doomlog(LOG_EC_SDL_UPDATEWINDOWSURFACE, NULL);
+}
+
 // Resetlevel??
 /*setup and call gameloop*/
 int playmode(char *level, t_sdlcontext sdl)
@@ -166,6 +208,7 @@ int playmode(char *level, t_sdlcontext sdl)
 	// Locks mouse
 	if (SDL_SetRelativeMouseMode(SDL_TRUE) < 0)
 		doomlog(LOG_EC_SDL_SETRELATIVEMOUSEMODE, NULL);
+	playmode_loading_screen("LOADING WORLD", &sdl);
 	game.world = load_world(level, &sdl);
 	game.world.app_mode = APPMODE_PLAY;
 	create_navmesh(&game.world);
@@ -173,6 +216,9 @@ int playmode(char *level, t_sdlcontext sdl)
 	player_init(&game.player, &sdl, &game.world);
 	game.player.transform.position = find_playerspawn(&game.world);
 	sdl.fog = true;
+	//TODO: why if u press tab it locks the player angle?
+	// Also why is this loop the only one that shows on the window and not the previous loading screen calls?
+	playmode_loading_screen_loop("PRESS ANY KEY TO PLAY", &sdl);
 	gr = gameloop(sdl, game);
 	if (SDL_SetRelativeMouseMode(SDL_FALSE) < 0)
 		doomlog(LOG_EC_SDL_SETRELATIVEMOUSEMODE, NULL);

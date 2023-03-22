@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 19:18:57 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 22:22:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@
 # define TEMPANIMLEGEND "assets/temp/.temp_anim_legend"
 
 # define DEFAULTLEVEL "level0"
+# define LOADINGSCREENIMG "assets/images/tga/loading_screen.tga"
 
 # define TEXTBACKGROUND_BORDERPADDING 6
 # define PERFGRAPH_SAMPLES 64
@@ -184,8 +185,10 @@ void		entity_assign_object(t_world *world, t_entity *entity, t_object *obj);
 
 
 void		world_save_to_file(t_world world);
-void		_world_sanitize_all_room_pointers(t_world *world);
-void		_world_init_rooms(t_world *world);
+void		world_sanitize_all_room_pointers(t_world *world);
+void		world_remove_all_room_entities(t_world *world);
+void		world_init(t_world *world, t_sdlcontext *sdl);
+void		world_init_rooms(t_world *world);
 
 //TODO: move to room.h
 void		_room_initwalls(t_world *world, t_area *room);
@@ -203,7 +206,10 @@ typedef struct s_game
 
 
 t_app_argument	get_app_argument(int argc, char **argv);
-void			loading_screen_show(t_sdlcontext *sdl, char *loading_message);
+void			editor_loading_screen(char *loading_message, t_sdlcontext *sdl);
+void			playmode_loading_screen(char *loading_message, t_sdlcontext *sdl);
+void			playmode_loading_screen_loop(char *loading_message, t_sdlcontext *sdl);
+
 
 /* TOOLS */
 // Protected ft_memalloc that calls doomlog with error code in case of an error

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 16:14:07 by raho              #+#    #+#             */
-/*   Updated: 2023/03/03 18:30:42 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 21:12:21 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ typedef struct s_tga
 
 typedef struct s_img	t_img;
 
-t_img	tgaparse(char *filename);
+t_img	tga_parse(char *filename);
 void	save_header(int fd, char *filename, t_tga *tga);
 int		check_data_type(uint8_t data_type_code, char *filename);
 void	save_pixel_order(t_tga *tga);

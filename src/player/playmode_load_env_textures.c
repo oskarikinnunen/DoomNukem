@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:07:37 by raho              #+#    #+#             */
-/*   Updated: 2023/03/22 14:19:56 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 21:12:21 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static void	unpack_and_load_texture(int txtr_i, char *level_path,
 									char *env_texture, t_sdlcontext *sdl)
 {
 	load_and_write_filecontent(level_path, env_texture, TEMPIMGENV);
-	sdl->env_textures[txtr_i] = tgaparse(TEMPIMGENV);
+	sdl->env_textures[txtr_i] = tga_parse(TEMPIMGENV);
 	if (sdl->env_textures[txtr_i].data != NULL)
 		ft_strcpy(sdl->env_textures[txtr_i].name, \
 					extract_filename(env_texture));
