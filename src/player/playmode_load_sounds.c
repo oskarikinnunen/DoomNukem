@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 22:05:13 by raho              #+#    #+#             */
-/*   Updated: 2023/03/21 14:11:44 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 14:19:05 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,11 @@ static void	unpack_and_load_sound(int sample_i, char *level_path,
 	{
 		load_and_write_filecontent(level_path, sound_name, TEMPSOUNDLOOP);
 		create_sound(sample_i, TEMPSOUNDLOOP, audio);
-		remove(TEMPSOUNDLOOP);
 	}
 	else
 	{
 		load_and_write_filecontent(level_path, sound_name, TEMPSOUND);
 		create_sound(sample_i, TEMPSOUND, audio);
-		remove(TEMPSOUND);
 	}
 	if (audio->samples[sample_i].sound != NULL)
 		ft_strcpy(audio->samples[sample_i].name, extract_filename(sound_name));
@@ -76,5 +74,4 @@ void	playmode_load_sounds(char *level_path, t_audio *audio)
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_sounds");
 	fileclose(fd, TEMPSOUNDLIST);
-	remove(TEMPSOUNDLIST);
 }

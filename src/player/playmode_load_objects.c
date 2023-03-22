@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:32:20 by raho              #+#    #+#             */
-/*   Updated: 2023/03/21 12:43:46 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 14:19:31 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,8 +85,6 @@ static void	unpack_and_load_object(int obj_i, char *level_path,
 	listdel(&materials);
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
 			"unpacked and loaded .obj file:", sdl->objects[obj_i].name, NULL});
-	remove(TEMPOBJ);
-	remove(TEMPMTL);
 }
 
 static int	parse_object_list(int fd, char *level_path, t_sdlcontext *sdl)
@@ -128,5 +126,4 @@ void	playmode_load_objects(char *level_path, t_sdlcontext *sdl)
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_objects");
 	fileclose(fd, TEMPOBJLIST);
-	remove(TEMPOBJLIST);
 }

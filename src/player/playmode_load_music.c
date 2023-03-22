@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 22:05:25 by raho              #+#    #+#             */
-/*   Updated: 2023/03/21 14:09:16 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 14:19:40 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ static void	unpack_and_load_music(int music_i, char *level_path,
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
 			"unpacked and loaded music file:", \
 			audio->music[music_i].name, NULL});
-	remove(TEMPMUSIC);
 }
 
 static int	parse_music_list(int fd, char *level_path, t_audio *audio)
@@ -66,5 +65,4 @@ void	playmode_load_music(char *level_path, t_audio *audio)
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_music");
 	fileclose(fd, TEMPMUSICLIST);
-	remove(TEMPMUSICLIST);
 }

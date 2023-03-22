@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 17:49:29 by raho              #+#    #+#             */
-/*   Updated: 2023/03/20 17:26:52 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 14:27:55 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ static void	unpack_and_load_anim(char *level_path, char *anim_path,
 	parse_anim(TEMPANIM, anim_name, object);
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
 			"unpacked and loaded anim:", extract_filename(anim_path), NULL});
-	remove(TEMPANIM);
 }
 
 static int	parse_anim_list(int fd, char *level_path,
@@ -64,5 +63,4 @@ void	playmode_load_anims(char *level_path,
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_anims");
 	fileclose(fd, TEMPANIMLIST);
-	remove(TEMPANIMLIST);
 }

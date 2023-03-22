@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 20:09:06 by raho              #+#    #+#             */
-/*   Updated: 2023/03/20 17:58:27 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 14:18:19 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,5 +73,4 @@ void	playmode_load_anim_legend(char *level_path, t_sdlcontext *sdl)
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_anim_legend");
 	fileclose(fd, ANIMLEGENDPATH);
-	remove(TEMPANIMLEGEND);
 }

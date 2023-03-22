@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:01:27 by raho              #+#    #+#             */
-/*   Updated: 2023/03/20 17:26:34 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 14:19:50 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ static void	unpack_and_load_image(int img_i, char *level_path,
 		ft_strcpy(sdl->images[img_i].name, extract_filename(image_name));
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
 			"unpacked and loaded .tga file:", sdl->images[img_i].name, NULL});
-	remove(TEMPIMG);
 }
 
 static int	parse_image_list(int fd, char *level_path, t_sdlcontext *sdl)
@@ -65,5 +64,4 @@ void	playmode_load_images(char *level_path, t_sdlcontext *sdl)
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_images");
 	fileclose(fd, TEMPIMGLIST);
-	remove(TEMPIMGLIST);
 }
