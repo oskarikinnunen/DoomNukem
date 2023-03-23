@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_light.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/21 14:28:18 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 21:17:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,7 +237,7 @@ void	comp_light_allocate(t_entity *entity, t_world *world)
 	light->cubemap.resolution.x = 2000;
 	light->cubemap.resolution.y = 2000;
 	light->ignoreself = false;
-	light->clr = INT_MAX;
+	light->clr = AMBER_3;
 	light->intensity = 1.0f;
 	light->origin = (t_vector3){0.0f, -25.0f, -10.0f};
 }

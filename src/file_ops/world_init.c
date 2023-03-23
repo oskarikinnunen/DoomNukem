@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 20:55:23 by raho              #+#    #+#             */
-/*   Updated: 2023/03/23 17:27:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 19:53:13 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,5 @@ void	world_init(t_world *world, t_sdlcontext *sdl)
 	world->entitycache = entitycache_empty(2048);
 	world->nav.clip_size = 250.0f;
 	world->debug_gui = prot_memalloc(sizeof(t_autogui));
-	printf("debug gui malloc succeed\n");
 	ft_strcpy(world->name, DEFAULTLEVEL);
 }

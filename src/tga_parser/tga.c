@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 16:12:58 by raho              #+#    #+#             */
-/*   Updated: 2023/03/23 18:01:24 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 21:26:20 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,13 +67,8 @@ void	check_transparency(t_img *img)
 			if (((img->data[p.x + (p.y * img->size.x)] >> 24) & 0xFF) != 255)
 			{
 				if (!img->transparency)
-				{
-					printf("found transparency in img \n");
 					img->transparency = true;
-				}
-				
 			}
-				
 			p.x++;
 		}
 		p.y++;
@@ -99,11 +94,11 @@ static t_img	tga_to_simpleimg(char *file_name, t_tga *tga)
 	i = 0;
 	while (i < img.length)
 	{
-		/*if (!img.transparency)
+		if (!img.transparency)
 			img.data[i] = flip_alpha(tga->image_data.pixels[i]);
-		else*/
-		//img.data[i] = tga->image_data.pixels[i];
-		img.data[i] = flip_alpha(tga->image_data.pixels[i]);
+		else
+			img.data[i] = tga->image_data.pixels[i];
+		//img.data[i] = flip_alpha(tga->image_data.pixels[i]);
 		i++;
 	}
 	

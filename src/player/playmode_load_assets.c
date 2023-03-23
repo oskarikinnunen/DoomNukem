@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 19:48:48 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 21:39:35 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ void	playmode_load_assets(char *level_name, t_sdlcontext *sdl)
 	objects_init(sdl);
 	human = get_object_by_name(*sdl, "Human.obj");
 	playmode_loading_screen("LOADING ANIMATIONS", sdl);
-	playmode_load_anims(fd, "anim", human);
-	playmode_load_anim_legend(fd, sdl);
+	//playmode_load_anims(level_path, "anim", human);
+	//playmode_load_anim_legend(level_path, sdl);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 		"loaded", s_itoa(sdl->human_anim_count), "animations:", NULL});
 	i = 0;

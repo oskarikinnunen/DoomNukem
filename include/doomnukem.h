@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 19:41:21 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 21:39:17 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@
 # define TEMPANIMLEGEND "assets/temp/.temp_anim_legend"
 
 # define DEFAULTLEVEL "level0"
-# define LOADINGSCREENIMG "assets/images/tga/loading_screen.tga"
+# define LOADINGSCREENIMG "assets/images/tga/loading_screen2.tga"
 
 # define TEXTBACKGROUND_BORDERPADDING 6
 # define PERFGRAPH_SAMPLES 64

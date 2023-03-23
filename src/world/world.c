@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 16:10:08 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 21:15:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,15 @@
 #include "objects.h"
 #include "editor_tools.h"
 
-void	lateupdate_entitycache(t_sdlcontext *sdl, t_world *world)
+void lateupdate_entitycache(t_sdlcontext *sdl, t_world *world)
 {
-	int			i;
-	int			found;
-	t_entity	*ent;
+	int i;
+	int found;
+	t_entity *ent;
 
 	i = 0;
 	found = 0;
-	while (found < world->entitycache.existing_entitycount
-		&& i < world->entitycache.alloc_count)
+	while (found < world->entitycache.existing_entitycount && i < world->entitycache.alloc_count)
 	{
 		ent = world->entitycache.sorted_entities[i];
 		if (ent->status != es_free)
@@ -37,11 +36,11 @@ void	lateupdate_entitycache(t_sdlcontext *sdl, t_world *world)
 	}
 }
 
-void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
+void update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 {
-	int			i;
-	int			found;
-	t_entity	*ent;
+	int i;
+	int found;
+	t_entity *ent;
 
 	i = 0;
 	found = 0;
@@ -65,13 +64,13 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 	sdl->render.occlusion.slow_render = false;
 }
 
-static void	sort_entitycache(t_world *world, t_vector3 location)
+static void sort_entitycache(t_world *world, t_vector3 location)
 {
-	int			i;
-	t_entity	*key;
-	int			j;
-	int			found;
-	t_entity	*ent;
+	int i;
+	t_entity *key;
+	int j;
+	int found;
+	t_entity *ent;
 	int e;
 
 	i = 0;
@@ -96,8 +95,8 @@ static void	sort_entitycache(t_world *world, t_vector3 location)
 	}
 }
 
-static void	world_update_debug_gui(t_world *world,
-								t_sdlcontext *sdl, t_render *render)
+static void world_update_debug_gui(t_world *world,
+								   t_sdlcontext *sdl, t_render *render)
 {
 	gui_start(world->debug_gui);
 	if (gui_shortcut_button("Toggle noclip", 'F', world->debug_gui))
@@ -105,14 +104,18 @@ static void	world_update_debug_gui(t_world *world,
 	if (gui_shortcut_button("Show navmesh:", 'N', world->debug_gui))
 		world->nav.show_navmesh = !world->nav.show_navmesh;
 	gui_labeled_float_slider("Navigation node size: ",
-		&world->nav.clip_size, 10.0f, world->debug_gui);
+							 &world->nav.clip_size, 10.0f, world->debug_gui);
 	if (gui_shortcut_button("Create navmesh:", 'C', world->debug_gui))
 		create_navmesh(world);
-	if (gui_shortcut_button("Toggle Lighting", 'L', world->debug_gui))
+	if (gui_shortcut_button("Toggle Lighting", 'l', world->debug_gui))
+	{
+		//sdl->
+		printf("toggle lighting wtf\n");
 		sdl->lighting_toggled = !sdl->lighting_toggled;
+	}
+		
 	if (gui_shortcut_button("Draw Occlusion Buffer", 'Y', world->debug_gui))
-		sdl->render.occlusion.draw_occlusion
-			= !sdl->render.occlusion.draw_occlusion;
+		sdl->render.occlusion.draw_occlusion = !sdl->render.occlusion.draw_occlusion;
 	if (gui_shortcut_button("Toggle Occlusion", 'O', world->debug_gui))
 		render->occlusion.occlusion = !render->occlusion.occlusion;
 	if (gui_shortcut_button("Toggle Occlusion boxes", 'P', world->debug_gui))
@@ -124,9 +127,9 @@ static void	world_update_debug_gui(t_world *world,
 	gui_end(world->debug_gui);
 }
 
-void	update_world3d(t_world *world, t_render *render)
+void update_world3d(t_world *world, t_render *render)
 {
-	t_sdlcontext	*sdl;
+	t_sdlcontext *sdl;
 
 	sdl = world->sdl;
 	for_all_active_entities(world, render_entity_worldtriangles);

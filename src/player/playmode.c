@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:44:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 21:24:52 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 21:39:45 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,5 +217,6 @@ void	playmode(char *level, t_sdlcontext sdl)
 	playmode_loading_screen_loop("PRESS ANY KEY TO PLAY", &sdl);
 	if (SDL_SetRelativeMouseMode(SDL_TRUE) < 0)
 		doomlog(LOG_EC_SDL_SETRELATIVEMOUSEMODE, NULL);
+	*(game.world.debug_gui) = init_gui(&sdl, &game.hid, &game.player, sdl.screensize, "Debugging menu (F2)");
 	gameloop(sdl, game);
 }

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 14:52:25 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/17 18:56:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 19:28:26 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,15 +184,11 @@ void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	t_entity		*ent;
 
 	ent = dat->raycastinfo.hit_entity;
-
 	gui = &dat->paint_gui;
 	gui_start(gui);
 	if (gui_shortcut_button("Copy texture", 'C', gui)
-		&& ent != NULL && ent->rigid)
-	{
+		&& ent != NULL && ent->rigid && ent->obj != NULL)
 		img_index = get_image_index(sdl, ent->obj->materials->img, img_index);
-	}
-
 	gui_end(gui);
 	int	delt;
 	delt = 0;

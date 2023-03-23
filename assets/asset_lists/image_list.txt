@@ -4,6 +4,7 @@ assets/images/tga/light_icon.tga
 assets/images/tga/wall_concrete.tga
 assets/images/tga/wood02.tga
 assets/images/tga/loading_screen.tga
+assets/images/tga/loading_screen2.tga
 assets/images/tga/audio_on_icon.tga
 assets/images/tga/welrod2.tga
 assets/images/tga/skybox3.tga

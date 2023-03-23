@@ -15,6 +15,7 @@ assets/images/tga/env/metal_weave2.tga
 assets/images/tga/env/stone02.tga
 assets/images/tga/env/metal03.tga
 assets/images/tga/env/tile1.tga
+assets/images/tga/env/glass.tga
 assets/images/tga/env/tile_floor.tga
 assets/images/tga/env/brick1.tga
 assets/images/tga/env/brick2.tga
