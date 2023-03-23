@@ -1,30 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   bake_lighting.c                                    :+:      :+:    :+:   */
+/*   vector2_round.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/15 16:00:29 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/22 16:55:52 by vlaine           ###   ########.fr       */
+/*   Created: 2023/03/21 16:37:29 by vlaine            #+#    #+#             */
+/*   Updated: 2023/03/21 16:40:11 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "doomnukem.h"
-/*
-calculate lighting camera buffers for all lights
+#include "vectors.h"
 
-allocate space for maps for all entities
-
-calculate lighting maps for all entities
-
-combine lightmap value with img to get texture for all entities
-*/
-
-void	recalculate_lighting(t_world *world)
+t_vector2	vector2_ceilf(t_vector2 v)
 {
-	recalculate_pointlight(world);
-	allocate_map_for_entities(world);
-	calculate_lighting(world);
-	calculate_texture_for_entities(world);
+	v.x = ceilf(v.x);
+	v.y = ceilf(v.y);
+	return (v);
+}
+
+t_vector2	vector2_floorf(t_vector2 v)
+{
+	v.x = floorf(v.x);
+	v.y = floorf(v.y);
+	return (v);
+}
+
+t_vector2	vector2_roundf(t_vector2 v)
+{
+	v.x = roundf(v.x);
+	v.y = roundf(v.y);
+	return (v);
+}
+
+t_vector2	vector2_truncf(t_vector2 v)
+{
+	v.x = truncf(v.x);
+	v.y = truncf(v.y);
+	return (v);
 }

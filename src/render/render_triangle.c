@@ -3,22 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   render_triangle.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/20 16:54:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 20:39:33 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "bresenham.h"
 
-void render_buffer_triangles(t_sdlcontext *sdl, t_render *render)
+static void unlit_render(t_sdlcontext *sdl, t_render *render)
 {
 	int index;
 
 	index = 0;
-	if (render->lightmode == lm_unlit || !sdl->lighting_toggled)
+	if (render->img->transparency && 0)
+	{
+		while (index < render->screenspace_ptri_count)
+		{
+			render_triangle_transparent(sdl, render, index);
+			index++;
+		}
+	}
+	else
 	{
 		while (index < render->screenspace_ptri_count)
 		{
@@ -26,6 +34,15 @@ void render_buffer_triangles(t_sdlcontext *sdl, t_render *render)
 			index++;
 		}
 	}
+}
+
+void render_buffer_triangles(t_sdlcontext *sdl, t_render *render)
+{
+	int index;
+
+	index = 0;
+	if (render->lightmode == lm_unlit || !sdl->lighting_toggled)
+		unlit_render(sdl, render);
 	else if (render->lightmode == lm_lit)
 	{
 		while (index < render->screenspace_ptri_count)

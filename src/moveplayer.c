@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 19:32:48 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 15:23:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -318,9 +318,9 @@ void	moveplayer(t_player *player, t_input *input, t_world *world)
 	player->gun->entity->transform.parent = &player->head_transform;
 	player_raycast(player, world);
 	player->input = *input;
-	if ((player->input.nextgun || player->input.prevgun)
+	/*if ((player->input.nextgun || player->input.prevgun)
 		&& !player->gun->reload_anim.active && world->app_mode == APPMODE_PLAY)
-		player_changegun(player);
+		player_changegun(player);*/
 	if (world->app_mode == APPMODE_PLAY)
 		updateguntransform(player, world);
 	if (!player->locked)

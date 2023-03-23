@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   rasterize_triangle_wrap.c                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/15 15:59:32 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/22 20:05:28 by vlaine           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "doomnukem.h"
 
@@ -21,14 +10,12 @@ inline static uint32_t sample_img_dynamic(t_render *render, uint32_t xsample, ui
 
 inline static void scanline(int start, int end, int y, t_point_triangle triangle, t_sdlcontext *sdl)
 {
+	uint32_t	clr;
 	t_vector3	tex;
-	float		dist;
 	t_stepv3	slope;
 	int			x;
 	float		index;
 
-
-	//printf("start: %i end: %i\n", start, end);
 	slope = make_uv_slopev3(start, end, y, triangle);
 	x = start;
 	index = 0.5f;
@@ -39,14 +26,13 @@ inline static void scanline(int start, int end, int y, t_point_triangle triangle
 		{
 			tex.x = slope.location.x + index * slope.step.x;
 			tex.y = slope.location.y + index * slope.step.y;
-			sdl->zbuffer[x + y * sdl->window_w] = tex.z;
+			clr = sample_img_dynamic(&sdl->render, tex.x / tex.z, tex.y / tex.z);
 			((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] =
-				sample_img_dynamic(&sdl->render, tex.x / tex.z, tex.y / tex.z);
+				blend_colors_alpha(((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w], clr, ((clr >> 24) & 0xFF));
 		}
 		index += 1.0f;
 		x++;
 	}
-	render_bitmask_row(start, end, 1.0f / slope.location.z, 1.0f / tex.z, y, sdl);
 }
 
 inline static void render_flat_top_tri(t_sdlcontext *sdl, t_point_triangle triangle)
@@ -101,7 +87,7 @@ inline static void render_flat_bot_tri(t_sdlcontext *sdl, t_point_triangle trian
 	}
 }
 
-void	render_triangle_unlit(t_sdlcontext *sdl, t_render *render, int index)
+void	render_triangle_transparent(t_sdlcontext *sdl, t_render *render, int index)
 {
 	t_point_triangle	triangle;
 	t_point_triangle	tris[2];

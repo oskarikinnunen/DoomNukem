@@ -11,6 +11,7 @@ typedef struct s_raycastinfo
 {
 	struct s_entity	*hit_entity;
 	t_vector3		hit_pos;
+	t_vector3		face_normal;
 	float			distance;
 }	t_raycastinfo;
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_entity.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/21 17:36:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 20:09:48 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ void render_entity_worldtriangles(t_entity *entity, t_world *world)
 	if (entity->obj == NULL)
 		return ;
 	render = &world->sdl->render;
-	render_worldspace(render, entity);
+	if (render_worldspace(render, entity) == false)
+		return;
 	i = 0;
 	while (i < obj->face_count)
 	{
@@ -67,6 +68,9 @@ void render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 		render->screen_edge.min = point_to_vector2(entity->occlusion.clip.min);
 		render->screen_edge.max = point_to_vector2(entity->occlusion.clip.max);
 	}
+	render->screen_edge.max.x = (float)(sdl->window_w * sdl->resolution_scaling) - 1.0f;
+	render->screen_edge.max.y = (float)(sdl->window_h * sdl->resolution_scaling) - 1.0f;
+	render->screen_edge.min = vector2_zero();
 	render_quaternions(sdl, render, entity);
 }
 

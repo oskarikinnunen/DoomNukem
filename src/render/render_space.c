@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 15:36:10 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/22 19:56:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 15:35:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ inline static void	update_bounds_world_triangles(t_entity *entity, t_mat4x4 matw
 		update_world_triangle_ignore(transformed, entity->occlusion.world_tri);
 }
 
-void render_worldspace(t_render *render, t_entity *entity)
+bool render_worldspace(t_render *render, t_entity *entity)
 {
 	t_object *obj;
 	int index;
@@ -87,8 +87,9 @@ void render_worldspace(t_render *render, t_entity *entity)
 
 	obj = entity->obj;
 	if (obj == NULL) // TODO: Is this needed?
-		return;
-	matworld = make_transform_matrix(entity->transform);
+		return(false);
+//	matworld = make_transform_matrix(entity->transform);
+	entity->matworld = matworld;
 	index = 0;
 	while (index < obj->vertice_count)
 	{
@@ -99,7 +100,8 @@ void render_worldspace(t_render *render, t_entity *entity)
 		render->q[index] = transformed_vector3(entity->transform, render->q[index].v);
 		index++;
 	}
-	update_bounds_world_triangles(entity, matworld);
+	//update_bounds_world_triangles(entity, matworld);
+	return(true);
 }
 
 t_triangle triangle_to_viewspace(t_triangle tritransformed, t_mat4x4 matview)
@@ -114,24 +116,13 @@ t_triangle triangle_to_viewspace(t_triangle tritransformed, t_mat4x4 matview)
 	return (tritransformed);
 }
 
-static t_vector3	normal_calc(t_triangle tritransformed)
-{
-	t_vector3 normal, line1, line2;
-
-	line1 = vector3_sub(tritransformed.p[1].v, tritransformed.p[0].v);
-	line2 = vector3_sub(tritransformed.p[2].v, tritransformed.p[0].v);
-	normal = vector3_crossproduct(line1, line2);
-	normal = vector3_normalise(normal);
-
-	return (normal);
-}
-
 bool is_triangle_backface(t_triangle tritransformed, t_render *render)
 {
+	return(false);
 	t_vector3 normal;
 	t_vector3 vcameraray;
 
-	normal = normal_calc(tritransformed);
+	normal = normal_calc_quaternion(tritransformed.p);
 	vcameraray = vector3_sub(tritransformed.p[0].v, render->camera.position);
 	if (vector3_dot(normal, vcameraray) < 0.0f || 1)
 		return (false);
@@ -144,7 +135,7 @@ t_point_triangle triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_tria
 	t_triangle triprojected;
 	t_point_triangle tri;
 	int i;
-	t_vector3 voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
+	const t_vector3 voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
 
 	i = 0;
 	while (i < 3)
@@ -182,7 +173,7 @@ void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 	int				i;
 	int				index;
 
-	if (entity->world_triangles == NULL || entity->obj == NULL)
+	if (entity->world_triangles == NULL || entity->obj == NULL || entity->hidden)
 	{
 		//doomlog(LOG_WARNING, "entity->worldtriangles == null in render_quaternions\n!	printing entity->object_name.str and entity->obj->name");
 		//doomlog(LOG_WARNING, entity->object_name.str);

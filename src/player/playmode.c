@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:44:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 17:35:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 19:12:25 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,10 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 	game.world.player = &game.player;
 	protagonist_play_audio(&game.player, &game.world, "protag_letsdo.wav");
 	play_music(&sdl, "music_arp1_ambient.wav");
-	/* //LIGHTING
+	// LIGHTING
 	for_all_active_entities(&game.world, render_entity_worldtriangles);
 	recalculate_lighting(&game.world);
-	sdl.lighting_toggled = true;*/
-	
+	sdl.lighting_toggled = true;
 	while (gr == game_continue)
 	{
 		if (game.player.health > 0)

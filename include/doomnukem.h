@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 14:49:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 20:19:43 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,9 @@
 # include "input.h"
 # include "debug.h"
 # include "navigation.h"
-# include <pthread.h>
 # include <SDL_thread.h>
+# include "thread.h"
+# include "decal.h"
 
 # define PI	3.14159265359
 # define FULLRAD M_PI * 2.0
@@ -357,15 +358,14 @@ void	set_nullentities(t_wall **ptr, int count);
 //TODO: temp for lights
 void	recalculate_lighting(t_world *world);
 void	recalculate_pointlight(t_world *world);
-void	rasterize_zbuffer(t_lighting *lighting, t_point_triangle triangle);
-
-void	bake_lighting(t_render *render, t_world *world);
-void	bake_lighting_shadows(t_render *render, t_world *world);
-void	render_entity_depth_buffer(t_sdlcontext sdl, t_render *render, t_entity *entity);
-void	update_arealights_for_entity(t_sdlcontext sdl, t_render *render, t_entity *entity);
-void	update_pointlight_for_entity(t_sdlcontext sdl, t_render *render, t_entity *entity);
+void	allocate_map_for_entities(t_world *world);
+void	calculate_lighting(struct s_world *world);
+void	calculate_texture_for_entities(struct s_world *world);
 
 void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render);
+
+bool	entity_has_transparent_mat(t_entity *entity);
+void	update_transparent(t_sdlcontext *sdl, t_world *world, t_render *render);
 //
 
 //Pathfind

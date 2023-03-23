@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 13:35:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 15:22:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,3 +117,19 @@ int	main(int argc, char **argv)
 	}
 	return (0);
 }
+
+/*
+t_img *ptr;
+	t_thread test;
+	test.structs = malloc(sizeof(t_img) * THREAD);
+	test.struct_size = sizeof(t_img);
+	for (int i = 0; i < THREAD; i++)
+	{
+		ptr = &(((t_img *)test.structs)[i]);
+		ptr->size.x = i;
+	}
+	test.func = temp_remove;
+	test.init = init_remove;
+	thread_set(&test);
+	exit(0);
+	*/
