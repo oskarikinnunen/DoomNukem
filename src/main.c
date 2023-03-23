@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 15:32:33 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 15:37:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	set_sdl_settings(t_sdlcontext *sdl)
 	t_graphicprefs	prefs;
 
 	free_sdl_stuff(sdl);
-	ft_bzero(sdl, sizeof(sdl)); //WHY DOES THIS WORK... this resets asset pointers aswell??
+	//ft_bzero(sdl, sizeof(sdl)); //WHY DOES THIS WORK... this resets asset pointers aswell??
 	prefs = load_graphicsprefs(); //TODO: load before this and just pass prefs set_sdl_settings
 	sdl->window_w = prefs.resolution_x;
 	sdl->window_h = prefs.resolution_y;

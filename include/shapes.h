@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 13:54:56 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/21 17:36:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 19:03:10 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,10 @@ typedef struct s_point_triangle
 	uint32_t		clr;
 }	t_point_triangle;
 
-typedef struct s_edge
+typedef struct s_line
 {
-	t_vector3	v[2];
-}	t_edge;
+	t_vector2	start;
+	t_vector2	end;
+}	t_line;
 
 # endif

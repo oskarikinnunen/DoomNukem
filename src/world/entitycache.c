@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 11:13:16 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 17:36:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 17:24:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ t_entity	*spawn_entity(t_world *world, t_object *obj)
 			ft_bzero(&cache->entities[i].component, sizeof(t_component));
 			entity_assign_object(world, &cache->entities[i], obj);
 			cache->existing_entitycount++;
-			if (cache->existing_entitycount >= cache->alloc_count)
-				doomlog(LOG_EC_MALLOC, NULL);
+			if (cache->existing_entitycount >= cache->alloc_count) 
+				doomlog(LOG_EC_MALLOC, "Too many entities, increase cache size!");
 			return (&cache->entities[i]);
 		}
 		i++;

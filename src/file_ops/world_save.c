@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world_save.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 13:57:45 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 21:56:11 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 17:44:01 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,8 @@ static void	pack_assets2(t_sdlcontext *sdl, char *level_path,
 	pack_file_to_level(level_path, ANIMLEGENDPATH);
 }
 
+int global_removed;
+
 void	world_save_to_file(t_world world)
 {
 	char	level_path[256];
@@ -115,6 +117,7 @@ void	world_save_to_file(t_world world)
 	if (surface_cache == NULL)
 		doomlog(LOG_EC_MALLOC, "world_save_to_file");
 	print_saving_message("SAVING AREAS, ENTITIES AND ROOMS", world.sdl);
+	global_removed = 0;
 	world_save_amap(level_path, world);
 	world_save_basic_ent(level_path, world);
 	world_init_rooms(&world);

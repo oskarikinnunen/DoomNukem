@@ -119,7 +119,8 @@ typedef struct	s_storyevent
 }	t_storyevent;
 typedef struct	s_boutton
 {
-	float	dist;
+	bool	can_interact;
+	uint32_t	last_interact_time;
 }	t_boutton;
 /*STRUCTDEF END, DONT REMOVE SINCE THE CREATECOMPONENT SCRIPT DEPENDS ON THIS*/
 

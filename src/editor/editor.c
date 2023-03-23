@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 15:32:40 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 15:37:34 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ void	update_editor_lateguis(t_editor *ed) //TODO: make this graphics_settings_gu
 			prefs.resolution_x = resolutions[i].x;
 			prefs.resolution_y = resolutions[i].y;
 			apply_graphics_prefs(prefs);
-			set_sdl_settings(ed->world.sdl);
+			//set_sdl_settings(ed->world.sdl);
 		}
 		free(str);
 		i++;

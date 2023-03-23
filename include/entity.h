@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 19:08:51 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 15:21:53 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ typedef struct s_entity
 	bool			ignore_raycasts;
 	bool			rigid;
 	bool			hidden;
+	bool			dont_save;
 	t_entitystatus	status;
 	t_bound			z_bound;
 	t_anim			animation;

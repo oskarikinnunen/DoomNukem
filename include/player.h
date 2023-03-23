@@ -3,6 +3,7 @@
 
 #include "entity.h"
 #include "input.h"
+#include "raycast.h"
 
 #define MAXHEALTH	200
 
@@ -53,6 +54,7 @@ typedef struct s_player
 	uint8_t				gun_selection;
 	uint8_t				ammo_arr[4];
 	t_gui_notification	gui_notif;
+	t_raycastinfo		raycastinfo;
 	uint8_t				gun_ammos[GUNPRESETCOUNT];
 	t_gun				guns[GUNPRESETCOUNT];
 	float				height;

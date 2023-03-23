@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 19:11:31 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 15:23:34 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "tools/entitytool.h" 
 #include "objects.h"
+#include "raycast.h"
 
 void	findbounds(t_entity *ent)
 {
@@ -111,7 +112,7 @@ void	entity_tool_raycast(t_editor *ed, t_sdlcontext *sdl,
 	ray.origin = ed->player.headposition;
 	ray.dir = ed->player.lookdir;
 	bzero(&dat->info, sizeof(t_raycastinfo));
-	if (raycast_new(ray, &dat->info, &ed->world))
+	if (raycast(ray, &dat->info, &ed->world))
 	{
 		if (dat->info.hit_entity != NULL
 			&& !dat->info.hit_entity->rigid)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prot_memalloc.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 12:48:23 by raho              #+#    #+#             */
-/*   Updated: 2023/03/20 12:51:58 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 17:12:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	*prot_memalloc(size_t size)
 	void	*new;
 
 	new = ft_memalloc(size);
-	if (new == NULL)
+	if (new == NULL && size != 0)
 		doomlog(LOG_EC_MALLOC, NULL);
 	return (new);
 }

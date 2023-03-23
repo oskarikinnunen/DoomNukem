@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 17:08:01 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 14:39:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 19:26:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "editor_tools.h"
 #include "doomnukem.h"
 #include "objects.h"
+#include "raycast.h"
 
 bool	area_has_wall_entity(t_entity *entity, t_area *area)
 {
@@ -87,5 +88,5 @@ void	room_tool_raycast(t_editor *ed, t_roomtooldata *dat)
 	ray.origin = ed->player.headposition;
 	ray.dir = ed->player.lookdir;
 	ft_bzero(&dat->raycastinfo, sizeof(t_raycastinfo));
-	raycast_new(ray, &dat->raycastinfo, &ed->world);
+	raycast(ray, &dat->raycastinfo, &ed->world);
 }

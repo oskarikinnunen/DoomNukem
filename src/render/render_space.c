@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_space.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 15:36:10 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/22 20:35:01 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 15:35:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ inline static void	update_world_triangle_ignore(t_quaternion *transformed, t_tri
 	world_triangles[0] = (t_triangle){.p[0] = transformed[0],.p[1] = transformed[1],.p[2] = transformed[2]};
 }
 
-inline static void update_bounds_world_triangles(t_entity *entity, t_mat4x4 matworld)
+inline static void	update_bounds_world_triangles(t_entity *entity, t_mat4x4 matworld)
 {
 	t_quaternion	transformed[8];
 	t_object		*obj;
@@ -173,7 +173,7 @@ void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 	int				i;
 	int				index;
 
-	if (entity->world_triangles == NULL || entity->obj == NULL)
+	if (entity->world_triangles == NULL || entity->obj == NULL || entity->hidden)
 	{
 		//doomlog(LOG_WARNING, "entity->worldtriangles == null in render_quaternions\n!	printing entity->object_name.str and entity->obj->name");
 		//doomlog(LOG_WARNING, entity->object_name.str);

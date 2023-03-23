@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world_load.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 14:55:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 21:58:58 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 17:34:21 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,5 +74,22 @@ t_world	load_world(char *level_name, t_sdlcontext *sdl)
 	ft_strcpy(world.name, level_name);
 	world_load_amap(level_path, &world);
 	world_load_basic_ent(level_path, &world);
+	int	i;
+	int	dest = 0;
+	i = 0;
+	t_object *obj;
+	obj = get_object_by_name(*sdl, "barrel.obj");
+	while (i < world.entitycache.alloc_count)
+	{
+		if (world.entitycache.entities[i].obj == obj
+			&& vector3_cmp(world.entitycache.entities[i].transform.position, vector3_zero()))
+			{
+				destroy_entity(&world, &world.entitycache.entities[i]);
+				dest++;
+			}
+			
+		i++;
+	}
+	printf("destroyed %i weird barrels\n", dest);
 	return (world);
 }

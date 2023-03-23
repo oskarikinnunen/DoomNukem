@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tga.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 16:12:58 by raho              #+#    #+#             */
-/*   Updated: 2023/03/22 21:12:21 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 18:01:24 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,34 @@ static int	load_tga(int fd, char *file_name, t_tga *tga)
 	return (1);
 }
 
+
+void	check_transparency(t_img *img)
+{
+	t_point	p;
+
+	p.y = 0;
+	img->transparency = false;
+	while (p.y < img->size.y)
+	{
+		p.x = 0;
+		while (p.x < img->size.x)
+		{
+			if (((img->data[p.x + (p.y * img->size.x)] >> 24) & 0xFF) != 255)
+			{
+				if (!img->transparency)
+				{
+					printf("found transparency in img \n");
+					img->transparency = true;
+				}
+				
+			}
+				
+			p.x++;
+		}
+		p.y++;
+	}
+}
+
 static t_img	tga_to_simpleimg(char *file_name, t_tga *tga)
 {
 	int		i;
@@ -63,19 +91,26 @@ static t_img	tga_to_simpleimg(char *file_name, t_tga *tga)
 	img.transparency = tga->transparency;
 	img.data = ft_memalloc(img.length * sizeof(uint32_t));
 	if (img.data == NULL)
+	{
+		printf("img data null???\n");
 		doomlog(LOG_EC_MALLOC, "tga_to_simpleimg");
+	}
+		
 	i = 0;
 	while (i < img.length)
 	{
-		if (!img.transparency)
+		/*if (!img.transparency)
 			img.data[i] = flip_alpha(tga->image_data.pixels[i]);
-		else
-			img.data[i] = tga->image_data.pixels[i];
+		else*/
+		//img.data[i] = tga->image_data.pixels[i];
+		img.data[i] = flip_alpha(tga->image_data.pixels[i]);
 		i++;
 	}
+	
 	if (tga->header.id_length != 0)
 		free(tga->image_data.image_id);
 	free(tga->image_data.pixels);
+	check_transparency(&img);
 	return (img);
 }
 

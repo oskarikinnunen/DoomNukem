@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world_save_basic_ent.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 20:01:34 by raho              #+#    #+#             */
-/*   Updated: 2023/03/22 20:45:07 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 18:09:19 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ static t_list	*entitycache_to_list(t_entitycache *cache)
 	entitylist = NULL;
 	while (found < cache->existing_entitycount && i < cache->alloc_count)
 	{
-		if (cache->entities[i].status != es_free)
+		if (cache->entities[i].status != es_free
+			&& cache->entities[i].dont_save == false)
 		{
 			cache->entities[i].id = found;
 			list_push(&entitylist, &cache->entities[i], sizeof(t_entity));

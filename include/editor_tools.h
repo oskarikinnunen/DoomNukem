@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 14:49:34 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 15:21:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 # include "render.h"
 # include "doomnukem.h"
 # include "collision.h"
-
 
 typedef enum e_point_tool_state
 {
@@ -176,19 +175,6 @@ t_tool				*get_npc_tool(void);
 t_tool				*get_load_tool(void);
 void				rendergrid(t_world *world, t_vector3 position, int size, uint32_t color);
 bool				rooms_share_zspace(t_area *room1, t_area *room2);
-
-typedef struct s_raycastinfo
-{
-	t_entity	*hit_entity;
-	t_vector3	face_normal;
-	t_vector3	hit_pos;
-	float		distance;
-}	t_raycastinfo;
-
-bool				raycast_new(t_ray r, t_raycastinfo *info, t_world *world);
-bool				raycast_plane(t_ray r, t_raycastinfo *info, float plane_z);
-bool				raycast_entity(t_ray r, t_raycastinfo *info, t_entity *entity);
-bool				raycast_tri(t_ray r, t_vector3_tri tri, float *dist);
 bool				entity_lookedat(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
 bool				triangle_lookedat(t_render r, t_triangle tri, t_sdlcontext sdl);
 int32_t				entity_lookedat_triangle_index(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
