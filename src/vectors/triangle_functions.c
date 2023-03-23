@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 16:37:35 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/22 16:55:46 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 18:45:59 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_vector2	get_max_vector2_from_vector3_triangle(t_vector2 max, t_vector3 t[3])
 			max.y = uv.y;
 		i++;
 	}
-	return(max);
+	return (max);
 }
 
 t_vector2	get_max_from_vector2_triangle(t_vector2 p[3])
@@ -43,7 +43,7 @@ t_vector2	get_max_from_vector2_triangle(t_vector2 p[3])
 		max.y = ft_max(max.y, p[i].y);
 		i++;
 	}
-	return(max);
+	return (max);
 }
 
 t_vector2	get_min_from_vector2_triangle(t_vector2 p[3])
@@ -59,10 +59,11 @@ t_vector2	get_min_from_vector2_triangle(t_vector2 p[3])
 		min.y = ft_min(min.y, p[i].y);
 		i++;
 	}
-	return(min);
+	return (min);
 }
 
 float	clockwise(t_vector2 p[3])
 {
-	return ((p[1].x - p[0].x) * (p[2].y - p[0].y) - (p[2].x - p[0].x) * (p[1].y - p[0].y));
+	return ((p[1].x - p[0].x) * (p[2].y - p[0].y) - \
+	(p[2].x - p[0].x) * (p[1].y - p[0].y));
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wall_tool_rooms.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 18:40:50 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 19:17:56 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,10 +244,9 @@ bool	checkroomnormal(t_floorcalc *fc)
 
 bool	points_collide(t_floorcalc *fc, t_vector2 tri[3])
 {
-	int	i;
-
-	t_triangle	t;
-	t_point		p;
+	int					i;
+	t_world_triangle	t;
+	t_point				p;
 
 	t.p[0].v = v2tov3(tri[0]);
 	t.p[1].v = v2tov3(tri[1]);

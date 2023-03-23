@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 21:15:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 21:56:30 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,7 @@ void update_world3d(t_world *world, t_render *render)
 	t_sdlcontext *sdl;
 
 	sdl = world->sdl;
-	for_all_active_entities(world, render_entity_worldtriangles);
+	for_all_active_entities(world, calculate_triangles_for_entity);
 	render_start_new(sdl, world->player);
 	clear_occlusion_buffer(sdl);
 	update_frustrum_culling(world, sdl, render);

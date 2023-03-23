@@ -15,7 +15,7 @@ void calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity)
 		render->end_index = 11;
 	else
 		render->end_index = 2;
-	clipped_point_triangle(render, sdl);
+	render_world_triangle_buffer_to_screen_triangle(render, sdl);
 }
 
 void clear_occlusion_buffer(t_sdlcontext *sdl)

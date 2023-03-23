@@ -6,70 +6,20 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:02:10 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/22 16:47:02 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 19:27:23 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-static int	screen_edge_clip(t_point_triangle *buff, int side,
-t_v2rectangle screen_edge, t_point_triangle triangle)
-{
-	int	tricount;
-
-	if (side == 0)
-		tricount = point_clip_triangle_against_plane(screen_edge.min, \
-		(t_vector2){0.0f, 1.0f}, triangle, buff);
-	else if (side == 1)
-		tricount = point_clip_triangle_against_plane(screen_edge.max, \
-		(t_vector2){0.0f, -1.0f}, triangle, buff);
-	else if (side == 2)
-		tricount = point_clip_triangle_against_plane(screen_edge.min, \
-		(t_vector2){1.0f, 0.0f}, triangle, buff);
-	else
-		tricount = point_clip_triangle_against_plane(screen_edge.max, \
-		(t_vector2){-1.0f, 0.0f}, triangle, buff);
-	return (tricount);
-}
-
-static t_point	clip_triangle(t_point_triangle *triangles,
-t_v2rectangle screen_edge)
-{
-	t_point_triangle	clipped[2];
-	t_point				start_end;
-	int					p;
-	int					nnewtriangles;
-	int					ntristoadd;
-
-	start_end = (t_point){0, 1};
-	nnewtriangles = 1;
-	p = 0;
-	while (p < 4)
-	{
-		ntristoadd = 0;
-		while (nnewtriangles > 0)
-		{
-			nnewtriangles--;
-			ntristoadd = screen_edge_clip(
-					clipped, p, screen_edge, triangles[start_end.x++]);
-			ft_memcpy(&triangles[start_end.y], clipped,
-				ntristoadd * sizeof(t_point_triangle));
-			start_end.y += ntristoadd;
-		}
-		nnewtriangles = start_end.y - start_end.x;
-		p++;
-	}
-	return (start_end);
-}
-
 static void	clip_and_render_triangle(
-	t_lighting *lighting, t_point_triangle triangle)
+	t_lighting *lighting, t_screen_triangle triangle)
 {
-	t_point_triangle	triangles[32];
+	t_screen_triangle	triangles[32];
 	t_point				start_end;
 
 	triangles[0] = triangle;
-	start_end = clip_triangle(triangles, lighting->screen_edge);
+	start_end = clip_screen_triangle_against_screen_edge(triangles, lighting->screen_edge);
 	while (start_end.x < start_end.y)
 	{
 		lighting->triangle = triangles[start_end.x];
@@ -78,11 +28,11 @@ static void	clip_and_render_triangle(
 	}
 }
 
-t_point_triangle	triangle_to_screen_point_triangle(
-	t_mat4x4 matproj, t_triangle clipped, t_vector2 size)
+t_screen_triangle	triangle_to_screen_point_triangle(
+	t_mat4x4 matproj, t_world_triangle clipped, t_vector2 size)
 {
-	t_triangle			triprojected;
-	t_point_triangle	tri;
+	t_world_triangle			triprojected;
+	t_screen_triangle	tri;
 	int					i;
 	const t_vector3		voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
 
@@ -100,14 +50,13 @@ t_point_triangle	triangle_to_screen_point_triangle(
 		tri.p[i].y = triprojected.p[i].v.y * (size.y * 0.5f);
 		i++;
 	}
-	tri.clr = clipped.clr;
 	return (tri);
 }
 
 void	render_zbuffer(t_lighting *l, t_entity *entity)
 {
-	t_triangle		clipped[2];
-	t_triangle		world_triangle;
+	t_world_triangle		clipped[2];
+	t_world_triangle		world_triangle;
 	int				nclippedtriangles;
 	int				index;
 	int				i;

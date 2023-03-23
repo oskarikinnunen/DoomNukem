@@ -6,15 +6,15 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:00:06 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/15 16:00:07 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 18:47:03 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-t_point_triangle	ps1(t_point_triangle in, int div)
+t_screen_triangle	ps1(t_screen_triangle in, int div)
 {
-	t_point_triangle	res;
+	t_screen_triangle	res;
 
 	res = in;
 	res.p[0] = vector2_div(res.p[0], div);
@@ -47,7 +47,7 @@ void ft_swap(void * a, void * b, size_t len)
 	}
 }
 
-void	sort_point_uv_tri(t_vector2 *p, t_vector3 *t)
+void	sort_vector2_vector3_by_vector2_height(t_vector2 *p, t_vector3 *t)
 {
 	int			s_x;
 	int			s_j;
@@ -77,9 +77,9 @@ void	sort_point_uv_tri(t_vector2 *p, t_vector3 *t)
 	}
 }
 
-t_point_triangle	wf_tri(t_point_triangle in, float scaling)
+t_screen_triangle	wf_tri(t_screen_triangle in, float scaling)
 {
-	t_point_triangle	res;
+	t_screen_triangle	res;
 
 	res = in;
 	res.p[0] = vector2_div(in.p[0], scaling);
@@ -114,7 +114,7 @@ inline static int flat_tri(t_vector2 p[3], t_vector3 t[3])
 	return(2);
 }
 
-inline int	triangle_to_flat(t_point_triangle triangle, t_point_triangle tris[2])
+inline int	triangle_to_flat(t_screen_triangle triangle, t_screen_triangle tris[2])
 {
 	t_vector2			p_split;
 	t_vector3			t_split;
@@ -123,7 +123,7 @@ inline int	triangle_to_flat(t_point_triangle triangle, t_point_triangle tris[2])
 
 	p = triangle.p;
 	t = triangle.t;
-	sort_point_uv_tri(p, t);
+	sort_vector2_vector3_by_vector2_height(p, t);
 	int res = flat_tri(p, t);
 	if (res != 2)
 	{

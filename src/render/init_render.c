@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 20:05:27 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 18:55:37 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ t_render	init_render(t_sdlcontext sdl)
 	render.camera.aspectratio = (float)(sdl.window_h) / (float)(sdl.window_w);
 	render.camera.matproj = matrix_makeprojection(90.0f, \
 								render.camera.aspectratio, 2.0f, 1000.0f);
-	render.screenspace_ptris = malloc(sizeof(t_point_triangle) * 10000);
+	render.screenspace_ptris = malloc(sizeof(t_screen_triangle) * 10000);
 	render.q = malloc(sizeof(t_quaternion) * 10000);
 	render.debug_img = get_image_by_name(sdl, "");
 	render.occlusion.occlusion = false;
