@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   calculate_lightmap.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 14:14:49 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/22 18:22:33 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 19:42:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ void	calculate_lighting(t_world *world)
 		&& i < world->entitycache.alloc_count)
 	{
 		ent = &world->entitycache.entities[i++];
-		if (ent->status != es_free)
+		if (ent->status != es_free && ent->map != NULL)
 		{
 			set_light_thread_struct(&thread, ent, world);
 			found++;

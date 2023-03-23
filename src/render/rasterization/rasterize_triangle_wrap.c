@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rasterize_triangle_wrap.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 15:59:32 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/22 20:05:28 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 19:56:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,6 @@ void	render_triangle_unlit(t_sdlcontext *sdl, t_render *render, int index)
 	triangle = render->screenspace_ptris[index];
 	if (sdl->ps1_tri_div > 1)
 		triangle = ps1(triangle, sdl->ps1_tri_div);
-
 	res = triangle_to_flat(triangle, tris);
 	if (res == 0)
 		render_flat_top_tri(sdl, tris[0]);

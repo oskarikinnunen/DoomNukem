@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:44:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 15:32:55 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 19:54:43 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,5 +215,6 @@ void	playmode(char *level, t_sdlcontext sdl)
 	playmode_loading_screen_loop("PRESS ANY KEY TO PLAY", &sdl);
 	if (SDL_SetRelativeMouseMode(SDL_TRUE) < 0)
 		doomlog(LOG_EC_SDL_SETRELATIVEMOUSEMODE, NULL);
+	*(game.world.debug_gui) = init_gui(&sdl, &game.hid, &game.player, sdl.screensize, "Debugging menu (F2)");
 	gameloop(sdl, game);
 }

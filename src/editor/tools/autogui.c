@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 14:52:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 20:56:55 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -513,8 +513,10 @@ bool	gui_shortcut_button(char *str, int alpha_or_keymask, t_autogui *gui)
 	gui_layout(gui, br.rect);
 	if (alpha_or_keymask < 32 && (gui->hid->keystate >> alpha_or_keymask) & 1) //Assumed keymask
 		br.clicked = true;
-	if (ft_isalpha(alpha_or_keymask) && check_alpha_key(gui->hid->alphakey_pressed, alpha_or_keymask))
+	if (ft_isalpha(alpha_or_keymask) && check_alpha_key(gui->hid->alphakey_pressed, alpha_or_keymask)) 
+	{
 		br.clicked = true;
+	}
 	return (br.clicked);
 }
 

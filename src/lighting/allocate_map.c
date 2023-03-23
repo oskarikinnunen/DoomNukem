@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   allocate_map.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 13:48:22 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/22 18:26:44 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 19:37:41 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,10 +108,8 @@ void	allocate_map_for_entities(t_world *world)
 		ent = &cache->entities[i];
 		if (ent->status != es_free)
 		{
-			if (ent->status == es_active)
-			{
+			if (ent->status == es_active && !entity_has_transparent_mat(ent))
 				allocate_map_for_entity(ent, world);
-			}
 			found++;
 		}
 		i++;

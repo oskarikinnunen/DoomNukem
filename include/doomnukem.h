@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 15:32:23 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 21:21:25 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@
 # define TEMPANIMLEGEND "assets/temp/.temp_anim_legend"
 
 # define DEFAULTLEVEL "level0"
-# define LOADINGSCREENIMG "assets/images/tga/loading_screen.tga"
+# define LOADINGSCREENIMG "assets/images/tga/loading_screen2.tga"
 
 # define TEXTBACKGROUND_BORDERPADDING 6
 # define PERFGRAPH_SAMPLES 64

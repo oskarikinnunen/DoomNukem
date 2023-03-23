@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   point_light.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:01:16 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/22 18:24:20 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 19:38:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ static void	render_shadowmap(t_world *world, t_lighting *l)
 		ent = world->entitycache.sorted_entities[i];
 		if (ent->status != es_free)
 		{
-			if (ent->status == es_active && !ent->hidden)
+			if (ent->status == es_active && !ent->hidden
+				&& !entity_has_transparent_mat(ent))
 			{
 				is_valid = (l->light->ignoreself && ent->id != l->entity->id);
 				if (l->light->ignoreself == false || is_valid)

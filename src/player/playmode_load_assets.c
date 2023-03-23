@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode_load_assets.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 15:21:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 19:40:40 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ void	playmode_load_assets(char *level_name, t_sdlcontext *sdl)
 	objects_init(sdl);
 	human = get_object_by_name(*sdl, "Human.obj");
 	playmode_loading_screen("LOADING ANIMATIONS", sdl);
-	playmode_load_anims(level_path, "anim", human);
-	playmode_load_anim_legend(level_path, sdl);
+	//playmode_load_anims(level_path, "anim", human);
+	//playmode_load_anim_legend(level_path, sdl);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 		"loaded", s_itoa(sdl->human_anim_count), "animations:", NULL});
 	i = 0;
