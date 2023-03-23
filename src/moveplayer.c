@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   moveplayer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 14:56:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 20:32:00 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -305,11 +305,12 @@ void	moveplayer(t_player *player, t_input *input, t_world *world)
 	t_vector3	move_vector;
 	float		angle;
 
-	player->gun->entity->transform.parent = &player->head_transform;
+	player->gun->entity->transform.parent = NULL;
+	player->gun->entity->hidden = true;
 	player->input = *input;
-	if ((player->input.nextgun || player->input.prevgun)
+	/*if ((player->input.nextgun || player->input.prevgun)
 		&& !player->gun->reload_anim.active && world->app_mode == APPMODE_PLAY)
-		player_changegun(player);
+		player_changegun(player);*/
 	if (world->app_mode == APPMODE_PLAY)
 		updateguntransform(player, world);
 	if (!player->locked)

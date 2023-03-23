@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/23 14:48:56 by raho             ###   ########.fr        #
+#    Updated: 2023/03/23 15:32:13 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -152,14 +152,25 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		render/render_triangle.c \
 		render/init_render.c \
 		render/render_space.c \
+		decal/decal.c \
+		lighting/allocate_map.c \
 		lighting/bake_lighting.c \
+		lighting/calculate_lightmap.c \
+		lighting/calculate_texture.c \
 		lighting/point_light.c \
 		lighting/fragment_light.c \
+		lighting/rasterize_lighting/render_zbuffer.c \
+		lighting/rasterize_lighting/rasterize_zbuffer.c \
+		lighting/rasterize_lighting/rasterize_triangle_shadow.c \
+		lighting/rasterize_lighting/rasterize_texture.c \
+		lighting/rasterize_lighting/rasterize_light_utils.c \
+		thread/thread.c \
+		thread/thread_lighting.c \
 		npc/navigation/pathfind.c \
 		npc/navigation/navmesh.c \
-		render/rasterization/rasterize_zbuffer.c \
 		render/rasterization/rasterize_triangle_wrap.c \
 		render/rasterization/rasterize_triangle.c \
+		render/rasterization/rasterize_triangle_transparent.c \
 		render/draw.c \
 		render/draw_rectangle.c \
 		render/draw_shapes.c \
@@ -167,11 +178,10 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		render/surface_tools.c \
 		render/colors.c \
 		render/text.c \
-		render/rasterization/rasterize_triangle_shadow.c \
-		render/render_zbuffer.c \
 		render/pixel_utils.c \
 		world/entitycache.c \
 		world/entitycache_2.c \
+		world/entitycache_transparent.c \
 		world/world.c \
 		entity/entity_transform.c \
 		entity/components/comp_light.c \
@@ -204,6 +214,7 @@ VECTORSRCFILES= conversions.c \
 		vector2_elementary.c \
 		vector2_more.c \
 		vector2_shorthands.c \
+		vector2_round.c \
 		vector3_cmp.c \
 		vector3_complex2.c \
 		vector3_complex3.c \
@@ -211,7 +222,11 @@ VECTORSRCFILES= conversions.c \
 		vector3_elementary.c \
 		vector3_more.c \
 		vector3_shorthands.c \
-		barycentric.c
+		vector3_shorthands2.c \
+		barycentric.c \
+		triangle_functions.c \
+		triangle_functions2.c \
+		debug.c #TODO: Remove before eval
 VECTORSRC= $(addprefix src/vectors/,$(VECTORSRCFILES))
 SRC= $(addprefix src/,$(SRCFILES))
 SRC+= $(VECTORSRC)

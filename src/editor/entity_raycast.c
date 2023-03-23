@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_raycast.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 17:47:07 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/21 13:15:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 19:11:04 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,7 @@ bool	raycast_entity(t_ray r, t_raycastinfo *info, t_entity *entity)
 			info->hit_pos = vector3_add(r.origin,
 					vector3_mul(r.dir, info->distance));
 			info->hit_entity = entity;
+			info->face_normal = normal_calc_quaternion(entity->world_triangles[i].p);
 			hit = true;
 		}
 		i++;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   matrix_transform.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 12:07:19 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 12:11:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 19:57:40 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ static t_vector3	relative(t_vector2 angle, t_vector3 pos)
 	return (temp.v);
 }
 
+//TODO: Fix this
 t_mat4x4	make_transform_matrix(t_transform transform)
 {
 	return (matrix_zero());

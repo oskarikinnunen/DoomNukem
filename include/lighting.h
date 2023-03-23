@@ -2,6 +2,9 @@
 # define LIGHTING_H
 
 #include "render_utils.h"
+#include "shapes.h"
+
+# define LIGHT_AMBIENT 0.15f
 
 typedef struct s_map
 {
@@ -33,12 +36,13 @@ typedef struct	s_light
 {
 	float			radius;
 	t_vector3		origin;
-	t_cubemap_state	cm_state;	
+	t_vector3		world_position;
+	t_cubemap_state	cm_state;
 	t_cubemap		cubemap;
 	bool			ignoreself;
 	uint32_t		clr;
-	float			ambient;
 	float			intensity;
+	float			ambient;
 }	t_light;
 
 typedef struct s_lighting
@@ -46,14 +50,19 @@ typedef struct s_lighting
 	struct s_world		*world;
 	t_triangle			*world_triangles;
 	t_light				*light;
-	struct s_entity		*light_ent;
+	struct s_entity		*entity;
+	struct s_img		*img;
 	bool				*overdraw;
 	float				*zbuffer;
 	t_map				*map;
 	t_vector2			resolution;
 	t_v2rectangle		screen_edge;
 	t_camera			camera;
+	t_point_triangle	triangle;
 	t_vector3			triangle_normal;
 }	t_lighting;
 
+t_v2rectangle	get_bounds(t_point_triangle *triangle);
+t_vector2		get_barycentric_offset(t_vector2 p[3]);
+void			rasterize_texture(t_point_triangle triangle, t_lighting *lighting);
 #endif

@@ -291,9 +291,11 @@ t_triangle			triangle_to_viewspace(t_triangle tritransformed, t_mat4x4 matview);
 t_point_triangle	triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_triangle clipped, t_sdlcontext sdl);
 bool				is_triangle_backface(t_triangle tritransformed, t_render *render);
 /* RASTERIZER */
+void				rasterize_zbuffer(t_lighting *lighting);
 void				render_triangle_lit(t_sdlcontext *sdl, t_render *render, int index);
 void				render_triangle_uv(t_lighting l, t_point_triangle triangle);
 void				render_triangle_unlit(t_sdlcontext *sdl, t_render *render, int index);
+void				render_triangle_transparent(t_sdlcontext *sdl, t_render *render, int index);
 void				render_triangle_dynamic(t_sdlcontext *sdl, t_render *render, int index);
 void				rasterize_light(t_point_triangle triangle, t_lighting *lighting);
 
@@ -325,7 +327,7 @@ void	create_music(int music_i, char *music_path, t_audio *audio);
 void	pause_music(t_audio *audio, bool pause);
 void	stop_music(t_audio *audio);
 
-int		clip_triangle_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
+int		clip_triangle_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
 int		point_clip_triangle_against_plane(t_vector2 plane_p, t_vector2 plane_n, t_point_triangle in_tri, t_point_triangle out_tri[2]);
 int		clip_triangle_against_occluder_plane(t_vector2 plane_p, t_vector2 plane_n, t_point_triangle in_tri, t_point_triangle out_tri[2]);
 //bitmask

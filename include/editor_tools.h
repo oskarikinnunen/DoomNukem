@@ -180,6 +180,7 @@ bool				rooms_share_zspace(t_area *room1, t_area *room2);
 typedef struct s_raycastinfo
 {
 	t_entity	*hit_entity;
+	t_vector3	face_normal;
 	t_vector3	hit_pos;
 	float		distance;
 }	t_raycastinfo;
