@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 13:57:45 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 14:54:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 13:26:27 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ t_list	*entitycache_to_list(t_entitycache *cache)
 	entitylist = NULL;
 	while (found < cache->existing_entitycount && i < cache->alloc_count)
 	{
-		if (cache->entities[i].status != es_free)
+		if (cache->entities[i].status != es_free && !cache->entities[i].dont_save)
 		{
 			cache->entities[i].id = found;
 			list_push(&entitylist, &cache->entities[i], sizeof(t_entity));

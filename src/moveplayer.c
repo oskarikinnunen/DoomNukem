@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 14:56:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 19:32:48 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "libft.h"
 #include "editor_tools.h"
 #include "movement_defs.h"
+#include "raycast.h"
 
 static t_vector3	normalized_inputvector(t_input input, t_player player)
 {
@@ -73,7 +74,7 @@ void	player_gun_raycast(t_player *player, t_world *world)
 	ray.origin = player->headposition;
 	ray.dir = player->lookdir;
 	ft_bzero(&info, sizeof(info));
-	if (raycast_new(ray, &info, world))
+	if (raycast(ray, &info, world))
 	{
 		if (info.hit_entity != NULL
 			&& info.hit_entity->component.type == COMP_NPC)
@@ -300,12 +301,22 @@ static void	player_changegun(t_player *player)
 	player->gun->entity->hidden = false;
 }
 
+static void	player_raycast(t_player *player, t_world *world)
+{
+	t_ray	ray;
+
+	ray.origin = player->headposition;
+	ray.dir = player->lookdir;
+	raycast(ray, &player->raycastinfo, world);
+}
+
 void	moveplayer(t_player *player, t_input *input, t_world *world)
 {
 	t_vector3	move_vector;
 	float		angle;
 
 	player->gun->entity->transform.parent = &player->head_transform;
+	player_raycast(player, world);
 	player->input = *input;
 	if ((player->input.nextgun || player->input.prevgun)
 		&& !player->gun->reload_anim.active && world->app_mode == APPMODE_PLAY)

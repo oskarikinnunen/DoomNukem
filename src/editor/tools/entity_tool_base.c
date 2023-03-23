@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 16:07:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/21 16:08:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 13:25:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ void	entity_tool_init(t_editor *ed, t_sdlcontext *sdl)
 	{
 		dat->new_ent = spawn_entity(&ed->world, NULL);
 		dat->new_ent->ignore_raycasts = true;
+		dat->new_ent->dont_save = true;
 	}
 	entitytool_entitygui_init(ed, sdl, dat);
 	entitytool_worldgui_init(ed, sdl, dat);

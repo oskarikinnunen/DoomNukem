@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 17:47:07 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/21 13:15:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 19:35:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ bool	raycast_entity(t_ray r, t_raycastinfo *info, t_entity *entity)
 	int				i;
 	bool			hit;
 	t_vector3_tri	tri;
+	t_triangle		tt;
 
 	i = 0;
 	hit = false;
@@ -99,7 +100,11 @@ bool	raycast_entity(t_ray r, t_raycastinfo *info, t_entity *entity)
 		return (hit);
 	while (i < entity->obj->face_count)
 	{
-		tri = worldspace_tri(entity, i);
+		//tri = worldspace_tri(entity, i);
+		tt = entity->world_triangles[i];
+		tri.a = tt.p[0].v;
+		tri.b = tt.p[1].v;
+		tri.c = tt.p[2].v;
 		if (raycast_tri(r, tri, &info->distance))
 		{
 			info->hit_pos = vector3_add(r.origin,

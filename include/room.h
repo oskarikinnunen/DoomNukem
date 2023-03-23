@@ -13,12 +13,6 @@ typedef struct s_meshtri
 	t_vector2	uv[3];
 }	t_meshtri;
 
-typedef struct s_line
-{
-	t_vector2	start;
-	t_vector2	end;
-}	t_line;
-
 typedef struct s_edgeline
 {
 	uint32_t	start_index;

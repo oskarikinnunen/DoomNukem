@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 14:37:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 13:15:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 13:38:28 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ void	apply_graphics_prefs(t_graphicprefs prefs)
 	char			*pref_filename;
 	int				fd;
 
+	printf("applying gprefs\n");
 	prefpath = SDL_GetPrefPath("temp", "stark");
 	pref_filename = ft_strnew(ft_strlen(prefpath) + 20);
 	if (pref_filename == NULL)

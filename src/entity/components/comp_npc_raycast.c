@@ -6,13 +6,14 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 17:08:18 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/15 13:26:59 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 19:27:13 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "entity.h"
 #include "doomnukem.h"
 #include "editor_tools.h"
+#include "raycast.h"
 
 void	npc_player_raycast(t_entity *entity, t_npc *npc, t_world *world)
 {
@@ -27,7 +28,7 @@ void	npc_player_raycast(t_entity *entity, t_npc *npc, t_world *world)
 	npc->seesplayer = false;
 	r.dir = vector3_normalise(r.dir);
 	float dist = vector3_dist(world->player->transform.position, get_entity_world_position(entity));
-	if (dist < 100000.0f && raycast_new(r, &info, world) && !world->player->noclip)
+	if (dist < 100000.0f && raycast(r, &info, world) && !world->player->noclip)
 	{
 		if (info.distance > dist)
 		{

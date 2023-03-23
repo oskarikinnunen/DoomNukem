@@ -6,13 +6,14 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 18:25:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 19:43:16 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "entity.h"
 #include "doomnukem.h"
 #include "editor_tools.h"
+
 
 /* Called once per frame, use this to update your entitys state */
 void	comp_boutton_update(t_entity *entity, t_world *world)
@@ -22,7 +23,15 @@ void	comp_boutton_update(t_entity *entity, t_world *world)
 	boutton = entity->component.data;
 	if (boutton == NULL)
 		return ;
-	boutton->dist = vector3_sqr_dist(entity->transform.position, world->player->transform.position);
+	boutton->can_interact
+		= (world->player->raycastinfo.hit_entity == entity
+			&& world->player->raycastinfo.distance < 50.0f);
+	if (boutton->can_interact && world->player->input.use
+		&& world->clock.time > boutton->last_interact_time + 5000)
+	{
+		boutton->last_interact_time = world->clock.time;
+		world->sdl->lighting_toggled = !world->sdl->lighting_toggled;
+	}
 }
 
 /* Called once per frame after the 3D world has been drawn, use this to draw gizmos/rays/whatever*/
@@ -33,7 +42,7 @@ void	comp_boutton_ui_update(t_entity *entity, t_world *world)
 	boutton = entity->component.data;
 	if (boutton == NULL)
 		return ;
-	if (boutton->dist < 5000.0f)
+	if (boutton->can_interact)
 	{
 		print_text_boxed(world->sdl, "[E] Press boutton", point_div(world->sdl->screensize, 2));
 	}

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 14:31:10 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/17 18:10:00 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 13:25:38 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ static void	player_init_weapons(t_player *player, t_world *world)
 				get_object_by_name(*world->sdl,
 					player->guns[i].stats.object_name));
 		player->guns[i].entity->ignore_raycasts = true;
+		player->guns[i].entity->dont_save = true;
 		player->guns[i].shoot_anim.framerate = 120;
 		player->guns[i].shoot_anim.loop = false;
 		player->guns[i].shoot_anim.lastframe = 2;

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:42:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/21 18:35:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 19:01:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include "walltool.h"
 #include "editor_tools.h"
+#include "raycast.h"
 
 //defines the current state of roomtool
 typedef enum e_roomtoolmode

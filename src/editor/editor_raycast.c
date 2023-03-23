@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 18:03:40 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 14:38:55 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/22 19:29:50 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ bool	raycast_plane(t_ray r, t_raycastinfo *info, float plane_z)
 }
 
 //TODO: f_Infinity
-bool	raycast_new(t_ray r, t_raycastinfo *info, t_world *world)
+bool	raycast(t_ray r, t_raycastinfo *info, t_world *world)
 {
 	int				i;
 	int				found;

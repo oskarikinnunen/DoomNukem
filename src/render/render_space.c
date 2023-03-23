@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_space.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 15:36:10 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/14 14:04:48 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/22 19:56:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ inline static void	update_world_triangle_ignore(t_quaternion *transformed, t_tri
 	world_triangles[0] = (t_triangle){.p[0] = transformed[0],.p[1] = transformed[1],.p[2] = transformed[2]};
 }
 
-inline static void update_bounds_world_triangles(t_entity *entity, t_mat4x4 matworld)
+inline static void	update_bounds_world_triangles(t_entity *entity, t_mat4x4 matworld)
 {
 	t_quaternion	transformed[8];
 	t_object		*obj;
