@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:44:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 15:32:55 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 21:24:52 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,10 @@ static void	gameloop(t_sdlcontext sdl, t_game game)
 	game.world.player = &game.player;
 	protagonist_play_audio(&game.player, &game.world, "protag_letsdo.wav");
 	play_music(&sdl, "music_arp1_ambient.wav");
-	// LIGHTING
-	for_all_active_entities(&game.world, render_entity_worldtriangles);
-	recalculate_lighting(&game.world);
-	sdl.lighting_toggled = true;
+	// LIGHTING TODO: (THESE SEGFAULT)
+	//for_all_active_entities(&game.world, render_entity_worldtriangles); 
+	//recalculate_lighting(&game.world);
+	//sdl.lighting_toggled = true;
 	while (gr == game_continue)
 	{
 		if (game.player.health > 0)
@@ -192,7 +192,9 @@ void	playmode_loading_screen(char *loading_message, t_sdlcontext *sdl)
 	}
 	ft_memcpy(sdl->window_surface->pixels, sdl->surface->pixels, sizeof(uint32_t) * sdl->window_w * sdl->window_h);
 	while (SDL_PollEvent(&e))
-		;
+		if (e.type == SDL_KEYDOWN)
+			if (iskey(e, SDLK_ESCAPE))
+				exit(0);
 	if (SDL_UpdateWindowSurface(sdl->window) < 0)
 	doomlog(LOG_EC_SDL_UPDATEWINDOWSURFACE, NULL);
 }

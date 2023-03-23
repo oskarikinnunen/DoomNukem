@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 14:53:35 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 20:59:13 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,19 +119,21 @@ t_list	*load_chunk(char *filename, char *chunkname, size_t size)
 	return (NULL);
 }
 
-inline int		read_chunk(int fd, t_filecontent *fc,
-							char *level_name, char *asset_name)
+int	read_chunk(int fd, t_filecontent *fc, char *asset_name)
 {
 	uint64_t	curr_len;
 
 	if (read(fd, fc->name, 128) == -1)
-		doomlog(LOG_EC_READ, level_name);
+		doomlog(LOG_EC_READ, "read_chunk");
 	if (ft_strcmp(fc->name, asset_name) == 0)
 	{
 		fc->length = read_len(fd);
 		fc->content = prot_memalloc(fc->length);
 		if (read(fd, fc->content, fc->length) == -1)
-			doomlog(LOG_EC_READ, level_name);
+			doomlog(LOG_EC_READ, "read_chunk");
+		if (lseek(fd, (CHUNKSIZE - (fc->length % CHUNKSIZE)), \
+				SEEK_CUR) == -1)
+			doomlog(LOG_EC_LSEEK, "read_chunk");
 		return (0);
 	}
 	else
@@ -139,7 +141,7 @@ inline int		read_chunk(int fd, t_filecontent *fc,
 		curr_len = read_len(fd);
 		if (lseek(fd, curr_len + (CHUNKSIZE - (curr_len % CHUNKSIZE)), \
 				SEEK_CUR) == -1)
-			doomlog(LOG_EC_LSEEK, level_name);
+			doomlog(LOG_EC_LSEEK, "read_chunk");
 	}
 	return (1);
 }

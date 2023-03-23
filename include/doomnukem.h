@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 15:32:23 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 19:41:21 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -276,14 +276,14 @@ bool		game_random_coinflip(t_world *world);
 /* PLAYMODE.C */
 void	playmode(char *level, t_sdlcontext sdl);
 void	playmode_death(t_game *game);
-void	playmode_load_images(char *level_path, t_sdlcontext *sdl);
-void	playmode_load_env_textures(char *level_path, t_sdlcontext *sdl);
-void	playmode_load_objects(char *level_path, t_sdlcontext *sdl);
-void	playmode_load_fonts(char *level_path, t_sdlcontext *sdl);
-void	playmode_load_sounds(char *level_path, t_audio *audio);
-void	playmode_load_music(char *level_path, t_audio *audio);
-void	playmode_load_anims(char *level_path, char *anim_name, t_object *object);
-void	playmode_load_anim_legend(char *level_path, t_sdlcontext *sdl);
+void	playmode_load_images(int level_fd, t_sdlcontext *sdl);
+void	playmode_load_env_textures(int level_fd, t_sdlcontext *sdl);
+void	playmode_load_objects(int level_fd, t_sdlcontext *sdl);
+void	playmode_load_fonts(int level_fd, t_sdlcontext *sdl);
+void	playmode_load_sounds(int level_fd, t_audio *audio);
+void	playmode_load_music(int level_fd, t_audio *audio);
+void	playmode_load_anims(int level_fd, char *anim_name, t_object *object);
+void	playmode_load_anim_legend(int level_fd, t_sdlcontext *sdl);
 
 
 /* PLAYER.C */

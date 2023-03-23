@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 20:10:06 by raho              #+#    #+#             */
-/*   Updated: 2023/03/23 15:20:17 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 21:16:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,27 +25,41 @@ uint64_t	read_len(int fd)
 	return (res);
 }
 
-t_filecontent	load_filecontent(char	*level_name, char	*asset_name)
+static void	restart_fd(int fd, int counter)
 {
-	int				fd;
+	if (counter == 2)
+		doomlog(LOG_FATAL, \
+				"expected level data not found from the level file");
+	if (lseek(fd, 0, SEEK_SET) == -1)
+		doomlog(LOG_EC_LSEEK, "load_filecontent");
+}
+
+t_filecontent	load_filecontent(int fd, char *asset_name)
+{
 	t_filecontent	fc;
 	int				rbytes;
 	char			buf[CHUNKSIZE + 1];
+	int				counter;
 
+	counter = 0;
 	ft_bzero(&fc, sizeof(t_filecontent));
-	fd = fileopen(level_name, O_RDONLY);
 	rbytes = read(fd, buf, CHUNKSIZE);
-	while (rbytes > 0)
+	while (rbytes >= 0)
 	{
 		buf[CHUNKSIZE] = '\0';
 		if (ft_strncmp(buf, "FCNK", 4) == 0)
-			if (read_chunk(fd, &fc, level_name, asset_name) == 0)
+			if (read_chunk(fd, &fc, asset_name) == 0)
 				return (fc);
+		if (rbytes == 0)
+		{
+			restart_fd(fd, counter);
+			counter++;
+		}
 		rbytes = read(fd, buf, CHUNKSIZE);
 	}
 	if (rbytes == -1)
-		doomlog(LOG_EC_READ, level_name);
-	fileclose(fd, level_name);
+		doomlog(LOG_EC_READ, "load_filecontent");
+	fileclose(fd, "load_filecontent");
 	return (fc);
 }
 
@@ -59,8 +73,13 @@ int	ft_fileread(int fd, t_filecontent *f)
 	len = read(fd, buf, sizeof(buf));
 	while (len)
 	{
-		temp = ft_memdup(buf, len); // TODO: PROTECT
+		temp = ft_memdup(buf, len);
+		if (temp == NULL)
+			doomlog(LOG_EC_MALLOC, "ft_fileread");
 		temp2 = ft_memjoin(f->content, (const void *)temp, f->length, len);
+		if (temp2 == NULL)
+			doomlog(LOG_EC_MALLOC, "ft_fileread");
+		free(temp);
 		if (f->content)
 			free(f->content);
 		f->content = temp2;
@@ -72,16 +91,16 @@ int	ft_fileread(int fd, t_filecontent *f)
 	return (f->length);
 }
 
-void	load_and_write_filecontent(char *worldname, char *fcname, \
-									char *filename)
+void	load_and_write_filecontent(int fd,
+									char *fc_name, char *file_name)
 {
 	t_filecontent	fc;
-	int				fd;
+	int				temp_fd;
 
-	fc = load_filecontent(worldname, fcname);
-	fd = fileopen(filename, O_CREAT | O_RDWR | O_TRUNC);
-	if (write(fd, fc.content, fc.length) == -1)
+	fc = load_filecontent(fd, fc_name);
+	temp_fd = fileopen(file_name, O_CREAT | O_RDWR | O_TRUNC);
+	if (write(temp_fd, fc.content, fc.length) == -1)
 		doomlog(LOG_EC_WRITE, "load_and_write_filecontent");
-	fileclose(fd, filename);
+	fileclose(temp_fd, file_name);
 	free(fc.content);
 }

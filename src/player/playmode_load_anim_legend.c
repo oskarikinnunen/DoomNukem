@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 20:09:06 by raho              #+#    #+#             */
-/*   Updated: 2023/03/22 14:18:19 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 19:05:20 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static void	parse_anim_name(char *line, t_sdlcontext *sdl)
 							line, ft_strlen(line + 1));
 }
 
-static int	parse_lines(int fd, t_sdlcontext *sdl)
+static int	parse_lines(int temp_fd, t_sdlcontext *sdl)
 {
 	int		ret;
 	int		i;
@@ -41,7 +41,7 @@ static int	parse_lines(int fd, t_sdlcontext *sdl)
 
 	i = 0;
 	line = NULL;
-	ret = get_next_line(fd, &line);
+	ret = get_next_line(temp_fd, &line);
 	while (ret)
 	{
 		if (line)
@@ -54,23 +54,23 @@ static int	parse_lines(int fd, t_sdlcontext *sdl)
 			free(line);
 			line = NULL;
 		}
-		ret = get_next_line(fd, &line);
+		ret = get_next_line(temp_fd, &line);
 	}
 	return (ret);
 }
 
-void	playmode_load_anim_legend(char *level_path, t_sdlcontext *sdl)
+void	playmode_load_anim_legend(int level_fd, t_sdlcontext *sdl)
 {
-	int	fd;
+	int	temp_fd;
 	int	ret;
 
 	doomlog(LOG_NORMAL, "UNPACKING ANIMATIONS");
-	load_and_write_filecontent(level_path, ANIMLEGENDPATH, TEMPANIMLEGEND);
-	fd = fileopen(TEMPANIMLEGEND, O_RDONLY);
+	load_and_write_filecontent(level_fd, ANIMLEGENDPATH, TEMPANIMLEGEND);
+	temp_fd = fileopen(TEMPANIMLEGEND, O_RDONLY);
 	sdl->human_anims = prot_memalloc(sizeof(t_human_animation) * 30);
 	sdl->human_anim_count = 0;
-	ret = parse_lines(fd, sdl);
+	ret = parse_lines(temp_fd, sdl);
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_anim_legend");
-	fileclose(fd, ANIMLEGENDPATH);
+	fileclose(temp_fd, ANIMLEGENDPATH);
 }

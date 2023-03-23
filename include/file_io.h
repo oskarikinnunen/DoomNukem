@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 16:56:41 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 22:04:37 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 21:09:29 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,13 @@ typedef enum e_load_arg
 
 void			save_entitylist(t_list *entitylist, char *filename);
 t_list			*load_chunk(char *filename, char *chunkname, size_t size);
-int				read_chunk(int fd, t_filecontent *fc, char *level_name, char *asset_name);
+int				read_chunk(int fd, t_filecontent *fc, char *asset_name);
 void			save_chunk(char *filename, char *chunkname, t_list *content);
 
-
-t_filecontent	load_filecontent(char *worldname, char *fc_name);
-void			load_and_write_filecontent(char *worldname, char *fcname, char *filename);
+// if offset is more than 0, filecontent seeks the information from 
+// the offset till the end of file
+t_filecontent	load_filecontent(int fd, char *asset_name);
+void			load_and_write_filecontent(int fd, char *fc_name, char *file_name);
 void			pack_file_to_level(char *level, char *file);
 
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entitycache_transparent.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 20:18:30 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/22 20:24:14 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 20:21:57 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ bool	entity_has_transparent_mat(t_entity *entity)
 {
 	int i;
 
+	if (entity->obj == NULL)
+		return (false);
 	i = 0;
 	while (i < entity->obj->material_count)
 	{
