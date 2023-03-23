@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 20:19:43 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 15:32:23 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,36 +45,37 @@
 # define IMGPATH "assets/images/"
 # define OBJPATH "assets/objects/"
 
-# define IMGLISTPATH "assets/.image_list.txt"
-# define IMGENVLISTPATH "assets/.image_env_list.txt"
-# define OBJLISTPATH "assets/.object_list.txt"
-# define MTLLISTPATH "assets/.material_list.txt"
-# define FONTLISTPATH "assets/.font_list.txt"
-# define SOUNDLISTPATH "assets/.sound_list.txt"
-# define MUSICLISTPATH "assets/.music_list.txt"
-# define ANIMLISTPATH "assets/.anim_list.txt"
+# define IMGLISTPATH "assets/asset_lists/image_list.txt"
+# define IMGENVLISTPATH "assets/asset_lists/image_env_list.txt"
+# define OBJLISTPATH "assets/asset_lists/object_list.txt"
+# define MTLLISTPATH "assets/asset_lists/material_list.txt"
+# define FONTLISTPATH "assets/asset_lists/font_list.txt"
+# define SOUNDLISTPATH "assets/asset_lists/sound_list.txt"
+# define MUSICLISTPATH "assets/asset_lists/music_list.txt"
+# define ANIMLISTPATH "assets/asset_lists/anim_list.txt"
 # define ANIMLEGENDPATH "assets/objects/animations/anim_legend.txt"
 
-# define TEMPIMGLIST "assets/.temp_image_list"
-# define TEMPIMGENVLIST "assets/.temp_image_env_list"
-# define TEMPOBJLIST "assets/.temp_object_list"
-# define TEMPFONTLIST "assets/.temp_font_list"
-# define TEMPSOUNDLIST "assets/.temp_sound_list"
-# define TEMPMUSICLIST "assets/.temp_music_list"
-# define TEMPANIMLIST "assets/.temp_anim_list"
+# define TEMPIMGLIST "assets/temp/.temp_image_list"
+# define TEMPIMGENVLIST "assets/temp/.temp_image_env_list"
+# define TEMPOBJLIST "assets/temp/.temp_object_list"
+# define TEMPFONTLIST "assets/temp/.temp_font_list"
+# define TEMPSOUNDLIST "assets/temp/.temp_sound_list"
+# define TEMPMUSICLIST "assets/temp/.temp_music_list"
+# define TEMPANIMLIST "assets/temp/.temp_anim_list"
 
-# define TEMPIMG "assets/.temp_image"
-# define TEMPIMGENV "assets/.temp_image_env"
-# define TEMPOBJ "assets/.temp_object"
-# define TEMPMTL "assets/.temp_mtl"
-# define TEMPFONT "assets/.temp_font"
-# define TEMPSOUND "assets/.temp_sound"
-# define TEMPSOUNDLOOP "assets/.temp_sound_loop"
-# define TEMPMUSIC "assets/.temp_music"
-# define TEMPANIM "assets/.temp_anim"
-# define TEMPANIMLEGEND "assets/.temp_anim_legend"
+# define TEMPIMG "assets/temp/.temp_image"
+# define TEMPIMGENV "assets/temp/.temp_image_env"
+# define TEMPOBJ "assets/temp/.temp_object"
+# define TEMPMTL "assets/temp/.temp_mtl"
+# define TEMPFONT "assets/temp/.temp_font"
+# define TEMPSOUND "assets/temp/.temp_sound"
+# define TEMPSOUNDLOOP "assets/temp/.temp_sound_loop"
+# define TEMPMUSIC "assets/temp/.temp_music"
+# define TEMPANIM "assets/temp/.temp_anim"
+# define TEMPANIMLEGEND "assets/temp/.temp_anim_legend"
 
 # define DEFAULTLEVEL "level0"
+# define LOADINGSCREENIMG "assets/images/tga/loading_screen.tga"
 
 # define TEXTBACKGROUND_BORDERPADDING 6
 # define PERFGRAPH_SAMPLES 64
@@ -185,8 +186,10 @@ void		entity_assign_object(t_world *world, t_entity *entity, t_object *obj);
 
 
 void		world_save_to_file(t_world world);
-void		_world_sanitize_all_room_pointers(t_world *world);
-void		_world_init_rooms(t_world *world);
+void		world_sanitize_all_room_pointers(t_world *world);
+void		world_remove_all_room_entities(t_world *world);
+void		world_init(t_world *world, t_sdlcontext *sdl);
+void		world_init_rooms(t_world *world);
 
 //TODO: move to room.h
 void		_room_initwalls(t_world *world, t_area *room);
@@ -204,6 +207,10 @@ typedef struct s_game
 
 
 t_app_argument	get_app_argument(int argc, char **argv);
+void			editor_loading_screen(char *loading_message, t_sdlcontext *sdl);
+void			playmode_loading_screen(char *loading_message, t_sdlcontext *sdl);
+void			playmode_loading_screen_loop(char *loading_message, t_sdlcontext *sdl);
+
 
 /* TOOLS */
 // Protected ft_memalloc that calls doomlog with error code in case of an error
@@ -216,7 +223,7 @@ int		init_log(void);
 char	*combine_strings(char **str);
 
 /* EDITOR.C */
-int		editorloop(char *level, t_sdlcontext sdl);
+void	editorloop(char *level, t_sdlcontext sdl);
 void	editor_load_images(t_sdlcontext *sdl);
 void	editor_load_env_textures(t_sdlcontext *sdl);
 void	editor_load_objects(t_sdlcontext *sdl);
@@ -267,7 +274,7 @@ uint32_t	game_random_range(t_world *world, uint32_t min, uint32_t max);
 bool		game_random_coinflip(t_world *world);
 
 /* PLAYMODE.C */
-int		playmode(char *level, t_sdlcontext sdl);
+void	playmode(char *level, t_sdlcontext sdl);
 void	playmode_death(t_game *game);
 void	playmode_load_images(char *level_path, t_sdlcontext *sdl);
 void	playmode_load_env_textures(char *level_path, t_sdlcontext *sdl);

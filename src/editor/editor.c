@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 15:23:22 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 15:37:34 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,15 +197,17 @@ void	update_audio(t_world *world)
 	FMOD_System_Update(sdl->audio.system);
 }
 
-int	editorloop(char *level, t_sdlcontext sdl)
+void	editorloop(char *level, t_sdlcontext sdl)
 {
 	t_editor	ed;
 	bool		audio = 0;
 
 	bzero(&ed, sizeof(t_editor));
+	editor_loading_screen("LOADING WORLD", &sdl);
 	ed.world = load_world(level, &sdl);
 	ed.world.app_mode = APPMODE_EDIT;
 	editor_player_init(&ed);
+	
 	//split these to their own file
 	*(ed.world.debug_gui) = init_gui(&sdl, &ed.hid, &ed.player, sdl.screensize, "Debugging menu (F2)");
 	ed.toolbar_gui = init_gui(&sdl, &ed.hid, &ed.player, (t_point){5, 5}, "Toolbar (F1)");
@@ -217,12 +219,10 @@ int	editorloop(char *level, t_sdlcontext sdl)
 
 	SDL_SetRelativeMouseMode(ed.hid.mouse.relative);
 	ed.player.locked = !ed.hid.mouse.relative;
-	//
 	
 	ed.gamereturn = game_continue;
 	sdl.lighting_toggled = false;
 	ed.player.gun->entity->hidden = true;
-	//play_music(&sdl, "music_arp1_ambient.wav");
 	sdl.render.occlusion.occlusion = false;
 	sdl.fog = false;
 	while (ed.gamereturn == game_continue)
@@ -238,7 +238,6 @@ int	editorloop(char *level, t_sdlcontext sdl)
 		char *fps = ft_itoa(ed.world.clock.fps);
 		print_text(&sdl, fps, (t_point){sdl.window_w - 80, 10});
 		drawcircle(sdl, point_div(sdl.screensize, 2), 4, CLR_BLUE);
-		//draw_image(sdl, point_zero(), tgaparse("assets/images/stone02.tga"), (t_point){400, 400});
 		free(fps);
 		update_editor_lateguis(&ed);
 		ed.hid.mouse.click_unhandled = false;
@@ -250,13 +249,10 @@ int	editorloop(char *level, t_sdlcontext sdl)
 	if (ed.player.gun->entity != NULL)
 		destroy_entity(&ed.world, ed.player.gun->entity);
 	save_graphics_prefs(&sdl);
-	//save_world(ed.world.name, ed.world);
 	world_save_to_file(ed.world);
 	if (ed.gamereturn == game_exit)
 	{
 		free_render(sdl.render);
 		quit_game(&sdl);
 	}
-		
-	return (ed.gamereturn);
 }

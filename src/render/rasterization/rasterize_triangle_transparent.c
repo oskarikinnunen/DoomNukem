@@ -28,7 +28,7 @@ inline static void scanline(int start, int end, int y, t_point_triangle triangle
 			tex.y = slope.location.y + index * slope.step.y;
 			clr = sample_img_dynamic(&sdl->render, tex.x / tex.z, tex.y / tex.z);
 			((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] =
-				blend_colors_alpha(((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w], clr, ((clr >> 24) & 0xFF));
+				blend_colors_alpha(((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w], clr, 127);
 		}
 		index += 1.0f;
 		x++;

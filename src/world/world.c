@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 20:37:50 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 16:10:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,21 +71,22 @@ static void	sort_entitycache(t_world *world, t_vector3 location)
 	t_entity	*key;
 	int			j;
 	int			found;
+	t_entity	*ent;
+	int e;
 
 	i = 0;
 	found = 0;
 	while (found < world->entitycache.existing_entitycount)
 	{
-		key = world->entitycache.sorted_entities[i];
-		if (key->status != es_free)
+		ent = world->entitycache.sorted_entities[i];
+		key = ent;
+		if (ent->status != es_free)
 		{
 			j = i - 1;
-			while (j >= 0 && world->entitycache.sorted_entities[j]
-				->occlusion.z_dist[1] > key->occlusion.z_dist[1])
+			while (j >= 0 && world->entitycache.sorted_entities[j]->occlusion.z_dist[1] < key->occlusion.z_dist[1])
 			{
-				if (key->status != es_free)
-					world->entitycache.sorted_entities[j + 1]
-						= world->entitycache.sorted_entities[j];
+				if (ent->status != es_free)
+					world->entitycache.sorted_entities[j + 1] = world->entitycache.sorted_entities[j];
 				j--;
 			}
 			found++;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_load_images.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:44:02 by raho              #+#    #+#             */
-/*   Updated: 2023/03/13 18:31:42 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 18:01:20 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static int	parse_image_list(int fd, t_sdlcontext *sdl)
 	{
 		if (image_path)
 		{
-			sdl->images[i] = tgaparse(image_path);
+			sdl->images[i] = tga_parse(image_path);
 			if (sdl->images[i].data != NULL)
 				ft_strcpy(sdl->images[i].name, extract_filename(image_path));
 			doomlog_mul(LOG_NORMAL, (char *[3]){\
@@ -73,7 +73,7 @@ static int	parse_image_env_list(int fd, t_sdlcontext *sdl)
 	{
 		if (env_texture_path)
 		{
-			sdl->env_textures[i] = tgaparse(env_texture_path);
+			sdl->env_textures[i] = tga_parse(env_texture_path);
 			if (sdl->env_textures[i].data != NULL)
 				ft_strcpy(sdl->env_textures[i].name, \
 							extract_filename(env_texture_path));

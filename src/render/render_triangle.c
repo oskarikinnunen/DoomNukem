@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_triangle.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/22 20:39:33 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 15:49:53 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static void unlit_render(t_sdlcontext *sdl, t_render *render)
 	int index;
 
 	index = 0;
-	if (render->img->transparency && 0)
+	if (render->img->transparency)
 	{
 		while (index < render->screenspace_ptri_count)
 		{

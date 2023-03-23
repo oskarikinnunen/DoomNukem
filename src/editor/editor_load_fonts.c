@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 20:56:42 by raho              #+#    #+#             */
-/*   Updated: 2023/03/16 21:22:51 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 18:31:05 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ t_font	font_parse(char *file_name)
 	while (i < FONT_SIZE_COUNT)
 	{
 		font.sizes[i] = TTF_OpenFont(file_name, \
-							((DEFAULT_FONT_SIZE * i) + DEFAULT_FONT_SIZE));
+							((FONT_SIZE_DEFAULT * i) + FONT_SIZE_DEFAULT));
 		if (!font.sizes[i])
 			doomlog(LOG_EC_TTF_OPENFONT, NULL);
 		i++;

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:51:14 by raho              #+#    #+#             */
-/*   Updated: 2023/03/17 20:01:12 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 15:20:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ void	editor_load_anims(char *anim_name, t_object *object)
 			ANIMLISTPATH, "framecount =", s_itoa(frame_malloc_count), NULL});
 	object->o_anim.frames = \
 			ft_memalloc(sizeof(t_objectanimframe) * frame_malloc_count);
+	ft_strncpy_term(object->o_anim.name, anim_name, 120);
 	if (object->o_anim.frames == NULL)
 		doomlog(LOG_EC_MALLOC, "editor_load_anims");
 	fd = fileopen(ANIMLISTPATH, O_RDONLY);

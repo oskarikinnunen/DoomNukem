@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:07:37 by raho              #+#    #+#             */
-/*   Updated: 2023/03/20 17:21:59 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 21:12:21 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,13 @@ static void	unpack_and_load_texture(int txtr_i, char *level_path,
 									char *env_texture, t_sdlcontext *sdl)
 {
 	load_and_write_filecontent(level_path, env_texture, TEMPIMGENV);
-	sdl->env_textures[txtr_i] = tgaparse(TEMPIMGENV);
+	sdl->env_textures[txtr_i] = tga_parse(TEMPIMGENV);
 	if (sdl->env_textures[txtr_i].data != NULL)
 		ft_strcpy(sdl->env_textures[txtr_i].name, \
 					extract_filename(env_texture));
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
 			"unpacked and loaded .tga file:", \
 			sdl->env_textures[txtr_i].name, NULL});
-	remove(TEMPIMGENV);
 }
 
 static int	parse_image_env_list(int fd, char *level_path, t_sdlcontext *sdl)
@@ -67,5 +66,4 @@ void	playmode_load_env_textures(char *level_path, t_sdlcontext *sdl)
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_env_textures");
 	fileclose(fd, TEMPIMGENVLIST);
-	remove(TEMPIMGENVLIST);
 }

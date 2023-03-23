@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:48:10 by raho              #+#    #+#             */
-/*   Updated: 2023/03/20 17:22:31 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 14:18:08 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ static void	unpack_and_load_font(int font_i, char *level_path,
 		ft_strcpy(sdl->fonts[font_i].name, extract_filename(font_name));
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
 			"unpacked and loaded .ttf file:", sdl->fonts[font_i].name, NULL});
-	remove(TEMPFONT);
 }
 
 static int	parse_font_list(int fd, char *level_path, t_sdlcontext *sdl)
@@ -65,5 +64,4 @@ void	playmode_load_fonts(char *level_path, t_sdlcontext *sdl)
 		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_fonts");
 	fileclose(fd, TEMPFONTLIST);
 	sdl->font_default = &sdl->fonts[0];
-	remove(TEMPFONTLIST);
 }
