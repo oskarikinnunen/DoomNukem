@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   anim.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:56:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 14:49:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 15:20:28 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,6 @@ void	parse_anim(char *anim_path, char *anim_name, t_object *object)
 
 	ft_bzero(&frame, sizeof(t_objectanimframe));
 	fd = fileopen(anim_path, O_RDONLY);
-	ft_strncpy_term(object->o_anim.name, anim_name, 120);
 	parse_animframe(fd, &frame, object);
 	object->o_anim.frames[object->o_anim.framecount] = frame;
 	object->o_anim.framecount++;

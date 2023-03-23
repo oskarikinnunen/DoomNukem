@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 17:49:29 by raho              #+#    #+#             */
-/*   Updated: 2023/03/22 14:27:55 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 15:20:32 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ void	playmode_load_anims(char *level_path,
 			TEMPANIMLIST, "framecount =", s_itoa(frame_malloc_count), NULL});
 	object->o_anim.frames = \
 			prot_memalloc(sizeof(t_objectanimframe) * frame_malloc_count);
+	ft_strncpy_term(object->o_anim.name, anim_name, 120);
 	fd = fileopen(TEMPANIMLIST, O_RDONLY);
 	ret = parse_anim_list(fd, level_path, anim_name, object);
 	if (ret == -1)

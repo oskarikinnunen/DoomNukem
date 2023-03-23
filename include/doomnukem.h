@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 22:22:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 14:32:05 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,7 +222,7 @@ int		init_log(void);
 char	*combine_strings(char **str);
 
 /* EDITOR.C */
-int		editorloop(char *level, t_sdlcontext sdl);
+void	editorloop(char *level, t_sdlcontext sdl);
 void	editor_load_images(t_sdlcontext *sdl);
 void	editor_load_env_textures(t_sdlcontext *sdl);
 void	editor_load_objects(t_sdlcontext *sdl);
@@ -273,7 +273,7 @@ uint32_t	game_random_range(t_world *world, uint32_t min, uint32_t max);
 bool		game_random_coinflip(t_world *world);
 
 /* PLAYMODE.C */
-int		playmode(char *level, t_sdlcontext sdl);
+void	playmode(char *level, t_sdlcontext sdl);
 void	playmode_death(t_game *game);
 void	playmode_load_images(char *level_path, t_sdlcontext *sdl);
 void	playmode_load_env_textures(char *level_path, t_sdlcontext *sdl);

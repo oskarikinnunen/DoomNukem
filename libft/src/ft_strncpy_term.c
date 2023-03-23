@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 18:44:17 by raho              #+#    #+#             */
-/*   Updated: 2023/03/20 18:53:29 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 15:08:40 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,10 @@ char	*ft_strncpy_term(char *dest, const char *src, size_t num)
 	while (i < num - 1)
 	{
 		if (i > len)
+		{
 			dest[i] = '\0';
+			return (dest);
+		}
 		else
 			dest[i] = src[i];
 		i++;

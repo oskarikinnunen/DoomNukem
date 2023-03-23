@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:44:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 22:25:57 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 15:23:04 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static void	debug_ramps(t_game *game)
 	}
 }
 /*main game loop*/
-static int gameloop(t_sdlcontext sdl, t_game game)
+static void	gameloop(t_sdlcontext sdl, t_game game)
 {
 	t_gamereturn	gr;
 
@@ -82,8 +82,6 @@ static int gameloop(t_sdlcontext sdl, t_game game)
 		free_render(sdl.render);
 		quit_game(&sdl);
 	}
-
-	return (gr);
 }
 
 static t_vector3 find_playerspawn(t_world *world)
@@ -180,6 +178,7 @@ void	playmode_loading_screen(char *loading_message, t_sdlcontext *sdl)
 	static t_img	*loading_image;
 	TTF_Font		*temp;
 	int				len;
+	SDL_Event		e;
 
 	if (first_time)
 		loading_image = get_image_by_name(*sdl, "loading_screen");
@@ -193,21 +192,19 @@ void	playmode_loading_screen(char *loading_message, t_sdlcontext *sdl)
 		sdl->font_default->size_default = temp;
 	}
 	ft_memcpy(sdl->window_surface->pixels, sdl->surface->pixels, sizeof(uint32_t) * sdl->window_w * sdl->window_h);
+	while (SDL_PollEvent(&e))
+		;
 	if (SDL_UpdateWindowSurface(sdl->window) < 0)
-		doomlog(LOG_EC_SDL_UPDATEWINDOWSURFACE, NULL);
+	doomlog(LOG_EC_SDL_UPDATEWINDOWSURFACE, NULL);
 }
 
 // Resetlevel??
 /*setup and call gameloop*/
-int playmode(char *level, t_sdlcontext sdl)
+void	playmode(char *level, t_sdlcontext sdl)
 {
 	t_game game;
-	t_gamereturn gr;
 
 	bzero(&game, sizeof(t_game));
-	// Locks mouse
-	if (SDL_SetRelativeMouseMode(SDL_TRUE) < 0)
-		doomlog(LOG_EC_SDL_SETRELATIVEMOUSEMODE, NULL);
 	playmode_loading_screen("LOADING WORLD", &sdl);
 	game.world = load_world(level, &sdl);
 	game.world.app_mode = APPMODE_PLAY;
@@ -216,11 +213,8 @@ int playmode(char *level, t_sdlcontext sdl)
 	player_init(&game.player, &sdl, &game.world);
 	game.player.transform.position = find_playerspawn(&game.world);
 	sdl.fog = true;
-	//TODO: why if u press tab it locks the player angle?
-	// Also why is this loop the only one that shows on the window and not the previous loading screen calls?
 	playmode_loading_screen_loop("PRESS ANY KEY TO PLAY", &sdl);
-	gr = gameloop(sdl, game);
-	if (SDL_SetRelativeMouseMode(SDL_FALSE) < 0)
+	if (SDL_SetRelativeMouseMode(SDL_TRUE) < 0)
 		doomlog(LOG_EC_SDL_SETRELATIVEMOUSEMODE, NULL);
-	return (gr);
+	gameloop(sdl, game);
 }

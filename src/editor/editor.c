@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 22:26:27 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 14:32:19 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,7 +197,7 @@ void	update_audio(t_world *world)
 	FMOD_System_Update(sdl->audio.system);
 }
 
-int	editorloop(char *level, t_sdlcontext sdl)
+void	editorloop(char *level, t_sdlcontext sdl)
 {
 	t_editor	ed;
 	bool		audio = 0;
@@ -256,6 +256,4 @@ int	editorloop(char *level, t_sdlcontext sdl)
 		free_render(sdl.render);
 		quit_game(&sdl);
 	}
-		
-	return (ed.gamereturn);
 }

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 22:26:05 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 15:23:52 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ void	editor_loading_screen(char *loading_message, t_sdlcontext *sdl)
 	static t_img	loading_image;
 	TTF_Font		*temp;
 	int				len;
+	SDL_Event			e;
 
 	if (first_time)
 		loading_image = tga_parse(LOADINGSCREENIMG);
@@ -63,8 +64,10 @@ void	editor_loading_screen(char *loading_message, t_sdlcontext *sdl)
 		sdl->font_default->size_default = temp;
 	}
 	ft_memcpy(sdl->window_surface->pixels, sdl->surface->pixels, sizeof(uint32_t) * sdl->window_w * sdl->window_h);
+	while (SDL_PollEvent(&e))
+		;
 	if (SDL_UpdateWindowSurface(sdl->window) < 0)
-		doomlog(LOG_EC_SDL_UPDATEWINDOWSURFACE, NULL);
+	doomlog(LOG_EC_SDL_UPDATEWINDOWSURFACE, NULL);
 }
 
 void	editor_load_assets(t_sdlcontext *sdl)
