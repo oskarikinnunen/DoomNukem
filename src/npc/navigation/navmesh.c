@@ -152,7 +152,7 @@ void	*ft_realloc(void *src, size_t dest_size, size_t src_size) //TODO: Should pr
 
 
 
-void	add_to_navmesh(t_navigation *nav, t_triangle t, t_world *world)
+void	add_to_navmesh(t_navigation *nav, t_world_triangle t, t_world *world)
 {
 	int i;
 	t_vector3	midpoint;
@@ -180,7 +180,7 @@ void	add_to_navmesh(t_navigation *nav, t_triangle t, t_world *world)
 	}
 }
 
-t_triangle	*add_to_cliplist(t_triangle *arr, int start, int *end, int *size, int index)
+t_world_triangle	*add_to_cliplist(t_world_triangle *arr, int start, int *end, int *size, int index)
 {
 	t_vector3	plane_p;
 	t_vector3	plane_n;
@@ -189,7 +189,7 @@ t_triangle	*add_to_cliplist(t_triangle *arr, int start, int *end, int *size, int
 	plane_n = vector3_normalise(vector3_sub(arr[start].p[index].v, arr[start].p[(index + 1) % 3].v));
 	if (*end + 4 >= *size)
 	{
-		arr = ft_realloc(arr, (*size + 1000) * sizeof(t_triangle), *size * sizeof(t_triangle));
+		arr = ft_realloc(arr, (*size + 1000) * sizeof(t_world_triangle), *size * sizeof(t_world_triangle));
 		if (!arr)
 			exit(0);
 		*size += 1000;
@@ -200,7 +200,7 @@ t_triangle	*add_to_cliplist(t_triangle *arr, int start, int *end, int *size, int
 	return(arr);
 }	
 
-int		get_max_dist_index(t_triangle t)
+int		get_max_dist_index(t_world_triangle t)
 {
 	float	dist;
 	int		index;
@@ -223,7 +223,7 @@ int		get_max_dist_index(t_triangle t)
 
 void	clip_navmesh(t_navigation *nav, t_entity *ent, t_world *world)
 {
-	t_triangle	*arr;
+	t_world_triangle	*arr;
 	int			size;
 	int			start = 0;
 	int			end = 1;
@@ -231,7 +231,7 @@ void	clip_navmesh(t_navigation *nav, t_entity *ent, t_world *world)
 	int			index;
 
 	size = 1000;
-	arr = ft_memalloc(sizeof(t_triangle) * size);
+	arr = ft_memalloc(sizeof(t_world_triangle) * size);
 	arr[0].p[0].v = ent->obj->vertices[0];
 	arr[0].p[1].v = ent->obj->vertices[1];
 	arr[0].p[2].v = ent->obj->vertices[2];

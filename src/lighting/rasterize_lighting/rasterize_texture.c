@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 17:14:18 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/22 14:14:40 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 18:57:36 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static void	sample_pixel(t_point xy, t_lighting *lighting)
 	lighting->map->texture[xy.y * lighting->map->size.x + xy.x] = clr;
 }
 
-static void	scanline(t_point_triangle triangle, t_lighting *lighting,
+static void	scanline(t_screen_triangle triangle, t_lighting *lighting,
 	t_v2rectangle bounds, int y)
 {
 	int	x;
@@ -44,7 +44,7 @@ static void	scanline(t_point_triangle triangle, t_lighting *lighting,
 	}
 }
 
-void	rasterize_texture(t_point_triangle triangle, t_lighting *lighting)
+void	rasterize_texture(t_screen_triangle triangle, t_lighting *lighting)
 {
 	t_v2rectangle	bounds;
 	t_vector2		offset;

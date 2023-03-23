@@ -6,119 +6,14 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 15:36:10 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/22 20:35:01 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 21:47:20 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-inline static void	update_world_triangle_box(t_quaternion *transformed, t_triangle *world_triangles)
+bool is_triangle_backface(t_world_triangle tritransformed, t_render *render)
 {
-	int i;
-	
-	i = 0;
-	while (i < 4)
-	{
-		world_triangles[i].p[0] = transformed[i];
-		world_triangles[i].p[1] = transformed[i + 4];
-		world_triangles[i].p[2] = transformed[((i + 1) % 4) + 4];
-		world_triangles[i + 4].p[0] = transformed[i];
-		world_triangles[i + 4].p[1] = transformed[(i + 1) % 4];
-		world_triangles[i + 4].p[2] = transformed[((i + 1) % 4) + 4];
-		i++;
-	}
-	world_triangles[8].p[0] = transformed[0];
-	world_triangles[8].p[1] = transformed[1];
-	world_triangles[8].p[2] = transformed[2];
-	world_triangles[9].p[0] = transformed[0];
-	world_triangles[9].p[1] = transformed[2];
-	world_triangles[9].p[2] = transformed[3];
-	world_triangles[10].p[0] = transformed[4];
-	world_triangles[10].p[1] = transformed[5];
-	world_triangles[10].p[2] = transformed[6];
-	world_triangles[11].p[0] = transformed[4];
-	world_triangles[11].p[1] = transformed[6];
-	world_triangles[11].p[2] = transformed[7];
-}
-
-inline static void	update_world_triangle_plane(t_quaternion *transformed, t_triangle *world_triangles)
-{
-	world_triangles[0].p[0] = transformed[0];
-	world_triangles[0].p[1] = transformed[2];
-	world_triangles[0].p[2] = transformed[3];
-	world_triangles[1].p[0] = transformed[0];
-	world_triangles[1].p[1] = transformed[1];
-	world_triangles[1].p[2] = transformed[3];
-}
-
-//rename function and enum that has the same name
-inline static void	update_world_triangle_ignore(t_quaternion *transformed, t_triangle *world_triangles)
-{
-	world_triangles[0] = (t_triangle){.p[0] = transformed[0],.p[1] = transformed[1],.p[2] = transformed[2]};
-}
-
-inline static void update_bounds_world_triangles(t_entity *entity, t_mat4x4 matworld)
-{
-	t_quaternion	transformed[8];
-	t_object		*obj;
-	int				index;
-
-	obj = entity->obj;
-	index = 0;
-	while (index < obj->bounds.count)
-	{
-		transformed[index] = vector3_to_quaternion(obj->bounds.box.v[index]);
-		transformed[index] = quaternion_mul_matrix(matworld, transformed[index]);
-		index++;
-	}
-	if (obj->bounds.type == bt_box)
-		update_world_triangle_box(transformed, entity->occlusion.world_tri);
-	else if (obj->bounds.type == bt_plane)
-		update_world_triangle_plane(transformed, entity->occlusion.world_tri);
-	else
-		update_world_triangle_ignore(transformed, entity->occlusion.world_tri);
-}
-
-bool render_worldspace(t_render *render, t_entity *entity)
-{
-	t_object *obj;
-	int index;
-	t_mat4x4 matworld;
-
-	obj = entity->obj;
-	if (obj == NULL) // TODO: Is this needed?
-		return(false);
-//	matworld = make_transform_matrix(entity->transform);
-	entity->matworld = matworld;
-	index = 0;
-	while (index < obj->vertice_count)
-	{
-		render->q[index] = vector3_to_quaternion(obj->vertices[index]);
-		if (entity->animation.active)
-			render->q[index].v = vector3_add(entity->obj->o_anim.frames[entity->animation.frame].deltavertices[index].delta, render->q[index].v);
-		// render->q[index] = quaternion_mul_matrix(matworld, render->q[index]);
-		render->q[index] = transformed_vector3(entity->transform, render->q[index].v);
-		index++;
-	}
-	//update_bounds_world_triangles(entity, matworld);
-	return(true);
-}
-
-t_triangle triangle_to_viewspace(t_triangle tritransformed, t_mat4x4 matview)
-{
-	tritransformed.p[0] = quaternion_mul_matrix(matview, tritransformed.p[0]);
-	tritransformed.p[1] = quaternion_mul_matrix(matview, tritransformed.p[1]);
-	tritransformed.p[2] = quaternion_mul_matrix(matview, tritransformed.p[2]);
-	tritransformed.t[0] = tritransformed.t[0];
-	tritransformed.t[1] = tritransformed.t[1];
-	tritransformed.t[2] = tritransformed.t[2];
-	tritransformed.clr = tritransformed.clr;
-	return (tritransformed);
-}
-
-bool is_triangle_backface(t_triangle tritransformed, t_render *render)
-{
-	return(false);
 	t_vector3 normal;
 	t_vector3 vcameraray;
 
@@ -130,44 +25,18 @@ bool is_triangle_backface(t_triangle tritransformed, t_render *render)
 		return (true);
 }
 
-t_point_triangle triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_triangle clipped, t_sdlcontext sdl)
-{
-	t_triangle triprojected;
-	t_point_triangle tri;
-	int i;
-	const t_vector3 voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
-
-	i = 0;
-	while (i < 3)
-	{
-		triprojected.p[i] = quaternion_mul_matrix(matproj, clipped.p[i]);
-		triprojected.t[i] = clipped.t[i];
-		tri.t[i].x = triprojected.t[i].x / triprojected.p[i].w;
-		tri.t[i].y = triprojected.t[i].y / triprojected.p[i].w;
-		tri.t[i].z = 1.0f / triprojected.p[i].w;
-		triprojected.p[i].v = vector3_div(triprojected.p[i].v, triprojected.p[i].w);
-		triprojected.p[i].v = vector3_negative(triprojected.p[i].v);
-		triprojected.p[i].v = vector3_add(triprojected.p[i].v, voffsetview);
-		tri.p[i].x = triprojected.p[i].v.x * (0.5f * (float)(sdl.window_w * sdl.resolution_scaling));
-		tri.p[i].y = triprojected.p[i].v.y * (0.5f * (float)(sdl.window_h * sdl.resolution_scaling));
-		i++;
-	}
-	tri.clr = clipped.clr;
-	return (tri);
-}
-
 static void clip_and_render_triangles(t_sdlcontext *sdl, t_render *render)
 {
-	clipped_point_triangle(render, *sdl);
-	render_buffer(sdl, render);
+	render_world_triangle_buffer_to_screen_triangle(render, *sdl);
+	render_screen_triangles_buffer(sdl, render);
 	render->screenspace_ptri_count = 0;
 	render->map.texture = NULL;
 	render->img = NULL;
 }
 
-void render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity)
+void render_world_triangles(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 {
-	t_triangle		world_tri;
+	t_world_triangle		world_tri;
 	t_object		*obj;
 	t_quaternion	temp;
 	int				i;

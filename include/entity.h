@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 19:08:51 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 21:37:50 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ typedef struct s_entity
 	t_anim			animation;
 	t_object		*obj;
 	t_occlusion		occlusion;
-	t_triangle		*world_triangles;
+	t_world_triangle		*world_triangles;
 	t_map			*map;
 	t_mat4x4		matworld;
 }	t_entity;
@@ -136,16 +136,16 @@ void	draw_entity_icon(t_entity *entity, t_img *img, struct s_world *world);
 void	draw_worldspace_icon(t_vector3 pos, t_img *img, struct s_world *world);
 void	highlight_entity(t_sdlcontext *sdl, t_entity *entity, uint32_t color);
 void	render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity);
-bool	render_worldspace(t_render *render, t_entity *entity);
-void	render_quaternions(t_sdlcontext *sdl, t_render *render, t_entity *entity);
-void	render_entity_worldtriangles(t_entity *entity, struct s_world *world);
+bool	calculate_quaternion_buffer_for_entity(t_quaternion *q, t_entity *entity);
+void	render_world_triangles(t_sdlcontext *sdl, t_render *render, t_entity *entity);
+void	calculate_triangles_for_entity(t_entity *entity, struct s_world *world);
 
 uint32_t	update_pixel_brightness(uint32_t light, uint32_t clr);
 uint32_t	get_lighting_for_pixel(t_lighting *lighting, uint32_t light_amount, t_vector3 location);
 uint32_t	get_light_amount(float delta, uint32_t clr, uint32_t light_amount);
 t_vector3	texcoord_to_loc(t_vector3 ws[3], t_vector2 uv[3], t_vector2 p);
 t_step		make_slope(float start, float end, float steps);
-t_stepv3	make_uv_slopev3(int start, int end, int y, t_point_triangle triangle);
+t_stepv3	make_uv_slopev3(int start, int end, int y, t_screen_triangle triangle);
 
 /* LIGHTING */
 void render_zbuffer(t_lighting *lighting, t_entity *entity);

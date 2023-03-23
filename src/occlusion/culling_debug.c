@@ -6,13 +6,13 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 14:59:10 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/14 13:05:13 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 18:50:40 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-void set_square_from_triangles(t_occlusion *occl, t_point_triangle *t, int count)
+void set_square_from_triangles(t_occlusion *occl, t_screen_triangle *t, int count)
 {
 	t_square	*s;
 	t_vector2	v;

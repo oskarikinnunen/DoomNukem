@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 13:07:06 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/22 17:35:52 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 18:56:17 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static void	sample_pixel(t_point xy, t_lighting *lighting)
 
 static void	buffer_triangles(int start, int i, int index, t_entity *entity)
 {
-	t_point_triangle	temp;
+	t_screen_triangle	temp;
 	int					vertex;
 	size_t				size;
 	t_lighting			lighting;

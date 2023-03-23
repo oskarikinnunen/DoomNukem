@@ -21,8 +21,7 @@ inline t_step	make_slope(float start, float end, float steps)
 	return(temp);
 }
 
-//TODO: can we use numbers in function names dunno
-inline t_stepv3 make_uv_slopev3(int start, int end, int y, t_point_triangle triangle)
+inline t_stepv3 make_uv_slopev3(int start, int end, int y, t_screen_triangle triangle)
 {
 	t_stepv3	slope;
 	t_vector2	left;

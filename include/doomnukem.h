@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 15:32:23 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 19:23:49 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@
 # include "npcs.h"
 # include "player.h"
 # include "input.h"
-# include "debug.h"
 # include "navigation.h"
 # include <SDL_thread.h>
 # include "thread.h"
@@ -152,7 +151,6 @@ typedef struct s_world
 	char				name[32];
 	t_player			*player; //make this just a local player, not a pointer?
 	t_clock				clock;
-	t_debugconsole		debugconsole;
 	struct s_autogui	*debug_gui;
 	t_log				log;
 	t_sdlcontext		*sdl;

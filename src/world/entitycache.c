@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entitycache.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 11:13:16 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 17:36:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 19:20:41 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	entity_assign_object(t_world *world, t_entity *entity, t_object *obj)
 	if (obj == NULL)
 		return ;
 	ft_strcpy(entity->object_name.str, obj->name);
-	entity->world_triangles = (t_triangle *)malloc(sizeof(t_triangle)
+	entity->world_triangles = (t_world_triangle *)malloc(sizeof(t_world_triangle)
 			* obj->face_count);
 	if (!entity->world_triangles)
 		doomlog(LOG_WARNING, "Non-fatal malloc error on entity_assign_object");

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:44:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 15:32:55 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 17:46:01 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static void	gameloop(t_sdlcontext sdl, t_game game)
 	protagonist_play_audio(&game.player, &game.world, "protag_letsdo.wav");
 	play_music(&sdl, "music_arp1_ambient.wav");
 	// LIGHTING
-	for_all_active_entities(&game.world, render_entity_worldtriangles);
+	for_all_active_entities(&game.world, calculate_triangles_for_entity);
 	recalculate_lighting(&game.world);
 	sdl.lighting_toggled = true;
 	while (gr == game_continue)

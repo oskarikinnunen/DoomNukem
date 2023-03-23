@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
+#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/23 15:32:13 by raho             ###   ########.fr        #
+#    Updated: 2023/03/23 21:50:40 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -148,10 +148,17 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		occlusion/culling_debug.c \
 		occlusion/bitmask_culling.c \
 		render/render_entity.c \
-		render/render_clip.c \
-		render/render_triangle.c \
+		render/renders_world_triangles_to_screen_triangles.c \
+		render/render_buffer.c \
 		render/init_render.c \
 		render/render_space.c \
+		render/render_gizmo.c \
+		render/transform/transform_triangle.c \
+		render/transform/transform_quaternion.c \
+		render/transform/clip_world_triangle_to_plane.c \
+		render/transform/clip_screen_triangle_to_plane.c \
+		render/transform/clip_screen_triangle_to_screen.c \
+		render/transform/transform_bounds.c \
 		decal/decal.c \
 		lighting/allocate_map.c \
 		lighting/bake_lighting.c \
@@ -225,8 +232,7 @@ VECTORSRCFILES= conversions.c \
 		vector3_shorthands2.c \
 		barycentric.c \
 		triangle_functions.c \
-		triangle_functions2.c \
-		debug.c #TODO: Remove before eval
+		triangle_functions2.c
 VECTORSRC= $(addprefix src/vectors/,$(VECTORSRCFILES))
 SRC= $(addprefix src/,$(SRCFILES))
 SRC+= $(VECTORSRC)

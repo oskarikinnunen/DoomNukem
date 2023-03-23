@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   physics.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 13:52:50 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 17:56:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 19:19:36 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ float sign2 (t_point p1, t_point p2, t_point p3)
     return ((p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y));
 }
 
-bool pointtrianglecollision (t_point point, t_triangle tri)
+bool pointtrianglecollision (t_point point, t_world_triangle tri)
 {
     float d1, d2, d3;
     bool has_neg, has_pos;

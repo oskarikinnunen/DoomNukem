@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_tools.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 14:49:34 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 19:17:20 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,7 @@ bool				raycast_plane(t_ray r, t_raycastinfo *info, float plane_z);
 bool				raycast_entity(t_ray r, t_raycastinfo *info, t_entity *entity);
 bool				raycast_tri(t_ray r, t_vector3_tri tri, float *dist);
 bool				entity_lookedat(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
-bool				triangle_lookedat(t_render r, t_triangle tri, t_sdlcontext sdl);
+bool				triangle_lookedat(t_render r, t_world_triangle tri, t_sdlcontext sdl);
 int32_t				entity_lookedat_triangle_index(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
 t_vector3			*entity_lookedat_vertex(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
 t_entity			*selected_entity(t_editor *ed, t_sdlcontext sdl);
