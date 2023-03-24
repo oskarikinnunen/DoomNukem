@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 21:51:13 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 13:07:43 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 14:26:44 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static int	parse_music_list(int fd, t_audio *audio)
 		{
 			create_music(i, music_path, audio);
 			if (audio->music[i].sound != NULL)
-				ft_strcpy(audio->music[i].name, extract_filename(music_path));
+				ft_strncpy_term(audio->music[i].name, extract_filename(music_path), 64);
 			doomlog_mul(LOG_NORMAL, (char *[3]){\
 					"loaded music file:", audio->music[i].name, NULL});
 			free(music_path);
@@ -51,9 +51,7 @@ void	editor_load_music(t_audio *audio)
 	audio->music_count = count_asset_list(MUSICLISTPATH);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 			MUSICLISTPATH, "music_count =", s_itoa(audio->music_count), NULL});
-	audio->music = ft_memalloc(sizeof(t_audiosample) * audio->music_count);
-	if (audio->music == NULL)
-		doomlog(LOG_EC_MALLOC, "editor_load_music");
+	audio->music = prot_memalloc(sizeof(t_audiosample) * audio->music_count);
 	fd = fileopen(MUSICLISTPATH, O_RDONLY);
 	ret = parse_music_list(fd, audio);
 	if (ret == -1)

@@ -6,12 +6,11 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 13:42:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 12:37:50 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 14:04:36 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
-
 
 static t_img	*error_image()
 {
@@ -24,7 +23,7 @@ static t_img	*error_image()
 		err_img.size.x = 32;
 		err_img.size.y = 32;
 		err_img.length = 32 * 32;
-		ft_strcpy(err_img.name, "ERRORIMAGE");
+		ft_strncpy_term(err_img.name, "ERRORIMAGE", 120);
 		i = 0;
 		while (i < 32 * 32)
 		{
@@ -76,7 +75,7 @@ t_img	*get_image_by_name(t_sdlcontext sdl, char *name)
 	char	fullpath[256];
 
 	i = 0;
-	ft_strcpy(correct_name, name);
+	ft_strncpy_term(correct_name, name, 60);
 	if (ft_strstr(name, ".tga") == NULL)
 		ft_strcat(correct_name, ".tga");
 	while (i < sdl.imagecount && sdl.images != NULL)

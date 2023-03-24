@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:32:20 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 13:07:15 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 14:29:25 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,12 +72,14 @@ static void	unpack_and_load_object(int obj_i, int level_fd,
 	materials = NULL;
 	material_name = replace_extension(object_name, "mtl");
 	if (material_name == NULL)
-		doomlog(LOG_EC_MALLOC, "couldn't replace object_name extension to mtl");
+		doomlog(LOG_EC_MALLOC, \
+				"couldn't replace object_name extension to mtl");
 	load_and_write_filecontent(level_fd, object_name, TEMPOBJ);
 	load_and_write_filecontent(level_fd, material_name, TEMPMTL);
 	sdl->objects[obj_i] = objparse(TEMPOBJ);
 	if (sdl->objects[obj_i].vertices != NULL)
-		ft_strcpy(sdl->objects[obj_i].name, extract_filename(object_name));
+		ft_strncpy_term(sdl->objects[obj_i].name, \
+				extract_filename(object_name), 250);
 	free(material_name);
 	free(sdl->objects[obj_i].materials); // TODO: remove this and fix the material malloc in objparse
 	playmode_parse_mtllib(&materials);

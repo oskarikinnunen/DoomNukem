@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   audio_sounds.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/28 15:14:01 by raho              #+#    #+#             */
-/*   Updated: 2023/03/20 17:59:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 14:00:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,6 @@ void	play_music(t_sdlcontext *sdl, char *musicname)
 
 	sample = get_music(sdl, musicname);
 	if (sample.sound != NULL)
-	{
-		printf("found sample for music %s \n", musicname);
-		FMOD_System_PlaySound(sdl->audio.system, sample.sound,
-			NULL, false, &sdl->audio.music_channel);
-	}
+		FMOD_System_PlaySound(sdl->audio.system, sample.sound, \
+				NULL, false, &sdl->audio.music_channel);
 }

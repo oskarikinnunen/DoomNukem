@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomlog.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 14:59:55 by raho              #+#    #+#             */
-/*   Updated: 2023/02/16 17:09:23 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/24 14:03:39 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*s_itoa(int i)
 	char		*a;
 
 	a = ft_itoa(i);
-	ft_strcpy(str, a);
+	ft_strncpy_term(str, a, 30);
 	free(a);
 	return (str);
 }

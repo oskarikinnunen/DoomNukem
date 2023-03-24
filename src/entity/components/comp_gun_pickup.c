@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 19:48:28 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 14:37:56 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	comp_gun_pickup_update(t_entity *entity, t_world *world)
 			}
 			i++;
 		}
-		ft_strcpy(world->player->gui_notif.str.str, "You picked up a new gun");
+		ft_strncpy_term(world->player->gui_notif.str.str, "You picked up a new gun", 60);
 		world->player->gui_notif.starttime = world->clock.time;
 		destroy_entity(world, entity);
 	}

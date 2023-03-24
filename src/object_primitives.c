@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   object_primitives.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 12:50:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 17:28:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 14:25:50 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,7 @@ static t_material	*default_mat(void)
 	t_material	*mat;
 
 	mat = prot_memalloc(sizeof(t_material));
-	if (mat == NULL)
-		doomlog(LOG_EC_MALLOC, NULL);
-	ft_strcpy(mat->texturename, "metal03.cng");
+	ft_strncpy_term(mat->texturename, "metal03.cng", 250);
 	mat->kd = INT_MAX;
 	return (mat);
 }
@@ -43,7 +41,7 @@ t_object	*object_tri(t_sdlcontext *sdl)
 	tri->vertice_count = 3;
 	tri->faces = prot_memalloc(sizeof(t_face) * 1);
 	tri->face_count = 1;
-	strcpy(tri->name, "meshtri");
+	ft_strncpy_term(tri->name, "meshtri", 250);
 	tri->vertices[0] = (t_vector3){0.0f, 0.0f, 0.0f};
 	tri->vertices[1] = (t_vector3){10.0f, 0.0f, 0.0f};
 	tri->vertices[2] = (t_vector3){0.0f, 0.0f, 10.0f};
@@ -109,14 +107,12 @@ t_object	*object_plane(t_sdlcontext *sdl)
 {
 	t_object	*plane;
 
-	plane = ft_memalloc(sizeof(t_object));
+	plane = prot_memalloc(sizeof(t_object));
 	plane->vertices = prot_memalloc(sizeof(t_vector3) * 4);
 	plane->vertice_count = 4;
 	plane->faces = prot_memalloc(sizeof(t_face) * 2);
 	plane->face_count = 2;
-	strcpy(plane->name, "plane");
-	if (plane->vertices == NULL || plane->faces == NULL)
-		doomlog(LOG_EC_MALLOC, NULL);
+	ft_strncpy_term(plane->name, "plane", 250);
 	plane_make_faces(plane);
 	plane_make_uvs_and_mats(plane, sdl);
 	return (plane);

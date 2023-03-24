@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:01:27 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 13:06:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 14:27:47 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ static void	unpack_and_load_image(int img_i, int level_fd,
 	load_and_write_filecontent(level_fd, image_name, TEMPIMG);
 	sdl->images[img_i] = tga_parse(TEMPIMG);
 	if (sdl->images[img_i].data != NULL)
-		ft_strcpy(sdl->images[img_i].name, extract_filename(image_name));
+		ft_strncpy_term(sdl->images[img_i].name, \
+				extract_filename(image_name), 120);
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
 			"unpacked and loaded .tga file:", sdl->images[img_i].name, NULL});
 }

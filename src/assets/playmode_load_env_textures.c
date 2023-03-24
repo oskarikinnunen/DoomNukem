@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:07:37 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 13:06:53 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 14:27:23 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ static void	unpack_and_load_texture(int txtr_i, int level_fd,
 	load_and_write_filecontent(level_fd, env_texture, TEMPIMGENV);
 	sdl->env_textures[txtr_i] = tga_parse(TEMPIMGENV);
 	if (sdl->env_textures[txtr_i].data != NULL)
-		ft_strcpy(sdl->env_textures[txtr_i].name, \
-					extract_filename(env_texture));
+		ft_strncpy_term(sdl->env_textures[txtr_i].name, \
+					extract_filename(env_texture), 120);
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
 			"unpacked and loaded .tga file:", \
 			sdl->env_textures[txtr_i].name, NULL});

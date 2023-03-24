@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   save_image_data.c                                  :+:      :+:    :+:   */
+/*   image_data.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 16:12:58 by raho              #+#    #+#             */
-/*   Updated: 2023/03/03 20:09:08 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 13:57:07 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,9 +92,7 @@ static void	parse_bottom_right(int fd, char *filename, t_tga *tga)
 void	save_image_data(int fd, char *filename, t_tga *tga)
 {
 	tga->image_data.pixels = \
-			ft_memalloc(sizeof(uint32_t) * tga->image_data.size);
-	if (tga->image_data.pixels == NULL)
-		doomlog(LOG_EC_MALLOC, filename);
+			prot_memalloc(sizeof(uint32_t) * tga->image_data.size);
 	if (tga->pixel_order.top && tga->pixel_order.left)
 		parse_top_left(fd, filename, tga);
 	else if (tga->pixel_order.top && tga->pixel_order.right)

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:36:10 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 13:07:59 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 13:51:20 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,7 @@ void	editor_load_anim_legend(t_sdlcontext *sdl)
 
 	doomlog(LOG_NORMAL, "LOADING ANIMATIONS");
 	fd = fileopen(ANIMLEGENDPATH, O_RDONLY);
-	sdl->human_anims = ft_memalloc(sizeof(t_human_animation) * 30);
-	if (sdl->human_anims == NULL)
-		doomlog(LOG_EC_MALLOC, "sdl->human_anims");
+	sdl->human_anims = prot_memalloc(sizeof(t_human_animation) * 30);
 	sdl->human_anim_count = 0;
 	ret = parse_lines(fd, sdl);
 	if (ret == -1)

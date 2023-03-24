@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 20:56:42 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 13:07:50 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 14:25:59 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ static int	parse_font_list(int fd, t_sdlcontext *sdl)
 		{
 			sdl->fonts[i] = font_parse(font_path);
 			if (sdl->fonts[i].sizes[0] != NULL)
-				ft_strcpy(sdl->fonts[i].name, extract_filename(font_path));
+				ft_strncpy_term(sdl->fonts[i].name, extract_filename(font_path), 120);
 			doomlog_mul(LOG_NORMAL, (char *[3]){\
 					"parsed .ttf file:", sdl->fonts[i].name, NULL});
 			free(font_path);
@@ -76,9 +76,7 @@ void	editor_load_fonts(t_sdlcontext *sdl)
 	sdl->fontcount = count_asset_list(FONTLISTPATH);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 			FONTLISTPATH, "size =", s_itoa(sdl->fontcount), NULL});
-	sdl->fonts = ft_memalloc(sizeof(t_font) * sdl->fontcount);
-	if (sdl->fonts == NULL)
-		doomlog(LOG_EC_MALLOC, "sdl->fonts");
+	sdl->fonts = prot_memalloc(sizeof(t_font) * sdl->fontcount);
 	fd = fileopen(FONTLISTPATH, O_RDONLY);
 	ret = parse_font_list(fd, sdl);
 	if (ret == -1)

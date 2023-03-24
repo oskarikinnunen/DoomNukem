@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   autogui.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 20:56:55 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 14:35:13 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -501,10 +501,12 @@ bool	gui_shortcut_button(char *str, int alpha_or_keymask, t_autogui *gui)
 	br.rect = empty_rect();
 	br.clicked = false;
 	str_s = ft_strnew(ft_strlen(str) + 4);
+	/* if (str_s == NULL)		TODO: can this be put here? -Rene
+		doomlog(LOG_EC_MALLOC, "gui_shortcut_button"); */
 	if (ft_isalpha(alpha_or_keymask))
-		snprintf(str_s, ft_strlen(str) + 4, "[%c]%s", alpha_or_keymask, str);
+		snprintf(str_s, ft_strlen(str) + 4, "[%c]%s", alpha_or_keymask, str);	// TODO: REMOVE snprintf
 	else
-		snprintf(str_s, ft_strlen(str) + 4, "[%s]", str);
+		snprintf(str_s, ft_strlen(str) + 4, "[%s]", str);	// TODO: REMOVE snprintf
 	if (gui_shoulddraw(gui))
 	{
 		br = autogui_internal_button(str_s, gui);
@@ -586,7 +588,7 @@ void	gui_string_edit(char *str, t_autogui	*gui)
 	t_point		start;
 	char		bstr[40];
 
-	ft_strcpy(bstr, str);
+	ft_strncpy_term(bstr, str);
 	done = false;
 	orig = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
 	rect = empty_rect();

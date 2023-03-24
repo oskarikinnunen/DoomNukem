@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tga.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 16:12:58 by raho              #+#    #+#             */
-/*   Updated: 2023/03/23 21:26:20 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 13:57:41 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,13 +84,7 @@ static t_img	tga_to_simpleimg(char *file_name, t_tga *tga)
 	img.size.y = tga->header.image_height;
 	img.length = tga->image_data.size;
 	img.transparency = tga->transparency;
-	img.data = ft_memalloc(img.length * sizeof(uint32_t));
-	if (img.data == NULL)
-	{
-		printf("img data null???\n");
-		doomlog(LOG_EC_MALLOC, "tga_to_simpleimg");
-	}
-		
+	img.data = prot_memalloc(img.length * sizeof(uint32_t));
 	i = 0;
 	while (i < img.length)
 	{
@@ -98,7 +92,6 @@ static t_img	tga_to_simpleimg(char *file_name, t_tga *tga)
 			img.data[i] = flip_alpha(tga->image_data.pixels[i]);
 		else
 			img.data[i] = tga->image_data.pixels[i];
-		//img.data[i] = flip_alpha(tga->image_data.pixels[i]);
 		i++;
 	}
 	

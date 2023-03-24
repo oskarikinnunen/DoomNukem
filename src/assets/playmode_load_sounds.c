@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 22:05:13 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 13:07:02 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 14:29:40 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ static void	unpack_and_load_sound(int sample_i, int level_fd,
 		create_sound(sample_i, TEMPSOUND, audio);
 	}
 	if (audio->samples[sample_i].sound != NULL)
-		ft_strcpy(audio->samples[sample_i].name, extract_filename(sound_name));
+		ft_strncpy_term(audio->samples[sample_i].name, \
+				extract_filename(sound_name), 60);
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
 			"unpacked and loaded sound file:", \
 			audio->samples[sample_i].name, NULL});

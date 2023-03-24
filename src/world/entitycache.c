@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entitycache.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 11:13:16 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 21:56:27 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/24 14:40:25 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	entity_assign_object(t_world *world, t_entity *entity, t_object *obj)
 	}
 	if (obj == NULL)
 		return ;
-	ft_strcpy(entity->object_name.str, obj->name);
+	ft_strncpy_term(entity->object_name.str, obj->name, 60);
 	entity->world_triangles = (t_world_triangle *)malloc(sizeof(t_world_triangle)
 			* obj->face_count);
 	if (!entity->world_triangles)

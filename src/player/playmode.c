@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:44:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 13:38:35 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 13:58:36 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ static void	gameloop(t_sdlcontext sdl, t_game game)
 			print_text(&sdl, s_itoa(game.world.clock.fps), (t_point){sdl.window_w - 80, 10});
 			debug_ramps(&game);
 			draw_player_hud(&game.world);
-			memcpy(sdl.window_surface->pixels, sdl.surface->pixels, sizeof(uint32_t) * sdl.window_w * sdl.window_h);
+			ft_memcpy(sdl.window_surface->pixels, sdl.surface->pixels, sizeof(uint32_t) * sdl.window_w * sdl.window_h);
 			if (SDL_UpdateWindowSurface(sdl.window) < 0)
 				doomlog(LOG_EC_SDL_UPDATEWINDOWSURFACE, NULL);
 			update_audio(&game.world);

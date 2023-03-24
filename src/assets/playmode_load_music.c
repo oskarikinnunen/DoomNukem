@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 22:05:25 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 13:07:10 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 14:28:02 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ static void	unpack_and_load_music(int music_i, int level_fd,
 	load_and_write_filecontent(level_fd, music_name, TEMPMUSIC);
 	create_music(music_i, TEMPMUSIC, audio);
 	if (audio->music[music_i].sound != NULL)
-		ft_strcpy(audio->music[music_i].name, extract_filename(music_name));
+		ft_strncpy_term(audio->music[music_i].name, \
+				extract_filename(music_name), 60);
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
 			"unpacked and loaded music file:", \
 			audio->music[music_i].name, NULL});

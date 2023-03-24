@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 13:57:45 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 13:32:22 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 14:39:00 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void	world_save_to_file(t_world world)
 	size_t	surface_size;
 
 	doomlog(LOG_NORMAL, "SAVING WORLD");
-	ft_strcpy(level_path, "worlds/");
+	ft_strncpy_term(level_path, "worlds/", 250);
 	ft_strncat(level_path, world.name, 200);
 	clean_create_level_file(level_path);
 	surface_size = sizeof(uint32_t) * \

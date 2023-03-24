@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 13:37:55 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 14:27:10 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	playmode_load_assets(char *level_name, t_sdlcontext *sdl)
 	char		level_path[256];
 	int			fd;
 
-	ft_strcpy(level_path, "worlds/");
+	ft_strncpy_term(level_path, "worlds/", 250);
 	ft_strncat(level_path, level_name, 200);
 	fd = fileopen(level_path, O_RDONLY);
 	playmode_load_fonts(fd, sdl);

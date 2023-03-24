@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool_paint.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 14:52:25 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 19:28:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 14:36:53 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	apply_floortexture(t_world *world, t_area *room, char *texname) //TODO: rem
 	t_meshtri	*floor;
 
 	i = 0;
-	ft_strcpy(room->s_floortex.str, texname);
+	ft_strncpy_term(room->s_floortex.str, texname, 60);
 }
 
 static t_wall	*_room_get_wall_with_entity(t_area *room, t_entity *entitymatch)
@@ -141,7 +141,7 @@ static void paint_room(t_entity *hit_ent, t_img *tex, t_world *world)
 		{
 			if (area->walls[i].entity == hit_ent)
 			{
-				ft_strcpy(area->walls[i].s_walltex.str, tex->name);
+				ft_strncpy_term(area->walls[i].s_walltex.str, tex->name, 60);
 				room_init(area, world);
 				return;
 			}
@@ -152,7 +152,7 @@ static void paint_room(t_entity *hit_ent, t_img *tex, t_world *world)
 		{
 			if (area->floors[i].entity == hit_ent)
 			{
-				ft_strcpy(area->s_floortex.str, tex->name);
+				ft_strncpy_term(area->s_floortex.str, tex->name, 60);
 				room_init(area, world);
 				return;
 			}
@@ -163,7 +163,7 @@ static void paint_room(t_entity *hit_ent, t_img *tex, t_world *world)
 		{
 			if (area->ceilings[i].entity == hit_ent)
 			{
-				ft_strcpy(area->s_ceiltex.str, tex->name);
+				ft_strncpy_term(area->s_ceiltex.str, tex->name, 60);
 				room_init(area, world);
 				return;
 			}

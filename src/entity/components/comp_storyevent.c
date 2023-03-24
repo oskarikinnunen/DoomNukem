@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_storyevent.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 17:29:20 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 14:38:07 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static void	storyevent_get_text(t_component comp, t_storyevent *storyevent)
 		"temp5",
 	};
 
-	ft_strcpy(storyevent->text, strs[comp.data_preset]);
+	ft_strncpy_term(storyevent->text, strs[comp.data_preset], 120);
 }
 
 /* Called once per frame after the 3D world has been drawn, use this to draw gizmos/rays/whatever*/

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gun_tool.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:49:59 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 18:32:19 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 14:36:24 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,6 @@ t_tool	*get_gun_tool()
 	{
 		tool.tooldata = ft_memalloc(sizeof(t_guntooldata));
 	}
-	ft_strcpy(tool.icon_name, "linetool.png");
+	ft_strncpy_term(tool.icon_name, "linetool.png", 250);
 	return (&tool);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gun_presets.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 12:51:01 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/17 17:58:19 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 14:39:23 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ t_gunstats	gun_machinegun(void)
 	t_gunstats	stats;
 
 	ft_bzero(&stats, sizeof(stats));
-	ft_strcpy(stats.object_name, "grenadelauncher.obj");
-	ft_strcpy(stats.audio_name, "gun_machinegun1.wav");
+	ft_strncpy_term(stats.object_name, "grenadelauncher.obj", 120);
+	ft_strncpy_term(stats.audio_name, "gun_machinegun1.wav", 120);
 	stats.ammomask = AM_ASSAULT;
 	stats.holsterpos = (t_vector3){11.5f, 7.90f, -10.9f};
 	stats.anglerecovery = 0.0006f;
@@ -42,8 +42,8 @@ t_gunstats	gun_sniper(void)
 	t_gunstats	stats;
 
 	ft_bzero(&stats, sizeof(stats));
-	ft_strcpy(stats.object_name, "welrod.obj");
-	ft_strcpy(stats.audio_name, "gun_sniper.wav");
+	ft_strncpy_term(stats.object_name, "welrod.obj", 120);
+	ft_strncpy_term(stats.audio_name, "gun_sniper.wav", 120);
 	stats.ammomask = AM_SNIPER;
 	stats.holsterpos = (t_vector3){5.0f, 3.7f, -5.1f};
 	stats.anglerecovery = 0.0002f;
