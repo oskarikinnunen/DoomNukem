@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 15:37:34 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 19:36:43 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 #include "objects.h"
 #include "entity.h"
 #include "navigation.h"
-
 
 char	*world_fullpath(char	*filename)
 {
@@ -227,7 +226,7 @@ void	editorloop(char *level, t_sdlcontext sdl)
 	sdl.fog = false;
 	while (ed.gamereturn == game_continue)
 	{
-		update_deltatime(&ed.world.clock);
+		update_clock(&ed.world.clock);
 		ed.gamereturn = editor_events(&ed);
 		if (!ed.player.locked)
 			moveplayer(&ed.player, &ed.hid.input, &ed.world);
@@ -253,6 +252,6 @@ void	editorloop(char *level, t_sdlcontext sdl)
 	if (ed.gamereturn == game_exit)
 	{
 		free_render(sdl.render);
-		quit_game(&sdl);
+		exit (0);
 	}
 }

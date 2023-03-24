@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/24 17:52:10 by raho             ###   ########.fr        #
+#    Updated: 2023/03/24 19:33:08 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -111,6 +111,7 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		player/playermovement_normal1.c \
 		player/playermovement_normal2.c \
 		player/playermovement_noclip.c \
+		player/playmode_set_up.c \
 		player/playmode.c \
 		player/playmode_death.c \
 		player/playmode_events.c \

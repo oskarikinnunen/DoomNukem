@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 15:37:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 19:14:57 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,6 @@ void	free_sdl_stuff(t_sdlcontext *sdl)
 		free(sdl->bitmask.tile);
 	if (sdl->scaling_buffer != NULL)
 		free(sdl->scaling_buffer);
-}
-
-void	quit_game(t_sdlcontext *sdl)
-{
-	SDL_Quit();
-	exit(0);
 }
 
 void	alloc_occlusion(t_sdlcontext *sdl)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   player.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 14:31:10 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 13:25:38 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 19:59:15 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,18 @@
 #include "doomnukem.h"
 #include "movement_defs.h"
 #include "player.h"
+
+static void	gun_entity_set_entity_values(t_gun *gun)
+{
+	gun->entity->ignore_raycasts = true;
+	gun->entity->dont_save = true;
+	gun->shoot_anim.framerate = 120;
+	gun->shoot_anim.loop = false;
+	gun->shoot_anim.lastframe = 2;
+	gun->view_anim.framerate = 120;
+	gun->view_anim.loop = false;
+	gun->view_anim.lastframe = 4;
+}
 
 static void	player_init_weapons(t_player *player, t_world *world)
 {
@@ -34,21 +46,14 @@ static void	player_init_weapons(t_player *player, t_world *world)
 		player->guns[i].entity = spawn_entity(world,
 				get_object_by_name(*world->sdl,
 					player->guns[i].stats.object_name));
-		player->guns[i].entity->ignore_raycasts = true;
-		player->guns[i].entity->dont_save = true;
-		player->guns[i].shoot_anim.framerate = 120;
-		player->guns[i].shoot_anim.loop = false;
-		player->guns[i].shoot_anim.lastframe = 2;
-		player->guns[i].view_anim.framerate = 120;
-		player->guns[i].view_anim.loop = false;
-		player->guns[i].view_anim.lastframe = 4;
+		gun_entity_set_entity_values(&player->guns[i]);
 		i++;
 	}
 }
 
 void	player_init(t_player *player, t_sdlcontext *sdl, t_world *world)
 {
-	ft_bzero(player, sizeof(player));
+	ft_bzero(player, sizeof(t_player));
 	player->ammo_arr[AM_ASSAULT] = 120;
 	player->ammo_arr[AM_SNIPER] = 40;
 	player->ammo_arr[AM_GRENADE] = 20;

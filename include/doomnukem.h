@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 17:53:19 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 20:15:08 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,7 +203,12 @@ typedef struct s_game
 	t_player		player;
 } t_game;
 
-
+void			respawn_player(t_game *game);
+t_vector3		find_playerspawn(t_world *world);
+void			set_up_world(t_sdlcontext *sdl, t_game *game);
+void			update_window_surface(t_sdlcontext *sdl);
+void			debug_ramps(t_game *game);
+void			draw_fps_counter(t_sdlcontext *sdl, t_game *game);
 t_app_argument	get_app_argument(int argc, char **argv);
 void			editor_loading_screen(char *loading_message, t_sdlcontext *sdl);
 void			playmode_loading_screen(char *loading_message, t_sdlcontext *sdl);
@@ -264,7 +269,7 @@ t_point vector3_to_screenspace(t_vector3 vec, t_sdlcontext sdl);
 t_list	*loadmap(char *filename);
 
 /* DELTATIME.C */
-void	update_deltatime(t_clock *c);
+void	update_clock(t_clock *c);
 
 /* EDITOR_BUTTONS.C */
 void	draw_editor_buttons(t_sdlcontext sdl, uint8_t tool_selected); //TODO: MOVE TO EDITOR_TOOLS
