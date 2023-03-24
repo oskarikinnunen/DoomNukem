@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_load_assets.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 21:33:33 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 22:00:04 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,8 @@ void	editor_load_assets(t_sdlcontext *sdl)
 	objects_init(sdl);
 	human = get_object_by_name(*sdl, "Human.obj");
 	editor_loading_screen("LOADING ANIMATIONS", sdl);
-	//editor_load_anims("anim", human);
-	//editor_load_anim_legend(sdl);
+	editor_load_anims("anim", human);
+	editor_load_anim_legend(sdl);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 		"loaded", s_itoa(sdl->human_anim_count), "animations:", NULL});
 	i = 0;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:44:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 21:39:45 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 22:07:12 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ static t_vector3 find_playerspawn(t_world *world)
 		if (ent->status == es_active && ent->component.type == COMP_PLAYERSPAWN)
 		{
 			result = ent->transform.position;
-			result.z -= 10.0f;
+			result.z += 10.0f;
 			destroy_entity(world, ent);
 		}
 		i++;
