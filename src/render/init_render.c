@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 18:55:37 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/24 22:21:00 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_render	init_render(t_sdlcontext sdl)
 	render.screenspace_ptris = malloc(sizeof(t_screen_triangle) * 10000);
 	render.q = malloc(sizeof(t_quaternion) * 10000);
 	render.debug_img = get_image_by_name(sdl, "");
-	render.occlusion.occlusion = false;
+	render.occlusion.occlusion = true;
 	render.occlusion.occluder_box = false;
 	render.occlusion.draw_occlusion = false;
 	return (render);

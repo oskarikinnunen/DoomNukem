@@ -6,76 +6,70 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 21:41:03 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/23 21:41:53 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/24 22:08:46 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
 
-inline static void	update_world_triangle_box(t_quaternion *transformed, t_world_triangle *world_triangles)
+static void set_vertices_from_bounds(t_quaternion vertices[8], t_box box)
 {
-	int i;
-	
-	i = 0;
-	while (i < 4)
+	vertices[0] = (t_quaternion){box.min.x, box.min.y, box.min.z, 1.0f}; // botleft 
+	vertices[1] = (t_quaternion){box.min.x, box.max.y, box.min.z, 1.0f};
+	vertices[2] = (t_quaternion){box.max.x, box.max.y, box.min.z, 1.0f};
+	vertices[3] = (t_quaternion){box.max.x, box.min.y, box.min.z, 1.0f}; // botright 3
+	vertices[4] = (t_quaternion){box.min.x, box.min.y, box.max.z, 1.0f};
+	vertices[5] = (t_quaternion){box.min.x, box.max.y, box.max.z, 1.0f}; // topleft 1
+	vertices[6] = (t_quaternion){box.max.x, box.max.y, box.max.z, 1.0f}; // topright 2
+	vertices[7] = (t_quaternion){box.max.x, box.min.y, box.max.z, 1.0f};
+}
+
+inline static void	update_world_triangle_box(t_quaternion vertices[8], t_world_triangle *world_triangles)
+{
+	ft_memcpy(world_triangles[0].p, (t_quaternion[3]){vertices[0], vertices[1], vertices[2]}, sizeof(t_quaternion) * 3);
+	ft_memcpy(world_triangles[1].p, (t_quaternion[3]){vertices[0], vertices[2], vertices[3]}, sizeof(t_quaternion) * 3);
+	ft_memcpy(world_triangles[2].p, (t_quaternion[3]){vertices[4], vertices[6], vertices[5]}, sizeof(t_quaternion) * 3);
+	ft_memcpy(world_triangles[3].p, (t_quaternion[3]){vertices[4], vertices[7], vertices[6]}, sizeof(t_quaternion) * 3);
+	ft_memcpy(world_triangles[4].p, (t_quaternion[3]){vertices[4], vertices[5], vertices[1]}, sizeof(t_quaternion) * 3);
+	ft_memcpy(world_triangles[5].p, (t_quaternion[3]){vertices[4], vertices[1], vertices[0]}, sizeof(t_quaternion) * 3);
+	ft_memcpy(world_triangles[6].p, (t_quaternion[3]){vertices[3], vertices[2], vertices[6]}, sizeof(t_quaternion) * 3);
+	ft_memcpy(world_triangles[7].p, (t_quaternion[3]){vertices[3], vertices[6], vertices[7]}, sizeof(t_quaternion) * 3);
+	ft_memcpy(world_triangles[8].p, (t_quaternion[3]){vertices[1], vertices[5], vertices[6]}, sizeof(t_quaternion) * 3);
+	ft_memcpy(world_triangles[9].p, (t_quaternion[3]){vertices[1], vertices[6], vertices[2]}, sizeof(t_quaternion) * 3);
+	ft_memcpy(world_triangles[10].p, (t_quaternion[3]){vertices[4], vertices[0], vertices[3]}, sizeof(t_quaternion) * 3);
+	ft_memcpy(world_triangles[11].p, (t_quaternion[3]){vertices[4], vertices[3], vertices[7]}, sizeof(t_quaternion) * 3);
+}
+
+static void update_entity_radius_and_origin(t_entity *entity, t_quaternion q[8])
+{
+	float	dist;
+	t_box	box;
+	int		i;
+
+	box = entity->occlusion.bounds.box;
+	entity->occlusion.bounds.origin = vector3_div(vector3_add(box.max, box.min), 2.0f);
+	entity->occlusion.bounds.radius = vector3_dist(entity->occlusion.bounds.origin, q[0].v);
+	i = 1;
+	while (i < 8)
 	{
-		world_triangles[i].p[0] = transformed[i];
-		world_triangles[i].p[1] = transformed[i + 4];
-		world_triangles[i].p[2] = transformed[((i + 1) % 4) + 4];
-		world_triangles[i + 4].p[0] = transformed[i];
-		world_triangles[i + 4].p[1] = transformed[(i + 1) % 4];
-		world_triangles[i + 4].p[2] = transformed[((i + 1) % 4) + 4];
+		dist = vector3_dist(entity->occlusion.bounds.origin, q[i].v);
+		if (dist > entity->occlusion.bounds.radius)
+			entity->occlusion.bounds.radius = dist;
 		i++;
 	}
-	world_triangles[8].p[0] = transformed[0];
-	world_triangles[8].p[1] = transformed[1];
-	world_triangles[8].p[2] = transformed[2];
-	world_triangles[9].p[0] = transformed[0];
-	world_triangles[9].p[1] = transformed[2];
-	world_triangles[9].p[2] = transformed[3];
-	world_triangles[10].p[0] = transformed[4];
-	world_triangles[10].p[1] = transformed[5];
-	world_triangles[10].p[2] = transformed[6];
-	world_triangles[11].p[0] = transformed[4];
-	world_triangles[11].p[1] = transformed[6];
-	world_triangles[11].p[2] = transformed[7];
 }
 
-inline static void	update_world_triangle_plane(t_quaternion *transformed, t_world_triangle *world_triangles)
+void update_bounds_world_triangles(t_entity *entity)
 {
-	world_triangles[0].p[0] = transformed[0];
-	world_triangles[0].p[1] = transformed[2];
-	world_triangles[0].p[2] = transformed[3];
-	world_triangles[1].p[0] = transformed[0];
-	world_triangles[1].p[1] = transformed[1];
-	world_triangles[1].p[2] = transformed[3];
-}
+	t_quaternion	vertices[8];
 
-//rename function and enum that has the same name
-inline static void	update_world_triangle_ignore(t_quaternion *transformed, t_world_triangle *world_triangles)
-{
-	world_triangles[0] = (t_world_triangle){.p[0] = transformed[0],.p[1] = transformed[1],.p[2] = transformed[2]};
-}
-
-inline static void update_bounds_world_triangles(t_entity *entity, t_mat4x4 matworld)
-{
-	t_quaternion	transformed[8];
-	t_object		*obj;
-	int				index;
-
-	obj = entity->obj;
-	index = 0;
-	while (index < obj->bounds.count)
-	{
-		transformed[index] = vector3_to_quaternion(obj->bounds.box.v[index]);
-		transformed[index] = quaternion_mul_matrix(matworld, transformed[index]);
-		index++;
-	}
-	if (obj->bounds.type == bt_box)
-		update_world_triangle_box(transformed, entity->occlusion.world_tri);
-	else if (obj->bounds.type == bt_plane)
-		update_world_triangle_plane(transformed, entity->occlusion.world_tri);
-	else
-		update_world_triangle_ignore(transformed, entity->occlusion.world_tri);
+	set_vertices_from_bounds(vertices, entity->occlusion.bounds.box);
+	if (entity->occlusion.world_tri_count >= 8)
+		update_world_triangle_box(vertices, entity->occlusion.world_tri);
+	else if (entity->occlusion.world_tri_count == 2)
+		ft_memcpy(entity->occlusion.world_tri, entity->world_triangles, sizeof(t_world_triangle) * entity->obj->face_count);
+	else if (entity->occlusion.world_tri_count == 1)
+		entity->occlusion.world_tri[0] = entity->world_triangles[0];
+	update_entity_radius_and_origin(entity, vertices);
 }

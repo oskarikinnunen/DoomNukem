@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 16:11:28 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/24 22:03:29 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ typedef struct s_entity
 	t_occlusion		occlusion;
 	t_world_triangle		*world_triangles;
 	t_map			*map;
-	t_mat4x4		matworld;
+	t_transform		old_transform;
 }	t_entity;
 
 typedef struct s_prefab
@@ -114,9 +114,6 @@ typedef struct s_entitycache
 
 void	entity_set_component_functions(t_entity *entity, struct s_world *world);
 
-
-t_vector3	get_entity_world_position(t_entity *entity);
-
 /* OCCLUSION*/
 void	render_bitmask_row(int ax, int bx, float aw, float bw, int y, t_sdlcontext *sdl);
 void	update_frustrum_culling(struct s_world *world, t_sdlcontext *sdl, t_render *render);
@@ -137,6 +134,7 @@ void	draw_entity_icon(t_entity *entity, t_img *img, struct s_world *world);
 void	draw_worldspace_icon(t_vector3 pos, t_img *img, struct s_world *world);
 void	highlight_entity(t_sdlcontext *sdl, t_entity *entity, uint32_t color);
 void	render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity);
+void	update_bounds_world_triangles(t_entity *entity);
 bool	calculate_quat_buffer_for_entity(t_quaternion *q, t_entity *entity);
 void	render_entitys_world_triangles(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 void	calculate_triangles_for_entity(t_entity *entity, struct s_world *world);

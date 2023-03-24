@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   walls.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 17:46:08 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 20:48:33 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,6 @@ void	applywallmesh(t_wall *wall, t_area *room, t_world *world)
 		/*wall->entity->obj->uvs[1] = flipped_uv(wall->entity->obj->uvs[1]);
 		wall->entity->obj->uvs[2] = flipped_uv(wall->entity->obj->uvs[2]);
 		wall->entity->obj->uvs[3] = flipped_uv(wall->entity->obj->uvs[3]);*/
-		update_wall_bounds(wall);
 		default_wall_occlusion_settings(wall, NULL);
 	}
 }

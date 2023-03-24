@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 19:17:56 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/24 20:46:54 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -532,7 +532,6 @@ void	_room_triangulate_floors(t_world *world, t_area *room)
 		applytrimesh(*mtri, obj);
 		mtri->entity = spawn_entity(world, obj);
 		mtri->entity->rigid = true;
-		update_floor_bounds(mtri);
 		
 		//printf("uv 1: %f %f2: %f %f 3: %f %f\n", mtri->uv[0].x, mtri->uv[0].y, mtri->uv[1].x, mtri->uv[1].y, mtri->uv[2].x, mtri->uv[2].y);
 		//create_lightmap_for_entity(mtri->entity, world);
@@ -571,7 +570,6 @@ void	room_makeceilings(t_world *world, t_area *room)
 		applytrimesh(*mtri, obj);
 		mtri->entity = spawn_entity(world, obj);
 		mtri->entity->rigid = true;
-		update_floor_bounds(mtri);
 		i++;
 	}
 	room->ceilingcount = i;

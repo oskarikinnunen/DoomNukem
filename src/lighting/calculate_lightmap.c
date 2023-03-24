@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 14:14:49 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/23 21:55:15 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/24 20:45:50 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ static void	calculate_if_valid(t_entity *entity, t_lighting *lighting)
 	if (entity->status == es_active && entity->obj && entity->map)
 	{
 		dist = vector3_dist(lighting->light->world_position, \
-		get_entity_world_position(entity)) - entity->obj->bounds.radius;
+		entity->occlusion.bounds.origin) - entity->occlusion.bounds.radius;
 		if (dist < lighting->light->radius)
 			calculate_light_for_entity(entity, lighting);
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 13:19:25 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 21:15:14 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -358,10 +358,6 @@ void	update_occlusion(struct s_world *world, t_render *render);
 void	default_entity_occlusion_settings(t_entity *e, t_world *world);
 void	default_floor_occlusion_settings(t_meshtri *f, t_world *world);
 void	default_wall_occlusion_settings(t_wall *w, t_world *world);
-
-void	update_object_bounds(t_object *obj);
-void	update_floor_bounds(t_meshtri *f);
-void	update_wall_bounds(t_wall *w);
 
 void	free_roomwalls(t_world *world, t_area *room);
 

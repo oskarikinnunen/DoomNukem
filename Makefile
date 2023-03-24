@@ -6,7 +6,7 @@
 #    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/24 16:45:35 by vlaine           ###   ########.fr        #
+#    Updated: 2023/03/24 20:44:29 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -187,7 +187,6 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		world/entitycache_2.c \
 		world/entitycache_transparent.c \
 		world/world.c \
-		entity/entity_transform.c \
 		entity/components/comp_light.c \
 		entity/components/comp_healthpack.c \
 		entity/components/comp_playerspawn.c \
