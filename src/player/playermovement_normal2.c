@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:23:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 14:57:12 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 19:40:27 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	crouchupdate(t_player *player, t_world *world)
 			player->crouchjumped = true;
 		}
 		if (player->cp.isgrounded)
-			player->height = ft_fmovetowards(player->height,
+			player->height = ft_fmovetowards(player->height, \
 				PLAYER_CROUCHHEIGHT, PLAYER_CROUCHSPEED * world->clock.delta);
 	}
 	else

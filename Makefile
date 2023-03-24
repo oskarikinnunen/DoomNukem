@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/24 21:49:08 by okinnune         ###   ########.fr        #
+#    Updated: 2023/03/24 22:16:31 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -118,6 +118,7 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		player/playermovement_normal1.c \
 		player/playermovement_normal2.c \
 		player/playermovement_noclip.c \
+		player/playmode_set_up.c \
 		player/playmode.c \
 		player/playmode_death.c \
 		player/playmode_events.c \

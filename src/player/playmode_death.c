@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   playmode_death.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 15:32:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/15 13:20:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 20:16:04 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
-
-#define DEATH_RETRY_DELAY 6000
+#include "player.h"
+#include "movement_defs.h"
 
 void	playermovement_death(t_player *player,
 							t_world *world, uint32_t deathtime)
@@ -84,7 +84,6 @@ static inline void	show_surface(t_sdlcontext *sdl)
 		doomlog(LOG_EC_SDL_UPDATEWINDOWSURFACE, NULL);
 }
 
-//TODO: add game_reload_level at the end of this
 void	playmode_death(t_game *game)
 {
 	static uint32_t	deathtime;
@@ -96,7 +95,7 @@ void	playmode_death(t_game *game)
 	cont = false;
 	while (!cont)
 	{
-		update_deltatime(&game->world.clock);
+		update_clock(&game->world.clock);
 		if (deathmodel->animation.active)
 			update_anim(&deathmodel->animation, game->world.clock.delta);
 		playmode_events(game);
@@ -105,7 +104,10 @@ void	playmode_death(t_game *game)
 		death_hud(&game->world, deathtime);
 		if (game->world.clock.time > deathtime + DEATH_RETRY_DELAY
 			&& game->hid.input.reload)
+		{
 			cont = true;
+			respawn_player(game);
+		}
 		show_surface(game->world.sdl);
 		update_audio(&game->world);
 	}

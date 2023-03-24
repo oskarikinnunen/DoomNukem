@@ -3,14 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   surface_tools.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 19:37:04 by raho              #+#    #+#             */
-/*   Updated: 2023/03/23 17:15:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 19:25:47 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "doomnukem.h"
 #include "render.h"
+
+void	update_window_surface(t_sdlcontext *sdl)
+{
+	ft_memcpy(sdl->window_surface->pixels, sdl->surface->pixels, \
+				sizeof(uint32_t) * sdl->window_w * sdl->window_h);
+	if (SDL_UpdateWindowSurface(sdl->window) < 0)
+		doomlog(LOG_EC_SDL_UPDATEWINDOWSURFACE, NULL);
+}
 
 static void	blend_text(t_sdlcontext *sdl, SDL_Surface *src, \
 									t_point pos, t_point i)
