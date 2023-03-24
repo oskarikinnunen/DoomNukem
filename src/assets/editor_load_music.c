@@ -6,13 +6,13 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 21:51:13 by raho              #+#    #+#             */
-/*   Updated: 2023/03/16 22:22:23 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 13:07:43 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
 #include "doomnukem.h"
-#include <dirent.h>
+#include "assets.h"
 #include "file_io.h"
 
 static int	parse_music_list(int fd, t_audio *audio)

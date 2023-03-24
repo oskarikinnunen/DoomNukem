@@ -6,12 +6,13 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 17:22:47 by raho              #+#    #+#             */
-/*   Updated: 2023/03/14 13:35:03 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 13:07:40 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "file_io.h"
+#include "assets.h"
 
 static int	parse_object_list(int fd, t_sdlcontext *sdl)
 {

@@ -6,13 +6,13 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 22:05:13 by raho              #+#    #+#             */
-/*   Updated: 2023/03/23 19:11:16 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 13:07:02 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "render.h"
-#include <dirent.h>
+#include "assets.h"
 #include "file_io.h"
 
 static void	unpack_and_load_sound(int sample_i, int level_fd,

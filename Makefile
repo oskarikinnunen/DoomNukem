@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
+#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/23 21:54:57 by vlaine           ###   ########.fr        #
+#    Updated: 2023/03/24 13:24:05 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,6 +33,25 @@ LIBFT = libft/libft.a
 #Source files:
 SRCFILES= main.c img.c deltatime.c anim.c \
 		app_argument.c \
+		assets/asset_tools.c \
+		assets/editor_load_assets.c \
+		assets/editor_load_anims.c \
+		assets/editor_load_anim_legend.c \
+		assets/editor_load_images.c \
+		assets/editor_load_objects.c \
+		assets/editor_load_fonts.c \
+		assets/editor_load_sounds.c \
+		assets/editor_load_music.c \
+		assets/playmode_load_assets.c \
+		assets/playmode_load_images.c \
+		assets/playmode_load_env_textures.c \
+		assets/playmode_load_objects.c \
+		assets/playmode_load_fonts.c \
+		assets/playmode_load_sounds.c \
+		assets/playmode_load_music.c \
+		assets/playmode_load_anims.c \
+		assets/playmode_load_anim_legend.c \
+		loading_screens/loading_screen.c \
 		file_ops/file_chunks.c \
 		file_ops/file_tools.c \
 		file_ops/file_content.c \
@@ -45,14 +64,6 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		editor/editor_mouse.c \
 		editor/editor_events.c \
 		editor/key_events.c \
-		editor/editor_load_assets.c \
-		editor/editor_load_anims.c \
-		editor/editor_load_anim_legend.c \
-		editor/editor_load_images.c \
-		editor/editor_load_objects.c \
-		editor/editor_load_fonts.c \
-		editor/editor_load_sounds.c \
-		editor/editor_load_music.c \
 		editor/tools/entity_tool.c \
 		editor/tools/entity_tool_base.c \
 		editor/tools/entity_tool_modify.c \
@@ -82,14 +93,11 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		init_sdl.c \
 		error_codes.c \
 		error_messages.c \
-		error_window.c \
-		error_window_events.c \
 		doomlog.c \
 		doomlog_messages.c \
 		physics.c \
 		list_helper.c \
 		spaceconversions.c \
-		handle_exit.c \
 		entity/component_init.c \
 		entity/components/component_definitions.c \
 		entity/components/comp_audiosource.c \
@@ -101,15 +109,6 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		player/playermovement_normal2.c \
 		player/playermovement_noclip.c \
 		player/playmode.c \
-		player/playmode_load_assets.c \
-		player/playmode_load_images.c \
-		player/playmode_load_env_textures.c \
-		player/playmode_load_objects.c \
-		player/playmode_load_fonts.c \
-		player/playmode_load_sounds.c \
-		player/playmode_load_music.c \
-		player/playmode_load_anims.c \
-		player/playmode_load_anim_legend.c \
 		player/playmode_death.c \
 		player/playmode_events.c \
 		player/hud.c \

@@ -6,12 +6,13 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:07:37 by raho              #+#    #+#             */
-/*   Updated: 2023/03/23 19:12:53 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 13:06:53 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "file_io.h"
+#include "assets.h"
 #include "tga.h"
 
 static void	unpack_and_load_texture(int txtr_i, int level_fd,

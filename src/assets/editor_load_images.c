@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   editor_load_images.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:44:02 by raho              #+#    #+#             */
-/*   Updated: 2023/03/23 18:01:20 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 13:07:47 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "file_io.h"
+#include "assets.h"
 #include "tga.h"
 
 static int	parse_image_list(int fd, t_sdlcontext *sdl)

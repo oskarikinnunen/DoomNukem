@@ -6,11 +6,12 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:48:10 by raho              #+#    #+#             */
-/*   Updated: 2023/03/23 19:15:25 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 13:06:29 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
+#include "assets.h"
 #include "file_io.h"
 
 static void	unpack_and_load_font(int font_i, int level_fd,

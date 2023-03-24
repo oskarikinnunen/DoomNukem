@@ -6,12 +6,13 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:32:20 by raho              #+#    #+#             */
-/*   Updated: 2023/03/23 21:08:09 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 13:07:15 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "file_io.h"
+#include "assets.h"
 #include "objects.h"
 
 static void	playmode_parse_mtllib(t_list **list)

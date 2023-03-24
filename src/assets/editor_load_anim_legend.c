@@ -6,12 +6,13 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:36:10 by raho              #+#    #+#             */
-/*   Updated: 2023/03/17 19:34:17 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 13:07:59 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "file_io.h"
+#include "assets.h"
 
 static void	parse_frame_line(char *line, t_sdlcontext *sdl)
 {

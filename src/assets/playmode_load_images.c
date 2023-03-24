@@ -6,12 +6,13 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:01:27 by raho              #+#    #+#             */
-/*   Updated: 2023/03/23 21:33:52 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 13:06:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "file_io.h"
+#include "assets.h"
 #include "tga.h"
 
 static void	unpack_and_load_image(int img_i, int level_fd,

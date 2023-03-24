@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 13:42:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 12:26:41 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 12:37:50 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,13 +65,11 @@ int	ft_strcmpdot(const char *s1, const char *s2)
 	return (*(unsigned char *)s1 - *(unsigned char *)s2);
 }
 
-
 // Finds an image by name 'name' from 'sdl.images'.
-//
 // If you're planning to draw a image a bunch of times,
 // you should cache this result and use it multiple times instead of calling 
 // this unction for each draw call.
-t_img	*get_image_by_name(t_sdlcontext sdl, char *name) //TODO: return pointer, this is wasteful use of memory especially when used for all of the objects
+t_img	*get_image_by_name(t_sdlcontext sdl, char *name)
 {
 	int		i;
 	char	correct_name[64];
@@ -81,14 +79,8 @@ t_img	*get_image_by_name(t_sdlcontext sdl, char *name) //TODO: return pointer, t
 	ft_strcpy(correct_name, name);
 	if (ft_strstr(name, ".tga") == NULL)
 		ft_strcat(correct_name, ".tga");
-	/*if (ft_strncmp(name, IMGPATH, sizeof(IMGPATH) - 1) != 0)
-		sprintf(fullpath, "%s%s", IMGPATH, name);
-	else
-		ft_strcpy(fullpath, name);*/
-	//printf("trying to match image name %s\n", correct_name);
 	while (i < sdl.imagecount && sdl.images != NULL)
 	{
-		//printf("image name %s \n", sdl.images[i].name);
 		if (ft_strcmpdot(sdl.images[i].name, correct_name) == 0)
 			return (&sdl.images[i]);
 		i++;
@@ -100,5 +92,5 @@ t_img	*get_image_by_name(t_sdlcontext sdl, char *name) //TODO: return pointer, t
 			return (&sdl.env_textures[i]);
 		i++;
 	}
-	return (error_image()); //TODO: RETURN DEBUGIMAGE HERE
+	return (error_image());
 }

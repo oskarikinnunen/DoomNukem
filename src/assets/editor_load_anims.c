@@ -6,13 +6,12 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:51:14 by raho              #+#    #+#             */
-/*   Updated: 2023/03/23 15:20:49 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 13:12:32 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "doomnukem.h"
 #include "file_io.h"
-#include "objects.h"
+#include "assets.h"
 
 static int	parse_anim_list(int fd, char *anim_name, t_object *object)
 {

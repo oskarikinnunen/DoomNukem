@@ -6,12 +6,13 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 17:49:29 by raho              #+#    #+#             */
-/*   Updated: 2023/03/23 19:03:29 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 13:07:26 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "file_io.h"
+#include "assets.h"
 #include "objects.h"
 
 static void	unpack_and_load_anim(int level_fd, char *anim_path,

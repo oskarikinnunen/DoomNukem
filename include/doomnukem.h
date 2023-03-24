@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 12:23:30 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 13:19:25 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,6 +208,30 @@ t_app_argument	get_app_argument(int argc, char **argv);
 void			editor_loading_screen(char *loading_message, t_sdlcontext *sdl);
 void			playmode_loading_screen(char *loading_message, t_sdlcontext *sdl);
 void			playmode_loading_screen_loop(char *loading_message, t_sdlcontext *sdl);
+void			print_loading_message(char *loading_message, t_sdlcontext *sdl);
+void			log_loaded_animations(t_sdlcontext *sdl);
+
+void	editor_load_assets(t_sdlcontext *sdl);
+void	editor_load_images(t_sdlcontext *sdl);
+void	editor_load_env_textures(t_sdlcontext *sdl);
+void	editor_load_objects(t_sdlcontext *sdl);
+void	editor_load_fonts(t_sdlcontext *sdl);
+void	editor_load_sounds(t_audio *audio);
+void	editor_load_music(t_audio *audio);
+void	editor_load_anims(char *anim_name, t_object *object);
+void	editor_load_anim_legend(t_sdlcontext *sdl);
+
+// THE PLAYMODE_LOAD_ASSET FUNCTION NEEDS TO CALL OTHER LOAD FUNCTIONS
+// IN THE SAME EXACT ORDER AS THEY ARE CALLED IN WORLD_SAVE
+void	playmode_load_assets(char *level_name, t_sdlcontext *sdl);
+void	playmode_load_images(int level_fd, t_sdlcontext *sdl);
+void	playmode_load_env_textures(int level_fd, t_sdlcontext *sdl);
+void	playmode_load_objects(int level_fd, t_sdlcontext *sdl);
+void	playmode_load_fonts(int level_fd, t_sdlcontext *sdl);
+void	playmode_load_sounds(int level_fd, t_audio *audio);
+void	playmode_load_music(int level_fd, t_audio *audio);
+void	playmode_load_anims(int level_fd, char *anim_name, t_object *object);
+void	playmode_load_anim_legend(int level_fd, t_sdlcontext *sdl);
 
 
 /* TOOLS */
@@ -222,14 +246,6 @@ char	*combine_strings(char **str);
 
 /* EDITOR.C */
 void	editorloop(char *level, t_sdlcontext sdl);
-void	editor_load_images(t_sdlcontext *sdl);
-void	editor_load_env_textures(t_sdlcontext *sdl);
-void	editor_load_objects(t_sdlcontext *sdl);
-void	editor_load_fonts(t_sdlcontext *sdl);
-void	editor_load_sounds(t_audio *audio);
-void	editor_load_music(t_audio *audio);
-void	editor_load_anims(char *anim_name, t_object *object);
-void	editor_load_anim_legend(t_sdlcontext *sdl);
 
 /* EDITOR_EVENTS.C */
 bool			iskey(SDL_Event e, int keycode);
@@ -274,15 +290,6 @@ bool		game_random_coinflip(t_world *world);
 /* PLAYMODE.C */
 void	playmode(char *level, t_sdlcontext sdl);
 void	playmode_death(t_game *game);
-void	playmode_load_images(int level_fd, t_sdlcontext *sdl);
-void	playmode_load_env_textures(int level_fd, t_sdlcontext *sdl);
-void	playmode_load_objects(int level_fd, t_sdlcontext *sdl);
-void	playmode_load_fonts(int level_fd, t_sdlcontext *sdl);
-void	playmode_load_sounds(int level_fd, t_audio *audio);
-void	playmode_load_music(int level_fd, t_audio *audio);
-void	playmode_load_anims(int level_fd, char *anim_name, t_object *object);
-void	playmode_load_anim_legend(int level_fd, t_sdlcontext *sdl);
-
 
 /* PLAYER.C */
 void	player_init(t_player *player, t_sdlcontext *sdl, t_world *world);

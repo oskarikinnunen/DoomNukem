@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world_save.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 13:57:45 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 17:44:01 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 12:42:59 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,15 +40,19 @@ static void	pack_multiple_files_to_level(char *level, char *asset_list)
 
 static void	print_saving_message(char *saving_message, t_sdlcontext *sdl)
 {
-	int	len;
+	int			len;
+	TTF_Font	*temp;
 
 	if (saving_message != NULL)
 	{
 		len = ft_strlen(saving_message);
+		temp = sdl->font_default->size_default;
+		sdl->font_default->size_default = sdl->font_default->sizes[1];
 		print_text_boxed(sdl, saving_message, \
 				(t_point){((sdl->window_w / 2) - \
 				(len / 2 * FONT_SIZE_DEFAULT)), \
 				((sdl->window_h / 2) + (FONT_SIZE_DEFAULT * 2))});
+		sdl->font_default->size_default = temp;
 		ft_memcpy(sdl->window_surface->pixels, sdl->surface->pixels, \
 				sizeof(uint32_t) * sdl->window_w * sdl->window_h);
 		if (SDL_UpdateWindowSurface(sdl->window) < 0)
@@ -99,8 +103,6 @@ static void	pack_assets2(t_sdlcontext *sdl, char *level_path,
 	pack_file_to_level(level_path, ANIMLEGENDPATH);
 }
 
-int global_removed;
-
 void	world_save_to_file(t_world world)
 {
 	char	level_path[256];
@@ -117,7 +119,6 @@ void	world_save_to_file(t_world world)
 	if (surface_cache == NULL)
 		doomlog(LOG_EC_MALLOC, "world_save_to_file");
 	print_saving_message("SAVING AREAS, ENTITIES AND ROOMS", world.sdl);
-	global_removed = 0;
 	world_save_amap(level_path, world);
 	world_save_basic_ent(level_path, world);
 	world_init_rooms(&world);

@@ -6,12 +6,13 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 20:56:42 by raho              #+#    #+#             */
-/*   Updated: 2023/03/22 18:31:05 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 13:07:50 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "file_io.h"
+#include "assets.h"
 
 t_font	font_parse(char *file_name)
 {
