@@ -6,22 +6,11 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 14:59:55 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 14:03:39 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 20:51:59 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
-
-char	*s_itoa(int i)
-{
-	static char	str[32];
-	char		*a;
-
-	a = ft_itoa(i);
-	ft_strncpy_term(str, a, 30);
-	free(a);
-	return (str);
-}
 
 static int	doomlog_open_error_exit(void)
 {

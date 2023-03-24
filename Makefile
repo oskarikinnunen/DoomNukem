@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/24 19:33:08 by raho             ###   ########.fr        #
+#    Updated: 2023/03/24 22:20:50 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -63,6 +63,8 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		editor/editor.c \
 		editor/editor_mouse.c \
 		editor/editor_events.c \
+		editor/editor_gui.c \
+		editor/editor_set_up.c \
 		editor/key_events.c \
 		editor/tools/entity_tool.c \
 		editor/tools/entity_tool_base.c \
@@ -90,6 +92,7 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		walls.c file_open.c \
 		moveplayer.c \
 		init_sdl.c \
+		logging/log_tools.c \
 		logging/error_codes.c \
 		logging/error_messages.c \
 		logging/doomlog.c \
@@ -144,6 +147,7 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		audio/audio_init.c \
 		audio/audio_tools.c \
 		audio/audio_sounds.c \
+		audio/audio_update.c \
 		occlusion/occlusion.c \
 		occlusion/frustrum_culling.c \
 		occlusion/occlusion_culling.c \
@@ -182,6 +186,7 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		render/draw.c \
 		render/draw_rectangle.c \
 		render/draw_shapes.c \
+		render/draw_crosshair.c \
 		render/render_helper.c \
 		render/surface_tools.c \
 		render/colors.c \

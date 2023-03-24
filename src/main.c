@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 19:14:57 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 21:32:04 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,7 @@ void	set_sdl_settings(t_sdlcontext *sdl)
 	t_graphicprefs	prefs;
 
 	free_sdl_stuff(sdl);
-	//ft_bzero(sdl, sizeof(sdl)); //WHY DOES THIS WORK... this resets asset pointers aswell??
-	prefs = load_graphicsprefs(); //TODO: load before this and just pass prefs set_sdl_settings
+	prefs = load_graphicsprefs();
 	sdl->window_w = prefs.resolution_x;
 	sdl->window_h = prefs.resolution_y;
 	sdl->resolution_scaling = ft_clampf(prefs.resolutionscale, 0.25f, 1.0f);
@@ -101,7 +100,7 @@ int	main(int argc, char **argv)
 	}
 	create_sdlcontext(app_argument.level_name, &sdl, app_argument.app_mode);
 	if (app_argument.app_mode == APPMODE_EDIT)
-		editorloop(app_argument.level_name, sdl);
+		editor(app_argument.level_name, sdl);
 	else if (app_argument.app_mode == APPMODE_PLAY)
 		playmode(app_argument.level_name, sdl);
 	else if (app_argument.app_mode == APPMODE_INVALID)

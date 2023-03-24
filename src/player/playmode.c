@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:44:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 19:42:15 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 21:59:44 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	gameloop(t_sdlcontext *sdl, t_game *game)
 			moveplayer(&game->player, &game->hid.input, &game->world);
 			update_world3d(&game->world, &sdl->render);
 			draw_player_hud(&game->world);
-			draw_fps_counter(sdl, game);
+			draw_fps_counter(sdl, game->world.clock.fps);
 			update_window_surface(sdl);
 			update_audio(&game->world);
 			game_random(&game->world);

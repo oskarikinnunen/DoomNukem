@@ -110,6 +110,6 @@ bool	keyismovedown(SDL_Event e);
 void	toggle_keystates(t_hid_info *hid, SDL_Event e);
 
 struct s_game;
-int	playmode_events(struct s_game *game);
+void	playmode_events(struct s_game *game);
 
 #endif

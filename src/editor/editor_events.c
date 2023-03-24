@@ -3,29 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   editor_events.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 16:17:53 by kfum             ###   ########.fr       */
+/*   Updated: 2023/03/24 21:55:34 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "editor_tools.h"
 
-void	force_mouseunlock(t_hid_info *hid)
+void	editor_save_quit(t_editor *ed)
 {
-	hid->mouse.relative = false;
-	SDL_SetRelativeMouseMode(hid->mouse.relative);
-	hid->mouse.delta = point_zero();
+	world_save_to_file(ed->world);
+	SDL_Quit();
+	exit (0);
 }
 
-void	force_mouselock(t_hid_info *hid)
+void	editor_quit(void)
 {
-	hid->mouse.relative = true;
-	SDL_SetRelativeMouseMode(hid->mouse.relative);
-	hid->mouse.delta = point_zero();
-	hid->mouse.pos = point_zero();
+	SDL_Quit();
+	exit (0);
 }
 
 static void	editor_key_down(t_editor *ed, SDL_Event e)
@@ -50,7 +48,7 @@ static void	editor_key_down(t_editor *ed, SDL_Event e)
 	}
 }
 
-t_gamereturn	editor_events(t_editor *ed)
+void	editor_events(t_editor *ed)
 {
 	static SDL_Event	e;
 
@@ -68,14 +66,13 @@ t_gamereturn	editor_events(t_editor *ed)
 			if (iskey(e, SDLK_ESCAPE))
 			{
 				if ((ed->hid.keystate >> KEYS_SHIFTMASK) & 1)
-					exit(0);
-				return (game_exit);
+					editor_quit();
+				editor_save_quit(ed);
 			}
 			editor_key_down(ed, e);
 		}
 		if (e.type == SDL_QUIT)
-			return (game_exit);
+			editor_save_quit(ed);
 	}
 	update_input(&ed->hid.input, ed->hid);
-	return (game_continue);
 }

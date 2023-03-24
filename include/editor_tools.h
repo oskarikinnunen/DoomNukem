@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_tools.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 21:55:04 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/24 22:19:14 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,13 @@ typedef struct s_tool
 struct	s_mouse;
 //struct	s_editor;
 
+void			editor_quit(void);
+void			editor_save_quit(t_editor *ed);
+void			update_editor_lateguis(t_editor *ed);
+void			set_up_editor(t_sdlcontext *sdl, t_editor *ed);
+
 void				update_editor_toolbar(t_editor *ed, t_autogui *toolbar);
-t_gamereturn		editor_events(t_editor *ed);
+void				editor_events(t_editor *ed);
 enum	e_load_arg;
 void				editor_world_setup(t_editor *ed, char	*worldname, t_sdlcontext *sdl, enum e_load_arg args);
 

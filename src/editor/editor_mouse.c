@@ -3,16 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   editor_mouse.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 06:45:42 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 21:53:32 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 21:55:40 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "editor_tools.h"
- 
+
+void	force_mouseunlock(t_hid_info *hid)
+{
+	hid->mouse.relative = false;
+	SDL_SetRelativeMouseMode(hid->mouse.relative);
+	hid->mouse.delta = point_zero();
+}
+
+void	force_mouselock(t_hid_info *hid)
+{
+	hid->mouse.relative = true;
+	SDL_SetRelativeMouseMode(hid->mouse.relative);
+	hid->mouse.delta = point_zero();
+	hid->mouse.pos = point_zero();
+} 
 
 bool	mouse_clicked(t_mouse mouse, int button)
 {

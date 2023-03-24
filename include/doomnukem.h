@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 20:15:08 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 22:17:31 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,12 +203,15 @@ typedef struct s_game
 	t_player		player;
 } t_game;
 
+
+void			playmode_quit(t_game *game);
+void			update_audio(t_world *world);
 void			respawn_player(t_game *game);
 t_vector3		find_playerspawn(t_world *world);
 void			set_up_world(t_sdlcontext *sdl, t_game *game);
 void			update_window_surface(t_sdlcontext *sdl);
 void			debug_ramps(t_game *game);
-void			draw_fps_counter(t_sdlcontext *sdl, t_game *game);
+void			draw_fps_counter(t_sdlcontext *sdl, uint32_t fps);
 t_app_argument	get_app_argument(int argc, char **argv);
 void			editor_loading_screen(char *loading_message, t_sdlcontext *sdl);
 void			playmode_loading_screen(char *loading_message, t_sdlcontext *sdl);
@@ -250,7 +253,7 @@ int		init_log(void);
 char	*combine_strings(char **str);
 
 /* EDITOR.C */
-void	editorloop(char *level, t_sdlcontext sdl);
+void	editor(char *level, t_sdlcontext sdl);
 
 /* EDITOR_EVENTS.C */
 bool			iskey(SDL_Event e, int keycode);

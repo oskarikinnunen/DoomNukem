@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   graphicsprefs.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 14:37:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 15:38:40 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 21:16:11 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ t_graphicprefs	defaultprefs(void)
 	prefs.screenmode = screenmode_windowed;
 	prefs.resolution_x = 1280;
 	prefs.resolution_y = 720;
-	prefs.resolutionscale = 1.0f;
+	prefs.resolutionscale = 0.5f;
 	prefs.volume = 5.0f;
 	return (prefs);
 }
@@ -76,28 +76,6 @@ void	apply_graphics_prefs(t_graphicprefs prefs)
 	free(pref_filename);
 }
 
-void	save_graphics_prefs(t_sdlcontext *sdl)
-{
-	char			*prefpath;
-	char			*pref_filename;
-	int				fd;
-	t_graphicprefs	prefs;
-
-	prefs = get_prefs_from_sdl(sdl);
-	prefpath = SDL_GetPrefPath("temp", "stark");
-	pref_filename = ft_strnew(ft_strlen(prefpath) + 20);
-	if (pref_filename == NULL)
-		doomlog(LOG_EC_MALLOC, "save_graphics_prefs");
-	ft_strcpy(pref_filename, prefpath);
-	ft_strcat(pref_filename, "graphics.pref");
-	fd = fileopen(pref_filename, O_RDWR | O_CREAT | O_TRUNC);
-	if (write(fd, &prefs, sizeof(prefs)) == -1)
-		doomlog(LOG_EC_WRITE, "apply_graphics_prefs");
-	fileclose(fd, pref_filename);
-	SDL_free(prefpath);
-	free(pref_filename);
-}
-
 t_graphicprefs	load_graphicsprefs(void)
 {
 	char			*prefpath;
@@ -122,8 +100,7 @@ t_graphicprefs	load_graphicsprefs(void)
 	}
 	SDL_free(prefpath);
 	free(pref_filename);
-	doomlog_mul(LOG_NORMAL, (char *[4]){\
-		"prefs resolution",
-		s_itoa(prefs.resolution_x), s_itoa(prefs.resolution_y), NULL});
+	doomlog_mul(LOG_NORMAL, (char *[4]){"prefs resolution", \
+			s_pitoa((t_point){prefs.resolution_x, prefs.resolution_y}), NULL});
 	return (prefs);
 }

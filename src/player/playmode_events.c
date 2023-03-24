@@ -6,12 +6,18 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 19:41:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 20:24:27 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 21:50:12 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "editor_tools.h"
+
+void	playmode_quit(t_game *game)
+{
+	SDL_Quit();
+	exit(0);
+}
 
 void	key_event(SDL_Event e, t_game *game)
 {
@@ -22,13 +28,10 @@ void	key_event(SDL_Event e, t_game *game)
 	if (iskey(e, SDLK_F3))
 		game->player.health = 0;
 	if (iskey(e, SDLK_ESCAPE))
-	{
-		SDL_Quit();
-		exit(0);
-	}			
+		playmode_quit(game);
 }
 
-int	playmode_events(t_game *game)
+void	playmode_events(t_game *game)
 {
 	static SDL_Event	e;
 
@@ -43,12 +46,8 @@ int	playmode_events(t_game *game)
 		if (e.type == SDL_KEYDOWN)
 			key_event(e, game);
 		if (e.type == SDL_QUIT)
-		{
-			SDL_Quit();
-			exit(0);
-		}
+			playmode_quit(game);
 		controller_events(e, &game->hid);
 	}
 	update_input(&game->hid.input, game->hid);
-	return (game_continue);
 }

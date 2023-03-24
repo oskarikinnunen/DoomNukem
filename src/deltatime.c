@@ -6,15 +6,15 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:25:00 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 19:24:31 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 21:59:54 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-void	draw_fps_counter(t_sdlcontext *sdl, t_game *game)
+void	draw_fps_counter(t_sdlcontext *sdl, uint32_t fps)
 {
-	print_text(sdl, s_itoa(game->world.clock.fps), \
+	print_text(sdl, s_itoa(fps), \
 				(t_point){sdl->window_w - 80, 10});
 }
 

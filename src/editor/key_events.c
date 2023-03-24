@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   key_events.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 15:56:54 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 12:29:24 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 21:27:29 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static void	toggle_keydown(t_hid_info *hid, SDL_Event e)
 	while (c <= 'z')
 	{
 		hid->alphakeystate |= iskey(e, c) << (c - 'a');
-		if ((hid->alphakeystate >> (c - 'a')) & 1 == 1)
+		if (((hid->alphakeystate >> (c - 'a')) & 1) == 1)
 			hid->alphakey_pressed |= iskey(e, c) << (c - 'a');
 		c++;
 	}

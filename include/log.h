@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 20:21:24 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 17:50:59 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 20:55:20 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,5 +103,6 @@ void	error_window_events(t_parent *p);
 
 /* converts integer to a stack memory string */
 char	*s_itoa(int i);
+char	*s_pitoa(t_point p);
 
 #endif
