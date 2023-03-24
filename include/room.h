@@ -98,13 +98,17 @@ typedef struct s_room
 
 struct s_world;
 
+
+bool			room_edge_is_legal(t_vector2 *edge, t_area *room);
+void			room_recalculate_joined_rooms(struct s_world *world, t_area *room);
 void			room_init(t_area *room, struct s_world *world);
 void			room_init_shallow(t_area *room, struct s_world *world);
+bool			room_is_legal(struct s_world *world, t_area *room);
 void			room_remove_entities(t_area *room, struct s_world *world);
 bool			edge_exists(t_vector2 edge, t_area	*room);
 void			_room_triangulate_floors(struct s_world *world, t_area *room);
-t_area			*world_add_room(t_world *world, t_area *room);
-void			world_remove_room(t_world *world, t_area *room);
+t_area			*world_add_room(struct s_world *world, t_area *room);
+void			world_remove_room(struct s_world *world, t_area *room);
 void			room_setpreset_floor(t_area *room);
 void			room_setpreset_exterior(t_area *room);
 void			room_setpreset_room(t_area *room);

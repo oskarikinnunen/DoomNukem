@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_tools.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 21:55:04 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/24 19:34:41 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,11 +132,10 @@ void				gui_int(int i, t_autogui *gui);
 void				gui_point(t_point point, t_autogui *gui);
 //Draws a button with text 'str' on the gui, and returns true if the button was pressed
 bool				gui_button(char *str, t_autogui *gui);
-bool	gui_shortcut_button(char *str, int alpha_or_keymask, t_autogui *gui);
-
-bool	gui_imagebutton(t_img	*img, t_autogui *gui);
-bool	gui_highlighted_button(char *str, t_autogui *gui);
-bool	gui_highlighted_button_if(char *str, t_autogui *gui, bool condition);
+bool				gui_shortcut_button(char *str, int alpha_or_keymask, t_autogui *gui);
+bool				gui_imagebutton(t_img	*img, t_autogui *gui);
+bool				gui_highlighted_button(char *str, t_autogui *gui);
+bool				gui_highlighted_button_if(char *str, t_autogui *gui, bool condition);
 
 //TODO: document
 void				gui_string_edit(char *str, t_autogui	*gui);
@@ -181,8 +180,8 @@ int32_t				entity_lookedat_triangle_index(t_editor *ed, t_sdlcontext sdl, t_enti
 t_vector3			*entity_lookedat_vertex(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
 t_entity			*selected_entity(t_editor *ed, t_sdlcontext sdl);
 
-void			room_makefloor(t_world *world, t_area *room);
-void			room_makeceilings(t_world *world, t_area *room);
+void				room_makefloor(t_world *world, t_area *room);
+void				room_makeceilings(t_world *world, t_area *room);
 
 /* TOOL_COMMON_FUNCTIONS.C */
 void				string_box(char *name, char *str, t_editor *ed, t_sdlcontext sdl, t_point pos);

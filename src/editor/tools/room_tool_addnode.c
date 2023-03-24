@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool_addnode.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 10:58:19 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 14:55:00 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 21:52:38 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,16 +40,6 @@ t_line	linebetween(int i, t_area *room)
 	line.start = room->edges[i];
 	line.end = room->edges[next_i];
 	return (line);
-}
-
-static void draw_node_indicator(t_vector3 cursor, t_roomtooldata *dat, t_world *world)
-{
-	t_point	center;
-
-	center = point_div(world->sdl->screensize, 2);
-	center = point_add(center, (t_point){0, 15});
-	render_circle(world->sdl, cursor, 10.0f, CLR_GREEN);
-	print_text_boxed(world->sdl, "[E] Add node", center);
 }
 
 static void draw_node_line(t_vector3 cursor, t_line l, t_sdlcontext *sdl)
@@ -87,7 +77,6 @@ bool	potentialnode(t_vector3 cursor, t_roomtooldata *dat, t_editor *ed)
 {
 	int		i;
 	t_line	l;
-	//linecirclecollision()
 
 	i = 0;
 	while (i < dat->room->edgecount)
@@ -99,20 +88,11 @@ bool	potentialnode(t_vector3 cursor, t_roomtooldata *dat, t_editor *ed)
 			draw_node_indicator(cursor, dat, &ed->world);
 			if (check_alpha_key(ed->hid.alphakey_pressed, 'e'))
 			{
-				/*
-					get cur index and next index,
-					find all rooms that have matching edges (in either order, cur->next or next->cur)
-						(and they share zspace with current room)
-						addnode(foundroom);
-				*/
 				addnode(v3tov2(cursor), dat->room, i);
 				room_init(dat->room, &ed->world);
-				printf("Add node %i!!\n", i);
 			}
-				
 			return (true);
 		}
-			
 		i++;
 	}
 	return (false);

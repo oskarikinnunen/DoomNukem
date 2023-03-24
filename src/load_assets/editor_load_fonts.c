@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 20:56:42 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 14:25:59 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 17:36:35 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@ static int	parse_font_list(int fd, t_sdlcontext *sdl)
 		{
 			sdl->fonts[i] = font_parse(font_path);
 			if (sdl->fonts[i].sizes[0] != NULL)
-				ft_strncpy_term(sdl->fonts[i].name, extract_filename(font_path), 120);
+				ft_strncpy_term(sdl->fonts[i].name, \
+						extract_filename(font_path), 120);
 			doomlog_mul(LOG_NORMAL, (char *[3]){\
 					"parsed .ttf file:", sdl->fonts[i].name, NULL});
 			free(font_path);

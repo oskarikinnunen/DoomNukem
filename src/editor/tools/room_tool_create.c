@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 16:47:41 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/21 16:48:34 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 22:04:40 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,15 +43,10 @@ static t_vector3	createmode_raycast(t_editor *ed, t_roomtooldata	*dat)
 	return (result);
 }
 
-void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
+static void createmode_drawgui(t_editor *ed, t_roomtooldata *dat, t_sdlcontext *sdl)
 {
-	t_vector2		*edge;
-	t_vector3		cursor;
-	t_autogui		*gui;
+	t_autogui	*gui;
 
-	cursor = createmode_raycast(ed, dat);
-	if (dat->room->edgecount == 0)
-		dat->room->height = cursor.z;
 	gui = &dat->newroom_gui;
 	gui_start(gui);
 	if (dat->room->edgecount == 0)
@@ -63,23 +58,28 @@ void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	if (gui_roompresets(dat->room, gui, &ed->world))
 		printf("after roompresets, edgecount is %i \n", dat->room->edgecount);
 	gui_end(gui);
+}
 
+void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
+{
+	t_vector2		*edge;
+	t_vector3		cursor;
+	bool			placelast;
+
+	cursor = createmode_raycast(ed, dat);
+	if (dat->room->edgecount == 0)
+		dat->room->height = cursor.z;
+	createmode_drawgui(ed, dat, sdl);
 	dat->room->ceiling_height = 50;
-	bool placelast = false;
-	if ((ed->hid.keystate >> KEYS_SHIFTMASK) & 1 && dat->room->edgecount > 1)
-	{
-		placelast = true;
-	}
+	placelast = ((ed->hid.keystate >> KEYS_SHIFTMASK) & 1 && dat->room->edgecount > 1);
 	if ((ed->hid.keystate >> KEYS_ENTERMASK) & 1)
 	{
 		dat->rtm = rtm_modify;
 		dat->room = world_add_room(&ed->world, dat->room);
-		//dat->room = list_findlast(ed->world.roomlist);
 		return ;
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 	{
-		printf("clicked, placing %inth edge \n", dat->room->edgecount);
 		if (!placelast)
 		{
 			edge = &dat->room->edges[dat->room->edgecount];
@@ -96,14 +96,11 @@ void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 				return ;
 			}
 		}
-		printf("clicked, placed %inth edge \n", dat->room->edgecount);
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
 	{
 		if (dat->room->edgecount >= 1)
-		{
 			dat->room->edgecount--;
-		}
 		else
 		{
 			free(dat->room);

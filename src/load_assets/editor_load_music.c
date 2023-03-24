@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 21:51:13 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 14:26:44 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 17:37:05 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ static int	parse_music_list(int fd, t_audio *audio)
 		{
 			create_music(i, music_path, audio);
 			if (audio->music[i].sound != NULL)
-				ft_strncpy_term(audio->music[i].name, extract_filename(music_path), 64);
+				ft_strncpy_term(audio->music[i].name, \
+						extract_filename(music_path), 64);
 			doomlog_mul(LOG_NORMAL, (char *[3]){\
 					"loaded music file:", audio->music[i].name, NULL});
 			free(music_path);

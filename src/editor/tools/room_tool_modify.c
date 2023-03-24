@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 17:48:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 17:56:30 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 19:25:51 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,13 @@ static void	modifymode_modifyheights(t_editor *ed, t_roomtooldata *dat)
 			dat->room->height += ed->hid.mouse.scroll_delta * 10;
 			dat->room->height = ft_clamp(dat->room->height, 0, 1000);
 			room_init(dat->room, &ed->world);
-			recalculate_joined_rooms(&ed->world, dat->room);
+			room_recalculate_joined_rooms(&ed->world, dat->room);
 		}
 		else
 		{
 			modifywallheights(dat->room,
 				ed->hid.mouse.scroll_delta, &ed->world);
-			recalculate_joined_rooms(&ed->world, dat->room);
+			room_recalculate_joined_rooms(&ed->world, dat->room);
 		}
 	}
 }
@@ -58,7 +58,7 @@ static void	modifymode_gui(t_editor *ed, t_roomtooldata *dat)
 	gui_label("Modifying: ", gui);
 	gui_label(dat->room->name, gui);
 	gui_endhorizontal(gui);
-	gui_labeled_bool("Legal: ", isroomlegal(&ed->world, dat->room), gui);
+	gui_labeled_bool("Legal: ", room_is_legal(&ed->world, dat->room), gui);
 	gui_labeled_int("Edges: ", dat->room->edgecount, gui);
 	gui_labeled_int("Walls: ", dat->room->wallcount, gui);
 	if (gui_roompresets(dat->room, gui, &ed->world))

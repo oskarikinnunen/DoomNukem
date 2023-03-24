@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:44:02 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 14:26:35 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 17:36:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ static int	parse_image_list(int fd, t_sdlcontext *sdl)
 		{
 			sdl->images[i] = tga_parse(image_path);
 			if (sdl->images[i].data != NULL)
-				ft_strncpy_term(sdl->images[i].name, extract_filename(image_path), 120);
+				ft_strncpy_term(sdl->images[i].name, \
+						extract_filename(image_path), 120);
 			doomlog_mul(LOG_NORMAL, (char *[3]){\
 					"parsed .tga file:", sdl->images[i].name, NULL});
 			free(image_path);

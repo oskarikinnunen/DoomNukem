@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   file_chunks.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 22:03:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 17:39:06 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ int	read_chunk(int fd, t_filecontent *fc, char *asset_name)
 			doomlog(LOG_EC_READ, "read_chunk");
 		if (lseek(fd, (CHUNKSIZE - (fc->length % CHUNKSIZE)), \
 				SEEK_CUR) == -1)
-				doomlog(LOG_EC_LSEEK, "read_chunk");
+			doomlog(LOG_EC_LSEEK, "read_chunk");
 		return (0);
 	}
 	else

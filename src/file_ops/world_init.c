@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 20:55:23 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 14:38:16 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 17:39:29 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,8 @@ t_entitycache	entitycache_empty(uint32_t cachesize)
 	ft_bzero(&cache, sizeof(t_entitycache));
 	cache.alloc_count = cachesize;
 	cache.entities = prot_memalloc(cache.alloc_count * sizeof(t_entity));
-	cache.sorted_entities = prot_memalloc(cache.alloc_count * sizeof(t_entity *));
+	cache.sorted_entities = prot_memalloc(\
+								cache.alloc_count * sizeof(t_entity *));
 	cache.existing_entitycount = 0;
 	i = 0;
 	while (i < cache.alloc_count)

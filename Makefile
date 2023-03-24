@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/24 17:49:43 by okinnune         ###   ########.fr        #
+#    Updated: 2023/03/24 21:49:08 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,24 +33,24 @@ LIBFT = libft/libft.a
 #Source files:
 SRCFILES= main.c img.c deltatime.c anim.c \
 		app_argument.c \
-		assets/asset_tools.c \
-		assets/load/editor_load_assets.c \
-		assets/load/editor_load_anims.c \
-		assets/load/editor_load_anim_legend.c \
-		assets/load/editor_load_images.c \
-		assets/load/editor_load_objects.c \
-		assets/load/editor_load_fonts.c \
-		assets/load/editor_load_sounds.c \
-		assets/load/editor_load_music.c \
-		assets/load/playmode_load_assets.c \
-		assets/load/playmode_load_images.c \
-		assets/load/playmode_load_env_textures.c \
-		assets/load/playmode_load_objects.c \
-		assets/load/playmode_load_fonts.c \
-		assets/load/playmode_load_sounds.c \
-		assets/load/playmode_load_music.c \
-		assets/load/playmode_load_anims.c \
-		assets/load/playmode_load_anim_legend.c \
+		load_assets/asset_tools.c \
+		load_assets/editor_load_assets.c \
+		load_assets/editor_load_anims.c \
+		load_assets/editor_load_anim_legend.c \
+		load_assets/editor_load_images.c \
+		load_assets/editor_load_objects.c \
+		load_assets/editor_load_fonts.c \
+		load_assets/editor_load_sounds.c \
+		load_assets/editor_load_music.c \
+		load_assets/playmode_load_assets.c \
+		load_assets/playmode_load_images.c \
+		load_assets/playmode_load_env_textures.c \
+		load_assets/playmode_load_objects.c \
+		load_assets/playmode_load_fonts.c \
+		load_assets/playmode_load_sounds.c \
+		load_assets/playmode_load_music.c \
+		load_assets/playmode_load_anims.c \
+		load_assets/playmode_load_anim_legend.c \
 		loading_screens/loading_screen.c \
 		file_ops/file_chunks.c \
 		file_ops/file_tools.c \
@@ -71,16 +71,21 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		editor/tools/entity_tool_gui_inits.c \
 		editor/tools/wall_tool_rooms.c \
 		editor/tools/room_ops.c \
+		editor/tools/room_ops_2.c \
 		editor/tools/room_tool.c \
 		editor/tools/room_tool_modify.c \
+		editor/tools/room_tool_modify_2.c \
 		editor/tools/room_tool_create.c \
 		editor/tools/room_tool_raycast_room.c \
 		editor/tools/room_tool_init_and_get.c \
 		editor/tools/room_tool_connect.c \
 		editor/tools/room_tool_node.c \
+		editor/tools/room_tool_node_2.c \
+		editor/tools/room_tool_node_3.c \
 		editor/tools/room_tool_addnode.c \
 		editor/tools/room_tool_common.c \
 		editor/tools/room_tool_paint.c \
+		editor/tools/room_tool_paint_2.c \
 		editor/tools/gun_tool.c \
 		editor/tools/autogui.c \
 		editor/editor_new_buttons.c \
@@ -142,9 +147,9 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		controller/controller_init.c \
 		controller/controller_events.c \
 		controller/controller_events_buttons.c \
-		assets/audio/audio_init.c \
-		assets/audio/audio_tools.c \
-		assets/audio/audio_sounds.c \
+		audio/audio_init.c \
+		audio/audio_tools.c \
+		audio/audio_sounds.c \
 		occlusion/occlusion.c \
 		occlusion/frustrum_culling.c \
 		occlusion/occlusion_culling.c \

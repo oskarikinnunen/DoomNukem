@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:42:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 17:49:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 21:50:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ typedef struct s_roomtooldata
 }	t_roomtooldata;
 
 void		room_tool_update(t_editor *ed, t_sdlcontext *sdl);
-
+void		room_tool_remove_room(t_editor *ed, t_roomtooldata *dat);
 bool		isconnect(t_vector2 v2, t_area *room);
 t_vector2	vector2_flipxy(t_vector2 vec);
 void		highlight_room(t_editor *ed, t_sdlcontext *sdl, t_area *room, uint32_t color);
@@ -58,18 +58,26 @@ t_meshtri	*selectedfloor(t_editor *ed, t_sdlcontext sdl, t_area *room);
 t_wall		*selectedwall(t_editor *ed, t_sdlcontext sdl, t_area *room);
 t_area		*selectedroom(t_editor *ed, t_sdlcontext sdl);
 
+bool		is_joined(t_vector2 edge, t_area	*room, t_world *world);
+
+/*ROOM_TOOL_RAYCAST.C*/
+void		room_tool_raycast(t_editor *ed, t_roomtooldata *dat);
+
 /*ROOM_TOOL_PAINT.C*/
+void		paint_room(t_entity *hit_ent, t_img *tex, t_world *world);
 void		room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat);
 
 /* ROOM_TOOL_ADDNODE.C */
 bool	potentialnode(t_vector3 cursor, t_roomtooldata *dat, t_editor *ed);
 
 /* ROOM_TOOL_NODE.C */
+void		draw_node_indicator(t_vector3 cursor, t_roomtooldata *dat, t_editor *ed);
 void		room_tool_node(t_vector3 cursor, t_roomtooldata *dat, t_editor *ed);
 t_vector2	*closest_edge(t_area *room, t_vector3 rc);
 
 //modifymode
 void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat);
+bool	gui_roompresets(t_area *room, t_autogui *gui, t_world *world);
 
 t_area	*get_raycast_room(t_raycastinfo info, t_world *world);
 

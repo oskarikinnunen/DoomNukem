@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 17:55:36 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 19:27:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,25 +15,6 @@
 #include "editor_tools.h"
 #include "doomnukem.h"
 #include "objects.h"
-
-static t_line	edgeline_to_line(t_edgeline edgeline)
-{
-	return ((t_line){.start = *edgeline.start, .end = *edgeline.end});
-}
-
-static void	room_tool_remove_room(t_editor *ed, t_roomtooldata *dat)
-{
-	t_area	temp;
-
-	ft_bzero(&temp, sizeof(t_area));
-	ft_memcpy(temp.edges, dat->room->edges,
-		sizeof(t_vector2) * dat->room->edgecount);
-	temp.edgecount = dat->room->edgecount;
-	world_remove_room(&ed->world, dat->room);
-	room_recalculate_joined_rooms(&ed->world, &temp);
-	dat->room = NULL;
-	dat->rtm = rtm_none;
-}
 
 void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 {

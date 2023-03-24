@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 14:58:20 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 17:30:46 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 17:35:09 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,8 @@ static bool	confirm_collision(t_character_collision *cc, t_vector3 *new_pos,
 			(wall_capsule_share_z(cc->wall, cc->cp) && \
 			!wall_capsule_step_threshold(cc->wall, cc->cp)))
 	{
-		if (collision_line_circle_save_collision((t_line){(*cc->wall->edgeline.start), \
+		if (collision_line_circle_save_collision(\
+				(t_line){(*cc->wall->edgeline.start), \
 				(*cc->wall->edgeline.end)}, \
 				(t_vector2){cc->potential_pos.x, cc->potential_pos.y}, \
 				cc->cp.radius, &cc->collision))

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 17:54:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 17:55:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 19:03:48 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,11 @@
 #include "editor_tools.h"
 #include "doomnukem.h"
 #include "objects.h"
+
+static t_line	edgeline_to_line(t_edgeline edgeline)
+{
+	return ((t_line){.start = *edgeline.start, .end = *edgeline.end});
+}
 
 static bool	illegalwall_move(t_wall *wall, t_area *room)
 {
