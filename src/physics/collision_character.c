@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 14:58:20 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 17:03:40 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 17:11:05 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,10 +82,10 @@ bool	check_character_collision(t_world *world, t_character_physics cp,
 		if (room != NULL)
 		{
 			index = 0;
-			cc.wall = &room->walls[index];
 			while (index < room->wallcount)
 			{
-				if (confirm_collision(&cc, &new_pos, \
+				cc.wall = &room->walls[index];
+				if (confirm_collision(&cc, new_pos, \
 						world->clock.delta) == true)
 					return (true);
 				index++;
