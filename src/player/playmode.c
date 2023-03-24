@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:44:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 22:00:35 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/24 12:31:52 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,15 @@ static void	gameloop(t_sdlcontext sdl, t_game game)
 	game.world.sdl = &sdl;
 	sdl.audio.sfx_volume = 1.0f;
 	game.world.player = &game.player;
-	protagonist_play_audio(&game.player, &game.world, "protag_letsdo.wav");
-	play_music(&sdl, "music_arp1_ambient.wav");
+	playmode_loading_screen("CREATING LIGHTING EFFECTS", &sdl);
 	// LIGHTING TODO: (THESE SEGFAULT)
 	for_all_active_entities(&game.world, calculate_triangles_for_entity); 
 	recalculate_lighting(&game.world);
 	sdl.lighting_toggled = true;
+	playmode_loading_screen_loop("PRESS ANY KEY TO PLAY", &sdl);
+	if (SDL_SetRelativeMouseMode(SDL_TRUE) < 0)
+		doomlog(LOG_EC_SDL_SETRELATIVEMOUSEMODE, NULL);
+	protagonist_play_audio(&game.player, &game.world, "protag_letsdo.wav");
 	while (gr == game_continue)
 	{
 		if (game.player.health > 0)
@@ -156,6 +159,7 @@ void	playmode_loading_screen_loop(char *loading_message, t_sdlcontext *sdl)
 {
 	SDL_Event	e;
 	playmode_loading_screen(loading_message, sdl);
+	play_music(sdl, "music_arp1_ambient.wav");
 	while (1)
 	{
 		while (SDL_PollEvent(&e))
@@ -214,9 +218,6 @@ void	playmode(char *level, t_sdlcontext sdl)
 	player_init(&game.player, &sdl, &game.world);
 	game.player.transform.position = find_playerspawn(&game.world);
 	sdl.fog = true;
-	playmode_loading_screen_loop("PRESS ANY KEY TO PLAY", &sdl);
-	if (SDL_SetRelativeMouseMode(SDL_TRUE) < 0)
-		doomlog(LOG_EC_SDL_SETRELATIVEMOUSEMODE, NULL);
 	*(game.world.debug_gui) = init_gui(&sdl, &game.hid, &game.player, sdl.screensize, "Debugging menu (F2)");
 	gameloop(sdl, game);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   img.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 13:42:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 14:49:59 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 12:26:41 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,6 @@ t_img	*get_image_by_name(t_sdlcontext sdl, char *name) //TODO: return pointer, t
 
 	i = 0;
 	ft_strcpy(correct_name, name);
-	/* if (ft_strstr(name, ".cng") == NULL)
-		ft_strcat(correct_name, ".cng"); */
 	if (ft_strstr(name, ".tga") == NULL)
 		ft_strcat(correct_name, ".tga");
 	/*if (ft_strncmp(name, IMGPATH, sizeof(IMGPATH) - 1) != 0)
