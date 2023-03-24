@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 13:20:32 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 13:24:55 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 17:47:44 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	playmode_loading_screen_loop(char *loading_message, t_sdlcontext *sdl)
 					return ;
 			}
 		}
-	} 
+	}
 }
 
 void	playmode_loading_screen(char *loading_message, t_sdlcontext *sdl)
