@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/27 10:42:33 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 14:49:36 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 17:36:12 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,10 @@ void	create_music(int music_i, char *music_path, t_audio *audio)
 		doomlog(LOG_EC_FMOD_SYSTEMCREATESOUND, NULL);
 }
 
+// TODO: apply volume settings from sdl somehow
 void	create_audio(t_audio *audio)
 {
 	ft_bzero(audio, sizeof(t_audio));
-	audio->system = NULL; // TODO: use the bzero but apply volume settings from sdl somehow
 	doomlog(LOG_NORMAL, "LOADING AUDIO");
 	if (FMOD_System_Create(&audio->system, FMOD_VERSION) != FMOD_OK)
 		doomlog(LOG_EC_FMOD_SYSTEMCREATE, NULL);

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:32:20 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 14:29:25 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 17:37:53 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ static void	unpack_and_load_object(int obj_i, int level_fd,
 		ft_strncpy_term(sdl->objects[obj_i].name, \
 				extract_filename(object_name), 250);
 	free(material_name);
-	free(sdl->objects[obj_i].materials); // TODO: remove this and fix the material malloc in objparse
+	free(sdl->objects[obj_i].materials);
 	playmode_parse_mtllib(&materials);
 	sdl->objects[obj_i].materials = \
 			list_to_ptr(materials, &sdl->objects[obj_i].material_count);

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 14:55:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 14:38:47 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 17:47:24 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,11 +61,34 @@ static void	world_load_amap(char *level, t_world *world)
 	world_init_rooms(world);
 }
 
+static void	destroy_invalid_objects(t_world *world, t_sdlcontext *sdl)
+{
+	int			i;
+	int			dest;
+	t_object	*obj;
+
+	i = 0;
+	dest = 0;
+	obj = get_object_by_name(*sdl, "barrel.obj");
+	while (i < world->entitycache.alloc_count)
+	{
+		if (world->entitycache.entities[i].obj == obj && \
+				vector3_cmp(world->entitycache.entities[i].transform.position, \
+				vector3_zero()))
+		{
+			destroy_entity(world, &world->entitycache.entities[i]);
+			dest++;
+		}
+		i++;
+	}
+}
+
+// If there are invalid objects, 
+// you can delete them with destroy_invalid_objects()
 t_world	load_world(char *level_name, t_sdlcontext *sdl)
 {
-	t_world	world;
-	char	level_path[256];
-	int		fd;
+	t_world		world;
+	char		level_path[256];
 
 	doomlog(LOG_NORMAL, "LOADING WORLD");
 	ft_strncpy_term(level_path, "worlds/", 250);
@@ -74,22 +97,5 @@ t_world	load_world(char *level_name, t_sdlcontext *sdl)
 	ft_strncpy_term(world.name, level_name, 30);
 	world_load_amap(level_path, &world);
 	world_load_basic_ent(level_path, &world);
-	int	i;
-	int	dest = 0;
-	i = 0;
-	t_object *obj;
-	obj = get_object_by_name(*sdl, "barrel.obj");
-	while (i < world.entitycache.alloc_count)
-	{
-		if (world.entitycache.entities[i].obj == obj
-			&& vector3_cmp(world.entitycache.entities[i].transform.position, vector3_zero()))
-			{
-				destroy_entity(&world, &world.entitycache.entities[i]);
-				dest++;
-			}
-			
-		i++;
-	}
-	printf("destroyed %i weird barrels\n", dest);
 	return (world);
 }

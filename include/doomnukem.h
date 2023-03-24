@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 15:18:04 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 17:53:19 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -314,7 +314,6 @@ void	error_log(int error_code);
 void	create_sdlcontext(char *level, t_sdlcontext	*sdl, t_app_mode app_mode);
 void	create_sdl_window(t_sdlcontext *sdl, t_screenmode mode);
 void	set_sdl_settings(t_sdlcontext *sdl);
-void	init_sdl_error_window(t_sdlcontext *sdl);
 void	quit_game(t_sdlcontext *sdl);
 
 void	apply_graphics_prefs(t_graphicprefs prefs);

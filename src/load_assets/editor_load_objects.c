@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 17:22:47 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 14:26:53 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 17:37:15 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ static int	parse_object_list(int fd, t_sdlcontext *sdl)
 		{
 			sdl->objects[i] = objparse(object_path);
 			if (sdl->objects[i].vertices != NULL)
-				ft_strncpy_term(sdl->objects[i].name, extract_filename(object_path), 250);
+				ft_strncpy_term(sdl->objects[i].name, \
+						extract_filename(object_path), 250);
 			doomlog_mul(LOG_NORMAL, (char *[3]){\
 					"parsed .obj file:", sdl->objects[i].name, NULL});
 			free(object_path);
