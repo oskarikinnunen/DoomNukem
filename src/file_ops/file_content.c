@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   file_content.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 20:10:06 by raho              #+#    #+#             */
-/*   Updated: 2023/03/23 21:16:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/23 22:03:11 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ uint64_t	read_len(int fd)
 	char		clen[8];
 	int			i;
 
+	ft_bzero(clen, sizeof(clen));
+	res = 0;
 	if (read(fd, clen, 8) == -1)
 		doomlog(LOG_EC_READ, "filecontent read_len");
 	res = *(uint64_t *)clen;

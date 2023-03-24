@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 13:04:42 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 13:37:55 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ void	playmode_load_assets(char *level_name, t_sdlcontext *sdl)
 	objects_init(sdl);
 	playmode_loading_screen("LOADING ANIMATIONS", sdl);
 	human = get_object_by_name(*sdl, "Human.obj");
-	//playmode_load_anims(level_path, "anim", human);
-	//playmode_load_anim_legend(level_path, sdl);
+	playmode_load_anims(fd, "anim", human);
+	playmode_load_anim_legend(fd, sdl);
 	log_loaded_animations(sdl);
 	fileclose(fd, level_name);
 }

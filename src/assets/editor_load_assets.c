@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 13:03:57 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 13:38:53 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	editor_load_assets(t_sdlcontext *sdl)
 	objects_init(sdl);
 	editor_loading_screen("LOADING ANIMATIONS", sdl);
 	human = get_object_by_name(*sdl, "Human.obj");
-	//editor_load_anims("anim", human);
-	//editor_load_anim_legend(sdl);
+	editor_load_anims("anim", human);
+	editor_load_anim_legend(sdl);
 	log_loaded_animations(sdl);
 }

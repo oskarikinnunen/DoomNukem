@@ -1,4 +1,3 @@
-assets/audio/amb_advertisement1.wav
 assets/audio/amb_dogbark1.wav
 assets/audio/amb_dogbark2.wav
 assets/audio/amb_electricspark1.wav
@@ -10,12 +9,10 @@ assets/audio/climb.wav
 assets/audio/climb1.wav
 assets/audio/climb2.wav
 assets/audio/climb3.wav
-assets/audio/cloud-10_gunshot.wav
 assets/audio/concrete-footsteps_loop.wav
 assets/audio/electricbuzz1_looped.wav
 assets/audio/electricbuzz2_looped.wav
 assets/audio/gattoangus_9mm-pistol.wav
-assets/audio/godowan_bubble1.wav
 assets/audio/gun_grenadelauncher.wav
 assets/audio/gun_machinegun.wav
 assets/audio/gun_machinegun1.wav
@@ -28,8 +25,6 @@ assets/audio/landing_impact2.wav
 assets/audio/landing_impact_hard.wav
 assets/audio/landing_impact_soft.wav
 assets/audio/landing_impact_step.wav
-assets/audio/mechland.wav
-assets/audio/mechwalk_loop.wav
 assets/audio/npc_death.wav
 assets/audio/npc_death2.wav
 assets/audio/pistol1.wav
@@ -43,5 +38,4 @@ assets/audio/protag_onedown.wav
 assets/audio/protag_thatonesdead.mp3
 assets/audio/protag_thatonesdead.wav
 assets/audio/ricochet.wav
-assets/audio/scifi-rapidfire.mp3
 assets/audio/shotgun_shoot.wav

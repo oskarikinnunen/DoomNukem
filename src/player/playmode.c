@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:44:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 13:18:57 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 13:38:35 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ static t_vector3 find_playerspawn(t_world *world)
 		if (ent->status == es_active && ent->component.type == COMP_PLAYERSPAWN)
 		{
 			result = ent->transform.position;
-			result.z -= 10.0f;
+			result.z += 10.0f;
 			destroy_entity(world, ent);
 		}
 		i++;
