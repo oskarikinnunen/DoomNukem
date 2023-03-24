@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 16:23:20 by kfum             ###   ########.fr       */
+/*   Updated: 2023/03/24 20:26:35 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,6 +172,6 @@ void update_world3d(t_world *world, t_render *render)
 	bitmask_to_pixels(sdl);
 	rescale_surface(sdl);
 	lateupdate_entitycache(sdl, world);
-	if (world->app_mode == APPMODE_EDIT && !world->debug_gui->hidden)
+	if (!world->debug_gui->hidden)
 		world_update_debug_gui(world, sdl, render);
 }

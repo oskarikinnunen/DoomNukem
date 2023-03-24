@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   debug_rendering.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 19:55:24 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 13:11:35 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 19:23:31 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,4 +38,24 @@ void	draw_entity_icon(t_entity *entity, t_img *img, t_world *world)
 		draw_image(*world->sdl, p, *img, (t_point){32, 32});
 	else
 		draw_image(*world->sdl, p, *img, (t_point){16, 16});
+}
+
+void	debug_ramps(t_game *game)
+{
+	t_list			*l;
+	t_vector3_tri	*tri;
+	int				i;
+
+	l = game->world.ramps;
+	i = 0;
+	while (l != NULL)
+	{
+		tri = (t_vector3_tri *)l->content;
+		if (i % 2 == 0)
+			render_ray3D(game->world.sdl, tri->c, tri->a, CLR_RED);
+		else
+			render_ray3D(game->world.sdl, tri->b, tri->c, CLR_BLUE);
+		i++;
+		l = l->next;
+	}
 }

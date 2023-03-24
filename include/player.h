@@ -5,12 +5,14 @@
 #include "input.h"
 #include "raycast.h"
 
-#define MAXHEALTH	200
+# define DEATH_RETRY_DELAY 6000
 
-#define AM_SNIPER	0
-#define AM_ASSAULT	1
-#define AM_PISTOL	2
-#define AM_GRENADE	3
+# define MAXHEALTH 200
+
+# define AM_SNIPER 0
+# define AM_ASSAULT 1
+# define AM_PISTOL 2
+# define AM_GRENADE 3
 
 typedef struct s_ammo_u8
 {

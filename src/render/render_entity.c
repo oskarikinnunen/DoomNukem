@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_entity.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/24 15:22:11 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/24 20:30:40 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,7 @@ void	render_entitys_world_triangles(
 
 	obj = entity->obj;
 	if (entity->world_triangles == NULL || obj == NULL || entity->hidden)
-	{
-		doomlog(LOG_WARNING, "entity invalid in render_space.c");
 		return ;
-	}
 	render->world_triangles = entity->world_triangles;
 	i = 0;
 	render->start_index = 0;
