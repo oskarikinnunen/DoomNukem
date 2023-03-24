@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_events.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 19:59:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 16:17:53 by kfum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,8 @@ t_gamereturn	editor_events(t_editor *ed)
 			}
 			editor_key_down(ed, e);
 		}
+		if (e.type == SDL_QUIT)
+			return (game_exit);
 	}
 	update_input(&ed->hid.input, ed->hid);
 	return (game_continue);
