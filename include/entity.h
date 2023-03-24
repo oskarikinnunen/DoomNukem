@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 21:55:07 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/24 16:11:28 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,8 +137,8 @@ void	draw_entity_icon(t_entity *entity, t_img *img, struct s_world *world);
 void	draw_worldspace_icon(t_vector3 pos, t_img *img, struct s_world *world);
 void	highlight_entity(t_sdlcontext *sdl, t_entity *entity, uint32_t color);
 void	render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity);
-bool	calculate_quaternion_buffer_for_entity(t_quaternion *q, t_entity *entity);
-void	render_world_triangles(t_sdlcontext *sdl, t_render *render, t_entity *entity);
+bool	calculate_quat_buffer_for_entity(t_quaternion *q, t_entity *entity);
+void	render_entitys_world_triangles(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 void	calculate_triangles_for_entity(t_entity *entity, struct s_world *world);
 
 uint32_t	update_pixel_brightness(uint32_t light, uint32_t clr);

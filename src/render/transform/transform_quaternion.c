@@ -6,13 +6,13 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 17:54:38 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/23 18:10:22 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/24 16:11:28 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-bool calculate_quaternion_buffer_for_entity(t_quaternion *q, t_entity *entity)
+bool calculate_quat_buffer_for_entity(t_quaternion *q, t_entity *entity)
 {
 	t_object	*obj;
 	int			index;

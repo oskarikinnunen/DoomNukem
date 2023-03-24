@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
+#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/24 13:24:05 by raho             ###   ########.fr        #
+#    Updated: 2023/03/24 15:45:15 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -150,7 +150,6 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		render/renders_world_triangles_to_screen_triangles.c \
 		render/render_buffer.c \
 		render/init_render.c \
-		render/render_space.c \
 		render/render_gizmo.c \
 		render/transform/transform_triangle.c \
 		render/transform/transform_quaternion.c \

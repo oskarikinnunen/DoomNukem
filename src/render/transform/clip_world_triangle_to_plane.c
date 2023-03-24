@@ -6,13 +6,14 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 18:48:58 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/23 19:17:20 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/24 15:56:34 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-static int clip_triangle(t_vector3 plane_p, t_vector3 plane_n, t_world_triangle in_tri, t_world_triangle *out_tri)
+static int	clip_triangle(t_vector3 plane_p, t_vector3 plane_n, \
+t_world_triangle in_tri, t_world_triangle *out_tri)
 {
 	float	t;
 
@@ -27,7 +28,8 @@ static int clip_triangle(t_vector3 plane_p, t_vector3 plane_n, t_world_triangle 
 	return (1);
 }
 
-static int clip_quad_to_triangles(t_vector3 plane_p, t_vector3 plane_n, t_world_triangle in_tri, t_world_triangle *out_tri)
+static int	clip_quad_to_triangles(t_vector3 plane_p, t_vector3 plane_n, \
+t_world_triangle in_tri, t_world_triangle *out_tri)
 {
 	float	t;
 
@@ -48,15 +50,13 @@ static int clip_quad_to_triangles(t_vector3 plane_p, t_vector3 plane_n, t_world_
 	return (2);
 }
 
-int clip_triangle_plane(t_vector3 plane_p, t_vector3 plane_n, t_world_triangle in_tri, t_world_triangle out_tri[2])
+static int	set_distance(t_world_triangle in_tri, t_vector3 plane_p, \
+t_vector3 plane_n, float dist[3])
 {
-	float		dist[3];
-	int			i;
-	int			outside = 0;
-	bool		inside;
-	float		t;
+	int	i;
+	int	outside;
 
-	plane_n = vector3_normalise(plane_n);
+	outside = 0;
 	i = 0;
 	while (i < 3)
 	{
@@ -65,17 +65,28 @@ int clip_triangle_plane(t_vector3 plane_p, t_vector3 plane_n, t_world_triangle i
 			outside++;
 		i++;
 	}
+	return (outside);
+}
+
+int	clip_triangle_plane(t_vector3 plane_p, t_vector3 plane_n, \
+t_world_triangle in_tri, t_world_triangle out_tri[2])
+{
+	float	dist[3];
+	int		outside;
+
+	plane_n = vector3_normalise(plane_n);
+	outside = set_distance(in_tri, plane_p, plane_n, dist);
 	if (outside == 3)
-		return(0);
+		return (0);
 	if (outside == 0)
 	{
 		out_tri[0] = in_tri;
-		return(1);
+		return (1);
 	}
 	sort_quaternion_vector3_by_dist(dist, in_tri.p, in_tri.t);
 	if (outside == 1)
 		return (clip_quad_to_triangles(plane_p, plane_n, in_tri, out_tri));
 	if (outside == 2)
 		return (clip_triangle(plane_p, plane_n, in_tri, out_tri));
-	return(0);
+	return (0);
 }

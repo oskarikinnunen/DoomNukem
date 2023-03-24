@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 19:31:26 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/23 18:45:13 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/24 14:49:50 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,5 +95,34 @@ void	sort_vector2_vector3_by_dist(
 		p[j + 1] = temp_p;
 		t[j + 1] = temp_t;
 		i++;
+	}
+}
+
+void	sort_vector2_vector3_by_vector2_height(t_vector2 *p, t_vector3 *t)
+{
+	int			s_x;
+	int			s_j;
+	t_vector2	temp_p;
+	t_vector3	temp_t;
+
+	s_x = 0;
+	s_j = 0;
+	while (s_x < 2)
+	{
+		while (s_j < 2 - s_x)
+		{
+			if (p[s_j].y < p[s_j + 1].y)
+			{
+				temp_p = p[s_j];
+				p[s_j] = p[s_j + 1];
+				p[s_j + 1] = temp_p;
+				temp_t = t[s_j];
+				t[s_j] = t[s_j + 1];
+				t[s_j + 1] = temp_t;
+			}
+			s_j++;
+		}
+		s_j = 0;
+		s_x++;
 	}
 }
