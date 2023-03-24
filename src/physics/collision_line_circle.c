@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 14:51:17 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 16:07:25 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 17:29:24 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static t_vector2	get_closest_point(t_line line, t_vector2 circle)
 	return (closest);
 }
 
-bool	old_collision_line_circle(t_line line, t_vector2 circle,
+bool	collision_line_circle_save_collision(t_line line, t_vector2 circle,
 									float radius, t_collision *collision)
 {
 	t_vector2	closest;

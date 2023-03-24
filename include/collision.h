@@ -30,7 +30,8 @@ bool	collision_point_circle(t_vector2 p, t_vector2 cp, float r);
 bool	collision_line_point(t_vector2 start, t_vector2 end, t_vector2 point);
 
 // Don't use this one for general use. Use line_circle_collision instead
-bool	old_collision_line_circle(t_line line, t_vector2 circle, float radius, t_collision *collision);
+// Saves the collision point to t_collision *
+bool	collision_line_circle_save_collision(t_line line, t_vector2 circle, float radius, t_collision *collision);
 
 // Use this for general use
 bool	collision_line_circle(t_line line, t_vector2 circle, float radius);

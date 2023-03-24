@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 03:25:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 15:17:26 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 17:30:07 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ static bool touches_edges_ramp(t_vector2 pos, float radius, t_vector3_tri ramp)
 	t_line line1;
 	t_line line2;
 	t_line line3;
-	t_collision unused_col;
 
 	line1.start = v3tov2(ramp.a);
 	line1.end = v3tov2(ramp.b);
@@ -29,7 +28,7 @@ static bool touches_edges_ramp(t_vector2 pos, float radius, t_vector3_tri ramp)
 	line2.end = v3tov2(ramp.c);
 	line3.start = v3tov2(ramp.c);
 	line3.end = v3tov2(ramp.a);
-	return (old_collision_line_circle(line1, pos, radius, &unused_col) || old_collision_line_circle(line2, pos, radius, &unused_col) || old_collision_line_circle(line3, pos, radius, &unused_col));
+	return (collision_line_circle(line1, pos, radius) || collision_line_circle(line2, pos, radius) || collision_line_circle(line3, pos, radius));
 }
 
 static bool touches_edges(t_vector2 pos, float radius, t_meshtri *floor)
@@ -37,7 +36,6 @@ static bool touches_edges(t_vector2 pos, float radius, t_meshtri *floor)
 	t_line line1;
 	t_line line2;
 	t_line line3;
-	t_collision unused_col;
 
 	line1.start = v3tov2(floor->v[0]);
 	line1.end = v3tov2(floor->v[1]);
@@ -45,7 +43,7 @@ static bool touches_edges(t_vector2 pos, float radius, t_meshtri *floor)
 	line2.end = v3tov2(floor->v[2]);
 	line3.start = v3tov2(floor->v[2]);
 	line3.end = v3tov2(floor->v[0]);
-	return (old_collision_line_circle(line1, pos, radius, &unused_col) || old_collision_line_circle(line2, pos, radius, &unused_col) || old_collision_line_circle(line3, pos, radius, &unused_col));
+	return (collision_line_circle(line1, pos, radius) || collision_line_circle(line2, pos, radius) || collision_line_circle(line3, pos, radius));
 }
 
 static bool charphys_floor_share_z(t_character_physics *cp, t_meshtri *floor)
