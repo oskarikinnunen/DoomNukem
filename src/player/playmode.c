@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:44:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 22:07:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 12:31:00 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,9 @@ static void	gameloop(t_sdlcontext sdl, t_game game)
 	protagonist_play_audio(&game.player, &game.world, "protag_letsdo.wav");
 	play_music(&sdl, "music_arp1_ambient.wav");
 	// LIGHTING TODO: (THESE SEGFAULT)
-	//for_all_active_entities(&game.world, render_entity_worldtriangles); 
-	//recalculate_lighting(&game.world);
-	//sdl.lighting_toggled = true;
+	for_all_active_entities(&game.world, calculate_triangles_for_entity); 
+	recalculate_lighting(&game.world);
+	sdl.lighting_toggled = true;
 	while (gr == game_continue)
 	{
 		if (game.player.health > 0)

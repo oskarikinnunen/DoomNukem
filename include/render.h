@@ -122,10 +122,10 @@ typedef struct s_render
 	t_map				map;
 	t_img				*img;
 	t_quaternion		*q;
-	t_triangle			*world_triangles;
+	t_world_triangle			*world_triangles;
 	uint32_t			start_index;
 	uint32_t			end_index;
-	t_point_triangle	*screenspace_ptris;
+	t_screen_triangle	*screenspace_ptris;
 	uint32_t			screenspace_ptri_count;
 	t_rend_lightmode	lightmode;
 	uint32_t			dynamic_light;
@@ -134,6 +134,7 @@ typedef struct s_render
 	bool				wireframe;
 	uint32_t			gizmocolor;
 	t_img				*debug_img;
+	t_screen_triangle	triangle;
 	t_render_statistics	rs;
 }	t_render;
 
@@ -285,19 +286,19 @@ void				render_capsule(t_sdlcontext *sdl, t_vector3 pos, float height, float rad
 void				render_circle(t_sdlcontext *sdl, t_vector3 pos, float radius, uint32_t clr);
 void				render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to);
 void				render_ray3D(t_sdlcontext *sdl, t_vector3 from, t_vector3 to, uint32_t clr);
-void				clipped_point_triangle(t_render *render, t_sdlcontext sdl);
-void				render_buffer(t_sdlcontext *sdl, t_render *render);
-t_triangle			triangle_to_viewspace(t_triangle tritransformed, t_mat4x4 matview);
-t_point_triangle	triangle_to_screenspace_point_triangle(t_mat4x4 matproj, t_triangle clipped, t_sdlcontext sdl);
-bool				is_triangle_backface(t_triangle tritransformed, t_render *render);
+void				render_world_triangle_buffer_to_screen_triangle(t_render *render, t_sdlcontext sdl);
+void				render_screen_triangles_buffer(t_sdlcontext *sdl, t_render *render);
+t_world_triangle			triangle_to_viewspace(t_world_triangle tritransformed, t_mat4x4 matview);
+t_screen_triangle	world_triangle_to_screen_triangle(t_mat4x4 matproj, t_world_triangle clipped, t_sdlcontext sdl);
+bool				is_triangle_backface(t_world_triangle tritransformed, t_render *render);
 /* RASTERIZER */
 void				rasterize_zbuffer(t_lighting *lighting);
 void				render_triangle_lit(t_sdlcontext *sdl, t_render *render, int index);
-void				render_triangle_uv(t_lighting l, t_point_triangle triangle);
+void				render_triangle_uv(t_lighting l, t_screen_triangle triangle);
 void				render_triangle_unlit(t_sdlcontext *sdl, t_render *render, int index);
 void				render_triangle_transparent(t_sdlcontext *sdl, t_render *render, int index);
 void				render_triangle_dynamic(t_sdlcontext *sdl, t_render *render, int index);
-void				rasterize_light(t_point_triangle triangle, t_lighting *lighting);
+void				rasterize_light(t_screen_triangle triangle, t_lighting *lighting);
 
 /* AUDIO TOOLS */
 
@@ -327,11 +328,11 @@ void	create_music(int music_i, char *music_path, t_audio *audio);
 void	pause_music(t_audio *audio, bool pause);
 void	stop_music(t_audio *audio);
 
-int		clip_triangle_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]);
-int		point_clip_triangle_against_plane(t_vector2 plane_p, t_vector2 plane_n, t_point_triangle in_tri, t_point_triangle out_tri[2]);
-int		clip_triangle_against_occluder_plane(t_vector2 plane_p, t_vector2 plane_n, t_point_triangle in_tri, t_point_triangle out_tri[2]);
+int		clip_triangle_plane(t_vector3 plane_p, t_vector3 plane_n, t_world_triangle in_tri, t_world_triangle out_tri[2]);
+int		clip_screen_triangle_plane(t_vector2 plane_p, t_vector2 plane_n, t_screen_triangle in_tri, t_screen_triangle out_tri[2]);
+t_point	clip_screen_triangle_against_screen_edge(t_screen_triangle *triangles, t_v2rectangle screen_edge);
+
 //bitmask
-int			clip_bitmask_triangle_against_plane(t_vector3 plane_p, t_vector3 plane_n, t_triangle in_tri, t_triangle out_tri[2]); //TODO: Implement this with gpu rendering
 t_bitmask	init_bitmask(t_sdlcontext *sdl);
 
 /* SURFACE TOOLS */
@@ -341,19 +342,20 @@ void	join_text_to_surface(SDL_Surface *dest, SDL_Surface *src, t_point pos, uint
 void	join_text_boxed_to_surface(t_sdlcontext *sdl, SDL_Surface *src, t_point pos, t_point padding);
 
 /*occlusion*/
-void	set_square_from_triangles(t_occlusion *occl, t_point_triangle *t, int count);
+void	set_square_from_triangles(t_occlusion *occl, t_screen_triangle *t, int count);
 void	render_bitmask(t_sdlcontext *sdl, t_render *render);
 
 /*Render helper*/
-int					triangle_to_flat(t_point_triangle triangle, t_point_triangle tris[2]);
-t_point_triangle	wf_tri(t_point_triangle in, float scaling);
+int					triangle_to_flat(t_screen_triangle triangle, t_screen_triangle tris[2]);
+void				sort_vector2_vector3_by_vector2_height(t_vector2 *p, t_vector3 *t);
+t_screen_triangle	wf_tri(t_screen_triangle in, float scaling);
 t_vector3			calc_step_texture(t_vector3 *t, float delta);
 void				calc_points_step(float x_step[2], t_vector3 t_step[2], t_vector2 *p, t_vector3 *t, float delta);
-void				sort_point_uv_tri(t_vector2 *p, t_vector3 *t);
+void				sort_vector2_vector3_by_vector2_y(t_vector2 *p, t_vector3 *t);
 void				sort_polygon_tri(t_vector2 *p2, t_vector2 *t, t_vector3 *p3);
 void				sort_point_tri(t_vector2 *p2, float *w);
 void				ft_swap(void * a, void * b, size_t len);
-t_point_triangle	ps1(t_point_triangle in, int div);
+t_screen_triangle	ps1(t_screen_triangle in, int div);
 
 
 #endif

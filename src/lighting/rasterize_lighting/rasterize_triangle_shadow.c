@@ -6,14 +6,14 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 15:59:23 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/22 14:15:20 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 18:57:27 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
 static void	sample_img(t_lighting *lighting, int x, int y,
-	t_point_triangle poly)
+	t_screen_triangle poly)
 {
 	t_vector3	loc;
 	uint32_t	light_amount;
@@ -30,7 +30,7 @@ static void	sample_img(t_lighting *lighting, int x, int y,
 	lighting->map->lightmap[y * (lighting->map->size.x) + x] = light_amount;
 }
 
-static void	scanline(t_point_triangle triangle, t_lighting *lighting,
+static void	scanline(t_screen_triangle triangle, t_lighting *lighting,
 	t_v2rectangle bounds, int y)
 {
 	bool		row;
@@ -58,7 +58,7 @@ static void	scanline(t_point_triangle triangle, t_lighting *lighting,
 	}
 }
 
-void	rasterize_light(t_point_triangle triangle, t_lighting *lighting)
+void	rasterize_light(t_screen_triangle triangle, t_lighting *lighting)
 {
 	t_v2rectangle	bounds;
 	t_vector2		offset;

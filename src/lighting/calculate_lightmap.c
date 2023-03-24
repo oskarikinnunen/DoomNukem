@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   calculate_lightmap.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 14:14:49 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/23 19:42:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 21:55:15 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static void	buffer_triangles(
 	int start, int i, t_lighting *lighting, t_entity *entity)
 {
-	t_point_triangle	temp;
+	t_screen_triangle	temp;
 	int					vertex;
 	size_t				size;
 

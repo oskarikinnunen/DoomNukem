@@ -48,7 +48,7 @@ typedef struct	s_light
 typedef struct s_lighting
 {
 	struct s_world		*world;
-	t_triangle			*world_triangles;
+	t_world_triangle			*world_triangles;
 	t_light				*light;
 	struct s_entity		*entity;
 	struct s_img		*img;
@@ -58,11 +58,11 @@ typedef struct s_lighting
 	t_vector2			resolution;
 	t_v2rectangle		screen_edge;
 	t_camera			camera;
-	t_point_triangle	triangle;
+	t_screen_triangle	triangle;
 	t_vector3			triangle_normal;
 }	t_lighting;
 
-t_v2rectangle	get_bounds(t_point_triangle *triangle);
+t_v2rectangle	get_bounds(t_screen_triangle *triangle);
 t_vector2		get_barycentric_offset(t_vector2 p[3]);
-void			rasterize_texture(t_point_triangle triangle, t_lighting *lighting);
+void			rasterize_texture(t_screen_triangle triangle, t_lighting *lighting);
 #endif

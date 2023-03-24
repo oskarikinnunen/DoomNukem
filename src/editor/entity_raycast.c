@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_raycast.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 17:47:07 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 15:23:28 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 21:57:33 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,10 +89,10 @@ t_vector3_tri	worldspace_tri(t_entity *entity, int index)
 
 bool	raycast_entity(t_ray r, t_raycastinfo *info, t_entity *entity)
 {
-	int				i;
-	bool			hit;
-	t_vector3_tri	tri;
-	t_triangle		tt;
+	int					i;
+	bool				hit;
+	t_vector3_tri		tri;
+	t_world_triangle	tt;
 
 	i = 0;
 	hit = false;

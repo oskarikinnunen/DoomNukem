@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 07:34:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 14:33:35 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 18:47:03 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ static void	fill_point_tri_bot(t_lighting *l)
 
 void	rasterize_zbuffer(t_lighting *lighting)
 {
-	t_point_triangle	tris[2];
+	t_screen_triangle	tris[2];
 	int					res;
 
 	res = triangle_to_flat(lighting->triangle, tris);

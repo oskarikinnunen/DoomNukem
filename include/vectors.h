@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 19:08:58 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 18:28:10 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -419,9 +419,15 @@ t_vector2		get_max_from_vector2_triangle(t_vector2 p[3]);
 t_vector2		get_min_from_vector2_triangle(t_vector2 p[3]);
 
 //returns max x and y from 3 t_vector3
-t_vector2	get_max_vector2_from_vector3_triangle(t_vector2 max, t_vector3 t[3]);
+t_vector2		get_max_vector2_from_vector3_triangle(t_vector2 max, t_vector3 t[3]);
 
 //>= 1.0f == counterclockwise, <= -1.0f == clockwise and 0.0f is collinear
 float		clockwise(t_vector2 p[3]);
+
+//sorts 3 quaternions and 3 vector3 by 3 distances
+void	sort_quaternion_vector3_by_dist(float dist[3], t_quaternion q[3], t_vector3 t[3]);
+
+//sorts 3 vector2 vector3 by vector2 y
+void	sort_vector2_vector3_by_dist(float dist[3], t_vector2 p[3], t_vector3 t[3]);
 
 #endif

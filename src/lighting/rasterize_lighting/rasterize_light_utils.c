@@ -6,17 +6,17 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 17:18:20 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/22 14:13:59 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/23 18:47:03 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-t_v2rectangle	get_bounds(t_point_triangle *triangle)
+t_v2rectangle	get_bounds(t_screen_triangle *triangle)
 {
 	t_v2rectangle	bounds;
 
-	sort_point_uv_tri(triangle->p, triangle->t);
+	sort_vector2_vector3_by_vector2_height(triangle->p, triangle->t);
 	if (clockwise(triangle->p) >= -1.0f)
 	{
 		ft_swap(&triangle->p[0], &triangle->p[2], sizeof(t_vector2));

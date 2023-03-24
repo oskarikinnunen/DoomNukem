@@ -1,21 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   render_triangle.c                                  :+:      :+:    :+:   */
+/*   render_buffer.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:16:50 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/23 21:05:40 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 21:55:31 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "bresenham.h"
 
-static void unlit_render(t_sdlcontext *sdl, t_render *render)
+static void	unlit_render(t_sdlcontext *sdl, t_render *render)
 {
-	int index;
+	int	index;
 
 	index = 0;
 	if (render->img->transparency)
@@ -36,9 +36,9 @@ static void unlit_render(t_sdlcontext *sdl, t_render *render)
 	}
 }
 
-void render_buffer_triangles(t_sdlcontext *sdl, t_render *render)
+void	render_buffer_triangles(t_sdlcontext *sdl, t_render *render)
 {
-	int index;
+	int	index;
 
 	index = 0;
 	if (render->lightmode == lm_unlit || !sdl->lighting_toggled)
@@ -53,28 +53,33 @@ void render_buffer_triangles(t_sdlcontext *sdl, t_render *render)
 	}
 }
 
-void render_buffer_triangle_wireframes(t_sdlcontext *sdl, t_render *render)
+void	render_buffer_triangle_wireframes(t_sdlcontext *sdl, t_render *render)
 {
-	int	index;
+	int					index;
+	t_screen_triangle	t1;
 
 	index = 0;
 	while (index < render->screenspace_ptri_count)
 	{
-		t_point_triangle t1 = wf_tri(render->screenspace_ptris[index], sdl->resolution_scaling);
-		drawline(*sdl, vector2_to_point(t1.p[0]), vector2_to_point(t1.p[1]), render->gizmocolor);
-		drawline(*sdl, vector2_to_point(t1.p[1]), vector2_to_point(t1.p[2]), render->gizmocolor);
-		drawline(*sdl, vector2_to_point(t1.p[2]), vector2_to_point(t1.p[0]), render->gizmocolor);
+		t1 = wf_tri(render->screenspace_ptris[index], sdl->resolution_scaling);
+		drawline(*sdl, vector2_to_point(t1.p[0]), \
+		vector2_to_point(t1.p[1]), render->gizmocolor);
+		drawline(*sdl, vector2_to_point(t1.p[1]), \
+		vector2_to_point(t1.p[2]), render->gizmocolor);
+		drawline(*sdl, vector2_to_point(t1.p[2]), \
+		vector2_to_point(t1.p[0]), render->gizmocolor);
 		index++;
 	}
 }
 
-void render_buffer(t_sdlcontext *sdl, t_render *render)
+void	render_screen_triangles_buffer(t_sdlcontext *sdl, t_render *render)
 {
-	if (!render->wireframe && (render->map.texture != NULL || render->img != NULL) && !sdl->global_wireframe)
+	bool	is_valid;
+
+	is_valid = (render->map.texture != NULL || render->img != NULL);
+	if (!render->wireframe && is_valid && !sdl->global_wireframe)
 		render_buffer_triangles(sdl, render);
-	if (render->wireframe/* || sdl->global_wireframe*/)
+	if (render->wireframe)
 		render_buffer_triangle_wireframes(sdl, render);
-	/*if (render->img == NULL)
-		render_solid_triangle(sdl, render);*/
 	render->rs.triangle_count += render->screenspace_ptri_count;
 }

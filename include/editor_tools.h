@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_tools.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 15:21:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/23 21:55:04 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,7 +176,7 @@ t_tool				*get_load_tool(void);
 void				rendergrid(t_world *world, t_vector3 position, int size, uint32_t color);
 bool				rooms_share_zspace(t_area *room1, t_area *room2);
 bool				entity_lookedat(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
-bool				triangle_lookedat(t_render r, t_triangle tri, t_sdlcontext sdl);
+bool				triangle_lookedat(t_render r, t_world_triangle tri, t_sdlcontext sdl);
 int32_t				entity_lookedat_triangle_index(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
 t_vector3			*entity_lookedat_vertex(t_editor *ed, t_sdlcontext sdl, t_entity *entity);
 t_entity			*selected_entity(t_editor *ed, t_sdlcontext sdl);
