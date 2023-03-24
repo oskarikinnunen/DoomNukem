@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool_addnode.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 10:58:19 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/27 18:45:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 14:55:00 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ bool	potentialnode(t_vector3 cursor, t_roomtooldata *dat, t_editor *ed)
 	while (i < dat->room->edgecount)
 	{
 		l = linebetween(i, dat->room);
-		if (linecirclecollision(l, v3tov2(cursor), 10.0f))
+		if (collision_line_circle(l, v3tov2(cursor), 10.0f))
 		{
 			draw_node_line(cursor, l, ed->world.sdl);
 			draw_node_indicator(cursor, dat, &ed->world);

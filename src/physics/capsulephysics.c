@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   capsulephysics.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 03:25:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 14:16:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 15:17:26 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static bool touches_edges_ramp(t_vector2 pos, float radius, t_vector3_tri ramp)
 	line2.end = v3tov2(ramp.c);
 	line3.start = v3tov2(ramp.c);
 	line3.end = v3tov2(ramp.a);
-	return (col_linecircle(line1, pos, radius, &unused_col) || col_linecircle(line2, pos, radius, &unused_col) || col_linecircle(line3, pos, radius, &unused_col));
+	return (old_collision_line_circle(line1, pos, radius, &unused_col) || old_collision_line_circle(line2, pos, radius, &unused_col) || old_collision_line_circle(line3, pos, radius, &unused_col));
 }
 
 static bool touches_edges(t_vector2 pos, float radius, t_meshtri *floor)
@@ -45,15 +45,15 @@ static bool touches_edges(t_vector2 pos, float radius, t_meshtri *floor)
 	line2.end = v3tov2(floor->v[2]);
 	line3.start = v3tov2(floor->v[2]);
 	line3.end = v3tov2(floor->v[0]);
-	return (col_linecircle(line1, pos, radius, &unused_col) || col_linecircle(line2, pos, radius, &unused_col) || col_linecircle(line3, pos, radius, &unused_col));
+	return (old_collision_line_circle(line1, pos, radius, &unused_col) || old_collision_line_circle(line2, pos, radius, &unused_col) || old_collision_line_circle(line3, pos, radius, &unused_col));
 }
 
-static bool charphys_floor_share_z(t_characterphysics *cp, t_meshtri *floor)
+static bool charphys_floor_share_z(t_character_physics *cp, t_meshtri *floor)
 {
 	return (floor->v->z >= cp->position->z && floor->v->z <= cp->position->z + cp->height);
 }
 
-static bool charphys_ramp_share_z(t_characterphysics *cp, t_vector3_tri ramp)
+static bool charphys_ramp_share_z(t_character_physics *cp, t_vector3_tri ramp)
 {
 	float fmin;
 	float fmax;
@@ -63,12 +63,12 @@ static bool charphys_ramp_share_z(t_characterphysics *cp, t_vector3_tri ramp)
 	return (fmin <= cp->position->z && fmax >= cp->position->z);
 }
 
-static bool charphys_ceil_share_z(t_characterphysics *cp, t_meshtri *floor)
+static bool charphys_ceil_share_z(t_character_physics *cp, t_meshtri *floor)
 {
 	return (floor->v->z >= cp->position->z + (cp->height / 2.0f) && floor->v->z <= cp->position->z + cp->height);
 }
 
-static bool is_in_ceil(t_characterphysics *cp, t_meshtri *ceil)
+static bool is_in_ceil(t_character_physics *cp, t_meshtri *ceil)
 {
 	t_ray r;
 	t_raycastinfo info;
@@ -85,7 +85,7 @@ static bool is_in_ceil(t_characterphysics *cp, t_meshtri *ceil)
 	return (false);
 }
 
-static bool is_in_floor(t_characterphysics *cp, t_meshtri *floor)
+static bool is_in_floor(t_character_physics *cp, t_meshtri *floor)
 {
 	t_ray r;
 	t_raycastinfo info;
@@ -102,7 +102,7 @@ static bool is_in_floor(t_characterphysics *cp, t_meshtri *floor)
 	return (false);
 }
 
-static bool is_in_ramp(t_characterphysics *cp, t_vector3_tri *ramp)
+static bool is_in_ramp(t_character_physics *cp, t_vector3_tri *ramp)
 {
 	t_ray r;
 	t_raycastinfo info;
@@ -117,7 +117,7 @@ static bool is_in_ramp(t_characterphysics *cp, t_vector3_tri *ramp)
 	return (false);
 }
 
-static float get_z_from_areas(t_characterphysics *cp, t_world *world)
+static float get_z_from_areas(t_character_physics *cp, t_world *world)
 {
 	t_list *list;
 	t_area *area;
@@ -166,7 +166,7 @@ static float sample_ramp_z(t_vector2 position, t_vector3_tri tri, int mod)
 	return (rampz);
 }
 
-static float get_z_from_ramps(t_characterphysics *cp, t_world *world)
+static float get_z_from_ramps(t_character_physics *cp, t_world *world)
 {
 	t_vector3_tri *tri;
 	t_list *list;
@@ -189,7 +189,7 @@ static float get_z_from_ramps(t_characterphysics *cp, t_world *world)
 
 // get_z_from_areas
 // get_z_from_ramps
-static float get_z_floor(t_characterphysics *cp, t_world *world)
+static float get_z_floor(t_character_physics *cp, t_world *world)
 {
 	float z;
 
@@ -199,7 +199,7 @@ static float get_z_floor(t_characterphysics *cp, t_world *world)
 	return (z);
 }
 
-static float get_z_ceil(t_characterphysics *cp, t_world *world)
+static float get_z_ceil(t_character_physics *cp, t_world *world)
 {
 	t_list *list;
 	t_area *room;
@@ -223,7 +223,7 @@ static float get_z_ceil(t_characterphysics *cp, t_world *world)
 	return (z);
 }
 
-t_bound get_bound(t_characterphysics *cp, t_world *world)
+t_bound get_bound(t_character_physics *cp, t_world *world)
 {
 	t_bound bound;
 
@@ -232,7 +232,7 @@ t_bound get_bound(t_characterphysics *cp, t_world *world)
 	return (bound);
 }
 
-void capsule_damp(t_characterphysics *phys, t_world *world)
+void capsule_damp(t_character_physics *phys, t_world *world)
 {
 	t_vector2 velocity_xy;
 
@@ -244,7 +244,7 @@ void capsule_damp(t_characterphysics *phys, t_world *world)
 }
 
 void capsule_add_xy_velocity(t_vector2 vel,
-							 t_characterphysics *phys, t_world *world)
+							 t_character_physics *phys, t_world *world)
 {
 	t_vector2 vel_clamped;
 
@@ -257,7 +257,7 @@ void capsule_add_xy_velocity(t_vector2 vel,
 }
 
 // TODO: norminette for this...
-void capsule_applygravity_new(t_characterphysics *charp, t_world *world)
+void capsule_applygravity_new(t_character_physics *charp, t_world *world)
 {
 	t_vector3 potential_pos;
 	t_vector3 new_pos;
@@ -267,9 +267,9 @@ void capsule_applygravity_new(t_characterphysics *charp, t_world *world)
 								vector3_mul(charp->velocity, world->clock.delta));
 	new_pos = potential_pos;
 	int i = 0;
-	while (check_collision_character(world, *charp, new_pos, &new_pos) && i < 5)
+	while (check_character_collision(world, *charp, new_pos, &new_pos) && i < 5)
 		i++;
-	if (!check_collision_character(world, *charp, new_pos, &new_pos))
+	if (!check_character_collision(world, *charp, new_pos, &new_pos))
 		*charp->position = new_pos;
 	zbound = get_bound(charp, world);
 	float floorz = zbound.min;

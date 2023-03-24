@@ -3,7 +3,7 @@
 
 bool	node_would_collide(t_world *world, t_vector3 midpoint)
 {
-	t_characterphysics	phys;
+	t_character_physics	phys;
 	t_vector3			vec;
 
 	ft_bzero(&phys, sizeof(phys));
@@ -11,7 +11,7 @@ bool	node_would_collide(t_world *world, t_vector3 midpoint)
 	phys.height = PLAYER_HEIGHT;
 	phys.position = &midpoint;
 	vec = midpoint;
-	if (check_collision_character(world, phys, vector3_add(midpoint, (t_vector3){0.0f, 0.0f, 0.0001f}), &vec))
+	if (check_character_collision(world, phys, vector3_add(midpoint, (t_vector3){0.0f, 0.0f, 0.0001f}), &vec))
 		return (true);
 	return (false);
 }
@@ -334,7 +334,7 @@ void	navmesh_process(t_world *world)
 {
 	return ;
 	t_vector3	newpos;
-	t_characterphysics	phys;
+	t_character_physics	phys;
 	int			i;
 
 	phys.height = PLAYER_HEIGHT;

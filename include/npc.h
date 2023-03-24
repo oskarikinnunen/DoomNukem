@@ -35,7 +35,7 @@ typedef enum e_npc_state
 
 typedef struct s_npc
 {
-	t_characterphysics	phys;
+	t_character_physics	phys;
 	int32_t				health;
 	bool				hit;
 	t_path				path;

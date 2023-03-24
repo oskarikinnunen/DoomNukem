@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_light.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 21:17:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 14:56:33 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,7 @@ void	comp_light_gui_edit(t_entity *entity, t_autogui *gui, t_world *world)
 	br.rect.position = point_zero();
 	br.rect.size = img->size;
 	br.clicked = false;
-	if (pointrectanglecollision(gui->hid->mouse.pos, br.rect))
+	if (collision_point_rectangle(gui->hid->mouse.pos, br.rect))
 	{
 		//drawrectangle(*gui->sdl, br.rect, AMBER_2);
 		if (mouse_clicked(gui->hid->mouse, MOUSE_LEFT))

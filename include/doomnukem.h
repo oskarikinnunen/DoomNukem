@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 13:19:25 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 15:18:04 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -306,9 +306,6 @@ void	create_navmesh(t_world *world);
 void	show_navmesh(t_world *world);
 
 /* COLLISION */
-bool	check_collision(t_world *world, t_player *player, t_vector3 potential_pos, t_vector3 *newpos);
-bool	alaiwan_collision(t_world *world, t_player *player, t_vector3 potential_pos, t_vector3 *new_pos);
-
 
 /* ERRORS.C */
 void	error_log(int error_code);

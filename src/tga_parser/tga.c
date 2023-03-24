@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 16:12:58 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 13:57:41 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 14:47:34 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ static int	load_tga(int fd, char *file_name, t_tga *tga)
 	return (1);
 }
 
-
 void	check_transparency(t_img *img)
 {
 	t_point	p;
@@ -94,7 +93,6 @@ static t_img	tga_to_simpleimg(char *file_name, t_tga *tga)
 			img.data[i] = tga->image_data.pixels[i];
 		i++;
 	}
-	
 	if (tga->header.id_length != 0)
 		free(tga->image_data.image_id);
 	free(tga->image_data.pixels);

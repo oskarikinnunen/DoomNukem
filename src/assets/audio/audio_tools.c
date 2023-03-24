@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/27 11:14:16 by raho              #+#    #+#             */
-/*   Updated: 2023/02/07 15:41:59 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 14:49:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ t_audiosample	get_sample(t_sdlcontext *sdl, const char *name)
 	return (error);
 }
 
-//TODO: sometimes channel is invalid when the sound is done playing but the address still stays on the pointer. 
+//TODO: sometimes channel is invalid when the sound is done playing but 
+// the address still stays on the pointer. 
 int	check_channel_status(FMOD_CHANNEL *channel)
 {
 	FMOD_BOOL	isplaying;
