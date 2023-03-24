@@ -269,7 +269,7 @@ void	malloc_space_for_navmesh(t_world *world)
 		if (ent->status != es_free)
 		{
 			if (ent->status == es_active && !ent->hidden)
-				if (ent->obj->bounds.type == bt_ignore)
+				if (ent->occlusion.world_tri_count == 1)
 					clip_navmesh(&world->nav, ent, world);
 			found++;
 		}

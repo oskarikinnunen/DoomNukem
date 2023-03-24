@@ -9,12 +9,7 @@ void calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity)
 	render->screen_edge.max.y = (float)(sdl.window_h * sdl.resolution_scaling) - 1.0f;
 	render->screen_edge.min.x = 0.0f;
 	render->screen_edge.min.y = 0.0f;
-	if (entity->obj->bounds.type == bt_plane)
-		render->end_index = 1;
-	else if (entity->obj->bounds.type == bt_box)
-		render->end_index = 11;
-	else
-		render->end_index = 2;
+	render->end_index = entity->occlusion.world_tri_count - 1;
 	render_world_triangle_buffer_to_screen_triangle(render, sdl);
 }
 
