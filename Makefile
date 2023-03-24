@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
+#    By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/21 14:21:33 by raho             ###   ########.fr        #
+#    Updated: 2023/03/24 11:38:11 by kfum             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,6 +29,9 @@ FREETYPE = $(INSTALLED_LIBS_DIR)/lib/libfreetype.a
 FMOD = $(FMOD_DIR)/copied
 
 LIBFT = libft/libft.a
+
+SRC_PATH = src/
+OBJ_PATH = obj/
 
 #Source files:
 SRCFILES= main.c img.c deltatime.c anim.c \
@@ -214,10 +217,11 @@ VECTORSRCFILES= conversions.c \
 		vector3_more.c \
 		vector3_shorthands.c \
 		barycentric.c
-VECTORSRC= $(addprefix src/vectors/,$(VECTORSRCFILES))
-SRC= $(addprefix src/,$(SRCFILES))
-SRC+= $(VECTORSRC)
-OBJ= $(SRC:.c=.o)
+
+
+OBJ = $(patsubst %.c, $(OBJ_PATH)%.o, $(SRCFILES))
+VECTORSRC= $(addprefix vectors/, $(VECTORSRCFILES))
+VEC_OBJ = $(patsubst %.c, $(OBJ_PATH)%.o, $(VECTORSRC))
 DEPENDS= $(OBJ:.o=.d)
 
 #Compilation stuff:
@@ -225,7 +229,7 @@ INCLUDE= -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include \
 			-I$(INSTALLED_LIBS_DIR)/include/SDL2/ \
 			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
 CC= gcc
-CFLAGS= $(INCLUDE) -g #-finline-functions -O2 -MMD #-march=native
+CFLAGS= $(INCLUDE) -g -finline-functions -O2 #-MMD#-march=native
 LDFLAGS = -Wl,-rpath $(INSTALLED_LIBS_DIR)/lib
 
 UNAME= $(shell uname)
@@ -245,17 +249,42 @@ endif
 #multi:
 #	$(MAKE) -j6 all
 
-all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(FMOD) $(LIBFT) $(OBJ)
-	$(CC) $(OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LDFLAGS)
+all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(FMOD) $(LIBFT) $(OBJ_PATH) $(OBJ) $(VEC_OBJ)
+	$(CC) $(OBJ) $(VEC_OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LDFLAGS)
 
 #-include $(DEPENDS)
+
+$(OBJ_PATH):
+	@mkdir -p $(OBJ_PATH)/debug
+	@mkdir -p $(OBJ_PATH)/editor/tools
+	@mkdir -p $(OBJ_PATH)/entity/components
+	@mkdir -p $(OBJ_PATH)/file_ops
+	@mkdir -p $(OBJ_PATH)/guns
+	@mkdir -p $(OBJ_PATH)/lighting
+	@mkdir -p $(OBJ_PATH)/logging
+	@mkdir -p $(OBJ_PATH)/npc/civilian
+	@mkdir -p $(OBJ_PATH)/npc/enemy
+	@mkdir -p $(OBJ_PATH)/npc/navigation
+	@mkdir -p $(OBJ_PATH)/obj_parser
+	@mkdir -p $(OBJ_PATH)/occlusion
+	@mkdir -p $(OBJ_PATH)/physics
+	@mkdir -p $(OBJ_PATH)/player
+	@mkdir -p $(OBJ_PATH)/preferences
+	@mkdir -p $(OBJ_PATH)/render/rasterization
+	@mkdir -p $(OBJ_PATH)/tga_parser
+	@mkdir -p $(OBJ_PATH)/vectors
+	@mkdir -p $(OBJ_PATH)/world
+
+$(OBJ_PATH)%.o: $(SRC_PATH)%.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ): Makefile include/*.h
 #	//$()
 
 clean:
-	rm -f $(OBJ)
-	rm -f $(DEPENDS)
+	@echo "$(RED)Cleaning obj folder...$(DEFAULT)"
+	@rm -rf $(OBJ_PATH)
+	@echo "$(GREEN)DONE.\n$(DEFAULT)"
 
 re: clean all
 

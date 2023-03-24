@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 19:48:28 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 15:30:36 by kfum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,13 +121,40 @@ static void	world_update_debug_gui(t_world *world,
 	gui_end(world->debug_gui);
 }
 
+
+static void	draw_skybox_image(t_world *world, t_img *skybox)
+{
+	t_point pointX1;
+	t_point pointX2;
+	float rotX;
+	float rotY;
+
+	rotX = fmodf(world->player->transform.rotation.x / (2 * PI), 1.0f);
+	rotY = fmodf(world->player->transform.rotation.y / PI, 1.0f);	
+	skybox = get_image_by_name(*world->sdl, "skybox.tga");	
+	if (rotX < 0)
+	{
+		pointX1 = point_add(point_zero(), (t_point){(rotX * skybox->size.x) + world->sdl->screensize.x, (rotY * skybox->size.y)});
+		pointX2 = point_add(point_zero(), (t_point){(rotX * skybox->size.x) - (skybox->size.x - world->sdl->screensize.x), (rotY * skybox->size.y)});
+	}
+	else
+	{
+		pointX1 = point_add(point_zero(), (t_point){rotX * skybox->size.x, (rotY * skybox->size.y)});
+		pointX2 = point_add(point_zero(), (t_point){(rotX * skybox->size.x) - skybox->size.x, (rotY * skybox->size.y)});
+	}	
+	draw_image(*world->sdl, pointX1, *skybox, skybox->size);
+	draw_image(*world->sdl, pointX2, *skybox, skybox->size);
+}
+
 void	update_world3d(t_world *world, t_render *render)
 {
 	t_sdlcontext	*sdl;
+	t_img			*skybox;
 
 	sdl = world->sdl;
 	for_all_active_entities(world, render_entity_worldtriangles);
 	render_start_new(sdl, world->player);
+	draw_skybox_image(world, skybox);
 	clear_occlusion_buffer(sdl);
 	update_frustrum_culling(world, sdl, render);
 	sort_entitycache(world, render->camera.position);

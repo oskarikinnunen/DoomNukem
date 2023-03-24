@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode_events.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 19:41:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 19:41:41 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 15:25:39 by kfum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ int	playmode_events(t_game *game)
 				return (game_exit);
 			}
 		}
+		if (e.type == SDL_QUIT)
+			return (game_exit);
 		controller_events(e, &game->hid);
 	}
 	updateinput_new(&game->hid.input, game->hid);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_events.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 19:38:06 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/22 15:25:46 by kfum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,8 @@ t_gamereturn	editor_events(t_editor *ed)
 			}
 			editor_key_down(ed, e);
 		}
+		if (e.type == SDL_QUIT)
+			return (game_exit);
 	}
 	updateinput_new(&ed->hid.input, ed->hid);
 	return (game_continue);
