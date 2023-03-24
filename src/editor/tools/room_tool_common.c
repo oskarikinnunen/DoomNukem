@@ -6,12 +6,13 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:53:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 14:38:24 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 19:25:28 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "editor_tools.h"
+#include "tools/roomtool.h"
 
 t_vector2   vector2_flipxy(t_vector2 vec)
 {
@@ -42,10 +43,7 @@ void	toggle_ceilings(t_world *world)
 		while (i < r->wallcount)
 		{
 			if (r->walls[i].ceilingwall)
-			{
 				r->walls[i].entity->hidden = world->ceiling_toggle;
-			}
-				
 			i++;
 		}
 		l = l->next;
@@ -62,6 +60,20 @@ bool	rooms_share_zspace(t_area *room1, t_area *room2)
 		&& room2->height >= room1->height)
 		share = true;
 	return (share);
+}
+
+void	room_tool_remove_room(t_editor *ed, t_roomtooldata *dat)
+{
+	t_area	temp;
+
+	ft_bzero(&temp, sizeof(t_area));
+	ft_memcpy(temp.edges, dat->room->edges,
+		sizeof(t_vector2) * dat->room->edgecount);
+	temp.edgecount = dat->room->edgecount;
+	world_remove_room(&ed->world, dat->room);
+	room_recalculate_joined_rooms(&ed->world, &temp);
+	dat->room = NULL;
+	dat->rtm = rtm_none;
 }
 
 t_vector2 next_edge(t_area *room, int i)

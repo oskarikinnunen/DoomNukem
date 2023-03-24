@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_npc_raycast.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 17:08:18 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 19:27:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 20:45:09 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	npc_player_raycast(t_entity *entity, t_npc *npc, t_world *world)
 	r.dir = vector3_mul(r.dir, 100.0f);
 	npc->seesplayer = false;
 	r.dir = vector3_normalise(r.dir);
-	float dist = vector3_dist(world->player->transform.position, get_entity_world_position(entity));
+	float dist = vector3_dist(world->player->transform.position, entity->occlusion.bounds.origin);
 	if (dist < 100000.0f && raycast(r, &info, world) && !world->player->noclip)
 	{
 		if (info.distance > dist)

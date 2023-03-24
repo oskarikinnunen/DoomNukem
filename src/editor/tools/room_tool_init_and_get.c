@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 17:07:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/21 18:26:14 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 21:55:20 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include "editor_tools.h"
 #include "doomnukem.h"
 #include "objects.h"
-
 
 static void	room_tool_init_other_guis(t_editor *ed, t_sdlcontext *sdl,
 	t_roomtooldata *dat)

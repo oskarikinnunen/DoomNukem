@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/17 13:54:56 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 22:01:16 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 22:29:16 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,12 @@ typedef struct s_trianglev2
 	t_vector2	b;
 	t_vector2	c;
 }	t_trianglev2;
+
+typedef struct s_box
+{
+	t_vector3	max;
+	t_vector3	min;
+}	t_box;
 
 typedef struct s_screen_triangle
 {

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:52:00 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 14:53:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 21:56:01 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void	free_roomwalls(t_world *world, t_area *room)
 {
-	int     i;
-	t_wall  *w;
+	int		i;
+	t_wall	*w;
 
 	i = 0;
 	while (i < room->wallcount)
@@ -28,6 +28,4 @@ void	free_roomwalls(t_world *world, t_area *room)
 		}
 		i++;
 	}
-	//free(room->walls);
-	//room->wallcount = 0;
 }

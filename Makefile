@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/24 22:20:50 by raho             ###   ########.fr        #
+#    Updated: 2023/03/24 22:28:49 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -72,15 +72,22 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		editor/tools/entity_tool_modify_2.c \
 		editor/tools/entity_tool_gui_inits.c \
 		editor/tools/wall_tool_rooms.c \
+		editor/tools/room_ops.c \
+		editor/tools/room_ops_2.c \
 		editor/tools/room_tool.c \
+		editor/tools/room_tool_modify.c \
+		editor/tools/room_tool_modify_2.c \
 		editor/tools/room_tool_create.c \
 		editor/tools/room_tool_raycast_room.c \
 		editor/tools/room_tool_init_and_get.c \
 		editor/tools/room_tool_connect.c \
 		editor/tools/room_tool_node.c \
+		editor/tools/room_tool_node_2.c \
+		editor/tools/room_tool_node_3.c \
 		editor/tools/room_tool_addnode.c \
 		editor/tools/room_tool_common.c \
 		editor/tools/room_tool_paint.c \
+		editor/tools/room_tool_paint_2.c \
 		editor/tools/gun_tool.c \
 		editor/tools/autogui.c \
 		editor/editor_new_buttons.c \
@@ -196,7 +203,6 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		world/entitycache_2.c \
 		world/entitycache_transparent.c \
 		world/world.c \
-		entity/entity_transform.c \
 		entity/components/comp_light.c \
 		entity/components/comp_healthpack.c \
 		entity/components/comp_playerspawn.c \
