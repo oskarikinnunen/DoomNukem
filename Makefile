@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
+#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/24 17:06:53 by raho             ###   ########.fr        #
+#    Updated: 2023/03/24 17:49:43 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -70,7 +70,9 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		editor/tools/entity_tool_modify_2.c \
 		editor/tools/entity_tool_gui_inits.c \
 		editor/tools/wall_tool_rooms.c \
+		editor/tools/room_ops.c \
 		editor/tools/room_tool.c \
+		editor/tools/room_tool_modify.c \
 		editor/tools/room_tool_create.c \
 		editor/tools/room_tool_raycast_room.c \
 		editor/tools/room_tool_init_and_get.c \

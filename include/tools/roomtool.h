@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:42:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 19:01:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 17:49:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,9 @@ bool	potentialnode(t_vector3 cursor, t_roomtooldata *dat, t_editor *ed);
 /* ROOM_TOOL_NODE.C */
 void		room_tool_node(t_vector3 cursor, t_roomtooldata *dat, t_editor *ed);
 t_vector2	*closest_edge(t_area *room, t_vector3 rc);
+
+//modifymode
+void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat);
 
 t_area	*get_raycast_room(t_raycastinfo info, t_world *world);
 
