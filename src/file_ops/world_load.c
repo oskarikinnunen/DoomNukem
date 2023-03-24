@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world_load.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 14:55:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 17:34:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 14:38:47 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,10 +68,10 @@ t_world	load_world(char *level_name, t_sdlcontext *sdl)
 	int		fd;
 
 	doomlog(LOG_NORMAL, "LOADING WORLD");
-	ft_strcpy(level_path, "worlds/");
+	ft_strncpy_term(level_path, "worlds/", 250);
 	ft_strncat(level_path, level_name, 200);
 	world_init(&world, sdl);
-	ft_strcpy(world.name, level_name);
+	ft_strncpy_term(world.name, level_name, 30);
 	world_load_amap(level_path, &world);
 	world_load_basic_ent(level_path, &world);
 	int	i;

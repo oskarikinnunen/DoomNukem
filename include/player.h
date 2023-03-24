@@ -37,7 +37,7 @@ typedef struct s_player
 {
 	t_transform			transform;
 	t_transform			head_transform;
-	t_characterphysics	cp;
+	t_character_physics	cp;
 	t_input				input;
 	bool				noclip;
 	bool				locked;

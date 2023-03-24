@@ -12,7 +12,7 @@ t_material	parsemat(int fd, char *name)
 	int			ret;
 
 	ft_bzero(&mat, sizeof(t_material));
-	ft_strcpy(mat.name, name);
+	ft_strncpy_term(mat.name, name, 250);
 	line = NULL;
 	ret = get_next_line(fd, &line);
 	while (ret)
@@ -41,9 +41,9 @@ t_material	parsemat(int fd, char *name)
 			if (ft_strnstr(line, "map_Kd ", sizeof("map_Kd")) != NULL)
 			{
 				if (ft_strrchr(line, '/') != NULL)
-					ft_strcpy(mat.texturename, ft_strrchr(line, '/') + 1);
+					ft_strncpy_term(mat.texturename, ft_strrchr(line, '/') + 1, 250);
 				else
-					ft_strcpy(mat.texturename, line + sizeof("map_Kd"));
+					ft_strncpy_term(mat.texturename, line + sizeof("map_Kd"), 250);
 			}
 			free(line);
 			line = NULL;
@@ -63,7 +63,7 @@ void	parse_mtllib(t_list **list, char *filename)
 	char		mat_path[256];
 	int			ret;
 
-	ft_strcpy(mat_path, OBJPATH);
+	ft_strncpy_term(mat_path, OBJPATH, 250);
 	ft_strcat(mat_path, filename);
 	fd = open(mat_path, O_RDONLY);
 	

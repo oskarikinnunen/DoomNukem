@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   autogui.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:19:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 20:56:55 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 17:24:25 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,9 +86,9 @@ static void update_scrollbar(t_autogui *gui)
 	scrollrect.position.y += (float)max_y * lerp;
 	draw_rectangle_filled(*gui->sdl, scrollrect, INT_MAX);
 	draw_rectangle(*gui->sdl, scrollrect, AMBER_0);
-	if (gui->hid->mouse.held == MOUSE_LEFT && pointrectanglecollision(gui->hid->mouse.pos, scrollrect))
+	if (gui->hid->mouse.held == MOUSE_LEFT && collision_point_rectangle(gui->hid->mouse.pos, scrollrect))
 		gui->scroll_held = true;
-	if (pointrectanglecollision(gui->hid->mouse.pos, scrollrect))
+	if (collision_point_rectangle(gui->hid->mouse.pos, scrollrect))
 		draw_rectangle(*gui->sdl, scrollrect, AMBER_1);
 	if (gui->scroll_held)
 		gui->scroll.y += (scrollrect.position.y + (scrollrect.size.y / 2)) - gui->hid->mouse.pos.y;
@@ -119,7 +119,7 @@ static void draw_rect_tri(t_sdlcontext *sdl, t_rectangle rect, uint32_t clr)
 
 static bool	clicked_rectangle(t_mouse m, t_rectangle rect)
 {
-	return (mouse_clicked(m, MOUSE_LEFT) && pointrectanglecollision(m.pos, rect));
+	return (mouse_clicked(m, MOUSE_LEFT) && collision_point_rectangle(m.pos, rect));
 }
 
 static void update_hidecross(t_autogui *gui)
@@ -173,9 +173,9 @@ void	gui_end(t_autogui *gui)
 	else if (!gui->locked)
 	{
 		draw_rectangle(*gui->sdl, dragbar, AMBER_0);
-		if (pointrectanglecollision(gui->hid->mouse.pos, dragbar) || gui->move_held)
+		if (collision_point_rectangle(gui->hid->mouse.pos, dragbar) || gui->move_held)
 			draw_rectangle(*gui->sdl, dragbar, AMBER_1);
-		if (gui->hid->mouse.held == MOUSE_LEFT && pointrectanglecollision(gui->hid->mouse.pos, dragbar) && !gui->hid->mouse.dragging_ui)
+		if (gui->hid->mouse.held == MOUSE_LEFT && collision_point_rectangle(gui->hid->mouse.pos, dragbar) && !gui->hid->mouse.dragging_ui)
 		{
 			//gui->hid->mouse.dragging_ui = true;
 			gui->move_held = true;
@@ -193,9 +193,9 @@ void	gui_end(t_autogui *gui)
 		dragcorner.size = (t_point) {16,16};
 		dragcorner.position = point_sub(point_add(gui->rect.position, gui->rect.size), dragcorner.size);
 		draw_rect_tri(gui->sdl, dragcorner, AMBER_0);
-		if (pointrectanglecollision(gui->hid->mouse.pos, dragcorner) || gui->drag_held)
+		if (collision_point_rectangle(gui->hid->mouse.pos, dragcorner) || gui->drag_held)
 			draw_rect_tri(gui->sdl, dragcorner, AMBER_1);
-		if (gui->hid->mouse.held == MOUSE_LEFT && pointrectanglecollision(gui->hid->mouse.pos, dragcorner) && !gui->hid->mouse.dragging_ui)
+		if (gui->hid->mouse.held == MOUSE_LEFT && collision_point_rectangle(gui->hid->mouse.pos, dragcorner) && !gui->hid->mouse.dragging_ui)
 		{
 			//gui->hid->mouse.dragging_ui = true;
 			gui->drag_held = true;
@@ -394,7 +394,7 @@ bool	gui_float_slider(float	*f, float mul, t_autogui *gui)
 		str = ft_ftoa(*f, 4);
 		rect = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
 		draw_rectangle(*gui->sdl, rect, AMBER_0);
-		if (pointrectanglecollision(gui->hid->mouse.pos, rect))
+		if (collision_point_rectangle(gui->hid->mouse.pos, rect))
 		{
 			print_text_boxed(gui->sdl, "Drag to affect value", point_add(gui->hid->mouse.pos, (t_point){40, -10}));
 			draw_rectangle(*gui->sdl, rect, AMBER_1);
@@ -446,7 +446,7 @@ static t_buttonreturn	autogui_internal_colored_button(char *str, t_autogui *gui,
 	br.rect = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
 	draw_rectangle(*gui->sdl, br.rect, AMBER_2);
 	br.clicked = false;
-	if (pointrectanglecollision(gui->hid->mouse.pos, br.rect))
+	if (collision_point_rectangle(gui->hid->mouse.pos, br.rect))
 	{
 		draw_rectangle(*gui->sdl, br.rect, color);
 		if (mouse_clicked(gui->hid->mouse, MOUSE_LEFT))
@@ -465,7 +465,7 @@ static t_buttonreturn	autogui_internal_button(char *str, t_autogui *gui)
 	br.rect = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
 	draw_rectangle(*gui->sdl, br.rect, AMBER_0);
 	br.clicked = false;
-	if (pointrectanglecollision(gui->hid->mouse.pos, br.rect))
+	if (collision_point_rectangle(gui->hid->mouse.pos, br.rect))
 	{
 		draw_rectangle(*gui->sdl, br.rect, AMBER_2);
 		if (mouse_clicked(gui->hid->mouse, MOUSE_LEFT))
@@ -501,10 +501,12 @@ bool	gui_shortcut_button(char *str, int alpha_or_keymask, t_autogui *gui)
 	br.rect = empty_rect();
 	br.clicked = false;
 	str_s = ft_strnew(ft_strlen(str) + 4);
+	/* if (str_s == NULL)		TODO: can this be put here? -Rene
+		doomlog(LOG_EC_MALLOC, "gui_shortcut_button"); */
 	if (ft_isalpha(alpha_or_keymask))
-		snprintf(str_s, ft_strlen(str) + 4, "[%c]%s", alpha_or_keymask, str);
+		snprintf(str_s, ft_strlen(str) + 4, "[%c]%s", alpha_or_keymask, str);	// TODO: REMOVE snprintf
 	else
-		snprintf(str_s, ft_strlen(str) + 4, "[%s]", str);
+		snprintf(str_s, ft_strlen(str) + 4, "[%s]", str);	// TODO: REMOVE snprintf
 	if (gui_shoulddraw(gui))
 	{
 		br = autogui_internal_button(str_s, gui);
@@ -532,7 +534,7 @@ bool	gui_imagebutton(t_img	*img, t_autogui *gui)
 		draw_image(*gui->sdl, gui_currentpos(gui), *img, (t_point){32, 32});
 		imgrect.size = (t_point){32, 32};
 		imgrect.position = gui_currentpos(gui);
-		if (pointrectanglecollision(gui->hid->mouse.pos, imgrect))
+		if (collision_point_rectangle(gui->hid->mouse.pos, imgrect))
 		{
 			print_text(gui->sdl, img->name, gui->hid->mouse.pos);
 			if (mouse_clicked(gui->hid->mouse, MOUSE_LEFT))
@@ -568,60 +570,11 @@ bool	gui_hoverlabel(char *str, t_autogui *gui)
 	if (gui_shoulddraw(gui))
 	{
 		rect = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
-		if (pointrectanglecollision(gui->hid->mouse.pos, rect))
+		if (collision_point_rectangle(gui->hid->mouse.pos, rect))
 			hovered = true;
 	}
 	gui_layout(gui, rect);
 	return (hovered);
-}
-
-//TODO: big norminette thing
-void	gui_string_edit(char *str, t_autogui	*gui)
-{
-
-	SDL_Event	e;
-	bool		done;
-	t_rectangle	rect;
-	t_rectangle	orig;
-	t_point		start;
-	char		bstr[40];
-
-	ft_strcpy(bstr, str);
-	done = false;
-	orig = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
-	rect = empty_rect();
-	if (gui_colored_button(bstr, gui, AMBER_4))
-	{
-		SDL_StartTextInput();
-		while (!done)
-		{
-			while (SDL_PollEvent(&e) && !done)
-			{
-				draw_rectangle_filled(*gui->sdl, rect, 1);
-				if (e.type == SDL_TEXTINPUT && ft_strlen(str) < 31)
-				{
-					ft_strncat(str, e.text.text, 32);
-				}
-				if (e.type == SDL_KEYDOWN && iskey(e, SDLK_BACKSPACE))
-					str[ft_strlen(str) - 1] = '\0';
-				rect = empty_rect();
-				ft_bzero(bstr, 40);
-				sprintf(bstr, "\xE6 %s ", str);
-				rect = print_text_boxed(gui->sdl, bstr, orig.position);
-				ft_memcpy(gui->sdl->window_surface->pixels, gui->sdl->surface->pixels, gui->sdl->window_w * gui->sdl->window_h * sizeof(uint32_t));
-				SDL_UpdateWindowSurface(gui->sdl->window);
-				if (e.type == SDL_MOUSEBUTTONDOWN
-					|| (e.type == SDL_KEYDOWN && (e.key.keysym.sym == SDLK_RETURN ||
-											e.key.keysym.sym == SDLK_RETURN2 ||
-											e.key.keysym.sym == SDLK_ESCAPE)))
-				{
-					done = true;
-					break ;
-				}
-			}
-		}
-		SDL_StopTextInput();
-	}
 }
 
 bool	gui_highlighted_button(char *str, t_autogui *gui)
@@ -780,7 +733,7 @@ bool	gui_int_slider(int *i, float mul, t_autogui *gui)
 	{
 		rect = print_text_boxed(gui->sdl, s_itoa(*i), gui_currentpos(gui));
 		draw_rectangle(*gui->sdl, rect, AMBER_0);
-		if (pointrectanglecollision(gui->hid->mouse.pos, rect))
+		if (collision_point_rectangle(gui->hid->mouse.pos, rect))
 			modified = gui_int_slider_internal(i, mul, rect, gui);
 	}
 	gui_layout(gui, rect);

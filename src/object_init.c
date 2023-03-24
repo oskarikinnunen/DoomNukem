@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 19:50:18 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/13 16:51:53 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 14:25:04 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ t_object	*get_object_by_name(t_sdlcontext sdl, char *name)
 	char	fullname[256];
 
 	ft_bzero(fullname, sizeof(fullname));
-	ft_strcpy(fullname, name);
+	ft_strncpy_term(fullname, name, 250);
 	if (ft_strstr(name, ".obj") == NULL)
 		ft_strcat(fullname, ".obj");
 	i = 0;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 14:53:44 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 14:37:46 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,10 @@ t_area	*world_add_room(t_world *world, t_area *room)
 	t_area	*worldroom;
 	ft_bzero(roomname, 64);
 	snprintf(roomname, 64, "area(%i)", ft_listlen(world->arealist));
-	ft_strcpy(room->name, roomname);
+	ft_strncpy_term(room->name, roomname, 30);
 	worldroom = ft_memalloc(sizeof(t_area));
-	ft_strcpy(worldroom->s_floortex.str, room->s_floortex.str);
-	ft_strcpy(worldroom->s_ceiltex.str, room->s_ceiltex.str);
+	ft_strncpy_term(worldroom->s_floortex.str, room->s_floortex.str, 60);
+	ft_strncpy_term(worldroom->s_ceiltex.str, room->s_ceiltex.str, 60);
 	ft_memcpy(worldroom->edges, room->edges, sizeof(worldroom->edges));
 	worldroom->edgecount = room->edgecount;
 	worldroom->floor_enabled = room->floor_enabled;
@@ -45,7 +45,7 @@ t_area	*world_add_room(t_world *world, t_area *room)
 	worldroom->loop = room->loop;
 	if (room->ceiling_height == 0)
 		worldroom->ceiling_height = 100;
-	ft_strcpy(worldroom->name, room->name);
+	ft_strncpy_term(worldroom->name, room->name, 30);
 	worldroom->height = room->height;
 	list_push(&world->arealist, worldroom, sizeof(t_area));
 	free(worldroom);
@@ -362,8 +362,8 @@ void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	if (gui_shortcut_button("New room", 'N', gui))
 	{
 		dat->room = ft_memalloc(sizeof(t_area));
-		ft_strcpy(dat->room->s_floortex.str, "concrete02.cng");
-		ft_strcpy(dat->room->s_ceiltex.str, "concrete02.cng");
+		ft_strncpy_term(dat->room->s_floortex.str, "concrete02.cng", 60);
+		ft_strncpy_term(dat->room->s_ceiltex.str, "concrete02.cng", 60);
 		dat->rtm = rtm_create;
 		room_setpreset_room(dat->room);
 		force_mouselock(&ed->hid);

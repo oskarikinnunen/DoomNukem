@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_audiosource.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/02 15:59:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 13:54:11 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,8 +166,6 @@ void	comp_audiosource_loadassets(t_entity *entity, t_world *world)
 {
 	t_audiosource	*source;
 	source = entity->component.data;
-	if (source == NULL)
-		doomlog(LOG_EC_MALLOC, NULL);
 	source->sample = get_sample(world->sdl, source->sample.name);
 }
 
@@ -175,7 +173,7 @@ void	comp_audiosource_allocate(t_entity *entity, t_world *world)
 {
 	t_audiosource	*source;
 
-	entity->component.data = ft_memalloc(sizeof(t_audiosource));
+	entity->component.data = prot_memalloc(sizeof(t_audiosource));
 	entity->component.data_size = sizeof(t_audiosource);
 	source = (t_audiosource *)entity->component.data;
 	source->sample = get_sample(world->sdl, "amb_dogbark1.wav");

@@ -73,7 +73,7 @@ typedef struct s_audiosource
 
 typedef struct s_interactable
 {
-	t_characterphysics	phys;
+	t_character_physics	phys;
 	t_anim		wiggle;
 	t_vector3	velocity;
 	float		radius;

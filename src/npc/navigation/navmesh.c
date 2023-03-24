@@ -3,7 +3,7 @@
 
 bool	node_would_collide(t_world *world, t_vector3 midpoint)
 {
-	t_characterphysics	phys;
+	t_character_physics	phys;
 	t_vector3			vec;
 
 	ft_bzero(&phys, sizeof(phys));
@@ -11,7 +11,7 @@ bool	node_would_collide(t_world *world, t_vector3 midpoint)
 	phys.height = PLAYER_HEIGHT;
 	phys.position = &midpoint;
 	vec = midpoint;
-	if (check_collision_character(world, phys, vector3_add(midpoint, (t_vector3){0.0f, 0.0f, 0.0001f}), &vec))
+	if (check_character_collision(world, phys, vector3_add(midpoint, (t_vector3){0.0f, 0.0f, 0.0001f}), &vec))
 		return (true);
 	return (false);
 }
@@ -142,7 +142,7 @@ void	*ft_realloc(void *src, size_t dest_size, size_t src_size) //TODO: Should pr
 {
 	void *dest;
 
-	dest = ft_memalloc(dest_size);
+	dest = prot_memalloc(dest_size);
 	if (!dest)
 		return(NULL);
 	ft_memcpy(dest, src, src_size);
@@ -231,7 +231,7 @@ void	clip_navmesh(t_navigation *nav, t_entity *ent, t_world *world)
 	int			index;
 
 	size = 1000;
-	arr = ft_memalloc(sizeof(t_world_triangle) * size);
+	arr = prot_memalloc(sizeof(t_world_triangle) * size);
 	arr[0].p[0].v = ent->obj->vertices[0];
 	arr[0].p[1].v = ent->obj->vertices[1];
 	arr[0].p[2].v = ent->obj->vertices[2];
@@ -258,9 +258,7 @@ void	malloc_space_for_navmesh(t_world *world)
 	if (world->nav.navmesh)
 		free(world->nav.navmesh);
 	world->nav.malloc_size = 1000;
-	world->nav.navmesh = ft_memalloc(sizeof(t_navnode) * world->nav.malloc_size);
-	if (!world->nav.navmesh)
-		doomlog(LOG_EC_MALLOC, NULL);
+	world->nav.navmesh = prot_memalloc(sizeof(t_navnode) * world->nav.malloc_size);
 	bzero(world->nav.navmesh, sizeof(t_navnode) * world->nav.malloc_size);
 	i = 0;
 	found = 0;
@@ -336,7 +334,7 @@ void	navmesh_process(t_world *world)
 {
 	return ;
 	t_vector3	newpos;
-	t_characterphysics	phys;
+	t_character_physics	phys;
 	int			i;
 
 	phys.height = PLAYER_HEIGHT;
@@ -387,7 +385,7 @@ void	create_navmesh(t_world *world)
 	}
 	if (world->nav.openlist)
 		free(world->nav.openlist);
-	world->nav.openlist = ft_memalloc(world->nav.malloc_size * sizeof(t_navnode));
+	world->nav.openlist = prot_memalloc(world->nav.malloc_size * sizeof(t_navnode));
 	if (!world->nav.openlist)
 		doomlog(LOG_EC_MALLOC, NULL);
 	ft_bzero(world->nav.openlist, world->nav.malloc_size * sizeof(t_navnode));

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playermovement_normal2.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:23:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 16:24:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 14:57:12 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static float	current_maxvelocity(t_player *player)
 		+ (player->input.run * (PLAYER_RUNSPEED - PLAYER_WALKSPEED)));
 }
 
-t_bound	get_bound(t_characterphysics *cp, t_world *world);
+t_bound	get_bound(t_character_physics *cp, t_world *world);
 
 void	crouchupdate(t_player *player, t_world *world)
 {

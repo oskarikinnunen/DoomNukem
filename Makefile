@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
+#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/23 21:54:57 by vlaine           ###   ########.fr        #
+#    Updated: 2023/03/24 17:06:53 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,6 +33,25 @@ LIBFT = libft/libft.a
 #Source files:
 SRCFILES= main.c img.c deltatime.c anim.c \
 		app_argument.c \
+		assets/asset_tools.c \
+		assets/load/editor_load_assets.c \
+		assets/load/editor_load_anims.c \
+		assets/load/editor_load_anim_legend.c \
+		assets/load/editor_load_images.c \
+		assets/load/editor_load_objects.c \
+		assets/load/editor_load_fonts.c \
+		assets/load/editor_load_sounds.c \
+		assets/load/editor_load_music.c \
+		assets/load/playmode_load_assets.c \
+		assets/load/playmode_load_images.c \
+		assets/load/playmode_load_env_textures.c \
+		assets/load/playmode_load_objects.c \
+		assets/load/playmode_load_fonts.c \
+		assets/load/playmode_load_sounds.c \
+		assets/load/playmode_load_music.c \
+		assets/load/playmode_load_anims.c \
+		assets/load/playmode_load_anim_legend.c \
+		loading_screens/loading_screen.c \
 		file_ops/file_chunks.c \
 		file_ops/file_tools.c \
 		file_ops/file_content.c \
@@ -45,14 +64,6 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		editor/editor_mouse.c \
 		editor/editor_events.c \
 		editor/key_events.c \
-		editor/editor_load_assets.c \
-		editor/editor_load_anims.c \
-		editor/editor_load_anim_legend.c \
-		editor/editor_load_images.c \
-		editor/editor_load_objects.c \
-		editor/editor_load_fonts.c \
-		editor/editor_load_sounds.c \
-		editor/editor_load_music.c \
 		editor/tools/entity_tool.c \
 		editor/tools/entity_tool_base.c \
 		editor/tools/entity_tool_modify.c \
@@ -78,38 +89,29 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		inputhelper.c \
 		walls.c file_open.c \
 		moveplayer.c \
-		collision.c \
 		init_sdl.c \
-		error_codes.c \
-		error_messages.c \
-		error_window.c \
-		error_window_events.c \
-		doomlog.c \
-		doomlog_messages.c \
+		logging/error_codes.c \
+		logging/error_messages.c \
+		logging/doomlog.c \
+		logging/doomlog_messages.c \
 		physics.c \
 		list_helper.c \
 		spaceconversions.c \
-		handle_exit.c \
 		entity/component_init.c \
 		entity/components/component_definitions.c \
 		entity/components/comp_audiosource.c \
 		entity/components/comp_audiosource_tools.c \
 		entity/components/comp_interactable.c \
 		physics/capsulephysics.c \
+		physics/collision_character.c \
+		physics/collision_line_circle.c \
+		physics/collision_line_point.c \
+		physics/collision_point_circle.c \
 		player/playermovement_normal.c \
 		player/playermovement_normal1.c \
 		player/playermovement_normal2.c \
 		player/playermovement_noclip.c \
 		player/playmode.c \
-		player/playmode_load_assets.c \
-		player/playmode_load_images.c \
-		player/playmode_load_env_textures.c \
-		player/playmode_load_objects.c \
-		player/playmode_load_fonts.c \
-		player/playmode_load_sounds.c \
-		player/playmode_load_music.c \
-		player/playmode_load_anims.c \
-		player/playmode_load_anim_legend.c \
 		player/playmode_death.c \
 		player/playmode_events.c \
 		player/hud.c \
@@ -134,14 +136,13 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		object_init.c \
 		object_primitives.c \
 		resolution_scaling.c \
-		controller.c \
-		controller_init.c \
-		controller_events.c \
-		controller_events_buttons.c \
-		audio_init.c \
-		audio_tools.c \
-		audio_sounds.c \
-		audio_music.c \
+		controller/controller.c \
+		controller/controller_init.c \
+		controller/controller_events.c \
+		controller/controller_events_buttons.c \
+		assets/audio/audio_init.c \
+		assets/audio/audio_tools.c \
+		assets/audio/audio_sounds.c \
 		occlusion/occlusion.c \
 		occlusion/frustrum_culling.c \
 		occlusion/occlusion_culling.c \
@@ -151,7 +152,6 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		render/renders_world_triangles_to_screen_triangles.c \
 		render/render_buffer.c \
 		render/init_render.c \
-		render/render_space.c \
 		render/render_gizmo.c \
 		render/transform/transform_triangle.c \
 		render/transform/transform_quaternion.c \

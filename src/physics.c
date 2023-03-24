@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   physics.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 13:52:50 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 19:19:36 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/24 14:56:33 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 }*/
 
 
-bool	pointrectanglecollision(t_point p, t_rectangle rect) //dunno if this should be in physics
+bool	collision_point_rectangle(t_point p, t_rectangle rect) //dunno if this should be in physics
 {
 	return (p.x > rect.position.x && p.x < rect.position.x + rect.size.x
 		&& p.y > rect.position.y && p.y < rect.position.y + rect.size.y);
