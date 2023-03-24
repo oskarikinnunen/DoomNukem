@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode_events.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 19:41:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 20:58:28 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/24 16:17:25 by kfum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,17 @@ int	playmode_events(t_game *game)
 			if (iskey(e, SDLK_F1))
 				game->player.noclip = !game->player.noclip;
 			if (iskey(e, SDLK_F2))
-				game->world.sdl->lighting_toggled = !game->world.sdl->lighting_toggled;
+				game->world.sdl->lighting_toggled \
+				= !game->world.sdl->lighting_toggled;
 			if (iskey(e, SDLK_ESCAPE))
 			{
 				if ((game->hid.keystate >> KEYS_SHIFTMASK) & 1)
 					exit(0);
 				return (game_exit);
-			}
+			}			
 		}
+		if (e.type == SDL_QUIT)
+			return (game_exit);
 		controller_events(e, &game->hid);
 	}
 	update_input(&game->hid.input, game->hid);

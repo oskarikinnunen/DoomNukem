@@ -26,9 +26,7 @@ assets/images/tga/quake3.tga
 assets/images/tga/redball.tga
 assets/images/tga/rustymetal.tga
 assets/images/tga/scifi_barrel.tga
-assets/images/tga/skybox1.tga
-assets/images/tga/skybox2.tga
-assets/images/tga/skybox3.tga
+assets/images/tga/skybox.tga
 assets/images/tga/stone02.tga
 assets/images/tga/trash.tga
 assets/images/tga/wall_concrete.tga

@@ -6,12 +6,11 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 19:15:23 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/23 19:27:30 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/24 15:53:11 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
-
 
 static int	screen_edge_clip(t_screen_triangle *buff, int side,
 t_v2rectangle screen_edge, t_screen_triangle triangle)
