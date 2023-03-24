@@ -6,11 +6,57 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 15:53:51 by raho              #+#    #+#             */
-/*   Updated: 2023/03/01 18:39:58 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 13:28:37 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
+
+static int	combine_strings_count_length(char **str)
+{
+	int	x;
+	int	y;
+	int	len;
+
+	y = 0;
+	len = 0;
+	while (str[y] != NULL)
+	{
+		x = 0;
+		while (str[y][x] != '\0')
+			x++;
+		len += x;
+		if (str[y + 1] != NULL)
+			len += 1;
+		y++;
+	}
+	return (len);
+}
+
+char	*combine_strings(char **str)
+{
+	int		x;
+	int		y;
+	int		len;
+	char	*result;
+
+	len = combine_strings_count_length(str);
+	result = ft_strnew(len);
+	if (result == NULL)
+		return (result);
+	y = 0;
+	x = 0;
+	while (str[y] != NULL)
+	{
+		ft_strcpy(&result[x], str[y]);
+		x += ft_strlen(str[y]);
+		result[x] = ' ';
+		x++;
+		y++;
+	}
+	result[len] = '\0';
+	return (result);
+}
 
 void	error_message(int code, int fd, char *str)
 {

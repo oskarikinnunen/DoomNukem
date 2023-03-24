@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 13:57:45 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 12:42:59 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/24 13:32:22 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,11 @@ static void	print_saving_message(char *saving_message, t_sdlcontext *sdl)
 	{
 		len = ft_strlen(saving_message);
 		temp = sdl->font_default->size_default;
-		sdl->font_default->size_default = sdl->font_default->sizes[1];
+		sdl->font_default->size_default = sdl->font_default->sizes[0];
 		print_text_boxed(sdl, saving_message, \
 				(t_point){((sdl->window_w / 2) - \
 				(len / 2 * FONT_SIZE_DEFAULT)), \
-				((sdl->window_h / 2) + (FONT_SIZE_DEFAULT * 2))});
+				((sdl->window_h / 2) + (FONT_SIZE_DEFAULT * 1))});
 		sdl->font_default->size_default = temp;
 		ft_memcpy(sdl->window_surface->pixels, sdl->surface->pixels, \
 				sizeof(uint32_t) * sdl->window_w * sdl->window_h);
@@ -118,7 +118,7 @@ void	world_save_to_file(t_world world)
 	surface_cache = ft_memdup(world.sdl->surface->pixels, surface_size);
 	if (surface_cache == NULL)
 		doomlog(LOG_EC_MALLOC, "world_save_to_file");
-	print_saving_message("SAVING AREAS, ENTITIES AND ROOMS", world.sdl);
+	print_saving_message("SAVING AREAS ENTITIES AND ROOMS", world.sdl);
 	world_save_amap(level_path, world);
 	world_save_basic_ent(level_path, world);
 	world_init_rooms(&world);
