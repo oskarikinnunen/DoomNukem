@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 15:57:00 by raho              #+#    #+#             */
-/*   Updated: 2023/03/23 15:57:01 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 13:55:22 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	set_light_thread_struct(
 
 void	set_lighting_texture_struct(t_thread *thread, struct s_entity *ent)
 {
-	if	(ent->status == es_active || ent->map != NULL)
+	if (ent->status == es_active || ent->map != NULL)
 	{
 		(((t_entity *)thread->structs)[thread->count++]) = *ent;
 		if (thread->count == THREAD)

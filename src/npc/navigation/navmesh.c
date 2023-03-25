@@ -328,7 +328,7 @@ void	check_neighbors(t_navigation *nav, int i, t_vector3 start, t_vector3 end)
 	}
 }
 
-#include "physics.h"
+#include "collision.h"
 
 void	navmesh_process(t_world *world)
 {

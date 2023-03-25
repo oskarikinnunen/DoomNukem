@@ -2,6 +2,15 @@
 # define COLLISION_H
 
 #include "shapes.h"
+#include "entity.h"
+#include "render.h"
+
+struct s_render;
+struct s_sdlcontext;
+struct s_entity;
+struct s_triangle;
+struct s_line;
+struct s_world;
 
 typedef struct s_collision
 {
@@ -16,6 +25,20 @@ typedef struct s_vector3_tri
 	t_vector3	c;
 } t_vector3_tri;
 
+typedef struct s_character_physics
+{
+	float		height;
+	float		radius;
+	float		*gravity_override;
+	t_vector3	*position;
+	t_vector3	velocity;
+	float		max_velocity;
+	bool		isgrounded;
+	bool		landingtrigger;
+	bool		ceilingtrigger;
+	t_vector3	impactvelocity;
+}	t_character_physics;
+
 typedef struct s_character_collision
 {
 	t_collision			collision;
@@ -24,10 +47,31 @@ typedef struct s_character_collision
 	struct s_wall		*wall;
 }	t_character_collision;
 
+typedef struct s_line_line_intersect
+{
+	float	x_diff1;
+	float	x_diff2;
+	float	y_diff1;
+	float	y_diff2;
+	float	fa;
+	float	fb;
+	float	x;
+	float	y;
+}	t_line_line_intersect;
+
 bool	vector_is_in_triangle(t_vector3 vec, t_vector3_tri tri);
 bool	collision_point_rectangle(t_point p, t_rectangle rect);
+bool	collision_point_triangle(t_point point, t_world_triangle tri); //TODO: pls deprecate, the other one is better (RENE: couldnt find the other "pointtrianglecollisionp"?)
 bool	collision_point_circle(t_vector2 p, t_vector2 cp, float r);
 bool	collision_line_point(t_vector2 start, t_vector2 end, t_vector2 point);
+bool	collision_line_line_intersect(t_line line1, t_line line2);
+
+bool	check_character_collision(struct s_world *world, t_character_physics cp, t_vector3 potential_pos, t_vector3 *new_pos);
+
+void	capsule_damp(t_character_physics *phys, struct s_world *world);
+void	capsule_add_xy_velocity(t_vector2 vel, t_character_physics *phys, struct s_world *world);
+void	capsule_applygravity_new(t_character_physics *charp, struct s_world *world);
+void	capsule_applygravity(t_character_physics charp, struct s_world *world);
 
 // Don't use this one for general use. Use line_circle_collision instead
 // Saves the collision point to t_collision *

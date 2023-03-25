@@ -1,30 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   list_helper.c                                      :+:      :+:    :+:   */
+/*   list_tools1.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/26 12:32:25 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 12:20:20 by raho             ###   ########.fr       */
+/*   Created: 2023/03/25 13:26:05 by raho              #+#    #+#             */
+/*   Updated: 2023/03/25 13:29:14 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
 #include "doomnukem.h"
-
-void	list_push(t_list **head, void *content, size_t content_size)
-{
-	t_list	*node;
-
-	node = ft_lstnew(content, content_size);
-	if (node == NULL)
-		doomlog(LOG_EC_MALLOC, "list_push");
-	if (*head == NULL)
-		*head = node;
-	else
-		ft_lstapp(head, node);
-}
 
 void	*list_findlast(t_list *head)
 {
@@ -36,11 +22,6 @@ void	*list_findlast(t_list *head)
 		l = l->next;
 	}
 	return (l->content);
-}
-
-void	free_list_node(void *content, size_t size)
-{
-	free(content);
 }
 
 //TODO: unused but might be useful, also make ft_memcmp protected?
@@ -60,35 +41,21 @@ void	*list_find(t_list *head, void *match, size_t content_size)
 	return (NULL);
 }
 
-//removes match from list
-void	list_remove(t_list **head, void *match, size_t content_size)
+void	list_push(t_list **head, void *content, size_t content_size)
 {
 	t_list	*node;
-	t_list	*prev;
 
-	node = *head;
-	prev = NULL;
-	while (node != NULL && match != NULL)
-	{
-		if (node->content == NULL)
-			return ;
-		if (ft_memcmp(match, node->content, content_size) == 0)
-		{
-			printf("found match, removing");
-			if (prev != NULL)
-				prev->next = node->next;
-			else
-				*head = node->next;
-			ft_lstdelone(&node, &free_list_node);
-			return ;
-		}
-		prev = node;
-		node = node->next;
-	}
+	node = ft_lstnew(content, content_size);
+	if (node == NULL)
+		doomlog(LOG_EC_MALLOC, "list_push");
+	if (*head == NULL)
+		*head = node;
+	else
+		ft_lstapp(head, node);
 }
 
-//Returns a mallocated and NULL terminated array of list contents.
-
+//Returns a mallocated and NULL terminated array of list contents
+//TODO: result malloc assumes the linked list only contains equal size contents
 void	*list_to_ptr(t_list *source, uint32_t *set_length)
 {
 	t_list	*l;
@@ -98,7 +65,7 @@ void	*list_to_ptr(t_list *source, uint32_t *set_length)
 	*set_length = 0;
 	if (source == NULL || source->content_size == 0)
 		return (NULL);
-	result = prot_memalloc((ft_listlen(source) + 1) * source->content_size); //assumes the linked list only contains equal sized contents
+	result = prot_memalloc((ft_listlen(source) + 1) * source->content_size);
 	l = source;
 	i = 0;
 	while (l != NULL)

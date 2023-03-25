@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   wall_tool_rooms.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 20:46:54 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/25 14:06:00 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "editor_tools.h"
- 
+#include "collision.h"
 #include "tools/walltool.h"
 #include "tools/roomtool.h"
 #include "objects.h"
@@ -262,7 +262,7 @@ bool	points_collide(t_floorcalc *fc, t_vector2 tri[3])
 			continue;
 		}
 		p = vector2_to_point(fc->edges[i]);
-		if (pointtrianglecollision(p, t))
+		if (collision_point_triangle(p, t))
 			return (true);
 		i++;
 	}

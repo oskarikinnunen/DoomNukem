@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 12:20:30 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 14:02:27 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@
 # include <math.h>
 # include <fcntl.h>
 # include <stdbool.h>
-//# include "physics.h"
 # include "animation.h" //PLAYER USES THIS, MOVE PLAYER TO SEPARATE HEADER
 # include "room.h"
 # include "npcs.h"

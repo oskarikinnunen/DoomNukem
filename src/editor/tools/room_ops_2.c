@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 17:54:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 11:47:37 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 14:04:04 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "editor_tools.h"
 #include "doomnukem.h"
 #include "objects.h"
+#include "collision.h"
 
 static t_line	edgeline_to_line(t_edgeline edgeline)
 {
@@ -35,7 +36,7 @@ static bool	illegalwall_move(t_wall *wall, t_area *room)
 	{
 		ow = &room->walls[i];
 		return (wall != &room->walls[i]
-			&& linelineintersect(
+			&& collision_line_line_intersect(
 				line_shorten(edgeline_to_line(wall->edgeline)),
 				line_shorten(edgeline_to_line(ow->edgeline))
 			));

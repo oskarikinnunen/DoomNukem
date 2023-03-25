@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/25 12:23:24 by raho             ###   ########.fr        #
+#    Updated: 2023/03/25 13:55:00 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -105,19 +105,20 @@ SRCFILES= main.c img.c deltatime.c \
 		logging/error_messages.c \
 		logging/doomlog.c \
 		logging/doomlog_messages.c \
-		physics.c \
-		list_helper.c \
+		linked_list/list_tools1.c \
+		linked_list/list_tools2.c \
 		spaceconversions.c \
 		entity/component_init.c \
 		entity/components/component_definitions.c \
 		entity/components/comp_audiosource.c \
 		entity/components/comp_audiosource_tools.c \
 		entity/components/comp_interactable.c \
-		physics/capsulephysics.c \
+		physics/capsule_physics.c \
 		physics/collision_character.c \
 		physics/collision_line_circle.c \
-		physics/collision_line_point.c \
-		physics/collision_point_circle.c \
+		physics/collision_simple.c \
+		physics/collision_point_triangle.c \
+		physics/collision_line_line_intersect.c \
 		player/playermovement_normal.c \
 		player/playermovement_normal1.c \
 		player/playermovement_normal2.c \

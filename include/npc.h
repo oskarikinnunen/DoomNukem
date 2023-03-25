@@ -2,7 +2,7 @@
 # define NPC_H
 
 #include "navigation.h"
-#include "physics.h"
+#include "collision.h"
 #include "components.h"
 
 typedef enum e_npc_type

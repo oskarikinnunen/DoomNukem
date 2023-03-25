@@ -1,20 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   capsulephysics.c                                   :+:      :+:    :+:   */
+/*   capsule_physics.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 03:25:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 17:30:07 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 14:02:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "movement_defs.h"
-#include "physics.h"
+#include "collision.h"
 #include "editor_tools.h"
-// #include ""
 
 static bool touches_edges_ramp(t_vector2 pos, float radius, t_vector3_tri ramp)
 {
