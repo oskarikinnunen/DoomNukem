@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 14:59:55 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 11:51:51 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 17:13:47 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ void	set_sdl_settings(t_sdlcontext *sdl)
 	sdl->render = init_render(*sdl);
 }
 
-void	create_sdlcontext(char *level, t_sdlcontext	*sdl, t_app_mode app_mode)
+void	create_sdlcontext(t_app_argument app_argument, t_sdlcontext	*sdl)
 {
 	ft_bzero(sdl, sizeof(t_sdlcontext));
 	if (SDL_Init(SDL_INIT_VIDEO) < 0 \
@@ -100,8 +100,8 @@ void	create_sdlcontext(char *level, t_sdlcontext	*sdl, t_app_mode app_mode)
 		|| TTF_Init() < 0)
 		doomlog(LOG_EC_SDL_INIT, NULL);
 	set_sdl_settings(sdl);
-	if (app_mode == APPMODE_EDIT)
+	if (app_argument.app_mode == APPMODE_EDIT)
 		editor_load_assets(sdl);
-	else if (app_mode == APPMODE_PLAY)
-		playmode_load_assets(level, sdl);
+	else if (app_argument.app_mode == APPMODE_PLAY)
+		playmode_load_assets(app_argument.level_name, sdl);
 }

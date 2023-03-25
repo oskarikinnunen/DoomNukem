@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw_rectangle.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 21:35:16 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/02 21:38:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 16:46:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,5 +97,31 @@ void	draw_rectangle_filled(t_sdlcontext sdl, t_rectangle rect, uint32_t clr)
 		}
 		p.x++;
 		i++;
+	}
+}
+
+void	draw_rect_tri(t_sdlcontext *sdl, t_rectangle rect, uint32_t clr)
+{
+	t_point	p;
+	int		line_len;
+
+	draw_triangle((t_triangle_draw){sdl, point_add(rect.position, \
+			(t_point){.y = rect.size.y}), point_add(rect.position, \
+			rect.size), point_add(rect.position, \
+			(t_point){.x = rect.size.x}), clr});
+	p = (t_point){0, 0};
+	line_len = 0;
+	while (p.y < rect.size.y)
+	{
+		p.x = line_len;
+		while (p.x > 0)
+		{
+			if (p.x % 2 == 0 || p.y % 2 == 0)
+				draw(*sdl, point_add(rect.position, \
+						(t_point){-p.x + rect.size.x, p.y}), clr);
+			p.x--;
+		}
+		line_len++;
+		p.y++;
 	}
 }

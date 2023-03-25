@@ -245,6 +245,15 @@ typedef struct s_sdlcontext
 	t_bitmask				bitmask;
 }	t_sdlcontext;
 
+typedef struct s_triangle_draw
+{
+	t_sdlcontext	*sdl;
+	t_point			p1;
+	t_point			p2;
+	t_point			p3;
+	uint32_t		clr;
+}	t_triangle_draw;
+
 void	save_graphics_prefs(t_graphicprefs prefs);
 t_graphicprefs	get_prefs_from_sdl(t_sdlcontext *sdl);
 t_graphicprefs	load_graphicsprefs();
@@ -269,8 +278,9 @@ void	draw_rectangle(t_sdlcontext, t_rectangle rect, uint32_t clr);
 void	draw_rectangle_filled(t_sdlcontext sdl, t_rectangle rect, uint32_t clr);
 void	draw_rectangle_raster(t_sdlcontext sdl, t_rectangle rect, uint32_t clr);
 void	draw_rectangle_raster_few(t_sdlcontext sdl, t_rectangle rect, uint32_t clr);
-void	draw_triangle(t_sdlcontext *sdl, t_point p1, t_point p2, t_point p3, uint32_t clr);
+void	draw_triangle(t_triangle_draw td);
 void	draw_crosshair(t_sdlcontext *sdl);
+void 	draw_rect_tri(t_sdlcontext *sdl, t_rectangle rect, uint32_t clr);
 
 /* INIT_RENDER.C */
 t_render	init_render(t_sdlcontext sdl);

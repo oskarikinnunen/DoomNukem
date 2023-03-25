@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rasterize_triangle_transparent.c                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 17:02:34 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/23 21:58:31 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/25 16:36:10 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,9 @@ inline static void	scanline(
 			tex.y = slope.location.y + index * slope.step.y;
 			clr = sample_img(&sdl->render, tex.x / tex.z, tex.y / tex.z);
 			if (((clr >> 24) & 0xFF) > 14)
-				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] =
-					blend_colors_alpha(((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w], clr, 127);
+				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] = \
+					blend_colors_alpha(((uint32_t *)sdl->surface->pixels)[\
+					x + y * sdl->window_w], clr, 127);
 		}
 		index += 1.0f;
 		x++;

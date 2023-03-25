@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 14:06:00 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 16:25:55 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,56 +267,6 @@ bool	points_collide(t_floorcalc *fc, t_vector2 tri[3])
 		i++;
 	}
 	return (false);
-	//pointtrianglecollision()
-	/*int	i;
-	t_line	o0;
-	t_line	o1;
-	t_line	o2;
-	t_line	t0;
-	t_line	t1;
-	t_line	t2;
-	t_line	t0s;
-	t_line	t1s;
-	t_line	t2s;
-
-	i = 0;
-	o0.start = tri[0];
-	o0.end = tri[1];
-	o1.start = tri[1];
-	o1.end = tri[2];
-	o2.start = tri[2];
-	o2.end = tri[0];
-
-
-	t0.end = tri[0];
-	t1.end = tri[1];
-	t2.end = tri[2];
-	while (i < fc->edgecount)
-	{
-		if (vector2_cmp(fc->edges[i], tri[0])
-			|| vector2_cmp(fc->edges[i], tri[1])
-			|| vector2_cmp(fc->edges[i], tri[2]))
-		{
-			i++;
-			continue;
-		}
-		t0.start = fc->edges[i];
-		t1.start = fc->edges[i];
-		t2.start = fc->edges[i];
-		t0s = line_shorten(t0);
-		t1s = line_shorten(t1);
-		t2s = line_shorten(t2);
-		if (!linelineintersect(t0s, o0) && !linelineintersect(t0s, o1) && !linelineintersect(t0s, o2)
-			&& !linelineintersect(t1s, o0) && !linelineintersect(t1s, o1) && !linelineintersect(t1s, o2)
-			&& !linelineintersect(t2s, o0) && !linelineintersect(t2s, o1) && !linelineintersect(t2s, o2))
-			{
-				printf("edge %f %f\n", fc->edges[i].x, fc->edges[i].y);
-				return (true);
-			}
-			
-		i++;
-	}
-	return (false);*/
 }
 
 t_line	line_shorten(t_line line) //lol

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 11:52:20 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 17:05:08 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,11 +69,11 @@ int	main(int argc, char **argv)
 		ft_putendl("graphics reset succesfully");
 		return (0);
 	}
-	create_sdlcontext(app_argument.level_name, &sdl, app_argument.app_mode);
+	create_sdlcontext(app_argument, &sdl);
 	if (app_argument.app_mode == APPMODE_EDIT)
-		editor(app_argument.level_name, sdl);
+		editor(app_argument, sdl);
 	else if (app_argument.app_mode == APPMODE_PLAY)
-		playmode(app_argument.level_name, sdl);
+		playmode(app_argument, sdl);
 	else if (app_argument.app_mode == APPMODE_INVALID)
 	{
 		ft_putendl_fd(\

@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/25 13:55:00 by raho             ###   ########.fr        #
+#    Updated: 2023/03/25 15:09:06 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -61,6 +61,19 @@ SRCFILES= main.c img.c deltatime.c \
 		file_ops/world_save_amap.c \
 		file_ops/world_load.c \
 		file_ops/world_init.c \
+		gui/gui_buttons1.c \
+		gui/gui_buttons2.c \
+		gui/gui_end.c \
+		gui/gui_internal.c \
+		gui/gui_labeled_elements.c \
+		gui/gui_labels.c \
+		gui/gui_presets.c \
+		gui/gui_set_up.c \
+		gui/gui_sliders1.c \
+		gui/gui_sliders2.c \
+		gui/gui_tools1.c \
+		gui/gui_tools2.c \
+		gui/gui_tools3.c \
 		editor/editor.c \
 		editor/editor_mouse.c \
 		editor/editor_events.c \
@@ -90,7 +103,6 @@ SRCFILES= main.c img.c deltatime.c \
 		editor/tools/room_tool_paint.c \
 		editor/tools/room_tool_paint_2.c \
 		editor/tools/gun_tool.c \
-		editor/tools/autogui.c \
 		editor/editor_new_buttons.c \
 		editor/editor_raycast.c \
 		editor/entity_raycast.c \

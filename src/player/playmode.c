@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:44:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 21:59:44 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 17:06:51 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,13 @@ static void	gameloop(t_sdlcontext *sdl, t_game *game)
 }
 
 /*setup and call gameloop*/
-void	playmode(char *level, t_sdlcontext sdl)
+void	playmode(t_app_argument app_argument, t_sdlcontext sdl)
 {
 	t_game	game;
 
 	ft_bzero(&game, sizeof(t_game));
 	playmode_loading_screen("LOADING WORLD", &sdl);
-	game.world = load_world(level, &sdl);
+	game.world = load_world(app_argument, &sdl);
 	playmode_loading_screen("SETTING UP WORLD", &sdl);
 	set_up_world(&sdl, &game);
 	playmode_loading_screen("CREATING LIGHTING EFFECTS", &sdl);

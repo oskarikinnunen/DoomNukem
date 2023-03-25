@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 13:26:05 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 13:29:14 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 15:56:23 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ void	*list_findlast(t_list *head)
 	return (l->content);
 }
 
-//TODO: unused but might be useful, also make ft_memcmp protected?
 void	*list_find(t_list *head, void *match, size_t content_size)
 {
 	t_list	*node;
@@ -32,7 +31,7 @@ void	*list_find(t_list *head, void *match, size_t content_size)
 	node = head;
 	while (node != NULL)
 	{
-		if (node->content == NULL)
+		if (node->content == NULL || match == NULL)
 			return (NULL);
 		if (ft_memcmp(match, node->content, content_size) == 0)
 			return (node->content);
@@ -55,7 +54,6 @@ void	list_push(t_list **head, void *content, size_t content_size)
 }
 
 //Returns a mallocated and NULL terminated array of list contents
-//TODO: result malloc assumes the linked list only contains equal size contents
 void	*list_to_ptr(t_list *source, uint32_t *set_length)
 {
 	t_list	*l;
