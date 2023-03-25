@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 17:57:33 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/21 12:21:21 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 20:53:24 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,6 @@
 #  define INT_MAX 2147483647
 # endif
 
-//# define PI 3.14159265359
-
 /* memory	*/
 void			*ft_memset(void *ptr, int value, size_t num);
 void			*ft_memcpy(void *dst, const void *src,
@@ -33,7 +31,8 @@ void			*ft_memccpy(void *dst, const void *src,
 					int c, size_t n);
 void			*ft_memmove(void *dst, const void *src, size_t len);
 char			*ft_memdup(const void *m, size_t n);
-void	*ft_memjoin(const void *dst, const void *src, size_t dst_len, size_t src_len);
+void			*ft_memjoin(const void *dst, const void *src, size_t dst_len, \
+							size_t src_len);
 int				ft_memcmp(const void *ptr1, const void*ptr2, size_t num);
 void			ft_memdel(void **ap);
 void			*ft_memalloc(size_t size);
@@ -61,7 +60,7 @@ void			ft_strclr(char *s);
 void			ft_strfill(char *s, char c); /*extra*/
 char			**ft_strsplit(const char *s, char c);
 char			**ft_strscrape(const char*s, char *delims);
-void			ft_strreplace (char *str, int c1, int c2);
+void			ft_strreplace(char *str, int c1, int c2);
 char			*ft_strncpy(char *dest, const char *src, size_t num);
 void			ft_striter(char *s, void (*f)(char *));
 void			ft_striteri(char *s, void (*f)(unsigned int, char *));
@@ -119,7 +118,8 @@ typedef struct s_list
 t_list			*ft_lstnew(const void *content, size_t content_size);
 t_list			*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
 void			ft_lstdelone(t_list **alst, void (*del)(void *, size_t));
-//actually deletes the list without the dumb function pointer shenanigans. Calls free for each content
+// Actually deletes the list without the dumb function pointer shenanigans
+// Calls free for each content
 void			listdel(t_list **alst);
 void			ft_lstdel(t_list **alst, void (*del)(void *, size_t));
 void			ft_lstiter(t_list *lst, void (*f)(t_list *elem));
@@ -130,5 +130,6 @@ int				ft_listlen(t_list *lst);
 char			*ft_strcdup(const char *str, char c);
 char			*ft_strncpy_term(char *dest, const char *src, size_t num);
 int				get_next_line(const int fd, char **line);
+double			ft_atof(const char *str);
 
 #endif

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
+#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/11 17:57:56 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/24 14:34:41 by vlaine           ###   ########.fr        #
+#    Updated: 2023/03/25 20:48:29 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,8 +28,8 @@ FILES= ft_abs.c ft_atoi.c ft_bzero.c ft_digitcount.c ft_isalnum.c ft_isalpha.c\
 	ft_get_next_line.c ft_strscrape.c ft_strreplace.c ft_degtorad.c \
 	ft_absf.c ft_listlen.c ft_strcdup.c get_next_line.c ft_flerp.c \
 	ft_fmovetowards.c protected_free.c ft_memjoin.c ft_strncpy_term.c \
-	ft_swap.c
-V_FILES= v3_basics.c bresenham.c
+	ft_swap.c ft_atof.c
+V_FILES= v3_basics1.c v3_basics2.c bresenham.c
 CFLAGS= -g -O2 -finline-functions -c -I.
 CC= gcc
 

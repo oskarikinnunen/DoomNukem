@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 12:20:53 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 12:55:27 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 20:45:36 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ static void	parse_mat_map_kd(char *line, t_material *mat)
 		ft_strncpy_term(mat->texturename, line + sizeof("map_Kd"), 250);
 }
 
-// TODO: make own version of atof()
 static void	parse_mat_kd(char *line, t_material *mat)
 {
 	char	**kd_strs;
@@ -33,7 +32,7 @@ static void	parse_mat_kd(char *line, t_material *mat)
 	i = 0;
 	while (i < 3 && kd_strs[i] != NULL)
 	{
-		mat->kd += ((int)(atof(kd_strs[i]) * 255.0f) & 0xFF) << (8 * i);
+		mat->kd += ((int)(ft_atof(kd_strs[i]) * 255.0f) & 0xFF) << (8 * i);
 		free(kd_strs[i]);
 		kd_strs[i] = NULL;
 		i++;

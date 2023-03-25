@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 15:38:32 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 13:16:01 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 20:46:00 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include "objects.h"
 #include "doomnukem.h"
 
-// TODO: make own version of atof()
 t_vector3	parse_vertex(char *line)
 {
 	t_vector3	result;
@@ -28,11 +27,11 @@ t_vector3	parse_vertex(char *line)
 	while (i < 3 && v_strs[i] != NULL)
 	{
 		if (i == 0)
-			result.x = atof(v_strs[i]);
+			result.x = ft_atof(v_strs[i]);
 		if (i == 1)
-			result.y = atof(v_strs[i]);
+			result.y = ft_atof(v_strs[i]);
 		if (i == 2)
-			result.z = atof(v_strs[i]);
+			result.z = ft_atof(v_strs[i]);
 		free(v_strs[i]);
 		i++;
 	}

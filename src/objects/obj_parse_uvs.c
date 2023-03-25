@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 14:17:47 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 13:12:25 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 20:45:47 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include "vectors.h"
 #include "doomnukem.h"
 
-// TODO: make own version of atof()
 t_vector2	parse_uv(char *line)
 {
 	t_vector2	result;
@@ -29,9 +28,9 @@ t_vector2	parse_uv(char *line)
 	while (i < 2 && uv_strs[i] != NULL)
 	{
 		if (i == 0)
-			result.x = atof(uv_strs[i]);
+			result.x = ft_atof(uv_strs[i]);
 		if (i == 1)
-			result.y = atof(uv_strs[i]);
+			result.y = ft_atof(uv_strs[i]);
 		free(uv_strs[i]);
 		i++;
 	}

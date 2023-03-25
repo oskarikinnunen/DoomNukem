@@ -1,28 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_listlen.c                                       :+:      :+:    :+:   */
+/*   v3_basics2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/04 14:59:21 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 20:49:30 by raho             ###   ########.fr       */
+/*   Created: 2023/03/25 20:47:52 by raho              #+#    #+#             */
+/*   Updated: 2023/03/25 20:48:17 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../v3lib.h"
 
-int	ft_listlen(t_list *lst)
+void	fv3_to_iv3(float *f3, int *i3)
 {
-	t_list	*cur;
-	int		i;
-
-	i = 0;
-	cur = lst;
-	while (cur != NULL)
-	{
-		cur = cur->next;
-		i++;
-	}
-	return (i);
+	i3[X] = (int)f3[X];
+	i3[Y] = (int)f3[Y];
+	i3[Z] = (int)f3[Z];
 }

@@ -1,23 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   v3_basics.c                                        :+:      :+:    :+:   */
+/*   v3_basics1.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 17:31:46 by okinnune          #+#    #+#             */
-/*   Updated: 2022/10/07 10:46:55 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 20:48:15 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../v3lib.h"
-
-void fv3_to_iv3(float *f3, int *i3)
-{
-	i3[X] = (int)f3[X];
-	i3[Y] = (int)f3[Y];
-	i3[Z] = (int)f3[Z];
-}
 
 //Adds right side to left side
 void	v3_add(float v3[3], float add[3])

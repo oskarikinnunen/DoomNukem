@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bresenham.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 12:09:50 by okinnune          #+#    #+#             */
-/*   Updated: 2022/11/03 19:50:44 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 20:47:09 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,7 @@ void	step_bresenham_y(t_bresenham *b)
 	}
 }
 
-#include <stdio.h>
-
-int		step_bresenham(t_bresenham *b)
+int	step_bresenham(t_bresenham *b)
 {
 	step_bresenham_x(b);
 	step_bresenham_y(b);

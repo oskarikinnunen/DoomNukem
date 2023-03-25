@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstdel.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/08 15:34:55 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/19 13:13:38 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 20:52:16 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ void	ft_lstdel(t_list **alst, void (*del)(void *, size_t))
 	}
 }
 
-//actually deletes the list without the dumb function pointer shenanigans. Calls free for each content
+// Actually deletes the list without the dumb function pointer shenanigans
+// Calls free for each content
 void	listdel(t_list **alst)
 {
 	t_list	**temp;

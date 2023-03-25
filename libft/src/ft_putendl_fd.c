@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/18 09:45:14 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/01 16:19:07 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 20:49:04 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	ft_putendl_fd(const char *s, int fd)
 {
 	if (!s)
-		return;
+		return ;
 	ft_putstr_fd(s, fd);
 	ft_putchar_fd('\n', fd);
 }
