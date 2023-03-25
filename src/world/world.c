@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 16:37:24 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 19:20:06 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ static void world_update_debug_gui(t_world *world,
 		printf("toggle lighting wtf\n");
 		sdl->lighting_toggled = !sdl->lighting_toggled;
 	}
-		
+
 	if (gui_shortcut_button("Draw Occlusion Buffer", 'Y', world->debug_gui))
 		sdl->render.occlusion.draw_occlusion = !sdl->render.occlusion.draw_occlusion;
 	if (gui_shortcut_button("Toggle Occlusion", 'O', world->debug_gui))
@@ -151,7 +151,7 @@ static void	draw_skybox_image(t_world *world, t_img *skybox)
 			(rot_y * skybox->size.y)});
 		skypos2 = point_add(point_zero(), (t_point){(rot_x * skybox->size.x) \
 			- skybox->size.x, (rot_y * skybox->size.y)});
-	}	
+	}
 	draw_image(*world->sdl, skypos1, *skybox, skybox->size);
 	draw_image(*world->sdl, skypos2, *skybox, skybox->size);
 }
@@ -164,12 +164,13 @@ void update_world3d(t_world *world, t_render *render)
 	sdl = world->sdl;
 	for_all_active_entities(world, calculate_triangles_for_entity);
 	render_start_new(sdl, world->player);
-	//draw_skybox_image(world, skybox);
+	draw_skybox_image(world, skybox);
 	clear_occlusion_buffer(sdl);
 	update_frustrum_culling(world, sdl, render);
 	sort_entitycache(world, render->camera.position);
 	update_entitycache(sdl, world, render);
 	bitmask_to_pixels(sdl);
+	show_navmesh(world);
 	rescale_surface(sdl);
 	lateupdate_entitycache(sdl, world);
 	if (!world->debug_gui->hidden)
