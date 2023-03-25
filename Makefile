@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
+#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/25 13:55:00 by raho             ###   ########.fr        #
+#    Updated: 2023/03/25 17:03:09 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -261,7 +261,7 @@ INCLUDE= -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include \
 			-I$(INSTALLED_LIBS_DIR)/include/SDL2/ \
 			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
 CC= gcc
-CFLAGS= $(INCLUDE) -g -finline-functions -O2 #-MMD #-march=native
+CFLAGS= $(INCLUDE) -g #-finline-functions -O2 #-MMD #-march=native
 LDFLAGS = -Wl,-rpath $(INSTALLED_LIBS_DIR)/lib
 
 UNAME= $(shell uname)

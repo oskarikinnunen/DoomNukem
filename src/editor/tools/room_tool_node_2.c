@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   room_tool_node2.c                                  :+:      :+:    :+:   */
+/*   room_tool_node_2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 21:45:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 21:46:34 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 16:54:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ void	draw_node_indicator(t_vector3 cursor,
 	t_point			center;
 	t_sdlcontext	*sdl;
 
+	if (dat->held_edge == NULL)
+		return ;
 	sdl = ed->world.sdl;
 	nodepos = v2tov3(*dat->held_edge);
 	nodepos.z = cursor.z;

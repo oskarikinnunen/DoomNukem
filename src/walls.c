@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   walls.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 12:10:49 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 17:18:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,7 @@ void	_room_initwalls(t_world *world, t_area *room)
 		{
 			t_object *obj;
 			obj = object_plane(world->sdl);
-			if (strlen(room->walls[i].s_walltex.str) != 0)
+			if (ft_strlen(room->walls[i].s_walltex.str) != 0)
 				obj->materials->img = get_image_by_name(*world->sdl, room->walls[i].s_walltex.str);
 			room->walls[i].entity = spawn_entity(world, obj); //Copy saved entitys important values
 			room->walls[i].entity->rigid = true;

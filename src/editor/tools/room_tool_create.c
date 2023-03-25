@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 16:47:41 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 22:04:40 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 16:20:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,32 @@ static void createmode_drawgui(t_editor *ed, t_roomtooldata *dat, t_sdlcontext *
 	gui_end(gui);
 }
 
+static void	createmode_step_back(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
+{
+	if (dat->room->edgecount >= 1)
+		dat->room->edgecount--;
+	else
+	{
+		free(dat->room);
+		dat->room = NULL;
+		dat->rtm = rtm_none;
+		return;
+	}
+}
+
+static void createmode_highlight(t_editor *ed, t_sdlcontext *sdl,
+		t_roomtooldata *dat, t_vector3 cursor)
+{
+	highlight_room(ed, sdl, dat->room, CLR_BLUE);
+	if (is_joined(v3tov2(cursor), dat->room, &ed->world))
+		render_circle(ed->world.sdl, cursor, 5, CLR_GREEN);
+	else
+		render_circle(ed->world.sdl, cursor, 5, CLR_BLUE);
+}
+
+
 void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 {
-	t_vector2		*edge;
 	t_vector3		cursor;
 	bool			placelast;
 
@@ -82,36 +105,14 @@ void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	{
 		if (!placelast)
 		{
-			edge = &dat->room->edges[dat->room->edgecount];
+			dat->room->edges[dat->room->edgecount] = v3tov2(cursor);
 			dat->room->edgecount++;
-			*edge = v3tov2(cursor);
-		}
-		else
-		{
-			if ((ed->hid.keystate >> KEYS_SHIFTMASK) & 1)
-			{
-				dat->rtm = rtm_modify;
-				world_add_room(&ed->world, dat->room);
-				dat->room = list_findlast(ed->world.arealist);
-				return ;
-			}
+			/*edge = &dat->room->edges[dat->room->edgecount];
+			dat->room->edgecount++;
+			*edge = v3tov2(cursor); //TODO:remove edge * and just access the edge*/
 		}
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
-	{
-		if (dat->room->edgecount >= 1)
-			dat->room->edgecount--;
-		else
-		{
-			free(dat->room);
-			dat->room = NULL;
-			dat->rtm = rtm_none;
-			return;
-		}
-	}
-	highlight_room(ed, sdl, dat->room, CLR_BLUE);
-	if (is_joined(v3tov2(cursor), dat->room, &ed->world))
-		render_circle(ed->world.sdl, cursor, 5, CLR_GREEN);
-	else
-		render_circle(ed->world.sdl, cursor, 5, CLR_BLUE);
+		createmode_step_back(ed, sdl, dat);
+	createmode_highlight(ed, sdl, dat, cursor);
 }
