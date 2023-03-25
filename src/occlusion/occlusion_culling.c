@@ -29,6 +29,7 @@ void clear_occlusion_buffer(t_sdlcontext *sdl)
 	}
 }
 
+//TODO: decide if needs to clamp or if the "while(y >= 0 && y < bitmask.tile_chunks.y)" protections are enough
 int clamped_bitmask_coord(int x, int y, t_bitmask *bitmask)
 {
 	return (y * bitmask->tile_chunks.x + x);
@@ -55,10 +56,10 @@ bool is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *e
 	entity->occlusion.clip.min.x = sdl->window_w;
 	entity->occlusion.clip.min.y = sdl->window_h;
 	y = chunk.min.y;
-	while (y <= chunk.max.y && y < sdl->bitmask.tile_chunks.y)
+	while (y <= chunk.max.y && y >= 0 && y < sdl->bitmask.tile_chunks.y)
 	{
 		x = chunk.min.x;
-		while (x <= chunk.max.x && x < sdl->bitmask.tile_chunks.x)
+		while (x <= chunk.max.x && x >= 0 && x < sdl->bitmask.tile_chunks.x)
 		{
 			if (w <= sdl->bitmask.tile[clamped_bitmask_coord(x,y, &sdl->bitmask)].max0)
 			{
