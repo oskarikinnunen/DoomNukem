@@ -6,16 +6,16 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 13:42:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 14:04:36 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 12:00:07 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-static t_img	*error_image()
+static t_img	*error_image(void)
 {
 	static t_img		err_img;
-	static	uint32_t	data[32 * 32];
+	static uint32_t		data[32 * 32];
 	int					i;
 
 	if (err_img.size.x == 0 || err_img.size.y == 0)
@@ -38,7 +38,6 @@ static t_img	*error_image()
 	return (&err_img);
 }
 
-
 t_img	*get_image_by_index(t_sdlcontext sdl, int index)
 {
 	int		i;
@@ -52,7 +51,6 @@ t_img	*get_image_by_index(t_sdlcontext sdl, int index)
 	}
 	return (error_image());
 }
-
 
 int	ft_strcmpdot(const char *s1, const char *s2)
 {

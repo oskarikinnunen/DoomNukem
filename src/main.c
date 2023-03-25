@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 21:32:04 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 11:52:20 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,76 +14,47 @@
 #include "assets.h"
 #include "objects.h"
 #include "file_io.h"
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
 
-void	free_sdl_stuff(t_sdlcontext *sdl)
+static void	check_editor_flags(int argc, char **argv,
+								t_app_argument *app_argument)
 {
-	if (sdl->zbuffer != NULL)
-		free(sdl->zbuffer);
-	if (sdl->surface != NULL)
-		SDL_FreeSurface(sdl->surface);
-	if (sdl->ui_surface != NULL)
-		SDL_FreeSurface(sdl->ui_surface);
-	if (sdl->window_surface != NULL)
-		SDL_FreeSurface(sdl->window_surface);
-	if (sdl->window != NULL)
-		SDL_DestroyWindow(sdl->window);
-	free_render(sdl->render);
-	if (sdl->bitmask.tile != NULL)
-		free(sdl->bitmask.tile);
-	if (sdl->scaling_buffer != NULL)
-		free(sdl->scaling_buffer);
+	if (argc == 3 && ft_strcmp(argv[1], "-edit") == 0)
+	{
+		app_argument->app_mode = APPMODE_EDIT;
+		ft_strncpy_term(app_argument->level_name, argv[2], 120);
+	}
+	else if ((argc == 2 && ft_strcmp(argv[1], "-edit") == 0) || argc == 1)
+	{
+		app_argument->app_mode = APPMODE_EDIT;
+		ft_strncpy_term(app_argument->level_name, DEFAULTLEVEL, 120);
+	}
 }
 
-void	alloc_occlusion(t_sdlcontext *sdl)
+static void	check_playmode_flags(int argc, char **argv,
+								t_app_argument *app_argument)
 {
-	sdl->bitmask.tile = prot_memalloc(sizeof(t_tile) * ((sdl->window_h * sdl->window_w) / 64)); //TODO: free
-	sdl->bitmask.bitmask_chunks.x = sdl->window_w / 16;
-	sdl->bitmask.bitmask_chunks.y = sdl->window_h / 8;
-	sdl->bitmask.tile_chunks.x = sdl->window_w / 8;
-	sdl->bitmask.tile_chunks.y = sdl->window_h / 8;
+	if (argc == 3 && ft_strcmp(argv[1], "-play") == 0)
+	{
+		app_argument->app_mode = APPMODE_PLAY;
+		ft_strncpy_term(app_argument->level_name, argv[2], 120);
+	}
+	else if ((argc == 2 && ft_strcmp(argv[1], "-play") == 0) || argc == 1)
+	{
+		app_argument->app_mode = APPMODE_PLAY;
+		ft_strncpy_term(app_argument->level_name, DEFAULTLEVEL, 120);
+	}
 }
 
-void	set_sdl_settings(t_sdlcontext *sdl)
+static t_app_argument	get_app_argument(int argc, char **argv)
 {
-	t_graphicprefs	prefs;
+	t_app_argument	app_argument;
 
-	free_sdl_stuff(sdl);
-	prefs = load_graphicsprefs();
-	sdl->window_w = prefs.resolution_x;
-	sdl->window_h = prefs.resolution_y;
-	sdl->resolution_scaling = ft_clampf(prefs.resolutionscale, 0.25f, 1.0f);
-	sdl->audio.sfx_volume = prefs.volume;
-	create_sdl_window(sdl, prefs.screenmode);
-	sdl->surface = SDL_CreateRGBSurfaceWithFormat(SDL_SWSURFACE, sdl->window_w, sdl->window_h, 32, SDL_PIXELFORMAT_ARGB8888);
-	if (sdl->surface == NULL)
-		doomlog(LOG_EC_SDL_CREATERGBSURFACE, NULL);
-	sdl->ui_surface = SDL_CreateRGBSurfaceWithFormat(SDL_SWSURFACE, sdl->window_w, sdl->window_h, 32, SDL_PIXELFORMAT_ARGB8888);
-	if (sdl->ui_surface == NULL)
-		doomlog(LOG_EC_SDL_CREATERGBSURFACE, NULL);
-	sdl->zbuffer = prot_memalloc(sdl->window_w * sdl->window_h * sizeof(float));
-	sdl->scaling_buffer = prot_memalloc(sdl->window_w * sdl->window_w * sizeof(uint32_t));
-	alloc_occlusion(sdl);
-	sdl->render = init_render(*sdl);
-}
-
-void	create_sdlcontext(char *level, t_sdlcontext	*sdl, t_app_mode app_mode)
-{
-	ft_bzero(sdl, sizeof(t_sdlcontext));
-	if (SDL_Init(SDL_INIT_VIDEO) < 0 \
-		|| SDL_Init(SDL_INIT_EVENTS) < 0 \
-		|| SDL_Init(SDL_INIT_GAMECONTROLLER) < 0 \
-		|| TTF_Init() < 0)
-		doomlog(LOG_EC_SDL_INIT, NULL);
-	set_sdl_settings(sdl);
-	if (app_mode == APPMODE_EDIT)
-		editor_load_assets(sdl);
-	else if (app_mode == APPMODE_PLAY)
-		playmode_load_assets(level, sdl);
+	ft_bzero(&app_argument, sizeof(t_app_argument));
+	check_editor_flags(argc, argv, &app_argument);
+	check_playmode_flags(argc, argv, &app_argument);
+	if (argc == 2 && ft_strcmp(argv[1], "-gfxreset") == 0)
+		app_argument.app_mode = APPMODE_GFX_RESET;
+	return (app_argument);
 }
 
 int	main(int argc, char **argv)
@@ -105,24 +76,9 @@ int	main(int argc, char **argv)
 		playmode(app_argument.level_name, sdl);
 	else if (app_argument.app_mode == APPMODE_INVALID)
 	{
-		ft_putendl_fd("usage: ./DoomNukem [[-edit | -play] level_file] | -gfxreset", 2);
+		ft_putendl_fd(\
+			"usage: ./DoomNukem [[-edit | -play] level_file] | -gfxreset", 2);
 		return (1);
 	}
 	return (0);
 }
-
-/*
-t_img *ptr;
-	t_thread test;
-	test.structs = malloc(sizeof(t_img) * THREAD);
-	test.struct_size = sizeof(t_img);
-	for (int i = 0; i < THREAD; i++)
-	{
-		ptr = &(((t_img *)test.structs)[i]);
-		ptr->size.x = i;
-	}
-	test.func = temp_remove;
-	test.init = init_remove;
-	thread_set(&test);
-	exit(0);
-	*/

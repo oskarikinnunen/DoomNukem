@@ -6,15 +6,15 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 15:38:32 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 14:55:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 13:16:01 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vectors.h"
 #include "objects.h"
-#include "libft.h"
-#include "doomnukem.h" //Used for listhelper functions, TODO: move listhelper stuff to own header
+#include "doomnukem.h"
 
+// TODO: make own version of atof()
 t_vector3	parse_vertex(char *line)
 {
 	t_vector3	result;
@@ -27,7 +27,6 @@ t_vector3	parse_vertex(char *line)
 	i = 0;
 	while (i < 3 && v_strs[i] != NULL)
 	{
-		// TODO: make own version of atof()
 		if (i == 0)
 			result.x = atof(v_strs[i]);
 		if (i == 1)
@@ -43,34 +42,33 @@ t_vector3	parse_vertex(char *line)
 	return (result);
 }
 
+static void	handle_vertex_parsing(t_vertex_parse *vp)
+{
+	vp->vec = parse_vertex(vp->line + sizeof("v"));
+	vp->vec = vector3_mul(vp->vec, 10.0f);
+	list_push(&vp->list, &vp->vec, sizeof(t_vector3));
+}
+
 t_list	*get_vertex_list(int fd)
 {
-	char		*line;
-	t_list		*list;
-	t_vector3	vec;
-	int			ret;
+	t_vertex_parse	vp;
 
-	list = NULL;
-	line = NULL;
-	ret = get_next_line(fd, &line);
-	while (ret)
+	ft_bzero(&vp, sizeof(t_vertex_parse));
+	vp.ret = get_next_line(fd, &vp.line);
+	while (vp.ret)
 	{
-		if (line)
+		if (vp.line)
 		{
-			if (ft_strnstr(line, "v ", sizeof("v")))
-			{
-				vec = parse_vertex(line + sizeof("v"));
-				vec = vector3_mul(vec, 10.0f);
-				list_push(&list, &vec, sizeof(t_vector3));
-			}
-			free (line);
-			line = NULL;
+			if (ft_strnstr(vp.line, "v ", sizeof("v")))
+				handle_vertex_parsing(&vp);
+			free (vp.line);
+			vp.line = NULL;
 		}
-		ret = get_next_line(fd, &line);
+		vp.ret = get_next_line(fd, &vp.line);
 	}
-	if (ret == -1)
+	if (vp.ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "objparse");
 	if (lseek(fd, 0, SEEK_SET) == -1)
 		doomlog(LOG_EC_LSEEK, "get_vertex_list");
-	return (list);
+	return (vp.list);
 }

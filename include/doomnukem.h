@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 22:28:53 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 12:20:30 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,7 @@ typedef struct s_world
 	t_app_mode			app_mode;
 }	t_world;
 
-t_vector2	flipped_uv(t_vector2 og);
+t_vector2	flipped_uv(t_vector2 vec);
 void		for_all_active_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *world));
 void		void_for_all_active_entities(t_world	*world, void *ptr, void	(*func)(t_entity *ent, void *ptr));
 void		for_all_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *world));
@@ -203,7 +203,7 @@ typedef struct s_game
 	t_player		player;
 } t_game;
 
-
+void			free_list_node(void *content, size_t size);
 void			playmode_quit(t_game *game);
 void			update_audio(t_world *world);
 void			respawn_player(t_game *game);
@@ -212,7 +212,6 @@ void			set_up_world(t_sdlcontext *sdl, t_game *game);
 void			update_window_surface(t_sdlcontext *sdl);
 void			debug_ramps(t_game *game);
 void			draw_fps_counter(t_sdlcontext *sdl, uint32_t fps);
-t_app_argument	get_app_argument(int argc, char **argv);
 void			editor_loading_screen(char *loading_message, t_sdlcontext *sdl);
 void			playmode_loading_screen(char *loading_message, t_sdlcontext *sdl);
 void			playmode_loading_screen_loop(char *loading_message, t_sdlcontext *sdl);

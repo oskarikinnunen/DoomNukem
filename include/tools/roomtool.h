@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   roomtool.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:42:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 21:50:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 11:47:44 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,12 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat);
 bool	gui_roompresets(t_area *room, t_autogui *gui, t_world *world);
 
 t_area	*get_raycast_room(t_raycastinfo info, t_world *world);
+
+void	recalculate_rooms_with_edge(t_editor *ed, t_vector2 edge);
+
+void	remove_edge(t_world *world, t_area *room, t_vector2 *edge);
+
+int		_room_find_edge_index(t_vector2 edge, t_area *room);
 
 
 # endif

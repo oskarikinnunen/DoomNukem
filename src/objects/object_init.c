@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   object_init.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 19:50:18 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 20:47:34 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/25 12:07:26 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,19 +27,15 @@ void	objects_init(t_sdlcontext *sdl)
 		m_i = 0;
 		while (m_i < object->material_count)
 		{
-			//if (ft_strcmp(object->materials[m_i].texturename, "") != 0)
-				object->materials[m_i].img = get_image_by_name(*sdl, object->materials[m_i].texturename);
-			/*else
-			{
-				printf("set null image, kd was %i\n", object->materials[m_i].kd & 0xFF);
-				object->materials[m_i].img = NULL;
-			}*/
+			object->materials[m_i].img = \
+				get_image_by_name(*sdl, object->materials[m_i].texturename);
 			m_i++;
 		}
 		i++;
 	}
 }
 
+//TODO: return debug object!!
 t_object	*get_object_by_name(t_sdlcontext sdl, char *name)
 {
 	int		i;
@@ -56,5 +52,5 @@ t_object	*get_object_by_name(t_sdlcontext sdl, char *name)
 			return (&sdl.objects[i]);
 		i++;
 	}
-	return (&sdl.objects[0]); //TODO: debug object!!
+	return (&sdl.objects[0]);
 }

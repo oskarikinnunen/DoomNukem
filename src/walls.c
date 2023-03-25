@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   walls.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 20:48:33 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/25 12:10:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,21 +131,10 @@ void	applywallmesh(t_wall *wall, t_area *room, t_world *world)
 			wall->entity->obj->uvs[i].y += wall->entity->obj->vertices[0].z / 100.0f;
 			i++;
 		}
-		//wall->entity->obj->vertices[0]
-		/*
-			y is 
-		 * 
-		 * 
-		*/
 		wall->entity->obj->uvs[0] = vector2_add(wall->entity->obj->uvs[0], wall->uv_offset);
 		wall->entity->obj->uvs[1] = vector2_add(wall->entity->obj->uvs[1], wall->uv_offset);
 		wall->entity->obj->uvs[2] = vector2_add(wall->entity->obj->uvs[2], wall->uv_offset);
 		wall->entity->obj->uvs[3] = vector2_add(wall->entity->obj->uvs[3], wall->uv_offset);
-		//create_lightmap_for_entity(wall->entity, world);
-		//create_map_for_entity(wall->entity, world);
-		/*wall->entity->obj->uvs[1] = flipped_uv(wall->entity->obj->uvs[1]);
-		wall->entity->obj->uvs[2] = flipped_uv(wall->entity->obj->uvs[2]);
-		wall->entity->obj->uvs[3] = flipped_uv(wall->entity->obj->uvs[3]);*/
 		default_wall_occlusion_settings(wall, NULL);
 	}
 }

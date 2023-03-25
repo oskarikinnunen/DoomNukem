@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   list_helper.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 12:32:25 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 14:50:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 12:20:20 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	*list_findlast(t_list *head)
 	return (l->content);
 }
 
-static void del_list(void *content, size_t size)
+void	free_list_node(void *content, size_t size)
 {
 	free(content);
 }
@@ -79,7 +79,7 @@ void	list_remove(t_list **head, void *match, size_t content_size)
 				prev->next = node->next;
 			else
 				*head = node->next;
-			ft_lstdelone(&node, &del_list);
+			ft_lstdelone(&node, &free_list_node);
 			return ;
 		}
 		prev = node;

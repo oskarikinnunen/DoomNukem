@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 14:17:47 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/08 18:58:34 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 13:12:25 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "vectors.h"
 #include "doomnukem.h"
 
+// TODO: make own version of atof()
 t_vector2	parse_uv(char *line)
 {
 	t_vector2	result;
@@ -27,7 +28,6 @@ t_vector2	parse_uv(char *line)
 	result = vector2_zero();
 	while (i < 2 && uv_strs[i] != NULL)
 	{
-		// TODO: make own version of atof()
 		if (i == 0)
 			result.x = atof(uv_strs[i]);
 		if (i == 1)
@@ -41,34 +41,33 @@ t_vector2	parse_uv(char *line)
 	return (result);
 }
 
+static void	handle_uv_parsing(t_uv_parse *uvp)
+{
+	uvp->uv = parse_uv(uvp->line + sizeof("vt"));
+	uvp->uv.y = 1.0f - uvp->uv.y;
+	list_push(&uvp->list, &uvp->uv, sizeof(t_vector2));
+}
+
 t_list	*get_uv_list(int fd)
 {
-	char		*line;
-	t_list		*list;
-	t_vector2	uv;
-	int			ret;
+	t_uv_parse	uvp;
 
-	list = NULL;
-	line = NULL;
-	ret = get_next_line(fd, &line);
-	while (ret)
+	ft_bzero(&uvp, sizeof(t_uv_parse));
+	uvp.ret = get_next_line(fd, &uvp.line);
+	while (uvp.ret)
 	{
-		if (line)
+		if (uvp.line)
 		{
-			if (ft_strnstr(line, "vt ", sizeof("vt")))
-			{
-				uv = parse_uv(line + sizeof("vt"));
-				uv.y = 1.0f - uv.y;
-				list_push(&list, &uv, sizeof(t_vector2));
-			}
-			free(line);
-			line = NULL;
+			if (ft_strnstr(uvp.line, "vt ", sizeof("vt")))
+				handle_uv_parsing(&uvp);
+			free(uvp.line);
+			uvp.line = NULL;
 		}
-		ret = get_next_line(fd, &line);
+		uvp.ret = get_next_line(fd, &uvp.line);
 	}
-	if (ret == -1)
+	if (uvp.ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "get_uv_list");
 	if (lseek(fd, 0, SEEK_SET) == -1)
 		doomlog(LOG_EC_LSEEK, "get_uv_list");
-	return (list);
+	return (uvp.list);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   transform_triangle.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 17:49:46 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/24 16:43:06 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/25 13:00:34 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ void	calculate_triangles_for_entity(
 		set_world_triangles_quats(
 			entity->world_triangles[i].p, render->q, obj->faces[i].v_indices);
 		set_world_triangles_uvs(
-			entity->world_triangles[i].t, obj, obj->faces[i].materialindex, i);
+			entity->world_triangles[i].t, obj, obj->faces[i].material_index, i);
 		i++;
 	}
 }

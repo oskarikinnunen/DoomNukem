@@ -3,25 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   obj_parse_faces.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 15:55:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 18:35:22 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 13:13:01 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vectors.h"
 #include "objects.h"
-#include "libft.h"
-#include "doomnukem.h" //Used for listhelper functions, TODO: move listhelper stuff to own header
+#include "doomnukem.h"
 
-
-//TODO: check and complain if faces are in 'quad' format
+// TODO: check and complain if faces are in 'quad' format
+// TODO: First atoi only takes the first number, so '3/2/9' would return 3 here
 t_face	parse_face(char *line)
 {
-	t_face		result;
-	char		**f_strs;
-	int			i;
+	t_face	result;
+	char	**f_strs;
+	int		i;
 
 	ft_bzero(&result, sizeof(t_face));
 	f_strs = ft_strsplit(line, ' ');
@@ -30,8 +29,7 @@ t_face	parse_face(char *line)
 	i = 0;
 	while (i < 3 && f_strs[i] != NULL)
 	{
-		// TODO: make own version of atof()
-		result.v_indices[i] = atoi(f_strs[i]); //Only takes the first number, so '3/2/9' would return 3 here.
+		result.v_indices[i] = ft_atoi(f_strs[i]);
 		if (ft_strlen(f_strs[i]) > 2 && ft_strstr(f_strs[i], "/") != NULL)
 			result.uv_indices[i] = ft_atoi(ft_strstr(f_strs[i], "/") + 1);
 		free(f_strs[i]);
@@ -43,7 +41,14 @@ t_face	parse_face(char *line)
 	return (result);
 }
 
-int			find_materialindex(char *matname, t_list *materials)
+static void	handle_face_parsing(t_face_list_parse *flp)
+{
+	flp->face = parse_face(flp->line + (sizeof("f")));
+	flp->face.material_index = flp->mat_index;
+	list_push(&flp->list, &flp->face, sizeof(t_face));
+}
+
+int	find_material_index(char *matname, t_list *materials)
 {
 	t_material	*mat;
 	t_list		*l;
@@ -65,39 +70,27 @@ int			find_materialindex(char *matname, t_list *materials)
 
 t_list	*get_face_list(int fd, t_list *materials)
 {
-	char		*line;
-	t_list		*list;
-	t_face		face;
-	t_material	*mat;
-	int			mat_index;
-	int			ret;
+	t_face_list_parse	flp;
 
-	list = NULL;
-	line = NULL;
-	mat_index = 0;
-	ret = get_next_line(fd, &line);
-	while (ret)
+	ft_bzero(&flp, sizeof(t_face_list_parse));
+	flp.ret = get_next_line(fd, &flp.line);
+	while (flp.ret)
 	{
-		if (line)
+		if (flp.line)
 		{
-			if (ft_strnstr(line, "usemtl ", sizeof("usemtl")))
-			{
-				mat_index = find_materialindex(line + sizeof("usemtl"), materials);
-			}
-			if (ft_strnstr(line, "f ", sizeof("f")))
-			{
-				face = parse_face(line + (sizeof("f")));
-				face.materialindex = mat_index;
-				list_push(&list, &face, sizeof(t_face));
-			}
-			free(line);
-			line = NULL;
+			if (ft_strnstr(flp.line, "usemtl ", sizeof("usemtl")))
+				flp.mat_index = find_material_index(flp.line + \
+									sizeof("usemtl"), materials);
+			if (ft_strnstr(flp.line, "f ", sizeof("f")))
+				handle_face_parsing(&flp);
+			free(flp.line);
+			flp.line = NULL;
 		}
-		ret = get_next_line(fd, &line);
+		flp.ret = get_next_line(fd, &flp.line);
 	}
-	if (ret == -1)
+	if (flp.ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "get_face_list");
 	if (lseek(fd, 0, SEEK_SET) == -1)
 		doomlog(LOG_EC_LSEEK, "get_face_list");
-	return (list);
+	return (flp.list);
 }

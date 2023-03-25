@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_ops_2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 17:54:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 19:03:48 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 11:47:37 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,20 +77,6 @@ bool	room_edge_is_legal(t_vector2 *edge, t_area *room)
 		i++;
 	}
 	return (true);
-}
-
-int	_room_find_edge_index(t_vector2 start, t_area *room)
-{
-	int	i;
-
-	i = 0;
-	while (i < room->edgecount)
-	{
-		if (vector2_cmp(start, room->edges[i]))
-			return (i);
-		i++;
-	}
-	return (-1);
 }
 
 void	room_recalculate_joined_rooms(t_world *world, t_area *room)

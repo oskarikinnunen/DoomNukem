@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:32:20 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 17:37:53 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 12:51:44 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static void	playmode_parse_mtllib(t_list **list)
 		{
 			if (ft_strstr(line, "newmtl ") != NULL)
 			{
-				mat = parsemat(fd, line + sizeof("newmtl"));
+				mat = parse_mat(fd, line + sizeof("newmtl"));
 				list_push(list, &mat, sizeof(t_material));
 			}
 			free(line);

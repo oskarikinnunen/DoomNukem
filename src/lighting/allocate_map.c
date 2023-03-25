@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   allocate_map.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 13:48:22 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/23 19:37:41 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 13:00:34 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,9 @@ static void	for_each_triangle(t_entity *entity)
 	{
 		max = get_max_vector2_from_vector3_triangle(
 				max, entity->world_triangles[i].t);
-		index = obj->faces[i].materialindex;
+		index = obj->faces[i].material_index;
 		if (i + 1 == obj->face_count || \
-		index != obj->faces[i + 1].materialindex)
+		index != obj->faces[i + 1].material_index)
 		{
 			max.x = fmaxf(max.x, 1.0f);
 			max.y = fmaxf(max.y, 1.0f);

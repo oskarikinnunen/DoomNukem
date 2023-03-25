@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   calculate_lightmap.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 14:14:49 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/24 20:45:50 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/25 13:00:34 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,9 @@ static void	calculate_light_for_entity(t_entity *entity, t_lighting *lighting)
 	start = 0;
 	while (i < obj->face_count)
 	{
-		index = obj->faces[i].materialindex;
+		index = obj->faces[i].material_index;
 		if (i + 1 == obj->face_count || \
-		index != obj->faces[i + 1].materialindex)
+		index != obj->faces[i + 1].material_index)
 		{
 			lighting->map = &entity->map[index];
 			lighting->img = entity->obj->materials[index].img;

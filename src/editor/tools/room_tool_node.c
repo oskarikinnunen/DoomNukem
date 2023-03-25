@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool_node.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 11:37:18 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 21:47:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 11:45:47 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 	modify existing nodes in an area, or remove them
 */
 //TODO: protect edgecount--?
-static void	remove_edge(t_world *world, t_area *room, t_vector2 *edge)
+void	remove_edge(t_world *world, t_area *room, t_vector2 *edge)
 {
 	t_list		*l;
 	t_area		*cur;
@@ -48,7 +48,7 @@ static void	remove_edge(t_world *world, t_area *room, t_vector2 *edge)
 	}
 }
 
-static void	recalculate_rooms_with_edge(t_editor *ed, t_vector2 edge)
+void	recalculate_rooms_with_edge(t_editor *ed, t_vector2 edge)
 {
 	t_list	*l;
 	t_area	*r;

@@ -6,16 +6,13 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:56:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 15:20:28 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 11:57:11 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "animation.h"
 #include "doomnukem.h"
-#include "libft.h"
 #include "render.h"
-#include <stdio.h>
-#include "file_io.h"
 
 static void	anim_end(t_anim *anim)
 {
@@ -86,45 +83,5 @@ void	start_anim(t_anim *anim, t_anim_mode mode)
 	else if (anim->mode == anim_backwards)
 		anim->frame = anim->lastframe;
 	else
-	{
-		printf("ERROR: ANIM MODE NOT IMPLEMENTED! \n");
-		exit(0);
-	}
-}
-
-void	parse_animframe(int fd, t_objectanimframe *frame, t_object *object)
-{
-	t_list		*verticelist;
-	t_vector3	*vertices;
-	uint32_t	vertexcount;
-	int			i;
-
-	vertexcount = 0;
-	verticelist = get_vertex_list(fd);
-	vertices = list_to_ptr(verticelist, &vertexcount);
-	listdel(&verticelist);
-	i = 0;
-	frame->deltavertices = prot_memalloc(sizeof(t_deltavertex) * vertexcount);
-	while (i < vertexcount)
-	{
-		frame->deltavertices[i].delta = vector3_sub(vertices[i], \
-													object->vertices[i]);
-		frame->deltavertices[i].v_index = i;
-		i++;
-	}
-	free(vertices);
-	frame->vertcount = vertexcount;
-}
-
-void	parse_anim(char *anim_path, char *anim_name, t_object *object)
-{
-	int					fd;
-	t_objectanimframe	frame;
-
-	ft_bzero(&frame, sizeof(t_objectanimframe));
-	fd = fileopen(anim_path, O_RDONLY);
-	parse_animframe(fd, &frame, object);
-	object->o_anim.frames[object->o_anim.framecount] = frame;
-	object->o_anim.framecount++;
-	fileclose(fd, anim_path);
+		doomlog(LOG_FATAL, "ERROR: ANIM MODE NOT IMPLEMENTED!");
 }

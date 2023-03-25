@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   objects.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 12:41:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 19:06:06 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/25 13:18:27 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,32 @@ typedef struct s_material
 	struct s_img	*img;
 }	t_material;
 
+typedef struct s_mat_parse
+{
+	t_material	mat;
+	char		mat_path[256];
+	char		*line;
+	int			fd;
+	int			ret;
+}	t_mat_parse;
+
 typedef struct s_face //Indexer for constructing faces (triangles)
 {
 	uint32_t	v_indices[3];
 	uint32_t	uv_indices[3];
-	uint32_t	materialindex;
+	uint32_t	material_index;
 	t_material	*material;
 }	t_face;
+
+typedef struct s_face_list_parse
+{
+	char		*line;
+	t_list		*list;
+	t_face		face;
+	t_material	*mat;
+	int			mat_index;
+	int			ret;
+}	t_face_list_parse;
 
 typedef	struct s_deltavertex
 {
@@ -67,11 +86,37 @@ typedef struct s_object
 	struct s_colliders	*col;
 }	t_object;
 
+typedef struct s_object_parse
+{
+	t_list	*materials;
+	t_list	*vertices;
+	t_list	*uvs;
+	t_list	*faces;
+}	t_object_parse;
+
+typedef struct s_uv_parse
+{
+	char		*line;
+	t_list		*list;
+	t_vector2	uv;
+	int			ret;
+}	t_uv_parse;
+
+typedef struct s_vertex_parse
+{
+	char		*line;
+	t_list		*list;
+	t_vector3	vec;
+	int			ret;
+}	t_vertex_parse;
+
 struct s_world;
 struct s_sdlcontext;
 
 t_object		objparse(char *filename);
-t_material		parsemat(int fd, char *name);
+t_material		parse_mat(int fd, char *name);
+void			parse_mtllib(t_list **list, char *filename);
+t_material		*default_mat(void);
 void			parse_animframe(int fd, t_objectanimframe *frame, t_object *object);
 void			parse_anim(char *anim_path, char *anim_name, t_object *object);
 struct s_list	*get_uv_list(int fd);

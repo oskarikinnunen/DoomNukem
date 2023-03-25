@@ -1,38 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   inputhelper.c                                      :+:      :+:    :+:   */
+/*   obj_tools.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/06 09:20:17 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 12:00:56 by raho             ###   ########.fr       */
+/*   Created: 2023/03/25 12:16:28 by raho              #+#    #+#             */
+/*   Updated: 2023/03/25 13:17:48 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
+#include "objects.h"
 
-bool	iskey(SDL_Event e, int keycode)
+t_vector2	flipped_uv(t_vector2 vec)
 {
-	return (e.key.keysym.sym == keycode);
-}
+	t_vector2	uv;
 
-bool	keyismoveleft(SDL_Event e)
-{
-	return (iskey(e, SDLK_LEFT) || iskey(e, SDLK_a));
-}
-
-bool	keyismoveright(SDL_Event e)
-{
-	return (iskey(e, SDLK_RIGHT) || iskey(e, SDLK_d));
-}
-
-bool	keyismoveup(SDL_Event e)
-{
-	return (iskey(e, SDLK_UP) || iskey(e, SDLK_w));
-}
-
-bool	keyismovedown(SDL_Event e)
-{
-	return (iskey(e, SDLK_DOWN) || iskey(e, SDLK_s));
+	uv.x = -vec.y;
+	uv.y = vec.x;
+	return (uv);
 }

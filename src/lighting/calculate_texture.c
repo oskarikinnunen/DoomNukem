@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   calculate_texture.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 13:07:06 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/23 21:55:19 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/25 13:00:34 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,9 +79,9 @@ void	*calculate_texture_for_entity(t_entity *entity)
 	start = 0;
 	while (i < entity->obj->face_count)
 	{
-		index = entity->obj->faces[i].materialindex;
+		index = entity->obj->faces[i].material_index;
 		if (i + 1 == entity->obj->face_count
-			|| index != entity->obj->faces[i + 1].materialindex)
+			|| index != entity->obj->faces[i + 1].material_index)
 			buffer_triangles(start, i, index, entity);
 		i++;
 	}

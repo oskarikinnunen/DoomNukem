@@ -215,7 +215,6 @@ typedef struct s_sdlcontext
 	SDL_Window				*window;
 	SDL_Surface				*window_surface;
 	SDL_Surface				*surface;
-	SDL_Surface				*ui_surface; //Not needed?
 	uint32_t				*scaling_buffer;
 	t_render				render;
 	t_platform				platform;

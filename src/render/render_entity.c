@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_entity.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/24 22:25:21 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/25 13:00:34 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,9 @@ void	render_entitys_world_triangles(
 	render->start_index = 0;
 	while (i < obj->face_count)
 	{
-		index = obj->faces[i].materialindex;
+		index = obj->faces[i].material_index;
 		if (i + 1 == obj->face_count || \
-		index != obj->faces[i + 1].materialindex)
+		index != obj->faces[i + 1].material_index)
 			set_render_for_entity(sdl, entity, index, i);
 		i++;
 	}

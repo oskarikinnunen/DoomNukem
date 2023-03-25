@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/24 22:28:49 by raho             ###   ########.fr        #
+#    Updated: 2023/03/25 12:23:24 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,8 +31,9 @@ FMOD = $(FMOD_DIR)/copied
 LIBFT = libft/libft.a
 
 #Source files:
-SRCFILES= main.c img.c deltatime.c anim.c \
-		app_argument.c \
+SRCFILES= main.c img.c deltatime.c \
+		animations/anim.c \
+		animations/anim_parse.c \
 		load_assets/asset_tools.c \
 		load_assets/editor_load_assets.c \
 		load_assets/editor_load_anims.c \
@@ -135,17 +136,20 @@ SRCFILES= main.c img.c deltatime.c anim.c \
 		entity/components/comp_npc_helpers.c \
 		entity/components/comp_npc_anims.c \
 		guns/gun_presets.c \
-		obj_parser/obj_parse.c \
-		obj_parser/obj_parse_vertex.c \
-		obj_parser/obj_parse_faces.c \
-		obj_parser/obj_parse_uvs.c \
+		objects/obj_parse.c \
+		objects/obj_parse_vertex.c \
+		objects/obj_parse_faces.c \
+		objects/obj_parse_uvs.c \
+		objects/obj_tools.c \
+		objects/mat_tools.c \
+		objects/mat_parse.c \
 		tga_parser/tga.c \
 		tga_parser/image_data.c \
 		tga_parser/preliminary_data.c \
 		game_random.c \
 		logging/prot_memalloc.c \
-		object_init.c \
-		object_primitives.c \
+		objects/object_init.c \
+		objects/object_primitives.c \
 		resolution_scaling.c \
 		controller/controller.c \
 		controller/controller_init.c \
