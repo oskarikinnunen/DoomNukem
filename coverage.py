@@ -15,7 +15,7 @@ print(str(percentage) + "% done")
 if (len (sys.argv) > 1) :
 	if (sys.argv[1] == "-v") :
 		stream = os.popen('norminette src | grep "Error!"')
-		print("Noncompliant files: \n")
+		print("Naughty noncompliant files: \n")
 		print((str)(stream.read()))
 	else :
 		print("Wrong argument '" + sys.argv[1] + "': use '-v' for verbose printing (prints noncompliant filenames)")

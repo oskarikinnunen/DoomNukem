@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 16:37:35 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/23 18:45:59 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/25 17:40:25 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,4 +66,27 @@ float	clockwise(t_vector2 p[3])
 {
 	return ((p[1].x - p[0].x) * (p[2].y - p[0].y) - \
 	(p[2].x - p[0].x) * (p[1].y - p[0].y));
+}
+
+bool	is_triangle_degenerate(t_vector3 *p)
+{
+	int		i;
+	int		index;
+	float	dist;
+
+	index = 0;
+	i = 1;
+	dist = vector3_dist(p[0], p[1]);
+	while (i < 3)
+	{
+		if (dist < vector3_dist(p[i], p[(i + 1) % 3]))
+		{
+			index = i;
+			dist = vector3_dist(p[i], p[(i + 1) % 3]);
+		}
+		i++;
+	}
+	if (vector3_dist(p[(index + 2) % 3], p[index]) + vector3_dist(p[(index + 2) % 3], p[(index + 1) % 3]) <= dist + 0.0001f)
+		return (true);
+	return (false);
 }

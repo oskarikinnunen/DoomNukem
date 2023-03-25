@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 10:58:19 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 17:05:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 18:22:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,6 @@
 #include "editor_tools.h"
 #include "doomnukem.h"
 
-/*static bool	cursor_in_room_zspace(t_vector3 cursor, t_room *room) {
-
-}*/
-
-/*
-	This function is called from modifymode,
-	and returns a node between two previous nodes if the player is looking at it
-*/
 typedef struct s_nodeline
 {
 	t_line	line;
@@ -42,7 +34,7 @@ t_line	linebetween(int i, t_area *room)
 	return (line);
 }
 
-static void draw_node_line(t_vector3 cursor, t_line l, t_sdlcontext *sdl)
+static void	draw_node_line(t_vector3 cursor, t_line l, t_sdlcontext *sdl)
 {
 	t_vector3	start;
 	t_vector3	end;
@@ -66,7 +58,8 @@ void	addnode(t_vector2 newnode, t_area *room, int node_i)
 	cpy_after = ft_clamp(room->edgecount - node_i - 1, 0, 32);
 	ft_memcpy(new_edges, room->edges, sizeof(t_vector2) * cpy_before);
 	new_edges[node_i + 1] = newnode;
-	ft_memcpy(new_edges + node_i + 2, room->edges + node_i + 1, sizeof(t_vector2) * cpy_after);
+	ft_memcpy(new_edges + node_i + 2,
+		room->edges + node_i + 1, sizeof(t_vector2) * cpy_after);
 	ft_memcpy(room->edges, new_edges, sizeof(t_vector2 [32]));
 	room->edgecount++;
 	printf("copied %i edges before new edge \n", node_i - 1);

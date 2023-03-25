@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_raycast.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 17:47:07 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 21:57:33 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/25 19:57:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,16 @@ t_vector3_tri	worldspace_tri(t_entity *entity, int index)
 	return (tri);
 }
 
+static t_vector3_tri	worldtri_to_v3tri(t_world_triangle wt)
+{
+	t_vector3_tri	tri;
+
+	tri.a = wt.p[0].v;
+	tri.b = wt.p[1].v;
+	tri.c = wt.p[2].v;
+	return (tri);
+}
+
 bool	raycast_entity(t_ray r, t_raycastinfo *info, t_entity *entity)
 {
 	int					i;
@@ -100,17 +110,14 @@ bool	raycast_entity(t_ray r, t_raycastinfo *info, t_entity *entity)
 		return (hit);
 	while (i < entity->obj->face_count)
 	{
-		//tri = worldspace_tri(entity, i);
-		tt = entity->world_triangles[i];
-		tri.a = tt.p[0].v;
-		tri.b = tt.p[1].v;
-		tri.c = tt.p[2].v;
+		tri = worldtri_to_v3tri(entity->world_triangles[i]);
 		if (raycast_tri(r, tri, &info->distance))
 		{
 			info->hit_pos = vector3_add(r.origin,
 					vector3_mul(r.dir, info->distance));
 			info->hit_entity = entity;
-			info->face_normal = normal_calc_quaternion(entity->world_triangles[i].p);
+			info->face_normal
+				= normal_calc_quaternion(entity->world_triangles[i].p);
 			hit = true;
 		}
 		i++;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 17:07:28 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 19:17:45 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ typedef enum e_gamereturn
 
 /*typedef struct s_animframe
 {
-	struct deltamove = 
+	struct deltamove =
 	{
 		int			index;
 		t_vector3	delta;
@@ -309,7 +309,10 @@ void	moveplayer(t_player *player, t_input *input, t_world *world);
 bool	pathfind(t_world *world, t_path *path); //TODO: deprecated
 t_path	path_find(t_vector3 start_vec, t_vector3 end_vec, t_world *world);
 void	create_navmesh(t_world *world);
+void	malloc_space_for_navmesh(t_world *world);
+void	check_neighbors(t_navigation *nav, int i, t_vector3 start, t_vector3 end);
 void	show_navmesh(t_world *world);
+void	*ft_realloc(void *src, size_t dest_size, size_t src_size);
 
 /* COLLISION */
 

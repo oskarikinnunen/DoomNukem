@@ -4,7 +4,6 @@
 		"cstdio": "c",
 		"string": "c",
 		"string_view": "c",
-<<<<<<< HEAD
 		"exception": "c",
 		"functional": "c",
 		"istream": "c",
@@ -13,9 +12,7 @@
 		"new": "c",
 		"ostream": "c",
 		"utility": "c",
-		"vectors.h": "c"
-=======
-		"inputhelp.h": "c"
->>>>>>> vlaine
+		"vectors.h": "c",
+		"doomnukem.h": "c"
 	}
 }

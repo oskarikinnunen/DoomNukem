@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 16:47:41 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 16:20:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 18:18:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include "editor_tools.h"
 #include "doomnukem.h"
 #include "objects.h"
-
 
 static t_vector3	createmode_raycast(t_editor *ed, t_roomtooldata	*dat)
 {
@@ -43,7 +42,8 @@ static t_vector3	createmode_raycast(t_editor *ed, t_roomtooldata	*dat)
 	return (result);
 }
 
-static void createmode_drawgui(t_editor *ed, t_roomtooldata *dat, t_sdlcontext *sdl)
+static void	createmode_drawgui(t_editor *ed,
+		t_roomtooldata *dat, t_sdlcontext *sdl)
 {
 	t_autogui	*gui;
 
@@ -60,7 +60,8 @@ static void createmode_drawgui(t_editor *ed, t_roomtooldata *dat, t_sdlcontext *
 	gui_end(gui);
 }
 
-static void	createmode_step_back(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
+static void	createmode_step_back(t_editor *ed, t_sdlcontext *sdl,
+		t_roomtooldata *dat)
 {
 	if (dat->room->edgecount >= 1)
 		dat->room->edgecount--;
@@ -69,11 +70,11 @@ static void	createmode_step_back(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata
 		free(dat->room);
 		dat->room = NULL;
 		dat->rtm = rtm_none;
-		return;
+		return ;
 	}
 }
 
-static void createmode_highlight(t_editor *ed, t_sdlcontext *sdl,
+static void	createmode_highlight(t_editor *ed, t_sdlcontext *sdl,
 		t_roomtooldata *dat, t_vector3 cursor)
 {
 	highlight_room(ed, sdl, dat->room, CLR_BLUE);
@@ -83,18 +84,15 @@ static void createmode_highlight(t_editor *ed, t_sdlcontext *sdl,
 		render_circle(ed->world.sdl, cursor, 5, CLR_BLUE);
 }
 
-
 void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 {
 	t_vector3		cursor;
-	bool			placelast;
 
 	cursor = createmode_raycast(ed, dat);
 	if (dat->room->edgecount == 0)
 		dat->room->height = cursor.z;
 	createmode_drawgui(ed, dat, sdl);
 	dat->room->ceiling_height = 50;
-	placelast = ((ed->hid.keystate >> KEYS_SHIFTMASK) & 1 && dat->room->edgecount > 1);
 	if ((ed->hid.keystate >> KEYS_ENTERMASK) & 1)
 	{
 		dat->rtm = rtm_modify;
@@ -103,14 +101,8 @@ void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 	{
-		if (!placelast)
-		{
-			dat->room->edges[dat->room->edgecount] = v3tov2(cursor);
-			dat->room->edgecount++;
-			/*edge = &dat->room->edges[dat->room->edgecount];
-			dat->room->edgecount++;
-			*edge = v3tov2(cursor); //TODO:remove edge * and just access the edge*/
-		}
+		dat->room->edges[dat->room->edgecount] = v3tov2(cursor);
+		dat->room->edgecount++;
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
 		createmode_step_back(ed, sdl, dat);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode_set_up.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 19:26:59 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 17:08:26 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 20:27:04 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ void	set_up_world(t_sdlcontext *sdl, t_game *game)
 	*(game->world.debug_gui) = init_gui((t_gui_init){sdl, &game->hid, \
 					&game->player, sdl->screensize, "Debugging menu (F2)"});
 	sdl->lighting_toggled = false;
-	sdl->render.occlusion.occlusion = false;
+	sdl->render.occlusion.occlusion = true;
 	game->world.sdl = sdl;
 	sdl->audio.sfx_volume = 1.0f;
 	game->world.player = &game->player;
