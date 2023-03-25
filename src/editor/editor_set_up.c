@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 22:13:31 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 22:24:34 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 17:08:12 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,16 +25,15 @@ void	editor_player_init(t_editor *ed)
 
 void	set_up_editor(t_sdlcontext *sdl, t_editor *ed)
 {
-	ed->world.app_mode = APPMODE_EDIT;
 	editor_player_init(ed);
-	*(ed->world.debug_gui) = init_gui(sdl, &ed->hid, &ed->player, \
-			sdl->screensize, "Debugging menu (F2)");
-	ed->toolbar_gui = init_gui(sdl, &ed->hid, &ed->player, \
-			(t_point){5, 5}, "Toolbar (F1)");
+	*(ed->world.debug_gui) = init_gui((t_gui_init){sdl, &ed->hid, \
+			&ed->player, sdl->screensize, "Debugging menu (F2)"});
+	ed->toolbar_gui = init_gui((t_gui_init){sdl, &ed->hid, &ed->player, \
+			(t_point){5, 5}, "Toolbar (F1)"});
 	ed->toolbar_gui.minimum_size = (t_point){165, 20};
 	ed->toolbar_gui.locked = true;
-	ed->graphics_gui = init_gui(sdl, &ed->hid, &ed->player, \
-			sdl->screensize, "Graphics (F3)");
+	ed->graphics_gui = init_gui((t_gui_init){sdl, &ed->hid, &ed->player, \
+			sdl->screensize, "Graphics (F3)"});
 	ed->graphics_gui.minimum_size = (t_point){200, 200};
 	ed->graphics_gui.rect.position = point_div(sdl->screensize, 2);
 	ed->player.locked = !ed->hid.mouse.relative;

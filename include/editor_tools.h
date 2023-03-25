@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 22:29:09 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 15:48:51 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 # include "render.h"
 # include "doomnukem.h"
 # include "collision.h"
+
+# define TITLE_BAR_HEIGHT 32
 
 typedef enum e_point_tool_state
 {
@@ -91,6 +93,33 @@ typedef struct s_tool
 	t_img		*icon;
 }	t_tool;
 
+typedef struct s_editor_raycast
+{
+	t_raycastinfo	internal_info;
+	t_entity		*ent;
+	int				found;
+	bool			hit;
+	int				i;
+}	t_editor_raycast;
+
+typedef struct s_editor_late_gui
+{
+	t_graphicprefs	prefs;
+	t_point					*resolutions;
+	char					*str;
+	t_point					res;
+	int						i;
+}	t_editor_late_gui;
+
+typedef struct s_gui_init
+{
+	t_sdlcontext	*sdl;
+	t_hid_info		*hid;
+	t_player		*player;
+	t_point			origin;
+	char			*title;
+}	t_gui_init;
+
 //struct	s_sdlcontext;
 struct	s_mouse;
 //struct	s_editor;
@@ -99,6 +128,21 @@ void			editor_quit(void);
 void			editor_save_quit(t_editor *ed);
 void			update_editor_lateguis(t_editor *ed);
 void			set_up_editor(t_sdlcontext *sdl, t_editor *ed);
+
+/* INTERNAL GUI */
+t_buttonreturn	autogui_internal_colored_button(char *str, t_autogui *gui, uint32_t color);
+t_buttonreturn	autogui_internal_button(char *str, t_autogui *gui);
+bool			gui_int_slider_internal(int *i, float mul, t_rectangle rect, t_autogui *gui);
+void			gui_layout(t_autogui *gui, t_rectangle rect);
+t_point			gui_currentpos(t_autogui *gui);
+t_rectangle		empty_rect(void);
+void			gui_limitrect(t_autogui *gui);
+bool			clicked_rectangle(t_mouse m, t_rectangle rect);
+void			update_hidecross(t_autogui *gui);
+void			update_scrollbar(t_autogui *gui);
+void			gui_layout_big(t_autogui *gui, t_rectangle rect);
+bool 			gui_shoulddraw(t_autogui *gui);
+void			gui_lock_mouse(t_autogui *gui);
 
 void				update_editor_toolbar(t_editor *ed, t_autogui *toolbar);
 void				editor_events(t_editor *ed);
@@ -111,7 +155,7 @@ void				editor_save_prefs(t_editor *ed);
 bool				object_lookedat(t_editor *ed, t_sdlcontext sdl, t_object *obj);
 
 //Call this only once, returns a gui with correctly initialized values
-t_autogui			init_gui(t_sdlcontext *sdl, t_hid_info *hid, t_player *player, t_point origin, char *title);
+t_autogui			init_gui(t_gui_init gui_init);
 //Tells the gui to start, you can call gui drawing functions after this
 void				gui_start(t_autogui *gui);
 //Tells the gui to end, do not call any gui drawing functions after calling gui_end
@@ -147,7 +191,7 @@ void				gui_string_edit(char *str, t_autogui	*gui);
 //TODO: document
 bool				gui_bool_edit(bool *b, t_autogui *gui);
 
-bool				gui_labeled_bool(char *str, bool b, t_autogui *gui);
+void				gui_labeled_bool(char *str, bool b, t_autogui *gui);
 //Draws an integer slider which allows modifying the integers value, returns true if the integer changed
 bool				gui_int_slider(int *i, float mul, t_autogui *gui);
 //Draws a float slider which allows modifying the floats value, returns true if the float changed

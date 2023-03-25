@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 14:55:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 17:47:24 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 17:23:02 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,17 +85,31 @@ static void	destroy_invalid_objects(t_world *world, t_sdlcontext *sdl)
 
 // If there are invalid objects, 
 // you can delete them with destroy_invalid_objects()
-t_world	load_world(char *level_name, t_sdlcontext *sdl)
+t_world	load_world(t_app_argument app_argument, t_sdlcontext *sdl)
 {
 	t_world		world;
 	char		level_path[256];
+	int			fd;
 
 	doomlog(LOG_NORMAL, "LOADING WORLD");
 	ft_strncpy_term(level_path, "worlds/", 250);
-	ft_strncat(level_path, level_name, 200);
+	ft_strncat(level_path, app_argument.level_name, 200);
 	world_init(&world, sdl);
-	ft_strncpy_term(world.name, level_name, 30);
-	world_load_amap(level_path, &world);
-	world_load_basic_ent(level_path, &world);
+	ft_strncpy_term(world.name, app_argument.level_name, 30);
+	world.app_mode = app_argument.app_mode;
+	if (world.app_mode == APPMODE_EDIT)
+	{
+		fd = open(level_path, O_RDONLY);
+		if (fd == -1)
+			return (world);
+		fileclose(fd, level_path);
+		world_load_amap(level_path, &world);
+		world_load_basic_ent(level_path, &world);
+	}
+	if (world.app_mode == APPMODE_PLAY)
+	{
+		world_load_amap(level_path, &world);
+		world_load_basic_ent(level_path, &world);
+	}
 	return (world);
 }

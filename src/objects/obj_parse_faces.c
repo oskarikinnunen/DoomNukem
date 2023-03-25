@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 15:55:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 13:13:01 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 16:23:19 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "doomnukem.h"
 
 // TODO: check and complain if faces are in 'quad' format
-// TODO: First atoi only takes the first number, so '3/2/9' would return 3 here
+// First atoi only takes the first number, so '3/2/9/' would return 3 here
 t_face	parse_face(char *line)
 {
 	t_face	result;

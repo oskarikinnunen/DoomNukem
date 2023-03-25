@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw_shapes.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 21:39:40 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/21 17:36:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 16:47:24 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,22 +33,11 @@ void	drawcircle(t_sdlcontext sdl, t_point pos, int size, uint32_t clr)
 	}
 }
 
-//TODO: make norminette compliant by using t_point_triangle
-void	draw_triangle(t_sdlcontext *sdl,
-					t_point p1, t_point p2, t_point p3, uint32_t clr)
+void	draw_triangle(t_triangle_draw td)
 {
-	drawline(*sdl, p1, p2, clr);
-	drawline(*sdl, p2, p3, clr);
-	drawline(*sdl, p3, p1, clr);
-}
-
-static void	drawl(t_sdlcontext sdl, t_point pos, uint32_t clr)
-{
-	if (pos.x < 0 || pos.x >= sdl.surface->w - 2
-		|| pos.y < 0 || pos.y >= sdl.surface->h - 2)
-		return ;
-	((uint32_t *)sdl.surface->pixels)[pos.x + (pos.y * sdl.surface->w)] = clr;
-	(sdl.zbuffer)[pos.x + (pos.y * sdl.surface->w)] = 1.0f;
+	drawline(*(td.sdl), td.p1, td.p2, td.clr);
+	drawline(*(td.sdl), td.p2, td.p3, td.clr);
+	drawline(*(td.sdl), td.p3, td.p1, td.clr);
 }
 
 void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr)
@@ -66,4 +55,9 @@ void	drawline(t_sdlcontext sdl, t_point from, t_point to, uint32_t clr)
 	while (step_bresenham(&b) != 1)
 		draw(sdl, b.local, clr);
 	draw(sdl, b.local, clr);
+}
+
+t_rectangle	empty_rect(void)
+{
+	return ((t_rectangle){0});
 }

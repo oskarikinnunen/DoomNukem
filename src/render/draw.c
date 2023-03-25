@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 22:22:13 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/25 16:47:07 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ void	draw(t_sdlcontext sdl, t_point pos, uint32_t clr)
 		|| pos.y < 0 || pos.y >= sdl.surface->h - 2)
 		return ;
 	((uint32_t *)sdl.surface->pixels)[pos.x + (pos.y * sdl.surface->w)] = clr;
-	sdl.zbuffer[pos.x + (pos.y * sdl.surface->w)] = 3.0f; //TODO: REMOVE THIS LINE
 }
 
 void	draw_alpha(t_sdlcontext sdl, t_point pos, uint32_t clr)

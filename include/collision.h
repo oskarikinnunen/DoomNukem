@@ -61,7 +61,7 @@ typedef struct s_line_line_intersect
 
 bool	vector_is_in_triangle(t_vector3 vec, t_vector3_tri tri);
 bool	collision_point_rectangle(t_point p, t_rectangle rect);
-bool	collision_point_triangle(t_point point, t_world_triangle tri); //TODO: pls deprecate, the other one is better (RENE: couldnt find the other "pointtrianglecollisionp"?)
+bool	collision_point_triangle(t_point point, t_world_triangle tri);
 bool	collision_point_circle(t_vector2 p, t_vector2 cp, float r);
 bool	collision_line_point(t_vector2 start, t_vector2 end, t_vector2 point);
 bool	collision_line_line_intersect(t_line line1, t_line line2);

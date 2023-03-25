@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 14:02:27 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 17:07:28 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ void		update_world3d(t_world *world, t_render *render);
 void		toggle_ceilings(t_world *world);
 
 
-t_world		load_world(char *level_name, t_sdlcontext *sdl);
+t_world		load_world(t_app_argument app_argument, t_sdlcontext *sdl);
 
 void		destroy_entity(t_world *world, t_entity *ent);
 t_entity	*find_entity_with_comp(t_world	*world, t_componenttype comp);
@@ -251,7 +251,7 @@ int		init_log(void);
 char	*combine_strings(char **str);
 
 /* EDITOR.C */
-void	editor(char *level, t_sdlcontext sdl);
+void	editor(t_app_argument app_argument, t_sdlcontext sdl);
 
 /* EDITOR_EVENTS.C */
 bool			iskey(SDL_Event e, int keycode);
@@ -294,7 +294,7 @@ uint32_t	game_random_range(t_world *world, uint32_t min, uint32_t max);
 bool		game_random_coinflip(t_world *world);
 
 /* PLAYMODE.C */
-void	playmode(char *level, t_sdlcontext sdl);
+void	playmode(t_app_argument app_argument, t_sdlcontext sdl);
 void	playmode_death(t_game *game);
 
 /* PLAYER.C */
@@ -317,7 +317,7 @@ void	show_navmesh(t_world *world);
 void	error_log(int error_code);
 
 /* SDL */
-void	create_sdlcontext(char *level, t_sdlcontext	*sdl, t_app_mode app_mode);
+void	create_sdlcontext(t_app_argument app_argument, t_sdlcontext	*sdl);
 void	create_sdl_window(t_sdlcontext *sdl, t_screenmode mode);
 void	set_sdl_settings(t_sdlcontext *sdl);
 void	quit_game(t_sdlcontext *sdl);

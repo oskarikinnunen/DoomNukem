@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:49:59 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 14:36:24 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 15:38:36 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,12 +87,14 @@ void	gun_tool_init(t_editor *ed, t_sdlcontext *sdl)
 	dat = ed->tool->tooldata;
 	if (dat->maingui.sdl == NULL)
 	{
-		dat->maingui = init_gui(sdl, &ed->hid, &ed->player, (t_point){20, 100}, "Gun tool");
+		dat->maingui = init_gui((t_gui_init){sdl, &ed->hid, &ed->player, \
+								(t_point){20, 100}, "Gun tool"});
 		gui_autosize(&dat->maingui);
 	}
 	if (dat->offsetgui.sdl == NULL)
 	{
-		dat->offsetgui = init_gui(sdl, &ed->hid, &ed->player, (t_point){20, 20}, "Offset");
+		dat->offsetgui = init_gui((t_gui_init){sdl, &ed->hid, &ed->player, \
+								(t_point){20, 20}, "Offset"});
 		dat->offsetgui.dock = &dat->maingui;
 		dat->offsetgui.hidden = true;
 		dat->offsetgui.allow_user_hide = true;
@@ -100,7 +102,8 @@ void	gun_tool_init(t_editor *ed, t_sdlcontext *sdl)
 	}
 	if (dat->presetgui.sdl == NULL)
 	{
-		dat->presetgui = init_gui(sdl, &ed->hid, &ed->player, (t_point){20, 20}, "Select preset");
+		dat->presetgui = init_gui((t_gui_init){sdl, &ed->hid, &ed->player, \
+								(t_point){20, 20}, "Select preset"});
 		dat->presetgui.dock = &dat->maingui;
 		dat->presetgui.hidden = true;
 		dat->presetgui.allow_user_hide = true;
@@ -108,7 +111,8 @@ void	gun_tool_init(t_editor *ed, t_sdlcontext *sdl)
 	}
 	if (dat->recoilgui.sdl == NULL)
 	{
-		dat->recoilgui = init_gui(sdl, &ed->hid, &ed->player, (t_point){20, 20}, "Recoil");
+		dat->recoilgui = init_gui((t_gui_init){sdl, &ed->hid, &ed->player, \
+								(t_point){20, 20}, "Recoil"});
 		dat->recoilgui.dock = &dat->maingui;
 		dat->recoilgui.hidden = true;
 		dat->recoilgui.allow_user_hide = true;

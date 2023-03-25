@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clip_screen_triangle_to_plane.c                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 18:49:09 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/24 15:54:26 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/25 16:35:20 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ t_screen_triangle in_tri, t_screen_triangle *out_tri)
 	return (1);
 }
 
-static int	vector2_clip_quad_to_triangles(t_vector2 plane_p, t_vector2 plane_n, \
-t_screen_triangle in_tri, t_screen_triangle *out_tri)
+static int	vector2_clip_quad_to_triangles(t_vector2 plane_p,
+	t_vector2 plane_n, t_screen_triangle in_tri, t_screen_triangle *out_tri)
 {
 	float		t;
 	t_vector2	start;

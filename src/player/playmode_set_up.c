@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 19:26:59 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 20:16:10 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 17:08:26 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,14 +87,13 @@ t_vector3	find_playerspawn(t_world *world)
 
 void	set_up_world(t_sdlcontext *sdl, t_game *game)
 {
-	game->world.app_mode = APPMODE_PLAY;
 	create_navmesh(&game->world);
 	playmode_preprocess_world(&game->world);
 	player_init(&game->player, sdl, &game->world);
 	game->player.transform.position = find_playerspawn(&game->world);
 	sdl->fog = true;
-	*(game->world.debug_gui) = init_gui(sdl, &game->hid, &game->player, \
-								sdl->screensize, "Debugging menu (F2)");
+	*(game->world.debug_gui) = init_gui((t_gui_init){sdl, &game->hid, \
+					&game->player, sdl->screensize, "Debugging menu (F2)"});
 	sdl->lighting_toggled = false;
 	sdl->render.occlusion.occlusion = false;
 	game->world.sdl = sdl;

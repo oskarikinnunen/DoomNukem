@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 22:18:15 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 17:07:52 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,13 @@ static void	editorloop(t_sdlcontext *sdl, t_editor *ed)
 	}
 }
 
-void	editor(char *level, t_sdlcontext sdl)
+void	editor(t_app_argument app_argument, t_sdlcontext sdl)
 {
 	t_editor	ed;
 
 	ft_bzero(&ed, sizeof(t_editor));
 	editor_loading_screen("LOADING WORLD", &sdl);
-	ed.world = load_world(level, &sdl);
+	ed.world = load_world(app_argument, &sdl);
 	editor_loading_screen("SETTING UP WORLD", &sdl);
 	set_up_editor(&sdl, &ed);
 	if (SDL_SetRelativeMouseMode(ed.hid.mouse.relative) < 0)

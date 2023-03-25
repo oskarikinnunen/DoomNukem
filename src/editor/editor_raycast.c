@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_raycast.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 18:03:40 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 15:23:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 14:31:43 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,33 +44,26 @@ bool	raycast_plane(t_ray r, t_raycastinfo *info, float plane_z)
 //TODO: f_Infinity
 bool	raycast(t_ray r, t_raycastinfo *info, t_world *world)
 {
-	int				i;
-	int				found;
-	t_entitycache	*cache;
-	t_raycastinfo	internal_info;
-	t_entity		*ent;
-	bool			hit;
+	t_entitycache		*cache;
+	t_editor_raycast	erc;
 
-	hit = false;
 	cache = &world->entitycache;
-	ft_bzero(&internal_info, sizeof(t_raycastinfo));
-	internal_info.distance = 100000.0f;
+	ft_bzero(&erc, sizeof(t_editor_raycast));
+	erc.internal_info.distance = 100000.0f;
 	r.dir = vector3_normalise(r.dir);
-	i = 0;
-	found = 0;
-	while (found < cache->existing_entitycount
-		&& i < cache->alloc_count)
+	while (erc.found < cache->existing_entitycount && \
+			erc.i < cache->alloc_count)
 	{
-		ent = &cache->entities[i];
-		if (ent->status != es_free && !ent->hidden)
+		erc.ent = &cache->entities[erc.i];
+		if (erc.ent->status != es_free && !erc.ent->hidden)
 		{
-			if (raycast_entity(r, &internal_info, ent))
-				hit = true;
-			found++;
+			if (raycast_entity(r, &erc.internal_info, erc.ent))
+				erc.hit = true;
+			erc.found++;
 		}
-		i++;
+		erc.i++;
 	}
 	if (info != NULL)
-		*info = internal_info;
-	return (hit);
+		*info = erc.internal_info;
+	return (erc.hit);
 }
