@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
+#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/25 19:17:36 by vlaine           ###   ########.fr        #
+#    Updated: 2023/03/25 20:06:42 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -100,6 +100,7 @@ SRCFILES= main.c img.c deltatime.c \
 		editor/tools/room_tool_node_3.c \
 		editor/tools/room_tool_addnode.c \
 		editor/tools/room_tool_common.c \
+		editor/tools/room_tool_common_2.c \
 		editor/tools/room_tool_paint.c \
 		editor/tools/room_tool_paint_2.c \
 		editor/tools/gun_tool.c \

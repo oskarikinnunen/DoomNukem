@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 17:18:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 20:32:01 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@ void	free_walls(t_area *room, t_world *world)
 		i++;
 	}
 }
-
-//if edges_exists_in_other_room && 
 
 t_wall	*find_wall(t_wall wall, t_area *room)
 {
@@ -168,14 +166,13 @@ void	_room_initwalls(t_world *world, t_area *room)
 			obj = object_plane(world->sdl);
 			if (ft_strlen(room->walls[i].s_walltex.str) != 0)
 				obj->materials->img = get_image_by_name(*world->sdl, room->walls[i].s_walltex.str);
-			room->walls[i].entity = spawn_entity(world, obj); //Copy saved entitys important values
+			room->walls[i].entity = spawn_entity(world, obj);
 			room->walls[i].entity->rigid = true;
 		}
 		room->walls[i].entity->transform.position = vector3_zero();
 		room->walls[i].entity->transform.scale = vector3_one();
 		room->walls[i].height = room->ceiling_height;
 		applywallmesh(&room->walls[i], room, world);
-		//update_wall_bounds(&room->walls[i]);
 		i++;
 	}
 }

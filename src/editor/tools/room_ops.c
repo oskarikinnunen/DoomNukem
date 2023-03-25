@@ -6,10 +6,9 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 17:45:17 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 17:47:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 20:00:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "tools/walltool.h"
 #include "tools/roomtool.h"
@@ -21,12 +20,9 @@
 t_area	*world_add_room(t_world *world, t_area *room)
 {
 	int		i;
-	char	roomname[64];
 	t_area	*worldroom;
 
-	ft_bzero(roomname, 64);
-	snprintf(roomname, 64, "area(%i)", ft_listlen(world->arealist));
-	ft_strncpy_term(room->name, roomname, 30);
+	ft_strncpy_term(room->name, "area", 30);
 	worldroom = ft_memalloc(sizeof(t_area));
 	ft_strncpy_term(worldroom->s_floortex.str, room->s_floortex.str, 60);
 	ft_strncpy_term(worldroom->s_ceiltex.str, room->s_ceiltex.str, 60);
