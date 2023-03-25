@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/25 15:09:06 by raho             ###   ########.fr        #
+#    Updated: 2023/03/25 18:03:33 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -222,10 +222,13 @@ SRCFILES= main.c img.c deltatime.c \
 		world/world.c \
 		entity/components/comp_light.c \
 		entity/components/comp_healthpack.c \
-		entity/components/comp_playerspawn.c \
-		entity/components/comp_gun_pickup.c \
+		entity/components/comp_player_spawn1.c \
+		entity/components/comp_player_spawn2.c \
+		entity/components/comp_gun_pickup1.c \
+		entity/components/comp_gun_pickup2.c \
 		entity/components/comp_auto_door.c \
-		entity/components/comp_storyevent.c \
+		entity/components/comp_story_events1.c \
+		entity/components/comp_story_events2.c \
 		entity/components/comp_boutton.c #.ENDSRC. CREATECOMPONENT SCRIPT DEPENDS ON THIS SO DONT REMOVE
 VECTORSRCFILES= conversions.c \
 		conversions2.c \

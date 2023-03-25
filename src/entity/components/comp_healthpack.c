@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_healthpack.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 15:03:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 17:59:11 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ void	comp_healthpack_allocate(t_entity *entity, t_world *world)
 	entity->component.data = ft_memalloc(sizeof(t_healthpack));
 	entity->component.data_size = sizeof(t_healthpack);
 	healthpack = (t_healthpack *)entity->component.data;
-	
 }
 
 /*	Internal function that's used to link this components behaviour

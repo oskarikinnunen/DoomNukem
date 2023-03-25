@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   comp_playerspawn.c                                 :+:      :+:    :+:   */
+/*   comp_player_spawn1.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 13:09:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 17:57:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,23 +24,13 @@ void	comp_playerspawn_update(t_entity *entity, t_world *world)
 		return ;
 }
 
-/* Called once per frame after the 3D world has been drawn, use this to draw gizmos/rays/whatever*/
+// Called once per frame after the 3D world has been drawn
+// Use this to draw gizmos/rays/whatever
 void	comp_playerspawn_ui_update(t_entity *entity, t_world *world)
 {
 	t_playerspawn	*playerspawn;
 
 	playerspawn = entity->component.data;
-	if (playerspawn == NULL)
-		return ;
-}
-
-/* Used to edit component values */
-void	comp_playerspawn_gui_edit(t_entity *entity, t_autogui *gui, t_world *world)
-{
-	t_playerspawn	*playerspawn;
-	//entity->particleimages[particleanim.];
-	playerspawn = entity->component.data;
-	gui_label("GUI for playerspawn not implemented", gui);
 	if (playerspawn == NULL)
 		return ;
 }
@@ -51,6 +41,7 @@ void	comp_playerspawn_gui_edit(t_entity *entity, t_autogui *gui, t_world *world)
 void	comp_playerspawn_loadassets(t_entity *entity, t_world *world)
 {
 	t_playerspawn	*playerspawn;
+
 	playerspawn = entity->component.data;
 }
 
