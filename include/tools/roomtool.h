@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   roomtool.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:42:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 11:47:44 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 19:46:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ void		highlight_room(t_editor *ed, t_sdlcontext *sdl, t_area *room, uint32_t col
 t_meshtri	*selectedfloor(t_editor *ed, t_sdlcontext sdl, t_area *room);
 t_wall		*selectedwall(t_editor *ed, t_sdlcontext sdl, t_area *room);
 t_area		*selectedroom(t_editor *ed, t_sdlcontext sdl);
+t_vector2	next_edge(t_area *room, int i);
 
 bool		is_joined(t_vector2 edge, t_area	*room, t_world *world);
 
