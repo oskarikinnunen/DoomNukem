@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   guntool.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 16:08:53 by okinnune          #+#    #+#             */
-/*   Updated: 2022/12/21 17:00:42 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/25 21:24:37 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 # define GUNTOOL_H
 
 #include "room.h"
+
+struct s_editor;
+struct s_sdlcontext;
 
 typedef enum e_guntoolmode
 {
@@ -33,5 +36,8 @@ typedef struct s_guntooldata
 	bool			gun_aim;
 	t_guntoolmode	gtm;
 }	t_guntooldata;
+
+void	gun_tool_init(struct s_editor *ed, struct s_sdlcontext *sdl);
+void	gun_tool_update(struct s_editor *ed, struct s_sdlcontext *sdl);
 
 # endif

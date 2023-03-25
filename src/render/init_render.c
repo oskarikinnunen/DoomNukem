@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_render.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 22:21:00 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/25 22:14:40 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ t_render	init_render(t_sdlcontext sdl)
 	t_vector3	vtarget;
 	t_mat4x4	matcamera;
 
-	bzero(&render, sizeof(t_render));
-	bzero(&render.camera, sizeof(t_camera));
+	ft_bzero(&render, sizeof(t_render));
+	ft_bzero(&render.camera, sizeof(t_camera));
 	render.camera.aspectratio = (float)(sdl.window_h) / (float)(sdl.window_w);
 	render.camera.matproj = matrix_makeprojection(90.0f, \
 								render.camera.aspectratio, 2.0f, 1000.0f);

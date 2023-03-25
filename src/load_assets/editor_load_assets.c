@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_load_assets.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 16:06:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 21:13:55 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	editor_load_assets(t_sdlcontext *sdl)
 	objects_init(sdl);
 	editor_loading_screen("LOADING ANIMATIONS", sdl);
 	human = get_object_by_name(*sdl, "Human.obj");
-	//editor_load_anims("anim", human);
-	//editor_load_anim_legend(sdl);
+	editor_load_anims("anim", human);
+	editor_load_anim_legend(sdl);
 	log_loaded_animations(sdl);
 }

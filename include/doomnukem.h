@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 19:17:45 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/25 22:24:04 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,6 +165,8 @@ typedef struct s_world
 	t_app_mode			app_mode;
 }	t_world;
 
+
+
 t_vector2	flipped_uv(t_vector2 vec);
 void		for_all_active_entities(t_world	*world, void	(*func)(t_entity *ent, t_world *world));
 void		void_for_all_active_entities(t_world	*world, void *ptr, void	(*func)(t_entity *ent, void *ptr));
@@ -202,6 +204,7 @@ typedef struct s_game
 	t_player		player;
 } t_game;
 
+void			draw_skybox_image(t_world *world, t_img *skybox);
 void			free_list_node(void *content, size_t size);
 void			playmode_quit(t_game *game);
 void			update_audio(t_world *world);

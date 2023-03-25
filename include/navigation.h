@@ -41,4 +41,25 @@ typedef struct s_navigation
 	bool		show_navmesh;
 	float		height;
 }	t_navigation;
+
+typedef struct s_triangle_border_share
+{
+	t_navigation	*nav;
+	int				i;
+	int				i1;
+	t_vector3		start;
+	t_vector3		end;
+
+}	t_triangle_border_share;
+
+typedef struct s_navmesh_info
+{
+	int	start;
+	int	end;
+	int	size;
+	int	index;
+}	t_navmesh_info;
+
+int	world_triangle_get_max_dist_index(t_world_triangle t);
+
 # endif

@@ -28,7 +28,6 @@
 # define CLR_BLUEGRAY 0x6A7382
 # define AMBER_0 0x551501
 # define AMBER_1 0x832d01
-//# define AMBER_2 0x831f00
 # define AMBER_2 0xbf7702
 # define AMBER_3 0xff9b05
 # define AMBER_4 0xf5a845

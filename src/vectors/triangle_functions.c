@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   triangle_functions.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 16:37:35 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/25 17:40:25 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/25 21:13:09 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,9 @@ bool	is_triangle_degenerate(t_vector3 *p)
 		}
 		i++;
 	}
-	if (vector3_dist(p[(index + 2) % 3], p[index]) + vector3_dist(p[(index + 2) % 3], p[(index + 1) % 3]) <= dist + 0.0001f)
+	if (vector3_dist(p[(index + 2) % 3], \
+			p[index]) + vector3_dist(p[(index + 2) % 3], \
+			p[(index + 1) % 3]) <= dist + 0.0001f)
 		return (true);
 	return (false);
 }

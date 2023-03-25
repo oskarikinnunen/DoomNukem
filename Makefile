@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
+#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/25 20:06:42 by okinnune         ###   ########.fr        #
+#    Updated: 2023/03/25 22:13:43 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -104,6 +104,8 @@ SRCFILES= main.c img.c deltatime.c \
 		editor/tools/room_tool_paint.c \
 		editor/tools/room_tool_paint_2.c \
 		editor/tools/gun_tool.c \
+		editor/tools/gun_tool_init.c \
+		editor/tools/gun_tool_update.c \
 		editor/editor_new_buttons.c \
 		editor/editor_raycast.c \
 		editor/entity_raycast.c \
@@ -205,7 +207,8 @@ SRCFILES= main.c img.c deltatime.c \
 		thread/thread_lighting.c \
 		navigation/pathfind.c \
 		navigation/navmesh.c \
-		navigation/create_navmesh.c \
+		navigation/create_navmesh1.c \
+		navigation/create_navmesh2.c \
 		navigation/nav_utils.c \
 		navigation/connect_navmesh.c \
 		render/rasterization/rasterize_triangle_wrap.c \
@@ -215,6 +218,7 @@ SRCFILES= main.c img.c deltatime.c \
 		render/draw_rectangle.c \
 		render/draw_shapes.c \
 		render/draw_crosshair.c \
+		render/draw_skybox.c \
 		render/render_helper.c \
 		render/surface_tools.c \
 		render/colors.c \

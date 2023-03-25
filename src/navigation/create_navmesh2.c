@@ -1,25 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   nav_utils.c                                        :+:      :+:    :+:   */
+/*   create_navmesh2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/25 17:45:00 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/25 22:15:39 by raho             ###   ########.fr       */
+/*   Created: 2023/03/25 22:12:06 by raho              #+#    #+#             */
+/*   Updated: 2023/03/25 22:13:12 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-void	*ft_realloc(void *src, size_t dest_size, size_t src_size)
+int	world_triangle_get_max_dist_index(t_world_triangle t)
 {
-	void	*dest;
+	float	dist;
+	int		index;
+	int		i;
 
-	dest = ft_memalloc(dest_size);
-	if (!dest)
-		return (NULL);
-	ft_memcpy(dest, src, src_size);
-	free(src);
-	return (dest);
+	index = 0;
+	dist = vector3_dist(t.p[0].v, t.p[1].v);
+	i = 1;
+	while (i < 3)
+	{
+		if (dist < vector3_dist(t.p[i].v, t.p[(i + 1) % 3].v))
+		{
+			dist = vector3_dist(t.p[i].v, t.p[(i + 1) % 3].v);
+			index = i;
+		}
+		i++;
+	}
+	return (index);
 }

@@ -1,10 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pathfind.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/25 22:16:15 by raho              #+#    #+#             */
+/*   Updated: 2023/03/25 22:22:57 by raho             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "doomnukem.h"
 
-uint32_t get_nearest_target_node(t_world *world, t_vector3 target)
+uint32_t	get_nearest_target_node(t_world *world, t_vector3 target)
 {
-	int e = 0;
-	int closest_point = 0;
-	float dist;
+	int		e;
+	int		closest_point;
+	float	dist;
+
+	e = 0;
+	closest_point = 0;
 	dist = vector3_dist(world->nav.navmesh[0].mid_point, target);
 	while (e < world->nav.node_amount)
 	{
@@ -15,10 +30,11 @@ uint32_t get_nearest_target_node(t_world *world, t_vector3 target)
 		}
 		e++;
 	}
-	return(closest_point);
+	return (closest_point);
 }
 
-static uint32_t	add_valid_neighbours(t_world *world, t_navnode *openlist, uint32_t lowest_f, uint32_t end)
+static uint32_t	add_valid_neighbours(t_world *world, t_navnode *openlist,
+										uint32_t lowest_f, uint32_t end)
 {
 	int			i;
 	int			count;
@@ -29,11 +45,13 @@ static uint32_t	add_valid_neighbours(t_world *world, t_navnode *openlist, uint32
 	while (i < openlist[lowest_f].neighbors)
 	{
 		id = openlist[lowest_f].neighbors_id[i];
-		if (openlist[id].visited == false && openlist[id].blocked == false && openlist[id].valid == false)
+		if (openlist[id].visited == false && \
+			openlist[id].blocked == false && openlist[id].valid == false)
 		{
 			openlist[id] = world->nav.navmesh[id];
 			openlist[id].g = openlist[lowest_f].g + 1.0f;
-			openlist[id].h = vector3_dist(openlist[id].mid_point, world->nav.navmesh[end].mid_point);
+			openlist[id].h = vector3_dist(openlist[id].mid_point, \
+								world->nav.navmesh[end].mid_point);
 			openlist[id].f = openlist[id].g + openlist[id].h;
 			openlist[id].valid = true;
 			openlist[id].parent = lowest_f;
@@ -45,7 +63,8 @@ static uint32_t	add_valid_neighbours(t_world *world, t_navnode *openlist, uint32
 	return (count);
 }
 
-static t_path	construct_path(int end, int start, t_navnode *openlist, t_path path)
+static t_path	construct_path(int end, int start,
+								t_navnode *openlist, t_path path)
 {
 	int	i;
 
@@ -70,7 +89,8 @@ static t_path	construct_path(int end, int start, t_navnode *openlist, t_path pat
 	return (path);
 }
 
-static uint32_t	get_best_node_id(t_navnode *openlist, uint32_t lowest_f_index, uint32_t list_len)
+static uint32_t	get_best_node_id(t_navnode *openlist,
+								uint32_t lowest_f_index, uint32_t list_len)
 {
 	uint32_t	found;
 	uint32_t	i;
@@ -90,7 +110,7 @@ static uint32_t	get_best_node_id(t_navnode *openlist, uint32_t lowest_f_index, u
 	return (lowest_f_index);
 }
 
-t_path path_find(t_vector3 start_vec, t_vector3 end_vec, t_world *world)
+t_path	path_find(t_vector3 start_vec, t_vector3 end_vec, t_world *world)
 {
 	t_navnode	*openlist;
 	uint32_t	list_len;
@@ -107,16 +127,17 @@ t_path path_find(t_vector3 start_vec, t_vector3 end_vec, t_world *world)
 	openlist[path.end].enter_point = openlist[path.end].mid_point;
 	list_len = 1;
 	if (world->nav.node_amount == 0)
-		return((t_path){.valid_path = false});
+		return ((t_path){.valid_path = false});
 	while (list_len > 0)
 	{
 		lowest_f_index = get_best_node_id(openlist, lowest_f_index, list_len);
 		if (lowest_f_index == path.start)
-			return(construct_path(path.end, path.start, openlist, path));
+			return (construct_path(path.end, path.start, openlist, path));
 		openlist[lowest_f_index].valid = false;
 		openlist[lowest_f_index].visited = true;
-		list_len += add_valid_neighbours(world, openlist, lowest_f_index, path.start) - 1;
+		list_len += add_valid_neighbours(\
+						world, openlist, lowest_f_index, path.start) - 1;
 	}
 	path.valid_path = false;
-	return(path);
+	return (path);
 }

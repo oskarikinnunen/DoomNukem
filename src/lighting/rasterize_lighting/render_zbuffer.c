@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_zbuffer.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:02:10 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/23 19:27:23 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/25 21:38:55 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ static void	clip_and_render_triangle(
 	t_point				start_end;
 
 	triangles[0] = triangle;
-	start_end = clip_screen_triangle_against_screen_edge(triangles, lighting->screen_edge);
+	start_end = clip_screen_triangle_against_screen_edge(\
+						triangles, lighting->screen_edge);
 	while (start_end.x < start_end.y)
 	{
 		lighting->triangle = triangles[start_end.x];
@@ -32,9 +33,9 @@ t_screen_triangle	triangle_to_screen_point_triangle(
 	t_mat4x4 matproj, t_world_triangle clipped, t_vector2 size)
 {
 	t_world_triangle			triprojected;
-	t_screen_triangle	tri;
-	int					i;
-	const t_vector3		voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
+	t_screen_triangle			tri;
+	int							i;
+	const t_vector3				voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
 
 	i = 0;
 	while (i < 3)
@@ -57,9 +58,9 @@ void	render_zbuffer(t_lighting *l, t_entity *entity)
 {
 	t_world_triangle		clipped[2];
 	t_world_triangle		world_triangle;
-	int				nclippedtriangles;
-	int				index;
-	int				i;
+	int						nclippedtriangles;
+	int						index;
+	int						i;
 
 	if (entity->obj == NULL || entity->world_triangles == NULL)
 		return ;

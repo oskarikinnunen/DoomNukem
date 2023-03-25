@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entitytool.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 15:28:31 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/21 15:59:40 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 22:32:39 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,9 @@ typedef struct s_entitytooldata
 	t_raycastinfo	info;
 }	t_entitytooldata;
 
-void	entitytool_entitygui_init(t_editor	*ed, t_sdlcontext *sdl, t_entitytooldata *dat);
-void	entitytool_worldgui_init(t_editor	*ed, t_sdlcontext *sdl, t_entitytooldata *dat);
-void	entitytool_objectgui_init(t_editor	*ed, t_sdlcontext *sdl, t_entitytooldata *dat);
+void	entitytool_entitygui_init(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat);
+void	entitytool_worldgui_init(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat);
+void	entitytool_objectgui_init(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat);
+void	entity_tool_raycast(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat);
 
 #endif

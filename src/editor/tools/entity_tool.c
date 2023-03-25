@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 15:23:34 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 22:14:19 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ void	entity_tool_raycast(t_editor *ed, t_sdlcontext *sdl,
 
 	ray.origin = ed->player.headposition;
 	ray.dir = ed->player.lookdir;
-	bzero(&dat->info, sizeof(t_raycastinfo));
+	ft_bzero(&dat->info, sizeof(t_raycastinfo));
 	if (raycast(ray, &dat->info, &ed->world))
 	{
 		if (dat->info.hit_entity != NULL

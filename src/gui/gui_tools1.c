@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:54:09 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 15:16:04 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 21:14:48 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,6 @@ t_point	gui_currentpos(t_autogui *gui)
 	t_point	pos;
 
 	pos = point_add(gui->rect.position, point_add(gui->scroll, gui->offset));
-	pos = point_add(pos, (t_point){5,0});
+	pos = point_add(pos, (t_point){5, 0});
 	return (pos);
 }

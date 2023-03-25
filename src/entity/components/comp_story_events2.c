@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 17:50:20 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 18:20:04 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 22:31:00 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	comp_storyevent_gui_edit(t_entity *entity,
 	if (storyevent == NULL)
 		return ;
 	if (gui_labeled_int_slider("Event index:", \
-					&entity->component.data_preset, 0.1f, gui))
+					(int32_t *)&entity->component.data_preset, 0.1f, gui))
 		storyevent->triggered = false;
 	entity->component.data_preset = \
 			ft_clamp(entity->component.data_preset, 0, 5);
