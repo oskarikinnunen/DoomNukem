@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:36:01 by raho              #+#    #+#             */
-/*   Updated: 2023/03/20 19:20:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 17:34:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,6 @@ static void	keyboard_movement(t_input *input,
 	input->prevgun = check_alpha_key(akeystate, 'q');
 	input->nextgun = check_alpha_key(akeystate, 'e');
 	input->reload = check_alpha_key(akeystate, 'r');
-	if (input->use)
-	{
-		printf("input use %i \n", input->use);
-		printf("akey %i \n", check_alpha_key(akeystate, 'e'));
-	}
 }
 
 static void	controller_movement(t_input *input, t_controller *controller)

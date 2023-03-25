@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_set_up.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 22:13:31 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 17:08:12 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 17:56:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 void	editor_player_init(t_editor *ed)
 {
-	ed->player.noclip = true;
 	player_init(&ed->player, ed->world.sdl, &ed->world);
+	ed->player.noclip = true;
 	ed->player.gun->disabled = true;
 	ed->world.debug_gui->hidden = true;
 	ed->graphics_gui.hidden = true;

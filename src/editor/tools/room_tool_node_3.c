@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 21:47:16 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 21:47:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 16:30:15 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ void	room_tool_node(t_vector3 cursor, t_roomtooldata *dat, t_editor *ed)
 		recalculate_rooms_with_edge(ed, *dat->held_edge);
 		recalc = false;
 	}
-	if (check_alpha_key(ed->hid.alphakey_pressed, 'X'))
+	if (check_alpha_key(ed->hid.alphakey_pressed, 'X')
+		&& dat->room->edgecount > 2)
 		remove_edge(&ed->world, dat->room, dat->held_edge);
 }

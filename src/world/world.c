@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 22:25:28 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/25 16:37:24 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ void update_world3d(t_world *world, t_render *render)
 	sdl = world->sdl;
 	for_all_active_entities(world, calculate_triangles_for_entity);
 	render_start_new(sdl, world->player);
-	draw_skybox_image(world, skybox);
+	//draw_skybox_image(world, skybox);
 	clear_occlusion_buffer(sdl);
 	update_frustrum_culling(world, sdl, render);
 	sort_entitycache(world, render->camera.position);

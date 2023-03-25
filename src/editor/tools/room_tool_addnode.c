@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 10:58:19 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 21:52:38 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 17:05:25 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,11 @@ static void draw_node_line(t_vector3 cursor, t_line l, t_sdlcontext *sdl)
 
 void	addnode(t_vector2 newnode, t_area *room, int node_i)
 {
-	int	cpy_before;
-	int	cpy_after;
-	t_vector2	*new_edges; //TODO: replace with t_vector2[32]
-	new_edges = ft_memalloc(sizeof(t_vector2) * 32);
+	int			cpy_before;
+	int			cpy_after;
+	t_vector2	new_edges[32];
 
+	ft_bzero(new_edges, sizeof(new_edges));
 	cpy_before = ft_clamp(node_i + 1, 0, 32);
 	cpy_after = ft_clamp(room->edgecount - node_i - 1, 0, 32);
 	ft_memcpy(new_edges, room->edges, sizeof(t_vector2) * cpy_before);
@@ -71,7 +71,6 @@ void	addnode(t_vector2 newnode, t_area *room, int node_i)
 	room->edgecount++;
 	printf("copied %i edges before new edge \n", node_i - 1);
 }
-
 
 bool	potentialnode(t_vector3 cursor, t_roomtooldata *dat, t_editor *ed)
 {
@@ -85,7 +84,7 @@ bool	potentialnode(t_vector3 cursor, t_roomtooldata *dat, t_editor *ed)
 		if (collision_line_circle(l, v3tov2(cursor), 10.0f))
 		{
 			draw_node_line(cursor, l, ed->world.sdl);
-			draw_node_indicator(cursor, dat, &ed->world);
+			draw_node_indicator(cursor, dat, ed);
 			if (check_alpha_key(ed->hid.alphakey_pressed, 'e'))
 			{
 				addnode(v3tov2(cursor), dat->room, i);
