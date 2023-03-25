@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 22:03:29 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/25 17:51:08 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,4 +148,5 @@ t_stepv3	make_uv_slopev3(int start, int end, int y, t_screen_triangle triangle);
 
 /* LIGHTING */
 void render_zbuffer(t_lighting *lighting, t_entity *entity);
+
 # endif

@@ -5,8 +5,6 @@
 	#include <inttypes.h>
 # endif
 
-
-
 typedef enum e_componenttype
 {
 	COMP_NONE,
@@ -26,6 +24,7 @@ typedef enum e_componenttype
 }	t_componenttype;
 
 struct s_autogui;
+struct s_entity;
 struct s_world;
 
 
@@ -141,7 +140,7 @@ void	assign_component_boutton(t_component *component);
 /* ASSIGNFUNC END, DONT REMOVE SINCE THE CREATECOMPONENT SCRIPT DEPENDS ON THIS*/
 /* AUDIOSOURCE INTERNAL FUNCTIONS */
 void	_audiosource_start(t_sdlcontext *sdl, t_audiosource	*source, t_vector3 *pos);
-void	_audiosource_2D_start(t_sdlcontext *sdl, t_audiosource	*source);
+void	_audiosource_2d_start(t_sdlcontext *sdl, t_audiosource	*source);
 
 /*NPC*/
 void	assign_component_npc(t_component *component);
@@ -149,5 +148,22 @@ void	assign_component_npc(t_component *component);
 /* GENERIC COMPONENT FUNCTIONS*/
 t_componentdefinition	*get_component_definitions();
 void	component_empty_function_pointers(t_component	*component);
+/* BOUTTON EVENT FUNCTIONS */
+void	comp_boutton_ui_update(struct s_entity *entity, struct s_world *world);
+void	comp_boutton_gui_edit(struct s_entity *entity, struct s_autogui *gui, struct s_world *world);
+void	comp_boutton_loadassets(struct s_entity *entity, struct s_world *world);
+void	comp_boutton_allocate(struct s_entity *entity, struct s_world *world);
+
+/* GUN EVENT FUNCTIONS */
+void	comp_gun_pickup_ui_update(struct s_entity *entity, struct s_world *world);
+void	comp_gun_pickup_gui_edit(struct s_entity *entity, struct s_autogui *gui, struct s_world *world);
+void	comp_gun_pickup_loadassets(struct s_entity *entity, struct s_world *world);
+void	comp_gun_pickup_allocate(struct s_entity *entity, struct s_world *world);
+
+/* STORY EVENT FUNCTIONS */
+void	comp_storyevent_ui_update(struct s_entity *entity, struct s_world *world);
+void	comp_storyevent_gui_edit(struct s_entity *entity, struct s_autogui *gui, struct s_world *world);
+void	comp_storyevent_loadassets(struct s_entity *entity, struct s_world *world);
+void	comp_storyevent_allocate(struct s_entity *entity, struct s_world *world);
 
 #endif

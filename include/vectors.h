@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 18:28:10 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/25 17:40:43 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -344,7 +344,7 @@ t_mat4x4 matrix_makescale(t_vector3 v);
 //returns transform matrix
 t_mat4x4 make_transform_matrix(t_transform transform);
 
-//returns matrix projection, fFovDegrees is player field of view in degrees, aspect ratio is float window height divided by window width, fnear is how close the camera clips and ffar is how far the camera clips 
+//returns matrix projection, fFovDegrees is player field of view in degrees, aspect ratio is float window height divided by window width, fnear is how close the camera clips and ffar is how far the camera clips
 t_mat4x4 matrix_makeprojection(float fFovDegrees, float fAspectRatio, float fNear, float fFar);
 
 //returns matrix multiplied by matrix 'm1' and matrix 'm2'
@@ -429,5 +429,8 @@ void	sort_quaternion_vector3_by_dist(float dist[3], t_quaternion q[3], t_vector3
 
 //sorts 3 vector2 vector3 by vector2 y
 void	sort_vector2_vector3_by_dist(float dist[3], t_vector2 p[3], t_vector3 t[3]);
+
+//returns true if triangle is degenerate
+bool	is_triangle_degenerate(t_vector3 *p);
 
 #endif

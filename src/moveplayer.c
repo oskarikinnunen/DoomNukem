@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   moveplayer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/23 15:23:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 17:33:18 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ void	play_gun_audio(t_gun *gun, t_world *world)
 		source.play_always = false;
 	}
 	source.sample = get_sample(world->sdl, gun->stats.audio_name);
-	_audiosource_2D_start(world->sdl, &source);
+	_audiosource_2d_start(world->sdl, &source);
 }
 
 void	play_gun_reload_audio(t_world *world)
@@ -149,7 +149,7 @@ void	play_gun_reload_audio(t_world *world)
 		source.volume = 1.0f;
 		source.play_always = false;
 	}
-	_audiosource_2D_start(world->sdl, &source);
+	_audiosource_2d_start(world->sdl, &source);
 }
 
 void	protagonist_play_audio(t_player *player,
@@ -159,7 +159,7 @@ void	protagonist_play_audio(t_player *player,
 
 	source.volume = 1.0f;
 	source.sample = get_sample(world->sdl, soundname);
-	_audiosource_2D_start(world->sdl, &source);
+	_audiosource_2d_start(world->sdl, &source);
 }
 
 static void gun_update_transform(t_player *player, t_gun *gun, t_clock c)

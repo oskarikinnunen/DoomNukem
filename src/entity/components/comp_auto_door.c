@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_auto_door.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 17:49:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/25 18:11:30 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,16 +28,21 @@ void	comp_auto_door_update(t_entity *entity, t_world *world)
 	og_pos.z = auto_door->original_z;
 	dist = vector3_sqr_dist(og_pos, world->player->transform.position);
 	if (dist < 5000.0f)
-		entity->transform.position.z = ft_fmovetowards(entity->transform.position.z, auto_door->original_z + 100.0f, 0.05f * world->clock.delta);
+		entity->transform.position.z = ft_fmovetowards(\
+				entity->transform.position.z, auto_door->original_z + 100.0f, \
+				0.05f * world->clock.delta);
 	else
-		entity->transform.position.z = ft_fmovetowards(entity->transform.position.z, auto_door->original_z, 0.05f * world->clock.delta);
+		entity->transform.position.z = ft_fmovetowards(\
+				entity->transform.position.z, auto_door->original_z, \
+				0.05f * world->clock.delta);
 }
 
 /* Used to edit component values */
-void	comp_auto_door_gui_edit(t_entity *entity, t_autogui *gui, t_world *world)
+void	comp_auto_door_gui_edit(t_entity *entity,
+								t_autogui *gui, t_world *world)
 {
 	t_auto_door	*auto_door;
-	//entity->particleimages[particleanim.];
+
 	auto_door = entity->component.data;
 	gui_label("GUI for auto_door not implemented", gui);
 	if (auto_door == NULL)
@@ -50,6 +55,7 @@ void	comp_auto_door_gui_edit(t_entity *entity, t_autogui *gui, t_world *world)
 void	comp_auto_door_loadassets(t_entity *entity, t_world *world)
 {
 	t_auto_door	*auto_door;
+
 	auto_door = entity->component.data;
 }
 

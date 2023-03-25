@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
+#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/25 17:35:33 by okinnune         ###   ########.fr        #
+#    Updated: 2023/03/25 19:17:36 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -202,8 +202,11 @@ SRCFILES= main.c img.c deltatime.c \
 		lighting/rasterize_lighting/rasterize_light_utils.c \
 		thread/thread.c \
 		thread/thread_lighting.c \
-		npc/navigation/pathfind.c \
-		npc/navigation/navmesh.c \
+		navigation/pathfind.c \
+		navigation/navmesh.c \
+		navigation/create_navmesh.c \
+		navigation/nav_utils.c \
+		navigation/connect_navmesh.c \
 		render/rasterization/rasterize_triangle_wrap.c \
 		render/rasterization/rasterize_triangle.c \
 		render/rasterization/rasterize_triangle_transparent.c \
@@ -222,10 +225,13 @@ SRCFILES= main.c img.c deltatime.c \
 		world/world.c \
 		entity/components/comp_light.c \
 		entity/components/comp_healthpack.c \
-		entity/components/comp_playerspawn.c \
-		entity/components/comp_gun_pickup.c \
+		entity/components/comp_player_spawn1.c \
+		entity/components/comp_player_spawn2.c \
+		entity/components/comp_gun_pickup1.c \
+		entity/components/comp_gun_pickup2.c \
 		entity/components/comp_auto_door.c \
-		entity/components/comp_storyevent.c \
+		entity/components/comp_story_events1.c \
+		entity/components/comp_story_events2.c \
 		entity/components/comp_boutton.c #.ENDSRC. CREATECOMPONENT SCRIPT DEPENDS ON THIS SO DONT REMOVE
 VECTORSRCFILES= conversions.c \
 		conversions2.c \

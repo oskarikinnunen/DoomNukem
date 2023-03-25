@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 13:54:11 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/25 18:13:27 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,31 +14,16 @@
 #include "doomnukem.h"
 #include "editor_tools.h"
 
-/*
-uint32_t	starttime;
-uint32_t	lifetime;
-t_anim	particleanim;
-t_img	particleimages[16];
-*/
-
 void	comp_audiosource_update(t_entity *entity, t_world *world)
 {
 	t_audiosource	*source;
 	bool			isplaying;
-	//entity->particleimages[particleanim.];
+
 	source = entity->component.data;
 	if (source == NULL || source->sample.sound == NULL)
 	{
 		return ;
 	}
-	
-	/*if (world->clock.prev_time > starttime + lifetime)
-	{
-		//free_object()
-		destroy_entity(world, entity);
-		return ;
-	}*/
-
 	isplaying = source_is_playing(source);
 	if (isplaying)
 	{
@@ -107,7 +92,6 @@ void	comp_audiosource_ui_update(t_entity *entity, t_world *world)
 	else
 		cur_img = audio_off_img;
 	draw_entity_icon(entity, cur_img, world);
-	//render_ball(world->sdl, entity->transform.position, source->range * 1.0f, CLR_BLUE);
 }
 
 void	comp_audiosource_gui_edit(t_entity *entity, t_autogui *gui, t_world *world)
@@ -118,7 +102,6 @@ void	comp_audiosource_gui_edit(t_entity *entity, t_autogui *gui, t_world *world)
 	
 	if (source == NULL)
 	{
-		//start_anim()
 		gui_label("!NULL source", gui);
 		return ;
 	}
@@ -156,10 +139,7 @@ void	comp_audiosource_gui_edit(t_entity *entity, t_autogui *gui, t_world *world)
 	source->random_delay_max = ft_clamp(source->random_delay_max, source->random_delay_min, 2000);
 	source->range = ft_clampf(source->range, 2.5f, 1000.0f);
 	if (gui_button("Play audio", gui))
-	{
 		source->queue_play = true;
-		//audiosource_start(gui->sdl, source, &entity->transform.position);
-	}
 }
 
 void	comp_audiosource_loadassets(t_entity *entity, t_world *world)
