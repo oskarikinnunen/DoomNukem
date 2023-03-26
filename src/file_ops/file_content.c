@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 20:10:06 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 16:48:37 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:04:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ t_file_content	load_filecontent(int fd, char *asset_name)
 	}
 	if (rbytes == -1)
 		doomlog(LOG_EC_READ, "load_filecontent");
-	fileclose(fd, "load_filecontent");
+	ft_fileclose(fd, "load_filecontent");
 	return (fc);
 }
 
@@ -101,9 +101,9 @@ void	load_and_write_filecontent(int fd,
 
 	ft_bzero(&fc, sizeof(t_file_content));
 	fc = load_filecontent(fd, fc_name);
-	temp_fd = fileopen(file_name, O_CREAT | O_RDWR | O_TRUNC);
+	temp_fd = ft_fileopen(file_name, O_CREAT | O_RDWR | O_TRUNC);
 	if (write(temp_fd, fc.content, fc.length) == -1)
 		doomlog(LOG_EC_WRITE, "load_and_write_filecontent");
-	fileclose(temp_fd, file_name);
+	ft_fileclose(temp_fd, file_name);
 	free(fc.content);
 }

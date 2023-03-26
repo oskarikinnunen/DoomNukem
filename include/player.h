@@ -1,18 +1,30 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   player.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/26 20:44:59 by raho              #+#    #+#             */
+/*   Updated: 2023/03/26 21:07:04 by raho             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PLAYER_H
 # define PLAYER_H
 
-#include "entity.h"
-#include "input.h"
-#include "raycast.h"
+# include "entity.h"
+# include "input.h"
+# include "raycast.h"
 
 # define DEATH_RETRY_DELAY 6000
-
 # define MAXHEALTH 200
-
 # define AM_SNIPER 0
 # define AM_ASSAULT 1
 # define AM_PISTOL 2
 # define AM_GRENADE 3
+
+struct	s_world;
 
 typedef struct s_ammo_u8
 {
@@ -21,42 +33,37 @@ typedef struct s_ammo_u8
 	uint8_t	pistol;
 	uint8_t	grenade;
 }	t_ammo_u8;
-/*
-sniper,
-assault,
-pistol,
-grenade
-*/
 
 typedef struct s_gui_notification
 {
 	uint32_t		starttime;
-	t_gamestring	str;
+	t_game_string	str;
 }	t_gui_notification;
 
 //TODO: add raycast_info
+//player speed is read-only - used for animations etc
 typedef struct s_player
 {
 	t_transform			transform;
 	t_transform			head_transform;
 	t_character_physics	cp;
 	t_input				input;
-	bool				noclip;
+	bool				no_clip;
 	bool				locked;
-	bool				crouchjumped;
-	float				speed; //read-only player speed used for animations etc
-	t_vector3			lookdir;
-	t_vector3			headposition;
+	bool				crouch_jumped;
+	float				speed;
+	t_vector3			look_dir;
+	t_vector3			head_position;
 	t_anim				jump;
 	t_anim				landing;
-	uint32_t			lastjumptime;
+	uint32_t			last_jump_time;
 	uint32_t			health;
-	uint32_t			lasthurttime;
-	t_vector3			lasthurtpos;
+	uint32_t			last_hurt_time;
+	t_vector3			last_hurt_pos;
 	uint8_t				gun_selection;
 	uint8_t				ammo_arr[4];
 	t_gui_notification	gui_notif;
-	t_raycastinfo		raycastinfo;
+	t_raycast_info		raycast_info;
 	uint8_t				gun_ammos[GUNPRESETCOUNT];
 	t_gun				guns[GUNPRESETCOUNT];
 	float				height;
@@ -65,15 +72,13 @@ typedef struct s_player
 	float				fov;
 }	t_player;
 
-struct s_world;
+t_gun_stats	gun_machinegun(void);
+t_gun_stats	gun_sniper(void);
 
-t_gunstats	gun_machinegun(void);
-t_gunstats	gun_sniper(void);
-
-void	draw_player_hud(struct s_world *world);
-void	playermovement_normal(t_player *player, struct s_world *world);
-void	playermovement_noclip(t_player *player, struct s_world *world);
-void	protagonist_play_audio(t_player *player, struct s_world *world, char *soundname);
+void		draw_player_hud(struct s_world *world);
+void		player_movement_normal(t_player *player, struct s_world *world);
+void		player_movement_noclip(t_player *player, struct s_world *world);
+void		protagonist_play_audio(t_player *player, struct s_world *world, \
+									char *soundname);
 
 #endif
-

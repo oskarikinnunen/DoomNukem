@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 14:31:10 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 19:59:15 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:23:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,17 @@ static void	gun_entity_set_entity_values(t_gun *gun)
 {
 	gun->entity->ignore_raycasts = true;
 	gun->entity->dont_save = true;
-	gun->shoot_anim.framerate = 120;
+	gun->shoot_anim.frame_rate = 120;
 	gun->shoot_anim.loop = false;
-	gun->shoot_anim.lastframe = 2;
-	gun->view_anim.framerate = 120;
+	gun->shoot_anim.last_frame = 2;
+	gun->view_anim.frame_rate = 120;
 	gun->view_anim.loop = false;
-	gun->view_anim.lastframe = 4;
+	gun->view_anim.last_frame = 4;
 }
 
 static void	player_init_weapons(t_player *player, t_world *world)
 {
-	static t_gunstats	(*preset_funcs[20])(void)
+	static t_gun_stats	(*preset_funcs[20])(void)
 		= {
 		gun_machinegun,
 		gun_sniper,
@@ -60,8 +60,8 @@ void	player_init(t_player *player, t_sdlcontext *sdl, t_world *world)
 	player->ammo_arr[AM_PISTOL] = 60;
 	player->transform.scale = vector3_one();
 	player->transform.rotation = (t_vector3){-RAD90, -RAD90 * 0.99f, 0.0f};
-	player->jump.framerate = 30;
-	player->jump.lastframe = 18;
+	player->jump.frame_rate = 30;
+	player->jump.last_frame = 18;
 	player->height = PLAYER_HEIGHT;
 	player->fov = 90.0f;
 	player->health = 120;

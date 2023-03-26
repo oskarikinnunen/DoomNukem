@@ -6,13 +6,13 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:41 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 17:34:39 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:40:10 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-bool	source_is_playing(t_audiosource *source)
+bool	source_is_playing(t_audio_source *source)
 {
 	FMOD_BOOL	isplaying;
 
@@ -25,7 +25,7 @@ bool	source_is_playing(t_audiosource *source)
 	return (isplaying);
 }
 
-void	_audiosource_2d_start(t_sdlcontext *sdl, t_audiosource *source)
+void	_audiosource_2d_start(t_sdlcontext *sdl, t_audio_source *source)
 {
 	FMOD_Channel_SetPaused(source->channel, true);
 	if (FMOD_System_PlaySound(sdl->audio.system, source->sample.sound, \
@@ -40,7 +40,7 @@ void	_audiosource_2d_start(t_sdlcontext *sdl, t_audiosource *source)
 }
 
 void	_audiosource_start(t_sdlcontext *sdl,
-							t_audiosource *source, t_vector3 *pos)
+							t_audio_source *source, t_vector3 *pos)
 {
 	FMOD_Channel_SetPaused(source->channel, true);
 	if (FMOD_System_PlaySound(sdl->audio.system, source->sample.sound, \
@@ -50,7 +50,7 @@ void	_audiosource_start(t_sdlcontext *sdl,
 			&((FMOD_VECTOR){0})) != FMOD_OK)
 		doomlog(LOG_EC_FMOD_CHANNELSET3DATTRIBUTES, NULL);
 	FMOD_Channel_Set3DMinMaxDistance(\
-			source->channel, source->_realrange, 10000.0f);
+			source->channel, source->_real_range, 10000.0f);
 	if (FMOD_Channel_SetVolume(source->channel, \
 			source->volume * sdl->audio.sfx_volume) != FMOD_OK)
 		doomlog(LOG_EC_FMOD_CHANNELSETVOLUME, NULL);

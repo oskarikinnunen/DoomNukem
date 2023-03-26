@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   decal.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/26 21:21:13 by raho              #+#    #+#             */
+/*   Updated: 2023/03/26 21:21:18 by raho             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef DECAL_H
 # define DECAL_H
 
@@ -11,6 +23,6 @@ typedef struct s_decal
 	t_vector3	normal;
 }	t_decal;
 
-void decal(struct s_world *world, t_decal decal);
+void	decal(struct s_world *world, t_decal decal);
 
 #endif

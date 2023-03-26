@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   create_navmesh.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 17:17:11 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 17:23:25 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/26 20:55:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ static void	add_to_navmesh_helper(t_navigation *nav)
 	if (nav->node_amount + 1 == nav->malloc_size)
 	{
 		nav->navmesh = ft_realloc(nav->navmesh, \
-						(nav->malloc_size + 1000) * sizeof(t_navnode), \
-						nav->malloc_size * sizeof(t_navnode));
+						(nav->malloc_size + 1000) * sizeof(t_nav_node), \
+						nav->malloc_size * sizeof(t_nav_node));
 		if (nav->navmesh == NULL)
 			doomlog(LOG_EC_MALLOC, "add_to_navmesh");
 		nav->malloc_size += 1000;
@@ -120,8 +120,8 @@ void	create_navmesh(t_world *world)
 		free(world->nav.navmesh);
 	world->nav.malloc_size = 1000;
 	world->nav.navmesh = prot_memalloc(\
-	sizeof(t_navnode) * world->nav.malloc_size);
-	ft_bzero(world->nav.navmesh, sizeof(t_navnode) * world->nav.malloc_size);
+	sizeof(t_nav_node) * world->nav.malloc_size);
+	ft_bzero(world->nav.navmesh, sizeof(t_nav_node) * world->nav.malloc_size);
 	i = 0;
 	found = 0;
 	world->nav.node_amount = 0;

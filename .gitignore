@@ -32,3 +32,4 @@ callgrind.out*
 DoomNukem
 doomlog.txt
 assets/temp/.temp*
+.vscode/

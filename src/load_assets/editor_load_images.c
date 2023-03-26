@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:44:02 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 17:36:49 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:04:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int	parse_image_list(int fd, t_sdlcontext *sdl)
 			sdl->images[i] = tga_parse(image_path);
 			if (sdl->images[i].data != NULL)
 				ft_strncpy_term(sdl->images[i].name, \
-						extract_filename(image_path), 120);
+						extract_file_name(image_path), 120);
 			doomlog_mul(LOG_NORMAL, (char *[3]){\
 					"parsed .tga file:", sdl->images[i].name, NULL});
 			free(image_path);
@@ -53,11 +53,11 @@ void	editor_load_images(t_sdlcontext *sdl)
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 			IMGLISTPATH, "size =", s_itoa(sdl->imagecount), NULL});
 	sdl->images = prot_memalloc(sizeof(t_img) * sdl->imagecount);
-	fd = fileopen(IMGLISTPATH, O_RDONLY);
+	fd = ft_fileopen(IMGLISTPATH, O_RDONLY);
 	ret = parse_image_list(fd, sdl);
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, IMGLISTPATH);
-	fileclose(fd, IMGLISTPATH);
+	ft_fileclose(fd, IMGLISTPATH);
 }
 
 static int	parse_image_env_list(int fd, t_sdlcontext *sdl)
@@ -76,7 +76,7 @@ static int	parse_image_env_list(int fd, t_sdlcontext *sdl)
 			sdl->env_textures[i] = tga_parse(env_texture_path);
 			if (sdl->env_textures[i].data != NULL)
 				ft_strncpy_term(sdl->env_textures[i].name, \
-							extract_filename(env_texture_path), 120);
+							extract_file_name(env_texture_path), 120);
 			doomlog_mul(LOG_NORMAL, (char *[3]){\
 					"parsed .tga file:", sdl->env_textures[i].name, NULL});
 			free(env_texture_path);
@@ -98,9 +98,9 @@ void	editor_load_env_textures(t_sdlcontext *sdl)
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 			IMGENVLISTPATH, "size =", s_itoa(sdl->env_texturecount), NULL});
 	sdl->env_textures = prot_memalloc(sizeof(t_img) * sdl->env_texturecount);
-	fd = fileopen(IMGENVLISTPATH, O_RDONLY);
+	fd = ft_fileopen(IMGENVLISTPATH, O_RDONLY);
 	ret = parse_image_env_list(fd, sdl);
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, IMGENVLISTPATH);
-	fileclose(fd, IMGENVLISTPATH);
+	ft_fileclose(fd, IMGENVLISTPATH);
 }

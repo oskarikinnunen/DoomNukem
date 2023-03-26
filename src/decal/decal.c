@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   decal.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 17:39:00 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 17:40:23 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/26 20:29:41 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	decal(struct s_world *world, t_decal decal)
 	obj = object_plane(world->sdl);
 	obj->materials->img = decal.img;
 	spawn_entity(world, obj);
-	if (vector3_dot(decal.normal, world->sdl->render.camera.lookdir) >= 0.0f)
+	if (vector3_dot(decal.normal, world->sdl->render.camera.look_dir) >= 0.0f)
 		decal.normal = vector3_negative(decal.normal);
 	decal.position = vector3_add(decal.position, decal.normal);
 	decal.normal = vector3_negative(decal.normal);
@@ -41,7 +41,7 @@ void	decal(struct s_world *world, t_decal decal)
 	vector3_mul(decal.normal, vector3_dot((t_vector3){0.01f, 0.0f, 0.99f}, \
 	decal.normal)));
 	new_up = vector3_normalise(new_up);
-	new_right = vector3_crossproduct(new_up, decal.normal);
+	new_right = vector3_cross_product(new_up, decal.normal);
 	nearside = DECAL_FOV * decal.size;
 	set_vertex_positions(obj->vertices, decal.position, \
 	vector3_mul(new_up, nearside), vector3_mul(new_right, nearside));

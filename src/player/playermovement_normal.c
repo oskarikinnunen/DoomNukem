@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   playermovement_normal.c                            :+:      :+:    :+:   */
+/*   player_movement_normal.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:22:48 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:49:01 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 20:46:02 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,20 @@
 
 void	play_footstepsound(t_player *player, t_world *world)
 {
-	static t_audiosource	source;
+	static t_audio_source	source;
 	float					lerp;
 
 	if (source.sample.sound == NULL)
 	{
 		source.sample = get_sample(world->sdl, "concrete-footsteps_loop.wav");
-		source._realrange = 50.0f;
+		source._real_range = 50.0f;
 		source.volume = 1.0f;
 		source.play_always = true;
 		_audiosource_start(world->sdl, &source, &player->transform.position);
 	}
 	lerp = vector2_magnitude(v3tov2(player->cp.velocity)) * 10.0f;
 	source.volume = lerp * 0.20f;
-	if (!player->cp.isgrounded)
+	if (!player->cp.is_grounded)
 	{
 		source.volume = 0.0f;
 		return ;
@@ -41,7 +41,7 @@ void	play_footstepsound(t_player *player, t_world *world)
 }
 
 //between 0-3000 because game_random_range works less randomly with 0-3
-t_audiosample	random_climbsound(t_world *world)
+t_audio_sample	random_climbsound(t_world *world)
 {
 	uint32_t	r;
 
@@ -57,21 +57,21 @@ t_audiosample	random_climbsound(t_world *world)
 
 void	play_landingsound(t_player *player, t_world *world)
 {
-	static t_audiosource	source;
+	static t_audio_source	source;
 	float					vlerp;
 
-	if (player->cp.impactvelocity.z > 0.0f)
+	if (player->cp.impact_velocity.z > 0.0f)
 	{
 		source.volume = 0.2f;
 		source.sample = random_climbsound(world);
-		source._realrange = ft_flerp(40.0f, 160.0f, vlerp);
-		_audiosource_start(world->sdl, &source, &player->headposition);
+		source._real_range = ft_flerp(40.0f, 160.0f, vlerp);
+		_audiosource_start(world->sdl, &source, &player->head_position);
 	}
 	else
 	{
-		vlerp = player->cp.impactvelocity.z / (GRAVITY);
+		vlerp = player->cp.impact_velocity.z / (GRAVITY);
 		source.volume = ft_clampf(vlerp, 0.2f, 0.4f);
-		source._realrange = ft_flerp(40.0f, 160.0f, vlerp);
+		source._real_range = ft_flerp(40.0f, 160.0f, vlerp);
 		if (vlerp < 0.38f)
 			source.sample = get_sample(world->sdl, "landing_impact_soft.wav");
 		else
@@ -80,7 +80,7 @@ void	play_landingsound(t_player *player, t_world *world)
 	}
 }
 
-void	playermovement_normal(t_player *player, t_world *world)
+void	player_movement_normal(t_player *player, t_world *world)
 {
 	player_update_physics(player, world);
 	player_rotate(player);
@@ -89,12 +89,12 @@ void	playermovement_normal(t_player *player, t_world *world)
 	player_jump(player, world);
 	player_update_animations(player, world);
 	player_update_physics(player, world);
-	capsule_applygravity_new(&player->cp, world);
+	capsule_apply_gravity_new(&player->cp, world);
 	play_footstepsound(player, world);
-	if (player->cp.landingtrigger)
+	if (player->cp.landing_trigger)
 	{
 		play_landingsound(player, world);
-		player->cp.landingtrigger = false;
+		player->cp.landing_trigger = false;
 	}
 	player_ceiling_check(player);
 }

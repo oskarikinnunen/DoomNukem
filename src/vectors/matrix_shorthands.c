@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   matrix_shorthands.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 18:43:49 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/14 12:18:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 22:13:30 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ t_mat4x4	matrix_zero(void)
 	return ((t_mat4x4){0.0f});
 }
 
-t_mat4x4	matrix_makeidentity(void)
+t_mat4x4	matrix_make_identity(void)
 {
 	t_mat4x4	matrix;
 

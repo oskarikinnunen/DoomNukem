@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 06:20:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 16:39:36 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:28:24 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,12 +81,12 @@ void	comp_interactable_update(t_entity *entity, t_world *world)
 		entity->transform.rotation.y = ft_fmovetowards(entity->transform.rotation.y, 0.0f, world->clock.delta * 0.0008f);
 	}
 	update_physics(entity, inter);
-	capsule_applygravity_new(&inter->phys, world);
+	capsule_apply_gravity_new(&inter->phys, world);
 	capsule_damp(&inter->phys, world);
 	//inter->velocity.x = ft_fmovetowards(inter->velocity.x, 0.0f, world->clock.delta * 0.012f);
 	//inter->velocity.x = ft_fmovetowards(inter->velocity.y, 0.0f, world->clock.delta * 0.012f);
-	//capsule_applygravity(inter_physics(entity, inter), world);
-	//capsule_applygravity_new(inter_physics())
+	//capsule_apply_gravity(inter_physics(entity, inter), world);
+	//capsule_apply_gravity_new(inter_physics())
 }
 
 void	comp_interactable_allocate(t_entity *entity, t_world *world)
@@ -98,18 +98,18 @@ void	comp_interactable_allocate(t_entity *entity, t_world *world)
 	inter = (t_interactable *)entity->component.data;
 	inter->radius = 7.0f;
 	inter->velocity = vector3_zero();
-	inter->wiggle.framerate = 30.0f;
-	inter->wiggle.lastframe = 60.0f;
+	inter->wiggle.frame_rate = 30.0f;
+	inter->wiggle.last_frame = 60.0f;
 }
 
 void	assign_component_interactable(t_component *component)
 {
-	component->data_size = sizeof(t_audiosource);
+	component->data_size = sizeof(t_audio_source);
 	component->func_allocate = comp_interactable_allocate;
 	component->func_update = comp_interactable_update;
 	component->func_ui_update = comp_interactable_ui_update;
 	component->func_gui_edit = NULL;
-	component->func_loadassets = NULL;
+	component->func_load_assets = NULL;
 	//spawn_entity
 	//addcomponent(pft_audiosource)
 }

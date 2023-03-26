@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 21:33:44 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 14:27:02 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:04:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int	parse_sound_list(int fd, t_audio *audio)
 			create_sound(i, sound_path, audio);
 			if (audio->samples[i].sound != NULL)
 				ft_strncpy_term(audio->samples[i].name, \
-							extract_filename(sound_path), 60);
+							extract_file_name(sound_path), 60);
 			doomlog_mul(LOG_NORMAL, (char *[3]){\
 					"loaded sound file:", audio->samples[i].name, NULL});
 			free(sound_path);
@@ -52,10 +52,10 @@ void	editor_load_sounds(t_audio *audio)
 	audio->samplecount = count_asset_list(SOUNDLISTPATH);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 			SOUNDLISTPATH, "samplecount =", s_itoa(audio->samplecount), NULL});
-	audio->samples = prot_memalloc(sizeof(t_audiosample) * audio->samplecount);
-	fd = fileopen(SOUNDLISTPATH, O_RDONLY);
+	audio->samples = prot_memalloc(sizeof(t_audio_sample) * audio->samplecount);
+	fd = ft_fileopen(SOUNDLISTPATH, O_RDONLY);
 	ret = parse_sound_list(fd, audio);
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, SOUNDLISTPATH);
-	fileclose(fd, SOUNDLISTPATH);
+	ft_fileclose(fd, SOUNDLISTPATH);
 }

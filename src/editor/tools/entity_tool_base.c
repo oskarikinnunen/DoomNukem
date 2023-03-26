@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 16:07:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 14:36:14 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:12:47 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@
 
 void	entity_tool_update(t_editor *ed, t_sdlcontext *sdl)
 {
-	t_entitytooldata	*dat;
+	t_entity_tool_data	*dat;
 	t_entity			*collide;
 
-	dat = (t_entitytooldata *)ed->tool->tooldata;
+	dat = (t_entity_tool_data *)ed->tool->tool_data;
 	entity_tool_raycast(ed, sdl, dat);
 	if (dat->new_ent->hidden)
 		entity_tool_modify(ed, sdl, dat);
@@ -28,9 +28,9 @@ void	entity_tool_update(t_editor *ed, t_sdlcontext *sdl)
 
 void	entity_tool_init(t_editor *ed, t_sdlcontext *sdl)
 {
-	t_entitytooldata	*dat;
+	t_entity_tool_data	*dat;
 
-	dat = ed->tool->tooldata;
+	dat = ed->tool->tool_data;
 	if (dat->new_ent == NULL)
 	{
 		dat->new_ent = spawn_entity(&ed->world, NULL);
@@ -49,12 +49,12 @@ t_tool	*get_entity_tool(void)
 		.update = entity_tool_update,
 		.init = entity_tool_init
 	};
-	t_entitytooldata	*dat;
+	t_entity_tool_data	*dat;
 
-	if (tool.tooldata == NULL)
+	if (tool.tool_data == NULL)
 	{
-		tool.tooldata = prot_memalloc(sizeof(t_entitytooldata));
-		dat = (t_entitytooldata *)tool.tooldata;
+		tool.tool_data = prot_memalloc(sizeof(t_entity_tool_data));
+		dat = (t_entity_tool_data *)tool.tool_data;
 	}
 	ft_strncpy_term(tool.icon_name, "entitytool.png", 250);
 	return (&tool);

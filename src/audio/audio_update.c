@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 21:18:29 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 21:28:03 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 20:46:13 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	update_audio(t_world *world)
 	t_sdlcontext	*sdl;
 
 	sdl = world->sdl;
-	nf = world->player->lookdir;
+	nf = world->player->look_dir;
 	nf = (t_vector3){-nf.x, -nf.y, 0.0f};
 	nf = vector3_normalise(nf);
 	if (sdl->audio.music_control.active)
@@ -56,7 +56,7 @@ void	update_audio(t_world *world)
 				sdl->audio.music_control.fade);
 	}
 	FMOD_System_Set3DListenerAttributes(sdl->audio.system, 0, \
-			(FMOD_VECTOR *)&world->player->headposition, &((FMOD_VECTOR){0}), \
+			(FMOD_VECTOR *)&world->player->head_position, &((FMOD_VECTOR){0}), \
 			(FMOD_VECTOR *)&nf, &((FMOD_VECTOR){.z = 1.0f}));
 	FMOD_System_Update(sdl->audio.system);
 }

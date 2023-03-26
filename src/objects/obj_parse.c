@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 12:21:41 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 12:43:42 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:04:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,13 +58,13 @@ t_object	objparse(char *filename)
 	t_object_parse	op;
 	int				fd;
 
-	fd = fileopen(filename, O_RDONLY);
+	fd = ft_fileopen(filename, O_RDONLY);
 	ft_bzero(&result, sizeof(t_object));
 	op.materials = get_material_list(fd);
 	op.vertices = get_vertex_list(fd);
 	op.uvs = get_uv_list(fd);
 	op.faces = get_face_list(fd, op.materials);
-	fileclose(fd, filename);
+	ft_fileclose(fd, filename);
 	result.materials = list_to_ptr(op.materials, &result.material_count);
 	if (result.materials == NULL)
 		result.materials = prot_memalloc(sizeof(t_material));

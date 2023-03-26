@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:02:10 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/25 21:38:55 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 20:29:32 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,14 +70,14 @@ void	render_zbuffer(t_lighting *l, t_entity *entity)
 	while (i < entity->obj->face_count)
 	{
 		world_triangle = triangle_to_viewspace(entity->world_triangles[i], \
-		l->camera.matview);
+		l->camera.mat_view);
 		nclippedtriangles = clip_triangle_plane((t_vector3){0.0f, 0.0f, 0.1f}, \
 		(t_vector3){0.0f, 0.0f, 1.0f}, world_triangle, clipped);
 		index = 0;
 		while (index < nclippedtriangles)
 		{
 			clip_and_render_triangle(l, triangle_to_screen_point_triangle(
-					l->camera.matproj, clipped[index++], l->resolution));
+					l->camera.mat_proj, clipped[index++], l->resolution));
 		}
 		i++;
 	}

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 21:49:05 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 15:35:26 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 20:29:32 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,10 +163,10 @@ void	render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to)
 		return ;
 	q1 = vector3_to_quaternion(from);
 	q2 = vector3_to_quaternion(to);
-	q1 = quaternion_mul_matrix(sdl->render.camera.matview, q1);
-	q2 = quaternion_mul_matrix(sdl->render.camera.matview, q2);
-	q1 = quaternion_mul_matrix(sdl->render.camera.matproj, q1);
-	q2 = quaternion_mul_matrix(sdl->render.camera.matproj, q2);
+	q1 = quaternion_mul_matrix(sdl->render.camera.mat_view, q1);
+	q2 = quaternion_mul_matrix(sdl->render.camera.mat_view, q2);
+	q1 = quaternion_mul_matrix(sdl->render.camera.mat_proj, q1);
+	q2 = quaternion_mul_matrix(sdl->render.camera.mat_proj, q2);
 	ql.start = q1;
 	ql.end = q2;
 	if (!clip_quatline_to_zplane(&ql))
@@ -204,7 +204,7 @@ static t_vector3 lookdirection2(t_vector2 angle)
 	t_quaternion	temp;
 	t_mat4x4		matcamerarot;
 
-	matcamerarot = matrix_makerotationz(angle.x);
+	matcamerarot = matrix_make_rotation_z(angle.x);
 	temp = quaternion_mul_matrix(matcamerarot, \
 			(t_quaternion){1.0f, 0.0f, 0.0f, 1.0f});
 	return (temp.v);

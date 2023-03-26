@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:44:04 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 15:42:04 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:14:54 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@ bool	gui_float_slider(float	*f, float mul, t_autogui *gui)
 	rect = empty_rect();
 	add = 0.0f;
 	modified = false;
-	if (gui_shoulddraw(gui))
+	if (gui_should_draw(gui))
 	{
 		str = ft_ftoa(*f, 4);
-		rect = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
+		rect = print_text_boxed(gui->sdl, str, gui_current_pos(gui));
 		draw_rectangle(*gui->sdl, rect, AMBER_0);
 		if (collision_point_rectangle(gui->hid->mouse.pos, rect))
 		{

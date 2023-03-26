@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 17:48:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:45:35 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:15:32 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static void	modifywallheights(t_area *room, int scrolldelta, t_world *world)
 	room_init(room, world);
 }
 
-static void	modifymode_modifyheights(t_editor *ed, t_roomtooldata *dat)
+static void	modifymode_modifyheights(t_editor *ed, t_room_tool_data *dat)
 {
 	if (ed->hid.mouse.scroll_delta != 0)
 	{
@@ -46,7 +46,7 @@ static void	modifymode_modifyheights(t_editor *ed, t_roomtooldata *dat)
 	}
 }
 
-static void	modifymode_gui(t_editor *ed, t_roomtooldata *dat)
+static void	modifymode_gui(t_editor *ed, t_room_tool_data *dat)
 {
 	t_autogui	*gui;
 
@@ -54,13 +54,13 @@ static void	modifymode_gui(t_editor *ed, t_roomtooldata *dat)
 		return ;
 	gui = &dat->modroom_gui;
 	gui_start(gui);
-	gui_starthorizontal(gui);
+	gui_start_horizontal(gui);
 	gui_label("Modifying: ", gui);
 	gui_label(dat->room->name, gui);
-	gui_endhorizontal(gui);
+	gui_end_horizontal(gui);
 	gui_labeled_bool("Legal: ", room_is_legal(&ed->world, dat->room), gui);
-	gui_labeled_int("Edges: ", dat->room->edgecount, gui);
-	gui_labeled_int("Walls: ", dat->room->wallcount, gui);
+	gui_labeled_int("Edges: ", dat->room->edge_count, gui);
+	gui_labeled_int("Walls: ", dat->room->wall_count, gui);
 	if (gui_room_presets(dat->room, gui, &ed->world))
 		room_init(dat->room, &ed->world);
 	if (gui_shortcut_button("Delete", KEYS_DELETEMASK, gui))
@@ -72,16 +72,16 @@ static void	modifymode_gui(t_editor *ed, t_roomtooldata *dat)
 	gui_end(gui);
 }
 
-static t_vector3	modifymode_get_cursor(t_editor *ed, t_roomtooldata *dat)
+static t_vector3	modifymode_get_cursor(t_editor *ed, t_room_tool_data *dat)
 {
 	t_vector3		cursor;
-	t_raycastinfo	planecastinfo;
+	t_raycast_info	planecastinfo;
 	t_ray			plane_ray;
 
 	cursor = vector3_zero();
 	ft_bzero(&planecastinfo, sizeof(planecastinfo));
-	plane_ray.origin = ed->player.headposition;
-	plane_ray.dir = ed->player.lookdir;
+	plane_ray.origin = ed->player.head_position;
+	plane_ray.dir = ed->player.look_dir;
 	if (raycast_plane(plane_ray, &planecastinfo, dat->room->height))
 	{
 		cursor = planecastinfo.hit_pos;
@@ -91,7 +91,7 @@ static t_vector3	modifymode_get_cursor(t_editor *ed, t_roomtooldata *dat)
 	return (cursor);
 }
 
-void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
+void	modifymode(t_editor *ed, t_sdlcontext sdl, t_room_tool_data *dat)
 {
 	t_vector3		cursor;
 

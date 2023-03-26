@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:53:11 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:28:24 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,5 +83,5 @@ void	assign_component_auto_door(t_component *component)
 	component->func_allocate = comp_auto_door_allocate;
 	component->func_update = comp_auto_door_update;
 	component->func_gui_edit = comp_auto_door_gui_edit;
-	component->func_loadassets = comp_auto_door_loadassets;
+	component->func_load_assets = comp_auto_door_loadassets;
 }

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 17:52:12 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:45:29 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 20:26:57 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@
 #include "doomnukem.h"
 #include "objects.h"
 
-t_areastatus	room_get_areastatus(t_area area)
+t_area_status	room_get_areastatus(t_area area)
 {
-	t_areastatus	status;
+	t_area_status	status;
 
 	status.is_floor \
 		= area.floor_enabled && !area.ceiling_enabled
@@ -34,17 +34,17 @@ t_areastatus	room_get_areastatus(t_area area)
 
 bool	gui_room_presets(t_area *room, t_autogui *gui, t_world *world)
 {
-	t_areastatus	status;
+	t_area_status	status;
 
 	status = room_get_areastatus(*room);
 	if (gui_highlighted_button_if("Floor", gui, status.is_floor))
 	{
-		room_setpreset_floor(room);
+		room_set_preset_floor(room);
 		return (true);
 	}
 	if (gui_highlighted_button_if("Exterior", gui, status.is_exterior))
 	{
-		room_setpreset_exterior(room);
+		room_set_preset_exterior(room);
 		return (true);
 	}
 	if (status.is_exterior
@@ -55,7 +55,7 @@ bool	gui_room_presets(t_area *room, t_autogui *gui, t_world *world)
 	}
 	if (gui_highlighted_button_if("Room", gui, status.is_room))
 	{
-		room_setpreset_room(room);
+		room_set_preset_room(room);
 		return (true);
 	}
 	return (false);

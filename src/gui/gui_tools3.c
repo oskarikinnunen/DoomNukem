@@ -6,18 +6,18 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:58:44 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 15:46:02 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:14:54 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "editor_tools.h"
 
-void	gui_limitrect(t_autogui *gui)
+void	gui_limit_rect(t_autogui *gui)
 {
 	gui->rect.size.x = ft_clamp(gui->rect.size.x, gui->minimum_size.x, 600);
 	gui->rect.size.y = ft_clamp(gui->rect.size.y, gui->minimum_size.y, \
 								gui->sdl->screensize.y);
-	gui->rect.size.x = ft_max(gui->rect.size.x, gui->x_maxdrawn);
+	gui->rect.size.x = ft_max(gui->rect.size.x, gui->x_max_drawn);
 	gui->rect.position.x = ft_clamp(gui->rect.position.x, 6, \
 									gui->sdl->window_w - 6 - gui->rect.size.x);
 	gui->rect.position.y = ft_clamp(gui->rect.position.y, 6, \
@@ -90,7 +90,7 @@ void	gui_layout_big(t_autogui *gui, t_rectangle rect)
 	x = ft_max(rect.size.x + 10, gui->min_x);
 	if (gui->agl == agl_vertical)
 	{
-		if (!gui_shoulddraw(gui))
+		if (!gui_should_draw(gui))
 		{
 			gui->overdraw += 34;
 		}
@@ -98,6 +98,6 @@ void	gui_layout_big(t_autogui *gui, t_rectangle rect)
 	}
 	else
 		gui->offset.x += x;
-	if (gui->offset.x > gui->x_maxdrawn)
-		gui->x_maxdrawn = gui->offset.x;
+	if (gui->offset.x > gui->x_max_drawn)
+		gui->x_max_drawn = gui->offset.x;
 }

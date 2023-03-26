@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:53:30 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 20:57:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,15 @@ static void	comp_light_allocate(t_entity *entity, t_world *world)
 	entity->component.data_size = sizeof(t_light);
 	light = (t_light *)entity->component.data;
 	light->radius = 300.0f;
-	light->cubemap.cameras[0].lookdir = (t_vector3){.x = 1.0f};
-	light->cubemap.cameras[1].lookdir = (t_vector3){.y = 1.0f};
-	light->cubemap.cameras[2].lookdir = (t_vector3){.x = 0.01f, .z = 0.99f};
-	light->cubemap.cameras[3].lookdir = (t_vector3){.x = -1.0f};
-	light->cubemap.cameras[4].lookdir = (t_vector3){.y = -1.0f};
-	light->cubemap.cameras[5].lookdir = (t_vector3){.x = -0.01f, .z = -0.99f};
+	light->cubemap.cameras[0].look_dir = (t_vector3){.x = 1.0f};
+	light->cubemap.cameras[1].look_dir = (t_vector3){.y = 1.0f};
+	light->cubemap.cameras[2].look_dir = (t_vector3){.x = 0.01f, .z = 0.99f};
+	light->cubemap.cameras[3].look_dir = (t_vector3){.x = -1.0f};
+	light->cubemap.cameras[4].look_dir = (t_vector3){.y = -1.0f};
+	light->cubemap.cameras[5].look_dir = (t_vector3){.x = -0.01f, .z = -0.99f};
 	light->cubemap.resolution.x = 2000;
 	light->cubemap.resolution.y = 2000;
-	light->ignoreself = false;
+	light->ignore_self = false;
 	light->clr = AMBER_3;
 	light->intensity = 1.0f;
 	light->origin = (t_vector3){0.0f, -25.0f, -10.0f};

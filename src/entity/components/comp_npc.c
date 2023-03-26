@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 18:57:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 12:53:56 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:26:21 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,14 +93,14 @@ void	comp_npc_update(t_entity *entity, t_world *world)
 			if (world->clock.time > npc->next_shoot_time)
 				npc_shoot(entity, npc, world);
 			entity_rotate_towards_xy(entity,
-				v3tov2(npc->lastseen_playerpos), 0.015f * world->clock.delta);
+				v3tov2(npc->last_seen_player_pos), 0.015f * world->clock.delta);
 		}
 		if (npc->state == NPC_STATE_AGGRO_PUSH)
-			npc_update_pushanim(entity, npc, world);
+			npc_update_push_anim(entity, npc, world);
 		lookaround(entity, npc, world);
 		npc_pathfind_step(entity, npc, world);
 	}
 	npc_update_physics(npc, entity);
-	capsule_applygravity_new(&npc->phys, world);
+	capsule_apply_gravity_new(&npc->phys, world);
 	npc_update_anim_state(entity, npc, world);
 }

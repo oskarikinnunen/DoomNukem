@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:07:37 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 14:27:23 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:04:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static void	unpack_and_load_texture(int txtr_i, int level_fd,
 	sdl->env_textures[txtr_i] = tga_parse(TEMPIMGENV);
 	if (sdl->env_textures[txtr_i].data != NULL)
 		ft_strncpy_term(sdl->env_textures[txtr_i].name, \
-					extract_filename(env_texture), 120);
+					extract_file_name(env_texture), 120);
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
 			"unpacked and loaded .tga file:", \
 			sdl->env_textures[txtr_i].name, NULL});
@@ -37,7 +37,7 @@ static int	parse_image_env_list(int level_fd, t_sdlcontext *sdl)
 
 	i = 0;
 	env_texture = NULL;
-	temp_fd = fileopen(TEMPIMGENVLIST, O_RDONLY);
+	temp_fd = ft_fileopen(TEMPIMGENVLIST, O_RDONLY);
 	ret = get_next_line(temp_fd, &env_texture);
 	while (ret)
 	{
@@ -50,7 +50,7 @@ static int	parse_image_env_list(int level_fd, t_sdlcontext *sdl)
 		}
 		ret = get_next_line(temp_fd, &env_texture);
 	}
-	fileclose(temp_fd, TEMPIMGENVLIST);
+	ft_fileclose(temp_fd, TEMPIMGENVLIST);
 	return (ret);
 }
 

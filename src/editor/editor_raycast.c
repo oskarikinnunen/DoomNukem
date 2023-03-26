@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 18:03:40 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 14:31:43 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:08:19 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,14 @@
 
 //TODO: use infinity as default internal_info_distance?
 //TODO: Do the other triangle
-bool	raycast_plane(t_ray r, t_raycastinfo *info, float plane_z)
+bool	raycast_plane(t_ray r, t_raycast_info *info, float plane_z)
 {
 	t_vector3_tri	tri;
-	t_raycastinfo	internal_info;
+	t_raycast_info	internal_info;
 	bool			hit;
 
 	hit = false;
-	ft_bzero(&internal_info, sizeof(t_raycastinfo));
+	ft_bzero(&internal_info, sizeof(t_raycast_info));
 	internal_info.distance = 100000.0f;
 	r.dir = vector3_normalise(r.dir);
 	tri.a = (t_vector3){.z = plane_z};
@@ -42,9 +42,9 @@ bool	raycast_plane(t_ray r, t_raycastinfo *info, float plane_z)
 }
 
 //TODO: f_Infinity
-bool	raycast(t_ray r, t_raycastinfo *info, t_world *world)
+bool	raycast(t_ray r, t_raycast_info *info, t_world *world)
 {
-	t_entitycache		*cache;
+	t_entity_cache		*cache;
 	t_editor_raycast	erc;
 
 	cache = &world->entitycache;

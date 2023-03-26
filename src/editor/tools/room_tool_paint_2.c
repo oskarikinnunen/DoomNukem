@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool_paint_2.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 20:30:48 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 20:31:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 20:26:36 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	area_apply_walltex_if_hit(t_area *area, t_entity *hit_ent,
 	int	i;
 
 	i = 0;
-	while (i < area->wallcount)
+	while (i < area->wall_count)
 	{
 		if (area->walls[i].entity == hit_ent)
 		{
@@ -39,11 +39,11 @@ static void	area_apply_floortex_if_hit(t_area *area, t_entity *hit_ent,
 	int	i;
 
 	i = 0;
-	while (i < area->floorcount)
+	while (i < area->floor_count)
 	{
 		if (area->floors[i].entity == hit_ent)
 		{
-			ft_strncpy_term(area->s_floortex.str, tex->name, 60);
+			ft_strncpy_term(area->s_floor_tex.str, tex->name, 60);
 			room_init(area, world);
 			return ;
 		}
@@ -57,11 +57,11 @@ static void	area_apply_ceilingtex_if_hit(t_area *area, t_entity *hit_ent,
 	int	i;
 
 	i = 0;
-	while (i < area->ceilingcount)
+	while (i < area->ceiling_count)
 	{
 		if (area->ceilings[i].entity == hit_ent)
 		{
-			ft_strncpy_term(area->s_ceiltex.str, tex->name, 60);
+			ft_strncpy_term(area->s_ceil_tex.str, tex->name, 60);
 			room_init(area, world);
 			return ;
 		}

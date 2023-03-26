@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 20:55:23 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 18:02:10 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:08:19 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,22 +38,22 @@ void	world_sanitize_all_room_pointers(t_world *world)
 	{
 		room = (t_area *)l->content;
 		i = 0;
-		while (i < room->wallcount)
+		while (i < room->wall_count)
 		{
-			room->walls[i].edgeline.start = NULL;
-			room->walls[i].edgeline.end = NULL;
+			room->walls[i].edge_line.start = NULL;
+			room->walls[i].edge_line.end = NULL;
 			i++;
 		}
 		l = l->next;
 	}
 }
 
-t_entitycache	entitycache_empty(uint32_t cachesize)
+t_entity_cache	entitycache_empty(uint32_t cachesize)
 {
-	t_entitycache	cache;
+	t_entity_cache	cache;
 	int				i;
 
-	ft_bzero(&cache, sizeof(t_entitycache));
+	ft_bzero(&cache, sizeof(t_entity_cache));
 	cache.alloc_count = cachesize;
 	cache.entities = prot_memalloc(cache.alloc_count * sizeof(t_entity));
 	cache.sorted_entities = prot_memalloc(\

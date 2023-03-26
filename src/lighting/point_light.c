@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:01:16 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 11:56:03 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:08:19 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ static void	render_shadowmap(t_world *world, t_lighting *l)
 			if (ent->status == es_active && !ent->hidden
 				&& !entity_has_transparent_mat(ent))
 			{
-				is_valid = (l->light->ignoreself && ent->id != l->entity->id);
-				if (l->light->ignoreself == false || is_valid)
+				is_valid = (l->light->ignore_self && ent->id != l->entity->id);
+				if (l->light->ignore_self == false || is_valid)
 					render_zbuffer(l, ent);
 			}
 			found++;
@@ -50,7 +50,7 @@ static void	update_cubemap_cameras(t_entity *entity)
 		return ;
 	light->world_position = \
 	transformed_vector3(entity->transform, light->origin).v;
-	matproj = matrix_makeprojection(90.0f, light->cubemap.resolution.y \
+	matproj = matrix_make_projection(90.0f, light->cubemap.resolution.y \
 	/ light->cubemap.resolution.x, 2.0f, 1000.0f);
 	i = 0;
 	while (i < 6)
@@ -58,7 +58,7 @@ static void	update_cubemap_cameras(t_entity *entity)
 		light->cubemap.shadowmaps[i] = (float *)prot_memalloc(sizeof(float) * \
 		(light->cubemap.resolution.x * light->cubemap.resolution.y));
 		light->cubemap.cameras[i].position = light->world_position;
-		light->cubemap.cameras[i].matproj = matproj;
+		light->cubemap.cameras[i].mat_proj = matproj;
 		calculate_matview(&light->cubemap.cameras[i]);
 		i++;
 	}
@@ -89,7 +89,7 @@ void	recalculate_pointlight(t_world *world)
 {
 	int				i;
 	int				found;
-	t_entitycache	*cache;
+	t_entity_cache	*cache;
 	t_entity		*ent;
 
 	i = 0;

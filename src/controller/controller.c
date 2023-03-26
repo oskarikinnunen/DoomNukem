@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   controller.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 15:36:01 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 17:34:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 20:59:50 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,14 +34,14 @@ static void	keyboard_movement(t_input *input,
 
 static void	controller_movement(t_input *input, t_controller *controller)
 {
-	input->move.x += controller->leftanalog.x;
-	input->move.y += controller->leftanalog.y;
+	input->move.x += controller->left_analog.x;
+	input->move.y += controller->left_analog.y;
 	input->turn = vector2_add(input->turn,
-			vector2_mul(controller->rightanalog, 0.05f));
+			vector2_mul(controller->right_analog, 0.05f));
 	input->crouch += controller->b;
 	input->jump += controller->a;
-	input->aim += controller->lefttrigger;
-	input->shoot += controller->righttrigger;
+	input->aim += controller->left_trigger;
+	input->shoot += controller->right_trigger;
 }
 
 void	update_input(t_input *input, t_hid_info info)

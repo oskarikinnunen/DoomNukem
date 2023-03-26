@@ -6,17 +6,17 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/27 11:14:16 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 14:49:49 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 20:35:11 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "render.h"
 #include "doomnukem.h"
 
-t_audiosample	get_music(t_sdlcontext *sdl, const char *name)
+t_audio_sample	get_music(t_sdlcontext *sdl, const char *name)
 {
 	int				i;
-	t_audiosample	error;
+	t_audio_sample	error;
 
 	i = 0;
 	while (i < sdl->audio.music_count)
@@ -25,14 +25,14 @@ t_audiosample	get_music(t_sdlcontext *sdl, const char *name)
 			return (sdl->audio.music[i]);
 		i++;
 	}
-	ft_bzero(&error, sizeof(t_audiosample));
+	ft_bzero(&error, sizeof(t_audio_sample));
 	return (error);
 }
 
-t_audiosample	get_sample(t_sdlcontext *sdl, const char *name)
+t_audio_sample	get_sample(t_sdlcontext *sdl, const char *name)
 {
 	int				i;
-	t_audiosample	error;
+	t_audio_sample	error;
 
 	i = 0;
 	while (i < sdl->audio.samplecount)
@@ -41,7 +41,7 @@ t_audiosample	get_sample(t_sdlcontext *sdl, const char *name)
 			return (sdl->audio.samples[i]);
 		i++;
 	}
-	ft_bzero(&error, sizeof(t_audiosample));
+	ft_bzero(&error, sizeof(t_audio_sample));
 	return (error);
 }
 

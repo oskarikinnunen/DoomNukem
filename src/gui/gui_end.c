@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 15:05:22 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 15:51:40 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:14:45 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,6 @@ void	gui_end(t_autogui *gui)
 		if (gui->move_held && !gui->locked)
 			gui->rect.position = point_sub(gui->hid->mouse.pos, point_div(dragbar.size, 2));
 	}
-	gui_limitrect(gui);
+	gui_limit_rect(gui);
 	
 }

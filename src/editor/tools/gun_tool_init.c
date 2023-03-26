@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 21:15:46 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 22:28:57 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:12:47 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,59 +14,59 @@
 #include "tools/guntool.h"
 #include "doomnukem.h"
 
-static void	init_gun_main_gui(t_guntooldata *dat,
+static void	init_gun_main_gui(t_gun_tool_data *dat,
 								t_editor *ed, t_sdlcontext *sdl)
 {
-	dat->maingui = init_gui((t_gui_init){sdl, &ed->hid, &ed->player, \
+	dat->main_gui = init_gui((t_gui_init){sdl, &ed->hid, &ed->player, \
 							(t_point){20, 100}, "Gun tool"});
-	gui_autosize(&dat->maingui);
+	gui_autosize(&dat->main_gui);
 }
 
-static void	init_gun_offset_gui(t_guntooldata *dat,
+static void	init_gun_offset_gui(t_gun_tool_data *dat,
 								t_editor *ed, t_sdlcontext *sdl)
 {
-	dat->offsetgui = init_gui((t_gui_init){sdl, &ed->hid, &ed->player, \
+	dat->offset_gui = init_gui((t_gui_init){sdl, &ed->hid, &ed->player, \
 								(t_point){20, 20}, "Offset"});
-	dat->offsetgui.dock = &dat->maingui;
-	dat->offsetgui.hidden = true;
-	dat->offsetgui.allow_user_hide = true;
-	gui_autosize(&dat->offsetgui);
+	dat->offset_gui.dock = &dat->main_gui;
+	dat->offset_gui.hidden = true;
+	dat->offset_gui.allow_user_hide = true;
+	gui_autosize(&dat->offset_gui);
 }
 
-static void	init_gun_preset_gui(t_guntooldata *dat,
+static void	init_gun_preset_gui(t_gun_tool_data *dat,
 								t_editor *ed, t_sdlcontext *sdl)
 {
-	dat->presetgui = init_gui((t_gui_init){sdl, &ed->hid, &ed->player, \
+	dat->preset_gui = init_gui((t_gui_init){sdl, &ed->hid, &ed->player, \
 								(t_point){20, 20}, "Select preset"});
-	dat->presetgui.dock = &dat->maingui;
-	dat->presetgui.hidden = true;
-	dat->presetgui.allow_user_hide = true;
-	gui_autosize(&dat->presetgui);
+	dat->preset_gui.dock = &dat->main_gui;
+	dat->preset_gui.hidden = true;
+	dat->preset_gui.allow_user_hide = true;
+	gui_autosize(&dat->preset_gui);
 }
 
-static void	init_gun_recoil_gui(t_guntooldata *dat,
+static void	init_gun_recoil_gui(t_gun_tool_data *dat,
 								t_editor *ed, t_sdlcontext *sdl)
 {
-	dat->recoilgui = init_gui((t_gui_init){sdl, &ed->hid, &ed->player, \
+	dat->recoil_gui = init_gui((t_gui_init){sdl, &ed->hid, &ed->player, \
 								(t_point){20, 20}, "Recoil"});
-	dat->recoilgui.dock = &dat->maingui;
-	dat->recoilgui.hidden = true;
-	dat->recoilgui.allow_user_hide = true;
-	gui_autosize(&dat->recoilgui);
+	dat->recoil_gui.dock = &dat->main_gui;
+	dat->recoil_gui.hidden = true;
+	dat->recoil_gui.allow_user_hide = true;
+	gui_autosize(&dat->recoil_gui);
 }
 
 void	gun_tool_init(t_editor *ed, t_sdlcontext *sdl)
 {
-	t_guntooldata	*dat;
+	t_gun_tool_data	*dat;
 
-	dat = ed->tool->tooldata;
-	if (dat->maingui.sdl == NULL)
+	dat = ed->tool->tool_data;
+	if (dat->main_gui.sdl == NULL)
 		init_gun_main_gui(dat, ed, sdl);
-	if (dat->offsetgui.sdl == NULL)
+	if (dat->offset_gui.sdl == NULL)
 		init_gun_offset_gui(dat, ed, sdl);
-	if (dat->presetgui.sdl == NULL)
+	if (dat->preset_gui.sdl == NULL)
 		init_gun_preset_gui(dat, ed, sdl);
-	if (dat->recoilgui.sdl == NULL)
+	if (dat->recoil_gui.sdl == NULL)
 		init_gun_recoil_gui(dat, ed, sdl);
 	ed->player.gun->disabled = false;
 	ed->player.locked = true;

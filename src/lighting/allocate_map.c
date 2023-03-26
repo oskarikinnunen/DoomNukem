@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 13:48:22 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 11:54:48 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:08:19 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void	allocate_map_for_entities(t_world *world)
 {
 	int				i;
 	int				found;
-	t_entitycache	*cache;
+	t_entity_cache	*cache;
 	t_entity		*ent;
 
 	i = 0;

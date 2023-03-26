@@ -6,24 +6,25 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:39:11 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:38:22 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:10:04 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "editor_tools.h"
+#include "npc.h"
 
 void	npc_play_sound(t_entity *entity, t_world *world, char *soundname)
 {
 	t_npc			*npc;
-	t_audiosource	source;
+	t_audio_source	source;
 
 	if (entity->component.type != COMP_NPC)
 		return ;
 	npc = entity->component.data;
-	source = npc->audiosource;
+	source = npc->audio_source;
 	source.sample = get_sample(world->sdl, soundname);
-	source._realrange = 250.0f;
+	source._real_range = 250.0f;
 	source.volume = 1.0f;
 	source.play_always = false;
 	_audiosource_start(world->sdl, &source, &entity->transform.position);
@@ -37,7 +38,7 @@ void	npc_shoot(t_entity *entity, t_npc *npc, t_world *world)
 	if (world->player->health == 0)
 		return ;
 	npc_play_sound(entity, world, "gun_machinegun.wav");
-	if (npc->seesplayer)
+	if (npc->sees_player)
 	{
 		hitdice = game_random_range(world, 0, 10);
 		hitchance = 5;
@@ -47,8 +48,8 @@ void	npc_shoot(t_entity *entity, t_npc *npc, t_world *world)
 		{
 			protagonist_play_audio(world->player, world, "protag_hurt.wav");
 			world->player->health -= 10;
-			world->player->lasthurttime = world->clock.time;
-			world->player->lasthurtpos = entity->transform.position;
+			world->player->last_hurt_time = world->clock.time;
+			world->player->last_hurt_pos = entity->transform.position;
 		}
 		else
 			protagonist_play_audio(world->player, world, "ricochet.wav");

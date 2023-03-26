@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 11:37:18 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:45:15 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 20:26:19 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,12 @@ void	remove_edge(t_world *world, t_area *room, t_vector2 *edge)
 		i = _room_find_edge_index(orig, cur);
 		if (i != -1)
 		{
-			while (i < cur->edgecount)
+			while (i < cur->edge_count)
 			{
 				cur->edges[i] = cur->edges[next_index(i, cur)];
 				i++;
 			}
-			cur->edgecount--;
+			cur->edge_count--;
 			room_remove_entities(cur, world);
 			room_init(cur, world);
 			room_recalculate_joined_rooms(world, cur);
@@ -108,7 +108,7 @@ void	apply_edge_drag_solo(t_vector2 *edge, t_vector2 snap,
 	{
 		ft_bzero(&temp, sizeof(t_area));
 		ft_memcpy(temp.edges, room->edges, sizeof(t_vector2) * 32);
-		temp.edgecount = room->edgecount;
+		temp.edge_count = room->edge_count;
 		if (edge_exists(orig, room))
 		{
 			i = _room_find_edge_index(orig, room);
@@ -117,7 +117,7 @@ void	apply_edge_drag_solo(t_vector2 *edge, t_vector2 snap,
 	}
 }
 
-void	applyedgedrag(t_vector2 *edge, t_vector2 cursor,
+void	apply_edge_drag(t_vector2 *edge, t_vector2 cursor,
 		t_area *room, t_world *world)
 {
 	int				i;

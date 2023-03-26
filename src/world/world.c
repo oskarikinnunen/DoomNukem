@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 17:37:25 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/26 20:46:32 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,8 +100,8 @@ static void	world_update_debug_gui(t_world *world,
 									t_sdlcontext *sdl, t_render *render)
 {
 	gui_start(world->debug_gui);
-	if (gui_shortcut_button("Toggle noclip", 'F', world->debug_gui))
-		world->player->noclip = !world->player->noclip;
+	if (gui_shortcut_button("Toggle no_clip", 'F', world->debug_gui))
+		world->player->no_clip = !world->player->no_clip;
 	if (gui_shortcut_button("Create navmesh:", 'C', world->debug_gui))
 		navmesh(world);
 	if (gui_shortcut_button("Toggle Lighting", 'l', world->debug_gui))

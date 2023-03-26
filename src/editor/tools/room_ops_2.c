@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 17:54:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 21:33:58 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 20:27:26 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include "objects.h"
 #include "collision.h"
 
-static t_line	edgeline_to_line(t_edgeline edgeline)
+static t_line	edgeline_to_line(t_edge_line edgeline)
 {
 	return ((t_line){.start = *edgeline.start, .end = *edgeline.end});
 }
@@ -28,17 +28,17 @@ static bool	illegalwall_move(t_wall *wall, t_area *room)
 	t_wall	*ow;
 
 	i = 0;
-	if (vector2_cmp(*wall->edgeline.start, *wall->edgeline.end))
+	if (vector2_cmp(*wall->edge_line.start, *wall->edge_line.end))
 	{
 		return (true);
 	}
-	while (i < room->wallcount)
+	while (i < room->wall_count)
 	{
 		ow = &room->walls[i];
 		return (wall != &room->walls[i]
 			&& collision_line_line_intersect(
-				line_shorten(edgeline_to_line(wall->edgeline)),
-				line_shorten(edgeline_to_line(ow->edgeline))
+				line_shorten(edgeline_to_line(wall->edge_line)),
+				line_shorten(edgeline_to_line(ow->edge_line))
 			));
 		i++;
 	}
@@ -55,7 +55,7 @@ bool	room_is_legal(t_world *world, t_area *room)
 	i = 0;
 	if (room->walls_enabled == false)
 		return (true);
-	while (i < room->wallcount)
+	while (i < room->wall_count)
 	{
 		if (illegalwall_move(&room->walls[i], room))
 			return (false);
@@ -70,7 +70,7 @@ bool	room_edge_is_legal(t_vector2 *edge, t_area *room)
 	t_vector2	*other;
 
 	i = 0;
-	while (i < room->edgecount)
+	while (i < room->edge_count)
 	{
 		other = &room->edges[i];
 		if (other != edge && vector2_dist(*edge, *other) < 10.0f)
@@ -93,7 +93,7 @@ void	room_recalculate_joined_rooms(t_world *world, t_area *room)
 		if (other != room)
 		{
 			i = 0;
-			while (i < room->edgecount)
+			while (i < room->edge_count)
 			{
 				if (edge_exists(room->edges[i], other))
 					room_init(other, world);

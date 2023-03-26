@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 18:12:11 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:12:47 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "doomnukem.h"
 #include "objects.h"
 
-void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
+void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_room_tool_data *dat)
 {
 	t_autogui	*gui;
 
@@ -25,10 +25,10 @@ void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	if (gui_shortcut_button("New room", 'N', gui))
 	{
 		dat->room = prot_memalloc(sizeof(t_area));
-		ft_strncpy_term(dat->room->s_floortex.str, "concrete02", 60);
-		ft_strncpy_term(dat->room->s_ceiltex.str, "concrete02", 60);
+		ft_strncpy_term(dat->room->s_floor_tex.str, "concrete02", 60);
+		ft_strncpy_term(dat->room->s_ceil_tex.str, "concrete02", 60);
 		dat->rtm = rtm_create;
-		room_setpreset_room(dat->room);
+		room_set_preset_room(dat->room);
 		force_mouselock(&ed->hid);
 	}
 	if (gui_shortcut_button("Paint rooms", 'P', gui))
@@ -37,12 +37,12 @@ void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 }
 
 void	room_tool_update_nonemode(t_editor *ed,
-		t_sdlcontext *sdl, t_roomtooldata *dat)
+		t_sdlcontext *sdl, t_room_tool_data *dat)
 {
 	t_area	*hover;
 
 	hover = NULL;
-	hover = get_raycast_room(dat->raycastinfo, &ed->world);
+	hover = get_raycast_room(dat->raycast_info, &ed->world);
 	if (hover != dat->room && hover != NULL)
 	{
 		highlight_room(ed, sdl, hover, AMBER_2);
@@ -59,15 +59,15 @@ void	room_tool_update_nonemode(t_editor *ed,
 
 void	room_tool_update(t_editor *ed, t_sdlcontext *sdl)
 {
-	t_roomtooldata	*dat;
+	t_room_tool_data	*dat;
 	t_ray			ray;
 
-	dat = (t_roomtooldata *)ed->tool->tooldata;
+	dat = (t_room_tool_data *)ed->tool->tool_data;
 	room_tool_raycast(ed, dat);
 	if (dat->rtm == rtm_none)
 		room_tool_update_nonemode(ed, sdl, dat);
 	if (dat->room != NULL && dat->rtm == rtm_create)
-		createmode(ed, sdl, dat);
+		create_mode(ed, sdl, dat);
 	update_maingui(ed, sdl, dat);
 	if (dat->rtm == rtm_modify && dat->room != NULL)
 	{

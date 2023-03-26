@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:53:40 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:39:48 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	comp_playerspawn_allocate(t_entity *entity, t_world *world)
 /*	Internal function that's used to link this components behaviour
 	TODO: better comment, lol
 */
-void	assign_component_playerspawn(t_component *component)
+void	assign_component_player_spawn(t_component *component)
 {
 	component->data_size = 0;
 	component_empty_function_pointers(component);

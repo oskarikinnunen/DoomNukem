@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 14:14:49 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 11:55:00 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:08:19 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void	*calculate_light_for_entities(t_test *ptr)
 {
 	int				i;
 	int				found;
-	t_entitycache	*cache;
+	t_entity_cache	*cache;
 	t_entity		*ent;
 	t_lighting		lighting;
 
@@ -131,6 +131,6 @@ void	calculate_lighting(t_world *world)
 			found++;
 		}
 	}
-	multithread_start(&thread);
+	multi_thread_start(&thread);
 	free(thread.structs);
 }

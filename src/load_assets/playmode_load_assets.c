@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode_load_assets.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 16:14:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 17:38:02 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 21:04:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	playmode_load_assets(char *level_name, t_sdlcontext *sdl)
 
 	ft_strncpy_term(level_path, "worlds/", 250);
 	ft_strncat(level_path, level_name, 200);
-	fd = fileopen(level_path, O_RDONLY);
+	fd = ft_fileopen(level_path, O_RDONLY);
 	playmode_load_fonts(fd, sdl);
 	playmode_load_images(fd, sdl);
 	playmode_loading_screen("LOADING ENV TEXTURES", sdl);
@@ -41,5 +41,5 @@ void	playmode_load_assets(char *level_name, t_sdlcontext *sdl)
 	playmode_load_anims(fd, "anim", human);
 	playmode_load_anim_legend(fd, sdl);
 	log_loaded_animations(sdl);
-	fileclose(fd, level_name);
+	ft_fileclose(fd, level_name);
 }

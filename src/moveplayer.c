@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:47:00 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:04:31 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include "editor_tools.h"
 #include "movement_defs.h"
 #include "raycast.h"
+#include "npc.h"
 
 static t_vector3	normalized_inputvector(t_input input, t_player player)
 {
@@ -29,14 +30,14 @@ static t_vector3	normalized_inputvector(t_input input, t_player player)
 	t_vector3	strafe;
 
 	movement = vector3_zero();
-	forward = vector3_mul_vector3(player.lookdir,
+	forward = vector3_mul_vector3(player.look_dir,
 			(t_vector3){1.0f, 1.0f, 0.0f});
 	forward = vector3_normalise(forward);
 	movement = vector3_mul(forward, -input.move.y);
-	right = vector3_crossproduct(forward, vector3_up());
+	right = vector3_cross_product(forward, vector3_up());
 	strafe = vector3_mul(right, input.move.x);
 	movement = vector3_add(movement, strafe);
-	if (player.noclip)
+	if (player.no_clip)
 	{
 		movement.z += 1.5f * input.jump;
 		movement.z -= 1.5f * input.crouch;
@@ -67,12 +68,12 @@ float	fmovetowards(float f1, float f2, float delta)
 void	player_gun_raycast(t_player *player, t_world *world)
 {
 	t_ray			ray;
-	t_raycastinfo	info;
+	t_raycast_info	info;
 	t_npc			*hit_npc;
 	uint32_t		r;
 
-	ray.origin = player->headposition;
-	ray.dir = player->lookdir;
+	ray.origin = player->head_position;
+	ray.dir = player->look_dir;
 	ft_bzero(&info, sizeof(info));
 	if (raycast(ray, &info, world))
 	{
@@ -106,7 +107,7 @@ void	player_gun_raycast(t_player *player, t_world *world)
 			hit_npc->hit = true;
 			hit_npc->phys.velocity = vector3_normalise(
 					vector3_sub(info.hit_entity->transform.position,
-						player->headposition));
+						player->head_position));
 			hit_npc->phys.velocity = vector3_mul(hit_npc->phys.velocity, 0.3f);
 			hit_npc->phys.velocity.z = 0.0f;
 			if (hit_npc->state == NPC_STATE_DEAD)
@@ -125,12 +126,12 @@ void	player_gun_raycast(t_player *player, t_world *world)
 
 void	play_gun_audio(t_gun *gun, t_world *world)
 {
-	static t_audiosource	source;
+	static t_audio_source	source;
 
 	if (source.sample.sound == NULL)
 	{
 		source.sample = get_sample(world->sdl, "gun_grenadelauncher.wav");
-		source._realrange = 50.0f;
+		source._real_range = 50.0f;
 		source.volume = 1.0f;
 		source.play_always = false;
 	}
@@ -140,12 +141,12 @@ void	play_gun_audio(t_gun *gun, t_world *world)
 
 void	play_gun_reload_audio(t_world *world)
 {
-	static t_audiosource	source;
+	static t_audio_source	source;
 
 	if (source.sample.sound == NULL)
 	{
 		source.sample = get_sample(world->sdl, "gun_reload.wav");
-		source._realrange = 50.0f;
+		source._real_range = 50.0f;
 		source.volume = 1.0f;
 		source.play_always = false;
 	}
@@ -155,7 +156,7 @@ void	play_gun_reload_audio(t_world *world)
 void	protagonist_play_audio(t_player *player,
 	t_world *world, char *soundname)
 {
-	static t_audiosource	source;
+	static t_audio_source	source;
 
 	source.volume = 1.0f;
 	source.sample = get_sample(world->sdl, soundname);
@@ -175,19 +176,19 @@ static void gun_update_transform(t_player *player, t_gun *gun, t_clock c)
 	gun->aim_lerp = ft_clampf(gun->aim_lerp, 0.0f, 1.0f);
 	lerp = gun->aim_lerp;
 	player->fov = 90.0f + (gun->aim_lerp * gun->stats.fov_offset);
-	neutralpos = vector3_lerp(gun->stats.holsterpos, gun->stats.aimpos, lerp);
+	neutralpos = vector3_lerp(gun->stats.holster_pos, gun->stats.aim_pos, lerp);
 	gun->entity->transform.position = neutralpos;
 	if (gun->shoot_anim.active)
-		gun->entity->transform.position = vector3_add(gun->entity->transform.position, vector3_mul(vector3_up(), gun->shoot_anim.lerp * gun->stats.recoiljump.y));
+		gun->entity->transform.position = vector3_add(gun->entity->transform.position, vector3_mul(vector3_up(), gun->shoot_anim.lerp * gun->stats.recoil_jump.y));
 	//bobbing:
 	gun->entity->transform.position.z += vector2_magnitude(player->input.move) * cosf((c.time * 0.007f)) * 0.05f;
 	gun->entity->transform.position.z = ft_fmovetowards(gun->entity->transform.position.z, gun->entity->transform.position.z + player->cp.velocity.z, c.delta * 0.1f);
 	gun->entity->transform.rotation.z += vector2_magnitude(player->input.move) * cosf((c.time * 0.007f)) * ft_degtorad(0.15f);
 	//recoilrecovery:
-	gun->entity->transform.rotation.y = fmovetowards(gun->entity->transform.rotation.y, ft_degtorad(player->input.move.y * 1.15f), gun->stats.anglerecovery * c.delta);
+	gun->entity->transform.rotation.y = fmovetowards(gun->entity->transform.rotation.y, ft_degtorad(player->input.move.y * 1.15f), gun->stats.angle_recovery * c.delta);
 	//recoil.y:
 	if (gun->shoot_anim.active)
-		gun->entity->transform.rotation.y += ft_flerp(0.0f, ft_degtorad(gun->stats.recoilangle.y), gun->shoot_anim.lerp);
+		gun->entity->transform.rotation.y += ft_flerp(0.0f, ft_degtorad(gun->stats.recoil_angle.y), gun->shoot_anim.lerp);
 	gun->entity->transform.rotation.y = ft_clampf(gun->entity->transform.rotation.y, ft_degtorad(-0.5f), ft_degtorad(15.0f));
 	//gun->entity->transform.rotation.x = ft_flerp(0.0f, ft_degtorad(2.0f), gun->shoot_anim.lerp);
 	//Slight angle when player moves:
@@ -200,18 +201,18 @@ static void gun_update_transform(t_player *player, t_gun *gun, t_clock c)
 		return ;
 	gun->entity->transform.rotation.z = fmovetowards(gun->entity->transform.rotation.z, zturn, 0.0004f * c.delta);
 	if (gun->view_anim.active)
-		player->transform.rotation.y += gun->view_anim.lerp * c.delta * gun->stats.viewrecoil.y;
+		player->transform.rotation.y += gun->view_anim.lerp * c.delta * gun->stats.view_recoil.y;
 }
 static void gun_update_reload_status(t_player *player, t_gun *gun, t_world *world)
 {
-	if (gun->bullets != gun->stats.magazinecapacity
+	if (gun->bullets != gun->stats.magazine_capacity
 		&& player->input.reload && !gun->reload_anim.active)
 	{
-		if (player->ammo_arr[gun->stats.ammomask] > 0)
+		if (player->ammo_arr[gun->stats.ammo_mask] > 0)
 		{
-			gun->reload_anim.framerate = 30;
-			gun->reload_anim.lastframe = gun->stats.reloadtime;
-			player->ammo_arr[gun->stats.ammomask] += gun->bullets;
+			gun->reload_anim.frame_rate = 30;
+			gun->reload_anim.last_frame = gun->stats.reload_time;
+			player->ammo_arr[gun->stats.ammo_mask] += gun->bullets;
 			start_anim(&gun->reload_anim, anim_forwards);
 			play_gun_reload_audio(world);
 		}
@@ -220,17 +221,17 @@ static void gun_update_reload_status(t_player *player, t_gun *gun, t_world *worl
 
 static void gun_update_shoot_status(t_player *player, t_gun *gun, t_world *world)
 {
-	if ((!player->input.shoot || gun->stats.fullauto)
-		&& world->clock.time > gun->lastshottime + gun->stats.firedelay)
-		gun->readytoshoot = true;
+	if ((!player->input.shoot || gun->stats.full_auto)
+		&& world->clock.time > gun->last_shot_time + gun->stats.fire_delay)
+		gun->ready_to_shoot = true;
 	if (gun->bullets == 0 || gun->reload_anim.active)
-		gun->readytoshoot = false;
-	if (player->input.shoot && gun->readytoshoot)
+		gun->ready_to_shoot = false;
+	if (player->input.shoot && gun->ready_to_shoot)
 	{
 		start_anim(&gun->shoot_anim, anim_forwards);
 		start_anim(&gun->view_anim, anim_forwards);
-		gun->readytoshoot = false;
-		gun->lastshottime = world->clock.time;
+		gun->ready_to_shoot = false;
+		gun->last_shot_time = world->clock.time;
 		gun->bullets--;
 		play_gun_audio(gun, world);
 		player_gun_raycast(player, world);
@@ -245,9 +246,9 @@ static void gun_update_reload_anim(t_player *player, t_gun *gun, t_world *world)
 	update_anim(&gun->reload_anim, world->clock.delta);
 	if (!gun->reload_anim.active)
 	{
-		bullets_added = ft_min(player->ammo_arr[gun->stats.ammomask], gun->stats.magazinecapacity);
+		bullets_added = ft_min(player->ammo_arr[gun->stats.ammo_mask], gun->stats.magazine_capacity);
 		gun->bullets = bullets_added;
-		player->ammo_arr[gun->stats.ammomask] -= bullets_added;
+		player->ammo_arr[gun->stats.ammo_mask] -= bullets_added;
 	}
 	midlerp = 1.0f - (ft_absf(0.5f - gun->reload_anim.lerp) * 2.0f);
 	gun->entity->transform.position.z -= midlerp * 2.2f;
@@ -263,7 +264,7 @@ void	updateguntransform(t_player *player, t_world *world)
 	if (player->gun == NULL || player->gun->disabled)
 		return ;
 	gun = player->gun;
-	gun->entity->transform.position = gun->stats.holsterpos;
+	gun->entity->transform.position = gun->stats.holster_pos;
 	gun_update_shoot_status(player, gun, world);
 	gun_update_reload_status(player, gun, world);
 	if (gun->shoot_anim.active)
@@ -305,9 +306,9 @@ static void	player_raycast(t_player *player, t_world *world)
 {
 	t_ray	ray;
 
-	ray.origin = player->headposition;
-	ray.dir = player->lookdir;
-	raycast(ray, &player->raycastinfo, world);
+	ray.origin = player->head_position;
+	ray.dir = player->look_dir;
+	raycast(ray, &player->raycast_info, world);
 }
 
 void	moveplayer(t_player *player, t_input *input, t_world *world)
@@ -325,13 +326,13 @@ void	moveplayer(t_player *player, t_input *input, t_world *world)
 		updateguntransform(player, world);
 	if (!player->locked)
 	{
-		if (!player->noclip)
-			playermovement_normal(player, world);
+		if (!player->no_clip)
+			player_movement_normal(player, world);
 		else
-			playermovement_noclip(player, world);
+			player_movement_noclip(player, world);
 	}
-	player->headposition = vector3_add(player->transform.position, (t_vector3){.z = player->height * 0.75f});
-	player->head_transform.position = player->headposition;
+	player->head_position = vector3_add(player->transform.position, (t_vector3){.z = player->height * 0.75f});
+	player->head_transform.position = player->head_position;
 	player->head_transform.rotation = player->transform.rotation;
 	player->head_transform.scale = player->transform.scale;
 }

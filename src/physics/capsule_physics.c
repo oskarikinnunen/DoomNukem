@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 03:25:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 14:02:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:26:21 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ static bool charphys_ceil_share_z(t_character_physics *cp, t_meshtri *floor)
 static bool is_in_ceil(t_character_physics *cp, t_meshtri *ceil)
 {
 	t_ray r;
-	t_raycastinfo info;
+	t_raycast_info info;
 
 	r.origin = vector3_add(*cp->position, (t_vector3){.z = 100.0f});
 	r.dir = (t_vector3){.z = -1.0f};
@@ -85,7 +85,7 @@ static bool is_in_ceil(t_character_physics *cp, t_meshtri *ceil)
 static bool is_in_floor(t_character_physics *cp, t_meshtri *floor)
 {
 	t_ray r;
-	t_raycastinfo info;
+	t_raycast_info info;
 
 	r.origin = vector3_add(*cp->position, (t_vector3){.z = 100.0f});
 	r.dir = (t_vector3){.z = -1.0f};
@@ -102,7 +102,7 @@ static bool is_in_floor(t_character_physics *cp, t_meshtri *floor)
 static bool is_in_ramp(t_character_physics *cp, t_vector3_tri *ramp)
 {
 	t_ray r;
-	t_raycastinfo info;
+	t_raycast_info info;
 
 	r.origin = vector3_add(*cp->position, (t_vector3){.z = 100.0f});
 	r.dir = (t_vector3){.z = -1.0f};
@@ -127,7 +127,7 @@ static float get_z_from_areas(t_character_physics *cp, t_world *world)
 	{
 		area = (t_area *)list->content;
 		i = 0;
-		while (i < area->floorcount)
+		while (i < area->floor_count)
 		{
 			if (is_in_floor(cp, &area->floors[i]))
 				z = ft_maxf(z, (float)area->height);
@@ -209,7 +209,7 @@ static float get_z_ceil(t_character_physics *cp, t_world *world)
 	{
 		room = (t_area *)list->content;
 		i = 0;
-		while (i < room->ceilingcount)
+		while (i < room->ceiling_count)
 		{
 			if (is_in_ceil(cp, &room->ceilings[i]))
 				z = ft_minf(z, (float)(room->height + room->ceiling_height));
@@ -254,7 +254,7 @@ void capsule_add_xy_velocity(t_vector2 vel,
 }
 
 // TODO: norminette for this...
-void capsule_applygravity_new(t_character_physics *charp, t_world *world)
+void capsule_apply_gravity_new(t_character_physics *charp, t_world *world)
 {
 	t_vector3 potential_pos;
 	t_vector3 new_pos;
@@ -273,18 +273,18 @@ void capsule_applygravity_new(t_character_physics *charp, t_world *world)
 	if (zbound.max <= charp->position->z + charp->height && charp->velocity.z < 0.0f)
 	{
 		charp->velocity.z = 0.0f;
-		charp->ceilingtrigger = true;
+		charp->ceiling_trigger = true;
 	}
 	if (floorz <= charp->position->z)
 	{
-		charp->isgrounded = (charp->position->z <= floorz);
+		charp->is_grounded = (charp->position->z <= floorz);
 		float target_z = floorz;
 		float gravityapply = 0.0012f;
 		float zveltarget;
 		zveltarget = GRAVITY;
 		if (charp->gravity_override != NULL)
 			zveltarget = *charp->gravity_override;
-		if (charp->isgrounded)
+		if (charp->is_grounded)
 			zveltarget = 0.0f;
 		charp->velocity.z = ft_fmovetowards(charp->velocity.z, zveltarget, gravityapply * world->clock.delta);
 		if (charp->velocity.z <= 0.0f)
@@ -293,16 +293,16 @@ void capsule_applygravity_new(t_character_physics *charp, t_world *world)
 			target_z = 10000.0f;
 		charp->position->z = ft_fmovetowards(charp->position->z, target_z, ft_absf(charp->velocity.z) * world->clock.delta);
 		charp->position->z = ft_clampf(charp->position->z, floorz, zbound.max - charp->height);
-		charp->isgrounded = (charp->position->z <= floorz);
+		charp->is_grounded = (charp->position->z <= floorz);
 	}
 	else
 		charp->position->z = ft_fmovetowards(charp->position->z, floorz, world->clock.delta * -GRAVITY * 0.5f);
-	if (charp->isgrounded && charp->velocity.z != 0)
+	if (charp->is_grounded && charp->velocity.z != 0)
 	{
-		charp->landingtrigger = true;
-		charp->impactvelocity.z = charp->velocity.z;
+		charp->landing_trigger = true;
+		charp->impact_velocity.z = charp->velocity.z;
 		charp->velocity.z = 0.0f;
 	}
-	charp->isgrounded = (charp->position->z <= floorz);
+	charp->is_grounded = (charp->position->z <= floorz);
 	capsule_damp(charp, world);
 }

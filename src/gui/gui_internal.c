@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:45:02 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 15:27:35 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:14:54 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	gui_layout(t_autogui *gui, t_rectangle rect)
 	x = ft_max(rect.size.x + 10, gui->min_x);
 	if (gui->agl == agl_vertical)
 	{
-		if (!gui_shoulddraw(gui))
+		if (!gui_should_draw(gui))
 		{
 			gui->overdraw += 20;
 		}
@@ -28,8 +28,8 @@ void	gui_layout(t_autogui *gui, t_rectangle rect)
 	}
 	else
 		gui->offset.x += x;
-	if (gui->offset.x > gui->x_maxdrawn)
-		gui->x_maxdrawn = gui->offset.x;
+	if (gui->offset.x > gui->x_max_drawn)
+		gui->x_max_drawn = gui->offset.x;
 }
 
 bool	gui_int_slider_internal(int *i, float mul,
@@ -54,11 +54,11 @@ bool	gui_int_slider_internal(int *i, float mul,
 	return (modified);
 }
 
-t_buttonreturn	autogui_internal_button(char *str, t_autogui *gui)
+t_button_return	autogui_internal_button(char *str, t_autogui *gui)
 {
-	t_buttonreturn	br;
+	t_button_return	br;
 
-	br.rect = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
+	br.rect = print_text_boxed(gui->sdl, str, gui_current_pos(gui));
 	draw_rectangle(*gui->sdl, br.rect, AMBER_0);
 	br.clicked = false;
 	if (collision_point_rectangle(gui->hid->mouse.pos, br.rect))
@@ -73,12 +73,12 @@ t_buttonreturn	autogui_internal_button(char *str, t_autogui *gui)
 	return (br);
 }
 
-t_buttonreturn	autogui_internal_colored_button(
+t_button_return	autogui_internal_colored_button(
 							char *str, t_autogui *gui, uint32_t color)
 {
-	t_buttonreturn	br;
+	t_button_return	br;
 
-	br.rect = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
+	br.rect = print_text_boxed(gui->sdl, str, gui_current_pos(gui));
 	draw_rectangle(*gui->sdl, br.rect, AMBER_2);
 	br.clicked = false;
 	if (collision_point_rectangle(gui->hid->mouse.pos, br.rect))
