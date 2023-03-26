@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playermovement_normal.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:22:48 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:49:01 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 19:40:48 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	playermovement_normal(t_player *player, t_world *world)
 	player_jump(player, world);
 	player_update_animations(player, world);
 	player_update_physics(player, world);
-	capsule_applygravity_new(&player->cp, world);
+	capsule_phys_step(&player->cp, world);
 	play_footstepsound(player, world);
 	if (player->cp.landingtrigger)
 	{

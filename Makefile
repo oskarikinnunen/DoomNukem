@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/26 18:24:54 by okinnune         ###   ########.fr        #
+#    Updated: 2023/03/26 22:02:15 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -85,6 +85,10 @@ SRCFILES= main.c img.c deltatime.c \
 		editor/tools/entity_tool_modify_2.c \
 		editor/tools/entity_tool_gui_inits.c \
 		editor/tools/wall_tool_rooms.c \
+		editor/tools/floor_triangulate.c \
+		editor/tools/floor_triangulate_2.c \
+		editor/tools/floor_triangulate_3.c \
+		editor/tools/floor_triangulate_4.c \
 		editor/tools/room_ops.c \
 		editor/tools/room_ops_2.c \
 		editor/tools/room_tool.c \
@@ -110,7 +114,7 @@ SRCFILES= main.c img.c deltatime.c \
 		editor/entity_raycast.c \
 		debug/debug_rendering.c \
 		inputhelper.c \
-		walls.c file_open.c \
+		walls.c walls_2.c walls_3.c file_open.c \
 		moveplayer.c \
 		init_sdl.c \
 		logging/log_tools.c \
@@ -124,9 +128,15 @@ SRCFILES= main.c img.c deltatime.c \
 		entity/component_init.c \
 		entity/components/component_definitions.c \
 		entity/components/comp_audiosource.c \
+		entity/components/comp_audiosource_setup.c \
 		entity/components/comp_audiosource_tools.c \
 		entity/components/comp_interactable.c \
+		entity/components/comp_interactable_2.c \
 		physics/capsule_physics.c \
+		physics/capsule_physics_2.c \
+		physics/capsule_physics_3.c \
+		physics/capsule_physics_4.c \
+		physics/capsule_physics_step.c \
 		physics/collision_character.c \
 		physics/collision_line_circle.c \
 		physics/collision_simple.c \

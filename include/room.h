@@ -106,7 +106,7 @@ void			room_init_shallow(t_area *room, struct s_world *world);
 bool			room_is_legal(struct s_world *world, t_area *room);
 void			room_remove_entities(t_area *room, struct s_world *world);
 bool			edge_exists(t_vector2 edge, t_area	*room);
-void			_room_triangulate_floors(struct s_world *world, t_area *room);
+void			room_make_floor(struct s_world *world, t_area *room);
 t_area			*world_add_room(struct s_world *world, t_area *room);
 void			world_remove_room(struct s_world *world, t_area *room);
 void			room_setpreset_floor(t_area *room);

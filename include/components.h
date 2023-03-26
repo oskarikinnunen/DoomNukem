@@ -75,6 +75,7 @@ typedef struct s_interactable
 	t_character_physics	phys;
 	t_anim		wiggle;
 	t_vector3	velocity;
+	t_vector2	pushv;
 	float		radius;
 	bool		isgrounded;
 	bool		interacted;
@@ -142,6 +143,9 @@ void	assign_component_boutton(t_component *component);
 void	_audiosource_start(t_sdlcontext *sdl, t_audiosource	*source, t_vector3 *pos);
 void	_audiosource_2d_start(t_sdlcontext *sdl, t_audiosource	*source);
 
+void	comp_audiosource_update(struct s_entity *entity, struct s_world *world);
+
+
 /*NPC*/
 void	assign_component_npc(t_component *component);
 
@@ -165,5 +169,8 @@ void	comp_storyevent_ui_update(struct s_entity *entity, struct s_world *world);
 void	comp_storyevent_gui_edit(struct s_entity *entity, struct s_autogui *gui, struct s_world *world);
 void	comp_storyevent_loadassets(struct s_entity *entity, struct s_world *world);
 void	comp_storyevent_allocate(struct s_entity *entity, struct s_world *world);
+
+/* INTERACTABLE FUNCTIONS */
+void	comp_interactable_update(struct s_entity *entity, struct s_world *world);
 
 #endif

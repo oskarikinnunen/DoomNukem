@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_npc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 18:57:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 12:53:56 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 19:40:35 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,6 @@ void	comp_npc_update(t_entity *entity, t_world *world)
 		npc_pathfind_step(entity, npc, world);
 	}
 	npc_update_physics(npc, entity);
-	capsule_applygravity_new(&npc->phys, world);
+	capsule_phys_step(&npc->phys, world);
 	npc_update_anim_state(entity, npc, world);
 }

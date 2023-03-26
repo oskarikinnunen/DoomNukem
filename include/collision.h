@@ -11,6 +11,8 @@ struct s_entity;
 struct s_triangle;
 struct s_line;
 struct s_world;
+struct s_bound;
+struct s_meshtri;
 
 typedef struct s_collision
 {
@@ -59,25 +61,38 @@ typedef struct s_line_line_intersect
 	float	y;
 }	t_line_line_intersect;
 
-bool	vector_is_in_triangle(t_vector3 vec, t_vector3_tri tri);
-bool	collision_point_rectangle(t_point p, t_rectangle rect);
-bool	collision_point_triangle(t_point point, t_world_triangle tri);
-bool	collision_point_circle(t_vector2 p, t_vector2 cp, float r);
-bool	collision_line_point(t_vector2 start, t_vector2 end, t_vector2 point);
-bool	collision_line_line_intersect(t_line line1, t_line line2);
-
-bool	check_character_collision(struct s_world *world, t_character_physics cp, t_vector3 potential_pos, t_vector3 *new_pos);
-
-void	capsule_damp(t_character_physics *phys, struct s_world *world);
-void	capsule_add_xy_velocity(t_vector2 vel, t_character_physics *phys, struct s_world *world);
-void	capsule_applygravity_new(t_character_physics *charp, struct s_world *world);
-void	capsule_applygravity(t_character_physics charp, struct s_world *world);
+bool			vector_is_in_triangle(t_vector3 vec, t_vector3_tri tri);
+bool			collision_point_rectangle(t_point p, t_rectangle rect);
+bool			collision_point_triangle(t_point point, t_world_triangle tri);
+bool			collision_point_circle(t_vector2 p, t_vector2 cp, float r);
+bool			collision_line_point(t_vector2 start, t_vector2 end, t_vector2 point);
+bool			collision_line_line_intersect(t_line line1, t_line line2);
+bool			check_character_collision(struct s_world *world, t_character_physics cp, t_vector3 potential_pos, t_vector3 *new_pos);
+void			capsule_damp(t_character_physics *phys, struct s_world *world);
+void			capsule_add_xy_velocity(t_vector2 vel, t_character_physics *phys, struct s_world *world);
+void			capsule_phys_step(t_character_physics *charp, struct s_world *world);
+void			capsule_applygravity(t_character_physics charp, struct s_world *world);
 
 // Don't use this one for general use. Use line_circle_collision instead
 // Saves the collision point to t_collision *
-bool	collision_line_circle_save_collision(t_line line, t_vector2 circle, float radius, t_collision *collision);
+bool			collision_line_circle_save_collision(t_line line, t_vector2 circle, float radius, t_collision *collision);
 
 // Use this for general use
-bool	collision_line_circle(t_line line, t_vector2 circle, float radius);
+bool			collision_line_circle(t_line line, t_vector2 circle, float radius);
+
+//Internal function, don't call outside of collision logic
+bool			charphys_floor_share_z(t_character_physics *cp, struct s_meshtri *floor);
+//Internal function, don't call outside of collision logic
+bool			touches_edges(t_vector2 pos, float radius, struct s_meshtri *floor);
+//Internal function, don't call outside of collision logic
+bool			touches_edges_ramp(t_vector2 pos, float radius, t_vector3_tri ramp);
+//Internal function, don't call outside of collision logic
+bool			charphys_ramp_share_z(t_character_physics *cp, t_vector3_tri ramp);
+//Internal function, don't call outside of collision logic
+struct s_bound	get_bound(t_character_physics *cp, struct s_world *world);
+//Internal function, don't call outside of collision logic
+float			get_z_from_areas(t_character_physics *cp, struct s_world *world);
+//Internal function, don't call outside of collision logic
+bool			is_in_ramp(t_character_physics *cp, t_vector3_tri *ramp);
 
 #endif

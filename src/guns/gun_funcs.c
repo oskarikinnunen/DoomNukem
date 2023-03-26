@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 17:07:17 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 17:28:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 18:53:43 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,35 @@
 #include "editor_tools.h"
 #include "movement_defs.h"
 #include "raycast.h"
+
+void	play_gun_audio(t_gun *gun, t_world *world)
+{
+	static t_audiosource	source;
+
+	if (source.sample.sound == NULL)
+	{
+		source.sample = get_sample(world->sdl, "gun_grenadelauncher.wav");
+		source._realrange = 50.0f;
+		source.volume = 1.0f;
+		source.play_always = false;
+	}
+	source.sample = get_sample(world->sdl, gun->stats.audio_name);
+	_audiosource_2d_start(world->sdl, &source);
+}
+
+void	play_gun_reload_audio(t_world *world)
+{
+	static t_audiosource	source;
+
+	if (source.sample.sound == NULL)
+	{
+		source.sample = get_sample(world->sdl, "gun_reload.wav");
+		source._realrange = 50.0f;
+		source.volume = 1.0f;
+		source.play_always = false;
+	}
+	_audiosource_2d_start(world->sdl, &source);
+}
 
 void	gun_update_reload_status(t_player *player,
 		t_gun *gun, t_world *world)
