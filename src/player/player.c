@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   player.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 14:31:10 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 19:59:15 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 20:51:43 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ static void	gun_entity_set_entity_values(t_gun *gun)
 {
 	gun->entity->ignore_raycasts = true;
 	gun->entity->dont_save = true;
+	gun->entity->dynamic_lit = true;
 	gun->shoot_anim.framerate = 120;
 	gun->shoot_anim.loop = false;
 	gun->shoot_anim.lastframe = 2;

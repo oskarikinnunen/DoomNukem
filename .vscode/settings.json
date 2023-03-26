@@ -14,6 +14,10 @@
 		"utility": "c",
 		"vectors.h": "c",
 		"doomnukem.h": "c",
-		"ratio": "c"
+		"ratio": "c",
+		"chrono": "c",
+		"__cxx_version": "c",
+		"__hash_table": "c",
+		"type_traits": "c"
 	}
 }

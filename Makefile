@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/26 22:02:15 by okinnune         ###   ########.fr        #
+#    Updated: 2023/03/26 22:12:21 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -236,6 +236,7 @@ SRCFILES= main.c img.c deltatime.c \
 		render/colors.c \
 		render/text.c \
 		render/pixel_utils.c \
+		render/render_dynamic_light.c \
 		world/entitycache.c \
 		world/entitycache_2.c \
 		world/entitycache_transparent.c \

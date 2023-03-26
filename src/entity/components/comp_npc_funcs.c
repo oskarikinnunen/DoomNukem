@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_npc_funcs.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:22:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 16:10:36 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 19:54:19 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ static void	comp_npc_allocate(t_entity *entity, t_world *world)
 
 	entity->component.data = prot_memalloc(sizeof(t_npc));
 	entity->component.data_size = sizeof(t_npc);
+	entity->dynamic_lit = true;
 	npc = entity->component.data;
 	ft_bzero(entity->component.data, sizeof(t_npc));
 	npc->movementspeed = 0.1f;

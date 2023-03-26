@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 17:30:52 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/26 20:41:07 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ typedef struct s_entity
 	bool			rigid;
 	bool			hidden;
 	bool			dont_save;
+	bool			destroy_obj;
+	bool			dynamic_lit;
 	t_entitystatus	status;
 	t_bound			z_bound;
 	t_anim			animation;
@@ -138,6 +140,7 @@ void	update_bounds_world_triangles(t_entity *entity);
 bool	calculate_quat_buffer_for_entity(t_quaternion *q, t_entity *entity);
 void	render_entitys_world_triangles(t_sdlcontext *sdl, t_render *render, t_entity *entity);
 void	calculate_triangles_for_entity(t_entity *entity, struct s_world *world);
+void	dynamic_lit(t_entity *entity, struct s_world *world, int index);
 
 uint32_t	update_pixel_brightness(uint32_t light, uint32_t clr);
 uint32_t	get_lighting_for_pixel(t_lighting *lighting, uint32_t light_amount, t_vector3 location);
