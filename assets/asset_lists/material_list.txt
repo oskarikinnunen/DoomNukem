@@ -9,6 +9,7 @@ assets/objects/grenadelauncher.mtl
 assets/objects/Human.mtl
 assets/objects/light.mtl
 assets/objects/lightbar.mtl
+assets/objects/plane.mtl
 assets/objects/tex_cube.mtl
 assets/objects/trash.mtl
 assets/objects/untitled.mtl

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 17:30:52 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/26 19:23:08 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ typedef struct s_entity
 	bool			rigid;
 	bool			hidden;
 	bool			dont_save;
+	bool			destroy_obj;
 	t_entitystatus	status;
 	t_bound			z_bound;
 	t_anim			animation;

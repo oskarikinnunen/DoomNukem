@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entitycache_2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 14:55:11 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 17:47:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 19:43:36 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ void	destroy_entity(t_world *world, t_entity *ent)
 		});
 	cache->entities[ent->id].status = es_free;
 	cache->entities[ent->id].obj = NULL;
+	if (ent->destroy_obj)
+		free_object(ent->obj);
 	if (ent->world_triangles != NULL)
 		free(ent->world_triangles);
 	if (cache->existing_entitycount == 0)
