@@ -3,15 +3,47 @@
 /*                                                        :::      ::::::::   */
 /*   navmesh.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 12:04:40 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 12:10:00 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 17:25:14 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "movement_defs.h"
+
+static void	malloc_space_for_navigation_buffer(t_world *world)
+{
+	if (world->nav.openlist)
+		free(world->nav.openlist);
+	world->nav.openlist = \
+	prot_memalloc(world->nav.malloc_size * sizeof(t_navnode));
+	if (!world->nav.openlist)
+		doomlog(LOG_EC_MALLOC, NULL);
+	ft_bzero(world->nav.openlist, world->nav.malloc_size * sizeof(t_navnode));
+}
+
+int	world_triangle_get_max_dist_index(t_world_triangle t)
+{
+	float	dist;
+	int		index;
+	int		i;
+
+	index = 0;
+	dist = vector3_dist(t.p[0].v, t.p[1].v);
+	i = 1;
+	while (i < 3)
+	{
+		if (dist < vector3_dist(t.p[i].v, t.p[(i + 1) % 3].v))
+		{
+			dist = vector3_dist(t.p[i].v, t.p[(i + 1) % 3].v);
+			index = i;
+		}
+		i++;
+	}
+	return (index);
+}
 
 void	navmesh(t_world *world)
 {
@@ -20,8 +52,6 @@ void	navmesh(t_world *world)
 	int			i;
 	int			j;
 
-	world->nav.clip_size = ft_clampf(world->nav.clip_size, 50.0f, 10000.0f);
-	world->nav.height = COL_STEP; // TODO: remove nav.height
 	create_navmesh(world);
 	i = 0;
 	while (i < world->nav.node_amount)
@@ -37,10 +67,5 @@ void	navmesh(t_world *world)
 		}
 		i++;
 	}
-	if (world->nav.openlist)
-		free(world->nav.openlist);
-	world->nav.openlist = prot_memalloc(world->nav.malloc_size * sizeof(t_navnode));
-	if (!world->nav.openlist)
-		doomlog(LOG_EC_MALLOC, NULL);
-	ft_bzero(world->nav.openlist, world->nav.malloc_size * sizeof(t_navnode));
+	malloc_space_for_navigation_buffer(world);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_entity.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/25 13:00:34 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 14:54:36 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ bool	is_triangle_backface(t_world_triangle tritransformed, t_render *render)
 
 	normal = normal_calc_quaternion(tritransformed.p);
 	vcameraray = vector3_sub(tritransformed.p[0].v, render->camera.position);
-	if (vector3_dot(normal, vcameraray) < 0.0f || 1)
+	if (!render->backface_check || vector3_dot(normal, vcameraray) < 0.0f)
 		return (false);
 	else
 		return (true);
@@ -78,23 +78,20 @@ void	render_entitys_world_triangles(
 void	render_entity(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 {
 	render->screenspace_ptri_count = 0;
-	/*t_world	w;
-	w.sdl = sdl;
-	render_entity_worldtriangles(entity, &w);*/
-	if ((point_cmp(entity->occlusion.clip.max, point_zero()) && point_cmp(entity->occlusion.clip.min, point_zero()))
-		|| !render->occlusion.occlusion)
-	{
-		render->screen_edge.max.x = (float)(sdl->window_w * sdl->resolution_scaling) - 1.0f;
-		render->screen_edge.max.y = (float)(sdl->window_h * sdl->resolution_scaling) - 1.0f;
-		render->screen_edge.min = vector2_zero();
-	}
-	else
+	render->backface_check = entity->occlusion.is_backface_cull;
+	render->screen_edge.max.x = \
+	(float)(sdl->window_w * sdl->resolution_scaling) - 1.0f;
+	render->screen_edge.max.y = \
+	(float)(sdl->window_h * sdl->resolution_scaling) - 1.0f;
+	render->screen_edge.min = vector2_zero();
+	if (render->occlusion.occlusion && \
+	entity->occlusion.clip.max.x <= render->screen_edge.max.x && \
+	entity->occlusion.clip.max.y <= render->screen_edge.max.y && \
+	entity->occlusion.clip.min.x >= 0 && \
+	entity->occlusion.clip.min.y >= 0)
 	{
 		render->screen_edge.min = point_to_vector2(entity->occlusion.clip.min);
 		render->screen_edge.max = point_to_vector2(entity->occlusion.clip.max);
 	}
-	render->screen_edge.max.x = (float)(sdl->window_w * sdl->resolution_scaling) - 1.0f;
-	render->screen_edge.max.y = (float)(sdl->window_h * sdl->resolution_scaling) - 1.0f;
-	render->screen_edge.min = vector2_zero();
 	render_entitys_world_triangles(sdl, render, entity);
 }

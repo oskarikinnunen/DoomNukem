@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_npc_states_1.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 17:07:49 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:48:11 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 16:28:32 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	npc_switch_to_chase_state(t_entity *entity,
 							t_npc *npc, t_world *world)
 {
 	npc->state = NPC_STATE_CHASE;
-	npc->path = path_find(entity->transform.position,
+	npc->path = pathfind(entity->transform.position,
 			npc->lastseen_playerpos, world);
 	printf("Found new path towards player, valid = %i \n",
 		npc->path.valid_path);

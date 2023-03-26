@@ -24,6 +24,17 @@ typedef struct s_occlusion
 	bool				is_occluded;
 }	t_occlusion;
 
+typedef struct s_bitmask_helper
+{
+	float			wstep;
+	int				chunk;
+	int				end_chunk;
+	int				wchunk;
+	int				row;
+	int				x;
+	uint16_t		res;
+}	t_bitmask_helper;
+
 typedef struct s_tile
 {
 	float		max1;
@@ -37,6 +48,7 @@ typedef struct s_bitmask
 	t_point				tile_chunks; //amount of tile chunks in x and y axis
 	t_tile				*tile;
 	float				max_dist;
+	float				last_max_dist;
 }	t_bitmask;
 
 

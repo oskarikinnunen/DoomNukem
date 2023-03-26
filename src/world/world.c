@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 12:01:51 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 17:37:25 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 
 	i = 0;
 	found = 0;
-	while (i < world->entitycache.alloc_count)
+	while (i < world->entitycache.alloc_count && \
+	found < world->entitycache.existing_entitycount)
 	{
 		ent = world->entitycache.sorted_entities[i];
 		if (ent->status != es_free)
@@ -54,14 +55,13 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 				ent->component.func_update(ent, world);
 			if (ent->status != es_free
 				&& entity_has_transparent_mat(ent) == false)
-			{
 				if (is_entity_culled(sdl, render, ent) == false)
 					render_entity(sdl, render, ent);
-			}
 			found++;
 		}
 		i++;
 	}
+	render->occlusion.screen_full = is_screen_full(world->sdl);
 	update_transparent(sdl, world, render);
 	sdl->render.occlusion.slow_render = false;
 }
@@ -102,12 +102,8 @@ static void	world_update_debug_gui(t_world *world,
 	gui_start(world->debug_gui);
 	if (gui_shortcut_button("Toggle noclip", 'F', world->debug_gui))
 		world->player->noclip = !world->player->noclip;
-	if (gui_shortcut_button("Show navmesh:", 'N', world->debug_gui))
-		world->nav.show_navmesh = !world->nav.show_navmesh;
-	gui_labeled_float_slider("Navigation node size: ", \
-							&world->nav.clip_size, 10.0f, world->debug_gui);
 	if (gui_shortcut_button("Create navmesh:", 'C', world->debug_gui))
-		create_navmesh(world);
+		navmesh(world);
 	if (gui_shortcut_button("Toggle Lighting", 'l', world->debug_gui))
 		sdl->lighting_toggled = !sdl->lighting_toggled;
 	if (gui_shortcut_button("Draw Occlusion Buffer", 'Y', world->debug_gui))
@@ -137,7 +133,6 @@ void	update_world3d(t_world *world, t_render *render)
 	update_frustrum_culling(world, sdl, render);
 	sort_entitycache(world, render->camera.position);
 	update_entitycache(sdl, world, render);
-	bitmask_to_pixels(sdl);
 	rescale_surface(sdl);
 	lateupdate_entitycache(sdl, world);
 	if (!world->debug_gui->hidden)

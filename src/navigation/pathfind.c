@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pathfind.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 22:16:15 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 11:28:54 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 17:29:09 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,11 +110,11 @@ static uint32_t	get_best_node_id(t_navnode *openlist,
 	return (lowest_f_index);
 }
 
-t_path	path_find(t_vector3 start_vec, t_vector3 end_vec, t_world *world)
+t_path	pathfind(t_vector3 start_vec, t_vector3 end_vec, t_world *world)
 {
 	t_navnode	*openlist;
 	uint32_t	list_len;
-	uint32_t	lowest_f_index;
+	uint32_t	i_f;
 	t_path		path;
 
 	openlist = world->nav.openlist;
@@ -126,17 +126,14 @@ t_path	path_find(t_vector3 start_vec, t_vector3 end_vec, t_world *world)
 	openlist[path.end].valid = true;
 	openlist[path.end].enter_point = openlist[path.end].mid_point;
 	list_len = 1;
-	if (world->nav.node_amount == 0)
-		return ((t_path){.valid_path = false});
 	while (list_len > 0)
 	{
-		lowest_f_index = get_best_node_id(openlist, lowest_f_index, list_len);
-		if (lowest_f_index == path.start)
+		i_f = get_best_node_id(openlist, i_f, list_len);
+		if (i_f == path.start)
 			return (construct_path(path.end, path.start, openlist, path));
-		openlist[lowest_f_index].valid = false;
-		openlist[lowest_f_index].visited = true;
-		list_len += add_valid_neighbours(\
-						world, openlist, lowest_f_index, path.start) - 1;
+		openlist[i_f].valid = false;
+		openlist[i_f].visited = true;
+		list_len += add_valid_neighbours(world, openlist, i_f, path.start) - 1;
 	}
 	path.valid_path = false;
 	return (path);

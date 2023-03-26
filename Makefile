@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
+#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/26 11:25:31 by raho             ###   ########.fr        #
+#    Updated: 2023/03/26 17:16:58 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -207,8 +207,7 @@ SRCFILES= main.c img.c deltatime.c \
 		thread/thread_lighting.c \
 		navigation/pathfind.c \
 		navigation/navmesh.c \
-		navigation/create_navmesh1.c \
-		navigation/create_navmesh2.c \
+		navigation/create_navmesh.c \
 		navigation/nav_utils.c \
 		navigation/connect_navmesh.c \
 		render/rasterization/rasterize_triangle_wrap.c \
@@ -285,7 +284,7 @@ INCLUDE= -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include \
 			-I$(INSTALLED_LIBS_DIR)/include/SDL2/ \
 			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
 CC= gcc
-CFLAGS= $(INCLUDE) -g #-finline-functions -O2 #-MMD #-march=native
+CFLAGS= $(INCLUDE) -g -finline-functions -O2 #-MMD #-march=native
 LDFLAGS = -Wl,-rpath $(INSTALLED_LIBS_DIR)/lib
 
 UNAME= $(shell uname)
