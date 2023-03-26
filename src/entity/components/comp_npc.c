@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 18:57:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:39:47 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 12:53:56 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,8 @@ static void	npc_pathfind_step(t_entity *entity, t_npc *npc, t_world *world)
 	move = vector2_mul(vector2_normalise(move), world->clock.delta
 			* PLAYER_ACCELERATION);
 	capsule_add_xy_velocity(move, &npc->phys, world);
-	entity_rotate_towards_xy(entity, enterpoint_2d, 0.015f * world->clock.delta);
+	entity_rotate_towards_xy(entity, enterpoint_2d, \
+							0.015f * world->clock.delta);
 	if (vector3_sqr_dist(entity->transform.position,
 			npc->path.path[npc->path.ai].enter_point) < 160.1f
 		&& npc->path.ai < npc->path.bi)

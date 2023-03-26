@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world_save_basic_ent.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 20:01:34 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 17:22:19 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 14:19:21 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,4 +60,5 @@ void	world_save_basic_ent(char *level, t_world world)
 	entitylist = entitycache_to_list(&world.entitycache);
 	entitylist_basicify(entitylist);
 	save_chunk(level, "BENT", entitylist);
+	listdel(&entitylist);
 }

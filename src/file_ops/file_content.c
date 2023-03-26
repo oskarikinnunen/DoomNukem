@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   file_content.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 20:10:06 by raho              #+#    #+#             */
-/*   Updated: 2023/03/23 22:03:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 14:10:48 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,15 @@ static void	restart_fd(int fd, int counter)
 		doomlog(LOG_EC_LSEEK, "load_filecontent");
 }
 
-t_filecontent	load_filecontent(int fd, char *asset_name)
+t_file_content	load_filecontent(int fd, char *asset_name)
 {
-	t_filecontent	fc;
+	t_file_content	fc;
 	int				rbytes;
 	char			buf[CHUNKSIZE + 1];
 	int				counter;
 
 	counter = 0;
-	ft_bzero(&fc, sizeof(t_filecontent));
+	ft_bzero(&fc, sizeof(t_file_content));
 	rbytes = read(fd, buf, CHUNKSIZE);
 	while (rbytes >= 0)
 	{
@@ -65,7 +65,7 @@ t_filecontent	load_filecontent(int fd, char *asset_name)
 	return (fc);
 }
 
-int	ft_fileread(int fd, t_filecontent *f)
+int	ft_fileread(int fd, t_file_content *f)
 {
 	char	*temp;
 	void	*temp2;
@@ -96,9 +96,10 @@ int	ft_fileread(int fd, t_filecontent *f)
 void	load_and_write_filecontent(int fd,
 									char *fc_name, char *file_name)
 {
-	t_filecontent	fc;
+	t_file_content	fc;
 	int				temp_fd;
 
+	ft_bzero(&fd, sizeof(t_file_content));
 	fc = load_filecontent(fd, fc_name);
 	temp_fd = fileopen(file_name, O_CREAT | O_RDWR | O_TRUNC);
 	if (write(temp_fd, fc.content, fc.length) == -1)

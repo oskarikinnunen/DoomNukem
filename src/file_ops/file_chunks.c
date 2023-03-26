@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 17:39:06 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 13:54:11 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ t_list	*load_chunk(char *filename, char *chunkname, size_t size)
 	return (NULL);
 }
 
-int	read_chunk(int fd, t_filecontent *fc, char *asset_name)
+int	read_chunk(int fd, t_file_content *fc, char *asset_name)
 {
 	uint64_t	curr_len;
 

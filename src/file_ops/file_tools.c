@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 19:59:44 by raho              #+#    #+#             */
-/*   Updated: 2023/03/22 20:14:20 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 14:11:31 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,9 @@ void	pack_file_to_level(char *level, char *file)
 {
 	int				fd;
 	void			*temp;
-	t_filecontent	fc;
+	t_file_content	fc;
 
-	ft_bzero(&fc, sizeof(t_filecontent));
+	ft_bzero(&fc, sizeof(t_file_content));
 	fd = fileopen(file, O_RDONLY);
 	ft_fileread(fd, &fc);
 	ft_strncpy(fc.name, file, 127);
@@ -68,6 +68,7 @@ void	pack_file_to_level(char *level, char *file)
 	if (write(fd, "PADD", CHUNKSIZE - (fc.length % CHUNKSIZE)) == -1)
 		doomlog(LOG_EC_WRITE, "save_chunk");
 	fileclose(fd, level);
+	free(fc.content);
 	doomlog_mul(LOG_NORMAL, (char *[5]){\
 			"packed file:", file, "to level:", level, NULL});
 }
