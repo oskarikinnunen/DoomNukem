@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 19:55:24 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 19:23:31 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 16:10:36 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,9 @@ void	debug_ramps(t_game *game)
 	{
 		tri = (t_vector3_tri *)l->content;
 		if (i % 2 == 0)
-			render_ray3D(game->world.sdl, tri->c, tri->a, CLR_RED);
+			render_ray3d(game->world.sdl, tri->c, tri->a, CLR_RED);
 		else
-			render_ray3D(game->world.sdl, tri->b, tri->c, CLR_BLUE);
+			render_ray3d(game->world.sdl, tri->b, tri->c, CLR_BLUE);
 		i++;
 		l = l->next;
 	}

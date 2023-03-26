@@ -6,13 +6,14 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 06:20:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:53:27 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 16:39:36 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "entity.h"
 #include "doomnukem.h"
 #include "editor_tools.h"
+#include "render.h"
 
 static void	update_physics(t_entity *entity, t_interactable *inter)
 {
@@ -38,7 +39,6 @@ void	comp_interactable_ui_update(t_entity *entity, t_world *world)
 	{
 		print_text_boxed(world->sdl, "[E]", point_div(world->sdl->screensize, 2));
 	}
-	render_capsule(world->sdl, entity->transform.position, 15.0f, inter->radius, CLR_GREEN);
 }
 
 void	comp_interactable_update(t_entity *entity, t_world *world)

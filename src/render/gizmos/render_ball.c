@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 15:10:29 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 15:13:33 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 16:08:09 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void	render_ball(t_sdlcontext *sdl, t_vector3 pos,
 
 	ft_bzero(&edges, sizeof(t_vector3));
 	sdl->render.gizmocolor = clr;
-	render_ball_xy(&edges, pos, size, sdl);
-	render_ball_yz(&edges, pos, size, sdl);
-	render_ball_xz(&edges, pos, size, sdl);
+	render_ball_xy(edges, pos, size, sdl);
+	render_ball_yz(edges, pos, size, sdl);
+	render_ball_xz(edges, pos, size, sdl);
 }

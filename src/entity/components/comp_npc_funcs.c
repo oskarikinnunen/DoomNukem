@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:22:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:53:35 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 16:10:36 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static void	render_navnode(t_entity *entity,
 	i = 0;
 	while (i < 3)
 	{
-		render_ray3D(sdl, navnode->vertex[i],
+		render_ray3d(sdl, navnode->vertex[i],
 			navnode->vertex[(i + 1) % 3], AMBER_2);
 		i++;
 	}
@@ -46,12 +46,12 @@ static void	comp_npc_ui_update(t_entity *entity, t_world *world)
 	if (world->app_mode == APPMODE_EDIT || 1)
 		return ;
 	npc = entity->component.data;
-	render_ray3D(world->sdl, entity->transform.position,
+	render_ray3d(world->sdl, entity->transform.position,
 		npc->path.path[npc->path.ai].enter_point, CLR_RED);
 	i = 0;
 	while (i < npc->path.bi)
 	{
-		render_ray3D(world->sdl, npc->path.path[i].enter_point,
+		render_ray3d(world->sdl, npc->path.path[i].enter_point,
 			npc->path.path[(i + 1)].enter_point, CLR_RED);
 		render_circle(world->sdl,
 			npc->path.path[i].enter_point, 10.0f, CLR_GREEN);
