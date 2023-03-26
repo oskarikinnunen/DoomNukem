@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 15:48:51 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 17:27:20 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,6 @@ struct	s_mouse;
 
 void			editor_quit(void);
 void			editor_save_quit(t_editor *ed);
-void			update_editor_lateguis(t_editor *ed);
 void			set_up_editor(t_sdlcontext *sdl, t_editor *ed);
 
 /* INTERNAL GUI */

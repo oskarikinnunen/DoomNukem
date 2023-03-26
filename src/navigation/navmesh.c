@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 12:04:40 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 12:10:00 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 17:11:20 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,5 @@ void	navmesh(t_world *world)
 	if (world->nav.openlist)
 		free(world->nav.openlist);
 	world->nav.openlist = prot_memalloc(world->nav.malloc_size * sizeof(t_navnode));
-	if (!world->nav.openlist)
-		doomlog(LOG_EC_MALLOC, NULL);
 	ft_bzero(world->nav.openlist, world->nav.malloc_size * sizeof(t_navnode));
 }

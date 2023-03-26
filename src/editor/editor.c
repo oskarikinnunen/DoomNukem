@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 17:07:52 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 17:27:23 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ static void	editorloop(t_sdlcontext *sdl, t_editor *ed)
 		if (ed->tool != NULL)
 			ed->tool->update(ed, sdl);
 		draw_crosshair(sdl);
-		update_editor_lateguis(ed);
 		draw_fps_counter(sdl, ed->world.clock.fps);
 		ed->hid.mouse.click_unhandled = false;
 		update_window_surface(sdl);

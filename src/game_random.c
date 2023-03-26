@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   game_random.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 11:11:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 18:33:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 17:17:55 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,9 @@ uint32_t	game_random_range(t_world *world, uint32_t min, uint32_t max)
 	uint32_t	result;
 
 	r = game_random(world);
+	if (max - min == 0)
+		doomlog(LOG_FATAL, \
+			"game_random_range max - min = 0 (can't modulo 0)");
 	result = r % (max - min);
 	result += min;
 	return (result);

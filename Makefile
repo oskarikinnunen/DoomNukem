@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/26 16:09:13 by raho             ###   ########.fr        #
+#    Updated: 2023/03/26 17:26:14 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -77,7 +77,6 @@ SRCFILES= main.c img.c deltatime.c \
 		editor/editor.c \
 		editor/editor_mouse.c \
 		editor/editor_events.c \
-		editor/editor_gui.c \
 		editor/editor_set_up.c \
 		editor/key_events.c \
 		editor/tools/entity_tool.c \
@@ -109,7 +108,6 @@ SRCFILES= main.c img.c deltatime.c \
 		editor/editor_new_buttons.c \
 		editor/editor_raycast.c \
 		editor/entity_raycast.c \
-		preferences/graphicsprefs.c \
 		debug/debug_rendering.c \
 		inputhelper.c \
 		walls.c file_open.c \
@@ -286,7 +284,7 @@ INCLUDE= -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include \
 			-I$(INSTALLED_LIBS_DIR)/include/SDL2/ \
 			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
 CC= gcc
-CFLAGS= $(INCLUDE) -g #-finline-functions -O2 #-MMD #-march=native
+CFLAGS= $(INCLUDE) -g -finline-functions -O2 #-MMD #-march=native
 LDFLAGS = -Wl,-rpath $(INSTALLED_LIBS_DIR)/lib
 
 UNAME= $(shell uname)

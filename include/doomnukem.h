@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 12:05:05 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 17:28:32 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,6 @@ typedef enum e_app_mode
 	APPMODE_INVALID,
 	APPMODE_EDIT,
 	APPMODE_PLAY,
-	APPMODE_GFX_RESET
 }	t_app_mode;
 
 typedef struct s_app_argument
