@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 19:42:32 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/26 22:21:36 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,26 @@ static void	sort_entitycache(t_world *world, t_vector3 location)
 	}
 }
 
+/*
+	if (gui_shortcut_button("Decal draw", 'G',
+		world->debug_gui)) //TODO: Remove after bullet holes implementation
+	{
+		t_decal	d;
+		t_ray	r;
+
+		r.origin = sdl->render.camera.position;
+		r.dir = sdl->render.camera.lookdir;
+		t_raycastinfo	info;
+		if (raycast(r, &info, world))
+		{
+			d.img = get_image_by_index(*sdl, 2);
+			d.normal = info.face_normal;
+			d.position = info.hit_pos;
+			d.size = 25.0f;
+			decal(world, d);
+		}
+	}
+*/
 static void	world_update_debug_gui(t_world *world,
 									t_sdlcontext *sdl, t_render *render)
 {
@@ -117,25 +137,10 @@ static void	world_update_debug_gui(t_world *world,
 		sdl->render.occlusion.slow_render = true;
 	if (gui_shortcut_button("Bake lighting (new)", 'b', world->debug_gui))
 		recalculate_lighting(world);
-	gui_labeled_float_slider("Resolution scaling", &world->sdl->resolution_scaling, 0.01f, world->debug_gui);
-	world->sdl->resolution_scaling = ft_clampf(world->sdl->resolution_scaling, 0.25f, 1.0f);
-	if (gui_shortcut_button("Decal draw", 'G', world->debug_gui)) //TODO: Remove after bullet holes implementation
-	{
-		t_decal	d;
-		t_ray	r;
-
-		r.origin = sdl->render.camera.position;
-		r.dir = sdl->render.camera.lookdir;
-		t_raycastinfo	info;
-		if (raycast(r, &info, world))
-		{
-			d.img = get_image_by_index(*sdl, 2);
-			d.normal = info.face_normal;
-			d.position = info.hit_pos;
-			d.size = 25.0f;
-			decal(world, d);
-		}
-	}
+	gui_labeled_float_slider("Resolution scaling",
+		&world->sdl->resolution_scaling, 0.01f, world->debug_gui);
+	world->sdl->resolution_scaling
+		= ft_clampf(world->sdl->resolution_scaling, 0.25f, 1.0f);
 	gui_end(world->debug_gui);
 }
 
