@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 14:59:55 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 22:08:37 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:25:08 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	set_sdl_settings(t_sdlcontext *sdl)
 	prefs.screenmode = screen_mode_windowed;
 	prefs.resolution_x = 1280;
 	prefs.resolution_y = 720;
-	prefs.resolutionscale = 0.5f;
+	prefs.resolutionscale = 1.0f;
 	prefs.volume = 5.0f;
 	sdl->window_w = prefs.resolution_x;
 	sdl->window_h = prefs.resolution_y;

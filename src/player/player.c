@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 14:31:10 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:23:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:46:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ static void	gun_entity_set_entity_values(t_gun *gun)
 {
 	gun->entity->ignore_raycasts = true;
 	gun->entity->dont_save = true;
+	gun->entity->dynamic_lit = true;
 	gun->shoot_anim.frame_rate = 120;
 	gun->shoot_anim.loop = false;
 	gun->shoot_anim.last_frame = 2;

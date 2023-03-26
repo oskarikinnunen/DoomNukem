@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:01:16 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 21:08:19 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ static void	render_shadowmap(t_world *world, t_lighting *l)
 		if (ent->status != es_free)
 		{
 			if (ent->status == es_active && !ent->hidden
-				&& !entity_has_transparent_mat(ent))
+				&& !entity_has_transparent_mat(ent)
+				&& !ent->dynamic_lit)
 			{
 				is_valid = (l->light->ignore_self && ent->id != l->entity->id);
 				if (l->light->ignore_self == false || is_valid)
@@ -89,7 +90,7 @@ void	recalculate_pointlight(t_world *world)
 {
 	int				i;
 	int				found;
-	t_entity_cache	*cache;
+	t_entitycache	*cache;
 	t_entity		*ent;
 
 	i = 0;

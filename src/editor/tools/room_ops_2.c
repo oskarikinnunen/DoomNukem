@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 17:54:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 20:27:26 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:39:28 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@
 #include "objects.h"
 #include "collision.h"
 
-static t_line	edgeline_to_line(t_edge_line edgeline)
+static t_line	edge_line_to_line(t_edge_line edge_line)
 {
-	return ((t_line){.start = *edgeline.start, .end = *edgeline.end});
+	return ((t_line){.start = *edge_line.start, .end = *edge_line.end});
 }
 
 static bool	illegalwall_move(t_wall *wall, t_area *room)
@@ -37,8 +37,8 @@ static bool	illegalwall_move(t_wall *wall, t_area *room)
 		ow = &room->walls[i];
 		return (wall != &room->walls[i]
 			&& collision_line_line_intersect(
-				line_shorten(edgeline_to_line(wall->edge_line)),
-				line_shorten(edgeline_to_line(ow->edge_line))
+				line_shorten(edge_line_to_line(wall->edge_line)),
+				line_shorten(edge_line_to_line(ow->edge_line))
 			));
 		i++;
 	}

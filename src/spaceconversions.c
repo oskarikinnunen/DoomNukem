@@ -6,14 +6,14 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 13:31:43 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 20:29:32 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:58:45 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "vectors.h"
 
-static t_vector3	normalized_lookdir(t_vector2 vector2)
+static t_vector3	normalized_look_dir(t_vector2 vector2)
 {
 	t_vector3	result;
 
@@ -33,9 +33,9 @@ t_quaternion	transformed_vector3(t_transform trsform, t_vector3 v)
 	if (trsform.parent != NULL)
 	{
 		res = quaternion_rotate_euler(res.v, trsform.parent->rotation);
-		fwd = normalized_lookdir((t_vector2){trsform.parent->rotation.x,
+		fwd = normalized_look_dir((t_vector2){trsform.parent->rotation.x,
 				trsform.parent->rotation.y});
-		up = normalized_lookdir((t_vector2){trsform.parent->rotation.x,
+		up = normalized_look_dir((t_vector2){trsform.parent->rotation.x,
 				trsform.parent->rotation.y + RAD90});
 		right = vector3_cross_product(fwd, vector3_up());
 		right = vector3_normalise(right);

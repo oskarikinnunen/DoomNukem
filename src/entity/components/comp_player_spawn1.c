@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:39:48 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:45:43 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	comp_playerspawn_ui_update(t_entity *entity, t_world *world)
 /*	This is called during load_world, use only if your component
 	NEEDS to gather assets (sounds etc.) at this time.
 */
-void	comp_playerspawn_loadassets(t_entity *entity, t_world *world)
+void	comp_playerspawn_load_assets(t_entity *entity, t_world *world)
 {
 	t_playerspawn	*playerspawn;
 

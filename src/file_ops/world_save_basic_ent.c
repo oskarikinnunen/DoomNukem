@@ -6,14 +6,14 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 20:01:34 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 21:08:19 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "file_io.h"
 #include "doomnukem.h"
 
-static t_list	*entitycache_to_list(t_entity_cache *cache)
+static t_list	*entitycache_to_list(t_entitycache *cache)
 {
 	int				i;
 	int				found;

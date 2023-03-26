@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 17:07:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:12:47 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 23:10:03 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	room_tool_init(t_editor *ed, t_sdlcontext *sdl)
 
 t_tool	*get_room_tool(void)
 {
-	static t_tool	tool
+	static t_tool		tool
 		= {
 		.update = room_tool_update,
 		.init = room_tool_init

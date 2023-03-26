@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 11:37:18 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 20:26:19 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:36:42 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 	This is called from room_tool_modifymode and is used to 
 	modify existing nodes in an area, or remove them
 */
-//TODO: protect edgecount--?
+//TODO: protect edge_count--?
 void	remove_edge(t_world *world, t_area *room, t_vector2 *edge)
 {
 	t_list		*l;

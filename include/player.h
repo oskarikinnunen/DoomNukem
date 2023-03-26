@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 20:44:59 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 21:07:04 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:55:52 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # define AM_GRENADE 3
 
 struct	s_world;
+struct	s_clock;
 
 typedef struct s_ammo_u8
 {
@@ -78,7 +79,16 @@ t_gun_stats	gun_sniper(void);
 void		draw_player_hud(struct s_world *world);
 void		player_movement_normal(t_player *player, struct s_world *world);
 void		player_movement_noclip(t_player *player, struct s_world *world);
+void		player_gun_raycast(t_player *player, struct s_world *world);
 void		protagonist_play_audio(t_player *player, struct s_world *world, \
 									char *soundname);
+void		gun_update_transform(t_player *player, t_gun *gun, \
+									struct s_clock c);
+void		gun_update_reload_status(t_player *player, t_gun *gun, \
+										struct s_world *world);
+void		gun_update_shoot_status(t_player *player, t_gun *gun, \
+									struct s_world *world);
+void		gun_update_reload_anim(t_player *player, t_gun *gun, \
+									struct s_world *world);
 
 #endif

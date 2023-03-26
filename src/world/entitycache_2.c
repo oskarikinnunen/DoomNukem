@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 14:55:11 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:08:19 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 void	destroy_entity(t_world *world, t_entity *ent)
 {
-	t_entity_cache	*cache;
+	t_entitycache	*cache;
 
 	cache = &world->entitycache;
 	if (ent->id >= cache->alloc_count)
@@ -26,6 +26,8 @@ void	destroy_entity(t_world *world, t_entity *ent)
 		});
 	cache->entities[ent->id].status = es_free;
 	cache->entities[ent->id].obj = NULL;
+	if (ent->destroy_obj)
+		free_object(ent->obj);
 	if (ent->world_triangles != NULL)
 		free(ent->world_triangles);
 	if (cache->existing_entitycount == 0)
@@ -36,7 +38,7 @@ void	destroy_entity(t_world *world, t_entity *ent)
 t_entity	*find_entity_with_comp(t_world	*world, t_component_type comp)
 {
 	int				i;
-	t_entity_cache	*cache;
+	t_entitycache	*cache;
 
 	cache = &world->entitycache;
 	i = 0;

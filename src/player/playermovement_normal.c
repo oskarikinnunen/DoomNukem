@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   player_movement_normal.c                            :+:      :+:    :+:   */
+/*   playermovement_normal.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:22:48 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 20:46:02 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 23:08:47 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 void	play_footstepsound(t_player *player, t_world *world)
 {
-	static t_audio_source	source;
+	static t_audiosource	source;
 	float					lerp;
 
 	if (source.sample.sound == NULL)
@@ -57,7 +57,7 @@ t_audio_sample	random_climbsound(t_world *world)
 
 void	play_landingsound(t_player *player, t_world *world)
 {
-	static t_audio_source	source;
+	static t_audiosource	source;
 	float					vlerp;
 
 	if (player->cp.impact_velocity.z > 0.0f)
@@ -89,7 +89,7 @@ void	player_movement_normal(t_player *player, t_world *world)
 	player_jump(player, world);
 	player_update_animations(player, world);
 	player_update_physics(player, world);
-	capsule_apply_gravity_new(&player->cp, world);
+	capsule_phys_step(&player->cp, world);
 	play_footstepsound(player, world);
 	if (player->cp.landing_trigger)
 	{

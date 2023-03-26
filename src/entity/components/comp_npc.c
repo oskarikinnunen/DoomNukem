@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 18:57:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:26:21 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:26:05 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,6 @@ void	comp_npc_update(t_entity *entity, t_world *world)
 		npc_pathfind_step(entity, npc, world);
 	}
 	npc_update_physics(npc, entity);
-	capsule_apply_gravity_new(&npc->phys, world);
+	capsule_phys_step(&npc->phys, world);
 	npc_update_anim_state(entity, npc, world);
 }

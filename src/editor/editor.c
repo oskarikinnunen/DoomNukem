@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:47:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 17:27:23 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 20:21:33 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ void	editor(t_app_argument app_argument, t_sdlcontext sdl)
 	ft_bzero(&ed, sizeof(t_editor));
 	editor_loading_screen("LOADING WORLD", &sdl);
 	ed.world = load_world(app_argument, &sdl);
+	ed.world.sdl->render.world = &ed.world;
 	editor_loading_screen("SETTING UP WORLD", &sdl);
 	set_up_editor(&sdl, &ed);
 	if (SDL_SetRelativeMouseMode(ed.hid.mouse.relative) < 0)

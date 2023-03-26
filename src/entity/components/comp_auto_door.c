@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:28:24 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:45:43 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	comp_auto_door_gui_edit(t_entity *entity,
 /*	This is called during load_world, use only if your component
 	NEEDS to gather assets (sounds etc.) at this time.
 */
-void	comp_auto_door_loadassets(t_entity *entity, t_world *world)
+void	comp_auto_door_load_assets(t_entity *entity, t_world *world)
 {
 	t_auto_door	*auto_door;
 
@@ -83,5 +83,5 @@ void	assign_component_auto_door(t_component *component)
 	component->func_allocate = comp_auto_door_allocate;
 	component->func_update = comp_auto_door_update;
 	component->func_gui_edit = comp_auto_door_gui_edit;
-	component->func_load_assets = comp_auto_door_loadassets;
+	component->func_load_assets = comp_auto_door_load_assets;
 }

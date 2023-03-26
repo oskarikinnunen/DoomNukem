@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 13:07:06 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 20:18:00 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,19 +25,17 @@ static void	sample_pixel(t_point xy, t_lighting *lighting)
 	lighting->map->texture[xy.y * lighting->map->size.x + xy.x] = clr;
 }
 
-static void	buffer_triangles(int start, int i, int index, t_entity *entity)
+void	parse_entity_texture(int index, t_entity *entity)
 {
 	t_screen_triangle	temp;
 	int					vertex;
-	size_t				size;
 	t_lighting			lighting;
 	t_point				xy;
 
+	if (!entity->map)
+		return ;
 	lighting.map = &entity->map[index];
 	lighting.img = entity->obj->materials[index].img;
-	size = lighting.map->size.x * lighting.map->size.y * sizeof(bool);
-	lighting.overdraw = prot_memalloc(size);
-	ft_bzero(lighting.overdraw, size);
 	xy.y = 0;
 	while (xy.y < lighting.map->size.y)
 	{
@@ -49,8 +47,6 @@ static void	buffer_triangles(int start, int i, int index, t_entity *entity)
 		}
 		xy.y++;
 	}
-	free(lighting.overdraw);
-	return ;
 }
 
 void	*calculate_texture_for_entity(t_entity *entity)
@@ -68,7 +64,7 @@ void	*calculate_texture_for_entity(t_entity *entity)
 		index = entity->obj->faces[i].material_index;
 		if (i + 1 == entity->obj->face_count
 			|| index != entity->obj->faces[i + 1].material_index)
-			buffer_triangles(start, i, index, entity);
+			parse_entity_texture(index, entity);
 		i++;
 	}
 	return (NULL);
@@ -92,7 +88,8 @@ void	calculate_texture_for_entities(t_world *world)
 		&& i < world->entitycache.alloc_count)
 	{
 		ent = &world->entitycache.entities[i++];
-		if (ent->status != es_free && ent->map != NULL)
+		if (ent->status != es_free && ent->map != NULL && \
+		!ent->dynamic_lit)
 		{
 			set_lighting_texture_struct(&thread, ent);
 			found++;

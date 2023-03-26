@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/26 19:39:24 by raho             ###   ########.fr        #
+#    Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -85,6 +85,10 @@ SRCFILES= main.c img.c deltatime.c \
 		editor/tools/entity_tool_modify_2.c \
 		editor/tools/entity_tool_gui_inits.c \
 		editor/tools/wall_tool_rooms.c \
+		editor/tools/floor_triangulate.c \
+		editor/tools/floor_triangulate_2.c \
+		editor/tools/floor_triangulate_3.c \
+		editor/tools/floor_triangulate_4.c \
 		editor/tools/room_ops.c \
 		editor/tools/room_ops_2.c \
 		editor/tools/room_tool.c \
@@ -110,7 +114,7 @@ SRCFILES= main.c img.c deltatime.c \
 		editor/entity_raycast.c \
 		debug/debug_rendering.c \
 		inputhelper.c \
-		walls.c file_open.c \
+		walls.c walls_2.c walls_3.c file_open.c \
 		moveplayer.c \
 		init_sdl.c \
 		logging/log_tools.c \
@@ -124,9 +128,15 @@ SRCFILES= main.c img.c deltatime.c \
 		entity/component_init.c \
 		entity/components/component_definitions.c \
 		entity/components/comp_audiosource.c \
+		entity/components/comp_audiosource_setup.c \
 		entity/components/comp_audiosource_tools.c \
 		entity/components/comp_interactable.c \
+		entity/components/comp_interactable_2.c \
 		physics/capsule_physics.c \
+		physics/capsule_physics_2.c \
+		physics/capsule_physics_3.c \
+		physics/capsule_physics_4.c \
+		physics/capsule_physics_step.c \
 		physics/collision_character.c \
 		physics/collision_line_circle.c \
 		physics/collision_simple.c \
@@ -142,7 +152,9 @@ SRCFILES= main.c img.c deltatime.c \
 		player/playmode_events.c \
 		player/hud.c \
 		player/player.c \
+		player/player_2.c \
 		entity/components/comp_npc.c \
+		entity/components/comp_npc_get_hit.c \
 		entity/components/comp_npc_state.c \
 		entity/components/comp_npc_states_1.c \
 		entity/components/comp_npc_raycast.c \
@@ -150,6 +162,8 @@ SRCFILES= main.c img.c deltatime.c \
 		entity/components/comp_npc_helpers.c \
 		entity/components/comp_npc_anims.c \
 		guns/gun_presets.c \
+		guns/gun_funcs.c \
+		guns/gun_transform.c \
 		objects/obj_parse.c \
 		objects/obj_parse_vertex.c \
 		objects/obj_parse_faces.c \
@@ -222,6 +236,7 @@ SRCFILES= main.c img.c deltatime.c \
 		render/colors.c \
 		render/text.c \
 		render/pixel_utils.c \
+		render/render_dynamic_light.c \
 		world/entitycache.c \
 		world/entitycache_2.c \
 		world/entitycache_transparent.c \
@@ -283,7 +298,7 @@ INCLUDE= -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include \
 			-I$(INSTALLED_LIBS_DIR)/include/SDL2/ \
 			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
 CC= gcc
-CFLAGS= $(INCLUDE) -g #-finline-functions -O2 #-MMD #-march=native
+CFLAGS= $(INCLUDE) -g -finline-functions -O2 #-MMD #-march=native
 LDFLAGS = -Wl,-rpath $(INSTALLED_LIBS_DIR)/lib
 
 UNAME= $(shell uname)

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 20:20:36 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 20:28:02 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:41:06 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,15 +86,15 @@ void			room_init_shallow(t_area *room, struct s_world *world);
 bool			room_is_legal(struct s_world *world, t_area *room);
 void			room_remove_entities(t_area *room, struct s_world *world);
 bool			edge_exists(t_vector2 edge, t_area	*room);
-void			_room_triangulate_floors(struct s_world *world, t_area *room);
+void			room_make_floor(struct s_world *world, t_area *room);
 t_area			*world_add_room(struct s_world *world, t_area *room);
 void			world_remove_room(struct s_world *world, t_area *room);
 void			room_set_preset_floor(t_area *room);
 void			room_set_preset_exterior(t_area *room);
 void			room_set_preset_room(t_area *room);
-void			apply_wall_mesh(t_wall *wall, t_area *room, \
+void			apply_wallmesh(t_wall *wall, t_area *room, \
 								struct s_world *world);
-void			apply_tri_mesh(t_meshtri tri, t_object *obj);
+void			apply_trimesh(t_meshtri tri, t_object *obj);
 void			walls_init(struct s_world *world, struct s_sdlcontext *sdl);
 
 #endif

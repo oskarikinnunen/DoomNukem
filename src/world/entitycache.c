@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 11:13:16 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:08:19 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 t_entity	*spawn_entity(t_world *world, t_object *obj)
 {
 	int				i;
-	t_entity_cache	*cache;
+	t_entitycache	*cache;
 
 	cache = &world->entitycache;
 	i = 0;
@@ -67,7 +67,7 @@ void	for_all_entities(t_world	*world,
 {
 	int				i;
 	int				found;
-	t_entity_cache	*cache;
+	t_entitycache	*cache;
 
 	i = 0;
 	found = 0;
@@ -88,7 +88,7 @@ void	void_for_all_active_entities(t_world	*world,
 {
 	int				i;
 	int				found;
-	t_entity_cache	*cache;
+	t_entitycache	*cache;
 
 	i = 0;
 	found = 0;
@@ -112,7 +112,7 @@ void	for_all_active_entities(t_world	*world,
 {
 	int				i;
 	int				found;
-	t_entity_cache	*cache;
+	t_entitycache	*cache;
 
 	i = 0;
 	found = 0;

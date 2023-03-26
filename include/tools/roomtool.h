@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:42:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 19:55:01 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:35:54 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,5 +101,6 @@ void		apply_edge_drag_solo(t_vector2 *edge, t_vector2 snap, \
 									t_area *room, t_world *world);
 void		apply_edge_drag(t_vector2 *edge, t_vector2 cursor, \
 							t_area *room, t_world *world);
+void		triangulate(t_floorcalc *fc);
 
 #endif

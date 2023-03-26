@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 20:55:23 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 21:08:19 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,12 @@ void	world_sanitize_all_room_pointers(t_world *world)
 	}
 }
 
-t_entity_cache	entitycache_empty(uint32_t cachesize)
+t_entitycache	entitycache_empty(uint32_t cachesize)
 {
-	t_entity_cache	cache;
+	t_entitycache	cache;
 	int				i;
 
-	ft_bzero(&cache, sizeof(t_entity_cache));
+	ft_bzero(&cache, sizeof(t_entitycache));
 	cache.alloc_count = cachesize;
 	cache.entities = prot_memalloc(cache.alloc_count * sizeof(t_entity));
 	cache.sorted_entities = prot_memalloc(\

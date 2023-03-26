@@ -177,6 +177,7 @@ typedef struct s_render
 	t_screen_triangle	triangle;
 	t_render_statistics	rs;
 	bool				backface_check;
+	struct s_world		*world;
 }	t_render;
 
 typedef struct s_audiosample

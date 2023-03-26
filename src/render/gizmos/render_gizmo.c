@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 21:49:05 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 20:29:32 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:58:45 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,7 +199,7 @@ void render_gizmo2d(t_sdlcontext *sdl, t_vector2 pos,
 		vector3_to_screenspace(v2tov3(pos), *sdl), size, color);
 }
 
-static t_vector3 lookdirection2(t_vector2 angle)
+static t_vector3 look_direction2(t_vector2 angle)
 {
 	t_quaternion	temp;
 	t_mat4x4		matcamerarot;

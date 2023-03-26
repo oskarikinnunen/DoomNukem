@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 14:14:49 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 21:08:19 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void	*calculate_light_for_entities(t_test *ptr)
 {
 	int				i;
 	int				found;
-	t_entity_cache	*cache;
+	t_entitycache	*cache;
 	t_entity		*ent;
 	t_lighting		lighting;
 

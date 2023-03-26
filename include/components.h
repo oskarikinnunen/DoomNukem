@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 21:27:40 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 22:00:27 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 23:05:42 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ typedef struct s_component_definition
 }	t_component_definition;
 
 /* COMPONENT_AUDIOSOURCE */
-typedef struct s_audio_source
+typedef struct s_audiosource
 {
 	t_audio_sample	sample;
 	FMOD_CHANNEL	*channel;
@@ -87,13 +87,14 @@ typedef struct s_audio_source
 	int				random_delay_max;
 	float			_real_range;
 	uint32_t		_next_start;
-}	t_audio_source;
+}	t_audiosource;
 
 typedef struct s_interactable
 {
 	t_character_physics	phys;
 	t_anim				wiggle;
 	t_vector3			velocity;
+	t_vector2			pushv;
 	float				radius;
 	bool				is_grounded;
 	bool				interacted;
@@ -140,7 +141,7 @@ typedef struct s_boutton
 /*STRUCTDEF END, DONT REMOVE! THE CREATECOMPONENT SCRIPT DEPENDS ON THIS*/
 
 /* AUDIOSOURCE FUNCTIONS */
-bool					source_is_playing(t_audio_source *source);
+bool					source_is_playing(t_audiosource *source);
 void					assign_component_audiosource(t_component *component);
 void					assign_component_interactable(t_component *component);
 void					assign_component_light(t_component *component);
@@ -155,9 +156,12 @@ void					assign_component_boutton(t_component *component);
 /* ASSIGNFUNC END, DONT REMOVE! THE CREATECOMPONENT SCRIPT DEPENDS ON THIS */
 /* AUDIOSOURCE INTERNAL FUNCTIONS */
 void					_audiosource_start(t_sdlcontext *sdl, \
-									t_audio_source *source, t_vector3 *pos);
+									t_audiosource *source, t_vector3 *pos);
 void					_audiosource_2d_start(t_sdlcontext *sdl, \
-									t_audio_source	*source);
+									t_audiosource	*source);
+
+void					comp_audiosource_update(struct s_entity *entity, \
+												struct s_world *world);
 
 /*NPC*/
 void					assign_component_npc(t_component *component);
@@ -195,5 +199,9 @@ void					comp_storyevent_load_assets(struct s_entity *entity, \
 													struct s_world *world);
 void					comp_storyevent_allocate(struct s_entity *entity, \
 													struct s_world *world);
+
+/* INTERACTABLE FUNCTIONS */
+void					comp_interactable_update(struct s_entity *entity, \
+												struct s_world *world);
 
 #endif

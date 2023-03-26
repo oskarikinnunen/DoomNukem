@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 20:51:59 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 20:55:13 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:44:24 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ typedef struct s_npc
 	bool				hit;
 	t_path				path;
 	t_anim				push_anim;
-	t_audio_source		audio_source;
+	t_audiosource		audiosource;
 	float				movement_speed;
 	bool				npc_type_changed;
 	bool				aggroed;
@@ -72,6 +72,7 @@ typedef struct s_npc
 	t_npc_type			npc_type;
 }	t_npc;
 
+void	npc_get_hit(struct s_entity *entity, struct s_world *world);
 void	npc_play_sound(struct s_entity *entity, \
 						struct s_world *world, char *sound_name);
 void	npc_shoot(struct s_entity *entity, t_npc *npc, \

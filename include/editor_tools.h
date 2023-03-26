@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 22:01:04 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:43:40 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,10 +104,10 @@ typedef struct s_editor_raycast
 
 typedef struct s_editor_late_gui
 {
+	t_graphic_prefs	prefs;
 	t_point			*resolutions;
 	char			*str;
 	t_point			res;
-	int				i;
 }	t_editor_late_gui;
 
 typedef struct s_gui_init
@@ -232,6 +232,7 @@ t_tool			*get_room_tool(void);
 t_tool			*get_entity_tool(void);
 t_tool			*get_npc_tool(void);
 t_tool			*get_load_tool(void);
+void			player_update_gun(t_player *player, t_world *world);
 void			render_grid(t_world *world, t_vector3 position, int size, \
 							uint32_t color);
 bool			rooms_share_zspace(t_area *room1, t_area *room2);

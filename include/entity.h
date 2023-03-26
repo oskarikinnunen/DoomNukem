@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:10:49 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ typedef struct s_entity
 	bool				rigid;
 	bool				hidden;
 	bool				dont_save;
+	bool				destroy_obj;
+	bool				dynamic_lit;
 	t_entity_status		status;
 	t_bound				z_bound;
 	t_anim				animation;
@@ -103,13 +105,13 @@ typedef struct s_gun
 	float		aim_lerp;
 }	t_gun;
 
-typedef struct s_entity_cache
+typedef struct s_entitycache
 {
 	t_entity	*entities;
 	uint32_t	existing_entitycount;
 	uint32_t	alloc_count;
 	t_entity	**sorted_entities;
-}	t_entity_cache;
+}	t_entitycache;
 
 void		entity_set_component_functions(t_entity *entity, \
 										struct s_world *world);
@@ -151,6 +153,7 @@ void		render_entitys_world_triangles(t_sdlcontext *sdl, \
 									t_render *render, t_entity *entity);
 void		calculate_triangles_for_entity(t_entity *entity, \
 											struct s_world *world);
+void		dynamic_lit(t_entity *entity, struct s_world *world, int index);
 
 uint32_t	update_pixel_brightness(uint32_t light, uint32_t clr);
 uint32_t	get_lighting_for_pixel(t_lighting *lighting, \

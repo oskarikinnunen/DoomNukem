@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 16:47:41 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:15:41 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:36:42 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static void	createmode_drawgui(t_editor *ed,
 	else
 		gui_empty_vertical(20, gui);
 	if (gui_room_presets(dat->room, gui, &ed->world))
-		printf("after roompresets, edgecount is %i \n", dat->room->edge_count);
+		printf("after roompresets, edge_count is %i \n", dat->room->edge_count);
 	gui_end(gui);
 }
 

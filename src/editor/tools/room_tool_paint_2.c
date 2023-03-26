@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 20:30:48 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 20:26:36 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:32:53 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static void	area_apply_walltex_if_hit(t_area *area, t_entity *hit_ent,
 	}
 }
 
-static void	area_apply_floortex_if_hit(t_area *area, t_entity *hit_ent,
+static void	area_apply_floor_tex_if_hit(t_area *area, t_entity *hit_ent,
 		t_img *tex, t_world *world)
 {
 	int	i;
@@ -79,7 +79,7 @@ void	paint_room(t_entity *hit_ent, t_img *tex, t_world *world)
 	{
 		area = l->content;
 		area_apply_walltex_if_hit(area, hit_ent, tex, world);
-		area_apply_floortex_if_hit(area, hit_ent, tex, world);
+		area_apply_floor_tex_if_hit(area, hit_ent, tex, world);
 		area_apply_ceilingtex_if_hit(area, hit_ent, tex, world);
 		l = l->next;
 	}

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/05 18:03:40 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:08:19 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ bool	raycast_plane(t_ray r, t_raycast_info *info, float plane_z)
 //TODO: f_Infinity
 bool	raycast(t_ray r, t_raycast_info *info, t_world *world)
 {
-	t_entity_cache		*cache;
+	t_entitycache		*cache;
 	t_editor_raycast	erc;
 
 	cache = &world->entitycache;

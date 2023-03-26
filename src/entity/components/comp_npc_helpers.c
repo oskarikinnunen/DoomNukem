@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:39:11 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 22:10:04 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:44:24 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,12 @@
 void	npc_play_sound(t_entity *entity, t_world *world, char *soundname)
 {
 	t_npc			*npc;
-	t_audio_source	source;
+	t_audiosource	source;
 
 	if (entity->component.type != COMP_NPC)
 		return ;
 	npc = entity->component.data;
-	source = npc->audio_source;
+	source = npc->audiosource;
 	source.sample = get_sample(world->sdl, soundname);
 	source._real_range = 250.0f;
 	source.volume = 1.0f;

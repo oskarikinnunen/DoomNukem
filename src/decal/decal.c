@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 17:39:00 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 20:29:41 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:30:08 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,12 @@ void	decal(struct s_world *world, t_decal decal)
 	t_vector3	new_up;
 	t_vector3	new_right;
 	float		nearside;
+	t_entity	*entity;
 
 	obj = object_plane(world->sdl);
 	obj->materials->img = decal.img;
-	spawn_entity(world, obj);
+	entity = spawn_entity(world, obj);
+	ft_strncpy(entity->object_name.str, "decal", 6);
 	if (vector3_dot(decal.normal, world->sdl->render.camera.look_dir) >= 0.0f)
 		decal.normal = vector3_negative(decal.normal);
 	decal.position = vector3_add(decal.position, decal.normal);

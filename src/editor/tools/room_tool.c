@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:12:47 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 23:09:44 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	room_tool_update_nonemode(t_editor *ed,
 void	room_tool_update(t_editor *ed, t_sdlcontext *sdl)
 {
 	t_room_tool_data	*dat;
-	t_ray			ray;
+	t_ray				ray;
 
 	dat = (t_room_tool_data *)ed->tool->tool_data;
 	room_tool_raycast(ed, dat);

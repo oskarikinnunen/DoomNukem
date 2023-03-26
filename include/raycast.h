@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 20:43:35 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 20:43:41 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:47:57 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 struct	s_entity;
 struct	s_world;
 
-typedef struct s_raycastinfo
+typedef struct s_raycast_info
 {
 	struct s_entity	*hit_entity;
 	t_vector3		hit_pos;

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 22:11:20 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ typedef struct s_world
 	t_lighting			lighting;
 	t_list				*arealist;
 	t_list				*ramps;
-	t_entity_cache		entitycache;
+	t_entitycache		entitycache;
 	t_entity			skybox;
 	bool				ceiling_toggle;
 	t_navigation		nav;
@@ -171,6 +171,7 @@ void			world_init_rooms(t_world *world);
 
 //TODO: move to room.h
 void			_room_initwalls(t_world *world, t_area *room);
+void			_room_initwalls_shallow(t_world *world, t_area *room);
 t_wall			*find_wall(t_wall wall, t_area *room);
 void			free_floor(t_world *world, t_area *room);
 void			free_ceilings(t_world *world, t_area *room);
@@ -357,6 +358,7 @@ void			recalculate_pointlight(t_world *world);
 void			allocate_map_for_entities(t_world *world);
 void			calculate_lighting(struct s_world *world);
 void			calculate_texture_for_entities(struct s_world *world);
+void			parse_entity_texture(int index, t_entity *entity);
 
 void			update_entitycache(t_sdlcontext *sdl, t_world *world, \
 									t_render *render);

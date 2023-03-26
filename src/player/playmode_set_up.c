@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 19:26:59 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 21:23:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static void	world_add_ramp(t_world *world, t_entity *entity)
 // then go through the triangles
 static void	playmode_preprocess_world(t_world *world)
 {
-	t_entity_cache	*cache;
+	t_entitycache	*cache;
 	t_object		*ramp;
 	int				i;
 
@@ -63,7 +63,7 @@ static void	playmode_preprocess_world(t_world *world)
 t_vector3	find_playerspawn(t_world *world)
 {
 	int				i;
-	t_entity_cache	*cache;
+	t_entitycache	*cache;
 	t_entity		*ent;
 	t_vector3		result;
 

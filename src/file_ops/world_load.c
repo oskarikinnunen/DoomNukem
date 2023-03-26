@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 14:55:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:06:41 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 23:09:26 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ static void	world_load_basic_ent(char *level, t_world *world)
 
 	doomlog(LOG_NORMAL, "LOADING BASIC_ENT");
 	e_list = load_chunk(level, "BENT", sizeof(t_game_string)
-			+ sizeof(t_transform) + sizeof(t_component_type) + sizeof(uint32_t));
+			+ sizeof(t_transform) + sizeof(t_component_type)
+			+ sizeof(uint32_t));
 	load_basic_ent_cache_from_list(world, e_list);
 	listdel(&e_list);
 }

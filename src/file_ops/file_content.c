@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 20:10:06 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 21:04:49 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:26:11 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void	restart_fd(int fd, int counter)
 t_file_content	load_filecontent(int fd, char *asset_name)
 {
 	t_file_content	fc;
-	int				rbytes;
+	ssize_t			rbytes;
 	char			buf[CHUNKSIZE + 1];
 	int				counter;
 

@@ -6,13 +6,13 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:41 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:40:10 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:44:24 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-bool	source_is_playing(t_audio_source *source)
+bool	source_is_playing(t_audiosource *source)
 {
 	FMOD_BOOL	isplaying;
 
@@ -25,7 +25,7 @@ bool	source_is_playing(t_audio_source *source)
 	return (isplaying);
 }
 
-void	_audiosource_2d_start(t_sdlcontext *sdl, t_audio_source *source)
+void	_audiosource_2d_start(t_sdlcontext *sdl, t_audiosource *source)
 {
 	FMOD_Channel_SetPaused(source->channel, true);
 	if (FMOD_System_PlaySound(sdl->audio.system, source->sample.sound, \
@@ -40,7 +40,7 @@ void	_audiosource_2d_start(t_sdlcontext *sdl, t_audio_source *source)
 }
 
 void	_audiosource_start(t_sdlcontext *sdl,
-							t_audio_source *source, t_vector3 *pos)
+							t_audiosource *source, t_vector3 *pos)
 {
 	FMOD_Channel_SetPaused(source->channel, true);
 	if (FMOD_System_PlaySound(sdl->audio.system, source->sample.sound, \
