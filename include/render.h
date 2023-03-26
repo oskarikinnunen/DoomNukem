@@ -35,6 +35,8 @@
 # define FONT_SIZE_DEFAULT 8
 # define FONT_SIZE_COUNT 4
 
+# define RCRCL_SIDES 16
+
 typedef struct s_step
 {
 	float	location;
@@ -253,6 +255,12 @@ typedef struct s_triangle_draw
 	uint32_t		clr;
 }	t_triangle_draw;
 
+typedef struct s_quat_line
+{
+	t_quaternion	start;
+	t_quaternion	end;
+}	t_quat_line;
+
 void	save_graphics_prefs(t_graphicprefs prefs);
 t_graphicprefs	get_prefs_from_sdl(t_sdlcontext *sdl);
 t_graphicprefs	load_graphicsprefs();
@@ -287,7 +295,6 @@ void		free_render(t_render render);
 void		calculate_matview(t_camera *camera);
 
 /* RENDER */
-void				render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size);
 void				render_gizmo3d(t_sdlcontext *sdl, t_vector3 pos, int size, uint32_t color);
 void				render_gizmo2d(t_sdlcontext *sdl, t_vector2 pos, int size, uint32_t color);
 void				render_ball(t_sdlcontext *sdl, t_vector3 pos, float size, uint32_t clr);
