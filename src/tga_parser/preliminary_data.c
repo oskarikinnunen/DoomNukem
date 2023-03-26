@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   preliminary_info.c                                 :+:      :+:    :+:   */
+/*   preliminary_data.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 16:12:58 by raho              #+#    #+#             */
-/*   Updated: 2023/03/03 20:09:08 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 11:59:29 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,9 +90,7 @@ void	save_pixel_order(t_tga *tga)
 
 void	save_image_id(int fd, char *filename, t_tga *tga)
 {
-	tga->image_data.image_id = ft_memalloc(tga->header.id_length + 1);
-	if (tga->image_data.image_id == NULL)
-		doomlog(LOG_EC_MALLOC, filename);
+	tga->image_data.image_id = prot_memalloc(tga->header.id_length + 1);
 	tga->image_data.image_id[tga->header.id_length] = '\0';
 	if (read(fd, tga->image_data.image_id, tga->header.id_length) == -1)
 		doomlog(LOG_EC_READ, filename);

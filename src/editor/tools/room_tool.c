@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 19:27:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 11:52:56 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	gui_start(gui);
 	if (gui_shortcut_button("New room", 'N', gui))
 	{
-		dat->room = ft_memalloc(sizeof(t_area));
+		dat->room = prot_memalloc(sizeof(t_area));
 		ft_strncpy_term(dat->room->s_floortex.str, "concrete02.cng", 60);
 		ft_strncpy_term(dat->room->s_ceiltex.str, "concrete02.cng", 60);
 		dat->rtm = rtm_create;

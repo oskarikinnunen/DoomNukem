@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 17:59:11 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 11:53:23 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	comp_healthpack_allocate(t_entity *entity, t_world *world)
 {
 	t_healthpack	*healthpack;
 
-	entity->component.data = ft_memalloc(sizeof(t_healthpack));
+	entity->component.data = prot_memalloc(sizeof(t_healthpack));
 	entity->component.data_size = sizeof(t_healthpack);
 	healthpack = (t_healthpack *)entity->component.data;
 }

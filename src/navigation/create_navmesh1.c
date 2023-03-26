@@ -6,11 +6,12 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 17:35:57 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/25 22:14:07 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 12:05:20 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
+#include "movement_defs.h"
 
 static t_world_triangle	*add_to_clip_list(t_navmesh_info info,
 											t_world_triangle *arr)
@@ -110,7 +111,7 @@ static void	clip_navmesh(t_navigation *nav, t_entity *ent, t_world *world)
 }
 
 //TODO: change to use world->roomlist floors
-void	malloc_space_for_navmesh(t_world *world)
+void	create_navmesh(t_world *world)
 {
 	int			i;
 	int			found;

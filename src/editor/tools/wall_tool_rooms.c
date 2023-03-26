@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 16:25:55 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 11:53:06 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -525,6 +525,6 @@ void	room_makeceilings(t_world *world, t_area *room)
 	room->ceilingcount = i;
 	
 	/*free_floor(world, room);
-	room->floors = ft_memalloc(sizeof(t_meshtri) * 1000);
+	room->floors = prot_memalloc(sizeof(t_meshtri) * 1000);
 	_room_triangulate_floors(world, room);*/
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_npc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 18:57:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 14:54:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 11:39:47 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "doomnukem.h"
 #include "editor_tools.h"
 #include "movement_defs.h"
+#include "npc.h"
 #include <stdlib.h>
 #include <time.h>
 
@@ -55,7 +56,7 @@ static void	npc_pathfind_step(t_entity *entity, t_npc *npc, t_world *world)
 	move = vector2_mul(vector2_normalise(move), world->clock.delta
 			* PLAYER_ACCELERATION);
 	capsule_add_xy_velocity(move, &npc->phys, world);
-	entity_rotatetowards_xy(entity, enterpoint_2d, 0.015f * world->clock.delta);
+	entity_rotate_towards_xy(entity, enterpoint_2d, 0.015f * world->clock.delta);
 	if (vector3_sqr_dist(entity->transform.position,
 			npc->path.path[npc->path.ai].enter_point) < 160.1f
 		&& npc->path.ai < npc->path.bi)
@@ -90,7 +91,7 @@ void	comp_npc_update(t_entity *entity, t_world *world)
 		{
 			if (world->clock.time > npc->next_shoot_time)
 				npc_shoot(entity, npc, world);
-			entity_rotatetowards_xy(entity,
+			entity_rotate_towards_xy(entity,
 				v3tov2(npc->lastseen_playerpos), 0.015f * world->clock.delta);
 		}
 		if (npc->state == NPC_STATE_AGGRO_PUSH)

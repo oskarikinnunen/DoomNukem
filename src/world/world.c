@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 21:09:04 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 12:01:51 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,6 @@ void	update_world3d(t_world *world, t_render *render)
 	sort_entitycache(world, render->camera.position);
 	update_entitycache(sdl, world, render);
 	bitmask_to_pixels(sdl);
-	show_navmesh(world);
 	rescale_surface(sdl);
 	lateupdate_entitycache(sdl, world);
 	if (!world->debug_gui->hidden)

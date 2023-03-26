@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 17:07:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 15:40:03 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 11:52:48 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ t_tool	*get_room_tool(void)
 
 	if (tool.tooldata == NULL)
 	{
-		tool.tooldata = ft_memalloc(sizeof(t_roomtooldata));
+		tool.tooldata = prot_memalloc(sizeof(t_roomtooldata));
 		dat = (t_roomtooldata *)tool.tooldata;
 		dat->room = NULL;
 	}

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 18:04:22 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 18:05:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 11:53:15 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	comp_boutton_allocate(t_entity *entity, t_world *world)
 {
 	t_boutton	*boutton;
 
-	entity->component.data = ft_memalloc(sizeof(t_boutton));
+	entity->component.data = prot_memalloc(sizeof(t_boutton));
 	entity->component.data_size = sizeof(t_boutton);
 	boutton = (t_boutton *)entity->component.data;
 }

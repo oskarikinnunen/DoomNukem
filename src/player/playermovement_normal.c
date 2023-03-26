@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playermovement_normal.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:22:48 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 14:54:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 11:49:01 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ void	playermovement_normal(t_player *player, t_world *world)
 	player_update_physics(player, world);
 	player_rotate(player);
 	player_move(player, world);
-	crouchupdate(player, world);
+	crouch_update(player, world);
 	player_jump(player, world);
 	player_update_animations(player, world);
 	player_update_physics(player, world);

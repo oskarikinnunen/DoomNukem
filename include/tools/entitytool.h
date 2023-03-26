@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 15:28:31 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 22:32:39 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 11:32:19 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,10 @@ void	entitytool_entitygui_init(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata
 void	entitytool_worldgui_init(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat);
 void	entitytool_objectgui_init(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat);
 void	entity_tool_raycast(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat);
+void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat);
+void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat);
+void	gui_entitymode(t_entity *entity, t_autogui *gui, t_world *world);
+void	gui_component(t_entity *entity, t_autogui *gui, t_world *world);
+void	findbounds(t_entity *ent);
 
 #endif

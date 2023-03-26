@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   comp_npc_states_1.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 17:07:49 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/13 17:13:32 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 11:48:11 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "entity.h"
 #include "doomnukem.h"
 #include "editor_tools.h"
+#include "npc.h"
 
 void	npc_switch_to_chase_state(t_entity *entity,
 							t_npc *npc, t_world *world)

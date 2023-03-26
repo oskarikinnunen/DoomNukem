@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   point_light.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:01:16 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/23 19:38:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 11:56:03 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ static void	update_cubemap_cameras(t_entity *entity)
 	i = 0;
 	while (i < 6)
 	{
-		light->cubemap.shadowmaps[i] = (float *)malloc(sizeof(float) * \
+		light->cubemap.shadowmaps[i] = (float *)prot_memalloc(sizeof(float) * \
 		(light->cubemap.resolution.x * light->cubemap.resolution.y));
 		light->cubemap.cameras[i].position = light->world_position;
 		light->cubemap.cameras[i].matproj = matproj;

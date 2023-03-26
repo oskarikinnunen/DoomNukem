@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   occlusion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 14:40:03 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/24 21:23:40 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/26 12:00:59 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ t_bitmask	init_bitmask(t_sdlcontext *sdl)
 {
 	t_bitmask	bitmask;
 	
-	bitmask.tile = malloc(sizeof(t_tile) * ((sdl->window_h * sdl->window_w) / 64));
+	bitmask.tile = prot_memalloc(sizeof(t_tile) * \
+			((sdl->window_h * sdl->window_w) / 64));
 	bitmask.bitmask_chunks.x = sdl->window_w / 16;
 	bitmask.bitmask_chunks.y = sdl->window_h / 8;
 	bitmask.tile_chunks.x = sdl->window_w / 8;

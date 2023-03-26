@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 13:07:06 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/25 13:00:34 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 11:55:53 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,7 @@ static void	buffer_triangles(int start, int i, int index, t_entity *entity)
 	lighting.map = &entity->map[index];
 	lighting.img = entity->obj->materials[index].img;
 	size = lighting.map->size.x * lighting.map->size.y * sizeof(bool);
-	lighting.overdraw = malloc(size);
-	if (lighting.overdraw == NULL)
-		doomlog(LOG_FATAL, "Malloc failed in calculate_texture.c");
+	lighting.overdraw = prot_memalloc(size);
 	ft_bzero(lighting.overdraw, size);
 	for (int y = 0; y < lighting.map->size.y; y++)
 	{
@@ -48,9 +46,6 @@ static void	buffer_triangles(int start, int i, int index, t_entity *entity)
 	}
 	free(lighting.overdraw);
 	return ; // early return;
-	if (lighting.overdraw == NULL)
-		doomlog(LOG_FATAL, "Malloc failed in calculate_texture.c");
-	ft_bzero(lighting.overdraw, size);
 	while (start <= i)
 	{
 		vertex = 0;
@@ -97,7 +92,7 @@ void	calculate_texture_for_entities(t_world *world)
 
 	thread.func = (void *)calculate_texture_for_entity;
 	thread.struct_size = sizeof(t_entity);
-	thread.structs = malloc(sizeof(t_entity) * THREAD);
+	thread.structs = prot_memalloc(sizeof(t_entity) * THREAD);
 	thread.count = 0;
 	ft_bzero(thread.structs, sizeof(t_entity) * THREAD);
 	i = 0;

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 11:37:18 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 11:45:47 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 11:45:15 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ static bool	edge_is_legal_in_all_areas_that_have_it(t_vector2 *edge,
 	return (legal);
 }
 
-void	applyedgedrag_solo(t_vector2 *edge, t_vector2 snap,
+void	apply_edge_drag_solo(t_vector2 *edge, t_vector2 snap,
 		t_area *room, t_world *world)
 {
 	int			i;

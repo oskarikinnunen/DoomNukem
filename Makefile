@@ -6,7 +6,7 @@
 #    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/25 22:13:43 by raho             ###   ########.fr        #
+#    Updated: 2023/03/26 11:25:31 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -237,7 +237,8 @@ SRCFILES= main.c img.c deltatime.c \
 		entity/components/comp_auto_door.c \
 		entity/components/comp_story_events1.c \
 		entity/components/comp_story_events2.c \
-		entity/components/comp_boutton.c #.ENDSRC. CREATECOMPONENT SCRIPT DEPENDS ON THIS SO DONT REMOVE
+		entity/components/comp_boutton1.c \
+		entity/components/comp_boutton2.c #.ENDSRC. CREATECOMPONENT SCRIPT DEPENDS ON THIS SO DONT REMOVE
 VECTORSRCFILES= conversions.c \
 		conversions2.c \
 		matrix_functions3.c \
@@ -284,7 +285,7 @@ INCLUDE= -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include \
 			-I$(INSTALLED_LIBS_DIR)/include/SDL2/ \
 			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
 CC= gcc
-CFLAGS= $(INCLUDE) -g -finline-functions -O2 #-MMD #-march=native
+CFLAGS= $(INCLUDE) -g #-finline-functions -O2 #-MMD #-march=native
 LDFLAGS = -Wl,-rpath $(INSTALLED_LIBS_DIR)/lib
 
 UNAME= $(shell uname)

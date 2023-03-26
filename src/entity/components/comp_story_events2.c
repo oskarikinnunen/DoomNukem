@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 17:50:20 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 22:31:00 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 11:53:44 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ void	comp_storyevent_allocate(t_entity *entity, t_world *world)
 {
 	t_storyevent	*storyevent;
 
-	entity->component.data = ft_memalloc(sizeof(t_storyevent));
+	entity->component.data = prot_memalloc(sizeof(t_storyevent));
 	entity->component.data_size = sizeof(t_storyevent);
 	storyevent = (t_storyevent *)entity->component.data;
 }

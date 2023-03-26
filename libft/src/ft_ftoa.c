@@ -6,24 +6,16 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 11:53:37 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 18:26:15 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 11:23:23 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include <stdio.h>
 
-//TODO: don't use snprintf
+//TODO: does this need to be more accurate?
 char	*ft_ftoa(float f, int dec)
 {
-	/* char	*str;
-
-	str = ft_strnew(32);
-	if (f >= 0.01f)
-		snprintf(str, 32, "%.2f", f);
-	else
-		snprintf(str, 32, "%.6f", f);
-	return (str); */
 	char	*final;
 	char	*strinteger;
 	char	*strdecimal;
@@ -36,7 +28,11 @@ char	*ft_ftoa(float f, int dec)
 	neg = (f < 0.0f);
 	strinteger = ft_itoa(ft_abs(i));
 	strdecimal = ft_itoa(ft_abs((int)f));
-	final = ft_strnew(ft_strlen(strinteger) + ft_strlen(strdecimal) + 1 + neg);
+	if (strinteger == NULL || strdecimal == NULL)
+		return (NULL);
+	final = ft_strnew(ft_strlen(strinteger) + ft_strlen(strdecimal) + neg + 2);
+	if (final == NULL)
+		return (NULL);
 	if (neg)
 		ft_strcat(final, "-");
 	ft_strcat(final, strinteger);

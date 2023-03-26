@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_light.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 18:55:15 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/26 11:53:30 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	comp_light_allocate(t_entity *entity, t_world *world)
 	t_light		*light;
 	int			i;
 
-	entity->component.data = ft_memalloc(sizeof(t_light));
+	entity->component.data = prot_memalloc(sizeof(t_light));
 	entity->component.data_size = sizeof(t_light);
 	light = (t_light *)entity->component.data;
 	light->radius = 300.0f;

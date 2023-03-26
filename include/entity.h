@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 17:51:08 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 11:38:22 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,8 @@ typedef struct s_entitycache
 }	t_entitycache;
 
 void	entity_set_component_functions(t_entity *entity, struct s_world *world);
+void	entity_rotate_towards_xy(t_entity *entity,
+									t_vector2 pos, float delta);
 
 /* OCCLUSION*/
 void	render_bitmask_row(int ax, int bx, float aw, float bw, int y, t_sdlcontext *sdl);

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:22:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 22:14:25 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 11:53:35 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ static void	comp_npc_allocate(t_entity *entity, t_world *world)
 {
 	t_npc	*npc;
 
-	entity->component.data = ft_memalloc(sizeof(t_npc));
+	entity->component.data = prot_memalloc(sizeof(t_npc));
 	entity->component.data_size = sizeof(t_npc);
 	npc = entity->component.data;
 	ft_bzero(entity->component.data, sizeof(t_npc));

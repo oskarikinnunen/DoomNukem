@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 18:11:30 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 11:53:11 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	comp_auto_door_allocate(t_entity *entity, t_world *world)
 {
 	t_auto_door	*auto_door;
 
-	entity->component.data = ft_memalloc(sizeof(t_auto_door));
+	entity->component.data = prot_memalloc(sizeof(t_auto_door));
 	entity->component.data_size = sizeof(t_auto_door);
 	auto_door = (t_auto_door *)entity->component.data;
 	auto_door->original_z = entity->transform.position.z;

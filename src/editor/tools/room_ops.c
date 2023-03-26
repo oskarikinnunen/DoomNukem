@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_ops.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 17:45:17 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 20:00:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 11:52:42 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ t_area	*world_add_room(t_world *world, t_area *room)
 	t_area	*worldroom;
 
 	ft_strncpy_term(room->name, "area", 30);
-	worldroom = ft_memalloc(sizeof(t_area));
+	worldroom = prot_memalloc(sizeof(t_area));
 	ft_strncpy_term(worldroom->s_floortex.str, room->s_floortex.str, 60);
 	ft_strncpy_term(worldroom->s_ceiltex.str, room->s_ceiltex.str, 60);
 	ft_memcpy(worldroom->edges, room->edges, sizeof(worldroom->edges));

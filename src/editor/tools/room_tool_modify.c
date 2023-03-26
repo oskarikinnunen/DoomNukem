@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool_modify.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 17:48:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 19:25:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 11:45:35 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ static void	modifymode_gui(t_editor *ed, t_roomtooldata *dat)
 	gui_labeled_bool("Legal: ", room_is_legal(&ed->world, dat->room), gui);
 	gui_labeled_int("Edges: ", dat->room->edgecount, gui);
 	gui_labeled_int("Walls: ", dat->room->wallcount, gui);
-	if (gui_roompresets(dat->room, gui, &ed->world))
+	if (gui_room_presets(dat->room, gui, &ed->world))
 		room_init(dat->room, &ed->world);
 	if (gui_shortcut_button("Delete", KEYS_DELETEMASK, gui))
 	{
@@ -102,7 +102,7 @@ void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat)
 		return ;
 	room_tool_node(cursor, dat, ed);
 	if (dat->held_edge == NULL)
-		potentialnode(cursor, dat, ed);
+		potential_node(cursor, dat, ed);
 	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
 	{
 		dat->room = NULL;

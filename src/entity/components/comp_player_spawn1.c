@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 17:57:49 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 11:53:40 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	comp_playerspawn_allocate(t_entity *entity, t_world *world)
 {
 	t_playerspawn	*playerspawn;
 
-	entity->component.data = ft_memalloc(sizeof(t_playerspawn));
+	entity->component.data = prot_memalloc(sizeof(t_playerspawn));
 	entity->component.data_size = sizeof(t_playerspawn);
 	playerspawn = (t_playerspawn *)entity->component.data;
 }

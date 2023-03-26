@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool_addnode.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 10:58:19 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 18:22:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 11:45:35 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void	addnode(t_vector2 newnode, t_area *room, int node_i)
 	printf("copied %i edges before new edge \n", node_i - 1);
 }
 
-bool	potentialnode(t_vector3 cursor, t_roomtooldata *dat, t_editor *ed)
+bool	potential_node(t_vector3 cursor, t_roomtooldata *dat, t_editor *ed)
 {
 	int		i;
 	t_line	l;

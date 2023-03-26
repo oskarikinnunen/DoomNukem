@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:23:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 19:40:27 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 11:35:58 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static float	current_maxvelocity(t_player *player)
 
 t_bound	get_bound(t_character_physics *cp, t_world *world);
 
-void	crouchupdate(t_player *player, t_world *world)
+void	crouch_update(t_player *player, t_world *world)
 {
 	t_bound	bound;
 

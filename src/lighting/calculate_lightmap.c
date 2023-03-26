@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 14:14:49 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/25 13:00:34 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 11:55:00 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,7 @@ static void	buffer_triangles(
 	size_t				size;
 
 	size = lighting->map->size.x * lighting->map->size.y * sizeof(bool);
-	lighting->overdraw = malloc(size);
-	if (lighting->overdraw == NULL)
-		doomlog(LOG_FATAL, "Malloc failed in bake_lighting.c");
+	lighting->overdraw = prot_memalloc(size);
 	ft_bzero(lighting->overdraw, size);
 	while (start <= i)
 	{
@@ -120,7 +118,7 @@ void	calculate_lighting(t_world *world)
 	found = 0;
 	thread.func = (void *)calculate_light_for_entities;
 	thread.struct_size = sizeof(t_test);
-	thread.structs = malloc(sizeof(t_test) * THREAD);
+	thread.structs = prot_memalloc(sizeof(t_test) * THREAD);
 	thread.count = 0;
 	ft_bzero(thread.structs, sizeof(t_test) * THREAD);
 	while (found < world->entitycache.existing_entitycount

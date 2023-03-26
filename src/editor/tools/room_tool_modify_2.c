@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool_modify_2.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 17:52:12 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 17:56:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 11:45:29 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ t_areastatus	room_get_areastatus(t_area area)
 	return (status);
 }
 
-bool	gui_roompresets(t_area *room, t_autogui *gui, t_world *world)
+bool	gui_room_presets(t_area *room, t_autogui *gui, t_world *world)
 {
 	t_areastatus	status;
 

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 13:48:22 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/25 22:14:30 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 11:54:48 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,8 @@ static void	allocate_map(t_entity *entity, int index, t_vector2 max)
 	map = &entity->map[index];
 	map->size = (t_point){ceilf(max.x) + 1, ceilf(max.y) + 1};
 	map->img_size = entity->obj->materials[index].img->size;
-	map->texture = malloc(sizeof(uint32_t) * map->size.x * map->size.y);
-	map->lightmap = malloc(sizeof(uint32_t) * map->size.x * map->size.y);
-	if (map->texture == NULL || map->lightmap == NULL)
-		doomlog(LOG_FATAL, "Malloc fail in bake_lighting.c");
+	map->texture = prot_memalloc(sizeof(uint32_t) * map->size.x * map->size.y);
+	map->lightmap = prot_memalloc(sizeof(uint32_t) * map->size.x * map->size.y);
 	clr = get_light_amount(LIGHT_AMBIENT, INT_MAX, 0);
 	ft_memset(map->lightmap, clr, sizeof(uint32_t) * map->size.x * map->size.y);
 }
@@ -85,10 +83,8 @@ static void	allocate_map_for_entity(t_entity *entity, t_world *world)
 		clear_map_for_entity(entity);
 	if (obj == NULL || obj->uv_count == 0 || entity->world_triangles == NULL)
 		return ;
-	entity->map = malloc(sizeof(t_map) * entity->obj->material_count);
+	entity->map = prot_memalloc(sizeof(t_map) * entity->obj->material_count);
 	ft_bzero(entity->map, sizeof(t_map) * entity->obj->material_count);
-	if (entity->map == NULL)
-		doomlog(LOG_FATAL, "Malloc fail in bake_lighting.c");
 	for_each_triangle(entity);
 }
 

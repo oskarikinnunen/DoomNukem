@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 22:24:04 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 12:05:05 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -312,7 +312,7 @@ void	moveplayer(t_player *player, t_input *input, t_world *world);
 bool	pathfind(t_world *world, t_path *path); //TODO: deprecated
 t_path	path_find(t_vector3 start_vec, t_vector3 end_vec, t_world *world);
 void	create_navmesh(t_world *world);
-void	malloc_space_for_navmesh(t_world *world);
+void	create_space_for_navmesh(t_world *world);
 void	check_neighbors(t_navigation *nav, int i, t_vector3 start, t_vector3 end);
 void	show_navmesh(t_world *world);
 void	*ft_realloc(void *src, size_t dest_size, size_t src_size);

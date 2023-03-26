@@ -50,4 +50,12 @@
 */
 
 
+void	player_update_physics(t_player *player, t_world *world);
+void	player_rotate(t_player *player);
+void	player_move(t_player *player, t_world *world);
+void	crouch_update(t_player *player, t_world *world);
+void	player_jump(t_player *player, t_world *world);
+void	player_update_animations(t_player *player, t_world *world);
+void	player_ceiling_check(t_player *player);
+
 #endif

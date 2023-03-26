@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:32:20 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 12:51:44 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 11:57:18 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,9 @@ static char	*replace_extension(char *file, char *extension)
 	int		len;
 
 	len = ft_strlen(file);
-	new = (char *)malloc(sizeof(char) * len + 1);
-	if (new != NULL)
-	{
-		ft_strcpy(new, file);
-		ft_strcpy(&new[len - 3], extension);
-	}
+	new = (char *)prot_memalloc(sizeof(char) * len + 1);
+	ft_strcpy(new, file);
+	ft_strcpy(&new[len - 3], extension);
 	return (new);
 }
 

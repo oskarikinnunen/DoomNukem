@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_interactable.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 06:20:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/06 17:36:40 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 11:53:27 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ void	comp_interactable_allocate(t_entity *entity, t_world *world)
 {
 	t_interactable	*inter;
 
-	entity->component.data = ft_memalloc(sizeof(t_interactable));
+	entity->component.data = prot_memalloc(sizeof(t_interactable));
 	entity->component.data_size = sizeof(t_interactable);
 	inter = (t_interactable *)entity->component.data;
 	inter->radius = 7.0f;

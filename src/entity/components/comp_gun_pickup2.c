@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 18:01:54 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 18:02:24 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 11:53:20 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	comp_gun_pickup_allocate(t_entity *entity, t_world *world)
 {
 	t_gun_pickup	*gun_pickup;
 
-	entity->component.data = ft_memalloc(sizeof(t_gun_pickup));
+	entity->component.data = prot_memalloc(sizeof(t_gun_pickup));
 	entity->component.data_size = sizeof(t_gun_pickup);
 	gun_pickup = (t_gun_pickup *)entity->component.data;
 	gun_pickup->original_z = entity->transform.position.z;

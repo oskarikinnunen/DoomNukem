@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   roomtool.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:42:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 19:46:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 11:45:53 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,9 @@ bool		isconnect(t_vector2 v2, t_area *room);
 t_vector2	vector2_flipxy(t_vector2 vec);
 void		highlight_room(t_editor *ed, t_sdlcontext *sdl, t_area *room, uint32_t color);
 //void		highlight_roomwalls(t_editor *ed, t_sdlcontext sdl, t_room room, uint32_t color);
-t_meshtri	*selectedfloor(t_editor *ed, t_sdlcontext sdl, t_area *room);
-t_wall		*selectedwall(t_editor *ed, t_sdlcontext sdl, t_area *room);
-t_area		*selectedroom(t_editor *ed, t_sdlcontext sdl);
+t_meshtri	*selected_floor(t_editor *ed, t_sdlcontext sdl, t_area *room);
+t_wall		*selected_wall(t_editor *ed, t_sdlcontext sdl, t_area *room);
+t_area		*selecte_droom(t_editor *ed, t_sdlcontext sdl);
 t_vector2	next_edge(t_area *room, int i);
 
 bool		is_joined(t_vector2 edge, t_area	*room, t_world *world);
@@ -69,7 +69,7 @@ void		paint_room(t_entity *hit_ent, t_img *tex, t_world *world);
 void		room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat);
 
 /* ROOM_TOOL_ADDNODE.C */
-bool	potentialnode(t_vector3 cursor, t_roomtooldata *dat, t_editor *ed);
+bool	potential_node(t_vector3 cursor, t_roomtooldata *dat, t_editor *ed);
 
 /* ROOM_TOOL_NODE.C */
 void		draw_node_indicator(t_vector3 cursor, t_roomtooldata *dat, t_editor *ed);
@@ -78,7 +78,7 @@ t_vector2	*closest_edge(t_area *room, t_vector3 rc);
 
 //modifymode
 void	modifymode(t_editor *ed, t_sdlcontext sdl, t_roomtooldata *dat);
-bool	gui_roompresets(t_area *room, t_autogui *gui, t_world *world);
+bool	gui_room_presets(t_area *room, t_autogui *gui, t_world *world);
 
 t_area	*get_raycast_room(t_raycastinfo info, t_world *world);
 
@@ -87,6 +87,14 @@ void	recalculate_rooms_with_edge(t_editor *ed, t_vector2 edge);
 void	remove_edge(t_world *world, t_area *room, t_vector2 *edge);
 
 int		_room_find_edge_index(t_vector2 edge, t_area *room);
+t_vector2	*_room_find_edge(t_vector2 edge, t_area *room);
+
+void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat);
+int		next_index(int cur, t_area *room);
+
+void	apply_edge_drag_solo(t_vector2 *edge, t_vector2 snap, t_area *room, t_world *world);
+void	applyedgedrag(t_vector2 *edge, t_vector2 cursor, t_area *room, t_world *world);
+
 
 
 # endif

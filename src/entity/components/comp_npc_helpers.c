@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_npc_helpers.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:39:11 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/13 17:14:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 11:38:22 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	npc_shoot(t_entity *entity, t_npc *npc, t_world *world)
 }
 
 //TODO: ugly norm
-void	entity_rotatetowards_xy(t_entity *entity,
+void	entity_rotate_towards_xy(t_entity *entity,
 									t_vector2 pos, float delta)
 {
 	float	angle;

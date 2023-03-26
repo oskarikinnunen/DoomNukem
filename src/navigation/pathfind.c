@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 22:16:15 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 22:22:57 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 11:28:54 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ t_path	path_find(t_vector3 start_vec, t_vector3 end_vec, t_world *world)
 	t_path		path;
 
 	openlist = world->nav.openlist;
-	ft_bzero(&path, sizeof(path));
+	ft_bzero(&path, sizeof(t_path));
 	ft_bzero(openlist, sizeof(t_navnode) * world->nav.node_amount);
 	path.start = get_nearest_target_node(world, start_vec);
 	path.end = get_nearest_target_node(world, end_vec);
