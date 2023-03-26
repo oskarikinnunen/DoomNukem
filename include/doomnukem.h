@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 12:05:05 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 17:42:13 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,6 @@ typedef enum e_app_mode
 	APPMODE_INVALID,
 	APPMODE_EDIT,
 	APPMODE_PLAY,
-	APPMODE_GFX_RESET
 }	t_app_mode;
 
 typedef struct s_app_argument
@@ -309,12 +308,11 @@ void	render_start_new(t_sdlcontext *sdl, t_player *player);
 void	moveplayer(t_player *player, t_input *input, t_world *world);
 
 /* NAVIGATION */
-bool	pathfind(t_world *world, t_path *path); //TODO: deprecated
-t_path	path_find(t_vector3 start_vec, t_vector3 end_vec, t_world *world);
+t_path	pathfind(t_vector3 start_vec, t_vector3 end_vec, t_world *world);
 void	create_navmesh(t_world *world);
+void	navmesh(t_world *world);
 void	create_space_for_navmesh(t_world *world);
 void	check_neighbors(t_navigation *nav, int i, t_vector3 start, t_vector3 end);
-void	show_navmesh(t_world *world);
 void	*ft_realloc(void *src, size_t dest_size, size_t src_size);
 
 /* COLLISION */

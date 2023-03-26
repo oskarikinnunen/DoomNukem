@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_npc_state.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:49:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/15 13:19:44 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 17:42:16 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,14 @@ static t_path	random_path(t_entity *entity, t_npc *npc, t_world *world)
 	i = 0;
 	while (i < 20)
 	{
-		r = rand() % curnode->neighbors;
+		r = game_random_range(world, 0, curnode->neighbors);
 		while (curnode->neighbors_id[r] == last_id && curnode->neighbors > 2)
-			r = rand() % curnode->neighbors;
-		printf("node %i is %i\n", i, curnode->neighbors_id[r]);
+			r = game_random_range(world, 0, curnode->neighbors);
 		curnode = &world->nav.navmesh[curnode->neighbors_id[r]];
 		last_id = curnode->index;
 		i++;
 	}
-	result = path_find(entity->transform.position, curnode->mid_point, world);
+	result = pathfind(entity->transform.position, curnode->mid_point, world);
 	if (result.bi <= 1)
 		result = random_path(entity, npc, world);
 	return (result);
@@ -61,7 +60,6 @@ void	npc_update_cautious_move_state(t_entity *entity,
 
 void	npc_switch_to_death_state(t_entity *entity, t_npc *npc, t_world *world)
 {
-	printf("going from %i to death state \n", npc->state);
 	npc->state = NPC_STATE_DEAD;
 	entity->animation.loop = false;
 	entity->animation.persist = true;

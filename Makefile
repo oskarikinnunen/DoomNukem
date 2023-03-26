@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/26 18:05:09 by okinnune         ###   ########.fr        #
+#    Updated: 2023/03/26 18:24:54 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -77,7 +77,6 @@ SRCFILES= main.c img.c deltatime.c \
 		editor/editor.c \
 		editor/editor_mouse.c \
 		editor/editor_events.c \
-		editor/editor_gui.c \
 		editor/editor_set_up.c \
 		editor/key_events.c \
 		editor/tools/entity_tool.c \
@@ -109,7 +108,6 @@ SRCFILES= main.c img.c deltatime.c \
 		editor/editor_new_buttons.c \
 		editor/editor_raycast.c \
 		editor/entity_raycast.c \
-		preferences/graphicsprefs.c \
 		debug/debug_rendering.c \
 		inputhelper.c \
 		walls.c file_open.c \
@@ -212,8 +210,7 @@ SRCFILES= main.c img.c deltatime.c \
 		thread/thread_lighting.c \
 		navigation/pathfind.c \
 		navigation/navmesh.c \
-		navigation/create_navmesh1.c \
-		navigation/create_navmesh2.c \
+		navigation/create_navmesh.c \
 		navigation/nav_utils.c \
 		navigation/connect_navmesh.c \
 		render/rasterization/rasterize_triangle_wrap.c \

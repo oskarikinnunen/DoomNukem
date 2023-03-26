@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 15:59:40 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/23 18:47:03 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/26 13:29:54 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ inline static uint32_t	sample_img(
 inline static void	scanline(
 	int start, int end, int y, t_sdlcontext *sdl)
 {
-	uint32_t	clr;
 	t_vector3	tex;
 	t_stepv3	slope;
 	int			x;
@@ -46,8 +45,8 @@ inline static void	scanline(
 		index += 1.0f;
 		x++;
 	}
-	render_bitmask_row(
-		start, end, 1.0f / slope.location.z, 1.0f / tex.z, y, sdl);
+	render_bitmask_row((t_point){start, end}, \
+	(t_vector2){1.0f / slope.location.z, 1.0f / tex.z}, y, sdl);
 }
 
 inline static void	render_flat_top_tri(

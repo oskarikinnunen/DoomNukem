@@ -6,12 +6,11 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/07 11:53:37 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:23:23 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 17:10:21 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <stdio.h>
 
 //TODO: does this need to be more accurate?
 char	*ft_ftoa(float f, int dec)

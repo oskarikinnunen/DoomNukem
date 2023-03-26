@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 19:17:54 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/26 17:32:22 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,6 @@ static t_app_argument	get_app_argument(int argc, char **argv)
 	ft_bzero(&app_argument, sizeof(t_app_argument));
 	check_editor_flags(argc, argv, &app_argument);
 	check_playmode_flags(argc, argv, &app_argument);
-	if (argc == 2 && ft_strcmp(argv[1], "-gfxreset") == 0)
-		app_argument.app_mode = APPMODE_GFX_RESET;
 	return (app_argument);
 }
 
@@ -63,12 +61,6 @@ int	main(int argc, char **argv)
 	t_app_argument	app_argument;
 
 	app_argument = get_app_argument(argc, argv);
-	if (app_argument.app_mode == APPMODE_GFX_RESET)
-	{
-		reset_graphics_prefs();
-		ft_putendl("graphics reset succesfully");
-		return (0);
-	}
 	create_sdlcontext(app_argument, &sdl);
 	if (app_argument.app_mode == APPMODE_EDIT)
 		editor(app_argument, sdl);
@@ -77,7 +69,7 @@ int	main(int argc, char **argv)
 	else if (app_argument.app_mode == APPMODE_INVALID)
 	{
 		ft_putendl_fd(\
-			"usage: ./DoomNukem [[-edit | -play] level_file] | -gfxreset", 2);
+			"usage: ./DoomNukem [-edit | -play] level_file", 2);
 		return (1);
 	}
 	return (0);

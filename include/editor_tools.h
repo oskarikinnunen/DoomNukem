@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 16:06:18 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 18:25:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,6 @@ struct	s_mouse;
 
 void			editor_quit(void);
 void			editor_save_quit(t_editor *ed);
-void			update_editor_lateguis(t_editor *ed);
 void			set_up_editor(t_sdlcontext *sdl, t_editor *ed);
 
 /* INTERNAL GUI */

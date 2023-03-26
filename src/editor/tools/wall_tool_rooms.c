@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:53:06 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 17:47:00 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -404,7 +404,7 @@ void	free_floor(t_world *world, t_area *room)
 	{
 		if (room->floors[i].entity != NULL)
 		{
-			if (room->floors[i].entity->obj != NULL )
+			if (room->floors[i].entity->obj != NULL)
 			{
 				free_object(room->floors[i].entity->obj);
 				room->floors[i].entity->obj = NULL;
@@ -426,7 +426,7 @@ void	free_ceilings(t_world *world, t_area *room)
 	{
 		if (room->ceilings[i].entity != NULL)
 		{
-			if (room->ceilings[i].entity->obj != NULL )
+			if (room->ceilings[i].entity->obj != NULL)
 			{
 				free_object(room->ceilings[i].entity->obj);
 				room->ceilings[i].entity->obj = NULL;

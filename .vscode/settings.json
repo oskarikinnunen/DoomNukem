@@ -13,6 +13,7 @@
 		"ostream": "c",
 		"utility": "c",
 		"vectors.h": "c",
-		"doomnukem.h": "c"
+		"doomnukem.h": "c",
+		"ratio": "c"
 	}
 }

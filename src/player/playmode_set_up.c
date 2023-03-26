@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode_set_up.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 19:26:59 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 20:27:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 17:10:33 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ t_vector3	find_playerspawn(t_world *world)
 
 void	set_up_world(t_sdlcontext *sdl, t_game *game)
 {
-	create_navmesh(&game->world);
+	navmesh(&game->world);
 	playmode_preprocess_world(&game->world);
 	player_init(&game->player, sdl, &game->world);
 	game->player.transform.position = find_playerspawn(&game->world);

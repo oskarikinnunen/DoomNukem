@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool_connect.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:52:00 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 21:56:01 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 17:45:40 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	free_roomwalls(t_world *world, t_area *room)
 		w = &room->walls[i];
 		if (w->entity != NULL)
 		{
+			free_object(w->entity->obj);
 			destroy_entity(world, w->entity);
 			w->entity = NULL;
 		}
