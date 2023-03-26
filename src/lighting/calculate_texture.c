@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   calculate_texture.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 13:07:06 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 11:55:53 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 17:33:55 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,35 +31,26 @@ static void	buffer_triangles(int start, int i, int index, t_entity *entity)
 	int					vertex;
 	size_t				size;
 	t_lighting			lighting;
+	t_point				xy;
 
 	lighting.map = &entity->map[index];
 	lighting.img = entity->obj->materials[index].img;
 	size = lighting.map->size.x * lighting.map->size.y * sizeof(bool);
 	lighting.overdraw = prot_memalloc(size);
 	ft_bzero(lighting.overdraw, size);
-	for (int y = 0; y < lighting.map->size.y; y++)
+	xy.y = 0;
+	while (xy.y < lighting.map->size.y)
 	{
-		for (int x = 0; x < lighting.map->size.x; x++)
+		xy.x = 0;
+		while (xy.x < lighting.map->size.x)
 		{
-			sample_pixel((t_point){x, y}, &lighting);
+			sample_pixel(xy, &lighting);
+			xy.x++;
 		}
+		xy.y++;
 	}
 	free(lighting.overdraw);
-	return ; // early return;
-	while (start <= i)
-	{
-		vertex = 0;
-		while (vertex < 3)
-		{
-			temp.t[vertex] = entity->world_triangles[start].p[vertex].v;
-			temp.p[vertex].x = entity->world_triangles[start].t[vertex].x;
-			temp.p[vertex].y = entity->world_triangles[start].t[vertex].y;
-			vertex++;
-		}
-		rasterize_texture(temp, &lighting);
-		start++;
-	}
-	free(lighting.overdraw);
+	return ;
 }
 
 void	*calculate_texture_for_entity(t_entity *entity)

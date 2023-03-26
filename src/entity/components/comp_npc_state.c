@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_npc_state.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:49:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 17:18:35 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 17:42:16 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static t_path	random_path(t_entity *entity, t_npc *npc, t_world *world)
 		last_id = curnode->index;
 		i++;
 	}
-	result = path_find(entity->transform.position, curnode->mid_point, world);
+	result = pathfind(entity->transform.position, curnode->mid_point, world);
 	if (result.bi <= 1)
 		result = random_path(entity, npc, world);
 	return (result);

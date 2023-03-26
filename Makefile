@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
+#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/26 17:26:14 by raho             ###   ########.fr        #
+#    Updated: 2023/03/26 17:42:09 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -206,8 +206,7 @@ SRCFILES= main.c img.c deltatime.c \
 		thread/thread_lighting.c \
 		navigation/pathfind.c \
 		navigation/navmesh.c \
-		navigation/create_navmesh1.c \
-		navigation/create_navmesh2.c \
+		navigation/create_navmesh.c \
 		navigation/nav_utils.c \
 		navigation/connect_navmesh.c \
 		render/rasterization/rasterize_triangle_wrap.c \

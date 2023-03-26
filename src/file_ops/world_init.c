@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world_init.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 20:55:23 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 17:09:13 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 17:23:14 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,6 @@ void	world_init(t_world *world, t_sdlcontext *sdl)
 	ft_bzero(world, sizeof(t_world));
 	world->sdl = sdl;
 	world->entitycache = entitycache_empty(2048);
-	world->nav.clip_size = 250.0f;
 	world->debug_gui = prot_memalloc(sizeof(t_autogui));
 	ft_strncpy_term(world->name, DEFAULTLEVEL, 30);
 }

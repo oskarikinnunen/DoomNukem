@@ -108,6 +108,7 @@ typedef struct s_debug_occlusion
 	bool		occluder_box; // turns on occluder boxes blue;
 	bool		draw_occlusion;
 	bool		slow_render;
+	bool		screen_full;
 }	t_debug_occlusion;
 
 typedef enum e_rend_lightmode
@@ -123,7 +124,7 @@ typedef struct s_render
 	t_map				map;
 	t_img				*img;
 	t_quaternion		*q;
-	t_world_triangle			*world_triangles;
+	t_world_triangle	*world_triangles;
 	uint32_t			start_index;
 	uint32_t			end_index;
 	t_screen_triangle	*screenspace_ptris;
@@ -137,6 +138,7 @@ typedef struct s_render
 	t_img				*debug_img;
 	t_screen_triangle	triangle;
 	t_render_statistics	rs;
+	bool				backface_check;
 }	t_render;
 
 typedef struct s_audiosample

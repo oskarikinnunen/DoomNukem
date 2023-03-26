@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   connect_navmesh.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 17:47:25 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/25 21:46:34 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 17:23:18 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ static bool	is_already_neighbor(t_navigation *nav, int i, int nb)
 	return (false);
 }
 
-//TODO: modify this in a way that allows higher nodes to connect to lower ones
 static int	line_laps_line(t_vector3 start1, t_vector3 end1, t_vector3 p)
 {
 	float	len;
@@ -72,7 +71,8 @@ static bool	triangles_share_border(t_triangle_border_share tbs)
 	int	j;
 
 	if (vector3_dist(tbs.nav->navmesh[tbs.i].mid_point, \
-			tbs.nav->navmesh[tbs.i1].mid_point) < 1000000.0f)
+			tbs.nav->navmesh[tbs.i1].mid_point) < \
+			NAV_CLIP_SIZE * 2.0f + COL_STEP)
 	{
 		j = 0;
 		while (j < 3)

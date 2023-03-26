@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:38:22 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 17:30:52 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ void	entity_rotate_towards_xy(t_entity *entity,
 									t_vector2 pos, float delta);
 
 /* OCCLUSION*/
-void	render_bitmask_row(int ax, int bx, float aw, float bw, int y, t_sdlcontext *sdl);
+void	render_bitmask_row(t_point x_line, t_vector2 w_line, int y, t_sdlcontext *sdl);
 void	update_frustrum_culling(struct s_world *world, t_sdlcontext *sdl, t_render *render);
 
 bool	is_entity_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity);
@@ -127,9 +127,7 @@ bool	is_entity_occlusion_culled(t_sdlcontext *sdl, t_render *render, t_entity *e
 void	calculate_triangles(t_sdlcontext sdl, t_render *render, t_entity *entity);
 void	clear_occlusion_buffer(t_sdlcontext *sdl);
 
-//Debug occl
-void	draw_wireframe(t_sdlcontext sdl, t_square s, uint32_t clr);
-void	bitmask_to_pixels(t_sdlcontext *sdl);
+bool	is_screen_full(t_sdlcontext *sdl);
 
 /* RENDERING */
 void	draw_entity_icon(t_entity *entity, t_img *img, struct s_world *world);

@@ -2,6 +2,7 @@
 # define NAVIGATION_H
 
 #include "vectors.h"
+# define NAV_CLIP_SIZE 250.0f
 
 typedef struct s_navnode
 {
@@ -37,9 +38,7 @@ typedef struct s_navigation
 	t_navnode	*navmesh;
 	t_navnode	*openlist;
 	uint32_t	malloc_size;
-	float		clip_size;
 	bool		show_navmesh;
-	float		height;
 }	t_navigation;
 
 typedef struct s_triangle_border_share
