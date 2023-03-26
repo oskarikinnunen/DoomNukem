@@ -57,6 +57,7 @@ typedef struct s_npc
 	t_npc_type			npc_type;
 }	t_npc;
 
+void	npc_get_hit(struct s_entity *entity, struct s_world *world);
 void	npc_play_sound(struct s_entity *entity, struct s_world *world, char *soundname);
 void	npc_shoot(struct s_entity *entity, t_npc *npc, struct s_world *world);
 void	npc_start_pushanim(struct s_entity *entity, t_npc *npc, struct s_world *world);

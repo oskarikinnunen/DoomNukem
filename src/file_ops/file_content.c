@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   file_content.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 20:10:06 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 14:10:48 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 16:51:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void	restart_fd(int fd, int counter)
 t_file_content	load_filecontent(int fd, char *asset_name)
 {
 	t_file_content	fc;
-	int				rbytes;
+	ssize_t			rbytes;
 	char			buf[CHUNKSIZE + 1];
 	int				counter;
 
@@ -99,7 +99,7 @@ void	load_and_write_filecontent(int fd,
 	t_file_content	fc;
 	int				temp_fd;
 
-	ft_bzero(&fd, sizeof(t_file_content));
+	ft_bzero(&fc, sizeof(t_file_content));
 	fc = load_filecontent(fd, fc_name);
 	temp_fd = fileopen(file_name, O_CREAT | O_RDWR | O_TRUNC);
 	if (write(temp_fd, fc.content, fc.length) == -1)

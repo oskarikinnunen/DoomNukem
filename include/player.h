@@ -66,6 +66,7 @@ typedef struct s_player
 }	t_player;
 
 struct s_world;
+struct s_clock;
 
 t_gunstats	gun_machinegun(void);
 t_gunstats	gun_sniper(void);
@@ -74,6 +75,7 @@ void	draw_player_hud(struct s_world *world);
 void	playermovement_normal(t_player *player, struct s_world *world);
 void	playermovement_noclip(t_player *player, struct s_world *world);
 void	protagonist_play_audio(t_player *player, struct s_world *world, char *soundname);
+void	gun_update_transform(t_player *player, t_gun *gun, struct s_clock c);
 
 #endif
 

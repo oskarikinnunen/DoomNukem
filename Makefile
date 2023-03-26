@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
+#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/26 11:25:31 by raho             ###   ########.fr        #
+#    Updated: 2023/03/26 15:10:22 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -145,6 +145,7 @@ SRCFILES= main.c img.c deltatime.c \
 		player/hud.c \
 		player/player.c \
 		entity/components/comp_npc.c \
+		entity/components/comp_npc_get_hit.c \
 		entity/components/comp_npc_state.c \
 		entity/components/comp_npc_states_1.c \
 		entity/components/comp_npc_raycast.c \
@@ -152,6 +153,7 @@ SRCFILES= main.c img.c deltatime.c \
 		entity/components/comp_npc_helpers.c \
 		entity/components/comp_npc_anims.c \
 		guns/gun_presets.c \
+		guns/gun_transform.c \
 		objects/obj_parse.c \
 		objects/obj_parse_vertex.c \
 		objects/obj_parse_faces.c \

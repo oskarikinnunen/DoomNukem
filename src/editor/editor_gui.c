@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_gui.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 22:09:55 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 16:19:54 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 16:11:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ t_point	*get_resolutions(void)
 		{1366, 768}, \
 		{1600, 900}, \
 		{1920, 1080}, \
-		{2560, 1440} \
+		{2560, 1440}
 	};
 
 	return (resolutions);
@@ -104,6 +104,7 @@ void	update_editor_lateguis(t_editor *ed)
 {
 	t_editor_late_gui	elg;
 	t_autogui			*gui;
+	int					i;
 
 	gui = &ed->graphics_gui;
 	elg.resolutions = get_resolutions();
@@ -111,20 +112,19 @@ void	update_editor_lateguis(t_editor *ed)
 	gui_label("Select resolution:", gui);
 	if (elg.prefs.resolution_x == 0)
 		elg.prefs = get_prefs_from_sdl(gui->sdl);
-	while (elg.i < 10)
+	i = 0;
+	while (i < 9)
 	{
-		elg.str = resolution_str(elg.resolutions[elg.i]);
-		if ((point_cmp(ed->world.sdl->screensize, elg.resolutions[elg.i]) && \
-				gui_highlighted_button(elg.str, gui)) || \
-				(!point_cmp(ed->world.sdl->screensize, \
-				elg.resolutions[elg.i]) && gui_button(elg.str, gui)))
+		elg.str = resolution_str(elg.resolutions[i]);
+		if (gui_highlighted_button_if(elg.str, gui,
+				point_cmp(gui->sdl->screensize, elg.resolutions[i])))
 		{
-			elg.prefs.resolution_x = elg.resolutions[elg.i].x;
-			elg.prefs.resolution_y = elg.resolutions[elg.i].y;
+			elg.prefs.resolution_x = elg.resolutions[i].x;
+			elg.prefs.resolution_y = elg.resolutions[i].y;
 			apply_graphics_prefs(elg.prefs);
 		}
 		free(elg.str);
-		elg.i++;
+		i++;
 	}
 	update_editor_lategui_helper(&elg, gui);
 }

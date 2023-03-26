@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_tools.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 14:52:30 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 15:48:51 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 16:06:18 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,6 @@ typedef struct s_editor_late_gui
 	t_point					*resolutions;
 	char					*str;
 	t_point					res;
-	int						i;
 }	t_editor_late_gui;
 
 typedef struct s_gui_init
