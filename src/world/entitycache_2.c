@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entitycache_2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 14:55:11 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/22 14:55:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 17:47:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ void	destroy_entity(t_world *world, t_entity *ent)
 		});
 	cache->entities[ent->id].status = es_free;
 	cache->entities[ent->id].obj = NULL;
-	free(ent->world_triangles);
+	if (ent->world_triangles != NULL)
+		free(ent->world_triangles);
 	if (cache->existing_entitycount == 0)
 		doomlog(LOG_EC_MALLOC, "Tried to remove entity -1\n");
 	cache->existing_entitycount--;

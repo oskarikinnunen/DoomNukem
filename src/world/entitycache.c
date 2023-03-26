@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 11:13:16 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 12:00:09 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 17:51:35 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,12 +56,10 @@ void	entity_assign_object(t_world *world, t_entity *entity, t_object *obj)
 	if (obj == NULL)
 		return ;
 	ft_strncpy_term(entity->object_name.str, obj->name, 60);
-	entity->world_triangles
-		= (t_world_triangle *)malloc(sizeof(t_world_triangle)
+	entity->world_triangles = \
+			(t_world_triangle *)prot_memalloc(sizeof(t_world_triangle) \
 			* obj->face_count);
 	entity->occlusion.world_tri_count = ft_min(12, obj->face_count);
-	if (!entity->world_triangles)
-		doomlog(LOG_WARNING, "Non-fatal malloc error on entity_assign_object");
 }
 
 void	for_all_entities(t_world	*world,
