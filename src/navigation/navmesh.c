@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 12:04:40 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 12:04:41 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 12:10:00 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	navmesh(t_world *world)
 
 	world->nav.clip_size = ft_clampf(world->nav.clip_size, 50.0f, 10000.0f);
 	world->nav.height = COL_STEP; // TODO: remove nav.height
-	malloc_space_for_navmesh(world);
+	create_navmesh(world);
 	i = 0;
 	while (i < world->nav.node_amount)
 	{
