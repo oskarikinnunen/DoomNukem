@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 17:42:13 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/26 20:43:44 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -375,6 +375,7 @@ void	recalculate_pointlight(t_world *world);
 void	allocate_map_for_entities(t_world *world);
 void	calculate_lighting(struct s_world *world);
 void	calculate_texture_for_entities(struct s_world *world);
+void	parse_entity_texture(int index, t_entity *entity);
 
 void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render);
 

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 11:05:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 18:21:20 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/26 20:57:25 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ static void	set_render_for_entity(
 	{
 		sdl->render.map = entity->map[index];
 		sdl->render.lightmode = lm_lit;
+		if (entity->dynamic_lit)
+			dynamic_lit(entity, sdl->render.world, index);
 	}
 	sdl->render.end_index = i;
 	clip_and_render_triangles(sdl, &sdl->render);
@@ -54,7 +56,6 @@ void	render_entitys_world_triangles(
 {
 	t_world_triangle	world_tri;
 	t_object			*obj;
-	t_quaternion		temp;
 	int					i;
 	int					index;
 

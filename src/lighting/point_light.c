@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   point_light.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:01:16 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 11:56:03 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 19:52:35 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ static void	render_shadowmap(t_world *world, t_lighting *l)
 		if (ent->status != es_free)
 		{
 			if (ent->status == es_active && !ent->hidden
-				&& !entity_has_transparent_mat(ent))
+				&& !entity_has_transparent_mat(ent)
+				&& !ent->dynamic_lit)
 			{
 				is_valid = (l->light->ignoreself && ent->id != l->entity->id);
 				if (l->light->ignoreself == false || is_valid)
