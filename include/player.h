@@ -76,6 +76,8 @@ void	playermovement_normal(t_player *player, struct s_world *world);
 void	playermovement_noclip(t_player *player, struct s_world *world);
 void	protagonist_play_audio(t_player *player, struct s_world *world, char *soundname);
 void	gun_update_transform(t_player *player, t_gun *gun, struct s_clock c);
-
+void	gun_update_reload_status(t_player *player, t_gun *gun, struct s_world *world);
+void	gun_update_shoot_status(t_player *player, t_gun *gun, struct s_world *world);
+void	gun_update_reload_anim(t_player *player, t_gun *gun,struct s_world *world);
 #endif
 
