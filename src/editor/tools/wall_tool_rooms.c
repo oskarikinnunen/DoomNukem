@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 17:47:00 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 19:29:17 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,12 @@
 
 t_vector2	*transformed_around(t_vector2 og, float angle, t_vector2 *t, int count)
 {
-	static t_vector2	final[MAXSELECTED];
+	static t_vector2	final[3];
 	int					i;
 	t_vector2			min;
 
 	min = (t_vector2){4000, 4000};
-	ft_memcpy(final, t, sizeof(t_vector2[MAXSELECTED]));
+	ft_memcpy(final, t, sizeof(t_vector2[3]));
 	i = 0;
 	while (i < count)
 	{
@@ -112,12 +112,11 @@ static bool intersect(t_line line1, t_vector2 *edges, int edgecount)
 static	bool correctangle(t_vector2 vs[3]) //TODO: takes 'fc', 'valid' array and 'validcount'
 {
 	t_vector2	*tr;
-	float		angle = vector2_anglebetween(vs[0], vs[2]);
+	float		angle;
+
+	angle = vector2_anglebetween(vs[0], vs[2]);
 	if (isinf(angle) || isnan(angle))
-	{
-		printf("angle was nan or inf \n");
-		exit(0);
-	}
+		doomlog(LOG_FATAL, "angle was nan or inf");
 	tr = transformed_around(vs[2], -angle, vs, 3);
 	return (tr[1].y >= tr[0].y && tr[1].y >= tr[2].y);
 }
@@ -404,7 +403,7 @@ void	free_floor(t_world *world, t_area *room)
 	{
 		if (room->floors[i].entity != NULL)
 		{
-			if (room->floors[i].entity->obj != NULL)
+			if (room->floors[i].entity->obj != NULL )
 			{
 				free_object(room->floors[i].entity->obj);
 				room->floors[i].entity->obj = NULL;
@@ -426,7 +425,7 @@ void	free_ceilings(t_world *world, t_area *room)
 	{
 		if (room->ceilings[i].entity != NULL)
 		{
-			if (room->ceilings[i].entity->obj != NULL)
+			if (room->ceilings[i].entity->obj != NULL )
 			{
 				free_object(room->ceilings[i].entity->obj);
 				room->ceilings[i].entity->obj = NULL;
