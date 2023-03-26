@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 10:58:19 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:45:35 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 16:10:36 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ static void	draw_node_line(t_vector3 cursor, t_line l, t_sdlcontext *sdl)
 	end = v2tov3(l.end);
 	start.z = cursor.z;
 	end.z = cursor.z;
-	render_ray3D(sdl, start, cursor, CLR_GREEN);
-	render_ray3D(sdl, end, cursor, CLR_GREEN);
+	render_ray3d(sdl, start, cursor, CLR_GREEN);
+	render_ray3d(sdl, end, cursor, CLR_GREEN);
 }
 
 void	addnode(t_vector2 newnode, t_area *room, int node_i)

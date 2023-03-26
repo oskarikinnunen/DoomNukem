@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool_common.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:53:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 19:47:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 16:10:36 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ static void	highlight_area_walls(t_editor *ed, t_sdlcontext *sdl,
 			ws2 = v2tov3(*area->walls[i].edgeline.start);
 			ws.z = area->height;
 			ws2.z = area->height + area->walls[i].height;
-			render_ray3D(sdl, ws, ws2, color);
+			render_ray3d(sdl, ws, ws2, color);
 		}
 		i++;
 	}
@@ -107,7 +107,7 @@ void	highlight_room(t_editor *ed, t_sdlcontext *sdl,
 		if (!room->loop && i == room->edgecount - 1)
 			;
 		else
-			render_ray3D(sdl, ws, ws2, color);
+			render_ray3d(sdl, ws, ws2, color);
 		i++;
 	}
 	highlight_area_walls(ed, sdl, room, color);

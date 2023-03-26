@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/26 15:10:22 by okinnune         ###   ########.fr        #
+#    Updated: 2023/03/26 16:54:10 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -186,7 +186,8 @@ SRCFILES= main.c img.c deltatime.c \
 		render/renders_world_triangles_to_screen_triangles.c \
 		render/render_buffer.c \
 		render/init_render.c \
-		render/render_gizmo.c \
+		render/gizmos/render_gizmo.c \
+		render/gizmos/render_ball.c \
 		render/transform/transform_triangle.c \
 		render/transform/transform_quaternion.c \
 		render/transform/clip_world_triangle_to_plane.c \

@@ -35,6 +35,8 @@
 # define FONT_SIZE_DEFAULT 8
 # define FONT_SIZE_COUNT 4
 
+# define RCRCL_SIDES 16
+
 typedef struct s_step
 {
 	float	location;
@@ -253,6 +255,12 @@ typedef struct s_triangle_draw
 	uint32_t		clr;
 }	t_triangle_draw;
 
+typedef struct s_quat_line
+{
+	t_quaternion	start;
+	t_quaternion	end;
+}	t_quat_line;
+
 void	save_graphics_prefs(t_graphicprefs prefs);
 t_graphicprefs	get_prefs_from_sdl(t_sdlcontext *sdl);
 t_graphicprefs	load_graphicsprefs();
@@ -287,14 +295,12 @@ void		free_render(t_render render);
 void		calculate_matview(t_camera *camera);
 
 /* RENDER */
-void				render_gizmo(t_sdlcontext sdl, t_render render, t_vector3 pos, int size);
 void				render_gizmo3d(t_sdlcontext *sdl, t_vector3 pos, int size, uint32_t color);
 void				render_gizmo2d(t_sdlcontext *sdl, t_vector2 pos, int size, uint32_t color);
 void				render_ball(t_sdlcontext *sdl, t_vector3 pos, float size, uint32_t clr);
-void				render_capsule(t_sdlcontext *sdl, t_vector3 pos, float height, float radius, uint32_t clr);
 void				render_circle(t_sdlcontext *sdl, t_vector3 pos, float radius, uint32_t clr);
 void				render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to);
-void				render_ray3D(t_sdlcontext *sdl, t_vector3 from, t_vector3 to, uint32_t clr);
+void				render_ray3d(t_sdlcontext *sdl, t_vector3 from, t_vector3 to, uint32_t clr);
 void				render_world_triangle_buffer_to_screen_triangle(t_render *render, t_sdlcontext sdl);
 void				render_screen_triangles_buffer(t_sdlcontext *sdl, t_render *render);
 t_world_triangle			triangle_to_viewspace(t_world_triangle tritransformed, t_mat4x4 matview);
