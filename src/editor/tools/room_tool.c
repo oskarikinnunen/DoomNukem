@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:52:56 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 18:12:11 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	if (gui_shortcut_button("New room", 'N', gui))
 	{
 		dat->room = prot_memalloc(sizeof(t_area));
-		ft_strncpy_term(dat->room->s_floortex.str, "concrete02.cng", 60);
-		ft_strncpy_term(dat->room->s_ceiltex.str, "concrete02.cng", 60);
+		ft_strncpy_term(dat->room->s_floortex.str, "concrete02", 60);
+		ft_strncpy_term(dat->room->s_ceiltex.str, "concrete02", 60);
 		dat->rtm = rtm_create;
 		room_setpreset_room(dat->room);
 		force_mouselock(&ed->hid);
