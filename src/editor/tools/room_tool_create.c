@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool_create.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 16:47:41 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 12:23:31 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/27 14:07:40 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static void	createmode_drawgui(t_editor *ed,
 	if (dat->room->edge_count == 0)
 		gui_label("Place first wall", gui);
 	else if (dat->room->edge_count > 1)
-		gui_label("Shift + click to finish room", gui);
+		gui_label("Enter to finish room", gui);
 	else
 		gui_empty_vertical(20, gui);
 	if (gui_room_presets(dat->room, gui, &ed->world))
