@@ -3,16 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   comp_npc_get_hit.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 14:33:59 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 22:52:09 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 18:18:51 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "entity.h"
 #include "doomnukem.h"
 #include "npc.h"
+
+static void npc_make_blood_decal(t_entity *entity, t_world *world)
+{
+	t_decal	d;
+
+	d.img = get_image_by_name(*world->sdl, "blood");
+	d.normal = vector3_up();
+	d.position = entity->transform.position;
+	d.size = 12.0f;
+	decal(world, d);
+}
 
 void	npc_get_hit(t_entity *entity, t_world *world)
 {
@@ -21,6 +32,7 @@ void	npc_get_hit(t_entity *entity, t_world *world)
 
 	hit_npc = entity->component.data;
 	hit_npc->health -= world->player->gun->stats.damage;
+	npc_make_blood_decal(entity, world);
 	if (hit_npc->health <= 0 && hit_npc->state != NPC_STATE_DEAD)
 	{
 		r = game_random_range(world, 0, 15);

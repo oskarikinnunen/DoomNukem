@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:44:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 13:03:44 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 19:53:44 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	playmode(t_app_argument app_argument, t_sdlcontext sdl)
 	game.world.sdl->render.world = &game.world;
 	playmode_loading_screen("SETTING UP WORLD", &sdl);
 	set_up_world(&sdl, &game);
-	playmode_loading_screen("CREATING LIGHTING EFFECTS", &sdl);
+	playmode_loading_screen("CREATING LIGHTMAPS", &sdl);
 	recalculate_lighting(&game.world);
 	playmode_loading_screen_loop("PRESS ANY KEY TO PLAY", &sdl);
 	if (SDL_SetRelativeMouseMode(SDL_TRUE) < 0)

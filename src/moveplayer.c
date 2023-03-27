@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   moveplayer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 22:27:59 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 19:39:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,13 +58,15 @@ static void	noclip_movement(t_player *player,
 static void	player_changegun(t_player *player)
 {
 	int	i;
+	int	old_sel;
 
 	player->gun_ammos[player->gun_selection] = player->gun->bullets;
+	old_sel = player->gun_selection;
 	player->gun_selection += player->input.nextgun;
 	player->gun_selection -= player->input.prevgun;
 	player->gun_selection %= GUNPRESETCOUNT;
 	if (player->guns[player->gun_selection].player_owned == false)
-		player->gun_selection = 0;
+		player->gun_selection = old_sel;
 	player->gun = &player->guns[player->gun_selection];
 	i = 0;
 	while (i < GUNPRESETCOUNT)
@@ -72,7 +74,8 @@ static void	player_changegun(t_player *player)
 		player->guns[i].entity->hidden = true;
 		i++;
 	}
-	player->gun->entity->hidden = false;
+	if (player->gun->player_owned)
+		player->gun->entity->hidden = false;
 }
 
 static void	player_raycast(t_player *player, t_world *world)

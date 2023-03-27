@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 15:22:23 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 17:30:01 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,16 @@ void	lateupdate_entitycache(t_sdlcontext *sdl, t_world *world)
 	}
 }
 
+static void	update_lifetime(t_entity *entity, t_world *world)
+{
+	if (entity->life_timeable)
+	{
+		entity->life_time -= world->clock.delta;
+		if (entity->life_time <= 0)
+			destroy_entity(world, entity);
+	}
+}
+
 void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 {
 	int			i;
@@ -48,7 +58,7 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 	while (i < world->entitycache.alloc_count && \
 	found < world->entitycache.existing_entitycount)
 	{
-		ent = world->entitycache.sorted_entities[i];
+		ent = world->entitycache.sorted_entities[i++];
 		if (ent->status != es_free)
 		{
 			if (ent->component.func_update != NULL)
@@ -57,9 +67,9 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 				&& entity_has_transparent_mat(ent) == false)
 				if (is_entity_culled(sdl, render, ent) == false)
 					render_entity(sdl, render, ent);
+			update_lifetime(ent, world);
 			found++;
 		}
-		i++;
 	}
 	render->occlusion.screen_full = is_screen_full(world->sdl);
 	update_transparent(sdl, world, render);

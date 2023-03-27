@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   player.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 14:31:10 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 22:46:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 18:34:36 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ static void	gun_entity_set_entity_values(t_gun *gun)
 	gun->entity->ignore_raycasts = true;
 	gun->entity->dont_save = true;
 	gun->entity->dynamic_lit = true;
+	gun->entity->hidden = true;
 	gun->shoot_anim.frame_rate = 120;
 	gun->shoot_anim.loop = false;
 	gun->shoot_anim.last_frame = 2;
@@ -68,6 +69,6 @@ void	player_init(t_player *player, t_sdlcontext *sdl, t_world *world)
 	player->health = 120;
 	player_init_weapons(player, world);
 	player->gun = &player->guns[0];
-	player->guns[0].player_owned = true;
+	player->guns[0].player_owned = false;
 	player->guns[1].player_owned = false;
 }

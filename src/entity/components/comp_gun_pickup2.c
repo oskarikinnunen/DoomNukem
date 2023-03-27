@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_gun_pickup2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 18:01:54 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 21:38:22 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 19:58:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,4 +59,6 @@ void	comp_gun_pickup_allocate(t_entity *entity, t_world *world)
 	entity->component.data_size = sizeof(t_gun_pickup);
 	gun_pickup = (t_gun_pickup *)entity->component.data;
 	gun_pickup->original_z = entity->transform.position.z;
+	entity->ignore_raycasts = true;
+	entity->dynamic_lit = true;
 }

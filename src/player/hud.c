@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   hud.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 14:50:05 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:07:13 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 19:51:04 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,13 +67,13 @@ static void	draw_reload_hud(t_world *world)
 	}
 }
 
-static void	draw_health_hud(t_point origin, t_world *world)
+static void	draw_health_hud(t_world *world)
 {
 	t_rectangle	rect_health;
 	t_rectangle	rect_hurt;
 
 	rect_health.size = (t_point){100, 15};
-	rect_health.position = point_add(origin, (t_point){60, 20});
+	rect_health.position = point_add((t_point){HUD1_X, world->sdl->screensize.y - HUD1_Y}, (t_point){60, 20});
 	draw_rectangle_filled(*world->sdl, rect_health, 0);
 	draw_rectangle(*world->sdl, rect_health, AMBER_1);
 	rect_health.size.x = ft_max(0, ((float)world->player->health
@@ -93,11 +93,14 @@ void	draw_player_hud(t_world *world)
 {
 	t_point	origin;
 
-	origin = draw_ammo_hud(world);
-	draw_ammo_hud_box(origin, world->sdl);
-	origin = draw_ammo_hud(world);
-	draw_reload_hud(world);
-	draw_health_hud(origin, world);
+	if (world->player->gun->player_owned)
+	{
+		origin = draw_ammo_hud(world);
+		draw_ammo_hud_box(origin, world->sdl);
+		origin = draw_ammo_hud(world);
+		draw_reload_hud(world);
+	}
+	draw_health_hud(world);
 	if (world->clock.time < world->player->gui_notif.starttime + 5000)
 	{
 		if (ft_strlen(world->player->gui_notif.str.str) > 0)
