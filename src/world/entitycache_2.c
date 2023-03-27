@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entitycache_2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 14:55:11 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 20:43:13 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,15 @@ t_entity	*find_entity_with_comp(t_world	*world, t_component_type comp)
 		i++;
 	}
 	return (NULL);
+}
+
+
+void	update_lifetime(t_entity *entity, t_world *world)
+{
+	if (entity->life_timeable)
+	{
+		entity->life_time -= world->clock.delta;
+		if (entity->life_time <= 0)
+			destroy_entity(world, entity);
+	}
 }

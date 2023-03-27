@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 17:30:01 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 20:43:00 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,6 @@ void	lateupdate_entitycache(t_sdlcontext *sdl, t_world *world)
 			found++;
 		}
 		i++;
-	}
-}
-
-static void	update_lifetime(t_entity *entity, t_world *world)
-{
-	if (entity->life_timeable)
-	{
-		entity->life_time -= world->clock.delta;
-		if (entity->life_time <= 0)
-			destroy_entity(world, entity);
 	}
 }
 

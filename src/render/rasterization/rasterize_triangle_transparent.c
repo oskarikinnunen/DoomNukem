@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 17:02:34 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/27 16:59:20 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 20:40:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ inline static void	scanline(
 			tex.x = slope.location.x + index * slope.step.x;
 			tex.y = slope.location.y + index * slope.step.y;
 			clr = sample_img(&sdl->render, tex.x / tex.z, tex.y / tex.z);
-			if (((clr >> 24) & 0xFF) > 240) //non transparent
+			if (((clr >> 24) & 0xFF) > 240)
 				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] = \
 					clr;
 			else if (((clr >> 24) & 0xFF) > 14)

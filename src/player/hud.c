@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 14:50:05 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 19:51:04 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 20:45:01 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,8 @@ static void	draw_health_hud(t_world *world)
 	t_rectangle	rect_hurt;
 
 	rect_health.size = (t_point){100, 15};
-	rect_health.position = point_add((t_point){HUD1_X, world->sdl->screensize.y - HUD1_Y}, (t_point){60, 20});
+	rect_health.position = point_add((t_point){HUD1_X,
+		world->sdl->screensize.y - HUD1_Y}, (t_point){60, 20});
 	draw_rectangle_filled(*world->sdl, rect_health, 0);
 	draw_rectangle(*world->sdl, rect_health, AMBER_1);
 	rect_health.size.x = ft_max(0, ((float)world->player->health

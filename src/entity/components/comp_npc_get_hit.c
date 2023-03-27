@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 14:33:59 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 18:18:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 20:42:43 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "doomnukem.h"
 #include "npc.h"
 
-static void npc_make_blood_decal(t_entity *entity, t_world *world)
+static void	npc_make_blood_decal(t_entity *entity, t_world *world)
 {
 	t_decal	d;
 
