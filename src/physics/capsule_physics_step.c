@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 18:55:30 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 13:01:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 20:36:15 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,6 @@ void	capsule_phys_step(t_character_physics *charp, t_world *world)
 	t_bound		zbound;
 
 	capsule_phys_2d_apply_pos(charp, world);
-	//printf("capsule 1 zpos %f\n", charp->position->z);
 	zbound = get_bound(charp, world);
 	if (zbound.max <= charp->position->z + charp->height
 		&& charp->velocity.z < 0.0f)
@@ -85,18 +84,13 @@ void	capsule_phys_step(t_character_physics *charp, t_world *world)
 		charp->velocity.z = 0.0f;
 		charp->ceiling_trigger = true;
 	}
-	//printf("capsule 2 zpos %f\n", charp->position->z);
 	capsule_phys_go_towards_floor(charp, zbound, world->clock.delta);
-	//printf("capsule 3 zpos %f\n", charp->position->z);
 	if (charp->is_grounded && charp->velocity.z != 0)
 	{
 		charp->landing_trigger = true;
 		charp->impact_velocity.z = charp->velocity.z;
 		charp->velocity.z = 0.0f;
 	}
-	//printf("capsule 4 zpos %f\n", charp->position->z);
 	charp->is_grounded = (charp->position->z <= zbound.min);
 	capsule_damp(charp, world);
-	//printf("capsule 5 zpos %f\n", charp->position->z);
-	//exit(0);
 }

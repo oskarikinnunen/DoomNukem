@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 16:29:48 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/27 21:08:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ typedef struct s_entity
 	t_world_triangle	*world_triangles;
 	t_map				*map;
 	t_transform			old_transform;
+	bool				life_timeable;
+	int					life_time;
 }	t_entity;
 
 typedef struct s_prefab

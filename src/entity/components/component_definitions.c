@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   component_definitions.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 20:11:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:40:23 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 19:30:59 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ t_component_definition	*get_component_definitions(void)
 		.func_assign_component = assign_component_interactable}, \
 	(t_component_definition){.type = COMP_LIGHT, .name = "Light", \
 		.func_assign_component = assign_component_light}, \
-	(t_component_definition){.type = COMP_HEALTHPACK, .name = "Healthpack", \
+	(t_component_definition){.type = COMP_HEALTHPACK, .name = "Supplypack", \
 		.func_assign_component = assign_component_healthpack}, \
 	(t_component_definition){.type = COMP_NPC, .name = "NPC", \
 		.func_assign_component = assign_component_npc}, \

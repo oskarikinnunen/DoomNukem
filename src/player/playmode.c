@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:44:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 18:50:46 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/27 21:08:37 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,9 @@ void	playmode(t_app_argument app_argument, t_sdlcontext sdl)
 	playmode_loading_screen("LOADING WORLD", &sdl);
 	game.world = load_world(app_argument, &sdl);
 	game.world.sdl->render.world = &game.world;
-	playmode_loading_screen("CREATING LIGHTING EFFECTS", &sdl);
+	playmode_loading_screen("SETTING UP WORLD", &sdl);
+	set_up_world(&sdl, &game);
+	playmode_loading_screen("CREATING LIGHTMAPS", &sdl);
 	recalculate_lighting(&game.world);
 	playmode_loading_screen("SETTING UP WORLD", &sdl);
 	set_up_world(&sdl, &game);

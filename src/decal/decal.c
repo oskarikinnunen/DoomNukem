@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   decal.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 17:39:00 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 22:30:08 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 17:38:32 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,9 @@ void	decal(struct s_world *world, t_decal decal)
 	obj = object_plane(world->sdl);
 	obj->materials->img = decal.img;
 	entity = spawn_entity(world, obj);
+	entity->life_timeable = true;
+	entity->life_time = 5000;
+	entity->ignore_raycasts = true;
 	ft_strncpy(entity->object_name.str, "decal", 6);
 	if (vector3_dot(decal.normal, world->sdl->render.camera.look_dir) >= 0.0f)
 		decal.normal = vector3_negative(decal.normal);
@@ -46,5 +49,5 @@ void	decal(struct s_world *world, t_decal decal)
 	new_right = vector3_cross_product(new_up, decal.normal);
 	nearside = DECAL_FOV * decal.size;
 	set_vertex_positions(obj->vertices, decal.position, \
-	vector3_mul(new_up, nearside), vector3_mul(new_right, nearside));
+		vector3_mul(new_up, nearside), vector3_mul(new_right, nearside));
 }
