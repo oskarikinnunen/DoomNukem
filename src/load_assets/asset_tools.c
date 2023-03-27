@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 12:55:40 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 17:50:54 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:04:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	count_asset_list(char *filename)
 
 	if (filename == NULL)
 		return (0);
-	fd = fileopen(filename, O_RDONLY);
+	fd = ft_fileopen(filename, O_RDONLY);
 	line = NULL;
 	ret = get_next_line(fd, &line);
 	i = 0;
@@ -39,7 +39,7 @@ int	count_asset_list(char *filename)
 	}
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, filename);
-	fileclose(fd, filename);
+	ft_fileclose(fd, filename);
 	return (i);
 }
 

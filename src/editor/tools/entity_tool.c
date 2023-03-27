@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 15:05:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 22:14:19 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:15:41 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "objects.h"
 #include "raycast.h"
 
-void	findbounds(t_entity *ent)
+void	find_bounds(t_entity *ent)
 {
 	t_bound		zbound;
 	t_vector3	v;
@@ -38,7 +38,7 @@ void	findbounds(t_entity *ent)
 	ent->z_bound = zbound;
 }
 
-static void	entitytool_objectgui_update(t_entitytooldata *dat,
+static void	entitytool_objectgui_update(t_entity_tool_data *dat,
 										t_world *world)
 {
 	t_object	*obj;
@@ -52,8 +52,8 @@ static void	entitytool_objectgui_update(t_entitytooldata *dat,
 	if (dat->new_ent != NULL && ft_strlen((dat->new_ent)->object_name.str) > 0)
 		gui_label((dat->new_ent)->object_name.str, gui);
 	else
-		gui_emptyvertical(20, gui);
-	gui_emptyvertical(20, gui);
+		gui_empty_vertical(20, gui);
+	gui_empty_vertical(20, gui);
 	while (i < gui->sdl->objectcount)
 	{
 		obj = &gui->sdl->objects[i];
@@ -67,9 +67,9 @@ static void	entitytool_objectgui_update(t_entitytooldata *dat,
 }
 
 void	entity_tool_move_entity(t_editor *ed, t_entity *entity,
-								t_entitytooldata *dat)
+								t_entity_tool_data *dat)
 {
-	findbounds(entity);
+	find_bounds(entity);
 	entity->transform.position = dat->info.hit_pos;
 	entity->transform.position.z
 		-= entity->z_bound.min * entity->transform.scale.z;
@@ -78,7 +78,7 @@ void	entity_tool_move_entity(t_editor *ed, t_entity *entity,
 }
 
 void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl,
-						t_entitytooldata *dat)
+						t_entity_tool_data *dat)
 {
 	t_entity	*went;
 
@@ -105,13 +105,13 @@ void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl,
 }
 
 void	entity_tool_raycast(t_editor *ed, t_sdlcontext *sdl,
-							t_entitytooldata *dat)
+							t_entity_tool_data *dat)
 {
 	t_ray	ray;
 
-	ray.origin = ed->player.headposition;
-	ray.dir = ed->player.lookdir;
-	ft_bzero(&dat->info, sizeof(t_raycastinfo));
+	ray.origin = ed->player.head_position;
+	ray.dir = ed->player.look_dir;
+	ft_bzero(&dat->info, sizeof(t_raycast_info));
 	if (raycast(ray, &dat->info, &ed->world))
 	{
 		if (dat->info.hit_entity != NULL

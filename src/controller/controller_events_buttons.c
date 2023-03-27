@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   controller_events.c                                :+:      :+:    :+:   */
+/*   controller_events_buttons.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 19:49:59 by raho              #+#    #+#             */
-/*   Updated: 2023/03/03 19:04:36 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:00:23 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,13 @@ static void	controller_button_press2(SDL_ControllerButtonEvent cbutton,
 							t_hid_info *hid, int c)
 {
 	if (cbutton.button == SDL_CONTROLLER_BUTTON_LEFTSTICK)
-		hid->controller[c].leftstick = true;
+		hid->controller[c].left_stick = true;
 	if (cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSTICK)
-		hid->controller[c].rightstick = true;
+		hid->controller[c].right_stick = true;
 	if (cbutton.button == SDL_CONTROLLER_BUTTON_LEFTSHOULDER)
-		hid->controller[c].leftshoulder = true;
+		hid->controller[c].left_shoulder = true;
 	if (cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSHOULDER)
-		hid->controller[c].rightshoulder = true;
+		hid->controller[c].right_shoulder = true;
 	if (cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP)
 		hid->controller[c].dpad_up = true;
 	if (cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN)
@@ -64,13 +64,13 @@ static void	controller_button_release2(SDL_ControllerButtonEvent cbutton,
 							t_hid_info *hid, int c)
 {
 	if (cbutton.button == SDL_CONTROLLER_BUTTON_LEFTSTICK)
-		hid->controller[c].leftstick = false;
+		hid->controller[c].left_stick = false;
 	if (cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSTICK)
-		hid->controller[c].rightstick = false;
+		hid->controller[c].right_stick = false;
 	if (cbutton.button == SDL_CONTROLLER_BUTTON_LEFTSHOULDER)
-		hid->controller[c].leftshoulder = false;
+		hid->controller[c].left_shoulder = false;
 	if (cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSHOULDER)
-		hid->controller[c].rightshoulder = false;
+		hid->controller[c].right_shoulder = false;
 	if (cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP)
 		hid->controller[c].dpad_up = false;
 	if (cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN)

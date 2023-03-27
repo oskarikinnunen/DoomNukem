@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_raycast.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 17:47:07 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 19:57:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 20:10:41 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,11 @@ bool	raycast_tri(t_ray r, t_vector3_tri tri, float *dist)
 
 	rd.e1 = vector3_sub(tri.b, tri.a);
 	rd.e2 = vector3_sub(tri.c, tri.a);
-	rd.n = vector3_crossproduct(rd.e1, rd.e2);
+	rd.n = vector3_cross_product(rd.e1, rd.e2);
 	det = -vector3_dot(r.dir, rd.n);
 	invdet = 1.0f / det;
 	rd.ao = vector3_sub(r.origin, tri.a);
-	rd.dao = vector3_crossproduct(rd.ao, r.dir);
+	rd.dao = vector3_cross_product(rd.ao, r.dir);
 	rd.result.x = vector3_dot(rd.e2, rd.dao) * invdet;
 	rd.result.y = -vector3_dot(rd.e1, rd.dao) * invdet;
 	rd.result.z = vector3_dot(rd.ao, rd.n) * invdet;
@@ -97,7 +97,7 @@ static t_vector3_tri	worldtri_to_v3tri(t_world_triangle wt)
 	return (tri);
 }
 
-bool	raycast_entity(t_ray r, t_raycastinfo *info, t_entity *entity)
+bool	raycast_entity(t_ray r, t_raycast_info *info, t_entity *entity)
 {
 	int					i;
 	bool				hit;

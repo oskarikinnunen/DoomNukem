@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:51:14 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 13:52:29 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:04:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static int	parse_anim_list(int fd, char *anim_name, t_object *object)
 		{
 			parse_anim(anim_path, anim_name, object);
 			doomlog_mul(LOG_NORMAL, (char *[3]){\
-					"parsed anim file:", extract_filename(anim_path), NULL});
+					"parsed anim file:", extract_file_name(anim_path), NULL});
 			free(anim_path);
 			anim_path = NULL;
 		}
@@ -46,11 +46,11 @@ void	editor_load_anims(char *anim_name, t_object *object)
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 			ANIMLISTPATH, "framecount =", s_itoa(frame_malloc_count), NULL});
 	object->o_anim.frames = \
-			prot_memalloc(sizeof(t_objectanimframe) * frame_malloc_count);
+			prot_memalloc(sizeof(t_object_anim_frame) * frame_malloc_count);
 	ft_strncpy_term(object->o_anim.name, anim_name, 120);
-	fd = fileopen(ANIMLISTPATH, O_RDONLY);
+	fd = ft_fileopen(ANIMLISTPATH, O_RDONLY);
 	ret = parse_anim_list(fd, anim_name, object);
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, ANIMLISTPATH);
-	fileclose(fd, ANIMLISTPATH);
+	ft_fileclose(fd, ANIMLISTPATH);
 }

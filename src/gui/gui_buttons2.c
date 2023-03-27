@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:48:41 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 16:22:16 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:14:54 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,13 @@ char	*construct_shortcut_label(char *str, int alpha_or_keymask)
 bool	gui_shortcut_button(char *str, int alpha_or_keymask, t_autogui *gui)
 {
 	t_rectangle		rect;
-	t_buttonreturn	br;
+	t_button_return	br;
 	char			*str_s;
 
 	br.rect = empty_rect();
 	br.clicked = false;
 	str_s = construct_shortcut_label(str, alpha_or_keymask);
-	if (gui_shoulddraw(gui))
+	if (gui_should_draw(gui))
 		br = autogui_internal_button(str_s, gui);
 	free(str_s);
 	gui_layout(gui, br.rect);

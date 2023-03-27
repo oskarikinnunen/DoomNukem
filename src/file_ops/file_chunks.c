@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 09:36:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 13:54:11 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:05:55 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ t_list	*parse_chunk(int fd, size_t size)
 	return (head);
 }
 
-void	save_chunk(char *filename, char *chunkname, t_list *content)
+void	save_chunk(char *filename, char *chunk_name, t_list *content)
 {
 	t_list	*l;
 	int		written;
@@ -70,10 +70,10 @@ void	save_chunk(char *filename, char *chunkname, t_list *content)
 	int		temp;
 
 	l = content;
-	fd = fileopen(filename, O_RDWR | O_APPEND);
+	fd = ft_fileopen(filename, O_RDWR | O_APPEND);
 	written = 0;
 	temp = 0;
-	if (write(fd, chunkname, CHUNKSIZE) == -1)
+	if (write(fd, chunk_name, CHUNKSIZE) == -1)
 		doomlog(LOG_EC_WRITE, "save_chunk");
 	while (l != NULL)
 	{
@@ -88,10 +88,10 @@ void	save_chunk(char *filename, char *chunkname, t_list *content)
 			doomlog(LOG_EC_WRITE, "save_chunk");
 	if (write(fd, "CEND", CHUNKSIZE) == -1)
 		doomlog(LOG_EC_WRITE, "save_chunk");
-	fileclose(fd, filename);
+	ft_fileclose(fd, filename);
 }
 
-t_list	*load_chunk(char *filename, char *chunkname, size_t size)
+t_list	*load_chunk(char *filename, char *chunk_name, size_t size)
 {
 	int		fd;
 	int		br;
@@ -99,23 +99,23 @@ t_list	*load_chunk(char *filename, char *chunkname, size_t size)
 	t_list	*result;
 	int		i;
 
-	fd = fileopen(filename, O_RDONLY);
+	fd = ft_fileopen(filename, O_RDONLY);
 	ft_bzero(buf, CHUNKSIZE + 1);
 	br = read(fd, buf, CHUNKSIZE);
 	while (br > 0)
 	{
 		buf[CHUNKSIZE] = '\0';
-		if (ft_strcmp(chunkname, buf) == 0)
+		if (ft_strcmp(chunk_name, buf) == 0)
 		{
 			result = parse_chunk(fd, size);
-			fileclose(fd, filename);
+			ft_fileclose(fd, filename);
 			return (result);
 		}
 		br = read(fd, buf, CHUNKSIZE);
 	}
 	if (br == -1)
 		doomlog(LOG_EC_READ, filename);
-	fileclose(fd, filename);
+	ft_fileclose(fd, filename);
 	return (NULL);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector3_more.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 11:40:43 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/13 17:24:00 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 20:10:57 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ t_vector3	vector3_snap(t_vector3 vec, int interval)
 	return (result);
 }
 
-t_vector3	vector3_movetowards(t_vector3 vec, t_vector3 to, float delta)
+t_vector3	vector3_move_towards(t_vector3 vec, t_vector3 to, float delta)
 {
 	t_vector3	result;
 

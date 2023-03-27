@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   matrix_functions.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 19:24:23 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/15 13:20:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 20:28:42 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vectors.h"
 
-t_mat4x4	matrix_makeprojection(float fovdegrees, float aspectratio,
+t_mat4x4	matrix_make_projection(float fovdegrees, float aspect_ratio,
 							float near, float far)
 {
 	float		fovrad;
@@ -20,7 +20,7 @@ t_mat4x4	matrix_makeprojection(float fovdegrees, float aspectratio,
 
 	matrix = matrix_zero();
 	fovrad = 1.0f / tanf(fovdegrees * 0.5f / 180.0f * 3.14159f);
-	matrix.m[0][0] = aspectratio * fovrad;
+	matrix.m[0][0] = aspect_ratio * fovrad;
 	matrix.m[1][1] = fovrad;
 	matrix.m[2][2] = far / (far - near);
 	matrix.m[3][2] = (-far * near) / (far - near);
@@ -72,7 +72,7 @@ static inline t_mat4x4	matrix_flip(t_mat4x4 m)
 }
 
 // Only for Rotation/Translation Matrices
-t_mat4x4	matrix_quickinverse(t_mat4x4 m)
+t_mat4x4	matrix_quick_inverse(t_mat4x4 m)
 {
 	t_mat4x4	matrix;
 

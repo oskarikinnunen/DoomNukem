@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 12:20:53 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 20:45:36 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:04:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void	parse_mtllib(t_list **list, char *filename)
 	ft_bzero(&mp, sizeof(t_mat_parse));
 	ft_strncpy_term(mp.mat_path, OBJPATH, 250);
 	ft_strcat(mp.mat_path, filename);
-	mp.fd = fileopen(mp.mat_path, O_RDONLY);
+	mp.fd = ft_fileopen(mp.mat_path, O_RDONLY);
 	mp.ret = get_next_line(mp.fd, &mp.line);
 	while (mp.ret)
 	{
@@ -96,5 +96,5 @@ void	parse_mtllib(t_list **list, char *filename)
 	}
 	if (mp.ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, mp.mat_path);
-	fileclose(mp.fd, mp.mat_path);
+	ft_fileclose(mp.fd, mp.mat_path);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool_modify_2.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 16:04:00 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/21 16:04:23 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 21:30:56 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@ void	gui_component(t_entity *entity, t_autogui *gui, t_world *world)
 	gui_end(gui);
 }
 
-void	gui_entitymode(t_entity *entity, t_autogui *gui, t_world *world)
+void	gui_entity_mode(t_entity *entity, t_autogui *gui, t_world *world)
 {
-	t_componentdefinition	*defs;
+	t_component_definition	*defs;
 	int						i;
 
 	gui->offset.x = 20;

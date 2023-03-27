@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 20:11:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 17:39:12 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:40:23 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,30 +20,30 @@ void	assign_component_none(t_component *component)
 	component_empty_function_pointers(component);
 }
 
-t_componentdefinition	*get_component_definitions(void)
+t_component_definition	*get_component_definitions(void)
 {
-	static t_componentdefinition	editables[32] = {\
-	(t_componentdefinition){.type = COMP_NONE, .name = "None", \
+	static t_component_definition	editables[32] = {\
+	(t_component_definition){.type = COMP_NONE, .name = "None", \
 		.func_assign_component = assign_component_none}, \
-	(t_componentdefinition){.type = COMP_AUDIOSOURCE, .name = "Audiosource", \
+	(t_component_definition){.type = COMP_AUDIOSOURCE, .name = "Audiosource", \
 		.func_assign_component = assign_component_audiosource}, \
-	(t_componentdefinition){.type = COMP_INTERACTABLE, .name = "Interactable", \
+	(t_component_definition){.type = COMP_INTERACTABLE, .name = "Interactable", \
 		.func_assign_component = assign_component_interactable}, \
-	(t_componentdefinition){.type = COMP_LIGHT, .name = "Light", \
+	(t_component_definition){.type = COMP_LIGHT, .name = "Light", \
 		.func_assign_component = assign_component_light}, \
-	(t_componentdefinition){.type = COMP_HEALTHPACK, .name = "Healthpack", \
+	(t_component_definition){.type = COMP_HEALTHPACK, .name = "Healthpack", \
 		.func_assign_component = assign_component_healthpack}, \
-	(t_componentdefinition){.type = COMP_NPC, .name = "NPC", \
+	(t_component_definition){.type = COMP_NPC, .name = "NPC", \
 		.func_assign_component = assign_component_npc}, \
-	(t_componentdefinition){.type = COMP_PLAYERSPAWN, .name = "Playerspawn", \
-		.func_assign_component = assign_component_playerspawn}, \
-	(t_componentdefinition){.type = COMP_GUN_PICKUP, .name = "Gun_pickup", \
+	(t_component_definition){.type = COMP_PLAYERSPAWN, .name = "Playerspawn", \
+		.func_assign_component = assign_component_player_spawn}, \
+	(t_component_definition){.type = COMP_GUN_PICKUP, .name = "Gun_pickup", \
 		.func_assign_component = assign_component_gun_pickup}, \
-	(t_componentdefinition){.type = COMP_AUTO_DOOR, .name = "Auto_door", \
+	(t_component_definition){.type = COMP_AUTO_DOOR, .name = "Auto_door", \
 		.func_assign_component = assign_component_auto_door}, \
-	(t_componentdefinition){.type = COMP_STORYEVENT, .name = "Storyevent", \
-		.func_assign_component = assign_component_storyevent}, \
-	(t_componentdefinition){.type = COMP_BOUTTON, .name = "Boutton", \
+	(t_component_definition){.type = COMP_STORYEVENT, .name = "Storyevent", \
+		.func_assign_component = assign_component_story_event}, \
+	(t_component_definition){.type = COMP_BOUTTON, .name = "Boutton", \
 		.func_assign_component = assign_component_boutton}};
 
 	return (editables);

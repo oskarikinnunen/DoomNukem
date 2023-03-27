@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 14:34:40 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 22:25:50 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:15:32 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	update_editor_toolbar(t_editor *ed, t_autogui *toolbar)
 	toolbar->rect.size.y = 60;
 	toolbar->rect.size.x = 540;
 	gui_start(toolbar);
-	gui_starthorizontal(toolbar);
+	gui_start_horizontal(toolbar);
 	if (gui_button("[1]Rooms", toolbar) || ed->hid.keystate >> KEYS_1MASK & 1)
 		change_tool(ed, toolbar->sdl, get_room_tool());
 	if (gui_button("[2]Entities", toolbar) || \
@@ -39,6 +39,6 @@ void	update_editor_toolbar(t_editor *ed, t_autogui *toolbar)
 		change_tool(ed, toolbar->sdl, get_gun_tool());
 	if (gui_shortcut_button("No tool", 't', toolbar))
 		ed->tool = NULL;
-	gui_endhorizontal(toolbar);
+	gui_end_horizontal(toolbar);
 	gui_end(toolbar);
 }

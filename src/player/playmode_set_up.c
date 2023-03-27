@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode_set_up.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 19:26:59 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 17:10:33 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,8 +110,8 @@ void	respawn_player(t_game *game)
 	game->player.ammo_arr[AM_PISTOL] = 60;
 	game->player.transform.scale = vector3_one();
 	game->player.transform.rotation = (t_vector3){-RAD90, -RAD90 * 0.99f, 0.0f};
-	game->player.jump.framerate = 30;
-	game->player.jump.lastframe = 18;
+	game->player.jump.frame_rate = 30;
+	game->player.jump.last_frame = 18;
 	game->player.height = PLAYER_HEIGHT;
 	game->player.fov = 90.0f;
 	game->player.health = 120;

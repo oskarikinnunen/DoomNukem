@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:54:09 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 21:14:48 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:15:32 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@ void	gui_int(int i, t_autogui *gui)
 	t_rectangle	rect;
 
 	rect = empty_rect();
-	if (gui_shoulddraw(gui))
+	if (gui_should_draw(gui))
 	{
 		str = ft_itoa(i);
-		rect = print_text_colored(gui->sdl, str, gui_currentpos(gui), AMBER_3);
+		rect = print_text_colored(gui->sdl, str, gui_current_pos(gui), AMBER_3);
 		free(str);
 	}
 	gui_layout(gui, rect);
@@ -30,10 +30,10 @@ void	gui_int(int i, t_autogui *gui)
 
 void	gui_point(t_point point, t_autogui *gui)
 {
-	gui_starthorizontal(gui);
+	gui_start_horizontal(gui);
 	gui_int(point.x, gui);
 	gui_int(point.y, gui);
-	gui_endhorizontal(gui);
+	gui_end_horizontal(gui);
 }
 
 void	gui_lock_mouse(t_autogui *gui)
@@ -46,7 +46,7 @@ void	gui_lock_mouse(t_autogui *gui)
 	gui->hid->mouse.dragging_ui = true;
 }
 
-t_point	gui_currentpos(t_autogui *gui)
+t_point	gui_current_pos(t_autogui *gui)
 {
 	t_point	pos;
 

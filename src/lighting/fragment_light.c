@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fragment_light.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:00:33 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/22 18:22:33 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/26 20:29:32 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ static t_quaternion	location_to_screenspace(
 {
 	const t_vector3	voffsetview = (t_vector3){1.0f, 1.0f, 0.0f};
 
-	q = quaternion_mul_matrix(camera.matview, q);
-	q = quaternion_mul_matrix(camera.matproj, q);
+	q = quaternion_mul_matrix(camera.mat_view, q);
+	q = quaternion_mul_matrix(camera.mat_proj, q);
 	q.v = vector3_div(q.v, q.w);
 	q.v = vector3_negative(q.v);
 	q.v = vector3_add(q.v, voffsetview);

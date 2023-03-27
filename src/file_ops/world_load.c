@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 14:55:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 17:23:02 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 23:09:26 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,9 @@ static void	world_load_basic_ent(char *level, t_world *world)
 	t_list	*e_list;
 
 	doomlog(LOG_NORMAL, "LOADING BASIC_ENT");
-	e_list = load_chunk(level, "BENT", sizeof(t_gamestring)
-			+ sizeof(t_transform) + sizeof(t_componenttype) + sizeof(uint32_t));
+	e_list = load_chunk(level, "BENT", sizeof(t_game_string)
+			+ sizeof(t_transform) + sizeof(t_component_type)
+			+ sizeof(uint32_t));
 	load_basic_ent_cache_from_list(world, e_list);
 	listdel(&e_list);
 }
@@ -102,7 +103,7 @@ t_world	load_world(t_app_argument app_argument, t_sdlcontext *sdl)
 		fd = open(level_path, O_RDONLY);
 		if (fd == -1)
 			return (world);
-		fileclose(fd, level_path);
+		ft_fileclose(fd, level_path);
 		world_load_amap(level_path, &world);
 		world_load_basic_ent(level_path, &world);
 	}

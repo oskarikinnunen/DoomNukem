@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:47:48 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 15:51:10 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:11:50 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	gui_start(t_autogui *gui)
 		gui->rect.size.x = gui->minimum_size.x;
 	if (gui->rect.size.y < gui->minimum_size.y)
 		gui->rect.size.y = gui->minimum_size.y;
-	gui->x_maxdrawn = 0;
+	gui->x_max_drawn = 0;
 }
 
 t_autogui	init_gui(t_gui_init gui_init)

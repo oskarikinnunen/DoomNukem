@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   conversions.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 17:23:31 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/17 18:47:53 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 20:06:52 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ t_quaternion	vector3_to_quaternion(t_vector3 v)
 	return ((t_quaternion){v.x, v.y, v.z, 1.0f});
 }
 
-float	radtodeg(float rad)
+float	rad_to_deg(float rad)
 {
 	return (rad * (180.0f / M_PI));
 }

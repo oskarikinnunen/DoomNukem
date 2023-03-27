@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playermovement_normal1.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:22:31 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 13:30:19 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 21:25:47 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	player_rotate(t_player *player)
 			v2tov3(player->input.turn));
 	player->transform.rotation.y = ft_clampf(player->transform.rotation.y,
 			-RAD90 * 0.99f, RAD90 * 0.99f);
-	player->lookdir = lookdirection((t_vector2){player->transform.rotation.x,
+	player->look_dir = look_direction((t_vector2){player->transform.rotation.x,
 			player->transform.rotation.y});
 }
 
@@ -32,11 +32,11 @@ static t_vector2	normalized_inputvector(t_input input, t_player player)
 	float		speed;
 
 	movement = vector2_zero();
-	forward = player.lookdir;
+	forward = player.look_dir;
 	forward.z = 0.0f;
 	forward = vector3_normalise(forward);
 	movement = vector2_mul(v3tov2(forward), -input.move.y);
-	right = vector3_crossproduct(forward, vector3_up());
+	right = vector3_cross_product(forward, vector3_up());
 	strafe = vector3_mul(right, input.move.x);
 	movement = vector2_add(movement, v3tov2(strafe));
 	movement = vector2_clamp_magnitude(movement, 1.0f);
@@ -54,13 +54,13 @@ void	player_move(t_player *player, t_world *world)
 
 void	player_jump(t_player *player, t_world *world)
 {
-	if (player->input.jump && player->cp.isgrounded
-		&& world->clock.time > player->lastjumptime + JUMP_DELAY)
+	if (player->input.jump && player->cp.is_grounded
+		&& world->clock.time > player->last_jump_time + JUMP_DELAY)
 	{
 		player->cp.velocity.z = 0.065f;
 		player->transform.position.z += 0.1f;
 		start_anim(&player->jump, anim_forwards);
-		player->lastjumptime = world->clock.time;
+		player->last_jump_time = world->clock.time;
 	}
 	if (player->jump.active)
 		update_anim(&player->jump, world->clock.delta);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   calculate_texture.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 13:07:06 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 21:11:59 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,6 @@ void	calculate_texture_for_entities(t_world *world)
 			found++;
 		}
 	}
-	multithread_start(&thread);
+	multi_thread_start(&thread);
 	free(thread.structs);
 }

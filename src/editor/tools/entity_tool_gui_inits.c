@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/12 13:48:51 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 15:36:05 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 19:54:53 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "objects.h"
 
 void	entitytool_entitygui_init(t_editor *ed,
-							t_sdlcontext *sdl, t_entitytooldata *dat)
+							t_sdlcontext *sdl, t_entity_tool_data *dat)
 {
 	t_autogui	*gui;
 
@@ -41,20 +41,20 @@ void	entitytool_entitygui_init(t_editor *ed,
 }
 
 void	entitytool_worldgui_init(t_editor *ed,
-							t_sdlcontext *sdl, t_entitytooldata *dat)
+							t_sdlcontext *sdl, t_entity_tool_data *dat)
 {
-	if (dat->worldgui.sdl == NULL)
+	if (dat->world_gui.sdl == NULL)
 	{
-		dat->worldgui = init_gui((t_gui_init){sdl, &ed->hid, &ed->player,
+		dat->world_gui = init_gui((t_gui_init){sdl, &ed->hid, &ed->player,
 				(t_point){200, 40}, "World entities"});
-		dat->worldgui.minimum_size.x = 300;
-		dat->worldgui.minimum_size.y = 450;
-		dat->worldgui.rect.size = dat->worldgui.minimum_size;
+		dat->world_gui.minimum_size.x = 300;
+		dat->world_gui.minimum_size.y = 450;
+		dat->world_gui.rect.size = dat->world_gui.minimum_size;
 	}
 }
 
 void	entitytool_objectgui_init(t_editor *ed,
-							t_sdlcontext *sdl, t_entitytooldata *dat)
+							t_sdlcontext *sdl, t_entity_tool_data *dat)
 {
 	if (dat->new_object_gui.sdl == NULL)
 	{

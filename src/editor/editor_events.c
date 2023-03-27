@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 21:55:34 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:48:28 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static void	editor_key_down(t_editor *ed, SDL_Event e)
 	if (iskey(e, SDLK_F5))
 	{
 		world_save_to_file(ed->world);
-		ed->world.lastsavetime = ed->world.clock.time;
+		ed->world.last_save_time = ed->world.clock.time;
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 20:09:06 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 13:07:30 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:23:32 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	parse_frame_line(char *line, t_sdlcontext *sdl)
 
 	frame = ft_atoi(line);
 	sdl->human_anims[sdl->human_anim_count].endframe = frame;
-	sdl->human_anims[sdl->human_anim_count].startframe = prev_frame;
+	sdl->human_anims[sdl->human_anim_count].start_frame = prev_frame;
 	prev_frame = frame;
 	sdl->human_anim_count++;
 }
@@ -67,11 +67,11 @@ void	playmode_load_anim_legend(int level_fd, t_sdlcontext *sdl)
 
 	doomlog(LOG_NORMAL, "UNPACKING ANIMATIONS");
 	load_and_write_filecontent(level_fd, ANIMLEGENDPATH, TEMPANIMLEGEND);
-	temp_fd = fileopen(TEMPANIMLEGEND, O_RDONLY);
+	temp_fd = ft_fileopen(TEMPANIMLEGEND, O_RDONLY);
 	sdl->human_anims = prot_memalloc(sizeof(t_human_animation) * 30);
 	sdl->human_anim_count = 0;
 	ret = parse_lines(temp_fd, sdl);
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_anim_legend");
-	fileclose(temp_fd, ANIMLEGENDPATH);
+	ft_fileclose(temp_fd, ANIMLEGENDPATH);
 }

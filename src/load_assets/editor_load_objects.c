@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 17:22:47 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 17:37:15 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:04:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static int	parse_object_list(int fd, t_sdlcontext *sdl)
 			sdl->objects[i] = objparse(object_path);
 			if (sdl->objects[i].vertices != NULL)
 				ft_strncpy_term(sdl->objects[i].name, \
-						extract_filename(object_path), 250);
+						extract_file_name(object_path), 250);
 			doomlog_mul(LOG_NORMAL, (char *[3]){\
 					"parsed .obj file:", sdl->objects[i].name, NULL});
 			free(object_path);
@@ -52,9 +52,9 @@ void	editor_load_objects(t_sdlcontext *sdl)
 	doomlog_mul(LOG_NORMAL, (char *[4]){OBJLISTPATH, \
 			"size =", s_itoa(sdl->objectcount), NULL});
 	sdl->objects = prot_memalloc(sizeof(t_object) * sdl->objectcount);
-	fd = fileopen(OBJLISTPATH, O_RDONLY);
+	fd = ft_fileopen(OBJLISTPATH, O_RDONLY);
 	ret = parse_object_list(fd, sdl);
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, OBJLISTPATH);
-	fileclose(fd, OBJLISTPATH);
+	ft_fileclose(fd, OBJLISTPATH);
 }

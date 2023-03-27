@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool_modify.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 15:02:24 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/21 16:04:14 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 21:15:41 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,14 @@
 #include "objects.h"
 
 static void	entity_gui_header(t_entity *ent, t_autogui *gui,
-							t_world *world, t_entitytooldata *dat)
+							t_world *world, t_entity_tool_data *dat)
 {
 	t_entity	*clone;
 
-	gui_starthorizontal(gui);
+	gui_start_horizontal(gui);
 	gui_label("ID: ", gui);
 	gui_label(s_itoa(ent->id), gui);
-	gui_endhorizontal(gui);
+	gui_end_horizontal(gui);
 	if (gui_shortcut_button("Clone", 'c', gui))
 	{
 		clone = spawn_entity(world, ent->obj);
@@ -34,14 +34,14 @@ static void	entity_gui_header(t_entity *ent, t_autogui *gui,
 }
 
 static void	entity_gui_component(t_entity *ent,
-						t_autogui *gui, t_world *world, t_entitytooldata *dat)
+						t_autogui *gui, t_world *world, t_entity_tool_data *dat)
 {
 	if (gui_highlighted_button_if("Edit component", gui,
 			dat->entity_ed.component_toggle))
 		dat->entity_ed.component_toggle = !dat->entity_ed.component_toggle;
 	if (dat->entity_ed.component_toggle)
 	{
-		gui_entitymode(ent, gui, world);
+		gui_entity_mode(ent, gui, world);
 		if (ent->component.type != COMP_NONE)
 		{
 			gui_start(&dat->entity_ed.component_gui);
@@ -52,7 +52,7 @@ static void	entity_gui_component(t_entity *ent,
 }
 
 static void	entity_gui_transform_and_component(t_entity *ent,
-						t_autogui *gui, t_world *world, t_entitytooldata *dat)
+						t_autogui *gui, t_world *world, t_entity_tool_data *dat)
 {
 	if (gui_highlighted_button_if("Edit transform", gui,
 			dat->entity_ed.tr_toggle))
@@ -60,7 +60,7 @@ static void	entity_gui_transform_and_component(t_entity *ent,
 	if (dat->entity_ed.tr_toggle)
 	{
 		gui_preset_transform(&ent->transform, gui);
-		gui_emptyvertical(15, gui);
+		gui_empty_vertical(15, gui);
 		if (gui_button("Reset rotation", gui))
 			ent->transform.rotation = vector3_zero();
 		if (gui_button("Reset scale", gui))
@@ -69,7 +69,7 @@ static void	entity_gui_transform_and_component(t_entity *ent,
 }
 
 static void	entity_grab_and_delete(t_entity *ent, t_autogui *gui,
-								t_editor *ed, t_entitytooldata *dat)
+								t_editor *ed, t_entity_tool_data *dat)
 {
 	if (ent == dat->info.hit_entity && ed->hid.mouse.held == MOUSE_LEFT
 		&& ed->hid.mouse.relative && !ed->world.player->locked)
@@ -85,7 +85,7 @@ static void	entity_grab_and_delete(t_entity *ent, t_autogui *gui,
 	}
 	if (dat->grabbing && !vector3_cmp(dat->info.hit_pos, vector3_zero()))
 	{
-		findbounds(ent);
+		find_bounds(ent);
 		ent->transform.position = dat->info.hit_pos;
 		ent->transform.position.z -= ent->z_bound.min * ent->transform.scale.z;
 		ent->transform.rotation.x
@@ -100,7 +100,7 @@ static void	entity_grab_and_delete(t_entity *ent, t_autogui *gui,
 
 //Only goes here if new_ent is NULL
 void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl,
-		t_entitytooldata *dat)
+		t_entity_tool_data *dat)
 {
 	t_entity	*ent;
 	t_autogui	*gui;

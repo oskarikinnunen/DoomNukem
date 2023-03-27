@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   controller_events.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 19:49:59 by raho              #+#    #+#             */
-/*   Updated: 2023/03/20 11:09:44 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 22:11:43 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,22 +32,22 @@ static void	controller_axis_move(SDL_ControllerAxisEvent caxis, t_hid_info *hid)
 	else
 		c = 1;
 	if (caxis.axis == SDL_CONTROLLER_AXIS_LEFTX)
-		hid->controller[c].leftanalog.x = \
+		hid->controller[c].left_analog.x = \
 				dead_zone(ft_clampf((caxis.value / 32767.f), -1.f, 1.f));
 	if (caxis.axis == SDL_CONTROLLER_AXIS_LEFTY)
-		hid->controller[c].leftanalog.y = \
+		hid->controller[c].left_analog.y = \
 				dead_zone(ft_clampf((caxis.value / 32767.f), -1.f, 1.f));
 	if (caxis.axis == SDL_CONTROLLER_AXIS_RIGHTX)
-		hid->controller[c].rightanalog.x = \
+		hid->controller[c].right_analog.x = \
 				dead_zone(ft_clampf((caxis.value / 32767.f), -1.f, 1.f));
 	if (caxis.axis == SDL_CONTROLLER_AXIS_RIGHTY)
-		hid->controller[c].rightanalog.y = \
+		hid->controller[c].right_analog.y = \
 				dead_zone(ft_clampf((caxis.value / 32767.f), -1.f, 1.f));
 	if (caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERLEFT)
-		hid->controller[c].lefttrigger = \
+		hid->controller[c].left_trigger = \
 				dead_zone(ft_clampf((caxis.value / 32767.f), -1.f, 1.f));
 	if (caxis.axis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT)
-		hid->controller[c].righttrigger = \
+		hid->controller[c].right_trigger = \
 				dead_zone(ft_clampf((caxis.value / 32767.f), -1.f, 1.f));
 }
 
@@ -96,7 +96,7 @@ void	handle_removed_controller(SDL_Event e, t_hid_info *hid)
 				"controller", s_itoa(c + 1), "disconnected", NULL});
 }
 
-int	controller_events(SDL_Event e, t_hid_info *hid)
+void	controller_events(SDL_Event e, t_hid_info *hid)
 {
 	SDL_Joystick	*joystick_id;
 
@@ -116,8 +116,7 @@ int	controller_events(SDL_Event e, t_hid_info *hid)
 	else if (e.type == SDL_CONTROLLERBUTTONUP)
 		controller_button_release(e.cbutton, hid);
 	if (hid->controller[0].guide == true)
-		return (game_exit);
+		return ;
 	if (hid->controller[0].back == true)
-		return (game_switchmode);
-	return (game_continue);
+		return ;
 }

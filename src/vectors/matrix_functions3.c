@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   matrix_functions3.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 12:34:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 12:40:39 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 20:10:41 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ static t_vector3	get_new_up(t_vector3 up, t_vector3 new_forward)
 
 static t_vector3	get_new_right(t_vector3 new_up, t_vector3 new_forward)
 {
-	return (vector3_crossproduct(new_up, new_forward));
+	return (vector3_cross_product(new_up, new_forward));
 }
 
 static t_mat4x4	get_matrix(t_vector3 new_right, t_vector3 new_up,
@@ -84,7 +84,7 @@ static t_mat4x4	get_matrix(t_vector3 new_right, t_vector3 new_up,
 	matrix.m[1][3] = 0.0f;
 	matrix.m[2][3] = 0.0f;
 	matrix.m[3][3] = 1.0f;
-	return (matrix_quickinverse(matrix));
+	return (matrix_quick_inverse(matrix));
 }
 
 t_mat4x4	matrix_lookat(t_vector3 pos, t_vector3 target, t_vector3 up)

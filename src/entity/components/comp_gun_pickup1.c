@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 18:03:17 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:38:22 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,5 +54,5 @@ void	assign_component_gun_pickup(t_component *component)
 	component->func_update = comp_gun_pickup_update;
 	component->func_gui_edit = comp_gun_pickup_gui_edit;
 	component->func_ui_update = comp_gun_pickup_ui_update;
-	component->func_loadassets = comp_gun_pickup_loadassets;
+	component->func_load_assets = comp_gun_pickup_load_assets;
 }

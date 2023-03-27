@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:48:10 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 14:27:35 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:04:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	unpack_and_load_font(int font_i, int level_fd,
 	sdl->fonts[font_i] = font_parse(TEMPFONT);
 	if (sdl->fonts[font_i].sizes[0] != NULL)
 		ft_strncpy_term(sdl->fonts[font_i].name, \
-				extract_filename(font_name), 120);
+				extract_file_name(font_name), 120);
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
 			"unpacked and loaded .ttf file:", sdl->fonts[font_i].name, NULL});
 }
@@ -35,7 +35,7 @@ static int	parse_font_list(int level_fd, t_sdlcontext *sdl)
 
 	i = 0;
 	font_name = NULL;
-	temp_fd = fileopen(TEMPFONTLIST, O_RDONLY);
+	temp_fd = ft_fileopen(TEMPFONTLIST, O_RDONLY);
 	ret = get_next_line(temp_fd, &font_name);
 	while (ret)
 	{
@@ -48,7 +48,7 @@ static int	parse_font_list(int level_fd, t_sdlcontext *sdl)
 		}
 		ret = get_next_line(temp_fd, &font_name);
 	}
-	fileclose(temp_fd, TEMPFONTLIST);
+	ft_fileclose(temp_fd, TEMPFONTLIST);
 	return (ret);
 }
 

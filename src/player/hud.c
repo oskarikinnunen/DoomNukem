@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   hud.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 14:50:05 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/17 18:39:40 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 21:07:13 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static t_point	draw_ammo_hud(t_world *world)
 	pos_ammo.x += 20;
 	print_text(world->sdl, "/", pos_ammo);
 	pos_ammo.x += 10;
-	ammocount = world->player->ammo_arr[world->player->gun->stats.ammomask];
+	ammocount = world->player->ammo_arr[world->player->gun->stats.ammo_mask];
 	print_text(world->sdl, s_itoa(ammocount), pos_ammo);
 	return (origin);
 }
@@ -79,7 +79,7 @@ static void	draw_health_hud(t_point origin, t_world *world)
 	rect_health.size.x = ft_max(0, ((float)world->player->health
 				/ (float)MAXHEALTH) * 100);
 	draw_rectangle_filled(*world->sdl, rect_health, CLR_RED);
-	if (world->clock.time < world->player->lasthurttime + 1000)
+	if (world->clock.time < world->player->last_hurt_time + 1000)
 	{
 		rect_hurt.position.x = 20;
 		rect_hurt.position.y = (int)(world->sdl->screensize.y * 0.75f);
