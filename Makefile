@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
+#    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/27 11:02:46 by okinnune         ###   ########.fr        #
+#    Updated: 2023/03/27 12:23:00 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -192,18 +192,6 @@ SRCFILES= main.c img.c deltatime.c \
 		occlusion/occlusion_culling.c \
 		occlusion/culling_debug.c \
 		occlusion/bitmask_culling.c \
-		render/render_entity.c \
-		render/renders_world_triangles_to_screen_triangles.c \
-		render/render_buffer.c \
-		render/init_render.c \
-		render/gizmos/render_gizmo.c \
-		render/gizmos/render_ball.c \
-		render/transform/transform_triangle.c \
-		render/transform/transform_quaternion.c \
-		render/transform/clip_world_triangle_to_plane.c \
-		render/transform/clip_screen_triangle_to_plane.c \
-		render/transform/clip_screen_triangle_to_screen.c \
-		render/transform/transform_bounds.c \
 		decal/decal.c \
 		lighting/allocate_map.c \
 		lighting/bake_lighting.c \
@@ -227,9 +215,9 @@ SRCFILES= main.c img.c deltatime.c \
 		render/rasterization/rasterize_triangle.c \
 		render/rasterization/rasterize_triangle_transparent.c \
 		render/draw.c \
+		render/draw2.c \
 		render/draw_rectangle.c \
 		render/draw_shapes.c \
-		render/draw_crosshair.c \
 		render/draw_skybox.c \
 		render/render_helper.c \
 		render/surface_tools.c \
@@ -237,6 +225,19 @@ SRCFILES= main.c img.c deltatime.c \
 		render/text.c \
 		render/pixel_utils.c \
 		render/render_dynamic_light.c \
+		render/render_entity.c \
+		render/renders_world_triangles_to_screen_triangles.c \
+		render/render_buffer.c \
+		render/init_render.c \
+		render/gizmos/render_gizmo.c \
+		render/gizmos/render_ball.c \
+		render/gizmos/clip_quatline.c \
+		render/transform/transform_triangle.c \
+		render/transform/transform_quaternion.c \
+		render/transform/clip_world_triangle_to_plane.c \
+		render/transform/clip_screen_triangle_to_plane.c \
+		render/transform/clip_screen_triangle_to_screen.c \
+		render/transform/transform_bounds.c \
 		world/entitycache.c \
 		world/entitycache_2.c \
 		world/entitycache_transparent.c \

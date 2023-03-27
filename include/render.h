@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 20:30:02 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 22:08:48 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 12:23:12 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -326,6 +326,11 @@ t_screen_triangle	world_triangle_to_screen_triangle(t_mat4x4 matproj, \
 								t_world_triangle clipped, t_sdlcontext sdl);
 bool				is_triangle_backface(t_world_triangle tritransformed, \
 											t_render *render);
+
+t_vector2			proj_quaternion_to_screenspace(\
+t_sdlcontext *sdl, t_quaternion proj_q);
+
+bool				clip_quatline_to_zplane(t_quat_line *ql);
 
 /* RASTERIZER */
 void				rasterize_zbuffer(t_lighting *lighting);

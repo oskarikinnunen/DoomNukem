@@ -6,60 +6,13 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 21:49:05 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/27 12:21:35 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/27 12:24:06 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "render.h"
 
-static t_vector2	proj_quaternion_to_screenspace(t_sdlcontext *sdl,
-													t_quaternion proj_q)
-{
-	t_vector3	v_offset_view;
-
-	proj_q.v = vector3_div(proj_q.v, proj_q.w);
-	proj_q.v = vector3_negative(proj_q.v);
-	v_offset_view = (t_vector3){1.0f, 1.0f, 0.0f};
-	proj_q.v = vector3_add(proj_q.v, v_offset_view);
-	proj_q.v.x *= 0.5f * (float)sdl->window_w;
-	proj_q.v.y *= 0.5f * (float)sdl->window_h;
-	return ((t_vector2){proj_q.v.x, proj_q.v.y});
-}
-
-bool	clip_quatline_to_zplane(t_quat_line *ql)
-{
-	t_vector3		plane_p;
-	t_vector3		plane_n;
-	float			lerp;
-	float			dist[2];
-
-	plane_p = (t_vector3){0.0f, 0.0f, 0.1f};
-	plane_n = (t_vector3){0.0f, 0.0f, 1.0f};
-	dist[0] = vector3_fdist_to_plane(ql->start.v, plane_n, plane_p);
-	dist[1] = vector3_fdist_to_plane(ql->end.v, plane_n, plane_p);
-	if (dist[0] < 0.0f && dist[1] < 0.0f)
-		return (false);
-	if (dist[0] < 0.0f || dist[1] < 0.0f)
-	{
-		if (dist[0] > dist[1])
-			ft_swap(&ql->start, &ql->end, sizeof(t_quaternion));
-		lerp = line_intersect_plane(plane_p, plane_n, ql->start.v, ql->end.v);
-		ql->start = lerp_quaternion(ql->start, ql->end, lerp);
-	}
-	return (true);
-}
-
-static t_line	newline(t_vector2 start, t_vector2 end)
-{
-	t_line	l;
-
-	l.start = start;
-	l.end = end;
-	return (l);
-}
-
-// XY
 void	render_circle(t_sdlcontext *sdl, t_vector3 pos,
 						float radius, uint32_t clr)
 {
@@ -89,8 +42,8 @@ bool	vector3_has_nan(t_vector3 vec)
 		|| isnan(vec.z) || isinf(vec.z));
 }
 
-void render_ray3d(t_sdlcontext *sdl, t_vector3 from,
-					t_vector3 to, uint32_t clr)
+void	render_ray3d(
+	t_sdlcontext *sdl, t_vector3 from, t_vector3 to, uint32_t clr)
 {
 	t_quaternion	q1;
 	t_quaternion	q2;
@@ -115,26 +68,15 @@ void render_ray3d(t_sdlcontext *sdl, t_vector3 from,
 			vector2_to_point(l.end), clr);
 }
 
-void render_gizmo3d(t_sdlcontext *sdl, t_vector3 pos,
+void	render_gizmo3d(t_sdlcontext *sdl, t_vector3 pos,
 					int size, uint32_t color)
 {
 	drawcircle(*sdl, vector3_to_screenspace(pos, *sdl), size, color);
 }
 
-void render_gizmo2d(t_sdlcontext *sdl, t_vector2 pos,
+void	render_gizmo2d(t_sdlcontext *sdl, t_vector2 pos,
 						int size, uint32_t color)
 {
 	drawcircle(*sdl,
 		vector3_to_screenspace(v2tov3(pos), *sdl), size, color);
-}
-
-static t_vector3 look_direction2(t_vector2 angle)
-{
-	t_quaternion	temp;
-	t_mat4x4		matcamerarot;
-
-	matcamerarot = matrix_make_rotation_z(angle.x);
-	temp = quaternion_mul_matrix(matcamerarot, \
-			(t_quaternion){1.0f, 0.0f, 0.0f, 1.0f});
-	return (temp.v);
 }

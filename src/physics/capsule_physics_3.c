@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   capsule_physics_3.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 19:07:24 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 22:47:57 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 12:23:56 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static bool	charphys_ceil_share_z(t_character_physics *cp, t_meshtri *floor)
 		+ (cp->height / 2.0f) && floor->v->z <= cp->position->z + cp->height);
 }
 
-bool	is_in_ceil(t_character_physics *cp, t_meshtri *ceil)
+bool	is_in_ceil(t_character_physics *cp, struct s_meshtri *ceil)
 {
 	t_ray			r;
 	t_raycast_info	info;
