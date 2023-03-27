@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_sdl.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 14:59:55 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 19:22:38 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/27 10:55:18 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,9 +75,9 @@ void	set_sdl_settings(t_sdlcontext *sdl)
 
 	free_sdl_stuff(sdl);
 	prefs.screenmode = screenmode_windowed;
-	prefs.resolution_x = 1280;
-	prefs.resolution_y = 720;
-	prefs.resolutionscale = 1.0f;
+	prefs.resolution_x = DEFAULT_RES_X;
+	prefs.resolution_y = DEFAULT_RES_Y;
+	prefs.resolutionscale = DEFAULT_RES_SCALING;
 	prefs.volume = 5.0f;
 	sdl->window_w = prefs.resolution_x;
 	sdl->window_h = prefs.resolution_y;

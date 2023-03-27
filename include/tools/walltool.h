@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 15:17:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/20 18:34:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 22:43:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,13 @@ typedef	enum e_walltoolmode
 }	t_walltoolmode;
 
 #define MAXSELECTED 32
+
+typedef struct s_ear
+{
+	t_vector2	first;
+	t_vector2	center;
+	t_vector2	second;
+}	t_ear;
 
 typedef struct s_floorcalc
 {

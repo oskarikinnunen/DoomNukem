@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 20:35:35 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:35:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 11:02:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,30 +16,6 @@
 #include "tools/walltool.h"
 #include "tools/roomtool.h"
 #include "objects.h"
-
-static bool	iteration_protect(int *valid, int validcount,
-		int i, t_floorcalc *fc)
-{
-	if (i == 50000)
-	{
-		populatevalid_l(valid, &validcount, *fc);
-		fc->facecount = 0;
-	}
-	if (i > 100000)
-	{
-		fc->facecount = 0;
-		doomlog(LOG_WARNING, "Couldn't create floor, too many iterations!");
-		return (true);
-	}
-	return (false);
-}
-
-typedef struct s_ear
-{
-	t_vector2	first;
-	t_vector2	center;
-	t_vector2	second;
-}	t_ear;
 
 t_ear	get_ear(int *valid, int validcount, t_floorcalc *fc)
 {
@@ -93,6 +69,8 @@ bool	fc_add_face(t_floorcalc *fc, int *valid, int *validcount)
 	return (false);
 }
 
+//TODO: find case where iteration protection triggers, check that
+// it handles correctly (doesn't segfault etc.)
 void	triangulate(t_floorcalc *fc)
 {
 	int		valid[MAXSELECTED];
@@ -104,12 +82,20 @@ void	triangulate(t_floorcalc *fc)
 	populatevalid(valid, &validcount, *fc);
 	i = 0;
 	fc->facecount = 0;
-	while (validcount > 2)
+	while (validcount > 2 && i <= 100000)
 	{
 		if (!fc_add_face(fc, valid, &validcount))
 			shift_direction(valid, validcount, i);
 		i++;
-		if (iteration_protect(valid, validcount, i, fc))
-			return ;
+		if (i == 50000)
+		{
+			populatevalid_l(valid, &validcount, *fc);
+			fc->facecount = 0;
+		}
+		if (i > 100000)
+		{
+			fc->facecount = 0;
+			doomlog(LOG_WARNING, "Couldn't create floor");
+		}
 	}
 }

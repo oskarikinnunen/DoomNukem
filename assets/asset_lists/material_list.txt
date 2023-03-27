@@ -1,5 +1,6 @@
 assets/objects/lightbar.mtl
 assets/objects/welrod.mtl
+assets/objects/plane.mtl
 assets/objects/trash.mtl
 assets/objects/bench.mtl
 assets/objects/Human.mtl

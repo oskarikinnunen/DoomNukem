@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 15:02:26 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 18:52:34 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 11:00:28 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,4 +87,6 @@ void	gun_update_transform(t_player *player, t_gun *gun, t_clock c)
 			gun->stats.aimpos, gun->aim_lerp);
 	gun->entity->transform.position = neutralpos;
 	gun_recoil_transform(player, gun, c);
+	gun_update_bobbing(player, gun, c);
+	gun_update_turn(player, gun, c);
 }

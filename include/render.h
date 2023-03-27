@@ -34,8 +34,10 @@
 # define CLEARSCREEN "\e[1;1H\e[2J"
 # define FONT_SIZE_DEFAULT 8
 # define FONT_SIZE_COUNT 4
-
 # define RCRCL_SIDES 16
+# define DEFAULT_RES_SCALING 0.5f
+# define DEFAULT_RES_X 1280
+# define DEFAULT_RES_Y 720
 
 typedef struct s_step
 {

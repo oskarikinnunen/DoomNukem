@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 20:59:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:03:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 22:40:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ bool	intersect(t_line line1, t_vector2 *edges, int edgecount)
 			line2.end = edges[0];
 		else
 			line2.end = edges[i + 1];
-		if (collision_line_line_intersect(line1, line2))
+		if (collision_line_line_intersect(line1, line_shorten(line2)))
 			return (true);
 		i++;
 	}
