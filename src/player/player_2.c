@@ -6,11 +6,10 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 17:26:50 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 18:23:58 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 21:09:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-//TODO: remove unused header includes
 #include "doomnukem.h"
 #include "npc.h"
 

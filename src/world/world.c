@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 20:43:00 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 21:08:59 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,32 +95,12 @@ static void	sort_entitycache(t_world *world, t_vector3 location)
 	}
 }
 
-//TODO: Remove after bullet holes implementation
-/* if (gui_shortcut_button("Decal draw", 'G', world->debug_gui))
-	{
-		t_decal	d;
-		t_ray	r;
-
-		r.origin = sdl->render.camera.position;
-		r.dir = sdl->render.camera.look_dir;
-		t_raycast_info	info;
-		if (raycast(r, &info, world))
-		{
-			d.img = get_image_by_index(*sdl, 2);
-			d.normal = info.face_normal;
-			d.position = info.hit_pos;
-			d.size = 25.0f;
-			decal(world, d);
-		}
-} */
 static void	world_update_debug_gui(t_world *world,
 									t_sdlcontext *sdl, t_render *render)
 {
 	gui_start(world->debug_gui);
 	if (gui_shortcut_button("Toggle no_clip", 'F', world->debug_gui))
 		world->player->no_clip = !world->player->no_clip;
-	if (gui_shortcut_button("Create navmesh:", 'C', world->debug_gui))
-		navmesh(world);
 	if (gui_shortcut_button("Toggle Lighting", 'l', world->debug_gui))
 		sdl->lighting_toggled = !sdl->lighting_toggled;
 	if (gui_shortcut_button("Draw Occlusion Buffer", 'Y', world->debug_gui))
@@ -128,13 +108,14 @@ static void	world_update_debug_gui(t_world *world,
 				!sdl->render.occlusion.draw_occlusion;
 	if (gui_shortcut_button("Toggle Occlusion", 'O', world->debug_gui))
 		render->occlusion.occlusion = !render->occlusion.occlusion;
-	gui_labeled_bool("Occlusion:", render->occlusion.occlusion, world->debug_gui);
-	if (gui_shortcut_button("Toggle Occlusion boxes", 'P', world->debug_gui))
-		render->occlusion.occluder_box = !render->occlusion.occluder_box;
 	if (gui_shortcut_button("Render Next Frame Slow", 'U', world->debug_gui))
 		sdl->render.occlusion.slow_render = true;
-	if (gui_shortcut_button("Bake lighting (new)", 'b', world->debug_gui))
-		recalculate_lighting(world);
+	if (world->app_mode == APPMODE_PLAY && \
+	gui_shortcut_button("Show_navmesh", 'N', world->debug_gui))
+		world->nav.show_navmesh = !world->nav.show_navmesh;
+	if (gui_shortcut_button("Occlusion boxes", 'B', world->debug_gui))
+		world->sdl->render.occlusion.draw_occlusion = \
+		!world->sdl->render.occlusion.draw_occlusion;
 	gui_labeled_float_slider("Resolution scaling", \
 			&world->sdl->resolution_scaling, 0.01f, world->debug_gui);
 	world->sdl->resolution_scaling = \
@@ -155,7 +136,10 @@ void	update_world3d(t_world *world, t_render *render)
 	update_frustrum_culling(world, sdl, render);
 	sort_entitycache(world, render->camera.position);
 	update_entitycache(sdl, world, render);
+	if (render->occlusion.draw_occlusion)
+		for_all_active_entities(world, draw_occlusion_boxes);
 	rescale_surface(sdl);
+	show_navmesh(world);
 	lateupdate_entitycache(sdl, world);
 	if (!world->debug_gui->hidden)
 		world_update_debug_gui(world, sdl, render);

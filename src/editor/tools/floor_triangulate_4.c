@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 21:00:41 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 22:36:58 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 18:48:13 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,18 +64,20 @@ t_line	line_shorten(t_line line)
 	return (final);
 }
 
-void	free_object(t_object *object)
+void	free_object(t_object **object)
 {
-	if (object == NULL)
+	if (*object == NULL)
 		return ;
-	if (object->faces != NULL)
-		free(object->faces);
-	if (object->materials != NULL)
-		free(object->materials);
-	if (object->uvs != NULL)
-		free(object->uvs);
-	if (object->vertices != NULL)
-		free(object->vertices);
+	if ((*object)->faces != NULL)
+		free((*object)->faces);
+	if ((*object)->materials != NULL)
+		free((*object)->materials);
+	if ((*object)->uvs != NULL)
+		free((*object)->uvs);
+	if ((*object)->vertices != NULL)
+		free((*object)->vertices);
+	free(*object);
+	*object = NULL;	
 }
 
 void	free_floor(t_world *world, t_area *room)
@@ -89,7 +91,7 @@ void	free_floor(t_world *world, t_area *room)
 		{
 			if (room->floors[i].entity->obj != NULL)
 			{
-				free_object(room->floors[i].entity->obj);
+				free_object(&room->floors[i].entity->obj);
 				room->floors[i].entity->obj = NULL;
 			}
 			destroy_entity(world, room->floors[i].entity);
@@ -110,7 +112,7 @@ void	free_ceilings(t_world *world, t_area *room)
 		{
 			if (room->ceilings[i].entity->obj != NULL)
 			{
-				free_object(room->ceilings[i].entity->obj);
+				free_object(&room->ceilings[i].entity->obj);
 				room->ceilings[i].entity->obj = NULL;
 			}
 			destroy_entity(world, room->ceilings[i].entity);

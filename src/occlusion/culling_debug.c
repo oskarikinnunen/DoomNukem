@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 14:59:10 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 17:31:12 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/27 17:12:34 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,4 +72,27 @@ bool	is_screen_full(t_sdlcontext *sdl)
 		i++;
 	}
 	return (true);
+}
+
+void	draw_occlusion_boxes(t_entity *entity, struct s_world *world)
+{
+	t_point		max;
+	t_point		min;
+	uint32_t	clr;
+
+	if (!entity->obj || !entity->world_triangles \
+	|| !world || entity->occlusion.world_tri_count == 1 \
+	|| entity->occlusion.is_frustrum_culled)
+		return ;
+	clr = CLR_GREEN;
+	if (entity->occlusion.world_tri_count >= 8)
+		clr = CLR_BLUE;
+	if (entity->occlusion.is_occluded)
+		clr = CLR_RED;
+	max = entity->occlusion.box.max;
+	min = entity->occlusion.box.min;
+	drawline(*world->sdl, min, (t_point){max.x, min.y}, clr);
+	drawline(*world->sdl, max, (t_point){max.x, min.y}, clr);
+	drawline(*world->sdl, max, (t_point){min.x, max.y}, clr);
+	drawline(*world->sdl, min, (t_point){min.x, max.y}, clr);
 }

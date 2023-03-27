@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 14:55:11 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 20:43:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 21:08:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	destroy_entity(t_world *world, t_entity *ent)
 	cache->entities[ent->id].status = es_free;
 	cache->entities[ent->id].obj = NULL;
 	if (ent->destroy_obj)
-		free_object(ent->obj);
+		free_object(&ent->obj);
 	if (ent->world_triangles != NULL)
 		free(ent->world_triangles);
 	if (cache->existing_entitycount == 0)

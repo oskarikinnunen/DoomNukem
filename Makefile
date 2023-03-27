@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
+#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/27 15:20:21 by okinnune         ###   ########.fr        #
+#    Updated: 2023/03/27 17:20:38 by raho             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -295,8 +295,7 @@ OBJ= $(SRC:.c=.o)
 DEPENDS= $(OBJ:.o=.d)
 
 #Compilation stuff:
-INCLUDE= -Isrc -Iinclude -Ilibft -I$(LUAFOLDER)/install/include \
-			-I$(INSTALLED_LIBS_DIR)/include/SDL2/ \
+INCLUDE= -Isrc -Iinclude -Ilibft -I$(INSTALLED_LIBS_DIR)/include/SDL2/ \
 			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
 CC= gcc
 CFLAGS= $(INCLUDE) -g -finline-functions -O3 #-MMD

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   occlusion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/23 14:40:03 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/27 15:01:18 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 16:32:39 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,10 @@ bool	is_entity_culled(t_sdlcontext *sdl, t_render *render, t_entity *entity)
 	{
 		entity->occlusion.is_occluded = \
 		is_entity_occlusion_culled(sdl, render, entity);
-		if (sdl->render.occlusion.slow_render == true)
+		if (sdl->render.occlusion.slow_render == true && \
+		entity->occlusion.is_occluded == false)
 		{
-			memcpy(sdl->window_surface->pixels, sdl->surface->pixels, \
+			ft_memcpy(sdl->window_surface->pixels, sdl->surface->pixels, \
 			sizeof(uint32_t) * sdl->window_w * sdl->window_h);
 			SDL_UpdateWindowSurface(sdl->window);
 			usleep(100000);
