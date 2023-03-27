@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   frustrum_culling.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 14:05:28 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 17:10:10 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ bool	is_entity_frustrum_culled(
 {
 	if (entity->obj == NULL)
 		return (true);
+	entity->occlusion.is_frustrum_culled = false;
 	calculate_triangles(*sdl, render, entity);
 	set_square_from_triangles(&entity->occlusion, \
 	render->screenspace_ptris, render->screenspace_ptri_count);
@@ -26,6 +27,7 @@ bool	is_entity_frustrum_culled(
 			sdl->bitmask.max_dist = entity->occlusion.z_dist[0];
 		return (false);
 	}
+	entity->occlusion.is_frustrum_culled = true;
 	return (true);
 }
 

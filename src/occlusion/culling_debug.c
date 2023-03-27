@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 14:59:10 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/27 15:30:43 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/27 17:12:34 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,9 @@ void	draw_occlusion_boxes(t_entity *entity, struct s_world *world)
 	t_point		min;
 	uint32_t	clr;
 
-	if (!entity->obj || !entity->world_triangles || !world)
-		return ;
-	if (entity->occlusion.world_tri_count == 1)
+	if (!entity->obj || !entity->world_triangles \
+	|| !world || entity->occlusion.world_tri_count == 1 \
+	|| entity->occlusion.is_frustrum_culled)
 		return ;
 	clr = CLR_GREEN;
 	if (entity->occlusion.world_tri_count >= 8)

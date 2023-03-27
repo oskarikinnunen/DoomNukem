@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   occlusion.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 20:44:01 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 20:48:46 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 17:09:41 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ typedef struct s_occlusion
 	float				z_dist[2];
 	bool				is_backface_cull;
 	bool				is_occluded;
+	bool				is_frustrum_culled;
 }	t_occlusion;
 
 typedef struct s_bitmask_helper

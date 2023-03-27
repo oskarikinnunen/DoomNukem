@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   allocate_map.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 13:48:22 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 18:52:29 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,10 @@ static void	clear_map_for_entity(t_entity *entity)
 		i++;
 	}
 	free(entity->map);
+	entity->map = NULL;
 }
 
-static void	for_each_triangle(t_entity *entity)
+static bool	for_each_triangle(t_entity *entity)
 {
 	int			i;
 	int			index;
@@ -64,11 +65,14 @@ static void	for_each_triangle(t_entity *entity)
 		{
 			max.x = fmaxf(max.x, 1.0f);
 			max.y = fmaxf(max.y, 1.0f);
+			if (max.x > 10000.0f || max.y > 10000.0f)
+				return (false);
 			allocate_map(entity, index, max);
 			max = vector2_zero();
 		}
 		i++;
 	}
+	return (true);
 }
 
 static void	allocate_map_for_entity(t_entity *entity, t_world *world)
@@ -85,7 +89,8 @@ static void	allocate_map_for_entity(t_entity *entity, t_world *world)
 		return ;
 	entity->map = prot_memalloc(sizeof(t_map) * entity->obj->material_count);
 	ft_bzero(entity->map, sizeof(t_map) * entity->obj->material_count);
-	for_each_triangle(entity);
+	if (for_each_triangle(entity) == false)
+		clear_map_for_entity(entity);
 }
 
 void	allocate_map_for_entities(t_world *world)

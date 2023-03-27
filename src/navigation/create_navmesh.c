@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   create_navmesh.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 17:17:11 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 18:50:02 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ void	create_navmesh(t_world *world)
 		if (ent->status != es_free)
 		{
 			if (ent->status == es_active && !ent->hidden)
-				if (ent->occlusion.world_tri_count == 1)
+				if (ent->occlusion.world_tri_count == 1 && ent->map != NULL)
 					clip_navmesh(&world->nav, ent, world);
 			found++;
 		}

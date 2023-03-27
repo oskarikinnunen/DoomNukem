@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 19:26:59 by raho              #+#    #+#             */
-/*   Updated: 2023/03/27 13:00:59 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/27 18:58:21 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void	set_up_world(t_sdlcontext *sdl, t_game *game)
 	sdl->fog = true;
 	*(game->world.debug_gui) = init_gui((t_gui_init){sdl, &game->hid, \
 					&game->player, sdl->screensize, "Debugging menu (F2)"});
-	sdl->lighting_toggled = false;
+	sdl->lighting_toggled = true;
 	sdl->render.occlusion.occlusion = true;
 	game->world.sdl = sdl;
 	sdl->audio.sfx_volume = 1.0f;

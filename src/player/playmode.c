@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:44:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 13:03:44 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 18:50:46 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,10 @@ void	playmode(t_app_argument app_argument, t_sdlcontext sdl)
 	playmode_loading_screen("LOADING WORLD", &sdl);
 	game.world = load_world(app_argument, &sdl);
 	game.world.sdl->render.world = &game.world;
-	playmode_loading_screen("SETTING UP WORLD", &sdl);
-	set_up_world(&sdl, &game);
 	playmode_loading_screen("CREATING LIGHTING EFFECTS", &sdl);
 	recalculate_lighting(&game.world);
+	playmode_loading_screen("SETTING UP WORLD", &sdl);
+	set_up_world(&sdl, &game);
 	playmode_loading_screen_loop("PRESS ANY KEY TO PLAY", &sdl);
 	if (SDL_SetRelativeMouseMode(SDL_TRUE) < 0)
 		doomlog(LOG_EC_SDL_SETRELATIVEMOUSEMODE, NULL);

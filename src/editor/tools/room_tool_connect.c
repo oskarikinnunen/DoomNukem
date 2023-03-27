@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:52:00 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 20:26:07 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 18:49:11 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	free_roomwalls(t_world *world, t_area *room)
 		w = &room->walls[i];
 		if (w->entity != NULL)
 		{
-			free_object(w->entity->obj);
+			free_object(&w->entity->obj);
 			destroy_entity(world, w->entity);
 			w->entity = NULL;
 		}

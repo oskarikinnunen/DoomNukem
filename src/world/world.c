@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 19:59:46 by kfum             ###   ########.fr       */
+/*   Updated: 2023/03/27 18:35:01 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,24 +95,6 @@ static void	sort_entitycache(t_world *world, t_vector3 location)
 	}
 }
 
-//TODO: Remove after bullet holes implementation
-/* if (gui_shortcut_button("Decal draw", 'G', world->debug_gui))
-	{
-		t_decal	d;
-		t_ray	r;
-
-		r.origin = sdl->render.camera.position;
-		r.dir = sdl->render.camera.look_dir;
-		t_raycast_info	info;
-		if (raycast(r, &info, world))
-		{
-			d.img = get_image_by_index(*sdl, 2);
-			d.normal = info.face_normal;
-			d.position = info.hit_pos;
-			d.size = 25.0f;
-			decal(world, d);
-		}
-} */
 static void	world_update_debug_gui(t_world *world,
 									t_sdlcontext *sdl, t_render *render)
 {
@@ -144,11 +126,12 @@ static void	world_update_debug_gui(t_world *world,
 void	update_world3d(t_world *world, t_render *render)
 {
 	t_sdlcontext	*sdl;
+	t_img			*skybox;
 
 	sdl = world->sdl;
 	for_all_active_entities(world, calculate_triangles_for_entity);
 	render_start_new(sdl, world->player);
-	draw_skybox_image(world);
+	draw_skybox_image(world, skybox);
 	clear_occlusion_buffer(sdl);
 	update_frustrum_culling(world, sdl, render);
 	sort_entitycache(world, render->camera.position);

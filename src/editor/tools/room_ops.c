@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 17:45:17 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 20:26:36 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 19:07:18 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ t_area	*world_add_room(t_world *world, t_area *room)
 	list_push(&world->arealist, worldroom, sizeof(t_area));
 	free(worldroom);
 	worldroom = list_findlast(world->arealist);
+	free(room);
 	return (worldroom);
 }
 
