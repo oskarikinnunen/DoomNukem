@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:53:23 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:28:24 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,5 +56,5 @@ void	assign_component_healthpack(t_component *component)
 	component->func_update = comp_healthpack_update;
 	component->func_gui_edit = NULL;
 	component->func_ui_update = NULL;
-	component->func_loadassets = NULL;
+	component->func_load_assets = NULL;
 }

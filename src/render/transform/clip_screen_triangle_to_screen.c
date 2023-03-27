@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   clip_screen_triangle_to_screen.c                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 19:15:23 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/24 15:53:11 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/26 20:23:27 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
 static int	screen_edge_clip(t_screen_triangle *buff, int side,
-t_v2rectangle screen_edge, t_screen_triangle triangle)
+t_v2_rectangle screen_edge, t_screen_triangle triangle)
 {
 	int	tricount;
 
@@ -33,7 +33,7 @@ t_v2rectangle screen_edge, t_screen_triangle triangle)
 }
 
 t_point	clip_screen_triangle_against_screen_edge(t_screen_triangle *triangles,
-t_v2rectangle screen_edge)
+t_v2_rectangle screen_edge)
 {
 	t_screen_triangle	clipped[2];
 	t_point				start_end;

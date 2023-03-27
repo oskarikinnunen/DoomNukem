@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:32:20 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 11:57:18 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:04:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static void	playmode_parse_mtllib(t_list **list)
 	t_material	mat;
 	int			ret;
 
-	fd = fileopen(TEMPMTL, O_RDONLY);
+	fd = ft_fileopen(TEMPMTL, O_RDONLY);
 	line = NULL;
 	ret = get_next_line(fd, &line);
 	while (ret)
@@ -41,7 +41,7 @@ static void	playmode_parse_mtllib(t_list **list)
 	}
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, TEMPMTL);
-	fileclose(fd, TEMPMTL);
+	ft_fileclose(fd, TEMPMTL);
 }
 
 // returns a string with a different extension.
@@ -76,7 +76,7 @@ static void	unpack_and_load_object(int obj_i, int level_fd,
 	sdl->objects[obj_i] = objparse(TEMPOBJ);
 	if (sdl->objects[obj_i].vertices != NULL)
 		ft_strncpy_term(sdl->objects[obj_i].name, \
-				extract_filename(object_name), 250);
+				extract_file_name(object_name), 250);
 	free(material_name);
 	free(sdl->objects[obj_i].materials);
 	playmode_parse_mtllib(&materials);
@@ -96,7 +96,7 @@ static int	parse_object_list(int level_fd, t_sdlcontext *sdl)
 
 	i = 0;
 	object_name = NULL;
-	temp_fd = fileopen(TEMPOBJLIST, O_RDONLY);
+	temp_fd = ft_fileopen(TEMPOBJLIST, O_RDONLY);
 	ret = get_next_line(temp_fd, &object_name);
 	while (ret)
 	{
@@ -109,7 +109,7 @@ static int	parse_object_list(int level_fd, t_sdlcontext *sdl)
 		}
 		ret = get_next_line(temp_fd, &object_name);
 	}
-	fileclose(temp_fd, TEMPOBJLIST);
+	ft_fileclose(temp_fd, TEMPOBJLIST);
 	return (ret);
 }
 

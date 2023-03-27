@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:49:59 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 21:34:56 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:12:47 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,10 @@ t_tool	*get_gun_tool(void)
 		.init = gun_tool_init, \
 		.update = gun_tool_update, \
 		.cleanup = gun_tool_cleanup};
-	t_guntooldata	*dat;
+	t_gun_tool_data	*dat;
 
-	if (tool.tooldata == NULL)
-		tool.tooldata = prot_memalloc(sizeof(t_guntooldata));
+	if (tool.tool_data == NULL)
+		tool.tool_data = prot_memalloc(sizeof(t_gun_tool_data));
 	ft_strncpy_term(tool.icon_name, "linetool.png", 250);
 	return (&tool);
 }

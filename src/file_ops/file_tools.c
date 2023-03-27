@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 19:59:44 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 14:11:31 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:04:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,13 @@
 
 void	clean_create_level_file(char *level)
 {
-	fileclose(fileopen(level, O_CREAT | O_RDWR | O_TRUNC), level);
+	ft_fileclose(ft_fileopen(level, O_CREAT | O_RDWR | O_TRUNC), level);
 	doomlog_mul(LOG_NORMAL, (char *[5]){\
 			"cleaned/created the level:", level, "succesfully"});
 }
 
 // returns a pointer to the start of the file's name without its path
-char	*extract_filename(const char *filepath)
+char	*extract_file_name(const char *filepath)
 {
 	char	*filename;
 
@@ -52,11 +52,11 @@ void	pack_file_to_level(char *level, char *file)
 	t_file_content	fc;
 
 	ft_bzero(&fc, sizeof(t_file_content));
-	fd = fileopen(file, O_RDONLY);
+	fd = ft_fileopen(file, O_RDONLY);
 	ft_fileread(fd, &fc);
 	ft_strncpy(fc.name, file, 127);
-	fileclose(fd, file);
-	fileopen(level, O_RDWR | O_APPEND);
+	ft_fileclose(fd, file);
+	ft_fileopen(level, O_RDWR | O_APPEND);
 	if (write(fd, "FCNK", 4) == -1)
 		doomlog(LOG_EC_WRITE, "save_chunk");
 	if (write(fd, fc.name, sizeof(char) * 128) == -1)
@@ -67,7 +67,7 @@ void	pack_file_to_level(char *level, char *file)
 		doomlog(LOG_EC_WRITE, "save_chunk");
 	if (write(fd, "PADD", CHUNKSIZE - (fc.length % CHUNKSIZE)) == -1)
 		doomlog(LOG_EC_WRITE, "save_chunk");
-	fileclose(fd, level);
+	ft_fileclose(fd, level);
 	free(fc.content);
 	doomlog_mul(LOG_NORMAL, (char *[5]){\
 			"packed file:", file, "to level:", level, NULL});

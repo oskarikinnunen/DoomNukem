@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector3_complex3.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 14:21:41 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/20 14:35:35 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 20:03:55 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@ t_quaternion	quaternion_rotate_euler(t_vector3 original, t_vector3 eulers)
 
 	temp.v = original;
 	temp.w = 1.0f;
-	matrotation = matrix_makerotationy(eulers.y);
+	matrotation = matrix_make_rotation_y(eulers.y);
 	temp = quaternion_mul_matrix(matrotation, temp);
-	matrotation = matrix_makerotationz(eulers.x);
+	matrotation = matrix_make_rotation_z(eulers.x);
 	temp = quaternion_mul_matrix(matrotation, temp);
-	matrotation = matrix_makerotationx(eulers.z);
+	matrotation = matrix_make_rotation_x(eulers.z);
 	temp = quaternion_mul_matrix(matrotation, temp);
 	return (temp);
 }

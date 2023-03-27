@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:36:10 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 13:51:20 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:23:32 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	parse_frame_line(char *line, t_sdlcontext *sdl)
 
 	frame = ft_atoi(line);
 	sdl->human_anims[sdl->human_anim_count].endframe = frame;
-	sdl->human_anims[sdl->human_anim_count].startframe = prev_frame;
+	sdl->human_anims[sdl->human_anim_count].start_frame = prev_frame;
 	prev_frame = frame;
 	sdl->human_anim_count++;
 }
@@ -66,11 +66,11 @@ void	editor_load_anim_legend(t_sdlcontext *sdl)
 	int	ret;
 
 	doomlog(LOG_NORMAL, "LOADING ANIMATIONS");
-	fd = fileopen(ANIMLEGENDPATH, O_RDONLY);
+	fd = ft_fileopen(ANIMLEGENDPATH, O_RDONLY);
 	sdl->human_anims = prot_memalloc(sizeof(t_human_animation) * 30);
 	sdl->human_anim_count = 0;
 	ret = parse_lines(fd, sdl);
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "editor_load_anim_legend");
-	fileclose(fd, ANIMLEGENDPATH);
+	ft_fileclose(fd, ANIMLEGENDPATH);
 }

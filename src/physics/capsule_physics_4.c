@@ -1,19 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   npcs.h                                             :+:      :+:    :+:   */
+/*   capsule_physics_4.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/22 13:49:27 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/16 17:48:08 by okinnune         ###   ########.fr       */
+/*   Created: 2023/03/26 19:16:58 by okinnune          #+#    #+#             */
+/*   Updated: 2023/03/26 19:22:47 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef NPCS_H
-# define NPCS_H
+#include "doomnukem.h"
+#include "movement_defs.h"
+#include "collision.h"
+#include "editor_tools.h"
 
-#include "entity.h"
-#include "colliders.h"
-
-# endif
+bool	charphys_floor_share_z(t_character_physics *cp, t_meshtri *floor)
+{
+	return (floor->v->z >= cp->position->z
+		&& floor->v->z <= cp->position->z + cp->height);
+}

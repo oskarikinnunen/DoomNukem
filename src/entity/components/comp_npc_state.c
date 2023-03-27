@@ -3,21 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   comp_npc_state.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:49:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 17:42:16 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/27 11:53:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "entity.h"
 #include "doomnukem.h"
 #include "editor_tools.h"
+#include "npc.h"
 
-void	npc_start_pushanim(t_entity *entity, t_npc *npc, t_world *world)
+void	npc_start_push_anim(t_entity *entity, t_npc *npc, t_world *world)
 {
-	npc->push_anim.framerate = 30;
-	npc->push_anim.lastframe = 15;
+	npc->push_anim.frame_rate = 30;
+	npc->push_anim.last_frame = 15;
 	start_anim(&npc->push_anim, anim_forwards);
 	start_human_anim(entity, "Walk_weapon", world);
 	npc->next_action_time = world->clock.time
@@ -29,7 +30,7 @@ static t_path	random_path(t_entity *entity, t_npc *npc, t_world *world)
 	int			i;
 	int			r;
 	int			last_id;
-	t_navnode	*curnode;
+	t_nav_node	*curnode;
 	t_path		result;
 
 	curnode = &world->nav.navmesh[
@@ -38,8 +39,8 @@ static t_path	random_path(t_entity *entity, t_npc *npc, t_world *world)
 	while (i < 20)
 	{
 		r = game_random_range(world, 0, curnode->neighbors);
-		while (curnode->neighbors_id[r] == last_id && curnode->neighbors > 2)
-			r = game_random_range(world, 0, curnode->neighbors);
+		/*while (curnode->neighbors_id[r] == last_id && curnode->neighbors > 2)
+			r = game_random_range(world, 0, curnode->neighbors);*/
 		curnode = &world->nav.navmesh[curnode->neighbors_id[r]];
 		last_id = curnode->index;
 		i++;
@@ -69,7 +70,7 @@ void	npc_update_state(t_entity *entity, t_npc *npc, t_world *world)
 {
 	npc_player_raycast(entity, npc, world);
 	npc->prev_state = npc->state;
-	if (!npc->seesplayer && !vector3_cmp(npc->lastseen_playerpos,
+	if (!npc->sees_player && !vector3_cmp(npc->last_seen_player_pos,
 			vector3_zero()) && npc->state != NPC_STATE_CHASE)
 		npc_switch_to_chase_state(entity, npc, world);
 	if (npc->state == NPC_STATE_CHASE && !npc->path.valid_path)

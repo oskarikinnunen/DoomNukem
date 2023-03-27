@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   animation.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/31 00:52:45 by okinnune          #+#    #+#             */
-/*   Updated: 2023/02/28 19:04:28 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 21:24:06 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,43 +16,45 @@
 # include <inttypes.h>
 # include <stdbool.h>
 
+struct	s_audio;
+struct	s_entity;
+struct	s_world;
+
 //TODO: add ping-pong, repeat
-typedef enum	e_anim_mode
+typedef enum e_anim_mode
 {
 	anim_forwards,
 	anim_backwards,
-} t_anim_mode;
+}	t_anim_mode;
 
-struct s_audio ;
-
-typedef struct s_audioevent
+typedef struct s_audio_event
 {
 	uint32_t		frame;
 	struct s_audio	*audio;
-	char			audioname[64];
-}	t_audioevent;
+	char			audio_name[64];
+}	t_audio_event;
 
 typedef struct s_anim
 {
 	bool			active;
 	bool			loop;
 	bool			persist;
-	uint8_t			framerate;
+	uint8_t			frame_rate;
 	uint32_t		time;
 	int32_t			frame;
-	int32_t			startframe;
-	int32_t			lastframe;
+	int32_t			start_frame;
+	int32_t			last_frame;
 	float			lerp;
 	t_anim_mode		mode;
-	t_audioevent	*audioevent;
+	t_audio_event	*audio_event;
 }	t_anim;
 
 void	update_anim(t_anim *anim, uint32_t delta);
-void	anim_setframe(t_anim *anim, uint32_t frame);
+void	anim_set_frame(t_anim *anim, uint32_t frame);
 void	update_anim_dir(t_anim *anim, uint32_t delta, t_anim_mode mode);
-void	start_anim(t_anim *anim, t_anim_mode mode); //TODO: make this return t_anim?
-struct s_entity;
-struct s_world;
-void	start_human_anim(struct s_entity *entity, char *name, struct s_world *world);
+//TODO: make this return t_anim?
+void	start_anim(t_anim *anim, t_anim_mode mode);
+void	start_human_anim(struct s_entity *entity, char *name, \
+							struct s_world *world);
 
 #endif

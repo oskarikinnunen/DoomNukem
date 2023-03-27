@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 18:18:13 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:39:32 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,12 @@ void	comp_storyevent_update(t_entity *entity, t_world *world)
 /*	Internal function that's used to link this components behaviour
 	TODO: better comment, lol
 */
-void	assign_component_storyevent(t_component *component)
+void	assign_component_story_event(t_component *component)
 {
 	component->data_size = sizeof(t_storyevent);
 	component->func_allocate = comp_storyevent_allocate;
 	component->func_update = comp_storyevent_update;
 	component->func_gui_edit = comp_storyevent_gui_edit;
 	component->func_ui_update = comp_storyevent_ui_update;
-	component->func_loadassets = comp_storyevent_loadassets;
+	component->func_load_assets = comp_storyevent_load_assets;
 }

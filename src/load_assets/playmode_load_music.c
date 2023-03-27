@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 22:05:25 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 14:28:02 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:04:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static void	unpack_and_load_music(int music_i, int level_fd,
 	create_music(music_i, TEMPMUSIC, audio);
 	if (audio->music[music_i].sound != NULL)
 		ft_strncpy_term(audio->music[music_i].name, \
-				extract_filename(music_name), 60);
+				extract_file_name(music_name), 60);
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
 			"unpacked and loaded music file:", \
 			audio->music[music_i].name, NULL});
@@ -37,7 +37,7 @@ static int	parse_music_list(int level_fd, t_audio *audio)
 
 	i = 0;
 	music_path = NULL;
-	temp_fd = fileopen(TEMPMUSICLIST, O_RDONLY);
+	temp_fd = ft_fileopen(TEMPMUSICLIST, O_RDONLY);
 	ret = get_next_line(temp_fd, &music_path);
 	while (ret)
 	{
@@ -50,7 +50,7 @@ static int	parse_music_list(int level_fd, t_audio *audio)
 		}
 		ret = get_next_line(temp_fd, &music_path);
 	}
-	fileclose(temp_fd, TEMPMUSICLIST);
+	ft_fileclose(temp_fd, TEMPMUSICLIST);
 	return (ret);
 }
 
@@ -63,7 +63,7 @@ void	playmode_load_music(int level_fd, t_audio *audio)
 	audio->music_count = count_asset_list(TEMPMUSICLIST);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 			TEMPMUSICLIST, "music_count =", s_itoa(audio->music_count), NULL});
-	audio->music = prot_memalloc(sizeof(t_audiosample) * audio->music_count);
+	audio->music = prot_memalloc(sizeof(t_audio_sample) * audio->music_count);
 	ret = parse_music_list(level_fd, audio);
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_music");

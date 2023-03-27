@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 22:05:13 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 17:38:07 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:04:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static void	unpack_and_load_sound(int sample_i, int level_fd,
 	}
 	if (audio->samples[sample_i].sound != NULL)
 		ft_strncpy_term(audio->samples[sample_i].name, \
-				extract_filename(sound_name), 60);
+				extract_file_name(sound_name), 60);
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
 			"unpacked and loaded sound file:", \
 			audio->samples[sample_i].name, NULL});
@@ -45,7 +45,7 @@ static int	parse_sound_list(int level_fd, t_audio *audio)
 
 	i = 0;
 	sound_path = NULL;
-	temp_fd = fileopen(TEMPSOUNDLIST, O_RDONLY);
+	temp_fd = ft_fileopen(TEMPSOUNDLIST, O_RDONLY);
 	ret = get_next_line(temp_fd, &sound_path);
 	while (ret)
 	{
@@ -58,7 +58,7 @@ static int	parse_sound_list(int level_fd, t_audio *audio)
 		}
 		ret = get_next_line(temp_fd, &sound_path);
 	}
-	fileclose(temp_fd, TEMPSOUNDLIST);
+	ft_fileclose(temp_fd, TEMPSOUNDLIST);
 	return (ret);
 }
 
@@ -71,7 +71,7 @@ void	playmode_load_sounds(int level_fd, t_audio *audio)
 	audio->samplecount = count_asset_list(TEMPSOUNDLIST);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 			TEMPSOUNDLIST, "samplecount =", s_itoa(audio->samplecount), NULL});
-	audio->samples = prot_memalloc(sizeof(t_audiosample) * audio->samplecount);
+	audio->samples = prot_memalloc(sizeof(t_audio_sample) * audio->samplecount);
 	ret = parse_sound_list(level_fd, audio);
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_sounds");

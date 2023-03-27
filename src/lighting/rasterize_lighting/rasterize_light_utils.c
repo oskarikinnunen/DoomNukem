@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   rasterize_light_utils.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 17:18:20 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/23 18:47:03 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/26 20:23:27 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-t_v2rectangle	get_bounds(t_screen_triangle *triangle)
+t_v2_rectangle	get_bounds(t_screen_triangle *triangle)
 {
-	t_v2rectangle	bounds;
+	t_v2_rectangle	bounds;
 
 	sort_vector2_vector3_by_vector2_height(triangle->p, triangle->t);
 	if (clockwise(triangle->p) >= -1.0f)

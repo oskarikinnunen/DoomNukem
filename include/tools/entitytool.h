@@ -6,43 +6,49 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 15:28:31 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:32:19 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 19:55:39 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef ENTITYTOOL_H
 # define ENTITYTOOL_H
 
-#include "entity.h"
-#include "editor_tools.h"
+# include "entity.h"
+# include "editor_tools.h"
 
-typedef struct s_entityeditor
+typedef struct s_entity_editor
 {
 	t_autogui		gui;
 	t_autogui		component_gui;
 	bool			tr_toggle;
 	bool			component_toggle;
-}	t_entityeditor;
+}	t_entity_editor;
 
 typedef struct s_entitytooldata
 {
-	t_autogui		worldgui;
-	t_entityeditor	entity_ed;
+	t_autogui		world_gui;
+	t_entity_editor	entity_ed;
 	t_autogui		new_object_gui;
 	t_entity		*sel_ent;
 	t_entity		*new_ent;
 	bool			grabbing;
-	t_raycastinfo	info;
-}	t_entitytooldata;
+	t_raycast_info	info;
+}	t_entity_tool_data;
 
-void	entitytool_entitygui_init(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat);
-void	entitytool_worldgui_init(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat);
-void	entitytool_objectgui_init(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat);
-void	entity_tool_raycast(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat);
-void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat);
-void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl, t_entitytooldata *dat);
-void	gui_entitymode(t_entity *entity, t_autogui *gui, t_world *world);
+void	entitytool_entitygui_init(t_editor *ed, t_sdlcontext *sdl, \
+									t_entity_tool_data *dat);
+void	entitytool_worldgui_init(t_editor *ed, t_sdlcontext *sdl, \
+									t_entity_tool_data *dat);
+void	entitytool_objectgui_init(t_editor *ed, t_sdlcontext *sdl, \
+									t_entity_tool_data *dat);
+void	entity_tool_raycast(t_editor *ed, t_sdlcontext *sdl, \
+									t_entity_tool_data *dat);
+void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl, \
+									t_entity_tool_data *dat);
+void	entity_tool_place(t_editor *ed, t_sdlcontext *sdl, \
+									t_entity_tool_data *dat);
+void	gui_entity_mode(t_entity *entity, t_autogui *gui, t_world *world);
 void	gui_component(t_entity *entity, t_autogui *gui, t_world *world);
-void	findbounds(t_entity *ent);
+void	find_bounds(t_entity *ent);
 
 #endif

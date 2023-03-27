@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pathfind.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 22:16:15 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 17:29:09 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/27 12:05:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ uint32_t	get_nearest_target_node(t_world *world, t_vector3 target)
 	return (closest_point);
 }
 
-static uint32_t	add_valid_neighbours(t_world *world, t_navnode *openlist,
+static uint32_t	add_valid_neighbours(t_world *world, t_nav_node *openlist,
 										uint32_t lowest_f, uint32_t end)
 {
 	int			i;
@@ -64,7 +64,7 @@ static uint32_t	add_valid_neighbours(t_world *world, t_navnode *openlist,
 }
 
 static t_path	construct_path(int end, int start,
-								t_navnode *openlist, t_path path)
+								t_nav_node *openlist, t_path path)
 {
 	int	i;
 
@@ -89,7 +89,7 @@ static t_path	construct_path(int end, int start,
 	return (path);
 }
 
-static uint32_t	get_best_node_id(t_navnode *openlist,
+static uint32_t	get_best_node_id(t_nav_node *openlist,
 								uint32_t lowest_f_index, uint32_t list_len)
 {
 	uint32_t	found;
@@ -112,14 +112,14 @@ static uint32_t	get_best_node_id(t_navnode *openlist,
 
 t_path	pathfind(t_vector3 start_vec, t_vector3 end_vec, t_world *world)
 {
-	t_navnode	*openlist;
+	t_nav_node	*openlist;
 	uint32_t	list_len;
 	uint32_t	i_f;
 	t_path		path;
 
 	openlist = world->nav.openlist;
 	ft_bzero(&path, sizeof(t_path));
-	ft_bzero(openlist, sizeof(t_navnode) * world->nav.node_amount);
+	ft_bzero(openlist, sizeof(t_nav_node) * world->nav.node_amount);
 	path.start = get_nearest_target_node(world, start_vec);
 	path.end = get_nearest_target_node(world, end_vec);
 	openlist[path.end] = world->nav.navmesh[path.end];

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 21:49:05 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/27 11:46:07 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/27 12:21:35 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,10 +101,10 @@ void render_ray3d(t_sdlcontext *sdl, t_vector3 from,
 		return ;
 	q1 = vector3_to_quaternion(from);
 	q2 = vector3_to_quaternion(to);
-	q1 = quaternion_mul_matrix(sdl->render.camera.matview, q1);
-	q2 = quaternion_mul_matrix(sdl->render.camera.matview, q2);
-	q1 = quaternion_mul_matrix(sdl->render.camera.matproj, q1);
-	q2 = quaternion_mul_matrix(sdl->render.camera.matproj, q2);
+	q1 = quaternion_mul_matrix(sdl->render.camera.mat_view, q1);
+	q2 = quaternion_mul_matrix(sdl->render.camera.mat_view, q2);
+	q1 = quaternion_mul_matrix(sdl->render.camera.mat_proj, q1);
+	q2 = quaternion_mul_matrix(sdl->render.camera.mat_proj, q2);
 	ql.start = q1;
 	ql.end = q2;
 	if (!clip_quatline_to_zplane(&ql))
@@ -128,12 +128,12 @@ void render_gizmo2d(t_sdlcontext *sdl, t_vector2 pos,
 		vector3_to_screenspace(v2tov3(pos), *sdl), size, color);
 }
 
-static t_vector3 lookdirection2(t_vector2 angle)
+static t_vector3 look_direction2(t_vector2 angle)
 {
 	t_quaternion	temp;
 	t_mat4x4		matcamerarot;
 
-	matcamerarot = matrix_makerotationz(angle.x);
+	matcamerarot = matrix_make_rotation_z(angle.x);
 	temp = quaternion_mul_matrix(matcamerarot, \
 			(t_quaternion){1.0f, 0.0f, 0.0f, 1.0f});
 	return (temp.v);

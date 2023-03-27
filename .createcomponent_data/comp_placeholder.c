@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_placeholder.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/01/24 11:11:18 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 23:15:50 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,5 +78,5 @@ void	assign_component_COMPONENTNAME(t_component *component)
 	component->func_update = comp_COMPONENTNAME_update;
 	component->func_gui_edit = comp_COMPONENTNAME_gui_edit;
 	component->func_ui_update = comp_COMPONENTNAME_ui_update;
-	component->func_loadassets = comp_COMPONENTNAME_loadassets;
+	component->func_load_assets = comp_COMPONENTNAME_loadassets;
 }

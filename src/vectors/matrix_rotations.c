@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   matrix_rotations.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 19:27:04 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/14 12:21:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 20:03:55 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vectors.h"
 
-t_mat4x4	matrix_makerotationx(float fAngleRad)
+t_mat4x4	matrix_make_rotation_x(float fAngleRad)
 {
 	t_mat4x4	matrix;
 
@@ -26,7 +26,7 @@ t_mat4x4	matrix_makerotationx(float fAngleRad)
 	return (matrix);
 }
 
-t_mat4x4	matrix_makerotationy(float fAngleRad)
+t_mat4x4	matrix_make_rotation_y(float fAngleRad)
 {
 	t_mat4x4	matrix;
 
@@ -40,7 +40,7 @@ t_mat4x4	matrix_makerotationy(float fAngleRad)
 	return (matrix);
 }
 
-t_mat4x4	matrix_makerotationz(float fAngleRad)
+t_mat4x4	matrix_make_rotation_z(float fAngleRad)
 {
 	t_mat4x4	matrix;
 

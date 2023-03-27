@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   navmesh.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 12:04:40 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 17:43:22 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/26 20:55:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ static void	malloc_space_for_navigation_buffer(t_world *world)
 	if (world->nav.openlist)
 		free(world->nav.openlist);
 	world->nav.openlist = \
-	prot_memalloc(world->nav.malloc_size * sizeof(t_navnode));
-	ft_bzero(world->nav.openlist, world->nav.malloc_size * sizeof(t_navnode));
+	prot_memalloc(world->nav.malloc_size * sizeof(t_nav_node));
+	ft_bzero(world->nav.openlist, world->nav.malloc_size * sizeof(t_nav_node));
 }
 
 int	world_triangle_get_max_dist_index(t_world_triangle t)

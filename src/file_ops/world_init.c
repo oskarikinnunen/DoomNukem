@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 20:55:23 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 18:02:10 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,10 @@ void	world_sanitize_all_room_pointers(t_world *world)
 	{
 		room = (t_area *)l->content;
 		i = 0;
-		while (i < room->wallcount)
+		while (i < room->wall_count)
 		{
-			room->walls[i].edgeline.start = NULL;
-			room->walls[i].edgeline.end = NULL;
+			room->walls[i].edge_line.start = NULL;
+			room->walls[i].edge_line.end = NULL;
 			i++;
 		}
 		l = l->next;

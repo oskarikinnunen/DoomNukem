@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/28 15:14:01 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 14:00:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 20:35:11 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 void	change_music(t_sdlcontext *sdl, char *musicname)
 {
-	t_audiosample	sample;
+	t_audio_sample	sample;
 
 	sample = get_music(sdl, musicname);
 	if (sample.sound != NULL)
@@ -29,7 +29,7 @@ void	change_music(t_sdlcontext *sdl, char *musicname)
 
 void	play_music(t_sdlcontext *sdl, char *musicname)
 {
-	t_audiosample	sample;
+	t_audio_sample	sample;
 
 	sample = get_music(sdl, musicname);
 	if (sample.sound != NULL)

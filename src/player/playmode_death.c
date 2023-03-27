@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 15:32:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 20:16:04 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:22:58 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,10 @@ void	playermovement_death(t_player *player,
 			v2tov3(player->input.turn));
 	player->transform.rotation.y = ft_clampf(player->transform.rotation.y,
 			-RAD90 * 0.99f, RAD90 * 0.99f);
-	player->lookdir = lookdirection(v3tov2(player->transform.rotation));
-	player->headposition = vector3_add(player->transform.position,
+	player->look_dir = look_direction(v3tov2(player->transform.rotation));
+	player->head_position = vector3_add(player->transform.position,
 			(t_vector3){.z = player->height * 0.75f});
-	player->head_transform.position = player->headposition;
+	player->head_transform.position = player->head_position;
 	player->head_transform.rotation = player->transform.rotation;
 	player->head_transform.scale = player->transform.scale;
 }
@@ -70,7 +70,7 @@ static t_entity	*spawn_playerdeathmodel(t_world *world)
 	pl_ent->transform.rotation.y = 0.0f;
 	pl_ent->transform.rotation.z = 0.0f;
 	start_human_anim(pl_ent, "Death3", world);
-	pl_ent->animation.framerate /= 5;
+	pl_ent->animation.frame_rate /= 5;
 	world->player->gun->entity->hidden = true;
 	protagonist_play_audio(world->player, world, "protag_death.wav");
 	return (pl_ent);

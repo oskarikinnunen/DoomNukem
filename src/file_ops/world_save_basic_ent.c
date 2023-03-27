@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 20:01:34 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 14:19:21 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ static void	entitylist_basicify(t_list *ent_list)
 	while (l != NULL)
 	{
 		e = (t_entity *)l->content;
-		l->content_size = sizeof(t_gamestring)
-			+ sizeof(t_transform) + sizeof(t_componenttype) + sizeof(uint32_t);
+		l->content_size = sizeof(t_game_string)
+			+ sizeof(t_transform) + sizeof(t_component_type) + sizeof(uint32_t);
 		l = l->next;
 	}
 }

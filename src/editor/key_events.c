@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 15:56:54 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 21:27:29 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:01:12 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,10 @@ static void	toggle_keydown(t_hid_info *hid, SDL_Event e)
 {
 	char	c;
 
-	hid->keystate |= keyismoveleft(e) << KEYS_LEFTMASK;
-	hid->keystate |= keyismoveright(e) << KEYS_RIGHTMASK;
-	hid->keystate |= keyismoveup(e) << KEYS_UPMASK;
-	hid->keystate |= keyismovedown(e) << KEYS_DOWNMASK;
+	hid->keystate |= key_is_move_left(e) << KEYS_LEFTMASK;
+	hid->keystate |= key_is_move_right(e) << KEYS_RIGHTMASK;
+	hid->keystate |= key_is_move_up(e) << KEYS_UPMASK;
+	hid->keystate |= key_is_move_down(e) << KEYS_DOWNMASK;
 	hid->keystate |= iskey(e, SDLK_LCTRL) << KEYS_CTRLMASK;
 	hid->keystate |= iskey(e, SDLK_SPACE) << KEYS_SPACEMASK;
 	hid->keystate |= iskey(e, SDLK_LSHIFT) << KEYS_SHIFTMASK;
@@ -53,10 +53,10 @@ static void	toggle_keyup(t_hid_info *hid, SDL_Event e)
 {
 	char	c;
 
-	hid->keystate &= ~(keyismoveleft(e)) << KEYS_LEFTMASK;
-	hid->keystate &= ~(keyismoveright(e) << KEYS_RIGHTMASK);
-	hid->keystate &= ~(keyismoveup(e) << KEYS_UPMASK);
-	hid->keystate &= ~(keyismovedown(e) << KEYS_DOWNMASK);
+	hid->keystate &= ~(key_is_move_left(e)) << KEYS_LEFTMASK;
+	hid->keystate &= ~(key_is_move_right(e) << KEYS_RIGHTMASK);
+	hid->keystate &= ~(key_is_move_up(e) << KEYS_UPMASK);
+	hid->keystate &= ~(key_is_move_down(e) << KEYS_DOWNMASK);
 	hid->keystate &= ~(iskey(e, SDLK_LCTRL) << KEYS_CTRLMASK);
 	hid->keystate &= ~(iskey(e, SDLK_SPACE) << KEYS_SPACEMASK);
 	hid->keystate &= ~(iskey(e, SDLK_LSHIFT) << KEYS_SHIFTMASK);
