@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vectors.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 22:58:45 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 12:51:44 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -311,9 +311,6 @@ float			point_fdist(t_point first, t_point second);
 //returns dot product of point 'first' and point 'second'
 float			point_fdot(t_point first, t_point second);
 
-//returns point lerped;
-t_point			lerp_point(t_point from, t_point to, float delta);
-
 typedef struct s_quaternion
 {
 	t_vector3	v;
@@ -363,9 +360,6 @@ t_mat4x4		matrix_make_translation(t_vector3 v);
 
 //returns matrix scale
 t_mat4x4		matrix_make_scale(t_vector3 v);
-
-//returns transform matrix
-t_mat4x4		make_transform_matrix(t_transform transform);
 
 //returns matrix projection, fFovDegrees is player field of view in degrees,
 //aspect ratio is float window height divided by window width,

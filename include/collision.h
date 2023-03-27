@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   collision.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 21:25:15 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 23:05:19 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 13:00:48 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,5 +120,9 @@ float			get_z_from_areas(t_character_physics *cp, \
 									struct s_world *world);
 //Internal function, don't call outside of collision logic
 bool			is_in_ramp(t_character_physics *cp, t_vector3_tri *ramp);
+
+bool			is_in_ceil(t_character_physics *cp, struct s_meshtri *ceil);
+
+t_vector3_tri	worldspace_tri(struct s_entity *entity, int index);
 
 #endif

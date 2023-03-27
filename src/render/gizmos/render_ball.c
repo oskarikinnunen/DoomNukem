@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_ball.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 15:10:29 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 16:08:09 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 11:31:54 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static void	render_ball_xy(t_vector3 *edges, t_vector3 pos,
 		edges[i].z = pos.z;
 		if (i >= 1)
 		{
-			render_ray(sdl, edges[i - 1], edges[i]);
+			render_ray3d(sdl, edges[i - 1], edges[i], sdl->render.gizmocolor);
 		}
 		angl += FULLRAD / RCRCL_SIDES;
 		i++;
@@ -49,7 +49,7 @@ static void	render_ball_yz(t_vector3 *edges, t_vector3 pos,
 		edges[i].y = pos.y + (cosf(angl) * size);
 		edges[i].z = pos.z - (sinf(angl) * size);
 		if (i >= 1)
-			render_ray(sdl, edges[i - 1], edges[i]);
+			render_ray3d(sdl, edges[i - 1], edges[i], sdl->render.gizmocolor);
 		angl += FULLRAD / RCRCL_SIDES;
 		i++;
 	}
@@ -69,7 +69,7 @@ static void	render_ball_xz(t_vector3 *edges, t_vector3 pos,
 		edges[i].y = pos.y;
 		edges[i].z = pos.z + (cosf(angl) * size);
 		if (i >= 1)
-			render_ray(sdl, edges[i - 1], edges[i]);
+			render_ray3d(sdl, edges[i - 1], edges[i], sdl->render.gizmocolor);
 		angl += FULLRAD / RCRCL_SIDES;
 		i++;
 	}
