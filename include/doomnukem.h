@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 14:21:40 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/27 19:51:16 by kfum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,7 +177,7 @@ void			free_floor(t_world *world, t_area *room);
 void			free_ceilings(t_world *world, t_area *room);
 void			free_walls(t_area *room, t_world *world);
 
-void			draw_skybox_image(t_world *world, t_img *skybox);
+void			draw_skybox_image(t_world *world);
 void			free_list_node(void *content, size_t size);
 void			playmode_quit(t_game *game);
 void			update_audio(t_world *world);
