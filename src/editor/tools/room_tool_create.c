@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 16:47:41 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 11:11:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 14:34:47 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,13 @@ static void	createmode_drawgui(t_editor *ed,
 	if (dat->room->edge_count == 0)
 		gui_label("Place first wall", gui);
 	else if (dat->room->edge_count > 1)
-		gui_label("Shift + click to finish room", gui);
+	{
+		gui_label("[Enter] to finish room", gui);
+		gui_start_horizontal(gui);
+		gui_label("Edgecount: ", gui);
+		gui_label(s_itoa(dat->room->edge_count), gui);
+		gui_end_horizontal(gui);
+	}
 	else
 		gui_empty_vertical(20, gui);
 	if (gui_room_presets(dat->room, gui, &ed->world))
@@ -93,13 +99,14 @@ void	create_mode(t_editor *ed, t_sdlcontext *sdl, t_room_tool_data *dat)
 		dat->room->height = cursor.z;
 	createmode_drawgui(ed, dat, sdl);
 	dat->room->ceiling_height = 50;
-	if ((ed->hid.keystate >> KEYS_ENTERMASK) & 1)
+	if (((ed->hid.keystate >> KEYS_ENTERMASK) & 1))
 	{
 		dat->rtm = rtm_modify;
 		dat->room = world_add_room(&ed->world, dat->room);
 		return ;
 	}
-	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
+	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT)
+		&& dat->room->edge_count < 31)
 	{
 		dat->room->edges[dat->room->edge_count] = v3tov2(cursor);
 		dat->room->edge_count++;

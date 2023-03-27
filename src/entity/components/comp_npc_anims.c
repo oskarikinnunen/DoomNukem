@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_npc_anims.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:29:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 22:10:25 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 15:17:01 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,6 @@ void	npc_update_anim_state(t_entity *entity, t_npc *npc, t_world *world)
 		start_human_anim(entity, "Walk_weapon", world);
 	if (npc->state == NPC_STATE_DEAD)
 	{
-		printf("prev state %i \n", npc->prev_state);
-		printf("starting death anim \n");
 		npc->prev_state = npc->state;
 		start_random_death_anim(entity, world);
 	}

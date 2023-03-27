@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:49:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 11:53:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 13:15:06 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,19 +35,19 @@ static t_path	random_path(t_entity *entity, t_npc *npc, t_world *world)
 
 	curnode = &world->nav.navmesh[
 		get_nearest_target_node(world, entity->transform.position)];
+	if (curnode->neighbors == 0)
+		return ((t_path) {.valid_path = false});
 	i = 0;
 	while (i < 20)
 	{
 		r = game_random_range(world, 0, curnode->neighbors);
-		/*while (curnode->neighbors_id[r] == last_id && curnode->neighbors > 2)
-			r = game_random_range(world, 0, curnode->neighbors);*/
 		curnode = &world->nav.navmesh[curnode->neighbors_id[r]];
 		last_id = curnode->index;
 		i++;
 	}
 	result = pathfind(entity->transform.position, curnode->mid_point, world);
 	if (result.bi <= 1)
-		result = random_path(entity, npc, world);
+		return ((t_path) {.valid_path = false});
 	return (result);
 }
 

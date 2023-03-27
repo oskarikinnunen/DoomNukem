@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   thread.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 15:57:03 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 20:18:00 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 12:30:15 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-//TODO: RENAME
 void	multi_thread_start(t_thread *thread)
 {
 	int			i;

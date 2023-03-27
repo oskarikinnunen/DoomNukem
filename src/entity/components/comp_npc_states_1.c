@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_npc_states_1.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 17:07:49 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 20:54:16 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 15:16:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@ void	npc_switch_to_chase_state(t_entity *entity,
 	npc->state = NPC_STATE_CHASE;
 	npc->path = pathfind(entity->transform.position,
 			npc->last_seen_player_pos, world);
-	printf("Found new path towards player, valid = %i \n",
-		npc->path.valid_path);
 }
 
 void	npc_switch_to_cautious_move_state(t_entity *entity,
@@ -31,7 +29,6 @@ void	npc_switch_to_cautious_move_state(t_entity *entity,
 	npc->state = NPC_STATE_CAUTIOUS_MOVE;
 	npc->next_action_time = world->clock.time + 3000;
 	npc->last_seen_player_pos = vector3_zero();
-	printf("GO TO CAUTION!\n");
 }
 
 bool	npc_sees_player_and_ready_to_aggro(t_npc *npc)

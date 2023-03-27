@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_ops_2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 17:54:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 22:39:28 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 14:31:51 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,6 @@ bool	room_is_legal(t_world *world, t_area *room)
 	t_area	*other;
 
 	i = 0;
-	if (room->walls_enabled == false)
-		return (true);
 	while (i < room->wall_count)
 	{
 		if (illegalwall_move(&room->walls[i], room))

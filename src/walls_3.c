@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   walls_3.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 20:20:18 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 22:40:50 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 14:19:59 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ void	room_init(t_area *room, t_world *world)
 		room->wall_count = 0;
 		room->ceiling_height = 0;
 	}
-	if (room->floor_enabled)
+	if (room->floor_enabled && room->edge_count > 2)
 	{
 		room_make_floor(world, room);
 		if (room->ceiling_enabled)

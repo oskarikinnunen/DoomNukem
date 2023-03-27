@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool_addnode.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 10:58:19 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 20:26:19 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 14:27:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ static void	draw_node_line(t_vector3 cursor, t_line l, t_sdlcontext *sdl)
 	render_ray3d(sdl, end, cursor, CLR_GREEN);
 }
 
+//TODO: make sure this is actually safe, spooky memcpy stuff
 void	addnode(t_vector2 newnode, t_area *room, int node_i)
 {
 	int			cpy_before;
@@ -62,7 +63,6 @@ void	addnode(t_vector2 newnode, t_area *room, int node_i)
 		room->edges + node_i + 1, sizeof(t_vector2) * cpy_after);
 	ft_memcpy(room->edges, new_edges, sizeof(t_vector2 [32]));
 	room->edge_count++;
-	printf("copied %i edges before new edge \n", node_i - 1);
 }
 
 bool	potential_node(t_vector3 cursor, t_room_tool_data *dat, t_editor *ed)
@@ -78,7 +78,8 @@ bool	potential_node(t_vector3 cursor, t_room_tool_data *dat, t_editor *ed)
 		{
 			draw_node_line(cursor, l, ed->world.sdl);
 			draw_node_indicator(cursor, dat, ed);
-			if (check_alpha_key(ed->hid.alphakey_pressed, 'e'))
+			if (check_alpha_key(ed->hid.alphakey_pressed, 'e')
+				&& dat->room->edge_count < 31)
 			{
 				addnode(v3tov2(cursor), dat->room, i);
 				room_init(dat->room, &ed->world);

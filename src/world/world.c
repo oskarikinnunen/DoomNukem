@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 23:17:46 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 14:55:15 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 	sdl->render.occlusion.slow_render = false;
 }
 
-//TODO: check if this sorts properly (This is the norm compliant version)
 static void	sort_entitycache(t_world *world, t_vector3 location)
 {
 	int			i;
@@ -114,7 +113,6 @@ static void	sort_entitycache(t_world *world, t_vector3 location)
 			decal(world, d);
 		}
 } */
-
 static void	world_update_debug_gui(t_world *world,
 									t_sdlcontext *sdl, t_render *render)
 {
@@ -130,6 +128,7 @@ static void	world_update_debug_gui(t_world *world,
 				!sdl->render.occlusion.draw_occlusion;
 	if (gui_shortcut_button("Toggle Occlusion", 'O', world->debug_gui))
 		render->occlusion.occlusion = !render->occlusion.occlusion;
+	gui_labeled_bool("Occlusion:", render->occlusion.occlusion, world->debug_gui);
 	if (gui_shortcut_button("Toggle Occlusion boxes", 'P', world->debug_gui))
 		render->occlusion.occluder_box = !render->occlusion.occluder_box;
 	if (gui_shortcut_button("Render Next Frame Slow", 'U', world->debug_gui))

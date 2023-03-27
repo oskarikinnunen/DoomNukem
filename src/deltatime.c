@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   deltatime.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:25:00 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 21:59:54 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 12:55:47 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	update_clock(t_clock *c)
 	static uint32_t	add;
 	static uint32_t	betweenframes;
 
-	time_now = SDL_GetTicks() + (UINT32_MAX - 5000);
+	time_now = SDL_GetTicks();
 	c->delta = time_now - c->time;
 	c->time = time_now;
 	add += c->delta;

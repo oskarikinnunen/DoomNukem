@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   audio_init.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/27 10:42:33 by raho              #+#    #+#             */
-/*   Updated: 2023/03/24 17:36:12 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 12:29:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ void	create_music(int music_i, char *music_path, t_audio *audio)
 		doomlog(LOG_EC_FMOD_SYSTEMCREATESOUND, NULL);
 }
 
-// TODO: apply volume settings from sdl somehow
 void	create_audio(t_audio *audio)
 {
 	ft_bzero(audio, sizeof(t_audio));

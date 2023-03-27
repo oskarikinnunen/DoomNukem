@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode_death.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 15:32:29 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:22:58 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 13:19:08 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,8 +96,7 @@ void	playmode_death(t_game *game)
 	while (!cont)
 	{
 		update_clock(&game->world.clock);
-		if (deathmodel->animation.active)
-			update_anim(&deathmodel->animation, game->world.clock.delta);
+		update_anim(&deathmodel->animation, game->world.clock.delta);
 		playmode_events(game);
 		playermovement_death(&game->player, &game->world, deathtime);
 		update_world3d(&game->world, &game->world.sdl->render);
@@ -106,6 +105,7 @@ void	playmode_death(t_game *game)
 			&& game->hid.input.reload)
 		{
 			cont = true;
+			destroy_entity(&game->world, deathmodel);
 			respawn_player(game);
 		}
 		show_surface(game->world.sdl);

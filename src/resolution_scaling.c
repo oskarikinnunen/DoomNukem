@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   resolution_scaling.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 06:55:31 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 16:21:22 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/27 15:14:39 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,19 +22,6 @@ static inline uint32_t	darken(uint32_t clr, float lerp)
 	final += (uint32_t)((clr >> 16 & 0xFF) * lerp) << 16;
 	return (final);
 }
-
-//TODO: this instead of darken, for ps1 style fog
-/*static uint32_t	mixcolor(uint32_t clr1, uint32_t clr2, float lerp)
-{
-	uint32_t	final;
-
-	clr1 = darken(clr1, lerp);
-	clr2 = darken(clr2, 1.0f - lerp);
-	final = (((clr1 & 0xFF) + (clr2 & 0xFF)) / 2) & 0xFF;
-	final += (uint32_t)(((clr1 >> 8 & 0xFF) + (clr2 >> 8 & 0xFF)) / 2) << 8;
-	final += (uint32_t)(((clr1 >> 16 & 0xFF) + (clr2 >> 8 & 0xFF)) / 2) << 16;
-	return (final);
-}*/
 
 static inline uint32_t	sample_fog(t_sdlcontext *sdl,
 	t_point sample, uint32_t stride)
@@ -90,9 +77,9 @@ void	rescale_surface(t_sdlcontext *sdl)
 	t_point			sample;
 	uint32_t		pstride;
 
+	surface_fog(sdl);
 	if (sdl->resolution_scaling >= 1.0f || sdl->resolution_scaling < 0.25f)
 		return ;
-	surface_fog(sdl);
 	p.y = 0;
 	while (p.y < sdl->window_h)
 	{

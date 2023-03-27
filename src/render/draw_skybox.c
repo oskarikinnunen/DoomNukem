@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw_skybox.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 21:09:32 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 15:38:03 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/27 14:09:48 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	draw_skybox_image(t_world *world, t_img *skybox)
 		skypos1 = point_add(point_zero(), (t_point){(rot.x * skybox->size.x) + \
 		world->sdl->screensize.x, (rot.y * skybox->size.y)});
 		skypos2 = point_add(point_zero(), (t_point){(rot.x * skybox->size.x) - \
-		(skybox->size.x - world->sdl->screensize.x), (rot.y * skybox->size.y)});
+		(skybox->size.x), (rot.y * skybox->size.y)});
 	}
 	else
 	{
