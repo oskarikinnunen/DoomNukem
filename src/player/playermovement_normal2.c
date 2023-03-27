@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 13:23:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:35:58 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:25:58 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,16 @@
 
 void	player_ceiling_check(t_player *player)
 {
-	if (player->cp.ceilingtrigger)
+	if (player->cp.ceiling_trigger)
 	{
 		player->jump.active = false;
-		player->cp.ceilingtrigger = false;
+		player->cp.ceiling_trigger = false;
 	}
 }
 
 static float	current_maxvelocity(t_player *player)
 {
-	if (!player->cp.isgrounded)
+	if (!player->cp.is_grounded)
 		return (PLAYER_WALKSPEED * 1.35f
 			+ (player->input.run * (PLAYER_RUNSPEED - PLAYER_WALKSPEED)));
 	return (PLAYER_WALKSPEED
@@ -39,13 +39,13 @@ void	crouch_update(t_player *player, t_world *world)
 
 	if (player->input.crouch)
 	{
-		if (!player->crouchjumped
-			&& !player->cp.isgrounded && player->cp.velocity.z >= 0)
+		if (!player->crouch_jumped
+			&& !player->cp.is_grounded && player->cp.velocity.z >= 0)
 		{
 			player->cp.velocity.z = 0.22f;
-			player->crouchjumped = true;
+			player->crouch_jumped = true;
 		}
-		if (player->cp.isgrounded)
+		if (player->cp.is_grounded)
 			player->height = ft_fmovetowards(player->height, \
 				PLAYER_CROUCHHEIGHT, PLAYER_CROUCHSPEED * world->clock.delta);
 	}
@@ -53,8 +53,8 @@ void	crouch_update(t_player *player, t_world *world)
 	{
 		player->height = ft_fmovetowards(player->height,
 				PLAYER_HEIGHT, PLAYER_CROUCHSPEED * world->clock.delta);
-		if (player->cp.isgrounded)
-			player->crouchjumped = false;
+		if (player->cp.is_grounded)
+			player->crouch_jumped = false;
 	}
 	bound = get_bound(&player->cp, world);
 	player->height = ft_clampf(player->height,

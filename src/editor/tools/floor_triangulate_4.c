@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   floor_triangulate_4.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 21:00:41 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:00:44 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 22:36:58 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ bool	points_collide(t_floorcalc *fc, t_vector2 tri[3])
 	t.p[1].v = v2tov3(tri[1]);
 	t.p[2].v = v2tov3(tri[2]);
 	i = 0;
-	while (i < fc->edgecount)
+	while (i < fc->edge_count)
 	{
 		if (vector2_cmp(fc->edges[i], tri[0])
 			|| vector2_cmp(fc->edges[i], tri[1])
@@ -83,7 +83,7 @@ void	free_floor(t_world *world, t_area *room)
 	int	i;
 
 	i = 0;
-	while (i < room->floorcount)
+	while (i < room->floor_count)
 	{
 		if (room->floors[i].entity != NULL)
 		{
@@ -104,7 +104,7 @@ void	free_ceilings(t_world *world, t_area *room)
 	int	i;
 
 	i = 0;
-	while (i < room->ceilingcount)
+	while (i < room->ceiling_count)
 	{
 		if (room->ceilings[i].entity != NULL)
 		{

@@ -6,29 +6,29 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 14:59:55 by raho              #+#    #+#             */
-/*   Updated: 2023/03/27 10:55:18 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 11:03:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 
-void	create_sdl_window(t_sdlcontext *sdl, t_screenmode mode)
+void	create_sdl_window(t_sdlcontext *sdl, t_screen_mode mode)
 {
 	SDL_DisplayMode	dmode;
 
 	SDL_GetCurrentDisplayMode(0, &dmode);
 	if (dmode.w != sdl->window_w || dmode.h != sdl->window_h)
-		mode = screenmode_windowed;
+		mode = screen_mode_windowed;
 	sdl->window_w = ft_clamp(sdl->window_w, 0, dmode.w);
 	sdl->window_h = ft_clamp(sdl->window_h, 0, dmode.h);
 	sdl->screensize = (t_point){sdl->window_w, sdl->window_h};
-	if (mode != screenmode_fullscreen)
+	if (mode != screen_mode_fullscreen)
 	{
 		sdl->window = SDL_CreateWindow("DoomNukem", \
 			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, \
 			sdl->window_w, sdl->window_h, SDL_WINDOW_SHOWN);
 	}
-	if (mode == screenmode_fullscreen)
+	if (mode == screen_mode_fullscreen)
 	{
 		sdl->window = SDL_CreateWindow("DoomNukem", 0, 0, \
 			sdl->window_w, sdl->window_h, SDL_WINDOW_SHOWN | \
@@ -71,7 +71,7 @@ void	alloc_occlusion(t_sdlcontext *sdl)
 
 void	set_sdl_settings(t_sdlcontext *sdl)
 {
-	t_graphicprefs	prefs;
+	t_graphic_prefs	prefs;
 
 	free_sdl_stuff(sdl);
 	prefs.screenmode = screenmode_windowed;

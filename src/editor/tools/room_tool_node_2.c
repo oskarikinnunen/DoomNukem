@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool_node_2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 21:45:46 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 16:54:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 20:26:19 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "doomnukem.h"
 
 void	draw_node_indicator(t_vector3 cursor,
-		t_roomtooldata *dat, t_editor *ed)
+		t_room_tool_data *dat, t_editor *ed)
 {
 	t_vector3		nodepos;
 	t_point			center;
@@ -41,7 +41,7 @@ t_vector2	*_room_find_edge(t_vector2 edge, t_area *room)
 	int	i;
 
 	i = 0;
-	while (i < room->edgecount)
+	while (i < room->edge_count)
 	{
 		if (vector2_cmp(edge, room->edges[i]))
 			return (&room->edges[i]);
@@ -55,7 +55,7 @@ int	_room_find_edge_index(t_vector2 edge, t_area *room)
 	int	i;
 
 	i = 0;
-	while (i < room->edgecount)
+	while (i < room->edge_count)
 	{
 		if (vector2_cmp(edge, room->edges[i]))
 			return (i);
@@ -66,7 +66,7 @@ int	_room_find_edge_index(t_vector2 edge, t_area *room)
 
 int	next_index(int cur, t_area *room)
 {
-	if (cur == room->edgecount - 1)
+	if (cur == room->edge_count - 1)
 		return (0);
 	return (cur + 1);
 }

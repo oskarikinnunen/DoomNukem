@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 19:41:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 21:50:12 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 20:46:32 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	playmode_quit(t_game *game)
 void	key_event(SDL_Event e, t_game *game)
 {
 	if (iskey(e, SDLK_F1))
-		game->player.noclip = !game->player.noclip;
+		game->player.no_clip = !game->player.no_clip;
 	if (iskey(e, SDLK_F2))
 		game->world.debug_gui->hidden = !game->world.debug_gui->hidden;
 	if (iskey(e, SDLK_F3))

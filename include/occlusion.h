@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   occlusion.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/26 20:44:01 by raho              #+#    #+#             */
+/*   Updated: 2023/03/26 20:48:46 by raho             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef OCCLUSION_H
 # define OCCLUSION_H
 
-#include "vectors.h"
-#include "shapes.h"
+# include "vectors.h"
+# include "shapes.h"
 
 //TODO: Rename this and change the t_bound to t_heigh or smt
 typedef struct s_ent_bounds
@@ -42,15 +54,17 @@ typedef struct s_tile
 	uint64_t	mask;
 }	t_tile;
 
+//bitmask_chunks: amount of bitmask chunks in x and y axis
+//tile_chunks: amount of tile chunks in x and y axis
 typedef struct s_bitmask
 {
-	t_point				bitmask_chunks; //amount of bitmask chunks in x and y axis
-	t_point				tile_chunks; //amount of tile chunks in x and y axis
-	t_tile				*tile;
-	float				max_dist;
-	float				last_max_dist;
+	t_point	bitmask_chunks;
+	t_point	tile_chunks;
+	t_tile	*tile;
+	float	max_dist;
+	float	last_max_dist;
 }	t_bitmask;
 
+uint16_t	mask_x(int x, int left_x, int right_x);
 
-uint16_t mask_x(int x, int left_x, int right_x);
 #endif

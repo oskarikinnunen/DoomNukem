@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 17:50:20 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 23:19:34 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 11:05:23 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	comp_storyevent_gui_edit(t_entity *entity,
 /*	This is called during load_world, use only if your component
 	NEEDS to gather assets (sounds etc.) at this time.
 */
-void	comp_storyevent_loadassets(t_entity *entity, t_world *world)
+void	comp_storyevent_load_assets(t_entity *entity, t_world *world)
 {
 	t_storyevent	*storyevent;
 

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 10:58:19 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 16:10:36 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 20:26:19 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ t_line	linebetween(int i, t_area *room)
 	int		next_i;
 	t_line	line;
 
-	if (i == room->edgecount - 1)
+	if (i == room->edge_count - 1)
 		next_i = 0;
 	else
 		next_i = i + 1;
@@ -55,23 +55,23 @@ void	addnode(t_vector2 newnode, t_area *room, int node_i)
 
 	ft_bzero(new_edges, sizeof(new_edges));
 	cpy_before = ft_clamp(node_i + 1, 0, 32);
-	cpy_after = ft_clamp(room->edgecount - node_i - 1, 0, 32);
+	cpy_after = ft_clamp(room->edge_count - node_i - 1, 0, 32);
 	ft_memcpy(new_edges, room->edges, sizeof(t_vector2) * cpy_before);
 	new_edges[node_i + 1] = newnode;
 	ft_memcpy(new_edges + node_i + 2,
 		room->edges + node_i + 1, sizeof(t_vector2) * cpy_after);
 	ft_memcpy(room->edges, new_edges, sizeof(t_vector2 [32]));
-	room->edgecount++;
+	room->edge_count++;
 	printf("copied %i edges before new edge \n", node_i - 1);
 }
 
-bool	potential_node(t_vector3 cursor, t_roomtooldata *dat, t_editor *ed)
+bool	potential_node(t_vector3 cursor, t_room_tool_data *dat, t_editor *ed)
 {
 	int		i;
 	t_line	l;
 
 	i = 0;
-	while (i < dat->room->edgecount)
+	while (i < dat->room->edge_count)
 	{
 		l = linebetween(i, dat->room);
 		if (collision_line_circle(l, v3tov2(cursor), 10.0f))

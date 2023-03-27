@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 20:35:35 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 11:02:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 11:05:12 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,11 @@ bool	fc_add_face(t_floorcalc *fc, int *valid, int *validcount)
 	ear = get_ear(valid, *validcount, fc);
 	if (!points_collide(fc, (t_vector2 *)&ear)
 		&& correctangle((t_vector2 *)&ear)
-		&& !intersect(line_shorten(line1), fc->edges, fc->edgecount))
+		&& !intersect(line_shorten(line1), fc->edges, fc->edge_count))
 	{
-		fc->faces[fc->facecount].v_indices[0] = valid[*validcount - 1];
-		fc->faces[fc->facecount].v_indices[1] = valid[0];
-		fc->faces[fc->facecount].v_indices[2] = valid[1];
+		fc->faces[fc->face_count].v_indices[0] = valid[*validcount - 1];
+		fc->faces[fc->face_count].v_indices[1] = valid[0];
+		fc->faces[fc->face_count].v_indices[2] = valid[1];
 		removevalid(valid, *validcount, 0);
 		*validcount -= 1;
 		if (*validcount == 2)
@@ -63,7 +63,7 @@ bool	fc_add_face(t_floorcalc *fc, int *valid, int *validcount)
 			ear.center = fc->edges[valid[0]];
 			ear.second = fc->edges[valid[1]];
 		}
-		fc->facecount++;
+		fc->face_count++;
 		return (true);
 	}
 	return (false);
@@ -81,7 +81,7 @@ void	triangulate(t_floorcalc *fc)
 	validcount = 0;
 	populatevalid(valid, &validcount, *fc);
 	i = 0;
-	fc->facecount = 0;
+	fc->face_count = 0;
 	while (validcount > 2 && i <= 100000)
 	{
 		if (!fc_add_face(fc, valid, &validcount))
@@ -90,12 +90,12 @@ void	triangulate(t_floorcalc *fc)
 		if (i == 50000)
 		{
 			populatevalid_l(valid, &validcount, *fc);
-			fc->facecount = 0;
+			fc->face_count = 0;
 		}
 		if (i > 100000)
 		{
-			fc->facecount = 0;
-			doomlog(LOG_WARNING, "Couldn't create floor");
+			fc->face_count = 0;
+			doom_log(LOG_WARNING, "Couldn't create floor");
 		}
 	}
 }

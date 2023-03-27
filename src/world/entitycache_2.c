@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entitycache_2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 14:55:11 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 19:43:36 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	destroy_entity(t_world *world, t_entity *ent)
 	cache->existing_entitycount--;
 }
 
-t_entity	*find_entity_with_comp(t_world	*world, t_componenttype comp)
+t_entity	*find_entity_with_comp(t_world	*world, t_component_type comp)
 {
 	int				i;
 	t_entitycache	*cache;

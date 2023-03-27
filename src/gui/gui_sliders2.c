@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gui_sliders2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 14:44:04 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 18:16:01 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 22:26:19 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,10 @@ bool	gui_float_slider(float	*f, float mul, t_autogui *gui)
 	rect = empty_rect();
 	add = 0.0f;
 	modified = false;
-	if (gui_shoulddraw(gui))
+	if (gui_should_draw(gui))
 	{
 		str = ft_ftoa(*f, 4);
-		rect = print_text_boxed(gui->sdl, str, gui_currentpos(gui));
+		rect = print_text_boxed(gui->sdl, str, gui_current_pos(gui));
 		draw_rectangle(*gui->sdl, rect, AMBER_0);
 		if (collision_point_rectangle(gui->hid->mouse.pos, rect))
 			modified = drag_slider(gui, f, mul, rect);

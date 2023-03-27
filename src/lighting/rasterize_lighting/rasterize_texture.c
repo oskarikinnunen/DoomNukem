@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rasterize_texture.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 17:14:18 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/23 18:57:36 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/26 20:23:27 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static void	sample_pixel(t_point xy, t_lighting *lighting)
 }
 
 static void	scanline(t_screen_triangle triangle, t_lighting *lighting,
-	t_v2rectangle bounds, int y)
+	t_v2_rectangle bounds, int y)
 {
 	int	x;
 
@@ -46,7 +46,7 @@ static void	scanline(t_screen_triangle triangle, t_lighting *lighting,
 
 void	rasterize_texture(t_screen_triangle triangle, t_lighting *lighting)
 {
-	t_v2rectangle	bounds;
+	t_v2_rectangle	bounds;
 	t_vector2		offset;
 	int				y;
 

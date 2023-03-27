@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   capsule_physics_2.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 19:05:43 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 19:06:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 22:33:04 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ static float	get_z_ceil(t_character_physics *cp, t_world *world)
 	{
 		room = (t_area *)list->content;
 		i = 0;
-		while (i < room->ceilingcount)
+		while (i < room->ceiling_count)
 		{
 			if (is_in_ceil(cp, &room->ceilings[i]))
 				z = ft_minf(z, (float)(room->height + room->ceiling_height));

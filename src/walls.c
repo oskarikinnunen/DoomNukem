@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   walls.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 05:31:47 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:01:29 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 23:11:04 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	free_walls(t_area *room, t_world *world)
 	int	i;
 
 	i = 0;
-	while (i < room->wallcount)
+	while (i < room->wall_count)
 	{
 		if (room->walls[i].entity->obj != NULL)
 		{
@@ -36,19 +36,20 @@ t_wall	*find_wall(t_wall wall, t_area *room)
 	int	i;
 
 	i = 0;
-	while (i < room->wallcount)
+	while (i < room->wall_count)
 	{
-		if (room->walls[i].edgeline.start == NULL
-			|| room->walls[i].edgeline.end == NULL
-			|| wall.edgeline.start == NULL || wall.edgeline.end == NULL)
+		if (room->walls[i].edge_line.start == NULL
+			|| room->walls[i].edge_line.end == NULL
+			|| wall.edge_line.start == NULL || wall.edge_line.end == NULL)
 		{
 			i++;
 			continue ;
 		}
-		if ((vector2_cmp(*room->walls[i].edgeline.start, *wall.edgeline.start) \
-		&& vector2_cmp(*room->walls[i].edgeline.end, *wall.edgeline.end))
-			|| (vector2_cmp(*room->walls[i].edgeline.start, *wall.edgeline.end) \
-		&& vector2_cmp(*room->walls[i].edgeline.end, *wall.edgeline.start)))
+		if ((vector2_cmp(*room->walls[i].edge_line.start, \
+			*wall.edge_line.start) && \
+			vector2_cmp(*room->walls[i].edge_line.end, *wall.edge_line.end)) || \
+			(vector2_cmp(*room->walls[i].edge_line.start, *wall.edge_line.end) \
+		&& vector2_cmp(*room->walls[i].edge_line.end, *wall.edge_line.start)))
 			return (&room->walls[i]);
 		i++;
 	}
@@ -64,11 +65,11 @@ void	room_init_shallow(t_area *room, t_world *world)
 	{
 		room_make_floor(world, room);
 		if (room->ceiling_enabled)
-			room_makeceilings(world, room);
+			room_make_ceilings(world, room);
 	}
 }
 
-void	applytrimesh(t_meshtri tri, t_object *obj)
+void	apply_trimesh(t_meshtri tri, t_object *obj)
 {
 	obj->vertices[0] = tri.v[0];
 	obj->vertices[1] = tri.v[1];

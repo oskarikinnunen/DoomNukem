@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_audiosource_setup.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 21:44:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:44:24 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 22:45:43 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	comp_audiosource_gui_edit(t_entity *entity,
 		source->queue_play = true;
 }
 
-void	comp_audiosource_loadassets(t_entity *entity, t_world *world)
+void	comp_audiosource_load_assets(t_entity *entity, t_world *world)
 {
 	t_audiosource	*source;
 
@@ -83,5 +83,5 @@ void	assign_component_audiosource(t_component *component)
 	component->func_update = comp_audiosource_update;
 	component->func_gui_edit = comp_audiosource_gui_edit;
 	component->func_ui_update = comp_audiosource_ui_update;
-	component->func_loadassets = comp_audiosource_loadassets;
+	component->func_load_assets = comp_audiosource_load_assets;
 }

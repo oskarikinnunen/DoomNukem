@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:52:00 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 17:45:40 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 20:26:07 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	free_roomwalls(t_world *world, t_area *room)
 	t_wall	*w;
 
 	i = 0;
-	while (i < room->wallcount)
+	while (i < room->wall_count)
 	{
 		w = &room->walls[i];
 		if (w->entity != NULL)

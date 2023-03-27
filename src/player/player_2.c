@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   player_2.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 17:26:50 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 17:27:10 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 22:51:27 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,13 @@
 #include "editor_tools.h"
 #include "movement_defs.h"
 #include "raycast.h"
+#include "npc.h"
 
 void	player_gun_raycast(t_player *player, t_world *world)
 {
 	t_entity	*hit_ent;
 
-	hit_ent = player->raycastinfo.hit_entity;
+	hit_ent = player->raycast_info.hit_entity;
 	if (hit_ent != NULL
 		&& hit_ent->component.type == COMP_NPC)
 	{
@@ -52,7 +53,7 @@ void	player_update_gun(t_player *player, t_world *world)
 	if (player->gun == NULL || player->gun->disabled)
 		return ;
 	gun = player->gun;
-	gun->entity->transform.position = gun->stats.holsterpos;
+	gun->entity->transform.position = gun->stats.holster_pos;
 	gun_update_shoot_status(player, gun, world);
 	gun_update_reload_status(player, gun, world);
 	if (gun->shoot_anim.active)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   renders_world_triangles_to_screen_triangles        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 15:59:55 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/23 21:38:28 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/26 20:29:32 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ inline static void	clip_viewspace_triangle_to_buffer(
 	while (i < nclippedtriangles)
 	{
 		screen_triangle_buffer[0] = world_triangle_to_screen_triangle(
-				render->camera.matproj, clipped[i], sdl);
+				render->camera.mat_proj, clipped[i], sdl);
 		start = clip_screen_triangle_against_screen_edge(
 				screen_triangle_buffer, render->screen_edge);
 		ft_memcpy(&render->screenspace_ptris[render->screenspace_ptri_count], \
@@ -53,7 +53,7 @@ void	render_world_triangle_buffer_to_screen_triangle(
 		if (!is_triangle_backface(world_tri, render))
 		{
 			world_tri = triangle_to_viewspace(
-					world_tri, render->camera.matview);
+					world_tri, render->camera.mat_view);
 			clip_viewspace_triangle_to_buffer(sdl, render, world_tri);
 		}
 		i++;

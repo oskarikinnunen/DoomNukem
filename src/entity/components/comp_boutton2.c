@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 18:04:22 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 11:53:15 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:38:14 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	comp_boutton_gui_edit(t_entity *entity,
 /*	This is called during load_world, use only if your component
 	NEEDS to gather assets (sounds etc.) at this time.
 */
-void	comp_boutton_loadassets(t_entity *entity, t_world *world)
+void	comp_boutton_load_assets(t_entity *entity, t_world *world)
 {
 	t_boutton	*boutton;
 

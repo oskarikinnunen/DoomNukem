@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   capsule_physics_3.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 19:07:24 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 19:46:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 22:47:57 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static bool	charphys_ceil_share_z(t_character_physics *cp, t_meshtri *floor)
 bool	is_in_ceil(t_character_physics *cp, t_meshtri *ceil)
 {
 	t_ray			r;
-	t_raycastinfo	info;
+	t_raycast_info	info;
 
 	r.origin = vector3_add(*cp->position, (t_vector3){.z = 100.0f});
 	r.dir = (t_vector3){.z = -1.0f};
@@ -41,7 +41,7 @@ bool	is_in_ceil(t_character_physics *cp, t_meshtri *ceil)
 static bool	is_in_floor(t_character_physics *cp, t_meshtri *floor)
 {
 	t_ray			r;
-	t_raycastinfo	info;
+	t_raycast_info	info;
 
 	r.origin = vector3_add(*cp->position, (t_vector3){.z = 100.0f});
 	r.dir = (t_vector3){.z = -1.0f};
@@ -58,7 +58,7 @@ static bool	is_in_floor(t_character_physics *cp, t_meshtri *floor)
 bool	is_in_ramp(t_character_physics *cp, t_vector3_tri *ramp)
 {
 	t_ray			r;
-	t_raycastinfo	info;
+	t_raycast_info	info;
 
 	r.origin = vector3_add(*cp->position, (t_vector3){.z = 100.0f});
 	r.dir = (t_vector3){.z = -1.0f};
@@ -85,7 +85,7 @@ float	get_z_from_areas(t_character_physics *cp, t_world *world)
 	{
 		area = (t_area *)list->content;
 		i = 0;
-		while (i < area->floorcount)
+		while (i < area->floor_count)
 		{
 			if (is_in_floor(cp, &area->floors[i]))
 				z = ft_maxf(z, (float)area->height);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_npc_anims.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:29:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/13 17:18:23 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 22:10:25 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "movement_defs.h"
 #include <stdlib.h>
 #include <time.h>
+#include "npc.h"
 
 static inline void	start_random_death_anim(t_entity *entity, t_world *world)
 {
@@ -68,7 +69,7 @@ static void	lookaround(t_entity *entity, t_npc *npc, t_world *world)
 				world->clock.delta * 0.015f);
 }
 
-void	npc_update_pushanim(t_entity *entity,
+void	npc_update_push_anim(t_entity *entity,
 									t_npc *npc, t_world *world)
 {
 	t_vector2	move;

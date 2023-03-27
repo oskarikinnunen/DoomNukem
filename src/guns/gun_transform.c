@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 15:02:26 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 11:00:28 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 11:05:29 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,17 @@ static void	gun_recoil_transform(t_player *player, t_gun *gun, t_clock c)
 	gun->entity->transform.rotation.y
 		= ft_fmovetowards(gun->entity->transform.rotation.y,
 			ft_degtorad(player->input.move.y * 1.15f),
-			gun->stats.anglerecovery * c.delta);
+			gun->stats.angle_recovery * c.delta);
 	if (gun->shoot_anim.active)
 		gun->entity->transform.rotation.y
-			+= ft_flerp(0.0f, ft_degtorad(gun->stats.recoilangle.y),
+			+= ft_flerp(0.0f, ft_degtorad(gun->stats.recoil_angle.y),
 				gun->shoot_anim.lerp);
 	gun->entity->transform.rotation.y
 		= ft_clampf(gun->entity->transform.rotation.y,
 			ft_degtorad(-0.5f), ft_degtorad(15.0f));
 	if (gun->view_anim.active)
 		player->transform.rotation.y += gun->view_anim.lerp
-			* c.delta * gun->stats.viewrecoil.y;
+			* c.delta * gun->stats.view_recoil.y;
 }
 
 static void	gun_calc_aim_lerp(t_player *player, t_gun *gun, t_clock c)
@@ -50,7 +50,7 @@ static void	gun_update_bobbing(t_player *player, t_gun *gun, t_clock c)
 		gun->entity->transform.position
 			= vector3_add(gun->entity->transform.position,
 				vector3_mul(vector3_up(), gun->shoot_anim.lerp
-					* gun->stats.recoiljump.y));
+					* gun->stats.recoil_jump.y));
 	gun->entity->transform.position.z
 		+= vector2_magnitude(player->input.move)
 		* cosf((c.time * 0.007f)) * 0.05f;
@@ -83,8 +83,8 @@ void	gun_update_transform(t_player *player, t_gun *gun, t_clock c)
 	gun->entity->transform.rotation.x = ft_degtorad(0.0f);
 	gun_calc_aim_lerp(player, gun, c);
 	player->fov = 90.0f + (gun->aim_lerp * gun->stats.fov_offset);
-	neutralpos = vector3_lerp(gun->stats.holsterpos,
-			gun->stats.aimpos, gun->aim_lerp);
+	neutralpos = vector3_lerp(gun->stats.holster_pos,
+			gun->stats.aim_pos, gun->aim_lerp);
 	gun->entity->transform.position = neutralpos;
 	gun_recoil_transform(player, gun, c);
 	gun_update_bobbing(player, gun, c);

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:41 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 17:34:39 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:44:24 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	_audiosource_start(t_sdlcontext *sdl,
 			&((FMOD_VECTOR){0})) != FMOD_OK)
 		doomlog(LOG_EC_FMOD_CHANNELSET3DATTRIBUTES, NULL);
 	FMOD_Channel_Set3DMinMaxDistance(\
-			source->channel, source->_realrange, 10000.0f);
+			source->channel, source->_real_range, 10000.0f);
 	if (FMOD_Channel_SetVolume(source->channel, \
 			source->volume * sdl->audio.sfx_volume) != FMOD_OK)
 		doomlog(LOG_EC_FMOD_CHANNELSETVOLUME, NULL);

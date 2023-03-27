@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gun_funcs.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 17:07:17 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 18:53:43 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 22:54:23 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	play_gun_audio(t_gun *gun, t_world *world)
 	if (source.sample.sound == NULL)
 	{
 		source.sample = get_sample(world->sdl, "gun_grenadelauncher.wav");
-		source._realrange = 50.0f;
+		source._real_range = 50.0f;
 		source.volume = 1.0f;
 		source.play_always = false;
 	}
@@ -42,7 +42,7 @@ void	play_gun_reload_audio(t_world *world)
 	if (source.sample.sound == NULL)
 	{
 		source.sample = get_sample(world->sdl, "gun_reload.wav");
-		source._realrange = 50.0f;
+		source._real_range = 50.0f;
 		source.volume = 1.0f;
 		source.play_always = false;
 	}
@@ -52,14 +52,14 @@ void	play_gun_reload_audio(t_world *world)
 void	gun_update_reload_status(t_player *player,
 		t_gun *gun, t_world *world)
 {
-	if (gun->bullets != gun->stats.magazinecapacity
+	if (gun->bullets != gun->stats.magazine_capacity
 		&& player->input.reload && !gun->reload_anim.active)
 	{
-		if (player->ammo_arr[gun->stats.ammomask] > 0)
+		if (player->ammo_arr[gun->stats.ammo_mask] > 0)
 		{
-			gun->reload_anim.framerate = 30;
-			gun->reload_anim.lastframe = gun->stats.reloadtime;
-			player->ammo_arr[gun->stats.ammomask] += gun->bullets;
+			gun->reload_anim.frame_rate = 30;
+			gun->reload_anim.last_frame = gun->stats.reload_time;
+			player->ammo_arr[gun->stats.ammo_mask] += gun->bullets;
 			start_anim(&gun->reload_anim, anim_forwards);
 			play_gun_reload_audio(world);
 		}
@@ -69,17 +69,17 @@ void	gun_update_reload_status(t_player *player,
 void	gun_update_shoot_status(t_player *player,
 		t_gun *gun, t_world *world)
 {
-	if ((!player->input.shoot || gun->stats.fullauto)
-		&& world->clock.time > gun->lastshottime + gun->stats.firedelay)
-		gun->readytoshoot = true;
+	if ((!player->input.shoot || gun->stats.full_auto)
+		&& world->clock.time > gun->last_shot_time + gun->stats.fire_delay)
+		gun->ready_to_shoot = true;
 	if (gun->bullets == 0 || gun->reload_anim.active)
-		gun->readytoshoot = false;
-	if (player->input.shoot && gun->readytoshoot)
+		gun->ready_to_shoot = false;
+	if (player->input.shoot && gun->ready_to_shoot)
 	{
 		start_anim(&gun->shoot_anim, anim_forwards);
 		start_anim(&gun->view_anim, anim_forwards);
-		gun->readytoshoot = false;
-		gun->lastshottime = world->clock.time;
+		gun->ready_to_shoot = false;
+		gun->last_shot_time = world->clock.time;
 		gun->bullets--;
 		play_gun_audio(gun, world);
 		player_gun_raycast(player, world);
@@ -95,10 +95,10 @@ void	gun_update_reload_anim(t_player *player, t_gun *gun,
 	update_anim(&gun->reload_anim, world->clock.delta);
 	if (!gun->reload_anim.active)
 	{
-		bullets_added = ft_min(player->ammo_arr[gun->stats.ammomask],
-				gun->stats.magazinecapacity);
+		bullets_added = ft_min(player->ammo_arr[gun->stats.ammo_mask],
+				gun->stats.magazine_capacity);
 		gun->bullets = bullets_added;
-		player->ammo_arr[gun->stats.ammomask] -= bullets_added;
+		player->ammo_arr[gun->stats.ammo_mask] -= bullets_added;
 	}
 	midlerp = 1.0f - (ft_absf(0.5f - gun->reload_anim.lerp) * 2.0f);
 	gun->entity->transform.position.z -= midlerp * 2.2f;

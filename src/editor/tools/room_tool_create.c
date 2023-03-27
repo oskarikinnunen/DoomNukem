@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 16:47:41 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:45:29 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 22:36:42 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,18 @@
 #include "doomnukem.h"
 #include "objects.h"
 
-static t_vector3	createmode_raycast(t_editor *ed, t_roomtooldata	*dat)
+static t_vector3	createmode_raycast(t_editor *ed, t_room_tool_data	*dat)
 {
 	t_vector3		result;
 	t_ray			ray;
-	t_raycastinfo	info;
+	t_raycast_info	info;
 
-	ray.origin = ed->player.headposition;
-	ray.dir = ed->player.lookdir;
-	if (dat->room->edgecount == 0)
+	ray.origin = ed->player.head_position;
+	ray.dir = ed->player.look_dir;
+	if (dat->room->edge_count == 0)
 	{	
-		if (dat->raycastinfo.hit_entity != NULL)
-			result = vector3_snap(dat->raycastinfo.hit_pos, 10);
+		if (dat->raycast_info.hit_entity != NULL)
+			result = vector3_snap(dat->raycast_info.hit_pos, 10);
 		else
 		{
 			raycast_plane(ray, &info, 0.0f);
@@ -43,28 +43,28 @@ static t_vector3	createmode_raycast(t_editor *ed, t_roomtooldata	*dat)
 }
 
 static void	createmode_drawgui(t_editor *ed,
-		t_roomtooldata *dat, t_sdlcontext *sdl)
+		t_room_tool_data *dat, t_sdlcontext *sdl)
 {
 	t_autogui	*gui;
 
 	gui = &dat->newroom_gui;
 	gui_start(gui);
-	if (dat->room->edgecount == 0)
+	if (dat->room->edge_count == 0)
 		gui_label("Place first wall", gui);
-	else if (dat->room->edgecount > 1)
+	else if (dat->room->edge_count > 1)
 		gui_label("Shift + click to finish room", gui);
 	else
-		gui_emptyvertical(20, gui);
+		gui_empty_vertical(20, gui);
 	if (gui_room_presets(dat->room, gui, &ed->world))
-		printf("after roompresets, edgecount is %i \n", dat->room->edgecount);
+		printf("after roompresets, edge_count is %i \n", dat->room->edge_count);
 	gui_end(gui);
 }
 
 static void	createmode_step_back(t_editor *ed, t_sdlcontext *sdl,
-		t_roomtooldata *dat)
+		t_room_tool_data *dat)
 {
-	if (dat->room->edgecount >= 1)
-		dat->room->edgecount--;
+	if (dat->room->edge_count >= 1)
+		dat->room->edge_count--;
 	else
 	{
 		free(dat->room);
@@ -75,7 +75,7 @@ static void	createmode_step_back(t_editor *ed, t_sdlcontext *sdl,
 }
 
 static void	createmode_highlight(t_editor *ed, t_sdlcontext *sdl,
-		t_roomtooldata *dat, t_vector3 cursor)
+		t_room_tool_data *dat, t_vector3 cursor)
 {
 	highlight_room(ed, sdl, dat->room, CLR_BLUE);
 	if (is_joined(v3tov2(cursor), dat->room, &ed->world))
@@ -84,12 +84,12 @@ static void	createmode_highlight(t_editor *ed, t_sdlcontext *sdl,
 		render_circle(ed->world.sdl, cursor, 5, CLR_BLUE);
 }
 
-void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
+void	create_mode(t_editor *ed, t_sdlcontext *sdl, t_room_tool_data *dat)
 {
 	t_vector3		cursor;
 
 	cursor = createmode_raycast(ed, dat);
-	if (dat->room->edgecount == 0)
+	if (dat->room->edge_count == 0)
 		dat->room->height = cursor.z;
 	createmode_drawgui(ed, dat, sdl);
 	dat->room->ceiling_height = 50;
@@ -101,8 +101,8 @@ void	createmode(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_LEFT))
 	{
-		dat->room->edges[dat->room->edgecount] = v3tov2(cursor);
-		dat->room->edgecount++;
+		dat->room->edges[dat->room->edge_count] = v3tov2(cursor);
+		dat->room->edge_count++;
 	}
 	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
 		createmode_step_back(ed, sdl, dat);

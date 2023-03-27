@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_npc_states_1.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 17:07:49 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 16:28:32 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/26 20:54:16 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	npc_switch_to_chase_state(t_entity *entity,
 {
 	npc->state = NPC_STATE_CHASE;
 	npc->path = pathfind(entity->transform.position,
-			npc->lastseen_playerpos, world);
+			npc->last_seen_player_pos, world);
 	printf("Found new path towards player, valid = %i \n",
 		npc->path.valid_path);
 }
@@ -30,16 +30,16 @@ void	npc_switch_to_cautious_move_state(t_entity *entity,
 {
 	npc->state = NPC_STATE_CAUTIOUS_MOVE;
 	npc->next_action_time = world->clock.time + 3000;
-	npc->lastseen_playerpos = vector3_zero();
+	npc->last_seen_player_pos = vector3_zero();
 	printf("GO TO CAUTION!\n");
 }
 
 bool	npc_sees_player_and_ready_to_aggro(t_npc *npc)
 {
-	return ((npc->seesplayer
+	return ((npc->sees_player
 			&& npc->state != NPC_STATE_AGGRO
 			&& npc->state != NPC_STATE_AGGRO_PUSH)
-		|| (npc->seesplayer && npc->state == NPC_STATE_AGGRO_PUSH
+		|| (npc->sees_player && npc->state == NPC_STATE_AGGRO_PUSH
 			&& !npc->push_anim.active));
 }
 
@@ -53,6 +53,6 @@ void	npc_switch_to_aggro_state(t_entity *entity, t_npc *npc, t_world *world)
 void	npc_start_pushanim_and_switch_to_push_state(t_entity *entity,
 											t_npc *npc, t_world *world)
 {
-	npc_start_pushanim(entity, npc, world);
+	npc_start_push_anim(entity, npc, world);
 	npc->state = NPC_STATE_AGGRO_PUSH;
 }

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 10:34:55 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 17:30:35 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:30:56 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 void	component_empty_function_pointers(t_component *component)
 {
 	component->func_allocate = NULL;
-	component->func_loadassets = NULL;
+	component->func_load_assets = NULL;
 	component->func_update = NULL;
 	component->func_ui_update = NULL;
 	component->func_gui_edit = NULL;
@@ -24,7 +24,7 @@ void	component_empty_function_pointers(t_component *component)
 
 void	entity_set_component_functions(t_entity *entity, t_world *world)
 {
-	t_componentdefinition	*defs;
+	t_component_definition	*defs;
 	int						i;
 
 	defs = get_component_definitions();

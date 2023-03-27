@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector3_complex2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 19:06:07 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/13 17:30:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 20:10:41 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_vector3	vector3_normalise(t_vector3 v)
 	return ((t_vector3){v.x / l, v.y / l, v.z / l});
 }
 
-t_vector3	vector3_crossproduct(t_vector3 v1, t_vector3 v2)
+t_vector3	vector3_cross_product(t_vector3 v1, t_vector3 v2)
 {
 	t_vector3	v;
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   walls_2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 20:19:24 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 20:19:36 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 22:40:52 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static void	wall_calc_height(t_area *room, t_area *cur,
 		}
 		else
 			wall->z_offset = (room->ceiling_height) - wall->height;
-		wall->ceilingwall = true;
+		wall->ceiling_wall = true;
 	}
 	else
 	{
@@ -50,7 +50,7 @@ void	clamp_wall_areaheight(t_wall *wall, t_area *room, t_world *world)
 
 	l = world->arealist;
 	wall->entity->hidden = false;
-	wall->ceilingwall = false;
+	wall->ceiling_wall = false;
 	wall->height = room->ceiling_height;
 	wall->z_offset = 0;
 	while (l != NULL)
@@ -72,7 +72,7 @@ static void	wall_apply_uvs(t_wall *wall)
 	float	dist;
 	int		i;
 
-	dist = vector2_dist(*wall->edgeline.start, *wall->edgeline.end);
+	dist = vector2_dist(*wall->edge_line.start, *wall->edge_line.end);
 	wall->entity->obj->uvs[0] = vector2_zero();
 	wall->entity->obj->uvs[1] = (t_vector2){dist / 100.0f, 0.0f};
 	wall->entity->obj->uvs[2] = (t_vector2){0.0f, wall->height / 100.0f};
@@ -89,26 +89,26 @@ static void	wall_apply_uvs(t_wall *wall)
 
 static void	wall_apply_vertices(t_wall *wall, t_area *room)
 {
-	wall->entity->obj->vertices[0] = v2tov3(*wall->edgeline.start);
+	wall->entity->obj->vertices[0] = v2tov3(*wall->edge_line.start);
 	wall->entity->obj->vertices[0].z += room->height + wall->z_offset;
-	wall->entity->obj->vertices[1] = v2tov3(*wall->edgeline.end);
+	wall->entity->obj->vertices[1] = v2tov3(*wall->edge_line.end);
 	wall->entity->obj->vertices[1].z
 		+= room->height + wall->z_offset;
-	wall->entity->obj->vertices[2] = v2tov3(*wall->edgeline.start);
+	wall->entity->obj->vertices[2] = v2tov3(*wall->edge_line.start);
 	wall->entity->obj->vertices[2].z
 		+= wall->height + room->height + wall->z_offset;
-	wall->entity->obj->vertices[3] = v2tov3(*wall->edgeline.end);
+	wall->entity->obj->vertices[3] = v2tov3(*wall->edge_line.end);
 	wall->entity->obj->vertices[3].z
 		+= wall->height + room->height + wall->z_offset;
 }
 
-void	applywallmesh(t_wall *wall, t_area *room, t_world *world)
+void	apply_wallmesh(t_wall *wall, t_area *room, t_world *world)
 {
 	int	i;
 
-	if (wall->edgeline.start != NULL && wall->edgeline.end != NULL)
+	if (wall->edge_line.start != NULL && wall->edge_line.end != NULL)
 		clamp_wall_areaheight(wall, room, world);
-	if (wall->edgeline.end != NULL && wall->edgeline.start != NULL)
+	if (wall->edge_line.end != NULL && wall->edge_line.start != NULL)
 	{
 		wall_apply_vertices(wall, room);
 		wall_apply_uvs(wall);

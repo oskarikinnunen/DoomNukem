@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/30 13:57:45 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 14:39:00 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:04:49 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	pack_multiple_files_to_level(char *level, char *asset_list)
 	char	*filename;
 
 	filename = NULL;
-	fd = fileopen(asset_list, O_RDONLY);
+	fd = ft_fileopen(asset_list, O_RDONLY);
 	ret = get_next_line(fd, &filename);
 	while (ret)
 	{
@@ -35,7 +35,7 @@ static void	pack_multiple_files_to_level(char *level, char *asset_list)
 	}
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, asset_list);
-	fileclose(fd, asset_list);
+	ft_fileclose(fd, asset_list);
 }
 
 static void	print_saving_message(char *saving_message, t_sdlcontext *sdl)

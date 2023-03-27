@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playermovement_noclip.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 18:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/17 18:35:24 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 23:08:34 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,11 @@ static t_vector3	normalized_inputvector(t_input input, t_player player)
 	float		speed;
 
 	movement = vector3_zero();
-	forward = player.lookdir;
+	forward = player.look_dir;
 	forward.z = 0.0f;
 	forward = vector3_normalise(forward);
 	movement = vector3_mul(sanitize_z(forward), -input.move.y);
-	right = vector3_crossproduct(forward, vector3_up());
+	right = vector3_cross_product(forward, vector3_up());
 	strafe = vector3_mul(right, input.move.x);
 	movement = vector3_add(movement, strafe);
 	movement = vector3_clamp_magnitude(movement, 1.0f);
@@ -40,7 +40,7 @@ static t_vector3	normalized_inputvector(t_input input, t_player player)
 	return (movement);
 }
 
-void	playermovement_noclip(t_player *player, t_world *world)
+void	player_movement_noclip(t_player *player, t_world *world)
 {
 	t_vector3		move_vec;
 	float			speed;
@@ -49,7 +49,7 @@ void	playermovement_noclip(t_player *player, t_world *world)
 			player->transform.rotation, v2tov3(player->input.turn));
 	player->transform.rotation.y = ft_clampf(player->transform.rotation.y,
 			-RAD90 * 0.99f, RAD90 * 0.99f);
-	player->lookdir = lookdirection((t_vector2){player->transform.rotation.x,
+	player->look_dir = look_direction((t_vector2){player->transform.rotation.x,
 			player->transform.rotation.y});
 	move_vec = normalized_inputvector(player->input, *player);
 	speed = EDITOR_FLYSPEED

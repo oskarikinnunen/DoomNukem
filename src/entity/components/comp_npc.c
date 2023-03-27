@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_npc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 18:57:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 19:40:35 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 22:26:05 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,10 +93,10 @@ void	comp_npc_update(t_entity *entity, t_world *world)
 			if (world->clock.time > npc->next_shoot_time)
 				npc_shoot(entity, npc, world);
 			entity_rotate_towards_xy(entity,
-				v3tov2(npc->lastseen_playerpos), 0.015f * world->clock.delta);
+				v3tov2(npc->last_seen_player_pos), 0.015f * world->clock.delta);
 		}
 		if (npc->state == NPC_STATE_AGGRO_PUSH)
-			npc_update_pushanim(entity, npc, world);
+			npc_update_push_anim(entity, npc, world);
 		lookaround(entity, npc, world);
 		npc_pathfind_step(entity, npc, world);
 	}

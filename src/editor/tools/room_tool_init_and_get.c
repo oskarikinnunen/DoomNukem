@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 17:07:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:52:48 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 23:10:03 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include "objects.h"
 
 static void	room_tool_init_other_guis(t_editor *ed, t_sdlcontext *sdl,
-	t_roomtooldata *dat)
+	t_room_tool_data *dat)
 {
 	if (dat->modroom_gui.sdl == NULL)
 	{
@@ -35,7 +35,7 @@ static void	room_tool_init_other_guis(t_editor *ed, t_sdlcontext *sdl,
 }
 
 static void	room_tool_init_mainguis(t_editor *ed, t_sdlcontext *sdl,
-		t_roomtooldata *dat)
+		t_room_tool_data *dat)
 {
 	if (dat->maingui.sdl == NULL)
 	{
@@ -55,26 +55,26 @@ static void	room_tool_init_mainguis(t_editor *ed, t_sdlcontext *sdl,
 
 void	room_tool_init(t_editor *ed, t_sdlcontext *sdl)
 {
-	t_roomtooldata	*dat;
+	t_room_tool_data	*dat;
 
-	dat = ed->tool->tooldata;
+	dat = ed->tool->tool_data;
 	room_tool_init_mainguis(ed, sdl, dat);
 	room_tool_init_other_guis(ed, sdl, dat);
 }
 
 t_tool	*get_room_tool(void)
 {
-	static t_tool	tool
+	static t_tool		tool
 		= {
 		.update = room_tool_update,
 		.init = room_tool_init
 	};
-	t_roomtooldata	*dat;
+	t_room_tool_data	*dat;
 
-	if (tool.tooldata == NULL)
+	if (tool.tool_data == NULL)
 	{
-		tool.tooldata = prot_memalloc(sizeof(t_roomtooldata));
-		dat = (t_roomtooldata *)tool.tooldata;
+		tool.tool_data = prot_memalloc(sizeof(t_room_tool_data));
+		dat = (t_room_tool_data *)tool.tool_data;
 		dat->room = NULL;
 	}
 	return (&tool);

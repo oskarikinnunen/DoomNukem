@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wall_tool_rooms.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 03:20:37 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 22:12:14 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 22:35:05 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,14 @@ static void	_room_apply_floor_objs(t_world *world, t_area *room, t_floorcalc fc)
 	t_object	*obj;
 
 	i = 0;
-	while (i < fc.facecount)
+	while (i < fc.face_count)
 	{
 		mtri = &room->floors[i];
 		obj = object_tri(world->sdl);
 		obj->materials->img = get_image_by_name(*world->sdl,
-				room->s_floortex.str);
+				room->s_floor_tex.str);
 		room_floor_apply_obj_vertices_etc(world, i, room, fc);
-		applytrimesh(*mtri, obj);
+		apply_trimesh(*mtri, obj);
 		mtri->entity = spawn_entity(world, obj);
 		mtri->entity->rigid = true;
 		i++;
@@ -69,16 +69,16 @@ void	room_make_floor(t_world *world, t_area *room)
 
 	ft_bzero(&fc, sizeof(fc));
 	i = 0;
-	while (i < room->edgecount)
+	while (i < room->edge_count)
 	{
-		fc.edges[fc.edgecount++] = room->edges[i];
+		fc.edges[fc.edge_count++] = room->edges[i];
 		i++;
 	}
 	triangulate(&fc);
-	if (fc.facecount == 0)
+	if (fc.face_count == 0)
 		return ;
 	ft_bzero(room->floors, sizeof(room->floors));
-	room->floorcount = fc.facecount;
+	room->floor_count = fc.face_count;
 	_room_apply_floor_objs(world, room, fc);
 }
 
@@ -96,24 +96,24 @@ static void	room_ceiling_apply_vertices_and_uv(t_area *room,
 	mtri->uv[2] = room->floors[i].uv[2];
 }
 
-void	room_makeceilings(t_world *world, t_area *room)
+void	room_make_ceilings(t_world *world, t_area *room)
 {
 	int			i;
 	t_meshtri	*mtri;
 	t_object	*obj;
 
 	i = 0;
-	while (i < room->floorcount)
+	while (i < room->floor_count)
 	{
 		mtri = &room->ceilings[i];
 		obj = object_tri(world->sdl);
 		obj->materials->img = get_image_by_name(*world->sdl,
-				room->s_ceiltex.str);
+				room->s_ceil_tex.str);
 		room_ceiling_apply_vertices_and_uv(room, mtri, i);
-		applytrimesh(*mtri, obj);
+		apply_trimesh(*mtri, obj);
 		mtri->entity = spawn_entity(world, obj);
 		mtri->entity->rigid = true;
 		i++;
 	}
-	room->ceilingcount = i;
+	room->ceiling_count = i;
 }

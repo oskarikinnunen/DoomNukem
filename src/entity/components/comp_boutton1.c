@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   comp_boutton.c                                     :+:      :+:    :+:   */
+/*   comp_boutton1.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 18:05:11 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 21:38:14 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ void	comp_boutton_update(t_entity *entity, t_world *world)
 	if (boutton == NULL)
 		return ;
 	boutton->can_interact
-		= (world->player->raycastinfo.hit_entity == entity
-			&& world->player->raycastinfo.distance < 50.0f);
+		= (world->player->raycast_info.hit_entity == entity
+			&& world->player->raycast_info.distance < 50.0f);
 	if (boutton->can_interact && world->player->input.use
 		&& world->clock.time > boutton->last_interact_time + 5000)
 	{
@@ -43,5 +43,5 @@ void	assign_component_boutton(t_component *component)
 	component->func_update = comp_boutton_update;
 	component->func_gui_edit = comp_boutton_gui_edit;
 	component->func_ui_update = comp_boutton_ui_update;
-	component->func_loadassets = comp_boutton_loadassets;
+	component->func_load_assets = comp_boutton_load_assets;
 }

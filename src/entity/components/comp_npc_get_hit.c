@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   comp_npc_get_hit.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 14:33:59 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 14:54:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 22:52:09 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "entity.h"
 #include "doomnukem.h"
+#include "npc.h"
 
 void	npc_get_hit(t_entity *entity, t_world *world)
 {
@@ -31,7 +32,7 @@ void	npc_get_hit(t_entity *entity, t_world *world)
 	hit_npc->hit = true;
 	hit_npc->phys.velocity = vector3_normalise(
 			vector3_sub(entity->transform.position,
-				world->player->headposition));
+				world->player->head_position));
 	hit_npc->phys.velocity = vector3_mul(hit_npc->phys.velocity, 0.3f);
 	hit_npc->phys.velocity.z = 0.0f;
 	if (hit_npc->state == NPC_STATE_DEAD)

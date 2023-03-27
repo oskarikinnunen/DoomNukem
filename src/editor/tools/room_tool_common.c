@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 08:53:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 16:10:36 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 20:27:18 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ void	toggle_ceilings(t_world *world)
 	{
 		r = l->content;
 		i = 0;
-		while (i < r->wallcount)
+		while (i < r->wall_count)
 		{
-			if (r->walls[i].ceilingwall)
+			if (r->walls[i].ceiling_wall)
 				r->walls[i].entity->hidden = world->ceiling_toggle;
 			i++;
 		}
@@ -72,13 +72,13 @@ static void	highlight_area_walls(t_editor *ed, t_sdlcontext *sdl,
 	t_vector3	ws2;
 
 	i = 0;
-	while (i < area->wallcount)
+	while (i < area->wall_count)
 	{
-		if (area->walls[i].edgeline.start != NULL
-			&& area->walls[i].edgeline.end != NULL)
+		if (area->walls[i].edge_line.start != NULL
+			&& area->walls[i].edge_line.end != NULL)
 		{
-			ws = v2tov3(*area->walls[i].edgeline.start);
-			ws2 = v2tov3(*area->walls[i].edgeline.start);
+			ws = v2tov3(*area->walls[i].edge_line.start);
+			ws2 = v2tov3(*area->walls[i].edge_line.start);
 			ws.z = area->height;
 			ws2.z = area->height + area->walls[i].height;
 			render_ray3d(sdl, ws, ws2, color);
@@ -96,7 +96,7 @@ void	highlight_room(t_editor *ed, t_sdlcontext *sdl,
 	t_vector2	start;
 
 	i = 0;
-	while (i < room->edgecount)
+	while (i < room->edge_count)
 	{
 		start = room->edges[i];
 		ws = (t_vector3){start.x, start.y, room->height};
@@ -104,7 +104,7 @@ void	highlight_room(t_editor *ed, t_sdlcontext *sdl,
 		sdl->render.gizmocolor = color;
 		ws2 = v2tov3(next_edge(room, i));
 		ws2.z = room->height;
-		if (!room->loop && i == room->edgecount - 1)
+		if (!room->loop && i == room->edge_count - 1)
 			;
 		else
 			render_ray3d(sdl, ws, ws2, color);

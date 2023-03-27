@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool_paint.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 14:52:25 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/24 20:33:31 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 19:44:57 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ bool	can_paint(t_editor *ed, t_entity *ent, t_img *tex)
 			&& ent->obj != NULL));
 }
 
-void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
+void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_room_tool_data *dat)
 {
 	t_autogui		*gui;
 	static t_img	*tex;
@@ -82,7 +82,7 @@ void	room_tool_paint(t_editor *ed, t_sdlcontext *sdl, t_roomtooldata *dat)
 	int				i;
 	t_entity		*ent;
 
-	ent = dat->raycastinfo.hit_entity;
+	ent = dat->raycast_info.hit_entity;
 	gui = &dat->paint_gui;
 	gui_start(gui);
 	if (gui_shortcut_button("Copy texture", 'C', gui)

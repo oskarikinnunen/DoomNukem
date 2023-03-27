@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   capsule_physics_step.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 18:55:30 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 20:02:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 22:50:31 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static void	move_towards_target_z(t_character_physics *charp,
 			ft_absf(charp->velocity.z) * delta);
 		charp->position->z = ft_clampf(charp->position->z,
 			bound.min, bound.max - charp->height);
-		charp->isgrounded = (charp->position->z <= bound.min);
+		charp->is_grounded = (charp->position->z <= bound.min);
 }
 
 static void	capsule_phys_go_towards_floor(t_character_physics *charp,
@@ -39,11 +39,11 @@ static void	capsule_phys_go_towards_floor(t_character_physics *charp,
 
 	if (bound.min <= charp->position->z)
 	{
-		charp->isgrounded = (charp->position->z <= bound.min);
+		charp->is_grounded = (charp->position->z <= bound.min);
 		zveltarget = GRAVITY;
 		if (charp->gravity_override != NULL)
 			zveltarget = *charp->gravity_override;
-		if (charp->isgrounded)
+		if (charp->is_grounded)
 			zveltarget = 0.0f;
 		charp->velocity.z = ft_fmovetowards(charp->velocity.z, zveltarget,
 				gravityapply * delta);
@@ -82,15 +82,15 @@ void	capsule_phys_step(t_character_physics *charp, t_world *world)
 		&& charp->velocity.z < 0.0f)
 	{
 		charp->velocity.z = 0.0f;
-		charp->ceilingtrigger = true;
+		charp->ceiling_trigger = true;
 	}
 	capsule_phys_go_towards_floor(charp, zbound, world->clock.delta);
-	if (charp->isgrounded && charp->velocity.z != 0)
+	if (charp->is_grounded && charp->velocity.z != 0)
 	{
-		charp->landingtrigger = true;
-		charp->impactvelocity.z = charp->velocity.z;
+		charp->landing_trigger = true;
+		charp->impact_velocity.z = charp->velocity.z;
 		charp->velocity.z = 0.0f;
 	}
-	charp->isgrounded = (charp->position->z <= zbound.min);
+	charp->is_grounded = (charp->position->z <= zbound.min);
 	capsule_damp(charp, world);
 }

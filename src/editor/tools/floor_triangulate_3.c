@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   floor_triangulate_3.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 21:00:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:00:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 22:36:42 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ bool	isaligned(t_vector2 vs[3])
 void	populatevalid(int valid[32], int *validcount, t_floorcalc fc)
 {
 	*validcount = 0;
-	while (*validcount < fc.edgecount)
+	while (*validcount < fc.edge_count)
 	{
 		valid[*validcount] = *validcount;
 		*validcount = *validcount + 1;
@@ -79,9 +79,9 @@ void	populatevalid(int valid[32], int *validcount, t_floorcalc fc)
 void	populatevalid_l(int valid[32], int *validcount, t_floorcalc fc)
 {
 	*validcount = 0;
-	while (*validcount < fc.edgecount)
+	while (*validcount < fc.edge_count)
 	{
-		valid[*validcount] = fc.edgecount - *validcount - 1;
+		valid[*validcount] = fc.edge_count - *validcount - 1;
 		*validcount = *validcount + 1;
 	}
 }

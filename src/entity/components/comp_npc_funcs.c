@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_npc_funcs.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:22:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 19:54:19 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/26 22:25:52 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,13 @@
 #include "movement_defs.h"
 #include <stdlib.h>
 #include <time.h>
+#include "npc.h"
 
 //TODO: move to header?
 void	comp_npc_update(t_entity *entity, t_world *world);
 
 static void	render_navnode(t_entity *entity,
-						t_navnode *navnode, t_sdlcontext *sdl)
+						t_nav_node *navnode, t_sdlcontext *sdl)
 {
 	float	fdist;
 	int		i;
@@ -64,7 +65,7 @@ static void	comp_npc_ui_update(t_entity *entity, t_world *world)
 			render_navnode(entity, &world->nav.navmesh[i], world->sdl);
 		i++;
 	}
-	render_circle(world->sdl, npc->lastseen_playerpos, 6.0f, AMBER_2);
+	render_circle(world->sdl, npc->last_seen_player_pos, 6.0f, AMBER_2);
 }
 
 static void	comp_npc_gui_edit(t_entity *entity, t_autogui *gui, t_world *world)
@@ -77,9 +78,9 @@ static void	comp_npc_gui_edit(t_entity *entity, t_autogui *gui, t_world *world)
 		gui_label("!NULL source", gui);
 		return ;
 	}
-	gui_starthorizontal(gui);
+	gui_start_horizontal(gui);
 	gui_label("NPC: ", gui);
-	gui_endhorizontal(gui);
+	gui_end_horizontal(gui);
 	gui_labeled_bool("ANIM:", entity->animation.active, gui);
 	gui_labeled_int("i:", entity->animation.frame, gui);
 }
@@ -93,7 +94,7 @@ static void	comp_npc_allocate(t_entity *entity, t_world *world)
 	entity->dynamic_lit = true;
 	npc = entity->component.data;
 	ft_bzero(entity->component.data, sizeof(t_npc));
-	npc->movementspeed = 0.1f;
+	npc->movement_speed = 0.1f;
 	npc->path.valid_path = false;
 	npc->health = 100;
 }

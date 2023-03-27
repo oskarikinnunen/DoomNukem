@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 15:57:00 by raho              #+#    #+#             */
-/*   Updated: 2023/03/25 13:55:22 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 20:18:00 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	set_light_thread_struct(
 	ptr->entity = ent;
 	ptr->world = world;
 	if (thread->count == THREAD)
-		multithread_start(thread);
+		multi_thread_start(thread);
 }
 
 void	set_lighting_texture_struct(t_thread *thread, struct s_entity *ent)
@@ -32,6 +32,6 @@ void	set_lighting_texture_struct(t_thread *thread, struct s_entity *ent)
 	{
 		(((t_entity *)thread->structs)[thread->count++]) = *ent;
 		if (thread->count == THREAD)
-			multithread_start(thread);
+			multi_thread_start(thread);
 	}
 }

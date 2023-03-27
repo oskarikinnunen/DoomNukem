@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   moveplayer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 17:24:27 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 22:27:59 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include "editor_tools.h"
 #include "movement_defs.h"
 #include "raycast.h"
+#include "npc.h"
 
 static t_vector3	normalized_inputvector(t_input input, t_player player)
 {
@@ -29,14 +30,14 @@ static t_vector3	normalized_inputvector(t_input input, t_player player)
 	t_vector3	strafe;
 
 	movement = vector3_zero();
-	forward = vector3_mul_vector3(player.lookdir,
+	forward = vector3_mul_vector3(player.look_dir,
 			(t_vector3){1.0f, 1.0f, 0.0f});
 	forward = vector3_normalise(forward);
 	movement = vector3_mul(forward, -input.move.y);
-	right = vector3_crossproduct(forward, vector3_up());
+	right = vector3_cross_product(forward, vector3_up());
 	strafe = vector3_mul(right, input.move.x);
 	movement = vector3_add(movement, strafe);
-	if (player.noclip)
+	if (player.no_clip)
 	{
 		movement.z += 1.5f * input.jump;
 		movement.z -= 1.5f * input.crouch;
@@ -78,9 +79,9 @@ static void	player_raycast(t_player *player, t_world *world)
 {
 	t_ray	ray;
 
-	ray.origin = player->headposition;
-	ray.dir = player->lookdir;
-	raycast(ray, &player->raycastinfo, world);
+	ray.origin = player->head_position;
+	ray.dir = player->look_dir;
+	raycast(ray, &player->raycast_info, world);
 }
 
 void	moveplayer(t_player *player, t_input *input, t_world *world)
@@ -98,14 +99,14 @@ void	moveplayer(t_player *player, t_input *input, t_world *world)
 		player_update_gun(player, world);
 	if (!player->locked)
 	{
-		if (!player->noclip)
-			playermovement_normal(player, world);
+		if (!player->no_clip)
+			player_movement_normal(player, world);
 		else
-			playermovement_noclip(player, world);
+			player_movement_noclip(player, world);
 	}
-	player->headposition = vector3_add(player->transform.position,
+	player->head_position = vector3_add(player->transform.position,
 			(t_vector3){.z = player->height * 0.75f});
-	player->head_transform.position = player->headposition;
+	player->head_transform.position = player->head_position;
 	player->head_transform.rotation = player->transform.rotation;
 	player->head_transform.scale = player->transform.scale;
 }

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 20:59:23 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 22:40:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 11:03:21 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,17 +55,17 @@ t_vector2	*transformed_around(t_vector2 og, float angle, t_vector2 *t)
 	return (final);
 }
 
-bool	intersect(t_line line1, t_vector2 *edges, int edgecount)
+bool	intersect(t_line line1, t_vector2 *edges, int edge_count)
 {
 	t_line	line2;
 	int		i;
 	float	res;
 
 	i = 0;
-	while (i < edgecount)
+	while (i < edge_count)
 	{
 		line2.start = edges[i];
-		if (i == edgecount - 1)
+		if (i == edge_count - 1)
 			line2.end = edges[0];
 		else
 			line2.end = edges[i + 1];

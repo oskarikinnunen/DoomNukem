@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gui_end.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 15:05:22 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 18:22:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 22:34:45 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,5 +111,5 @@ void	gui_end(t_autogui *gui)
 	drag_release(gui);
 	scroll(gui);
 	place(gui);
-	gui_limitrect(gui);
+	gui_limit_rect(gui);
 }

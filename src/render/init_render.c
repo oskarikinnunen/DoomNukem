@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:59:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 11:59:07 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/26 20:46:13 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ t_render	init_render(t_sdlcontext sdl)
 
 	ft_bzero(&render, sizeof(t_render));
 	ft_bzero(&render.camera, sizeof(t_camera));
-	render.camera.aspectratio = (float)(sdl.window_h) / (float)(sdl.window_w);
-	render.camera.matproj = matrix_makeprojection(90.0f, \
-								render.camera.aspectratio, 2.0f, 1000.0f);
+	render.camera.aspect_ratio = (float)(sdl.window_h) / (float)(sdl.window_w);
+	render.camera.mat_proj = matrix_make_projection(90.0f, \
+								render.camera.aspect_ratio, 2.0f, 1000.0f);
 	render.screenspace_ptris = \
 			prot_memalloc(sizeof(t_screen_triangle) * 10000);
 	render.q = prot_memalloc(sizeof(t_quaternion) * 10000);
@@ -38,8 +38,8 @@ void	calculate_matview(t_camera *camera)
 {
 	t_vector3	vtarget;
 
-	vtarget = vector3_add(camera->position, camera->lookdir);
-	camera->matview = matrix_lookat(camera->position, \
+	vtarget = vector3_add(camera->position, camera->look_dir);
+	camera->mat_view = matrix_lookat(camera->position, \
 										vtarget, (t_vector3){0.0f, 0.0f, 1.0f});
 }
 
@@ -50,11 +50,11 @@ void	render_start_new(t_sdlcontext *sdl, t_player *player)
 	t_vector3	vtarget;
 
 	render = &sdl->render;
-	render->camera.lookdir = player->lookdir;
-	render->camera.position = player->headposition;
+	render->camera.look_dir = player->look_dir;
+	render->camera.position = player->head_position;
 	fov_rad = fov_deg_to_fov_rad(player->fov);
-	render->camera.matproj.m[0][0] = render->camera.aspectratio * fov_rad;
-	render->camera.matproj.m[1][1] = fov_rad;
+	render->camera.mat_proj.m[0][0] = render->camera.aspect_ratio * fov_rad;
+	render->camera.mat_proj.m[1][1] = fov_rad;
 	calculate_matview(&render->camera);
 	ft_bzero(sdl->surface->pixels,
 		sizeof(uint32_t) * sdl->window_h * sdl->window_w);

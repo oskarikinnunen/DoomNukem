@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   walls_3.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 20:20:18 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:01:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/26 22:40:50 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,17 @@
 
 static void	wall_assign_edges(t_area *room, int i)
 {
-	room->walls[i].edgeline.start = &room->edges[i];
-	room->walls[i].edgeline.start_index = i;
-	if (i != room->edgecount - 1)
+	room->walls[i].edge_line.start = &room->edges[i];
+	room->walls[i].edge_line.start_index = i;
+	if (i != room->edge_count - 1)
 	{
-		room->walls[i].edgeline.end = &room->edges[i + 1];
-		room->walls[i].edgeline.end_index = i + 1;
+		room->walls[i].edge_line.end = &room->edges[i + 1];
+		room->walls[i].edge_line.end_index = i + 1;
 	}
 	else
 	{
-		room->walls[i].edgeline.end = &room->edges[0];
-		room->walls[i].edgeline.end_index = 0;
+		room->walls[i].edge_line.end = &room->edges[0];
+		room->walls[i].edge_line.end_index = 0;
 	}
 }
 
@@ -37,10 +37,10 @@ void	_room_initwalls_shallow(t_world *world, t_area *room)
 	t_object	*obj;
 
 	i = 0;
-	room->wallcount = room->edgecount;
+	room->wall_count = room->edge_count;
 	if (!room->floor_enabled && !room->loop)
-		room->wallcount--;
-	while (i < room->wallcount)
+		room->wall_count--;
+	while (i < room->wall_count)
 	{
 		wall_assign_edges(room, i);
 		if (room->walls[i].entity == NULL)
@@ -64,10 +64,10 @@ void	_room_initwalls(t_world *world, t_area *room)
 	t_object	*obj;
 
 	i = 0;
-	room->wallcount = room->edgecount;
+	room->wall_count = room->edge_count;
 	if (!room->floor_enabled && !room->loop)
-		room->wallcount--;
-	while (i < room->wallcount)
+		room->wall_count--;
+	while (i < room->wall_count)
 	{
 		wall_assign_edges(room, i);
 		if (room->walls[i].entity == NULL)
@@ -80,7 +80,7 @@ void	_room_initwalls(t_world *world, t_area *room)
 			room->walls[i].entity->rigid = true;
 		}
 		room->walls[i].height = room->ceiling_height;
-		applywallmesh(&room->walls[i], room, world);
+		apply_wallmesh(&room->walls[i], room, world);
 		i++;
 	}
 }
@@ -99,14 +99,14 @@ void	room_init(t_area *room, t_world *world)
 		_room_initwalls(world, room);
 	else
 	{
-		room->wallcount = 0;
+		room->wall_count = 0;
 		room->ceiling_height = 0;
 	}
 	if (room->floor_enabled)
 	{
 		room_make_floor(world, room);
 		if (room->ceiling_enabled)
-			room_makeceilings(world, room);
+			room_make_ceilings(world, room);
 	}
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
 		"initialized area:", room->name, NULL});
