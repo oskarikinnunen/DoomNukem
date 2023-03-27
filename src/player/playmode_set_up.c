@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode_set_up.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 19:26:59 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 13:00:59 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,6 @@
 #include "objects.h"
 #include "editor_tools.h"
 #include "movement_defs.h"
-
-// TODO: this can use entity->worldvertices once that is in the main branch, 
-// for now this'll use this. Defined in editor_raycast.c
-t_vector3_tri	worldspace_tri(t_entity *entity, int index);
 
 static void	world_add_ramp(t_world *world, t_entity *entity)
 {

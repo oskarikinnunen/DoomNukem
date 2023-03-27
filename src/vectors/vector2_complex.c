@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   vector2_complex.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 11:43:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 11:07:01 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 12:50:52 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vectors.h"
-#include "room.h" //Has line definition... TODO: move line to shapes.h
 
 float	vector2_sqr_magnitude(t_vector2 vec)
 {

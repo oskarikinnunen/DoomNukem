@@ -3,23 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   player_2.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 17:26:50 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 22:51:27 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 13:15:09 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 //TODO: remove unused header includes
 #include "doomnukem.h"
-#include "collision.h"
-#include "bresenham.h"
-#include "objects.h"
-#include "entity.h"
-#include "libft.h"
-#include "editor_tools.h"
-#include "movement_defs.h"
-#include "raycast.h"
 #include "npc.h"
 
 void	player_gun_raycast(t_player *player, t_world *world)
