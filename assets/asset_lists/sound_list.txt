@@ -7,7 +7,6 @@ assets/audio/npc_death2.wav
 assets/audio/pistol2.wav
 assets/audio/climb1.wav
 assets/audio/npc_death.wav
-assets/audio/shotgun_shoot.wav
 assets/audio/amb_electricspark3_long.wav
 assets/audio/landing_impact_soft.wav
 assets/audio/barrelhit.wav
@@ -15,7 +14,6 @@ assets/audio/gun_machinegun.wav
 assets/audio/protag_onedown.wav
 assets/audio/protag_niceshot.wav
 assets/audio/bubbles.wav
-assets/audio/amb_electricspark2.wav
 assets/audio/landing_impact2.wav
 assets/audio/concrete-footsteps_loop.wav
 assets/audio/gun_machinegun1.wav
@@ -37,5 +35,4 @@ assets/audio/protag_hurt.wav
 assets/audio/protag_letsdo.wav
 assets/audio/gun_reload.wav
 assets/audio/landing_impact.wav
-assets/audio/gattoangus_9mm-pistol.wav
 assets/audio/gun_grenadelauncher.wav
