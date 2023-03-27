@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 17:47:25 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 17:23:18 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/27 14:41:28 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ static bool	is_already_neighbor(t_navigation *nav, int i, int nb)
 {
 	int	index;
 
+	if (nav->navmesh[i].neighbors > 10)
+		return (true);
 	index = 0;
 	while (index < nav->navmesh[i].neighbors)
 	{
