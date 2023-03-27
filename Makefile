@@ -6,13 +6,13 @@
 #    By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/27 12:23:00 by vlaine           ###   ########.fr        #
+#    Updated: 2023/03/27 12:36:09 by vlaine           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
 
-NAME = DoomNukem
+NAME = doom-nukem
 #Library dependencies:
 
 LIBS_DIR = libs
