@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool_create.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 16:47:41 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 22:36:42 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 11:11:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ void	create_mode(t_editor *ed, t_sdlcontext *sdl, t_room_tool_data *dat)
 		dat->room->edges[dat->room->edge_count] = v3tov2(cursor);
 		dat->room->edge_count++;
 	}
+	createmode_highlight(ed, sdl, dat, cursor);
 	if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
 		createmode_step_back(ed, sdl, dat);
-	createmode_highlight(ed, sdl, dat, cursor);
 }

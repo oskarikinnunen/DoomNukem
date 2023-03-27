@@ -6,11 +6,12 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 14:59:55 by raho              #+#    #+#             */
-/*   Updated: 2023/03/27 11:03:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 11:14:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
+#include "render.h"
 
 void	create_sdl_window(t_sdlcontext *sdl, t_screen_mode mode)
 {
@@ -74,7 +75,7 @@ void	set_sdl_settings(t_sdlcontext *sdl)
 	t_graphic_prefs	prefs;
 
 	free_sdl_stuff(sdl);
-	prefs.screenmode = screenmode_windowed;
+	prefs.screenmode = screen_mode_windowed;
 	prefs.resolution_x = DEFAULT_RES_X;
 	prefs.resolution_y = DEFAULT_RES_Y;
 	prefs.resolutionscale = DEFAULT_RES_SCALING;

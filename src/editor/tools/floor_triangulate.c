@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 20:35:35 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 11:05:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 11:25:27 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ void	triangulate(t_floorcalc *fc)
 		if (i > 100000)
 		{
 			fc->face_count = 0;
-			doom_log(LOG_WARNING, "Couldn't create floor");
+			doomlog(LOG_WARNING, "Couldn't create floor");
 		}
 	}
 }

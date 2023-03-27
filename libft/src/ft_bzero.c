@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 16:06:39 by okinnune          #+#    #+#             */
-/*   Updated: 2022/04/19 13:49:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 11:46:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 void	ft_bzero(void *s, size_t n)
 {
+	if (n == 0)
+		return ;
 	while (n > sizeof(long))
 	{
 		*(long *) s = 0L;
