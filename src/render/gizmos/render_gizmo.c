@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_gizmo.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 21:49:05 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 15:35:26 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 11:46:07 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,62 +27,25 @@ static t_vector2	proj_quaternion_to_screenspace(t_sdlcontext *sdl,
 	return ((t_vector2){proj_q.v.x, proj_q.v.y});
 }
 
-// TODO: Replace with a new function dont fix norm
-bool	clip_line_against_lineplane(t_line *line, t_line plane)
-{
-	float	f_dist1;
-	float	f_dist2;
-	float	lerp;
-	t_line	temp;
-
-	temp.start = plane.end;
-	temp.end = plane.start;
-	f_dist1 = vector2_fdist_to_plane(line->start, plane.end, plane.start);
-	f_dist2 = vector2_fdist_to_plane(line->end, plane.end, plane.start);
-	if (f_dist1 < 0.0f && f_dist2 < 0.0f)
-		return (false);
-	if (f_dist1 < 0.0f)
-	{
-		lerp = vector2_line_intersect_plane(\
-				plane.start, plane.end, line->start, line->end);
-		line->start = vector2_lerp(line->start, line->end, lerp);
-	}
-	else if (f_dist2 < 0.0f)
-	{
-		lerp = vector2_line_intersect_plane(\
-				plane.start, plane.end, line->start, line->end);
-		line->end = vector2_lerp(line->start, line->end, lerp);
-	}
-	return (true);
-}
-
-// TODO: Replace with a new function dont fix norm
 bool	clip_quatline_to_zplane(t_quat_line *ql)
 {
-	t_vector3		pp;
-	t_vector3		pn;
+	t_vector3		plane_p;
+	t_vector3		plane_n;
 	float			lerp;
-	float			fdist1;
-	float			fdist2;
+	float			dist[2];
 
-	pp = (t_vector3){.z = 0.1f};
-	pn = (t_vector3){.z = 1.0f};
-	fdist1 = vector3_fdist_to_plane(ql->start.v, pn, pp);
-	fdist2 = vector3_fdist_to_plane(ql->end.v, pn, pp);
-	if (fdist1 < 0.0f && fdist2 < 0.0f)
+	plane_p = (t_vector3){0.0f, 0.0f, 0.1f};
+	plane_n = (t_vector3){0.0f, 0.0f, 1.0f};
+	dist[0] = vector3_fdist_to_plane(ql->start.v, plane_n, plane_p);
+	dist[1] = vector3_fdist_to_plane(ql->end.v, plane_n, plane_p);
+	if (dist[0] < 0.0f && dist[1] < 0.0f)
 		return (false);
-	if (fdist1 < 0.0f || fdist2 < 0.0f)
+	if (dist[0] < 0.0f || dist[1] < 0.0f)
 	{
-		if (fdist1 < 0.0f)
-		{
-			lerp = line_intersect_plane(pp, pn, ql->start.v, ql->end.v);
-			ql->start = lerp_quaternion(ql->start, ql->end, lerp);
-		}
-		else
-		{
-			lerp = line_intersect_plane(pp, pn, ql->end.v, ql->start.v);
-			ql->end = lerp_quaternion(ql->end, ql->start, lerp);
-		}
+		if (dist[0] > dist[1])
+			ft_swap(&ql->start, &ql->end, sizeof(t_quaternion));
+		lerp = line_intersect_plane(plane_p, plane_n, ql->start.v, ql->end.v);
+		ql->start = lerp_quaternion(ql->start, ql->end, lerp);
 	}
 	return (true);
 }
@@ -113,7 +76,7 @@ void	render_circle(t_sdlcontext *sdl, t_vector3 pos,
 		edges[i].y = pos.y + (cosf(angl) * radius);
 		edges[i].z = pos.z;
 		if (i >= 1)
-			render_ray(sdl, edges[i - 1], edges[i]);
+			render_ray3d(sdl, edges[i - 1], edges[i], clr);
 		angl += FULLRAD / RCRCL_SIDES;
 		i++;
 	}
@@ -126,39 +89,14 @@ bool	vector3_has_nan(t_vector3 vec)
 		|| isnan(vec.z) || isinf(vec.z));
 }
 
-// TODO: Name better
-static int	render_ray_helper(t_line *l, t_sdlcontext *sdl)
-{
-	t_line	plane1;
-	t_line	plane2;
-	t_line	plane3;
-	t_line	plane4;
-
-	plane1 = newline((t_vector2){0.0f, 0.0f}, (t_vector2){0.0f, 1.0f});
-	plane2 = newline((t_vector2){0.0f, (float)(sdl->window_h) - 1.0f}, \
-					(t_vector2){0.0f, -1.0f});
-	plane3 = newline((t_vector2){0.0f, 0.0f}, (t_vector2){1.0f, 0.0f});
-	plane4 = newline((t_vector2){(float)(sdl->window_w) - 1.0f, 0.0f}, \
-					(t_vector2){-1.0f, 0.0f});
-	if (!clip_line_against_lineplane(l, plane1))
-		return (1);
-	if (!clip_line_against_lineplane(l, plane2))
-		return (1);
-	if (!clip_line_against_lineplane(l, plane3))
-		return (1);
-	if (!clip_line_against_lineplane(l, plane4))
-		return (1);
-	return (0);
-}
-
-// TODO: Redo this?
-void	render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to)
+void render_ray3d(t_sdlcontext *sdl, t_vector3 from,
+					t_vector3 to, uint32_t clr)
 {
 	t_quaternion	q1;
 	t_quaternion	q2;
 	t_line			l;
 	t_quat_line		ql;
-	
+
 	if (vector3_has_nan(from) || vector3_has_nan(to))
 		return ;
 	q1 = vector3_to_quaternion(from);
@@ -173,17 +111,8 @@ void	render_ray(t_sdlcontext *sdl, t_vector3 from, t_vector3 to)
 		return ;
 	l.start = proj_quaternion_to_screenspace(sdl, ql.start);
 	l.end = proj_quaternion_to_screenspace(sdl, ql.end);
-	if (render_ray_helper(&l, sdl) == 1)
-		return ;
 	drawline(*sdl, vector2_to_point(l.start), \
-			vector2_to_point(l.end), sdl->render.gizmocolor);
-}
-
-void render_ray3d(t_sdlcontext *sdl, t_vector3 from,
-					t_vector3 to, uint32_t clr)
-{
-	sdl->render.gizmocolor = clr;
-	render_ray(sdl, from, to);
+			vector2_to_point(l.end), clr);
 }
 
 void render_gizmo3d(t_sdlcontext *sdl, t_vector3 pos,

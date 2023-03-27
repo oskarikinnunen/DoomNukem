@@ -18,6 +18,14 @@
 		"chrono": "c",
 		"__cxx_version": "c",
 		"__hash_table": "c",
-		"type_traits": "c"
+		"type_traits": "c",
+		"__bit_reference": "c",
+		"__split_buffer": "c",
+		"array": "c",
+		"initializer_list": "c",
+		"ios": "c",
+		"iterator": "c",
+		"unordered_map": "c",
+		"vector": "c"
 	}
 }

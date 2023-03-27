@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 17:40:43 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/27 11:48:26 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -290,9 +290,6 @@ float		point_fdist(t_point first, t_point second);
 
 //returns dot product of point 'first' and point 'second'
 float		point_fdot(t_point first, t_point second);
-
-//returns point lerped;
-t_point lerp_point(t_point from, t_point to, float delta);
 
 typedef struct s_quaternion
 {

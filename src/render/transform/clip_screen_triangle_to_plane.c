@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clip_screen_triangle_to_plane.c                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 18:49:09 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/25 16:35:20 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 11:15:56 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,13 @@ t_screen_triangle in_tri, t_screen_triangle *out_tri)
 	t_vector2	start;
 	t_vector2	end;
 
-	start = (t_vector2){in_tri.p[0].x, in_tri.p[0].y};
-	end = (t_vector2){in_tri.p[2].x, in_tri.p[2].y};
+	start = in_tri.p[0];
+	end = in_tri.p[2];
 	t = vector2_line_intersect_plane(plane_p, plane_n, start, end);
 	out_tri->p[0] = vector2_lerp(in_tri.p[0], in_tri.p[2], t);
 	out_tri->t[0] = vector3_lerp(in_tri.t[0], in_tri.t[2], t);
-	start = (t_vector2){in_tri.p[1].x, in_tri.p[1].y};
-	end = (t_vector2){in_tri.p[2].x, in_tri.p[2].y};
+	start = in_tri.p[1];
+	end = in_tri.p[2];
 	t = vector2_line_intersect_plane(plane_p, plane_n, start, end);
 	out_tri->p[1] = vector2_lerp(in_tri.p[1], in_tri.p[2], t);
 	out_tri->t[1] = vector3_lerp(in_tri.t[1], in_tri.t[2], t);
@@ -41,13 +41,13 @@ static int	vector2_clip_quad_to_triangles(t_vector2 plane_p,
 	t_vector2	start;
 	t_vector2	end;
 
-	start = (t_vector2){in_tri.p[0].x, in_tri.p[0].y};
-	end = (t_vector2){in_tri.p[1].x, in_tri.p[1].y};
+	start = in_tri.p[0];
+	end = in_tri.p[1];
 	t = vector2_line_intersect_plane(plane_p, plane_n, start, end);
 	out_tri[0].p[0] = vector2_lerp(in_tri.p[0], in_tri.p[1], t);
 	out_tri[0].t[0] = vector3_lerp(in_tri.t[0], in_tri.t[1], t);
-	start = (t_vector2){in_tri.p[0].x, in_tri.p[0].y};
-	end = (t_vector2){in_tri.p[2].x, in_tri.p[2].y};
+	start = in_tri.p[0];
+	end = in_tri.p[2];
 	t = vector2_line_intersect_plane(plane_p, plane_n, start, end);
 	out_tri[0].p[1] = vector2_lerp(in_tri.p[0], in_tri.p[2], t);
 	out_tri[0].t[1] = vector3_lerp(in_tri.t[0], in_tri.t[2], t);
