@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 15:53:51 by raho              #+#    #+#             */
-/*   Updated: 2023/03/08 17:05:29 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 14:49:47 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,31 +41,62 @@ static void	sdl_errors(int error_code, int fd)
 	ft_putendl_fd(SDL_GetError(), fd);
 }
 
-static void	std_fnc_errors(int ec, int fd)
+static void	std_fnc_errors2(int ec, int fd)
 {
-	if (ec == LOG_EC_OPEN)
-		ft_putendl_fd(combine_strings((char *[3]){
-				"Open failed -", strerror(errno)}), fd);
-	if (ec == LOG_EC_CLOSE)
-		ft_putendl_fd(combine_strings((char *[3]){
-				"Close failed -", strerror(errno)}), fd);
-	if (ec == LOG_EC_WRITE)
-		ft_putendl_fd(combine_strings((char *[3]){
-				"Write failed -", strerror(errno)}), fd);
+	char	*error_message;
+
 	if (ec == LOG_EC_MALLOC)
-		ft_putendl_fd(combine_strings((char *[3]){
-				"Malloc failed -", strerror(errno)}), fd);
+	{
+		error_message = combine_strings((char *[3]){
+				"Malloc failed -", strerror(errno)});
+		ft_putendl_fd(error_message, fd);
+		free(error_message);
+	}
 	if (ec == LOG_EC_GETNEXTLINE)
 		ft_putendl_fd("get_next_line failed", fd);
-	if (ec == LOG_EC_FORK)
-		ft_putendl_fd(combine_strings((char *[3]){
-				"Fork failed -", strerror(errno)}), fd);
 	if (ec == LOG_EC_READ)
-		ft_putendl_fd(combine_strings((char *[3]){
-				"Read failed -", strerror(errno)}), fd);
+	{
+		error_message = combine_strings((char *[3]){
+				"Read failed -", strerror(errno)});
+		ft_putendl_fd(error_message, fd);
+		free(error_message);
+	}
 	if (ec == LOG_EC_LSEEK)
-		ft_putendl_fd(combine_strings((char *[3]){
-				"Lseek failed -", strerror(errno)}), fd);
+	{
+		error_message = combine_strings((char *[3]){
+				"Lseek failed -", strerror(errno)});
+		ft_putendl_fd(error_message, fd);
+		free(error_message);
+	}
+}
+
+static void	std_fnc_errors(int ec, int fd)
+{
+	char	*error_message;
+
+	if (ec == LOG_EC_OPEN)
+	{
+		error_message = combine_strings((char *[3]){
+				"Open failed -", strerror(errno)});
+		ft_putendl_fd(error_message, fd);
+		free(error_message);
+	}
+	else if (ec == LOG_EC_CLOSE)
+	{
+		error_message = combine_strings((char *[3]){
+				"Close failed -", strerror(errno)});
+		ft_putendl_fd(error_message, fd);
+		free(error_message);
+	}
+	else if (ec == LOG_EC_WRITE)
+	{
+		error_message = combine_strings((char *[3]){
+				"Write failed -", strerror(errno)});
+		ft_putendl_fd(error_message, fd);
+		free(error_message);
+	}
+	else
+		std_fnc_errors2(ec, fd);
 }
 
 static void	fmod_errors(int ec, int fd)
