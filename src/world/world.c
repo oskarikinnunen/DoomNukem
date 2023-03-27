@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 23:17:46 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 12:45:59 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 	sdl->render.occlusion.slow_render = false;
 }
 
-//TODO: check if this sorts properly (This is the norm compliant version)
 static void	sort_entitycache(t_world *world, t_vector3 location)
 {
 	int			i;
@@ -95,25 +94,6 @@ static void	sort_entitycache(t_world *world, t_vector3 location)
 		i++;
 	}
 }
-
-//TODO: Remove after bullet holes implementation
-/* if (gui_shortcut_button("Decal draw", 'G', world->debug_gui))
-	{
-		t_decal	d;
-		t_ray	r;
-
-		r.origin = sdl->render.camera.position;
-		r.dir = sdl->render.camera.look_dir;
-		t_raycast_info	info;
-		if (raycast(r, &info, world))
-		{
-			d.img = get_image_by_index(*sdl, 2);
-			d.normal = info.face_normal;
-			d.position = info.hit_pos;
-			d.size = 25.0f;
-			decal(world, d);
-		}
-} */
 
 static void	world_update_debug_gui(t_world *world,
 									t_sdlcontext *sdl, t_render *render)

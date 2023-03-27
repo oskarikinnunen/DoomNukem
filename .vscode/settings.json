@@ -26,6 +26,11 @@
 		"ios": "c",
 		"iterator": "c",
 		"unordered_map": "c",
-		"vector": "c"
+		"vector": "c",
+		"room.h": "c",
+		"gamestring.h": "c",
+		"editor_tools.h": "c",
+		"entity.h": "c",
+		"algorithm": "c"
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 16:25:20 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 12:23:22 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/27 12:51:44 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -360,9 +360,6 @@ t_mat4x4		matrix_make_translation(t_vector3 v);
 
 //returns matrix scale
 t_mat4x4		matrix_make_scale(t_vector3 v);
-
-//returns transform matrix
-t_mat4x4		make_transform_matrix(t_transform transform);
 
 //returns matrix projection, fFovDegrees is player field of view in degrees,
 //aspect ratio is float window height divided by window width,

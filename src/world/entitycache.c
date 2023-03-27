@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entitycache.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 11:13:16 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 12:48:26 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ t_entity	*spawn_entity(t_world *world, t_object *obj)
 	return (NULL);
 }
 
-//TODO: is this nonfatal?
 void	entity_assign_object(t_world *world, t_entity *entity, t_object *obj)
 {
 	entity->obj = obj;

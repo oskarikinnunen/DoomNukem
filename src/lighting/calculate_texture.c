@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   calculate_texture.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 13:07:06 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 13:24:36 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,6 @@ static void	sample_pixel(t_point xy, t_lighting *lighting)
 
 void	parse_entity_texture(int index, t_entity *entity)
 {
-	t_screen_triangle	temp;
-	int					vertex;
 	t_lighting			lighting;
 	t_point				xy;
 

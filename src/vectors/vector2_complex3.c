@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   vector2_complex3.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 11:43:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/14 11:46:06 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 12:49:27 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vectors.h"
-#include "room.h" //Has line definition... TODO: move line to shapes.h
+#include "room.h"
 
 float	vector2_fdist_to_plane(t_vector2 p,
 	t_vector2 plane_n, t_vector2 plane_p)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_raycast.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 17:47:07 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 20:10:41 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 13:41:08 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,7 @@ t_vector3	get_anim_vert(t_entity *entity, int index)
 		.deltavertices[index].delta);
 }
 
-//TODO: use new entity->worldspace_triangles
-t_vector3_tri	worldspace_tri(t_entity *entity, int index)
+t_vector3_tri	worldspace_tri(struct s_entity *entity, int index)
 {
 	t_vector3_tri	tri;
 	t_object		*object;
@@ -69,6 +68,8 @@ t_vector3_tri	worldspace_tri(t_entity *entity, int index)
 	int				i3;
 
 	object = entity->obj;
+	if (object == NULL)
+		return ((t_vector3_tri){0});
 	i1 = object->faces[index].v_indices[0] - 1;
 	i2 = object->faces[index].v_indices[1] - 1;
 	i3 = object->faces[index].v_indices[2] - 1;
@@ -106,7 +107,8 @@ bool	raycast_entity(t_ray r, t_raycast_info *info, t_entity *entity)
 
 	i = 0;
 	hit = false;
-	if (entity->ignore_raycasts || entity->obj == NULL)
+	if (entity->ignore_raycasts || entity->obj == NULL \
+	|| entity->world_triangles == NULL)
 		return (hit);
 	while (i < entity->obj->face_count)
 	{

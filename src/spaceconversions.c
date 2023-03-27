@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   spaceconversions.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 13:31:43 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 22:58:45 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 12:43:46 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ t_quaternion	transformed_vector3(t_transform trsform, t_vector3 v)
 	return (res);
 }
 
-//TODO: clip?
 t_point	vector3_to_screenspace(t_vector3 vec, t_sdlcontext sdl)
 {
 	t_camera		c;
