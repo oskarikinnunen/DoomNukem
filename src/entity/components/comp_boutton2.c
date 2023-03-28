@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 18:04:22 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 21:38:14 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/28 10:30:02 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ void	comp_boutton_ui_update(t_entity *entity, t_world *world)
 	boutton = entity->component.data;
 	if (boutton == NULL)
 		return ;
-	if (boutton->can_interact)
+	if (boutton->can_interact && world->player->health > 0)
 	{
-		print_text_boxed(world->sdl, "[E] Press boutton", \
+		print_text_boxed(world->sdl, "[E] Game over", \
 				point_div(world->sdl->screensize, 2));
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 18:55:30 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 20:36:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 22:58:02 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,10 +71,9 @@ static void	capsule_phys_2d_apply_pos(t_character_physics *charp,
 		*charp->position = new_pos;
 }
 
-// TODO: norminette for this...
 void	capsule_phys_step(t_character_physics *charp, t_world *world)
 {
-	t_bound		zbound;
+	t_bound	zbound;
 
 	capsule_phys_2d_apply_pos(charp, world);
 	zbound = get_bound(charp, world);

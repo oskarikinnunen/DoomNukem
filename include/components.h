@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   components.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 21:27:40 by raho              #+#    #+#             */
-/*   Updated: 2023/03/27 17:19:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/28 09:45:22 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@ typedef struct s_interactable
 typedef struct s_healthpack
 {
 	float	test_variable;
+	bool	is_actually_ammo;
 }	t_healthpack;
 
 typedef struct s_npc_civilian

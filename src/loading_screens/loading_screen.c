@@ -3,15 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   loading_screen.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 13:20:32 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 18:46:47 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/28 11:34:07 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "doomnukem.h"
 #include "tga.h"
+
+static void	close_window(SDL_Event	e)
+{
+	while (SDL_PollEvent(&e))
+	{
+		if (e.type == SDL_KEYDOWN)
+		{
+			if (iskey(e, SDLK_ESCAPE))
+				exit(0);
+		}
+		if (e.type == SDL_QUIT)
+			exit(0);
+	}
+}
 
 void	print_loading_message(char *loading_message, t_sdlcontext *sdl)
 {
@@ -44,10 +58,7 @@ void	editor_loading_screen(char *loading_message, t_sdlcontext *sdl)
 		print_loading_message(loading_message, sdl);
 	ft_memcpy(sdl->window_surface->pixels, sdl->surface->pixels, \
 			sizeof(uint32_t) * sdl->window_w * sdl->window_h);
-	while (SDL_PollEvent(&e))
-		if (e.type == SDL_KEYDOWN)
-			if (iskey(e, SDLK_ESCAPE))
-				exit(0);
+	close_window(e);
 	if (SDL_UpdateWindowSurface(sdl->window) < 0)
 		doomlog(LOG_EC_SDL_UPDATEWINDOWSURFACE, NULL);
 }
@@ -69,6 +80,8 @@ void	playmode_loading_screen_loop(char *loading_message, t_sdlcontext *sdl)
 				else
 					return ;
 			}
+			if (e.type == SDL_QUIT)
+				exit(0);
 		}
 	}
 }
@@ -92,10 +105,7 @@ void	playmode_loading_screen(char *loading_message, t_sdlcontext *sdl)
 		print_loading_message(loading_message, sdl);
 	ft_memcpy(sdl->window_surface->pixels, sdl->surface->pixels, \
 			sizeof(uint32_t) * sdl->window_w * sdl->window_h);
-	while (SDL_PollEvent(&e))
-		if (e.type == SDL_KEYDOWN)
-			if (iskey(e, SDLK_ESCAPE))
-				exit(0);
+	close_window(e);
 	if (SDL_UpdateWindowSurface(sdl->window) < 0)
 		doomlog(LOG_EC_SDL_UPDATEWINDOWSURFACE, NULL);
 }

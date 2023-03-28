@@ -1,3 +1,2 @@
-assets/audio/music_arp1_ambient.wav
 assets/audio/music_arp1_action.wav
 assets/audio/music_arp1_ambient.wav

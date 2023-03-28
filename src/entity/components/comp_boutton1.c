@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:38:14 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/28 10:24:24 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,7 @@ void	comp_boutton_update(t_entity *entity, t_world *world)
 	if (boutton->can_interact && world->player->input.use
 		&& world->clock.time > boutton->last_interact_time + 5000)
 	{
-		boutton->last_interact_time = world->clock.time;
-		world->sdl->lighting_toggled = !world->sdl->lighting_toggled;
+		world->player->health = 0;
 	}
 }
 

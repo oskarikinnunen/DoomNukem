@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 21:06:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 23:03:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "doomnukem.h"
 #include "editor_tools.h"
 
-static void gun_pickup_change_player_gun(t_entity *entity,
+static void	gun_pickup_change_player_gun(t_entity *entity,
 		int i, t_world *world)
 {
 	int	index;
@@ -45,8 +45,8 @@ void	comp_gun_pickup_update(t_entity *entity, t_world *world)
 		return ;
 	entity->transform.rotation.x += world->clock.delta * 0.001f;
 	entity->transform.position.z = \
-		gun_pickup->original_z + (ft_absf(sinf(world->clock.time
-		* 0.001f)) * 10.0f);
+			gun_pickup->original_z + (ft_absf(sinf(world->clock.time
+					* 0.001f)) * 10.0f);
 	if (vector3_sqr_dist(world->player->transform.position, \
 						entity->transform.position) < 1000.0f)
 	{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   calculate_texture.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 13:07:06 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/27 13:24:36 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/27 22:28:04 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,11 @@ void	parse_entity_texture(int index, t_entity *entity)
 			xy.x++;
 		}
 		xy.y++;
+	}
+	if (entity->map[index].lightmap)
+	{
+		free(entity->map[index].lightmap);
+		entity->map[index].lightmap = NULL;
 	}
 }
 

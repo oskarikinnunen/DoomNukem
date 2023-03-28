@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_npc_state.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 16:49:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 15:20:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 22:35:41 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static t_path	random_path(t_entity *entity, t_npc *npc, t_world *world)
 	curnode = &world->nav.navmesh[
 		get_nearest_target_node(world, entity->transform.position)];
 	if (curnode->neighbors == 0)
-		return ((t_path) {.valid_path = false});
+		return ((t_path){.valid_path = false});
 	i = 0;
 	while (i < 20)
 	{
@@ -47,7 +47,7 @@ static t_path	random_path(t_entity *entity, t_npc *npc, t_world *world)
 	}
 	result = pathfind(entity->transform.position, curnode->mid_point, world);
 	if (result.bi <= 1)
-		return ((t_path) {.valid_path = false});
+		return ((t_path){.valid_path = false});
 	return (result);
 }
 

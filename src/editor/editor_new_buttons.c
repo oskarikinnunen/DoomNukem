@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_new_buttons.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 14:34:40 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:15:32 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/28 12:16:29 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,6 @@ void	update_editor_toolbar(t_editor *ed, t_autogui *toolbar)
 	if (gui_button("[2]Entities", toolbar) || \
 			ed->hid.keystate >> KEYS_2MASK & 1)
 		change_tool(ed, toolbar->sdl, get_entity_tool());
-	if (gui_button("[3]Guns", toolbar) || ed->hid.keystate >> KEYS_3MASK & 1)
-		change_tool(ed, toolbar->sdl, get_gun_tool());
 	if (gui_shortcut_button("No tool", 't', toolbar))
 		ed->tool = NULL;
 	gui_end_horizontal(toolbar);

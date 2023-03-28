@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 21:08:59 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/28 12:13:26 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,25 +101,16 @@ static void	world_update_debug_gui(t_world *world,
 	gui_start(world->debug_gui);
 	if (gui_shortcut_button("Toggle no_clip", 'F', world->debug_gui))
 		world->player->no_clip = !world->player->no_clip;
-	if (gui_shortcut_button("Toggle Lighting", 'l', world->debug_gui))
+	if (gui_shortcut_button("Toggle Lighting", 'L', world->debug_gui))
 		sdl->lighting_toggled = !sdl->lighting_toggled;
-	if (gui_shortcut_button("Draw Occlusion Buffer", 'Y', world->debug_gui))
-		sdl->render.occlusion.draw_occlusion = \
-				!sdl->render.occlusion.draw_occlusion;
 	if (gui_shortcut_button("Toggle Occlusion", 'O', world->debug_gui))
 		render->occlusion.occlusion = !render->occlusion.occlusion;
-	if (gui_shortcut_button("Render Next Frame Slow", 'U', world->debug_gui))
-		sdl->render.occlusion.slow_render = true;
 	if (world->app_mode == APPMODE_PLAY && \
 	gui_shortcut_button("Show_navmesh", 'N', world->debug_gui))
 		world->nav.show_navmesh = !world->nav.show_navmesh;
 	if (gui_shortcut_button("Occlusion boxes", 'B', world->debug_gui))
 		world->sdl->render.occlusion.draw_occlusion = \
 		!world->sdl->render.occlusion.draw_occlusion;
-	gui_labeled_float_slider("Resolution scaling", \
-			&world->sdl->resolution_scaling, 0.01f, world->debug_gui);
-	world->sdl->resolution_scaling = \
-			ft_clampf(world->sdl->resolution_scaling, 0.25f, 1.0f);
 	gui_end(world->debug_gui);
 }
 
@@ -131,7 +122,7 @@ void	update_world3d(t_world *world, t_render *render)
 	sdl = world->sdl;
 	for_all_active_entities(world, calculate_triangles_for_entity);
 	render_start_new(sdl, world->player);
-	draw_skybox_image(world, skybox);
+	draw_skybox_image(world);
 	clear_occlusion_buffer(sdl);
 	update_frustrum_culling(world, sdl, render);
 	sort_entitycache(world, render->camera.position);

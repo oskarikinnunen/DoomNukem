@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_healthpack.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 18:14:04 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:28:24 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/28 12:08:37 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,41 @@
 #include "doomnukem.h"
 #include "editor_tools.h"
 
+static void	comp_ammo_udate(t_world *world)
+{
+	if (world->player->ammo_arr[AM_ASSAULT] < 205)
+		world->player->ammo_arr[AM_ASSAULT] += 50;
+	else if (world->player->ammo_arr[AM_ASSAULT] >= 205 && \
+			world->player->ammo_arr[AM_ASSAULT] < 250)
+		world->player->ammo_arr[AM_ASSAULT] = 255;
+	if (world->player->ammo_arr[AM_SNIPER] < 205)
+		world->player->ammo_arr[AM_SNIPER] += 50;
+	else if (world->player->ammo_arr[AM_SNIPER] >= 205 && \
+			world->player->ammo_arr[AM_SNIPER] < 250)
+		world->player->ammo_arr[AM_SNIPER] = 255;
+}
+
 /* Called once per frame, use this to update your entitys state */
 void	comp_healthpack_update(t_entity *entity, t_world *world)
 {
 	t_healthpack	*healthpack;
+	bool			player_close_enough;
 
 	healthpack = entity->component.data;
 	if (healthpack == NULL || world->app_mode == APPMODE_EDIT)
 		return ;
-	if (world->player->health < MAXHEALTH
-		&& vector3_sqr_dist(entity->transform.position,
-			world->player->transform.position) < 2000.0f)
+	player_close_enough = vector3_sqr_dist(entity->transform.position,
+			world->player->transform.position) < 2000.0f;
+	if (!player_close_enough)
+		return ;
+	if (healthpack->is_actually_ammo)
 	{
-		world->player->health += 20;
+		comp_ammo_udate(world);
+		destroy_entity(world, entity);
+	}
+	else if (world->player->health < MAXHEALTH)
+	{
+		world->player->health += 40;
 		world->player->health
 			= ft_clampf(world->player->health, 40, MAXHEALTH);
 		destroy_entity(world, entity);
@@ -44,6 +66,8 @@ void	comp_healthpack_allocate(t_entity *entity, t_world *world)
 	entity->component.data = prot_memalloc(sizeof(t_healthpack));
 	entity->component.data_size = sizeof(t_healthpack);
 	healthpack = (t_healthpack *)entity->component.data;
+	if (ft_strcmp(entity->obj->name, "ammo_pickup.obj") == 0)
+		healthpack->is_actually_ammo = true;
 }
 
 /*	Internal function that's used to link this components behaviour

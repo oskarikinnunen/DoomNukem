@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   point_light.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 16:01:16 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 22:57:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static void	update_cubemap_cameras(t_entity *entity)
 	}
 }
 
-static void	calculate_pointlight(t_world *world, t_entity *entity)
+void	calculate_pointlight(t_world *world, t_entity *entity)
 {
 	int				index;
 	t_lighting		l;
@@ -86,28 +86,18 @@ static void	calculate_pointlight(t_world *world, t_entity *entity)
 	}
 }
 
-void	recalculate_pointlight(t_world *world)
+void	free_pointlight(t_light *light)
 {
-	int				i;
-	int				found;
-	t_entitycache	*cache;
-	t_entity		*ent;
+	int	i;
 
+	if (light == NULL)
+		return ;
 	i = 0;
-	found = 0;
-	cache = &world->entitycache;
-	while (found < cache->existing_entitycount
-		&& i < cache->alloc_count)
+	while (i < 6)
 	{
-		ent = &cache->entities[i++];
-		if (ent->status != es_free)
-		{
-			if (ent->status == es_active && \
-			ent->component.type == COMP_LIGHT)
-			{
-				calculate_pointlight(world, ent);
-			}
-			found++;
-		}
+		if (light->cubemap.shadowmaps[i])
+			free(light->cubemap.shadowmaps[i]);
+		light->cubemap.shadowmaps[i] = NULL;
+		i++;
 	}
 }

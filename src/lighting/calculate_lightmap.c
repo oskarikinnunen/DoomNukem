@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   calculate_lightmap.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 14:14:49 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 22:57:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 22:27:54 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,25 +77,24 @@ static void	calculate_if_valid(t_entity *entity, t_lighting *lighting)
 	}
 }
 
-void	*calculate_light_for_entities(t_test *ptr)
+void	*calculate_light_for_entities(t_thread_helper *ptr)
 {
 	int				i;
 	int				found;
-	t_entitycache	*cache;
 	t_entity		*ent;
 	t_lighting		lighting;
 
-	if (ptr->world == NULL)
+	if (ptr->world == NULL || ptr->entity == NULL)
 		return (NULL);
 	lighting.entity = ptr->entity;
 	lighting.light = ptr->entity->component.data;
+	calculate_pointlight(ptr->world, ptr->entity);
 	i = 0;
 	found = 0;
-	cache = &ptr->world->entitycache;
-	while (found < cache->existing_entitycount
-		&& i < cache->alloc_count)
+	while (found < ptr->world->entitycache.existing_entitycount
+		&& i < ptr->world->entitycache.alloc_count)
 	{
-		ent = &cache->entities[i];
+		ent = &ptr->world->entitycache.entities[i];
 		if (ent->status != es_free)
 		{
 			calculate_if_valid(ent, &lighting);
@@ -103,6 +102,7 @@ void	*calculate_light_for_entities(t_test *ptr)
 		}
 		i++;
 	}
+	free_pointlight(lighting.light);
 	return (NULL);
 }
 
@@ -117,10 +117,10 @@ void	calculate_lighting(t_world *world)
 	i = 0;
 	found = 0;
 	thread.func = (void *)calculate_light_for_entities;
-	thread.struct_size = sizeof(t_test);
-	thread.structs = prot_memalloc(sizeof(t_test) * THREAD);
+	thread.struct_size = sizeof(t_thread_helper);
+	thread.structs = prot_memalloc(sizeof(t_thread_helper) * THREAD);
 	thread.count = 0;
-	ft_bzero(thread.structs, sizeof(t_test) * THREAD);
+	ft_bzero(thread.structs, sizeof(t_thread_helper) * THREAD);
 	while (found < world->entitycache.existing_entitycount
 		&& i < world->entitycache.alloc_count)
 	{

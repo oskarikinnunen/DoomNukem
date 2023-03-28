@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   doomnukem.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:39:02 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 16:29:36 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/28 11:57:56 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@
 # include "player.h"
 # include "input.h"
 # include "navigation.h"
-# include <SDL_thread.h>
 # include "thread.h"
 # include "decal.h"
 
@@ -177,7 +176,7 @@ void			free_floor(t_world *world, t_area *room);
 void			free_ceilings(t_world *world, t_area *room);
 void			free_walls(t_area *room, t_world *world);
 
-void			draw_skybox_image(t_world *world, t_img *skybox);
+void			draw_skybox_image(t_world *world);
 void			free_list_node(void *content, size_t size);
 void			playmode_quit(t_game *game);
 void			update_audio(t_world *world);
@@ -217,6 +216,7 @@ void			playmode_load_music(int level_fd, t_audio *audio);
 void			playmode_load_anims(int level_fd, char *anim_name, \
 									t_object *object);
 void			playmode_load_anim_legend(int level_fd, t_sdlcontext *sdl);
+void			playmode_protect_npcs(t_world *world);
 
 /* TOOLS */
 // Protected ft_memalloc that calls doomlog with error code in case of an error
@@ -356,7 +356,8 @@ void			set_nullentities(t_wall **ptr, int count);
 
 //TODO: temp for lights
 void			recalculate_lighting(t_world *world);
-void			recalculate_pointlight(t_world *world);
+void			calculate_pointlight(t_world *world, t_entity *entity);
+void			free_pointlight(t_light *light);
 void			allocate_map_for_entities(t_world *world);
 void			calculate_lighting(struct s_world *world);
 void			calculate_texture_for_entities(struct s_world *world);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   moveplayer.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 11:09:03 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 19:39:49 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/28 09:58:37 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ static void	player_changegun(t_player *player)
 	int	i;
 	int	old_sel;
 
-	player->gun_ammos[player->gun_selection] = player->gun->bullets;
 	old_sel = player->gun_selection;
 	player->gun_selection += player->input.nextgun;
 	player->gun_selection -= player->input.prevgun;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity_tool_modify.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 15:02:24 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:15:41 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/28 11:48:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,12 +118,13 @@ void	entity_tool_modify(t_editor *ed, t_sdlcontext *sdl,
 		entity_gui_transform_and_component(ent, gui, &ed->world, dat);
 		entity_gui_component(ent, gui, &ed->world, dat);
 		gui_end(gui);
-		entity_grab_and_delete(ent, gui, ed, dat);
 		if (mouse_clicked(ed->hid.mouse, MOUSE_RIGHT))
 		{
 			dat->sel_ent->ignore_raycasts = false;
 			dat->sel_ent = NULL;
 			dat->new_ent->hidden = false;
+			return ;
 		}
+		entity_grab_and_delete(ent, gui, ed, dat);
 	}
 }

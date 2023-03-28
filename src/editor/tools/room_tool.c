@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 11:32:36 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 20:01:52 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/28 09:17:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_room_tool_data *dat)
 
 	gui = &dat->maingui;
 	gui_start(gui);
-	if (gui_shortcut_button("New room", 'N', gui) && dat->rtm != rtm_create\
+	if (gui_shortcut_button("New room", 'N', gui) && dat->rtm != rtm_create \
 		&& dat->room == NULL)
 	{
 		dat->room = prot_memalloc(sizeof(t_area));
@@ -32,8 +32,13 @@ void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_room_tool_data *dat)
 		room_set_preset_room(dat->room);
 		force_mouselock(&ed->hid);
 	}
-	if (gui_shortcut_button("Paint rooms", 'P', gui))
-		dat->rtm = rtm_paint;
+	if (dat->room == NULL)
+	{
+		if (gui_shortcut_button("Paint rooms", 'P', gui))
+			dat->rtm = rtm_paint;
+	}
+	else
+		gui_label("Exit createmode to [P]Paint rooms", gui);
 	gui_end(gui);
 }
 
@@ -69,7 +74,8 @@ void	room_tool_update(t_editor *ed, t_sdlcontext *sdl)
 		room_tool_update_nonemode(ed, sdl, dat);
 	if (dat->room != NULL && dat->rtm == rtm_create)
 		create_mode(ed, sdl, dat);
-	update_maingui(ed, sdl, dat);
+	if (dat->rtm == rtm_create || dat->rtm == rtm_none)
+		update_maingui(ed, sdl, dat);
 	if (dat->rtm == rtm_modify && dat->room != NULL)
 	{
 		modifymode(ed, *sdl, dat);

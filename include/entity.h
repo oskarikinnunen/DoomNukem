@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 21:08:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/28 09:16:32 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,8 @@ void		clear_occlusion_buffer(t_sdlcontext *sdl);
 bool		is_screen_full(t_sdlcontext *sdl);
 
 void		draw_occlusion_boxes(t_entity *entity, struct s_world *world);
+
+void		clear_map_for_entity(t_entity *entity);
 
 /* RENDERING */
 void		draw_entity_icon(t_entity *entity, t_img *img, \

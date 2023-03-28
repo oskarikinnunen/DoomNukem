@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   allocate_map.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 13:48:22 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/27 18:52:29 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/28 09:17:47 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static void	allocate_map(t_entity *entity, int index, t_vector2 max)
 	ft_memset(map->lightmap, clr, sizeof(uint32_t) * map->size.x * map->size.y);
 }
 
-static void	clear_map_for_entity(t_entity *entity)
+void	clear_map_for_entity(t_entity *entity)
 {
 	int	i;
 
@@ -50,18 +50,16 @@ static bool	for_each_triangle(t_entity *entity)
 	int			i;
 	int			index;
 	t_vector2	max;
-	t_object	*obj;
 
-	obj = entity->obj;
-	i = 0;
 	max = vector2_zero();
-	while (i < obj->face_count)
+	i = 0;
+	while (i < entity->obj->face_count)
 	{
 		max = get_max_vector2_from_vector3_triangle(
 				max, entity->world_triangles[i].t);
-		index = obj->faces[i].material_index;
-		if (i + 1 == obj->face_count || \
-		index != obj->faces[i + 1].material_index)
+		index = entity->obj->faces[i].material_index;
+		if (i + 1 == entity->obj->face_count || \
+		index != entity->obj->faces[i + 1].material_index)
 		{
 			max.x = fmaxf(max.x, 1.0f);
 			max.y = fmaxf(max.y, 1.0f);

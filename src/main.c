@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 13:37:38 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 17:32:22 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/28 11:12:23 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static void	check_editor_flags(int argc, char **argv,
 		app_argument->app_mode = APPMODE_EDIT;
 		ft_strncpy_term(app_argument->level_name, argv[2], 120);
 	}
-	else if ((argc == 2 && ft_strcmp(argv[1], "-edit") == 0) || argc == 1)
+	else if (argc == 2 && ft_strcmp(argv[1], "-edit") == 0)
 	{
 		app_argument->app_mode = APPMODE_EDIT;
 		ft_strncpy_term(app_argument->level_name, DEFAULTLEVEL, 120);
@@ -61,11 +61,16 @@ int	main(int argc, char **argv)
 	t_app_argument	app_argument;
 
 	app_argument = get_app_argument(argc, argv);
-	create_sdlcontext(app_argument, &sdl);
 	if (app_argument.app_mode == APPMODE_EDIT)
+	{
+		create_sdlcontext(app_argument, &sdl);
 		editor(app_argument, sdl);
+	}
 	else if (app_argument.app_mode == APPMODE_PLAY)
+	{
+		create_sdlcontext(app_argument, &sdl);
 		playmode(app_argument, sdl);
+	}
 	else if (app_argument.app_mode == APPMODE_INVALID)
 	{
 		ft_putendl_fd(\

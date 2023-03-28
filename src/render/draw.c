@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 05:48:12 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/25 20:18:30 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/28 09:31:56 by kfum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ static inline void	draw_image_opaque(t_sdlcontext sdl,
 	while (pixel.y < scale.y)
 	{
 		pixel.x = 0;
-		while (pixel.x < scale.x && pos.x + pixel.x < sdl.window_w)
+		while (pixel.x < scale.x)
 		{
 			sample.x = ft_clamp(pixel.x * scalar.x, 0, img.size.x - 1);
 			sample.y = ft_clamp(pixel.y * scalar.y, 0, img.size.y - 1);

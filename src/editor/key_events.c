@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   key_events.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/14 15:56:54 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:01:12 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/28 10:50:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static void	toggle_keydown(t_hid_info *hid, SDL_Event e)
 	hid->keystate |= key_is_move_right(e) << KEYS_RIGHTMASK;
 	hid->keystate |= key_is_move_up(e) << KEYS_UPMASK;
 	hid->keystate |= key_is_move_down(e) << KEYS_DOWNMASK;
-	hid->keystate |= iskey(e, SDLK_LCTRL) << KEYS_CTRLMASK;
+	hid->keystate |= iskey(e, SDLK_v) << KEYS_CTRLMASK;
 	hid->keystate |= iskey(e, SDLK_SPACE) << KEYS_SPACEMASK;
 	hid->keystate |= iskey(e, SDLK_LSHIFT) << KEYS_SHIFTMASK;
 	hid->keystate |= iskey(e, SDLK_LALT) << KEYS_LALTMASK;
@@ -57,7 +57,7 @@ static void	toggle_keyup(t_hid_info *hid, SDL_Event e)
 	hid->keystate &= ~(key_is_move_right(e) << KEYS_RIGHTMASK);
 	hid->keystate &= ~(key_is_move_up(e) << KEYS_UPMASK);
 	hid->keystate &= ~(key_is_move_down(e) << KEYS_DOWNMASK);
-	hid->keystate &= ~(iskey(e, SDLK_LCTRL) << KEYS_CTRLMASK);
+	hid->keystate &= ~(iskey(e, SDLK_v) << KEYS_CTRLMASK);
 	hid->keystate &= ~(iskey(e, SDLK_SPACE) << KEYS_SPACEMASK);
 	hid->keystate &= ~(iskey(e, SDLK_LSHIFT) << KEYS_SHIFTMASK);
 	hid->keystate &= ~(iskey(e, SDLK_LALT) << KEYS_LALTMASK);

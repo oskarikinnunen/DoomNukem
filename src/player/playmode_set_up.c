@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   playmode_set_up.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 19:26:59 by raho              #+#    #+#             */
-/*   Updated: 2023/03/27 18:58:21 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/28 12:12:12 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,13 +83,14 @@ t_vector3	find_playerspawn(t_world *world)
 
 void	set_up_world(t_sdlcontext *sdl, t_game *game)
 {
-	navmesh(&game->world);
 	playmode_preprocess_world(&game->world);
+	playmode_protect_npcs(&game->world);
 	player_init(&game->player, sdl, &game->world);
 	game->player.transform.position = find_playerspawn(&game->world);
-	sdl->fog = true;
+	sdl->fog = false;
 	*(game->world.debug_gui) = init_gui((t_gui_init){sdl, &game->hid, \
 					&game->player, sdl->screensize, "Debugging menu (F2)"});
+	game->world.debug_gui->hidden = true;
 	sdl->lighting_toggled = true;
 	sdl->render.occlusion.occlusion = true;
 	game->world.sdl = sdl;
@@ -112,7 +113,7 @@ void	respawn_player(t_game *game)
 	game->player.fov = 90.0f;
 	game->player.health = 120;
 	game->player.gun = &game->player.guns[0];
-	game->player.gun->entity->hidden = false;
-	game->player.guns[0].player_owned = true;
+	game->player.gun->entity->hidden = true;
+	game->player.guns[0].player_owned = false;
 	game->player.guns[1].player_owned = false;
 }

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 17:39:00 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/27 17:38:32 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/28 09:16:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,14 @@ static void	set_vertex_positions(
 	vertices[3] = vector3_add(vector3_add(pos, y), x);
 }
 
+static void	decal_entity_thingies(t_entity *entity)
+{
+	entity->life_timeable = true;
+	entity->life_time = 5000;
+	entity->ignore_raycasts = true;
+	entity->destroy_obj = true;
+}
+
 void	decal(struct s_world *world, t_decal decal)
 {
 	t_object	*obj;
@@ -34,9 +42,7 @@ void	decal(struct s_world *world, t_decal decal)
 	obj = object_plane(world->sdl);
 	obj->materials->img = decal.img;
 	entity = spawn_entity(world, obj);
-	entity->life_timeable = true;
-	entity->life_time = 5000;
-	entity->ignore_raycasts = true;
+	decal_entity_thingies(entity);
 	ft_strncpy(entity->object_name.str, "decal", 6);
 	if (vector3_dot(decal.normal, world->sdl->render.camera.look_dir) >= 0.0f)
 		decal.normal = vector3_negative(decal.normal);

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 17:02:34 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/27 20:40:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/27 23:07:59 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ inline static uint32_t	sample_img(
 	return ((render->img->data[ysample * render->img->size.x + xsample]));
 }
 
+//TODO NORMINETEEEE
 inline static void	scanline(
 	int start, int end, int y, t_sdlcontext *sdl)
 {
@@ -27,18 +28,16 @@ inline static void	scanline(
 	t_vector3	tex;
 	t_stepv3	slope;
 	int			x;
-	float		index;
 
 	slope = make_uv_slopev3(start, end, y, sdl->render.triangle);
 	x = start;
-	index = 0.5f;
 	while (x < end)
 	{
-		tex.z = slope.location.z + index * slope.step.z;
+		tex.z = slope.location.z + ((x - start) + 0.5f) * slope.step.z;
 		if (tex.z > sdl->zbuffer[x + y * sdl->window_w])
 		{
-			tex.x = slope.location.x + index * slope.step.x;
-			tex.y = slope.location.y + index * slope.step.y;
+			tex.x = slope.location.x + ((x - start) + 0.5f) * slope.step.x;
+			tex.y = slope.location.y + ((x - start) + 0.5f) * slope.step.y;
 			clr = sample_img(&sdl->render, tex.x / tex.z, tex.y / tex.z);
 			if (((clr >> 24) & 0xFF) > 240)
 				((uint32_t *)sdl->surface->pixels)[x + y * sdl->window_w] = \
@@ -48,7 +47,6 @@ inline static void	scanline(
 					blend_colors_alpha(((uint32_t *)sdl->surface->pixels)[\
 					x + y * sdl->window_w], clr, 127);
 		}
-		index += 1.0f;
 		x++;
 	}
 }

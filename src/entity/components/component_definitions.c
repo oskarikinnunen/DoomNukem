@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 20:11:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 19:30:59 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/28 09:17:37 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 
 void	assign_component_none(t_component *component)
 {
-	component->data = NULL;
 	component_empty_function_pointers(component);
 }
 

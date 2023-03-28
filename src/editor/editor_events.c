@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_events.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 07:12:39 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 19:16:38 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/28 10:41:18 by kfum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,6 @@ static void	editor_key_down(t_editor *ed, SDL_Event e)
 		ed->toolbar_gui.hidden = !ed->toolbar_gui.hidden;
 	if (iskey(e, SDLK_F2))
 		ed->world.debug_gui->hidden = !ed->world.debug_gui->hidden;
-	if (iskey(e, SDLK_F3))
-		ed->graphics_gui.hidden = !ed->graphics_gui.hidden;
 	if (iskey(e, SDLK_F5))
 	{
 		world_save_to_file(ed->world);

@@ -21,6 +21,9 @@ libs/installed_libs/lib/FMOD/copied
 .createcomponent_data/temp_*
 .createcomponent_data/bu/*
 
+coverage.py
+asset_list_creator.sh
+
 libft/libft.a
 libft/**.o
 lua-5.3.6/install/

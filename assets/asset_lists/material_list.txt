@@ -1,3 +1,4 @@
+assets/objects/ammo_pickup.mtl
 assets/objects/barrel.mtl
 assets/objects/bench.mtl
 assets/objects/boutton.mtl
@@ -6,6 +7,7 @@ assets/objects/concrete_stairs_ramp.mtl
 assets/objects/cube.mtl
 assets/objects/cube_tex.mtl
 assets/objects/grenadelauncher.mtl
+assets/objects/health_pickup.mtl
 assets/objects/Human.mtl
 assets/objects/light.mtl
 assets/objects/lightbar.mtl

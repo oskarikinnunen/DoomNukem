@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 21:00:41 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 18:48:13 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/27 22:34:13 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	free_object(t_object **object)
 	if ((*object)->vertices != NULL)
 		free((*object)->vertices);
 	free(*object);
-	*object = NULL;	
+	*object = NULL;
 }
 
 void	free_floor(t_world *world, t_area *room)

@@ -6,7 +6,7 @@
 /*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 20:44:59 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 22:55:52 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/28 09:58:40 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ typedef struct s_player
 	uint8_t				ammo_arr[4];
 	t_gui_notification	gui_notif;
 	t_raycast_info		raycast_info;
-	uint8_t				gun_ammos[GUNPRESETCOUNT];
 	t_gun				guns[GUNPRESETCOUNT];
 	float				height;
 	struct s_gun		*gun;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gun_presets.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 12:51:01 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 21:07:48 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/28 12:09:44 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,10 @@ t_gun_stats	gun_machinegun(void)
 	stats.view_recoil.y = 0.0004f;
 	stats.recoil_angle.y = 3.7f;
 	stats.aim_pos = (t_vector3){0.0f, 3.0f, -4.7f};
-	stats.fire_delay = 150;
+	stats.fire_delay = 130;
 	stats.ads_speed = 0.02f;
 	stats.fov_offset = 0.0f;
-	stats.damage = 15;
+	stats.damage = 17;
 	stats.magazine_capacity = 25;
 	stats.reload_time = 45;
 	stats.full_auto = true;

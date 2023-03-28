@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/22 14:55:11 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 21:08:54 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/28 09:18:32 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,16 @@ void	destroy_entity(t_world *world, t_entity *ent)
 			", which exceeds the allocated cache size.", NULL
 		});
 	cache->entities[ent->id].status = es_free;
-	cache->entities[ent->id].obj = NULL;
+	clear_map_for_entity(ent);
 	if (ent->destroy_obj)
 		free_object(&ent->obj);
+	cache->entities[ent->id].obj = NULL;
 	if (ent->world_triangles != NULL)
 		free(ent->world_triangles);
+	ent->world_triangles = NULL;
+	if (ent->component.data != NULL)
+		free(ent->component.data);
+	ent->component.data = NULL;
 	if (cache->existing_entitycount == 0)
 		doomlog(LOG_EC_MALLOC, "Tried to remove entity -1\n");
 	cache->existing_entitycount--;
@@ -51,7 +56,6 @@ t_entity	*find_entity_with_comp(t_world	*world, t_component_type comp)
 	}
 	return (NULL);
 }
-
 
 void	update_lifetime(t_entity *entity, t_world *world)
 {

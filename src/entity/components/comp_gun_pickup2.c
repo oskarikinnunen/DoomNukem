@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 18:01:54 by raho              #+#    #+#             */
-/*   Updated: 2023/03/27 19:58:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/28 10:26:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void	comp_gun_pickup_allocate(t_entity *entity, t_world *world)
 	entity->component.data_size = sizeof(t_gun_pickup);
 	gun_pickup = (t_gun_pickup *)entity->component.data;
 	gun_pickup->original_z = entity->transform.position.z;
-	entity->ignore_raycasts = true;
+	if (world->app_mode == APPMODE_PLAY)
+		entity->ignore_raycasts = true;
 	entity->dynamic_lit = true;
 }

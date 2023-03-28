@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nav_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 17:45:00 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/27 16:30:36 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/28 12:17:24 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,8 @@ void	show_navmesh(t_world *world)
 	int			j;
 	float		dist;
 
-	if (!world || !world->nav.show_navmesh)
+	if (!world || !world->nav.show_navmesh
+		|| world->nav.navmesh == NULL)
 		return ;
 	i = 0;
 	while (i < world->nav.node_amount)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_interactable.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 06:20:15 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 22:30:50 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/28 11:52:31 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ void	comp_interactable_update(t_entity *entity, t_world *world)
 	t_interactable	*inter;
 
 	inter = entity->component.data;
-	if (inter == NULL)
+	if (inter == NULL || world->app_mode == APPMODE_EDIT)
 		return ;
 	if (vector3_sqr_dist(world->player->transform.position,
 			entity->transform.position) < 250.0f)

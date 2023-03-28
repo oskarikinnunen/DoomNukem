@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: raho <raho@student.hive.fi>                +#+  +:+       +#+         #
+#    By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/03 13:28:58 by okinnune          #+#    #+#              #
-#    Updated: 2023/03/27 17:20:38 by raho             ###   ########.fr        #
+#    Updated: 2023/03/28 11:52:43 by kfum             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,6 +29,8 @@ FREETYPE = $(INSTALLED_LIBS_DIR)/lib/libfreetype.a
 FMOD = $(FMOD_DIR)/copied
 
 LIBFT = libft/libft.a
+SRC_PATH = src/
+OBJ_PATH = obj/
 
 #Source files:
 SRCFILES= main.c img.c deltatime.c \
@@ -147,6 +149,7 @@ SRCFILES= main.c img.c deltatime.c \
 		player/playermovement_normal2.c \
 		player/playermovement_noclip.c \
 		player/playmode_set_up.c \
+		player/playmode_protect.c \
 		player/playmode.c \
 		player/playmode_death.c \
 		player/playmode_events.c \
@@ -288,26 +291,24 @@ VECTORSRCFILES= conversions.c \
 		barycentric.c \
 		triangle_functions.c \
 		triangle_functions2.c
-VECTORSRC= $(addprefix src/vectors/,$(VECTORSRCFILES))
-SRC= $(addprefix src/,$(SRCFILES))
-SRC+= $(VECTORSRC)
-OBJ= $(SRC:.c=.o)
-DEPENDS= $(OBJ:.o=.d)
+
+OBJ = $(patsubst %.c, $(OBJ_PATH)%.o, $(SRCFILES))
+VECTORSRC= $(addprefix vectors/, $(VECTORSRCFILES))
+VEC_OBJ = $(patsubst %.c, $(OBJ_PATH)%.o, $(VECTORSRC))
 
 #Compilation stuff:
 INCLUDE= -Isrc -Iinclude -Ilibft -I$(INSTALLED_LIBS_DIR)/include/SDL2/ \
-			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
+			-I$(INSTALLED_LIBS_DIR)/include/FMOD/
 CC= gcc
-CFLAGS= $(INCLUDE) -g -finline-functions -O3 #-MMD
+CFLAGS= $(INCLUDE) -g -finline-functions -O3
 LDFLAGS = -Wl,-rpath $(INSTALLED_LIBS_DIR)/lib
 
 UNAME= $(shell uname)
 ifeq ($(UNAME), Darwin)
-override CFLAGS += '-D GL_SILENCE_DEPRECATION'
-LIBS= $(LIBFT) -lm -framework OpenGL -L$(INSTALLED_LIBS_DIR)/lib -lSDL2 -lSDL2_ttf -L$(INSTALLED_LIBS_DIR)/lib -lfmod -lfmodL
+LIBS= $(LIBFT) -lm -L$(INSTALLED_LIBS_DIR)/lib -lSDL2 -lSDL2_ttf -L$(INSTALLED_LIBS_DIR)/lib -lfmod -lfmodL
 AUTOGEN =
 else ifeq ($(UNAME), Linux)
-LIBS =  $(LIBFT) -lm -lGL -L$(INSTALLED_LIBS_DIR)/lib -lSDL2 -lSDL2_ttf -L$(INSTALLED_LIBS_DIR)/lib -lfmod -lfmodL -lpthread
+LIBS =  $(LIBFT) -lm -L$(INSTALLED_LIBS_DIR)/lib -lSDL2 -lSDL2_ttf -L$(INSTALLED_LIBS_DIR)/lib -lfmod -lfmodL -lpthread
 AUTOGEN = ./autogen.sh &&
 else
 warning:
@@ -315,20 +316,59 @@ warning:
 	exit 1
 endif
 
-#multi:
-#	$(MAKE) -j6 all
+all: $(NAME)
 
-all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(FMOD) $(LIBFT) $(OBJ)
-	$(CC) $(OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LDFLAGS)
+$(NAME): $(SDL2) $(FREETYPE) $(SDL2_TTF) $(FMOD) $(LIBFT) $(OBJ_PATH) $(OBJ) $(VEC_OBJ)
+	$(CC) $(OBJ) $(VEC_OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LDFLAGS)
 
-#-include $(DEPENDS)
+$(OBJ_PATH):
+	@mkdir -p $(OBJ_PATH)/animations
+	@mkdir -p $(OBJ_PATH)/audio
+	@mkdir -p $(OBJ_PATH)/controller
+	@mkdir -p $(OBJ_PATH)/debug
+	@mkdir -p $(OBJ_PATH)/decal
+	@mkdir -p $(OBJ_PATH)/editor
+	@mkdir -p $(OBJ_PATH)/editor/tools
+	@mkdir -p $(OBJ_PATH)/entity
+	@mkdir -p $(OBJ_PATH)/entity/components
+	@mkdir -p $(OBJ_PATH)/file_ops
+	@mkdir -p $(OBJ_PATH)/gui
+	@mkdir -p $(OBJ_PATH)/guns
+	@mkdir -p $(OBJ_PATH)/lighting
+	@mkdir -p $(OBJ_PATH)/lighting/rasterize_lighting
+	@mkdir -p $(OBJ_PATH)/linked_list
+	@mkdir -p $(OBJ_PATH)/load_assets
+	@mkdir -p $(OBJ_PATH)/loading_screens
+	@mkdir -p $(OBJ_PATH)/logging
+	@mkdir -p $(OBJ_PATH)/navigation
+	@mkdir -p $(OBJ_PATH)/objects
+	@mkdir -p $(OBJ_PATH)/obj_parser
+	@mkdir -p $(OBJ_PATH)/occlusion
+	@mkdir -p $(OBJ_PATH)/physics
+	@mkdir -p $(OBJ_PATH)/player
+	@mkdir -p $(OBJ_PATH)/render
+	@mkdir -p $(OBJ_PATH)/render/gizmos
+	@mkdir -p $(OBJ_PATH)/render/rasterization
+	@mkdir -p $(OBJ_PATH)/render/transform
+	@mkdir -p $(OBJ_PATH)/tga_parser
+	@mkdir -p $(OBJ_PATH)/thread
+	@mkdir -p $(OBJ_PATH)/vectors
+	@mkdir -p $(OBJ_PATH)/world
+
+$(OBJ_PATH)%.o: $(SRC_PATH)%.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ): Makefile include/*.h
-#	//$()
 
 clean:
-	rm -f $(OBJ)
-	rm -f $(DEPENDS)
+	@echo "$(RED)\nCleaning obj folder...$(DEFAULT)"
+	@rm -rf $(OBJ_PATH)
+	@echo "$(GREEN)DONE.\n$(DEFAULT)"
+
+fclean: clean
+	@echo "$(RED)Deleting .$(NAME)...$(DEFAULT)" 
+	@rm -f $(NAME)
+	@echo "$(GREEN)DONE.\n$(DEFAULT)"
 
 re: clean all
 
@@ -393,3 +433,8 @@ $(FREETYPE): $(FREETYPE_DIR)/ready_to_build
 
 $(SDL2_TTF): $(SDL2_TTF_DIR)/ready_to_build
 	cd $(SDL2_TTF_DIR) && make && make install
+
+# Output colors
+DEFAULT	:=\033[0m
+GREEN	:=\033[0;32m
+RED		:=\033[0;31m

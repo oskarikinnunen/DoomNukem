@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   comp_interactable_2.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 22:01:47 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/26 22:47:21 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/28 12:09:00 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,6 @@ void	comp_interactable_ui_update(t_entity *entity, t_world *world)
 	inter = entity->component.data;
 	if (inter == NULL)
 		return ;
-	if (vector3_sqr_dist(world->player->transform.position,
-			entity->transform.position) < 1000.0f)
-	{
-		print_text_boxed(world->sdl, "[E]",
-			point_div(world->sdl->screensize, 2));
-	}
 }
 
 void	comp_interactable_allocate(t_entity *entity, t_world *world)
@@ -36,6 +30,7 @@ void	comp_interactable_allocate(t_entity *entity, t_world *world)
 
 	entity->component.data = prot_memalloc(sizeof(t_interactable));
 	entity->component.data_size = sizeof(t_interactable);
+	entity->dynamic_lit = true;
 	inter = (t_interactable *)entity->component.data;
 	inter->radius = 7.0f;
 	inter->velocity = vector3_zero();

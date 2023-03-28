@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   editor_set_up.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
+/*   By: kfum <kfum@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/24 22:13:31 by raho              #+#    #+#             */
-/*   Updated: 2023/03/26 20:46:32 by raho             ###   ########.fr       */
+/*   Updated: 2023/03/28 10:41:46 by kfum             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,6 @@ void	set_up_editor(t_sdlcontext *sdl, t_editor *ed)
 			(t_point){5, 5}, "Toolbar (F1)"});
 	ed->toolbar_gui.minimum_size = (t_point){165, 20};
 	ed->toolbar_gui.locked = true;
-	ed->graphics_gui = init_gui((t_gui_init){sdl, &ed->hid, &ed->player, \
-			sdl->screensize, "Graphics (F3)"});
 	ed->graphics_gui.minimum_size = (t_point){200, 200};
 	ed->graphics_gui.rect.position = point_div(sdl->screensize, 2);
 	ed->player.locked = !ed->hid.mouse.relative;

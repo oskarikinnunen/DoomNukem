@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   culling_debug.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
+/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 14:59:10 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/27 17:12:34 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/03/28 09:18:18 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,15 +61,22 @@ void	set_square_from_triangles(
 bool	is_screen_full(t_sdlcontext *sdl)
 {
 	float	dist;
-	int		i;
+	int		x;
+	int		y;
 
 	dist = sdl->bitmask.last_max_dist + 1000.0f;
-	i = 0;
-	while (i < sdl->bitmask.bitmask_chunks.x * sdl->bitmask.bitmask_chunks.y)
+	y = 0;
+	while (y < (sdl->bitmask.tile_chunks.y - 2) * sdl->resolution_scaling)
 	{
-		if (sdl->bitmask.tile[i].max0 == dist)
-			return (false);
-		i++;
+		x = 0;
+		while (x < (sdl->bitmask.tile_chunks.x - 2) * sdl->resolution_scaling)
+		{
+			if (sdl->bitmask.tile[y * sdl->bitmask.tile_chunks.x + x].max0
+				== dist)
+				return (false);
+			x++;
+		}
+		y++;
 	}
 	return (true);
 }

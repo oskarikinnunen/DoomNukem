@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   room_tool_create.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: raho <raho@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 16:47:41 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/27 15:20:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/03/28 07:32:19 by raho             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ static void	createmode_drawgui(t_editor *ed,
 	else
 		gui_empty_vertical(20, gui);
 	if (gui_room_presets(dat->room, gui, &ed->world))
-		printf("after roompresets, edge_count is %i \n", dat->room->edge_count);
+		;
 	gui_end(gui);
 }
 
