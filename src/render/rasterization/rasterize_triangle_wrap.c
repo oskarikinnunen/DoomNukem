@@ -6,7 +6,7 @@
 /*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 15:59:32 by vlaine            #+#    #+#             */
-/*   Updated: 2023/03/26 13:30:11 by vlaine           ###   ########.fr       */
+/*   Updated: 2023/04/02 01:25:14 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,7 @@ inline static void	scanline(
 		index += 1.0f;
 		x++;
 	}
-	render_bitmask_row((t_point){start, end}, \
-	(t_vector2){1.0f / slope.location.z, 1.0f / tex.z}, y, sdl);
+	render_bitmask_row(start, end, 1.0f / slope.location.z, 1.0f / tex.z, y, sdl);
 }
 
 inline static void	render_flat_top_tri(

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 20:30:02 by raho              #+#    #+#             */
-/*   Updated: 2023/03/27 15:20:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/04/02 01:21:07 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,9 @@
 # define FONT_SIZE_DEFAULT 8
 # define FONT_SIZE_COUNT 4
 # define RCRCL_SIDES 16
-# define DEFAULT_RES_SCALING 0.5f
+# define DEFAULT_RES_SCALING 1.0f
 # define DEFAULT_RES_X 1280
-# define DEFAULT_RES_Y 720
+# define DEFAULT_RES_Y 1280
 
 typedef struct s_step
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   world.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 17:40:53 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/28 12:13:26 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/04/02 01:27:15 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,6 +131,7 @@ void	update_world3d(t_world *world, t_render *render)
 		for_all_active_entities(world, draw_occlusion_boxes);
 	rescale_surface(sdl);
 	show_navmesh(world);
+	//bitmask_to_pixels(sdl);
 	lateupdate_entitycache(sdl, world);
 	if (!world->debug_gui->hidden)
 		world_update_debug_gui(world, sdl, render);

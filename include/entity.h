@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   entity.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vlaine <vlaine@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 22:59:13 by okinnune          #+#    #+#             */
-/*   Updated: 2023/03/28 09:16:32 by okinnune         ###   ########.fr       */
+/*   Updated: 2023/04/02 01:24:32 by vlaine           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,8 +121,7 @@ void		entity_rotate_towards_xy(t_entity *entity, \
 									t_vector2 pos, float delta);
 
 /* OCCLUSION*/
-void		render_bitmask_row(t_point x_line, t_vector2 w_line, \
-								int y, t_sdlcontext *sdl);
+void render_bitmask_row(int ax, int bx, float aw, float bw, int y, t_sdlcontext *sdl);
 void		update_frustrum_culling(struct s_world *world, \
 									t_sdlcontext *sdl, t_render *render);
 
