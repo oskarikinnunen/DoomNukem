@@ -18,7 +18,7 @@ NAME = doom-nukem
 LIBS_DIR = libs
 INSTALLED_LIBS_DIR = $(LIBS_DIR)/installed_libs
 
-SDL2_DIR = $(LIBS_DIR)/SDL2-2.0.8
+SDL2_DIR = $(LIBS_DIR)/SDL-release-2.30.0#/SDL2-2.0.8
 SDL2_TTF_DIR = $(LIBS_DIR)/SDL2_ttf-2.0.15
 FREETYPE_DIR = $(LIBS_DIR)/freetype-2.9
 FMOD_DIR = $(INSTALLED_LIBS_DIR)/lib/FMOD
@@ -298,7 +298,7 @@ DEPENDS= $(OBJ:.o=.d)
 INCLUDE= -Isrc -Iinclude -Ilibft -I$(INSTALLED_LIBS_DIR)/include/SDL2/ \
 			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
 CC= gcc
-CFLAGS= $(INCLUDE) -g -finline-functions -O3 #-MMD
+CFLAGS= $(INCLUDE) -g -finline-functions -O3 -std=c99 #-MMD
 LDFLAGS = -Wl,-rpath $(INSTALLED_LIBS_DIR)/lib
 
 UNAME= $(shell uname)

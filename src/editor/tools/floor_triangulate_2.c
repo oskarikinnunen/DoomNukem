@@ -16,7 +16,7 @@
 #include "tools/walltool.h"
 #include "tools/roomtool.h"
 #include "objects.h"
-
+/*
 static t_vector2	rot_vec(t_vector2 v, float cos, float sin)
 {
 	t_vector2	temp;
@@ -102,3 +102,4 @@ void	removevalid(int *valid, int count, int ri)
 		i++;
 	}
 }
+*/

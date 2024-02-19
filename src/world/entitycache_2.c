@@ -52,7 +52,7 @@ t_entity	*find_entity_with_comp(t_world	*world, t_component_type comp)
 	return (NULL);
 }
 
-
+/*
 void	update_lifetime(t_entity *entity, t_world *world)
 {
 	if (entity->life_timeable)
@@ -61,4 +61,4 @@ void	update_lifetime(t_entity *entity, t_world *world)
 		if (entity->life_time <= 0)
 			destroy_entity(world, entity);
 	}
-}
+}*/

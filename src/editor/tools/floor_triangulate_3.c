@@ -17,6 +17,7 @@
 #include "tools/roomtool.h"
 #include "objects.h"
 
+/*
 void	shiftvalid(int valid[32], int count)
 {
 	int	temp;
@@ -85,3 +86,4 @@ void	populatevalid_l(int valid[32], int *validcount, t_floorcalc fc)
 		*validcount = *validcount + 1;
 	}
 }
+*/

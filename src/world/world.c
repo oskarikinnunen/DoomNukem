@@ -37,6 +37,17 @@ void	lateupdate_entitycache(t_sdlcontext *sdl, t_world *world)
 	}
 }
 
+
+void	update_lifetime(t_entity *entity, t_world *world)
+{
+	if (entity->life_timeable)
+	{
+		entity->life_time -= world->clock.delta;
+		if (entity->life_time <= 0)
+			destroy_entity(world, entity);
+	}
+}
+
 void	update_entitycache(t_sdlcontext *sdl, t_world *world, t_render *render)
 {
 	int			i;

@@ -17,6 +17,7 @@
 #include "tools/roomtool.h"
 #include "objects.h"
 
+/*
 bool	points_collide(t_floorcalc *fc, t_vector2 tri[3])
 {
 	int					i;
@@ -121,3 +122,4 @@ void	free_ceilings(t_world *world, t_area *room)
 		i++;
 	}
 }
+*/
