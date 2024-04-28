@@ -60,7 +60,7 @@ void	comp_boutton_allocate(t_entity *entity, t_world *world)
 {
 	t_boutton	*boutton;
 
-	entity->component.data = prot_memalloc(sizeof(t_boutton));
+	entity->component.data = new t_boutton;//prot_memalloc(sizeof(t_boutton));
 	entity->component.data_size = sizeof(t_boutton);
 	// boutton = (t_boutton *)entity->component.data;
 }

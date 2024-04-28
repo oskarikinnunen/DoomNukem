@@ -48,7 +48,7 @@ void	editor(t_app_argument app_argument, t_sdlcontext sdl)
 	ed.world.sdl->render.world = &ed.world;
 	editor_loading_screen("SETTING UP WORLD", &sdl);
 	set_up_editor(&sdl, &ed);
-	if (SDL_SetRelativeMouseMode(ed.hid.mouse.relative) < 0)
+	if (SDL_SetRelativeMouseMode((SDL_bool)ed.hid.mouse.relative) < 0)
 		doomlog(LOG_EC_SDL_SETRELATIVEMOUSEMODE, NULL);
 	editorloop(&sdl, &ed);
 }

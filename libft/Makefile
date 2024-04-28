@@ -31,7 +31,7 @@ FILES= ft_abs.c ft_atoi.c ft_bzero.c ft_digitcount.c ft_isalnum.c ft_isalpha.c\
 	ft_swap.c ft_atof.c
 V_FILES= v3_basics1.c v3_basics2.c bresenham.c
 CFLAGS= -g -O2 -finline-functions -c -I.
-CC= gcc
+CC= g++
 
 V_SRCS= $(addprefix v3_src/, $(V_FILES))
 SRCS= $(addprefix src/, $(FILES))

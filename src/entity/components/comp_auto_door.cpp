@@ -68,7 +68,7 @@ void	comp_auto_door_allocate(t_entity *entity, t_world *world)
 {
 	t_auto_door	*auto_door;
 
-	entity->component.data = std::make_unique<t_auto_door>().get();
+	entity->component.data = new t_auto_door;
 	entity->component.data_size = sizeof(t_auto_door);
 	auto_door = (t_auto_door *)entity->component.data;
 	auto_door->original_z = entity->transform.position.z;

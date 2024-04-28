@@ -17,7 +17,7 @@ t_material	*default_mat(void)
 {
 	t_material	*mat;
 
-	mat = prot_memalloc(sizeof(t_material));
+	mat = new t_material;//prot_memalloc(sizeof(t_material));
 	ft_strncpy_term(mat->texturename, "metal03", 250);
 	mat->kd = INT_MAX;
 	return (mat);

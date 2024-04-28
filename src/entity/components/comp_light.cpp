@@ -20,7 +20,7 @@ static void	comp_light_allocate(t_entity *entity, t_world *world)
 	t_light		*light;
 	int			i;
 
-	entity->component.data = prot_memalloc(sizeof(t_light));
+	entity->component.data = new t_light;//prot_memalloc(sizeof(t_light));
 	entity->component.data_size = sizeof(t_light);
 	light = (t_light *)entity->component.data;
 	light->radius = 300.0f;

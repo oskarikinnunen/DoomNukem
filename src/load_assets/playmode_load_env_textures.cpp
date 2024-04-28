@@ -63,7 +63,7 @@ void	playmode_load_env_textures(int level_fd, t_sdlcontext *sdl)
 	sdl->env_texturecount = count_asset_list(TEMPIMGENVLIST);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 			TEMPIMGENVLIST, "size =", s_itoa(sdl->env_texturecount), NULL});
-	sdl->env_textures = prot_memalloc(sizeof(t_img) * sdl->env_texturecount);
+	sdl->env_textures = new t_img[sdl->env_texturecount];// prot_memalloc(sizeof(t_img) * sdl->env_texturecount);
 	ret = parse_image_env_list(level_fd, sdl);
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_env_textures");

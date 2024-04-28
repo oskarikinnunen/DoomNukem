@@ -30,7 +30,7 @@ void	remove_edge(t_world *world, t_area *room, t_vector2 *edge)
 	orig = *edge;
 	while (l != NULL)
 	{
-		cur = l->content;
+		cur = (t_area*)l->content;
 		i = _room_find_edge_index(orig, cur);
 		if (i != -1)
 		{
@@ -57,7 +57,7 @@ void	recalculate_rooms_with_edge(t_editor *ed, t_vector2 edge)
 	l = ed->world.arealist;
 	while (l != NULL)
 	{
-		r = l->content;
+		r = (t_area*)l->content;
 		if (_room_find_edge(edge, r) != NULL)
 		{
 			room_init(r, &ed->world);
@@ -79,7 +79,7 @@ static bool	edge_is_legal_in_all_areas_that_have_it(t_vector2 *edge,
 	l = world->arealist;
 	while (l != NULL)
 	{
-		cur = l->content;
+		cur = (t_area*)l->content;
 		if (_room_find_edge(*edge, cur) != NULL)
 		{
 			test = _room_find_edge(*edge, cur);
@@ -133,7 +133,7 @@ void	apply_edge_drag(t_vector2 *edge, t_vector2 cursor,
 		l = world->arealist;
 		while (l != NULL)
 		{
-			cur = l->content;
+			cur = (t_area*)l->content;
 			if (edge_exists(orig, cur) && rooms_share_zspace(room, cur))
 			{
 				i = _room_find_edge_index(orig, cur);

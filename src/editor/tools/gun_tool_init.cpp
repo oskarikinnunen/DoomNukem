@@ -59,7 +59,7 @@ void	gun_tool_init(t_editor *ed, t_sdlcontext *sdl)
 {
 	t_gun_tool_data	*dat;
 
-	dat = ed->tool->tool_data;
+	dat = (t_gun_tool_data*)ed->tool->tool_data;
 	if (dat->main_gui.sdl == NULL)
 		init_gun_main_gui(dat, ed, sdl);
 	if (dat->offset_gui.sdl == NULL)

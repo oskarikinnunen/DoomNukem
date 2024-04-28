@@ -61,7 +61,7 @@ void	playmode_load_fonts(int level_fd, t_sdlcontext *sdl)
 	sdl->fontcount = count_asset_list(TEMPFONTLIST);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 			TEMPFONTLIST, "size =", s_itoa(sdl->fontcount), NULL});
-	sdl->fonts = prot_memalloc(sizeof(t_font) * sdl->fontcount);
+	sdl->fonts = new t_font[sdl->fontcount];//prot_memalloc(sizeof(t_font) * sdl->fontcount);
 	ret = parse_font_list(level_fd, sdl);
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_fonts");

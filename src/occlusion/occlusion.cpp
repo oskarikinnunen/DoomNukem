@@ -34,8 +34,7 @@ t_bitmask	init_bitmask(t_sdlcontext *sdl)
 {
 	t_bitmask	bitmask;
 
-	bitmask.tile = prot_memalloc(sizeof(t_tile) * \
-			((sdl->window_h * sdl->window_w) / 64));
+	bitmask.tile = new t_tile[(sdl->window_h * sdl->window_w) / 64];//prot_memalloc(sizeof(t_tile) * ((sdl->window_h * sdl->window_w) / 64));
 	bitmask.bitmask_chunks.x = sdl->window_w / 16;
 	bitmask.bitmask_chunks.y = sdl->window_h / 8;
 	bitmask.tile_chunks.x = sdl->window_w / 8;

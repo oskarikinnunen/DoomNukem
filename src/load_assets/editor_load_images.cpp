@@ -52,7 +52,7 @@ void	editor_load_images(t_sdlcontext *sdl)
 	sdl->imagecount = count_asset_list(IMGLISTPATH);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 			IMGLISTPATH, "size =", s_itoa(sdl->imagecount), NULL});
-	sdl->images = prot_memalloc(sizeof(t_img) * sdl->imagecount);
+	sdl->images = new t_img[sdl->imagecount];//prot_memalloc(sizeof(t_img) * sdl->imagecount);
 	fd = ft_fileopen(IMGLISTPATH, O_RDONLY);
 	ret = parse_image_list(fd, sdl);
 	if (ret == -1)
@@ -97,7 +97,7 @@ void	editor_load_env_textures(t_sdlcontext *sdl)
 	sdl->env_texturecount = count_asset_list(IMGENVLISTPATH);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 			IMGENVLISTPATH, "size =", s_itoa(sdl->env_texturecount), NULL});
-	sdl->env_textures = prot_memalloc(sizeof(t_img) * sdl->env_texturecount);
+	sdl->env_textures = new t_img[sdl->env_texturecount];// prot_memalloc(sizeof(t_img) * sdl->env_texturecount);
 	fd = ft_fileopen(IMGENVLISTPATH, O_RDONLY);
 	ret = parse_image_env_list(fd, sdl);
 	if (ret == -1)

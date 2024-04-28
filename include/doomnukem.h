@@ -75,7 +75,6 @@
 # define PERFGRAPH_SAMPLES 64
 
 struct s_autogui;
-enum   load_arg;
 
 typedef struct s_perf_graph
 {

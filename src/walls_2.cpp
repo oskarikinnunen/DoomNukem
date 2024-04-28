@@ -55,7 +55,7 @@ void	clamp_wall_areaheight(t_wall *wall, t_area *room, t_world *world)
 	wall->z_offset = 0;
 	while (l != NULL)
 	{
-		cur = l->content;
+		cur = (t_area*)l->content;
 		other_w = find_wall(*wall, cur);
 		if (cur != room
 			&& other_w != NULL && rooms_share_zspace(room, cur))

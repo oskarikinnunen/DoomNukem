@@ -48,15 +48,15 @@ static void	playmode_parse_mtllib(t_list **list)
 // both extensions needs to be 3 characters long
 static char	*replace_extension(char *file, char *extension)
 {
-	char	*new;
+	char	*newStr;
 	char	*temp;
 	int		len;
 
 	len = ft_strlen(file);
-	new = (char *)prot_memalloc(sizeof(char) * len + 1);
-	ft_strcpy(new, file);
-	ft_strcpy(&new[len - 3], extension);
-	return (new);
+	newStr = (char *)prot_memalloc(sizeof(char) * len + 1);
+	ft_strcpy(newStr, file);
+	ft_strcpy(&newStr[len - 3], extension);
+	return (newStr);
 }
 
 // material needs to be the same name as the object in the directory
@@ -81,7 +81,7 @@ static void	unpack_and_load_object(int obj_i, int level_fd,
 	free(sdl->objects[obj_i].materials);
 	playmode_parse_mtllib(&materials);
 	sdl->objects[obj_i].materials = \
-			list_to_ptr(materials, &sdl->objects[obj_i].material_count);
+			(t_material*)list_to_ptr(materials, &sdl->objects[obj_i].material_count);
 	listdel(&materials);
 	doomlog_mul(LOG_NORMAL, (char *[3]){\
 			"unpacked and loaded .obj file:", sdl->objects[obj_i].name, NULL});
@@ -122,7 +122,7 @@ void	playmode_load_objects(int level_fd, t_sdlcontext *sdl)
 	sdl->objectcount = count_asset_list(TEMPOBJLIST);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 			TEMPOBJLIST, "size =", s_itoa(sdl->objectcount), NULL});
-	sdl->objects = prot_memalloc(sizeof(t_object) * sdl->objectcount);
+	sdl->objects = new t_object[sdl->objectcount];//prot_memalloc(sizeof(t_object) * sdl->objectcount);
 	ret = parse_object_list(level_fd, sdl);
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_objects");

@@ -20,8 +20,8 @@ static void	allocate_map(t_entity *entity, int index, t_vector2 max)
 	map = &entity->map[index];
 	map->size = (t_point){ceilf(max.x) + 1, ceilf(max.y) + 1};
 	map->img_size = entity->obj->materials[index].img->size;
-	map->texture = prot_memalloc(sizeof(uint32_t) * map->size.x * map->size.y);
-	map->lightmap = prot_memalloc(sizeof(uint32_t) * map->size.x * map->size.y);
+	map->texture = new uint32_t[map->size.x * map->size.y];// prot_memalloc(sizeof(uint32_t) * map->size.x * map->size.y);
+	map->lightmap = new uint32_t[map->size.x * map->size.y]; //prot_memalloc(sizeof(uint32_t) * map->size.x * map->size.y);
 	clr = get_light_amount(LIGHT_AMBIENT, INT_MAX, 0);
 	ft_memset(map->lightmap, clr, sizeof(uint32_t) * map->size.x * map->size.y);
 }
@@ -87,7 +87,7 @@ static void	allocate_map_for_entity(t_entity *entity, t_world *world)
 		clear_map_for_entity(entity);
 	if (obj == NULL || obj->uv_count == 0 || entity->world_triangles == NULL)
 		return ;
-	entity->map = prot_memalloc(sizeof(t_map) * entity->obj->material_count);
+	entity->map = new t_map[entity->obj->material_count];//prot_memalloc(sizeof(t_map) * entity->obj->material_count);
 	ft_bzero(entity->map, sizeof(t_map) * entity->obj->material_count);
 	if (for_each_triangle(entity) == false)
 		clear_map_for_entity(entity);

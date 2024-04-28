@@ -69,7 +69,7 @@ inline static void	swap_vector2_and_vector3(
 	ft_swap(v3_a, v3_b, sizeof(t_vector3));
 }
 
-inline int	triangle_to_flat(t_screen_triangle t, t_screen_triangle b[2])
+int	triangle_to_flat(t_screen_triangle t, t_screen_triangle b[2])
 {
 	t_vector2	p_split;
 	t_vector3	t_split;

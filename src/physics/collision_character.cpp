@@ -79,7 +79,7 @@ bool	check_character_collision(t_world *world, t_character_physics cp,
 	l = world->arealist;
 	while (l != NULL)
 	{
-		room = l->content;
+		room = (t_area*)l->content;
 		if (room != NULL)
 		{
 			index = 0;

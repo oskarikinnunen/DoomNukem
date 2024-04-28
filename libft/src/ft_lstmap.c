@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-static	void	delete(void *content, size_t size)
+static	void	deleteContent(void *content, size_t size)
 {
 	if (size > 0)
 		free(content);
@@ -20,24 +20,24 @@ static	void	delete(void *content, size_t size)
 
 t_list	*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem))
 {
-	t_list	*new;
+	t_list	*newList;
 	t_list	*temp;
 
-	new = NULL;
+	newList = NULL;
 	while (lst != NULL)
 	{
 		temp = f(lst);
 		if (temp == NULL)
 		{
-			if (new != NULL)
-				ft_lstdel(&new, delete);
+			if (newList != NULL)
+				ft_lstdel(&newList, deleteContent);
 			return (NULL);
 		}
-		if (new == NULL)
-			new = temp;
+		if (newList == NULL)
+			newList = temp;
 		else
-			ft_lstapp(&new, temp);
+			ft_lstapp(&newList, temp);
 		lst = lst->next;
 	}
-	return (new);
+	return (newList);
 }

@@ -51,7 +51,7 @@ typedef enum e_npc_state
 	NPC_STATE_DEAD
 }	t_npc_state;
 
-typedef struct s_npc
+typedef struct s_npc : public ComponentData
 {
 	t_character_physics	phys;
 	int32_t				health;

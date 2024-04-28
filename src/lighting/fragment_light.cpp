@@ -77,7 +77,7 @@ uint32_t	get_lighting_for_pixel(
 	float			dist;
 	t_vector3		dir;
 
-	l->light = l->entity->component.data;
+	l->light = (t_light*)l->entity->component.data;
 	dist = vector3_dist(l->light->world_position, pixel_loc);
 	if (dist > l->light->radius)
 		return (light_amount);

@@ -24,9 +24,9 @@ t_render	init_render(t_sdlcontext sdl)
 	render.camera.aspect_ratio = (float)(sdl.window_h) / (float)(sdl.window_w);
 	render.camera.mat_proj = matrix_make_projection(90.0f, \
 								render.camera.aspect_ratio, 2.0f, 1000.0f);
-	render.screenspace_ptris = \
+	render.screenspace_ptris = new t_screen_triangle[10000];//\
 			prot_memalloc(sizeof(t_screen_triangle) * 10000);
-	render.q = prot_memalloc(sizeof(t_quaternion) * 10000);
+	render.q = new t_quaternion[10000];// prot_memalloc(sizeof(t_quaternion) * 10000);
 	render.debug_img = get_image_by_name(sdl, "");
 	render.occlusion.occlusion = true;
 	render.occlusion.occluder_box = false;

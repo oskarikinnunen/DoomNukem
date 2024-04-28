@@ -66,7 +66,7 @@ static inline void	swap_surfaces(t_sdlcontext *sdl)
 {
 	static uint32_t	*swap;
 
-	swap = sdl->surface->pixels;
+	swap = (uint32_t*)sdl->surface->pixels;
 	sdl->surface->pixels = sdl->scaling_buffer;
 	sdl->scaling_buffer = swap;
 }

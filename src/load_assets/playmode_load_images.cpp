@@ -62,7 +62,7 @@ void	playmode_load_images(int level_fd, t_sdlcontext *sdl)
 	sdl->imagecount = count_asset_list(TEMPIMGLIST);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 			TEMPIMGLIST, "size =", s_itoa(sdl->imagecount), NULL});
-	sdl->images = prot_memalloc(sizeof(t_img) * sdl->imagecount);
+	sdl->images = new t_img[sdl->imagecount];//prot_memalloc(sizeof(t_img) * sdl->imagecount);
 	ret = parse_image_list(level_fd, sdl);
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_images");

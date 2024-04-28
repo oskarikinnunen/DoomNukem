@@ -25,7 +25,7 @@ void	update_maingui(t_editor *ed, t_sdlcontext *sdl, t_room_tool_data *dat)
 	if (gui_shortcut_button("New room", 'N', gui) && dat->rtm != rtm_create\
 		&& dat->room == NULL)
 	{
-		dat->room = prot_memalloc(sizeof(t_area));
+		dat->room = new t_area;//prot_memalloc(sizeof(t_area));
 		ft_strncpy_term(dat->room->s_floor_tex.str, "concrete02", 60);
 		ft_strncpy_term(dat->room->s_ceil_tex.str, "concrete02", 60);
 		dat->rtm = rtm_create;

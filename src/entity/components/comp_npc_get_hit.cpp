@@ -30,7 +30,7 @@ void	npc_get_hit(t_entity *entity, t_world *world)
 	t_npc	*hit_npc;
 	int		r;
 
-	hit_npc = entity->component.data;
+	hit_npc = (t_npc*)entity->component.data;
 	hit_npc->health -= world->player->gun->stats.damage;
 	npc_make_blood_decal(entity, world);
 	if (hit_npc->health <= 0 && hit_npc->state != NPC_STATE_DEAD)

@@ -19,8 +19,8 @@ void	ft_swap(void *a, void *b, size_t len)
 	unsigned char	temp;
 	size_t			i;
 
-	a1 = a;
-	b1 = b;
+	a1 = (unsigned char*)a;
+	b1 = (unsigned char*)b;
 	i = 0;
 	while (i < len)
 	{

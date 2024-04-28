@@ -46,7 +46,7 @@ static void	comp_npc_ui_update(t_entity *entity, t_world *world)
 
 	if (world->app_mode == APPMODE_EDIT || 1)
 		return ;
-	npc = entity->component.data;
+	npc = (t_npc*)entity->component.data;
 	render_ray3d(world->sdl, entity->transform.position,
 		npc->path.path[npc->path.ai].enter_point, CLR_RED);
 	i = 0;
@@ -89,10 +89,10 @@ static void	comp_npc_allocate(t_entity *entity, t_world *world)
 {
 	t_npc	*npc;
 
-	entity->component.data = prot_memalloc(sizeof(t_npc));
+	entity->component.data = new t_npc;//prot_memalloc(sizeof(t_npc));
 	entity->component.data_size = sizeof(t_npc);
 	entity->dynamic_lit = true;
-	npc = entity->component.data;
+	npc = (t_npc*)entity->component.data;
 	ft_bzero(entity->component.data, sizeof(t_npc));
 	npc->movement_speed = 0.1f;
 	npc->path.valid_path = false;

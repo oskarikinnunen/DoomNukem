@@ -168,6 +168,7 @@ t_step		make_slope(float start, float end, float steps);
 t_stepv3	make_uv_slopev3(int start, int end, int y, \
 							t_screen_triangle triangle);
 
+int	triangle_to_flat(t_screen_triangle t, t_screen_triangle b[2]);
 /* LIGHTING */
 void		render_zbuffer(t_lighting *lighting, t_entity *entity);
 

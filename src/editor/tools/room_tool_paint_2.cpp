@@ -77,7 +77,7 @@ void	paint_room(t_entity *hit_ent, t_img *tex, t_world *world)
 	l = world->arealist;
 	while (l != NULL)
 	{
-		area = l->content;
+		area = (t_area*)l->content;
 		area_apply_walltex_if_hit(area, hit_ent, tex, world);
 		area_apply_floor_tex_if_hit(area, hit_ent, tex, world);
 		area_apply_ceilingtex_if_hit(area, hit_ent, tex, world);

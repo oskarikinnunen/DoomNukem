@@ -23,7 +23,7 @@ void	toggle_ceilings(t_world *world)
 	l = world->arealist;
 	while (l != NULL)
 	{
-		r = l->content;
+		r = (t_area*)l->content;
 		i = 0;
 		while (i < r->wall_count)
 		{
@@ -55,7 +55,7 @@ bool	is_joined(t_vector2 edge, t_area	*room, t_world *world)
 	l = world->arealist;
 	while (l != NULL)
 	{
-		other = l->content;
+		other = (t_area*)l->content;
 		if (other != room && edge_exists(edge, other)
 			&& rooms_share_zspace(room, other))
 			return (true);

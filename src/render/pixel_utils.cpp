@@ -28,7 +28,7 @@ uint32_t	update_pixel_brightness(uint32_t light, uint32_t clr)
 	return (clr);
 }
 
-inline t_step	make_slope(float start, float end, float steps)
+t_step	make_slope(float start, float end, float steps)
 {
 	t_step	temp;
 
@@ -37,7 +37,7 @@ inline t_step	make_slope(float start, float end, float steps)
 	return (temp);
 }
 
-inline t_stepv3	make_uv_slopev3(
+t_stepv3	make_uv_slopev3(
 	int start, int end, int y, t_screen_triangle triangle)
 {
 	t_stepv3	slope;

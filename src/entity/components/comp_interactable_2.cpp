@@ -19,7 +19,7 @@ void	comp_interactable_ui_update(t_entity *entity, t_world *world)
 {
 	t_interactable	*inter;
 
-	inter = entity->component.data;
+	inter = (t_interactable*)entity->component.data;
 	if (inter == NULL)
 		return ;
 	if (vector3_sqr_dist(world->player->transform.position,
@@ -34,7 +34,7 @@ void	comp_interactable_allocate(t_entity *entity, t_world *world)
 {
 	t_interactable	*inter;
 
-	entity->component.data = prot_memalloc(sizeof(t_interactable));
+	entity->component.data = new t_interactable;//prot_memalloc(sizeof(t_interactable));
 	entity->component.data_size = sizeof(t_interactable);
 	inter = (t_interactable *)entity->component.data;
 	inter->radius = 7.0f;

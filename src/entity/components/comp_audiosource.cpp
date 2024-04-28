@@ -47,8 +47,9 @@ static void	audiosource_fmod_update(t_entity *entity,
 	else
 		source->_real_range = ft_fmovetowards(source->_real_range,
 				source->range, world->clock.delta * 0.20f);
+	FMOD_VECTOR vel = {0};
 	FMOD_Channel_Set3DAttributes(source->channel,
-		(FMOD_VECTOR *)&entity->transform.position, &((FMOD_VECTOR){0}));
+		(FMOD_VECTOR*)&entity->transform.position, &vel);
 	FMOD_Channel_Set3DMinMaxDistance(source->channel,
 		source->_real_range, 10000.0f);
 	FMOD_Channel_SetVolume(source->channel, source->volume
@@ -60,7 +61,7 @@ void	comp_audiosource_update(t_entity *entity, t_world *world)
 	t_audiosource	*source;
 	bool			isplaying;
 
-	source = entity->component.data;
+	source = (t_audiosource*)entity->component.data;
 	if (source == NULL || source->sample.sound == NULL)
 	{
 		return ;

@@ -30,7 +30,7 @@ void	entity_tool_init(t_editor *ed, t_sdlcontext *sdl)
 {
 	t_entity_tool_data	*dat;
 
-	dat = ed->tool->tool_data;
+	dat = (t_entity_tool_data*)ed->tool->tool_data;
 	if (dat->new_ent == NULL)
 	{
 		dat->new_ent = spawn_entity(&ed->world, NULL);

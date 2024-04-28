@@ -16,14 +16,14 @@
 void	force_mouseunlock(t_hid_info *hid)
 {
 	hid->mouse.relative = false;
-	SDL_SetRelativeMouseMode(hid->mouse.relative);
+	SDL_SetRelativeMouseMode((SDL_bool)hid->mouse.relative);
 	hid->mouse.delta = point_zero();
 }
 
 void	force_mouselock(t_hid_info *hid)
 {
 	hid->mouse.relative = true;
-	SDL_SetRelativeMouseMode(hid->mouse.relative);
+	SDL_SetRelativeMouseMode((SDL_bool)hid->mouse.relative);
 	hid->mouse.delta = point_zero();
 	hid->mouse.pos = point_zero();
 }

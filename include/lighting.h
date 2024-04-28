@@ -44,24 +44,11 @@ typedef struct s_cubemap
 	t_camera	cameras[6];
 }	t_cubemap;
 
-typedef struct s_light
-{
-	float			radius;
-	t_vector3		origin;
-	t_vector3		world_position;
-	t_cubemap_state	cm_state;
-	t_cubemap		cubemap;
-	bool			ignore_self;
-	uint32_t		clr;
-	float			intensity;
-	float			ambient;
-}	t_light;
-
 typedef struct s_lighting
 {
 	struct s_world		*world;
 	t_world_triangle	*world_triangles;
-	t_light				*light;
+	class t_light		*light;
 	struct s_entity		*entity;
 	struct s_img		*img;
 	bool				*overdraw;

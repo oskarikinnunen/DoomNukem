@@ -87,7 +87,7 @@ void	room_recalculate_joined_rooms(t_world *world, t_area *room)
 	l = world->arealist;
 	while (l != NULL)
 	{
-		other = l->content;
+		other = (t_area*)l->content;
 		if (other != room)
 		{
 			i = 0;

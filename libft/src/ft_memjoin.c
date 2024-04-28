@@ -21,7 +21,7 @@ void	*ft_memjoin(const void *dst, const void *src,
 	if (res != NULL)
 	{
 		ft_memcpy(res, dst, dst_len);
-		ft_memcpy(res + dst_len, src, src_len);
+		ft_memcpy((char*)res + dst_len, src, src_len);
 	}
 	return (res);
 }

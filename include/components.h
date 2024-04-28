@@ -77,8 +77,9 @@ typedef struct s_component_definition
 }	t_component_definition;
 
 /* COMPONENT_AUDIOSOURCE */
-typedef struct s_audiosource
+typedef struct s_audiosource : public ComponentData
 {
+public:
 	t_audio_sample	sample;
 	FMOD_CHANNEL	*channel;
 	float			range;
@@ -93,8 +94,23 @@ typedef struct s_audiosource
 	uint32_t		_next_start;
 }	t_audiosource;
 
-typedef struct s_interactable
+class t_light : public ComponentData
 {
+public:
+	float			radius;
+	t_vector3		origin;
+	t_vector3		world_position;
+	t_cubemap_state	cm_state;
+	t_cubemap		cubemap;
+	bool			ignore_self;
+	uint32_t		clr;
+	float			intensity;
+	float			ambient;
+};
+
+typedef struct s_interactable : ComponentData
+{
+public:
 	t_character_physics	phys;
 	t_anim				wiggle;
 	t_vector3			velocity;

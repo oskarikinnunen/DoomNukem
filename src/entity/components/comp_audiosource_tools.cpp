@@ -46,8 +46,9 @@ void	_audiosource_start(t_sdlcontext *sdl,
 	if (FMOD_System_PlaySound(sdl->audio.system, source->sample.sound, \
 			NULL, true, &source->channel) != FMOD_OK)
 		doomlog(LOG_EC_FMOD_SYSTEMPLAYSOUND, NULL);
+		FMOD_VECTOR temp = (FMOD_VECTOR){0};
 	if (FMOD_Channel_Set3DAttributes(source->channel, (FMOD_VECTOR *)pos, \
-			&((FMOD_VECTOR){0})) != FMOD_OK)
+			&(temp)) != FMOD_OK)
 		doomlog(LOG_EC_FMOD_CHANNELSET3DATTRIBUTES, NULL);
 	FMOD_Channel_Set3DMinMaxDistance(\
 			source->channel, source->_real_range, 10000.0f);

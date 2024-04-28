@@ -83,7 +83,7 @@ static t_img	tga_to_simpleimg(char *file_name, t_tga *tga)
 	img.size.y = tga->header.image_height;
 	img.length = tga->image_data.size;
 	img.transparency = tga->transparency;
-	img.data = prot_memalloc(img.length * sizeof(uint32_t));
+	img.data = new uint32_t[img.length];//prot_memalloc(img.length * sizeof(uint32_t));
 	i = 0;
 	while (i < img.length)
 	{

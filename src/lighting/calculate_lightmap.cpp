@@ -77,7 +77,7 @@ static void	calculate_if_valid(t_entity *entity, t_lighting *lighting)
 	}
 }
 
-void	*calculate_light_for_entities(t_test *ptr)
+void	*calculate_light_for_entities(void *test)
 {
 	int				i;
 	int				found;
@@ -85,6 +85,7 @@ void	*calculate_light_for_entities(t_test *ptr)
 	t_entity		*ent;
 	t_lighting		lighting;
 
+	t_test* ptr = (t_test*)test;
 	if (ptr->world == NULL)
 		return (NULL);
 	lighting.entity = ptr->entity;
@@ -118,7 +119,7 @@ void	calculate_lighting(t_world *world)
 	found = 0;
 	thread.func = calculate_light_for_entities;
 	thread.struct_size = sizeof(t_test);
-	thread.structs = prot_memalloc(sizeof(t_test) * THREAD);
+	thread.structs = (void **)(new t_test[THREAD]);//prot_memalloc(sizeof(t_test) * THREAD);
 	thread.count = 0;
 	ft_bzero(thread.structs, sizeof(t_test) * THREAD);
 	while (found < world->entitycache.existing_entitycount

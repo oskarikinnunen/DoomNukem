@@ -21,7 +21,7 @@ void	npc_play_sound(t_entity *entity, t_world *world, char *soundname)
 
 	if (entity->component.type != COMP_NPC)
 		return ;
-	npc = entity->component.data;
+	npc = (t_npc*)entity->component.data;
 	source = npc->audiosource;
 	source.sample = get_sample(world->sdl, soundname);
 	source._real_range = 250.0f;

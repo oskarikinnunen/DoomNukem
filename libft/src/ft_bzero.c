@@ -17,15 +17,16 @@ void	ft_bzero(void *s, size_t n)
 	while (n > sizeof(long))
 	{
 		*(long *) s = 0L;
-		s += sizeof(long);
+		s = (char *)s + sizeof(long);
 		n -= sizeof(long);
 	}
 	while (n > sizeof(int))
 	{
 		*(int *) s = 0;
-		s += sizeof(int);
+		s = (char *)s + sizeof(int);
 		n -= sizeof(int);
 	}
+	char *ptr = (char*)s;
 	while (n-- > 0)
-		*(char *)s++ = 0;
+		*ptr++ = 0;
 }

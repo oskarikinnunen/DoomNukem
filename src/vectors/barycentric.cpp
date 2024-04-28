@@ -30,7 +30,7 @@ t_vector2	barycentric_coordinates(t_vector2 *p, t_vector2 v)
 	return (w);
 }
 
-inline t_vector3	get_vector3_from_barycentric(t_vector3 *p, t_vector2 bary)
+t_vector3	get_vector3_from_barycentric(t_vector3 *p, t_vector2 bary)
 {
 	t_vector3	ab;
 	t_vector3	ac;

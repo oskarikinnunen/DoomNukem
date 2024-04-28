@@ -40,7 +40,7 @@ void	comp_gun_pickup_update(t_entity *entity, t_world *world)
 	t_gun_pickup	*gun_pickup;
 	int				i;
 
-	gun_pickup = entity->component.data;
+	gun_pickup = (t_gun_pickup*)entity->component.data;
 	if (gun_pickup == NULL || world->app_mode == APPMODE_EDIT)
 		return ;
 	entity->transform.rotation.x += world->clock.delta * 0.001f;

@@ -20,7 +20,7 @@ void	comp_playerspawn_gui_edit(t_entity *entity,
 {
 	t_playerspawn	*playerspawn;
 
-	playerspawn = entity->component.data;
+	playerspawn = (t_playerspawn*)entity->component.data;
 	gui_label("GUI for playerspawn not implemented", gui);
 	if (playerspawn == NULL)
 		return ;

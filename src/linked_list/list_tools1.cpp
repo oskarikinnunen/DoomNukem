@@ -75,7 +75,7 @@ void	*list_to_ptr(t_list *source, uint32_t *set_length)
 				"content size doesn't match with initial lists' content size!", \
 				NULL});
 		}
-		ft_memcpy(result + (i * l->content_size), l->content, l->content_size);
+		ft_memcpy((char*)result + (i * l->content_size), l->content, l->content_size);
 		l = l->next;
 		i++;
 	}

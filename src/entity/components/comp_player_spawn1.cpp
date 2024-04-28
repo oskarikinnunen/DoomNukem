@@ -19,7 +19,7 @@ void	comp_playerspawn_update(t_entity *entity, t_world *world)
 {
 	t_playerspawn	*playerspawn;
 
-	playerspawn = entity->component.data;
+	playerspawn = (t_playerspawn*)entity->component.data;
 	if (playerspawn == NULL)
 		return ;
 }
@@ -30,7 +30,7 @@ void	comp_playerspawn_ui_update(t_entity *entity, t_world *world)
 {
 	t_playerspawn	*playerspawn;
 
-	playerspawn = entity->component.data;
+	playerspawn = (t_playerspawn*)entity->component.data;
 	if (playerspawn == NULL)
 		return ;
 }
@@ -42,7 +42,7 @@ void	comp_playerspawn_load_assets(t_entity *entity, t_world *world)
 {
 	t_playerspawn	*playerspawn;
 
-	playerspawn = entity->component.data;
+	playerspawn = (t_playerspawn*)entity->component.data;
 }
 
 /*	Set default values of your component here.
@@ -53,7 +53,7 @@ void	comp_playerspawn_allocate(t_entity *entity, t_world *world)
 {
 	t_playerspawn	*playerspawn;
 
-	entity->component.data = prot_memalloc(sizeof(t_playerspawn));
+	entity->component.data = new t_playerspawn;//prot_memalloc(sizeof(t_playerspawn));
 	entity->component.data_size = sizeof(t_playerspawn);
 	playerspawn = (t_playerspawn *)entity->component.data;
 }

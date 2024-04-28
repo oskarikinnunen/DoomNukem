@@ -83,7 +83,7 @@ void	comp_storyevent_allocate(t_entity *entity, t_world *world)
 {
 	t_storyevent	*storyevent;
 
-	entity->component.data = std::make_unique<t_storyevent>().get();
+	entity->component.data = new t_storyevent;
 	entity->component.data_size = sizeof(t_storyevent);
 	storyevent = (t_storyevent *)entity->component.data;
 }

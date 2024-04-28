@@ -45,7 +45,7 @@ t_list	*parse_chunk(int fd, size_t size)
 	t_list	*node;
 	int		count;
 
-	buf = prot_memalloc(size);
+	buf = new char[size];// (char*)prot_memalloc(size);
 	count = find_chunk_count(fd);
 	count = (count * CHUNKSIZE) / size;
 	head = NULL;

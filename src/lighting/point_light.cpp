@@ -46,7 +46,7 @@ static void	update_cubemap_cameras(t_entity *entity)
 	t_mat4x4	matproj;
 	int			i;
 
-	light = entity->component.data;
+	light = (t_light*)entity->component.data;
 	if (light == NULL)
 		return ;
 	light->world_position = \
@@ -71,7 +71,7 @@ static void	calculate_pointlight(t_world *world, t_entity *entity)
 	t_lighting		l;
 
 	update_cubemap_cameras(entity);
-	l.light = entity->component.data;
+	l.light = (t_light*)entity->component.data;
 	l.resolution = l.light->cubemap.resolution;
 	l.entity = entity;
 	index = 0;

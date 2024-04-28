@@ -31,7 +31,7 @@ static void	editor_key_down(t_editor *ed, SDL_Event e)
 	if (iskey(e, SDLK_TAB))
 	{
 		ed->hid.mouse.relative = !ed->hid.mouse.relative;
-		SDL_SetRelativeMouseMode(ed->hid.mouse.relative);
+		SDL_SetRelativeMouseMode((SDL_bool)ed->hid.mouse.relative);
 		ed->player.locked = !ed->hid.mouse.relative;
 		ed->hid.mouse.delta = point_zero();
 	}

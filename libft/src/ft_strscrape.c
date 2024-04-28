@@ -14,7 +14,7 @@
 
 static int	is_any_delim(char c, char *delims)
 {
-	_Bool	result;
+	bool	result;
 
 	result = 0;
 	while (*delims)

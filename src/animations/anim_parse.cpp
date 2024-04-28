@@ -23,10 +23,10 @@ void	parse_animframe(int fd, t_object_anim_frame *frame, t_object *object)
 
 	vertexcount = 0;
 	verticelist = get_vertex_list(fd);
-	vertices = list_to_ptr(verticelist, &vertexcount);
+	vertices = (t_vector3*)list_to_ptr(verticelist, &vertexcount);
 	listdel(&verticelist);
 	i = 0;
-	frame->deltavertices = prot_memalloc(sizeof(t_deltavertex) * vertexcount);
+	frame->deltavertices = new t_deltavertex[vertexcount];//prot_memalloc(sizeof(t_deltavertex) * vertexcount);
 	while (i < vertexcount)
 	{
 		frame->deltavertices[i].delta = vector3_sub(vertices[i], \

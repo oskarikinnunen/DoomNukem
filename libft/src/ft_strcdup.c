@@ -19,20 +19,20 @@
 char	*ft_strcdup(const char *str, char c)
 {
 	int		index;
-	char	*new;
+	char	*newStr;
 
 	index = 0;
 	while (str[index] != '\0' && str[index] != c)
 		index++;
-	new = (char *)malloc(sizeof(char) * (index + 1));
-	if (new == NULL)
+	newStr = (char *)malloc(sizeof(char) * (index + 1));
+	if (newStr == NULL)
 		return (NULL);
 	index = 0;
 	while (str[index] != '\0' && str[index] != c)
 	{
-		new[index] = str[index];
+		newStr[index] = str[index];
 		index++;
 	}
-	new[index] = '\0';
-	return (new);
+	newStr[index] = '\0';
+	return (newStr);
 }

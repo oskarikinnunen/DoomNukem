@@ -33,9 +33,10 @@ void	play_footstepsound(t_player *player, t_world *world)
 		source.volume = 0.0f;
 		return ;
 	}
+	FMOD_VECTOR temp = ((FMOD_VECTOR){0});
 	FMOD_Channel_SetPitch(source.channel, ft_clampf(lerp, 1.0f, 1.35f));
 	FMOD_Channel_Set3DAttributes(source.channel,
-		(FMOD_VECTOR *)&player->transform.position, &((FMOD_VECTOR){0}));
+		(FMOD_VECTOR *)&player->transform.position, &temp);
 	FMOD_Channel_SetVolume(source.channel,
 		source.volume * world->sdl->audio.sfx_volume);
 }

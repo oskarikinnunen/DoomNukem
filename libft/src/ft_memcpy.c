@@ -25,16 +25,18 @@ void	*ft_memcpy(void *dst, const void *src, size_t n)
 	while (n > sizeof(long))
 	{
 		*(long *) cpy = *(const long *) src;
-		n -= ((cpy += sizeof(long)) != 0) * sizeof(long);
-		src += sizeof(long);
+		n -= ((cpy = (char *)cpy + sizeof(long)) != 0) * sizeof(long);
+		src = (char*)src + sizeof(long);
 	}
 	while (n > sizeof(int))
 	{
 		*(int *) cpy = *(const int *) src;
-		n -= ((cpy += sizeof(int)) != 0) * sizeof(int);
-		src += sizeof(int);
+		n -= ((cpy = (char*)cpy + sizeof(int)) != 0) * sizeof(int);
+		src = (char*)src + sizeof(int);
 	}
+	char *ptr = (char*)cpy;
+	char *ptr1 = (char*)src;
 	while (n-- > 0)
-		*(char *) cpy++ = *(const char *) src++;
+		*(ptr++) = *(ptr1++);
 	return (dst);
 }

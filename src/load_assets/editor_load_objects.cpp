@@ -51,7 +51,7 @@ void	editor_load_objects(t_sdlcontext *sdl)
 	sdl->objectcount = count_asset_list(OBJLISTPATH);
 	doomlog_mul(LOG_NORMAL, (char *[4]){OBJLISTPATH, \
 			"size =", s_itoa(sdl->objectcount), NULL});
-	sdl->objects = prot_memalloc(sizeof(t_object) * sdl->objectcount);
+	sdl->objects = new t_object[sdl->objectcount];// prot_memalloc(sizeof(t_object) * sdl->objectcount);
 	fd = ft_fileopen(OBJLISTPATH, O_RDONLY);
 	ret = parse_object_list(fd, sdl);
 	if (ret == -1)

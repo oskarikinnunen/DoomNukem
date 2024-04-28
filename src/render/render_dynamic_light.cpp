@@ -57,7 +57,7 @@ t_entity *entity, t_entity *light_ent, t_world *world, uint32_t light_amount)
 	t_raycast_info	ri;
 	bool			temp;
 
-	light = light_ent->component.data;
+	light = (t_light*)light_ent->component.data;
 	if (!light)
 		return (light_amount);
 	temp = entity->ignore_raycasts;

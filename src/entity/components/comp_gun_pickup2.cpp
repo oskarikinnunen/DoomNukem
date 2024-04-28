@@ -20,7 +20,7 @@ void	comp_gun_pickup_ui_update(t_entity *entity, t_world *world)
 {
 	t_gun_pickup	*gun_pickup;
 
-	gun_pickup = entity->component.data;
+	gun_pickup = (t_gun_pickup*)entity->component.data;
 	if (gun_pickup == NULL)
 		return ;
 }
@@ -31,7 +31,7 @@ void	comp_gun_pickup_gui_edit(t_entity *entity,
 {
 	t_gun_pickup	*gun_pickup;
 
-	gun_pickup = entity->component.data;
+	gun_pickup = (t_gun_pickup*)entity->component.data;
 	gui_label("GUI for gun_pickup not implemented", gui);
 	if (gun_pickup == NULL)
 		return ;
@@ -44,7 +44,7 @@ void	comp_gun_pickup_load_assets(t_entity *entity, t_world *world)
 {
 	t_gun_pickup	*gun_pickup;
 
-	gun_pickup = entity->component.data;
+	gun_pickup = (t_gun_pickup*)entity->component.data;
 }
 
 /*	Set default values of your component here.
@@ -55,7 +55,7 @@ void	comp_gun_pickup_allocate(t_entity *entity, t_world *world)
 {
 	t_gun_pickup	*gun_pickup;
 
-	entity->component.data = prot_memalloc(sizeof(t_gun_pickup));
+	entity->component.data = new t_gun_pickup;//prot_memalloc(sizeof(t_gun_pickup));
 	entity->component.data_size = sizeof(t_gun_pickup);
 	gun_pickup = (t_gun_pickup *)entity->component.data;
 	gun_pickup->original_z = entity->transform.position.z;

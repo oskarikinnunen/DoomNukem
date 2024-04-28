@@ -57,7 +57,7 @@ void	room_tool_init(t_editor *ed, t_sdlcontext *sdl)
 {
 	t_room_tool_data	*dat;
 
-	dat = ed->tool->tool_data;
+	dat = (t_room_tool_data*)ed->tool->tool_data;
 	room_tool_init_mainguis(ed, sdl, dat);
 	room_tool_init_other_guis(ed, sdl, dat);
 }

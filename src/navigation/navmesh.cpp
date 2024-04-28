@@ -17,8 +17,8 @@ static void	malloc_space_for_navigation_buffer(t_world *world)
 {
 	if (world->nav.openlist)
 		free(world->nav.openlist);
-	world->nav.openlist = \
-	prot_memalloc(world->nav.malloc_size * sizeof(t_nav_node));
+	world->nav.openlist = new t_nav_node[world->nav.malloc_size];
+	//prot_memalloc(world->nav.malloc_size * sizeof(t_nav_node));
 	ft_bzero(world->nav.openlist, world->nav.malloc_size * sizeof(t_nav_node));
 }
 

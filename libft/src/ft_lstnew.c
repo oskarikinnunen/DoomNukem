@@ -34,7 +34,7 @@ t_list	*ft_lstnew(const void *content, size_t content_size)
 		}
 		i = 0;
 		while (i++ < content_size)
-			*(char *)(res->content + i - 1) = *(char *)(content + i - 1);
+			*((char*)res->content + i - 1) = *((char *)content + i - 1);
 		res->content_size = content_size;
 		res->next = NULL;
 	}

@@ -43,9 +43,9 @@ t_list	*get_material_list(int fd)
 
 void	obj_save_vertices_uvs_faces(t_object *object, t_object_parse *op)
 {
-	object->vertices = list_to_ptr(op->vertices, &object->vertice_count);
-	object->uvs = list_to_ptr(op->uvs, &object->uv_count);
-	object->faces = list_to_ptr(op->faces, &object->face_count);
+	object->vertices = (t_vector3*)list_to_ptr(op->vertices, &object->vertice_count);
+	object->uvs = (t_vector2*)list_to_ptr(op->uvs, &object->uv_count);
+	object->faces = (t_face*)list_to_ptr(op->faces, &object->face_count);
 	ft_lstdel(&op->vertices, free_list_node);
 	ft_lstdel(&op->uvs, free_list_node);
 	ft_lstdel(&op->faces, free_list_node);
@@ -65,9 +65,9 @@ t_object	objparse(char *filename)
 	op.uvs = get_uv_list(fd);
 	op.faces = get_face_list(fd, op.materials);
 	ft_fileclose(fd, filename);
-	result.materials = list_to_ptr(op.materials, &result.material_count);
+	result.materials = (t_material*)list_to_ptr(op.materials, &result.material_count);
 	if (result.materials == NULL)
-		result.materials = prot_memalloc(sizeof(t_material));
+		result.materials = new t_material;//prot_memalloc(sizeof(t_material));
 	ft_lstdel(&op.materials, free_list_node);
 	obj_save_vertices_uvs_faces(&result, &op);
 	return (result);

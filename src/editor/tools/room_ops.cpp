@@ -23,7 +23,7 @@ t_area	*world_add_room(t_world *world, t_area *room)
 	t_area	*worldroom;
 
 	ft_strncpy_term(room->name, "area", 30);
-	worldroom = prot_memalloc(sizeof(t_area));
+	worldroom = new t_area;//prot_memalloc(sizeof(t_area));
 	ft_strncpy_term(worldroom->s_floor_tex.str, room->s_floor_tex.str, 60);
 	ft_strncpy_term(worldroom->s_ceil_tex.str, room->s_ceil_tex.str, 60);
 	ft_memcpy(worldroom->edges, room->edges, sizeof(worldroom->edges));
@@ -38,7 +38,7 @@ t_area	*world_add_room(t_world *world, t_area *room)
 	worldroom->height = room->height;
 	list_push(&world->arealist, worldroom, sizeof(t_area));
 	free(worldroom);
-	worldroom = list_findlast(world->arealist);
+	worldroom = (t_area*)list_findlast(world->arealist);
 	free(room);
 	return (worldroom);
 }

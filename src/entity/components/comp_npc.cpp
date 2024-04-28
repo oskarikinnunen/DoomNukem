@@ -80,7 +80,7 @@ void	comp_npc_update(t_entity *entity, t_world *world)
 {
 	t_npc	*npc;
 
-	npc = entity->component.data;
+	npc = (t_npc*)entity->component.data;
 	if (npc == NULL || world->app_mode == APPMODE_EDIT
 		|| world->player->health == 0)
 		return ;

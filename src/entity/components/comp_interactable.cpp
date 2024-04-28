@@ -84,7 +84,7 @@ void	comp_interactable_update(t_entity *entity, t_world *world)
 {
 	t_interactable	*inter;
 
-	inter = entity->component.data;
+	inter = (t_interactable*)entity->component.data;
 	if (inter == NULL)
 		return ;
 	if (vector3_sqr_dist(world->player->transform.position,

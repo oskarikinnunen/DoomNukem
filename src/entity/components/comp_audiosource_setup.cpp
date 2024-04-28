@@ -27,7 +27,7 @@ void	comp_audiosource_ui_update(t_entity *entity, t_world *world)
 		audio_off_img = get_image_by_name(*world->sdl, "audio_off_icon");
 		audio_on_img = get_image_by_name(*world->sdl, "audio_on_icon");
 	}
-	source = entity->component.data;
+	source = (t_audiosource*)entity->component.data;
 	if (source == NULL || source->sample.sound == NULL)
 	{
 		return ;
@@ -45,7 +45,7 @@ void	comp_audiosource_gui_edit(t_entity *entity,
 {
 	t_audiosource	*source;
 
-	source = entity->component.data;
+	source = (t_audiosource*)entity->component.data;
 	if (source == NULL)
 	{
 		gui_label("!NULL source", gui);
@@ -59,7 +59,7 @@ void	comp_audiosource_load_assets(t_entity *entity, t_world *world)
 {
 	t_audiosource	*source;
 
-	source = entity->component.data;
+	source = (t_audiosource*)entity->component.data;
 	source->sample = get_sample(world->sdl, source->sample.name);
 }
 
@@ -67,7 +67,7 @@ void	comp_audiosource_allocate(t_entity *entity, t_world *world)
 {
 	t_audiosource	*source;
 
-	entity->component.data = prot_memalloc(sizeof(t_audiosource));
+	entity->component.data = new t_audiosource;//prot_memalloc(sizeof(t_audiosource));
 	entity->component.data_size = sizeof(t_audiosource);
 	source = (t_audiosource *)entity->component.data;
 	source->sample = get_sample(world->sdl, "amb_dogbark1.wav");

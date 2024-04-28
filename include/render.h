@@ -14,6 +14,8 @@
 # define RENDER_H
 
 //TODO: make this work without relative path?
+#include <iostream>
+#include <memory>
 # include "../libs/installed_libs/include/SDL2/SDL.h"
 # include "../libs/installed_libs/include/SDL2/SDL_ttf.h"
 # include "vectors.h"

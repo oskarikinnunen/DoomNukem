@@ -19,5 +19,5 @@ char	*ft_memdup(const void *m, size_t n)
 	result = (char *)malloc(n);
 	if (result)
 		ft_memcpy(result, m, n);
-	return (result);
+	return ((char*)result);
 }

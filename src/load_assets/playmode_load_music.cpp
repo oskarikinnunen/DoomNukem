@@ -63,7 +63,7 @@ void	playmode_load_music(int level_fd, t_audio *audio)
 	audio->music_count = count_asset_list(TEMPMUSICLIST);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 			TEMPMUSICLIST, "music_count =", s_itoa(audio->music_count), NULL});
-	audio->music = prot_memalloc(sizeof(t_audio_sample) * audio->music_count);
+	audio->music = new t_audio_sample[audio->music_count];// prot_memalloc(sizeof(t_audio_sample) * audio->music_count);
 	ret = parse_music_list(level_fd, audio);
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_music");
