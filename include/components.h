@@ -41,15 +41,13 @@ typedef enum e_componenttype
 	COMP_BOUTTON
 }	t_component_type;
 
-//Func allocate: called when ed
-//*func_load_assets is only used if component needs to hold assets/pointer data,
-//in which case you can implement the loading behaviour here
-
-class s_componentData
+class ComponentData
 {
 
 };
-
+//Func allocate: called when ed
+//*func_load_assets is only used if component needs to hold assets/pointer data,
+//in which case you can implement the loading behaviour here
 typedef struct s_component
 {
 	t_component_type	type;
@@ -68,7 +66,7 @@ typedef struct s_component
 							struct s_entity *, struct s_world *);
 	void				(*func_ui_update)(\
 							struct s_entity *, struct s_world *);
-	s_componentData		*data;
+	ComponentData		*data;
 }	t_component;
 
 typedef struct s_component_definition
@@ -106,38 +104,38 @@ typedef struct s_interactable
 	bool				interacted;
 }	t_interactable;
 
-typedef struct s_healthpack : public s_componentData
+typedef class s_healthpack : public ComponentData
 {
+	public:
 	public:
 	float	test_variable;
 }	t_healthpack;
 
-typedef struct s_npc_civilian : public s_componentData
+typedef struct s_npc_civilian : public ComponentData
 {
 	public:
 	float	test_variable;
 }	t_npc_civilian;
 
-typedef struct s_playerspawn : public s_componentData
+typedef struct s_playerspawn : public ComponentData
 {
 	public:
-	
 	float	test_variable;
 }	t_playerspawn;
 
-typedef struct s_gun_pickup : public s_componentData
+typedef struct s_gun_pickup : public ComponentData
 {
 	public:
 	float	original_z;
 }	t_gun_pickup;
 
-typedef class s_auto_door : public s_componentData
+typedef struct s_auto_door : public ComponentData
 {
 	public:
 	float	original_z;
 }	t_auto_door;
 
-typedef class s_storyevent : public s_componentData
+typedef struct s_storyevent : public ComponentData
 {
 	public:
 	bool		triggered;
@@ -145,13 +143,12 @@ typedef class s_storyevent : public s_componentData
 	char		text[128];
 }	t_storyevent;
 
-class t_boutton : public s_componentData
+typedef struct s_boutton : public ComponentData
 {
-public:
-
+	public:
 	bool		can_interact;
 	uint32_t	last_interact_time;
-};
+}	t_boutton;
 
 /*STRUCTDEF END, DONT REMOVE! THE CREATECOMPONENT SCRIPT DEPENDS ON THIS*/
 

@@ -13,13 +13,9 @@
 #ifndef FILE_IO_H
 # define FILE_IO_H
 
-//# include "editor_tools.h"
-#include "stdlib.h"
-# define CHUNKSIZE 4
+# include "editor_tools.h"
 
-typedef struct s_editor t_editor;
-typedef struct s_world t_world;
-typedef struct s_list t_list;
+# define CHUNKSIZE 4
 
 typedef struct s_chunkloader
 {
@@ -40,7 +36,7 @@ typedef struct s_file_content
 	void		*content;
 }	t_file_content;
 
-typedef enum e_load_arg
+typedef enum load_arg
 {
 	LOAD_ARG_AMAP,
 	LOAD_ARG_AMAP_AND_BASIC,

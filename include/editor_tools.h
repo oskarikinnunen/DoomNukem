@@ -18,10 +18,10 @@
 # include "doomnukem.h"
 # include "collision.h"
 
-#include "stdlib.h"
 # define TITLE_BAR_HEIGHT 32
 
-struct	s_mouse;
+struct s_mouse;
+enum   load_arg;
 
 typedef enum e_point_tool_state
 {
@@ -147,7 +147,7 @@ void			gui_lock_mouse(t_autogui *gui);
 void			update_editor_toolbar(t_editor *ed, t_autogui *toolbar);
 void			editor_events(t_editor *ed);
 void			editor_world_setup(t_editor *ed, char *world_name, \
-									t_sdlcontext *sdl, enum e_load_arg args);
+									t_sdlcontext *sdl, enum load_arg args);
 
 /* EDITORPREFERENCES.C */
 void			editor_save_prefs(t_editor *ed);

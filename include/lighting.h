@@ -15,7 +15,6 @@
 
 # include "render_utils.h"
 # include "shapes.h"
-#include "components.h"
 
 # define LIGHT_AMBIENT 0.15f
 
@@ -45,10 +44,8 @@ typedef struct s_cubemap
 	t_camera	cameras[6];
 }	t_cubemap;
 
-typedef class s_light : public s_componentData
+typedef struct s_light
 {
-
-public:
 	float			radius;
 	t_vector3		origin;
 	t_vector3		world_position;

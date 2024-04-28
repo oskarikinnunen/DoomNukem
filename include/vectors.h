@@ -27,6 +27,8 @@ typedef struct s_vector2
 	float	y;
 }	t_vector2;
 
+struct	s_line;
+struct	s_sdlcontext;
 
 //returns closest flo
 t_vector2		vector2_ceilf(t_vector2 v);
@@ -237,8 +239,8 @@ typedef struct s_transform
 
 typedef struct s_point
 {
-	int	x;
-	int	y;
+	int		x;
+	int		y;
 }	t_point;
 
 //shorthand for (t_point){0, 0}
@@ -410,7 +412,7 @@ t_vector2		point_to_vector2(t_point point);
 //Returns a point on the screen that is calculated by interpolating the screen
 //size with the given x and y values using linear interpolation
 t_point			screenlerp(float x_lerp, float y_lerp, \
-							s_sdlcontext *sdl);
+							struct s_sdlcontext *sdl);
 
 //Returns static str for given vector3
 char			*vector_string(t_vector3 vec);
