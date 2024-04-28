@@ -18,9 +18,9 @@
 # include "doomnukem.h"
 # include "collision.h"
 
+#include "stdlib.h"
 # define TITLE_BAR_HEIGHT 32
 
-enum	e_load_arg;
 struct	s_mouse;
 
 typedef enum e_point_tool_state

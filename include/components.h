@@ -44,6 +44,12 @@ typedef enum e_componenttype
 //Func allocate: called when ed
 //*func_load_assets is only used if component needs to hold assets/pointer data,
 //in which case you can implement the loading behaviour here
+
+class s_componentData
+{
+
+};
+
 typedef struct s_component
 {
 	t_component_type	type;
@@ -62,7 +68,7 @@ typedef struct s_component
 							struct s_entity *, struct s_world *);
 	void				(*func_ui_update)(\
 							struct s_entity *, struct s_world *);
-	void				*data;
+	s_componentData		*data;
 }	t_component;
 
 typedef struct s_component_definition
@@ -100,43 +106,52 @@ typedef struct s_interactable
 	bool				interacted;
 }	t_interactable;
 
-typedef struct s_healthpack
+typedef struct s_healthpack : public s_componentData
 {
+	public:
 	float	test_variable;
 }	t_healthpack;
 
-typedef struct s_npc_civilian
+typedef struct s_npc_civilian : public s_componentData
 {
+	public:
 	float	test_variable;
 }	t_npc_civilian;
 
-typedef struct s_playerspawn
+typedef struct s_playerspawn : public s_componentData
 {
+	public:
+	
 	float	test_variable;
 }	t_playerspawn;
 
-typedef struct s_gun_pickup
+typedef struct s_gun_pickup : public s_componentData
 {
+	public:
 	float	original_z;
 }	t_gun_pickup;
 
-typedef struct s_auto_door
+typedef class s_auto_door : public s_componentData
 {
+	public:
 	float	original_z;
 }	t_auto_door;
 
-typedef struct s_storyevent
+typedef class s_storyevent : public s_componentData
 {
+	public:
 	bool		triggered;
 	uint32_t	trigger_time;
 	char		text[128];
 }	t_storyevent;
 
-typedef struct s_boutton
+class t_boutton : public s_componentData
 {
+public:
+
 	bool		can_interact;
 	uint32_t	last_interact_time;
-}	t_boutton;
+};
 
 /*STRUCTDEF END, DONT REMOVE! THE CREATECOMPONENT SCRIPT DEPENDS ON THIS*/
 

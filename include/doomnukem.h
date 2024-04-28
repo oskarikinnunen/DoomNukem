@@ -1,3 +1,4 @@
+
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
@@ -13,6 +14,8 @@
 #ifndef DOOMNUKEM_H
 # define DOOMNUKEM_H
 
+#include <iostream>
+#include <memory>
 # include "libft.h"
 # include "log.h"
 # include <errno.h>
@@ -30,6 +33,7 @@
 # include <SDL_thread.h>
 # include "thread.h"
 # include "decal.h"
+#include "file_io.h"
 
 # define PI 3.14159265359
 # define FULLRAD 6.28318530718
@@ -75,8 +79,6 @@
 # define PERFGRAPH_SAMPLES 64
 
 struct	s_autogui;
-enum	e_load_arg;
-
 typedef struct s_perf_graph
 {
 	t_img		image;

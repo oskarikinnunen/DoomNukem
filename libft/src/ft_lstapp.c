@@ -15,7 +15,7 @@
 /*							FT_LSTAPP 									*/
 /*	Appends t_list 'new' to the end of the list pointed by alst.		*/
 
-void	ft_lstapp(t_list **alst, t_list *new)
+void	ft_lstapp(t_list **alst, t_list *newList)
 {
 	t_list	*orig;
 
@@ -24,7 +24,7 @@ void	ft_lstapp(t_list **alst, t_list *new)
 	{
 		*alst = (*alst)->next;
 	}
-	new->next = NULL;
-	(*alst)->next = new;
+	newList->next = NULL;
+	(*alst)->next = newList;
 	(*alst) = orig;
 }

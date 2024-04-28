@@ -13,9 +13,13 @@
 #ifndef FILE_IO_H
 # define FILE_IO_H
 
-# include "editor_tools.h"
-
+//# include "editor_tools.h"
+#include "stdlib.h"
 # define CHUNKSIZE 4
+
+typedef struct s_editor t_editor;
+typedef struct s_world t_world;
+typedef struct s_list t_list;
 
 typedef struct s_chunkloader
 {

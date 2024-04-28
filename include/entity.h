@@ -18,7 +18,6 @@
 # include "objects.h"
 # include "occlusion.h"
 # include "render.h"
-# include "lighting.h"
 # include "components.h"
 # include "gamestring.h"
 
@@ -37,8 +36,9 @@ typedef enum e_entity_status
 	es_active
 }	t_entity_status;
 
-typedef struct s_entity
+typedef class s_entity
 {
+public:
 	t_game_string		object_name;
 	t_transform			transform;
 	t_component			component;

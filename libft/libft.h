@@ -123,8 +123,8 @@ void			ft_lstdelone(t_list **alst, void (*del)(void *, size_t));
 void			listdel(t_list **alst);
 void			ft_lstdel(t_list **alst, void (*del)(void *, size_t));
 void			ft_lstiter(t_list *lst, void (*f)(t_list *elem));
-void			ft_lstadd(t_list **alst, t_list *new);
-void			ft_lstapp(t_list **alst, t_list *new);/*extra*/
+void			ft_lstadd(t_list **alst, t_list *newList);
+void			ft_lstapp(t_list **alst, t_list *newList);/*extra*/
 int				ft_listlen(t_list *lst);
 
 char			*ft_strcdup(const char *str, char c);

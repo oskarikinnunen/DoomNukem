@@ -16,8 +16,8 @@
 /*	Adds t_list 'new' to the beginning of the list pointed by alst		*/
 /* 	and points 'new' as the value of alst.								*/
 
-void	ft_lstadd(t_list **alst, t_list *new)
+void	ft_lstadd(t_list **alst, t_list *newList)
 {
-	new->next = (*alst);
-	*alst = new;
+	newList->next = (*alst);
+	*alst = newList;
 }
