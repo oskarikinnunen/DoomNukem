@@ -47,12 +47,12 @@ void	parse_entity_texture(int index, t_entity *entity)
 	}
 }
 
-void	*calculate_texture_for_entity(void *test)
+void	*calculate_texture_for_entity(void *ptr)
 {
+	t_entity *entity = (t_entity*)ptr;
 	int			index;
 	int			start;
 	int			i;
-	t_entity* entity = (t_entity*)test;
 
 	if (entity->obj->uv_count == 0 || entity->world_triangles == NULL)
 		return (NULL);
@@ -78,7 +78,7 @@ void	calculate_texture_for_entities(t_world *world)
 
 	thread.func = calculate_texture_for_entity;
 	thread.struct_size = sizeof(t_entity);
-	thread.structs = (void**)new t_entity[THREAD];//prot_memalloc(sizeof(t_entity) * THREAD);
+	thread.structs = (void**)prot_memalloc(sizeof(t_entity) * THREAD);
 	thread.count = 0;
 	ft_bzero(thread.structs, sizeof(t_entity) * THREAD);
 	i = 0;

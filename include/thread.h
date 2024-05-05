@@ -38,7 +38,7 @@ void	set_light_thread_struct(t_thread *thread, struct s_entity *ent, \
 void	set_lighting_texture_struct(t_thread *thread, struct s_entity *ent);
 
 void	*calculate_light_for_entities(void *test);
-void	*calculate_texture_for_entity(struct s_entity *entity);
+void	*calculate_texture_for_entity(void *ptr);
 
 void	multi_thread_start(t_thread *thread);
 

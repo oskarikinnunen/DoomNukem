@@ -89,7 +89,7 @@ static void	comp_npc_allocate(t_entity *entity, t_world *world)
 {
 	t_npc	*npc;
 
-	entity->component.data = new t_npc;//prot_memalloc(sizeof(t_npc));
+	entity->component.data = (t_npc*)prot_memalloc(sizeof(t_npc));
 	entity->component.data_size = sizeof(t_npc);
 	entity->dynamic_lit = true;
 	npc = (t_npc*)entity->component.data;

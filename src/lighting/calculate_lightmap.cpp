@@ -20,7 +20,7 @@ static void	buffer_triangles(
 	size_t				size;
 
 	size = lighting->map->size.x * lighting->map->size.y * sizeof(bool);
-	lighting->overdraw = new bool[size];
+	lighting->overdraw = (bool*)prot_memalloc(size);
 	ft_bzero(lighting->overdraw, size);
 	while (start <= i)
 	{
@@ -77,15 +77,15 @@ static void	calculate_if_valid(t_entity *entity, t_lighting *lighting)
 	}
 }
 
-void	*calculate_light_for_entities(void *test)
+void	*calculate_light_for_entities(void *temp)
 {
+	t_test *ptr = (t_test*)temp;
 	int				i;
 	int				found;
 	t_entitycache	*cache;
 	t_entity		*ent;
 	t_lighting		lighting;
 
-	t_test* ptr = (t_test*)test;
 	if (ptr->world == NULL)
 		return (NULL);
 	lighting.entity = ptr->entity;
@@ -119,7 +119,7 @@ void	calculate_lighting(t_world *world)
 	found = 0;
 	thread.func = calculate_light_for_entities;
 	thread.struct_size = sizeof(t_test);
-	thread.structs = (void **)(new t_test[THREAD]);//prot_memalloc(sizeof(t_test) * THREAD);
+	thread.structs = (void**)prot_memalloc(sizeof(t_test) * THREAD);
 	thread.count = 0;
 	ft_bzero(thread.structs, sizeof(t_test) * THREAD);
 	while (found < world->entitycache.existing_entitycount

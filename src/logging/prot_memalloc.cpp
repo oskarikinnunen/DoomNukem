@@ -14,10 +14,10 @@
 
 void	*prot_memalloc(size_t size)
 {
-	void	*newPtr;
+	void	*newMalloc;
 
-	newPtr = ft_memalloc(size);
-	if (newPtr == NULL)
+	newMalloc = ft_memalloc(size);
+	if (newMalloc == NULL)
 		doomlog(LOG_EC_MALLOC, NULL);
-	return (newPtr);
+	return (newMalloc);
 }

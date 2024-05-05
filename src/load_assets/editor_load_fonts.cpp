@@ -77,7 +77,7 @@ void	editor_load_fonts(t_sdlcontext *sdl)
 	sdl->fontcount = count_asset_list(FONTLISTPATH);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 			FONTLISTPATH, "size =", s_itoa(sdl->fontcount), NULL});
-	sdl->fonts = new t_font[sdl->fontcount];// prot_memalloc(sizeof(t_font) * sdl->fontcount);
+	sdl->fonts = (t_font*)prot_memalloc(sizeof(t_font) * sdl->fontcount);
 	fd = ft_fileopen(FONTLISTPATH, O_RDONLY);
 	ret = parse_font_list(fd, sdl);
 	if (ret == -1)

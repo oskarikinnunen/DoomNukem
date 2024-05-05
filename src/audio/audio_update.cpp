@@ -55,10 +55,10 @@ void	update_audio(t_world *world)
 		FMOD_Channel_SetVolume(sdl->audio.music_channel, \
 				sdl->audio.music_control.fade);
 	}
-	FMOD_VECTOR vel, up;
-	vel = ((FMOD_VECTOR){0});
-	up = ((FMOD_VECTOR){.z = 1.0f});
+	FMOD_VECTOR vel = {0};
+	FMOD_VECTOR up = {.z = 1.f};
 	FMOD_System_Set3DListenerAttributes(sdl->audio.system, 0, \
-			(FMOD_VECTOR *)&world->player->head_position, &vel, (FMOD_VECTOR *)&nf, &up);
+			(FMOD_VECTOR *)&world->player->head_position, &vel, \
+			(FMOD_VECTOR *)&nf, &up);
 	FMOD_System_Update(sdl->audio.system);
 }

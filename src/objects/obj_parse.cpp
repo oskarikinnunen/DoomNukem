@@ -67,7 +67,7 @@ t_object	objparse(char *filename)
 	ft_fileclose(fd, filename);
 	result.materials = (t_material*)list_to_ptr(op.materials, &result.material_count);
 	if (result.materials == NULL)
-		result.materials = new t_material;//prot_memalloc(sizeof(t_material));
+		result.materials = (t_material*)prot_memalloc(sizeof(t_material));
 	ft_lstdel(&op.materials, free_list_node);
 	obj_save_vertices_uvs_faces(&result, &op);
 	return (result);

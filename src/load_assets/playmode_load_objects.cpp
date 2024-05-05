@@ -122,7 +122,7 @@ void	playmode_load_objects(int level_fd, t_sdlcontext *sdl)
 	sdl->objectcount = count_asset_list(TEMPOBJLIST);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 			TEMPOBJLIST, "size =", s_itoa(sdl->objectcount), NULL});
-	sdl->objects = new t_object[sdl->objectcount];//prot_memalloc(sizeof(t_object) * sdl->objectcount);
+	sdl->objects = (t_object*)prot_memalloc(sizeof(t_object) * sdl->objectcount);
 	ret = parse_object_list(level_fd, sdl);
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_objects");

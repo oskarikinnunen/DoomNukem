@@ -20,7 +20,7 @@
 
 static void	editorloop(t_sdlcontext *sdl, t_editor *ed)
 {
-	while (true)
+	while (1)
 	{
 		update_clock(&ed->world.clock);
 		editor_events(ed);

@@ -62,7 +62,7 @@ void	free_sdl_stuff(t_sdlcontext *sdl)
 //TODO: free bitmask.tile
 void	alloc_occlusion(t_sdlcontext *sdl)
 {
-	sdl->bitmask.tile = new t_tile[(sdl->window_h * sdl->window_w) / 64];// prot_memalloc(sizeof(t_tile) * \
+	sdl->bitmask.tile = (t_tile*)prot_memalloc(sizeof(t_tile) * \
 			((sdl->window_h * sdl->window_w) / 64));
 	sdl->bitmask.bitmask_chunks.x = sdl->window_w / 16;
 	sdl->bitmask.bitmask_chunks.y = sdl->window_h / 8;
@@ -89,8 +89,8 @@ void	set_sdl_settings(t_sdlcontext *sdl)
 				sdl->window_w, sdl->window_h, 32, SDL_PIXELFORMAT_ARGB8888);
 	if (sdl->surface == NULL)
 		doomlog(LOG_EC_SDL_CREATERGBSURFACE, NULL);
-	sdl->zbuffer = new float[sdl->window_w * sdl->window_h];// prot_memalloc(sdl->window_w * sdl->window_h * sizeof(float));
-	sdl->scaling_buffer = new uint32_t[sdl->window_w * sdl->window_w];//(sdl->window_w * sdl->window_w * \
+	sdl->zbuffer = (float*)prot_memalloc(sdl->window_w * sdl->window_h * sizeof(float));
+	sdl->scaling_buffer = (uint32_t*)prot_memalloc(sdl->window_w * sdl->window_w * \
 											sizeof(uint32_t));
 	alloc_occlusion(sdl);
 	sdl->render = init_render(*sdl);

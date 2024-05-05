@@ -24,7 +24,7 @@ inline static void	sample_img(uint32_t x, uint32_t y, float z,
 	}
 }
 
-inline static void	scanline(int ax, int bx, int y, t_lighting *l)
+inline void	scanline(int ax, int bx, int y, t_lighting *l)
 {
 	t_vector2	bary;
 	t_vector2	left;
@@ -50,7 +50,7 @@ inline static void	scanline(int ax, int bx, int y, t_lighting *l)
 	}
 }
 
-static void	fill_point_tri_top(t_lighting *l)
+inline void	fill_point_tri_top(t_lighting *l)
 {
 	int				y;
 	float			steps;
@@ -75,7 +75,7 @@ static void	fill_point_tri_top(t_lighting *l)
 	}
 }
 
-static void	fill_point_tri_bot(t_lighting *l)
+inline void	fill_point_tri_bot(t_lighting *l)
 {
 	int				y;
 	float			steps;

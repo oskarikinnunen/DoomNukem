@@ -41,7 +41,7 @@ void	comp_healthpack_allocate(t_entity *entity, t_world *world)
 {
 	t_healthpack	*healthpack;
 
-	entity->component.data = new t_healthpack;//prot_memalloc(sizeof(t_healthpack));
+	entity->component.data = (t_healthpack*)prot_memalloc(sizeof(t_healthpack));
 	entity->component.data_size = sizeof(t_healthpack);
 	healthpack = (t_healthpack *)entity->component.data;
 }

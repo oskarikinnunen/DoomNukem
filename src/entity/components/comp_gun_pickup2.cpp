@@ -55,7 +55,7 @@ void	comp_gun_pickup_allocate(t_entity *entity, t_world *world)
 {
 	t_gun_pickup	*gun_pickup;
 
-	entity->component.data = new t_gun_pickup;//prot_memalloc(sizeof(t_gun_pickup));
+	entity->component.data = (t_gun_pickup*)prot_memalloc(sizeof(t_gun_pickup));
 	entity->component.data_size = sizeof(t_gun_pickup);
 	gun_pickup = (t_gun_pickup *)entity->component.data;
 	gun_pickup->original_z = entity->transform.position.z;

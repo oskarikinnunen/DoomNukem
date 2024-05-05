@@ -20,7 +20,8 @@ void	multi_thread_start(t_thread *thread)
 	i = 0;
 	while (i < thread->count)
 	{
-		pthread_create(&thread->threads[i], NULL, thread->func, (thread->structs[i * thread->struct_size]));
+		ptr = &(thread->structs[i * thread->struct_size]);
+		pthread_create(&thread->threads[i], NULL, thread->func, ptr);
 		i++;
 	}
 	i = 0;

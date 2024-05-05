@@ -34,12 +34,12 @@ void	comp_boutton_ui_update(t_entity *entity, t_world *world)
 void	comp_boutton_gui_edit(t_entity *entity,
 								t_autogui *gui, t_world *world)
 {
-	// t_boutton	*boutton;
+	t_boutton	*boutton;
 
-	// boutton = entity->component.data;
-	// gui_label("GUI for boutton not implemented", gui);
-	// if (boutton == NULL)
-	// 	return ;
+	boutton = (t_boutton*)entity->component.data;
+	gui_label("GUI for boutton not implemented", gui);
+	if (boutton == NULL)
+		return ;
 }
 
 /*	This is called during load_world, use only if your component
@@ -47,9 +47,9 @@ void	comp_boutton_gui_edit(t_entity *entity,
 */
 void	comp_boutton_load_assets(t_entity *entity, t_world *world)
 {
-	// t_boutton	*boutton;
+	t_boutton	*boutton;
 
-	// boutton = entity->component.data;
+	boutton = (t_boutton*)entity->component.data;
 }
 
 /*	Set default values of your component here.
@@ -60,7 +60,7 @@ void	comp_boutton_allocate(t_entity *entity, t_world *world)
 {
 	t_boutton	*boutton;
 
-	entity->component.data = new t_boutton;//prot_memalloc(sizeof(t_boutton));
+	entity->component.data = (t_boutton*)prot_memalloc(sizeof(t_boutton));
 	entity->component.data_size = sizeof(t_boutton);
-	// boutton = (t_boutton *)entity->component.data;
+	boutton = (t_boutton *)entity->component.data;
 }

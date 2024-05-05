@@ -90,7 +90,7 @@ void	save_pixel_order(t_tga *tga)
 
 void	save_image_id(int fd, char *filename, t_tga *tga)
 {
-	tga->image_data.image_id = new char[tga->header.id_length + 1];//prot_memalloc(tga->header.id_length + 1);
+	tga->image_data.image_id = (char*)prot_memalloc(tga->header.id_length + 1);
 	tga->image_data.image_id[tga->header.id_length] = '\0';
 	if (read(fd, tga->image_data.image_id, tga->header.id_length) == -1)
 		doomlog(LOG_EC_READ, filename);

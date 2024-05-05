@@ -67,7 +67,7 @@ void	comp_audiosource_allocate(t_entity *entity, t_world *world)
 {
 	t_audiosource	*source;
 
-	entity->component.data = new t_audiosource;//prot_memalloc(sizeof(t_audiosource));
+	entity->component.data = (t_audiosource*)prot_memalloc(sizeof(t_audiosource));
 	entity->component.data_size = sizeof(t_audiosource);
 	source = (t_audiosource *)entity->component.data;
 	source->sample = get_sample(world->sdl, "amb_dogbark1.wav");

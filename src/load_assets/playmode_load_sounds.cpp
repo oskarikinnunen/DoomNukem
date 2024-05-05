@@ -71,7 +71,7 @@ void	playmode_load_sounds(int level_fd, t_audio *audio)
 	audio->samplecount = count_asset_list(TEMPSOUNDLIST);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 			TEMPSOUNDLIST, "samplecount =", s_itoa(audio->samplecount), NULL});
-	audio->samples = new t_audio_sample[audio->samplecount];//prot_memalloc(sizeof(t_audio_sample) * audio->samplecount);
+	audio->samples = (t_audio_sample*)prot_memalloc(sizeof(t_audio_sample) * audio->samplecount);
 	ret = parse_sound_list(level_fd, audio);
 	if (ret == -1)
 		doomlog(LOG_EC_GETNEXTLINE, "playmode_load_sounds");

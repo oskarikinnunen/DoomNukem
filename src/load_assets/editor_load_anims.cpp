@@ -12,7 +12,6 @@
 
 #include "file_io.h"
 #include "assets.h"
-#include "doomnukem.h"
 
 static int	parse_anim_list(int fd, char *anim_name, t_object *object)
 {
@@ -46,7 +45,8 @@ void	editor_load_anims(char *anim_name, t_object *object)
 	frame_malloc_count = count_asset_list(ANIMLISTPATH);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 			ANIMLISTPATH, "framecount =", s_itoa(frame_malloc_count), NULL});
-	object->o_anim.frames = new t_object_anim_frame[frame_malloc_count];// prot_memalloc(sizeof(t_object_anim_frame) * frame_malloc_count);
+	object->o_anim.frames = \
+			(t_object_anim_frame*)prot_memalloc(sizeof(t_object_anim_frame) * frame_malloc_count);
 	ft_strncpy_term(object->o_anim.name, anim_name, 120);
 	fd = ft_fileopen(ANIMLISTPATH, O_RDONLY);
 	ret = parse_anim_list(fd, anim_name, object);

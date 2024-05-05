@@ -57,7 +57,7 @@ float	vector2_anglebetween(t_vector2 first, t_vector2 second)
 	return (atan2f(temp.y, temp.x));
 }
 
-t_point	screenlerp(float xlerp, float ylerp, s_sdlcontext *sdl)
+t_point	screenlerp(float xlerp, float ylerp, t_sdlcontext *sdl)
 {
 	return ((t_point){sdl->screensize.x * xlerp, sdl->screensize.y * ylerp});
 }

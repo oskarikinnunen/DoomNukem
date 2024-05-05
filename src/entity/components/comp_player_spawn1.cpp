@@ -53,7 +53,7 @@ void	comp_playerspawn_allocate(t_entity *entity, t_world *world)
 {
 	t_playerspawn	*playerspawn;
 
-	entity->component.data = new t_playerspawn;//prot_memalloc(sizeof(t_playerspawn));
+	entity->component.data = (t_playerspawn*)prot_memalloc(sizeof(t_playerspawn));
 	entity->component.data_size = sizeof(t_playerspawn);
 	playerspawn = (t_playerspawn *)entity->component.data;
 }

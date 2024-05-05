@@ -49,7 +49,7 @@ static void	audiosource_fmod_update(t_entity *entity,
 				source->range, world->clock.delta * 0.20f);
 	FMOD_VECTOR vel = {0};
 	FMOD_Channel_Set3DAttributes(source->channel,
-		(FMOD_VECTOR*)&entity->transform.position, &vel);
+		(FMOD_VECTOR *)&entity->transform.position, &vel);
 	FMOD_Channel_Set3DMinMaxDistance(source->channel,
 		source->_real_range, 10000.0f);
 	FMOD_Channel_SetVolume(source->channel, source->volume

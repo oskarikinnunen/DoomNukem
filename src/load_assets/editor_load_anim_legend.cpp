@@ -67,7 +67,7 @@ void	editor_load_anim_legend(t_sdlcontext *sdl)
 
 	doomlog(LOG_NORMAL, "LOADING ANIMATIONS");
 	fd = ft_fileopen(ANIMLEGENDPATH, O_RDONLY);
-	sdl->human_anims = new s_human_animation[30];// prot_memalloc(sizeof(t_human_animation) * 30);
+	sdl->human_anims = (t_human_animation*)prot_memalloc(sizeof(t_human_animation) * 30);
 	sdl->human_anim_count = 0;
 	ret = parse_lines(fd, sdl);
 	if (ret == -1)

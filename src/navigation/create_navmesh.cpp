@@ -91,7 +91,7 @@ static void	clip_navmesh(t_navigation *nav, t_entity *ent, t_world *world)
 	info.start = 0;
 	info.end = 1;
 	info.size = 1000;
-	arr = new t_world_triangle[info.size];// prot_memalloc(sizeof(t_world_triangle) * info.size);
+	arr = (t_world_triangle*)prot_memalloc(sizeof(t_world_triangle) * info.size);
 	arr[0].p[0].v = ent->obj->vertices[0];
 	arr[0].p[1].v = ent->obj->vertices[1];
 	arr[0].p[2].v = ent->obj->vertices[2];
@@ -119,7 +119,7 @@ void	create_navmesh(t_world *world)
 	if (world->nav.navmesh)
 		free(world->nav.navmesh);
 	world->nav.malloc_size = 1000;
-	world->nav.navmesh = new t_nav_node[world->nav.malloc_size];// prot_memalloc(\
+	world->nav.navmesh = (t_nav_node*)prot_memalloc(\
 	sizeof(t_nav_node) * world->nav.malloc_size);
 	ft_bzero(world->nav.navmesh, sizeof(t_nav_node) * world->nav.malloc_size);
 	i = 0;

@@ -68,7 +68,7 @@ void	playmode_load_anim_legend(int level_fd, t_sdlcontext *sdl)
 	doomlog(LOG_NORMAL, "UNPACKING ANIMATIONS");
 	load_and_write_filecontent(level_fd, ANIMLEGENDPATH, TEMPANIMLEGEND);
 	temp_fd = ft_fileopen(TEMPANIMLEGEND, O_RDONLY);
-	sdl->human_anims = new s_human_animation[30];//(sizeof(t_human_animation) * 30);
+	sdl->human_anims = (t_human_animation*)prot_memalloc(sizeof(t_human_animation) * 30);
 	sdl->human_anim_count = 0;
 	ret = parse_lines(temp_fd, sdl);
 	if (ret == -1)

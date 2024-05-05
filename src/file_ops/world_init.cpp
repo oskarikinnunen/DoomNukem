@@ -12,7 +12,6 @@
 
 #include "doomnukem.h"
 #include "file_io.h"
-#include "editor_tools.h"
 
 void	world_remove_all_room_entities(t_world *world)
 {
@@ -56,8 +55,8 @@ t_entitycache	entitycache_empty(uint32_t cachesize)
 
 	ft_bzero(&cache, sizeof(t_entitycache));
 	cache.alloc_count = cachesize;
-	cache.entities = new t_entity[cache.alloc_count];//prot_memalloc(cache.alloc_count * sizeof(t_entity));
-	cache.sorted_entities = new t_entity*[cache.alloc_count];//prot_memalloc(\
+	cache.entities = (t_entity*)prot_memalloc(cache.alloc_count * sizeof(t_entity));
+	cache.sorted_entities = (t_entity**)prot_memalloc(\
 								cache.alloc_count * sizeof(t_entity *));
 	cache.existing_entitycount = 0;
 	i = 0;
@@ -99,6 +98,6 @@ void	world_init(t_world *world, t_sdlcontext *sdl)
 	ft_bzero(world, sizeof(t_world));
 	world->sdl = sdl;
 	world->entitycache = entitycache_empty(2048);
-	world->debug_gui = new s_autogui;//prot_memalloc(sizeof(t_autogui));
+	world->debug_gui = (t_autogui*)prot_memalloc(sizeof(t_autogui));
 	ft_strncpy_term(world->name, DEFAULTLEVEL, 30);
 }

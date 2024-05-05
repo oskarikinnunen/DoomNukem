@@ -21,7 +21,7 @@ void	comp_auto_door_update(t_entity *entity, t_world *world)
 	float		dist;
 	t_vector3	og_pos;
 
-	auto_door = (t_auto_door	*)entity->component.data;
+	auto_door = (t_auto_door*)entity->component.data;
 	if (auto_door == NULL)
 		return ;
 	og_pos = entity->transform.position;
@@ -43,7 +43,7 @@ void	comp_auto_door_gui_edit(t_entity *entity,
 {
 	t_auto_door	*auto_door;
 
-	auto_door = (t_auto_door	*)entity->component.data;
+	auto_door = (t_auto_door*)entity->component.data;
 	gui_label("GUI for auto_door not implemented", gui);
 	if (auto_door == NULL)
 		return ;
@@ -56,19 +56,18 @@ void	comp_auto_door_load_assets(t_entity *entity, t_world *world)
 {
 	t_auto_door	*auto_door;
 
-	auto_door = (t_auto_door	*)entity->component.data;
+	auto_door = (t_auto_door*)entity->component.data;
 }
 
 /*	Set default values of your component here.
 	This will be called when editor assigns this component type to an entity,
 	or during entity_set_component()
 */
-
 void	comp_auto_door_allocate(t_entity *entity, t_world *world)
 {
 	t_auto_door	*auto_door;
 
-	entity->component.data = new t_auto_door;
+	entity->component.data = (t_auto_door*)prot_memalloc(sizeof(t_auto_door));
 	entity->component.data_size = sizeof(t_auto_door);
 	auto_door = (t_auto_door *)entity->component.data;
 	auto_door->original_z = entity->transform.position.z;

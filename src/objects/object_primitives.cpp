@@ -15,7 +15,7 @@
 
 static void	object_tri_set_faces(t_object *tri)
 {
-	tri->faces = new t_face;//prot_memalloc(sizeof(t_face) * 1);
+	tri->faces = (t_face*)prot_memalloc(sizeof(t_face) * 1);
 	tri->face_count = 1;
 	tri->faces[0].v_indices[0] = 1;
 	tri->faces[0].v_indices[1] = 2;
@@ -29,9 +29,9 @@ t_object	*object_tri(t_sdlcontext *sdl)
 {
 	t_object	*tri;
 
-	tri = new t_object;//prot_memalloc(sizeof(t_object));
+	tri = (t_object*)prot_memalloc(sizeof(t_object));
 	ft_strncpy_term(tri->name, "meshtri", 250);
-	tri->vertices = new t_vector3[3];//prot_memalloc(sizeof(t_vector3) * 3);
+	tri->vertices = (t_vector3*)prot_memalloc(sizeof(t_vector3) * 3);
 	tri->vertice_count = 3;
 	tri->vertices[0] = (t_vector3){0.0f, 0.0f, 0.0f};
 	tri->vertices[1] = (t_vector3){10.0f, 0.0f, 0.0f};
@@ -41,7 +41,7 @@ t_object	*object_tri(t_sdlcontext *sdl)
 	tri->faces[0].material = &tri->materials[0];
 	tri->materials->img = get_image_by_name(*sdl, tri->materials->texturename);
 	tri->material_count = 1;
-	tri->uvs = new t_vector2[3];//(sizeof(t_vector2) * 3);
+	tri->uvs = (t_vector2*)prot_memalloc(sizeof(t_vector2) * 3);
 	tri->uv_count = 3;
 	tri->uvs[0] = (t_vector2){0.0f, 0.0f};
 	tri->uvs[1] = (t_vector2){1.0f, 0.0f};
@@ -77,7 +77,7 @@ static void	plane_make_uvs_and_mats(t_object *plane, t_sdlcontext *sdl)
 	plane->faces[1].material = &plane->materials[0];
 	plane->materials->img = \
 			get_image_by_name(*sdl, plane->materials->texturename);
-	plane->uvs = new t_vector2[4];//(sizeof(t_vector2) * 4);
+	plane->uvs = (t_vector2*)prot_memalloc(sizeof(t_vector2) * 4);
 	plane->uv_count = 2;
 	plane->uvs[0] = (t_vector2){0.0f, 0.0f};
 	plane->uvs[1] = (t_vector2){0.0f, 1.0f};
@@ -89,10 +89,10 @@ t_object	*object_plane(t_sdlcontext *sdl)
 {
 	t_object	*plane;
 
-	plane = new t_object;//prot_memalloc(sizeof(t_object));
-	plane->vertices = new t_vector3[4];//prot_memalloc(sizeof(t_vector3) * 4);
+	plane = (t_object*)prot_memalloc(sizeof(t_object));
+	plane->vertices = (t_vector3*)prot_memalloc(sizeof(t_vector3) * 4);
 	plane->vertice_count = 4;
-	plane->faces = new t_face[2];//prot_memalloc(sizeof(t_face) * 2);
+	plane->faces = (t_face*)prot_memalloc(sizeof(t_face) * 2);
 	plane->face_count = 2;
 	ft_strncpy_term(plane->name, "plane", 250);
 	plane_make_faces(plane);

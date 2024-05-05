@@ -36,7 +36,7 @@ void	comp_storyevent_ui_update(t_entity *entity, t_world *world)
 	t_storyevent	*storyevent;
 	t_point			point;
 
-	storyevent = (t_storyevent	*)entity->component.data;
+	storyevent = (t_storyevent*)entity->component.data;
 	if (storyevent == NULL)
 		return ;
 	point.x = 10;
@@ -72,7 +72,7 @@ void	comp_storyevent_load_assets(t_entity *entity, t_world *world)
 {
 	t_storyevent	*storyevent;
 
-	storyevent = (t_storyevent	*)entity->component.data;
+	storyevent = (t_storyevent*)entity->component.data;
 }
 
 /*	Set default values of your component here.
@@ -83,7 +83,7 @@ void	comp_storyevent_allocate(t_entity *entity, t_world *world)
 {
 	t_storyevent	*storyevent;
 
-	entity->component.data = new t_storyevent;
+	entity->component.data = (t_storyevent*)prot_memalloc(sizeof(t_storyevent));
 	entity->component.data_size = sizeof(t_storyevent);
 	storyevent = (t_storyevent *)entity->component.data;
 }

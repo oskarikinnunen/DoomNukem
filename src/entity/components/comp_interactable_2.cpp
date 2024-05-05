@@ -34,7 +34,7 @@ void	comp_interactable_allocate(t_entity *entity, t_world *world)
 {
 	t_interactable	*inter;
 
-	entity->component.data = new t_interactable;//prot_memalloc(sizeof(t_interactable));
+	entity->component.data = (t_interactable*)prot_memalloc(sizeof(t_interactable));
 	entity->component.data_size = sizeof(t_interactable);
 	inter = (t_interactable *)entity->component.data;
 	inter->radius = 7.0f;

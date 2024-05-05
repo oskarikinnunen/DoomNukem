@@ -12,7 +12,6 @@
 
 #include "objects.h"
 #include "file_io.h"
-#include "doomnukem.h"
 
 void	parse_animframe(int fd, t_object_anim_frame *frame, t_object *object)
 {
@@ -26,7 +25,7 @@ void	parse_animframe(int fd, t_object_anim_frame *frame, t_object *object)
 	vertices = (t_vector3*)list_to_ptr(verticelist, &vertexcount);
 	listdel(&verticelist);
 	i = 0;
-	frame->deltavertices = new t_deltavertex[vertexcount];//prot_memalloc(sizeof(t_deltavertex) * vertexcount);
+	frame->deltavertices = (t_deltavertex*)prot_memalloc(sizeof(t_deltavertex) * vertexcount);
 	while (i < vertexcount)
 	{
 		frame->deltavertices[i].delta = vector3_sub(vertices[i], \

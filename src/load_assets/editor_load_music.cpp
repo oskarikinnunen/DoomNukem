@@ -52,7 +52,7 @@ void	editor_load_music(t_audio *audio)
 	audio->music_count = count_asset_list(MUSICLISTPATH);
 	doomlog_mul(LOG_NORMAL, (char *[4]){\
 			MUSICLISTPATH, "music_count =", s_itoa(audio->music_count), NULL});
-	audio->music = new t_audio_sample[audio->music_count];//prot_memalloc(sizeof(t_audio_sample) * audio->music_count);
+	audio->music = (t_audio_sample*)prot_memalloc(sizeof(t_audio_sample) * audio->music_count);
 	fd = ft_fileopen(MUSICLISTPATH, O_RDONLY);
 	ret = parse_music_list(fd, audio);
 	if (ret == -1)
