@@ -297,13 +297,13 @@ DEPENDS= $(OBJ:.o=.d)
 #Compilation stuff:
 INCLUDE= -Isrc -Iinclude -Ilibft -I$(INSTALLED_LIBS_DIR)/include/SDL2/ \
 			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
-CC= g++
-CFLAGS= $(INCLUDE) -g -finline-functions -O3 #-MMD
+CXX= g++
+CXXFLAGS= $(INCLUDE) -g -MMD# -finline-functions -O3
 LDFLAGS = -Wl,-rpath $(INSTALLED_LIBS_DIR)/lib
 
 UNAME= $(shell uname)
 ifeq ($(UNAME), Darwin)
-override CFLAGS += '-D GL_SILENCE_DEPRECATION'
+override CXXFLAGS += '-D GL_SILENCE_DEPRECATION'
 LIBS= $(LIBFT) -lm -framework OpenGL -L$(INSTALLED_LIBS_DIR)/lib -lSDL2 -lSDL2_ttf -L$(INSTALLED_LIBS_DIR)/lib -lfmod -lfmodL
 AUTOGEN =
 else ifeq ($(UNAME), Linux)
@@ -318,17 +318,17 @@ endif
 #multi:
 #	$(MAKE) -j6 all
 
-all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(FMOD) $(LIBFT)
-	g++ -o $(NAME) $(SRC) $(INCLUDE) $(LIBS) $(LDFLAGS)
-
-#-include $(DEPENDS)
+all: $(SDL2) $(FREETYPE) $(SDL2_TTF) $(FMOD) $(LIBFT) $(OBJ)
+	$(CXX) $(OBJ) -o $(NAME) $(INCLUDE) $(LIBS) $(LDFLAGS)
 
 $(OBJ): Makefile include/*.h
-#	//$()
 
 clean:
 	rm -f $(OBJ)
-	rm -f $(DEPENDS)
+	rm -f *.o
+
+fclean: clean
+	rm -f doom-nukem
 
 re: clean all
 
@@ -344,6 +344,7 @@ clean-libs:
 	rm $(FMOD)
 
 re-libs: clean-libs all
+
 
 $(FMOD):
 	cp $(FMOD_DIR)/libfmod.dylib $(INSTALLED_LIBS_DIR)/lib/

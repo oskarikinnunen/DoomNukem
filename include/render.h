@@ -412,4 +412,5 @@ void				sort_point_tri(t_vector2 *p2, float *w);
 void				ft_swap(void *a, void *b, size_t len);
 t_screen_triangle	ps1(t_screen_triangle in, int div);
 
+
 #endif
