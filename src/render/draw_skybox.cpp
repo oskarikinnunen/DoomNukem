@@ -26,17 +26,17 @@ void	draw_skybox_image(t_world *world, t_img *skybox)
 	skybox = get_image_by_name(*world->sdl, "skybox.tga");
 	if (rot.x < 0)
 	{
-		skypos1 = point_add(point_zero(), (t_point){(rot.x * skybox->size.x) + \
-		world->sdl->screensize.x, (rot.y * skybox->size.y)});
-		skypos2 = point_add(point_zero(), (t_point){(rot.x * skybox->size.x) - \
-		(skybox->size.x), (rot.y * skybox->size.y)});
+		skypos1 = point_add(point_zero(), (t_point){(int)(rot.x * skybox->size.x) + \
+		world->sdl->screensize.x, (int)(rot.y * skybox->size.y)});
+		skypos2 = point_add(point_zero(), (t_point){(int)(rot.x * skybox->size.x) - \
+		(skybox->size.x), (int)(rot.y * skybox->size.y)});
 	}
 	else
 	{
-		skypos1 = point_add(point_zero(), (t_point){rot.x * skybox->size.x, \
-			(rot.y * skybox->size.y)});
-		skypos2 = point_add(point_zero(), (t_point){(rot.x * skybox->size.x) \
-			- skybox->size.x, (rot.y * skybox->size.y)});
+		skypos1 = point_add(point_zero(), (t_point){(int)rot.x * skybox->size.x, \
+			(int)(rot.y * skybox->size.y)});
+		skypos2 = point_add(point_zero(), (t_point){(int)(rot.x * skybox->size.x) \
+			- skybox->size.x, (int)(rot.y * skybox->size.y)});
 	}
 	draw_image(*world->sdl, skypos1, *skybox, skybox->size);
 	draw_image(*world->sdl, skypos2, *skybox, skybox->size);

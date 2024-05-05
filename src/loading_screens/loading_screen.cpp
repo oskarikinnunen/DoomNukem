@@ -22,13 +22,14 @@ void	print_loading_message(char *loading_message, t_sdlcontext *sdl)
 	temp = sdl->font_default->size_default;
 	sdl->font_default->size_default = sdl->font_default->sizes[1];
 	print_text_boxed(sdl, loading_message, (t_point){\
-			((sdl->window_w / 2) - (len / 2 * (2 * FONT_SIZE_DEFAULT))), \
-			(sdl->window_h - (sdl->window_h / 5))});
+			(((int)sdl->window_w / 2) - (len / 2 * (2 * FONT_SIZE_DEFAULT))), \
+			((int)sdl->window_h - ((int)sdl->window_h / 5))});
 	sdl->font_default->size_default = temp;
 }
 
 void	editor_loading_screen(char *loading_message, t_sdlcontext *sdl)
 {
+	assert(loading_message);
 	static int		first_time = 1;
 	static t_img	loading_image;
 	SDL_Event		e;
@@ -39,11 +40,11 @@ void	editor_loading_screen(char *loading_message, t_sdlcontext *sdl)
 		first_time = 0;
 	}
 	draw_image(*sdl, point_zero(), loading_image, \
-			(t_point){sdl->window_w, sdl->window_h});
+			(t_point){(int)sdl->window_w, (int)sdl->window_h});
 	if (loading_message != NULL)
 		print_loading_message(loading_message, sdl);
 	ft_memcpy(sdl->window_surface->pixels, sdl->surface->pixels, \
-			sizeof(uint32_t) * sdl->window_w * sdl->window_h);
+			sizeof(uint32_t) * (int)sdl->window_w * (int)sdl->window_h);
 	while (SDL_PollEvent(&e))
 		if (e.type == SDL_KEYDOWN)
 			if (iskey(e, SDLK_ESCAPE))
@@ -87,11 +88,11 @@ void	playmode_loading_screen(char *loading_message, t_sdlcontext *sdl)
 		first_time = 0;
 	}
 	draw_image(*sdl, point_zero(), *loading_image, \
-			(t_point){sdl->window_w, sdl->window_h});
+			(t_point){(int)sdl->window_w, (int)sdl->window_h});
 	if (loading_message != NULL)
 		print_loading_message(loading_message, sdl);
 	ft_memcpy(sdl->window_surface->pixels, sdl->surface->pixels, \
-			sizeof(uint32_t) * sdl->window_w * sdl->window_h);
+			sizeof(uint32_t) * (int)sdl->window_w * (int)sdl->window_h);
 	while (SDL_PollEvent(&e))
 		if (e.type == SDL_KEYDOWN)
 			if (iskey(e, SDLK_ESCAPE))

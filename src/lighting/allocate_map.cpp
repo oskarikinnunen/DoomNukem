@@ -18,7 +18,7 @@ static void	allocate_map(t_entity *entity, int index, t_vector2 max)
 	t_map		*map;
 
 	map = &entity->map[index];
-	map->size = (t_point){ceilf(max.x) + 1, ceilf(max.y) + 1};
+	map->size = (t_point){(int)ceilf(max.x) + 1, (int)ceilf(max.y) + 1};
 	map->img_size = entity->obj->materials[index].img->size;
 	map->texture = (uint32_t*)prot_memalloc(sizeof(uint32_t) * map->size.x * map->size.y);
 	map->lightmap = (uint32_t*)prot_memalloc(sizeof(uint32_t) * map->size.x * map->size.y);

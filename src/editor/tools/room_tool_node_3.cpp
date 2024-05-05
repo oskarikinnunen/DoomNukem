@@ -28,7 +28,7 @@ t_vector2	*closest_edge(t_area *room, t_vector3 rc)
 	while (i < room->edge_count)
 	{
 		edge = &room->edges[i];
-		edge_3d = (t_vector3){edge->x, edge->y, room->height};
+		edge_3d = (t_vector3){edge->x, edge->y, (float)room->height};
 		if (vector3_sqr_dist(rc, edge_3d) < 1000.0f
 			&& vector3_sqr_dist(rc, edge_3d) < prev_dist)
 		{

@@ -33,9 +33,9 @@ inline void	scanline(int ax, int bx, int y, t_lighting *l)
 	float		index;
 
 	left = barycentric_coordinates(
-			l->triangle.p, vector2_add_xy((t_vector2){ax, y}, 0.5f));
+			l->triangle.p, vector2_add_xy((t_vector2){(float)ax, (float)y}, 0.5f));
 	right = barycentric_coordinates(
-			l->triangle.p, vector2_add_xy((t_vector2){bx, y}, 0.5f));
+			l->triangle.p, vector2_add_xy((t_vector2){(float)bx, (float)y}, 0.5f));
 	bary = left;
 	steps = bx - ax;
 	index = 0.0f;

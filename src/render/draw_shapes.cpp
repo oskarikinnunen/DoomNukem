@@ -66,7 +66,7 @@ static bool	screen_edge_line_clip(t_sdlcontext *sdl, t_point *from, t_point *to)
 {
 	t_vector2	screen_edge;
 
-	screen_edge = (t_vector2){sdl->window_w - 1, sdl->window_h - 1};
+	screen_edge = (t_vector2){(float)sdl->window_w - 1, (float)sdl->window_h - 1};
 	if (!clip_line_to_plane(from, to, vector2_zero(), (t_vector2){0.0f, 1.0f}))
 		return (false);
 	if (!clip_line_to_plane(from, to, screen_edge, (t_vector2){0.0f, -1.0f}))

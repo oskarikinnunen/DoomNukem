@@ -44,8 +44,8 @@ t_stepv3	make_uv_slopev3(
 	t_vector2	left;
 	t_vector2	right;
 
-	left = barycentric_coordinates(triangle.p, (t_vector2){start, y});
-	right = barycentric_coordinates(triangle.p, (t_vector2){end, y});
+	left = barycentric_coordinates(triangle.p, (t_vector2){(float)start, (float)y});
+	right = barycentric_coordinates(triangle.p, (t_vector2){(float)end, (float)y});
 	slope.location = get_vector3_from_barycentric(triangle.t, left);
 	slope.step = get_vector3_from_barycentric(triangle.t, right);
 	slope.step = \

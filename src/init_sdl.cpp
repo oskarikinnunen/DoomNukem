@@ -22,7 +22,7 @@ void	create_sdl_window(t_sdlcontext *sdl, t_screen_mode mode)
 		mode = screen_mode_windowed;
 	sdl->window_w = ft_clamp(sdl->window_w, 0, dmode.w);
 	sdl->window_h = ft_clamp(sdl->window_h, 0, dmode.h);
-	sdl->screensize = (t_point){sdl->window_w, sdl->window_h};
+	sdl->screensize = (t_point){(int)sdl->window_w, (int)sdl->window_h};
 	if (mode != screen_mode_fullscreen)
 	{
 		sdl->window = SDL_CreateWindow("DoomNukem", \

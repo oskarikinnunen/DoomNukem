@@ -99,7 +99,7 @@ void	highlight_room(t_editor *ed, t_sdlcontext *sdl,
 	while (i < room->edge_count)
 	{
 		start = room->edges[i];
-		ws = (t_vector3){start.x, start.y, room->height};
+		ws = (t_vector3){start.x, start.y, (float)room->height};
 		render_gizmo3d(sdl, ws, 2, color);
 		sdl->render.gizmocolor = color;
 		ws2 = v2tov3(next_edge(room, i));

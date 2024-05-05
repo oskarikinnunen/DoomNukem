@@ -15,7 +15,7 @@
 void	draw_fps_counter(t_sdlcontext *sdl, uint32_t fps)
 {
 	print_text(sdl, s_itoa(fps), \
-				(t_point){sdl->window_w - 80, 10});
+				(t_point){((int)sdl->window_w) - 80, 10});
 }
 
 void	update_clock(t_clock *c)

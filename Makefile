@@ -298,7 +298,7 @@ DEPENDS= $(OBJ:.o=.d)
 INCLUDE= -Isrc -Iinclude -Ilibft -I$(INSTALLED_LIBS_DIR)/include/SDL2/ \
 			-I$(INSTALLED_LIBS_DIR)/include/FMOD/ #$(LIBFT)
 CXX= g++
-CXXFLAGS= $(INCLUDE) -g -MMD# -finline-functions -O3
+CXXFLAGS= $(INCLUDE) -g -std=c++11#-MMD# -finline-functions -O3
 LDFLAGS = -Wl,-rpath $(INSTALLED_LIBS_DIR)/lib
 
 UNAME= $(shell uname)
@@ -325,10 +325,10 @@ $(OBJ): Makefile include/*.h
 
 clean:
 	rm -f $(OBJ)
-	rm -f *.o
+	rm -f $(DEPENDS)
 
 fclean: clean
-	rm -f doom-nukem
+	rm -f
 
 re: clean all
 

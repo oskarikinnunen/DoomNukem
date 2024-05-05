@@ -49,9 +49,9 @@ static void	print_saving_message(char *saving_message, t_sdlcontext *sdl)
 		temp = sdl->font_default->size_default;
 		sdl->font_default->size_default = sdl->font_default->sizes[0];
 		print_text_boxed(sdl, saving_message, \
-				(t_point){((sdl->window_w / 2) - \
+				(t_point){(((int)sdl->window_w / 2) - \
 				(len / 2 * FONT_SIZE_DEFAULT)), \
-				((sdl->window_h / 2) + (FONT_SIZE_DEFAULT * 1))});
+				(((int)sdl->window_h / 2) + (FONT_SIZE_DEFAULT * 1))});
 		sdl->font_default->size_default = temp;
 		ft_memcpy(sdl->window_surface->pixels, sdl->surface->pixels, \
 				sizeof(uint32_t) * sdl->window_w * sdl->window_h);

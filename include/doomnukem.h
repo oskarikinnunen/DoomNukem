@@ -13,6 +13,7 @@
 #ifndef DOOMNUKEM_H
 # define DOOMNUKEM_H
 
+#include <cassert>
 # include "libft.h"
 # include "log.h"
 # include <errno.h>

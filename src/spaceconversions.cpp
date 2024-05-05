@@ -68,6 +68,6 @@ t_point	vector3_to_screenspace(t_vector3 vec, t_sdlcontext sdl)
 	proj_q.v.y *= 0.5f * (float)sdl.window_h;
 	if (proj_q.w < 0.0f)
 		return ((t_point){-100, -100});
-	result = (t_point){proj_q.v.x, proj_q.v.y};
+	result = (t_point){(int)proj_q.v.x, (int)proj_q.v.y};
 	return (result);
 }

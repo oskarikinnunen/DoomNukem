@@ -24,7 +24,7 @@ static void	sample_img(t_lighting *lighting, int x, int y,
 		return ;
 	else
 		lighting->overdraw[y * lighting->map->size.x + x] = true;
-	loc = texcoord_to_loc(poly.t, poly.p, (t_vector2){x, y});
+	loc = texcoord_to_loc(poly.t, poly.p, (t_vector2){(float)x, (float)y});
 	light_amount = lighting->map->lightmap[y * (lighting->map->size.x) + x];
 	light_amount = get_lighting_for_pixel(lighting, light_amount, loc);
 	lighting->map->lightmap[y * (lighting->map->size.x) + x] = light_amount;
@@ -43,7 +43,7 @@ static void	scanline(t_screen_triangle triangle, t_lighting *lighting,
 	x = bounds.min.x;
 	while (x < bounds.max.x)
 	{
-		bary = barycentric_coordinates(triangle.p, (t_vector2){x, y});
+		bary = barycentric_coordinates(triangle.p, (t_vector2){(float)x, (float)y});
 		if (bary.x >= offset.x && bary.y >= offset.y
 			&& bary.x + bary.y <= 1.0f -(offset.x + offset.y))
 		{
