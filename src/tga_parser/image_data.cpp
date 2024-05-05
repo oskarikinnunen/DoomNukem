@@ -92,7 +92,7 @@ static void	parse_bottom_right(int fd, char *filename, t_tga *tga)
 void	save_image_data(int fd, char *filename, t_tga *tga)
 {
 	tga->image_data.pixels = \
-			(uint32_t*)(sizeof(uint32_t) * tga->image_data.size);
+			(uint32_t*)prot_memalloc(sizeof(uint32_t) * tga->image_data.size);
 	if (tga->pixel_order.top && tga->pixel_order.left)
 		parse_top_left(fd, filename, tga);
 	else if (tga->pixel_order.top && tga->pixel_order.right)
