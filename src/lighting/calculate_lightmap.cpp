@@ -89,7 +89,7 @@ void	*calculate_light_for_entities(void *temp)
 	if (ptr->world == NULL)
 		return (NULL);
 	lighting.entity = ptr->entity;
-	lighting.light = (t_light*)ptr->entity->component.data;
+	lighting.light = (t_light*)(ptr->entity->component.data);
 	i = 0;
 	found = 0;
 	cache = &ptr->world->entitycache;

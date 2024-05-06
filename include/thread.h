@@ -15,7 +15,7 @@
 
 # include <pthread.h>
 
-# define THREAD 6
+# define THREAD 1
 
 typedef struct s_test
 {
